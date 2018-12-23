@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
 
 class Header extends React.Component {
   render () {
@@ -21,9 +20,16 @@ class Header extends React.Component {
           <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
             <span>Save</span>
           </button>
-          <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}}>
-            <span>Deactivate</span>
-          </Link>
+          {this.props.isEdit && !this.props.isActive &&
+            <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.onEdit(true)}>
+              <span>Activate</span>
+            </button>
+          }
+          {this.props.isEdit && this.props.isActive &&
+            <button className='addLink btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.onEdit(false)}>
+              <span>Deactivate</span>
+            </button>
+          }
         </div>
       </div>
     )

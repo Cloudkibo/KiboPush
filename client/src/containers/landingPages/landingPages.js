@@ -47,7 +47,11 @@ class LandingPage extends React.Component {
       state: {pageId: this.state.pageSelected}
     })
   }
-  onEdit () {
+  onEdit (landingPage) {
+    browserHistory.push({
+      pathname: `/createLandingPage`,
+      state: {pageId: landingPage.pageId, _id: landingPage._id}
+    })
   }
   showCreateDialog () {
     this.setState({isShowingCreate: true})
@@ -225,7 +229,7 @@ class LandingPage extends React.Component {
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{landingPage.pageId.pageName}</span></td>
                             <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{landingPage.title}</span></td>
+                              <span style={{width: '150px'}}>{'url or title'}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
@@ -285,7 +289,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchLandingPages: fetchLandingPages,
     deleteLandingPage: deleteLandingPage,
-    loadMyPagesList: loadMyPagesList,
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)

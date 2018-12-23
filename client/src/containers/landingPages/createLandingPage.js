@@ -6,63 +6,57 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createLandingPage } from '../../redux/actions/landingPages.actions'
+import { createLandingPage, updateLandingPageData, editLandingPage } from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
-import State from './state'
+import Tabs from './tabs'
+import Preview from './preview'
 
 class CreateLandingPage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      currentTab: 'initialState',
-      optInMessage: this.props.location.state ? this.props.location.state.message : [],
-      initialState: this.props.location.state ? this.props.location.state.initialState : {},
-      submittedState: this.props.location.state ? this.props.location.state.submittedState : {},
-      isActive: this.props.location.state ? this.props.location.state.isActive : true,
-      pageId: this.props.location.state ? this.props.location.state.pageId : ''
+      optInMessage: this.props.location.state ? this.props.location.state.message : [{
+        text: 'hello'
+      }],
+      isActive: props.location.state && props.location.state._id ? props.location.state.isActive : true,
+      isEdit: false
     }
 
-    this.setSubmittedState = this.setSubmittedState.bind(this)
-    this.setInitialState = this.setInitialState.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
-    this.showDialogDelete = this.showDialogDelete.bind(this)
+    if (props.location.state && props.location.state.pageId) {
+      props.updateLandingPageData(this.props.landingPage, '', 'pageId', props.location.state.pageId)
+    }
     this.onEdit = this.onEdit.bind(this)
-    this.setCurrentTab = this.setCurrentTab.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.setStatus = this.setStatus.bind(this)
+  }
+  componentDidMount () {
+    if (this.props.location.state && this.props.location.state._id) {
+      this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive})
+      this.props.updateLandingPageData('', '', '', '', '', {
+        pageId: this.props.location.state.landingPage.pageId,
+        initialState: this.props.location.state.landingPage.initialState,
+        submittedState: this.props.location.state.landingPage.submittedState,
+        currentTab: 'initialState'
+      })
+    }
   }
   onEdit () {
-  }
-  setCurrentTab (tab) {
-    console.log('setCurrentTab', tab)
-    this.setState({
-      currentTab: tab
-    })
-  }
-  showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
-  }
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.landingPages) {
-      this.displayData(0, nextProps.landingPages)
-      this.setState({totalLength: nextProps.landingPages.length})
-    }
-  }
-  setInitialState (data) {
-    this.setState({initialState: data})
-    console.log('setInitialState:', data)
-  }
-  setSubmittedState (data) {
-    this.setState({submittedState: data})
-    console.log('setSubmittedState:', data)
+    this.props.editLandingPage(this.props.location.state.landingPage._id, {
+      initialState: this.props.landingPage.initialState,
+      submittedState: this.props.landingPage.submittedState,
+      optInMessage: this.state.optInMessage,
+      isActive: this.state.isActive})
   }
   onSave () {
-    this.props.createLandingPage({initialState: this.state.initialState, submittedState: this.state.submittedState, pageId: this.state.pageId, optInMessage: this.state.optInMessage, isActive: true}, this.msg)
+    this.props.createLandingPage({initialState: this.props.landingPage.initialState,
+      submittedState: this.props.landingPage.submittedState,
+      pageId: this.props.landingPage.pageId,
+      optInMessage: this.state.optInMessage,
+      isActive: this.state.isActive}, this.msg)
+  }
+  setStatus (value) {
+    this.setState({isActive: value})
   }
   render () {
     var alertOptions = {
@@ -79,14 +73,18 @@ class CreateLandingPage extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-                <Header onSave={this.onSave} />
+                <Header onSave={this.onSave}
+                  onEdit={this.onEdit}
+                  isEdit={this.state.isEdit}
+                  isActive={this.state.isActive}
+                  setStatus={this.setStatus} />
                 <div className='m-portlet__body'>
-                  <State currentTab={this.state.currentTab}
-                    setCurrentTab={this.setCurrentTab}
-                    optInMessage={this.state.optInMessage}
-                    setInitialState={this.setInitialState}
-                    setSubmittedState={this.setSubmittedState}
-                    pageId={this.props.location.state.pageId} />
+                  <div className='row'>
+                    <div className='col-md-6 col-lg-6 col-sm-6'>
+                      <Tabs />
+                    </div>
+                    <Preview />
+                  </div>
                 </div>
               </div>
             </div>
@@ -100,12 +98,15 @@ class CreateLandingPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    landingPage: state.landingPagesInfo.landingPage
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createLandingPage: createLandingPage
+    createLandingPage: createLandingPage,
+    updateLandingPageData: updateLandingPageData,
+    editLandingPage: editLandingPage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLandingPage)

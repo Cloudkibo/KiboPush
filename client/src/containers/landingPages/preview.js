@@ -7,43 +7,48 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import PreviewInitialSate from './initialStatePreview'
+import PreviewInitialState from './initialStatePreview'
+import PreviewSubmittedState from './submittedStatePreview'
 
 class Preview extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      backgroundColor: props.landingPage.currentTab === 'initialState' ? props.landingPage.initialState.backgroundColor : props.landingPage.currentTab === 'submittedState' && props.landingPage.submittedState.state ? props.landingPage.submittedState.state.backgroundColor : '#fff',
+      backgroundImage: props.landingPage.currentTab === 'initialState' && props.landingPage.initialState.pageTemplate === 'background' && props.landingPage.initialState.mediaLink !== '' ? props.landingPage.initialState.mediaLink : ''
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.landingPage.currentTab === 'initialState') {
+      this.setState({backgroundColor: nextProps.landingPage.initialState.backgroundColor})
+    } else if (nextProps.landingPage.currentTab === 'submittedState' && nextProps.landingPage.submittedState.state && nextProps.landingPage.submittedState.state.backgroundColor) {
+      this.setState({backgroundColor: nextProps.landingPage.submittedState.state.backgroundColor})
+    } else {
+      this.setState({backgroundColor: '#fff'})
+    }
+    if (nextProps.landingPage.currentTab === 'initialState' && nextProps.landingPage.initialState.pageTemplate === 'background' && nextProps.landingPage.initialState.mediaLink !== '') {
+      this.setState({backgroundImage: nextProps.landingPage.initialState.mediaLink})
+    } else {
+      this.setState({backgroundImage: ''})
     }
   }
 
   render () {
-    console.log('render in preview', this.props.currentTab)
+    console.log('backgroundColor', this.state.backgroundColor)
     return (
-      <div className='col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2', backgroundColor: this.props.initialState ? this.props.initialState.backgroundColor : '#fff'}}>
+      <div className='col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2', backgroundColor: this.state.backgroundColor, backgroundImage: 'url(' + this.state.backgroundImage + ')', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
         {
-          this.props.currentTab === 'optInAction' &&
+          this.props.landingPage.currentTab === 'optInActions' &&
           <div style={{paddingLeft: '50px'}}>
             <ViewMessage payload={this.props.optInMessage} />
           </div>
         }
-        {this.props.currentTab === 'initialState' &&
-          <PreviewInitialSate
-            initialState={this.props.initialState}
-            setInitialStatePreview={this.props.setInitialStatePreview}
-            title='Here is your widget headline. Click here to change it!'
-            description='We also put default text here. Make sure to turn it into a unique and valuable message.'
-            pageId={this.props.pageId}
-          />
+        {this.props.landingPage.currentTab === 'initialState' &&
+          <PreviewInitialState />
         }
-        {this.props.currentTab === 'submittedState' &&
-          <PreviewInitialSate
-            initialState={this.props.submittedState.state}
-            setInitialStatePreview={this.props.setSubmittedStatePreview}
-            title='Thank You for Reading Our Thank You Message!'
-            description='Once a user opt-ins through your form, he sees this. Unless you change it, of course.'
-            button='View it in Messenger'
-            currentTab={this.props.currentTab}
-            />
+        {this.props.landingPage.currentTab === 'submittedState' &&
+          <PreviewSubmittedState />
         }
       </div>
     )
@@ -52,6 +57,7 @@ class Preview extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    landingPage: state.landingPagesInfo.landingPage
   }
 }
 

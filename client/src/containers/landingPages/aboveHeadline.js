@@ -7,14 +7,18 @@ import React from 'react'
 
 class AboveHeadline extends React.Component {
   render () {
+    console.log('this.props in aboveHeadline', this.props)
     return (
       <div>
+        <br />
+        { this.props.initialState && (this.props.initialState.pageTemplate === 'text' || this.props.currentTab === 'submittedState') && this.props.initialState.mediaLink !== '' &&
         <img style={{width: '300px', height: '300px', margin: '10px auto 10px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
-        <textarea className='addMenu' value={this.props.title} rows='3' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
-        <textarea className='addMenu' value={this.props.description} rows='3' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />
+        }
+        <textarea className='addMenu' value={this.props.title} rows='2' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
+        <textarea className='addMenu' value={this.props.description} rows='2' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />
         <br />
         {this.props.currentTab && this.props.currentTab === 'submittedState'
-        ? <center>
+        ? <center style={{marginTop: '10px'}}>
           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon'>
             <span>
               <input type='text' value={this.props.buttonText} style={{width: '150px', backgroundColor: '#337ab7', border: '0', color: 'white'}} onChange={this.props.handleButtonText} />

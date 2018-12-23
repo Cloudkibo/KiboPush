@@ -9,6 +9,13 @@ export function showAllLandingPages (data) {
   }
 }
 
+export function showUpdatedData (data) {
+  return {
+    type: ActionTypes.UPDATE_LANDING_PAGE,
+    data
+  }
+}
+
 export function fetchLandingPages () {
   return (dispatch) => {
     callApi('landingPage').then(res => {
@@ -44,5 +51,26 @@ export function createLandingPage (data, msg) {
         msg.error('failed to save landing page')
       }
     })
+  }
+}
+
+export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
+  return (dispatch) => {
+    let landingPage = {
+      initialState: landingPageData.initialState,
+      submittedState: landingPageData.submittedState,
+      pageId: landingPageData.pageId,
+      currentTab: landingPageData.currentTab
+    }
+    if (editLandingPage) {
+      landingPage = editLandingPage
+    } else if (updateKey === 'state') {
+      landingPage[tabValue][updateKey][stateKey] = updateValue
+    } else if (updateKey === 'currentTab' || updateKey === 'pageId') {
+      landingPage[updateKey] = updateValue
+    } else {
+      landingPage[tabValue][updateKey] = updateValue
+    }
+    dispatch(showUpdatedData(landingPage))
   }
 }
