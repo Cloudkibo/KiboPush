@@ -18,6 +18,7 @@ class PreviewInitialSate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      loadScript: true
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
@@ -33,8 +34,10 @@ class PreviewInitialSate extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.fbAppId) {
-      window.fbAsyncInit = function () {
+    if (nextProps.fbAppId && this.state.loadScript) {
+      console.log('in componentWillReceiveProps of fbappid')
+      const script = document.createElement('script')
+      script.innerHTML = window.fbAsyncInit = function () {
         FB.init({
           appId: nextProps.fbAppId,
           autoLogAppEvents: true,
@@ -49,6 +52,8 @@ class PreviewInitialSate extends React.Component {
         js.src = 'https://connect.facebook.net/en_US/sdk.js'
         fjs.parentNode.insertBefore(js, fjs)
       }(document, 'script', 'facebook-jssdk'))
+      document.body.appendChild(script)
+      this.setState({loadScript: false})
     }
   }
 
@@ -105,9 +110,11 @@ class PreviewInitialSate extends React.Component {
               pageId={this.props.landingPage.pageId}
               currentTab={this.props.landingPage.currentTab} />
           }
+          {this.props.fbAppId &&
           <div className='fb-send-to-messenger'
             messenger_app_id={this.props.fbAppId}
             page_id={this.props.landingPage.pageId} />
+        }
       </div>
     )
   }
