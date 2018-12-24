@@ -41,10 +41,10 @@ class Preview extends React.Component {
         {
           this.props.landingPage.currentTab === 'optInActions' &&
           <div style={{paddingLeft: '50px'}}>
-            <ViewMessage payload={this.props.optInMessage} />
+            <ViewMessage payload={this.props.landingPage.optInMessage} />
           </div>
         }
-        {this.props.landingPage.currentTab === 'initialState' &&
+        {(this.props.landingPage.currentTab === 'initialState' || this.props.landingPage.currentTab === 'setup') &&
           <PreviewInitialState />
         }
         {this.props.landingPage.currentTab === 'submittedState' &&

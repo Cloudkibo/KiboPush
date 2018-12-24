@@ -105,8 +105,7 @@ class LandingPageMessage extends React.Component {
   goBack () {
     if (this.props.module === 'landingPage') {
       browserHistory.push({
-        pathname: `/createLandingPage`,
-        state: {tab: 'optInAction', message: this.state.editMessage}
+        pathname: `/createLandingPage`
       })
     }
   }
@@ -117,7 +116,7 @@ class LandingPageMessage extends React.Component {
     this.setState({
       editMessage: this.state.broadcast
     })
-    this.msg.success('Message Saved Successfully')
+    this.props.saveMessage(this.state.broadcast)
   }
   handleText (obj) {
     console.log('handleText', obj)

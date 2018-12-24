@@ -7,12 +7,14 @@
   import { connect } from 'react-redux'
   import { bindActionCreators } from 'redux'
   import CreateMessage from '../../components/CreateMessage/createMessage'
+  import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+  import AlertContainer from 'react-alert'
 
   class LandingPageMessage extends React.Component {
     constructor (props, context) {
       super(props, context)
       this.state = {
-        optInMessage: this.props.location.state.editMessage ? this.props.location.state.editMessage : []
+        optInMessage: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : []
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
@@ -20,21 +22,36 @@
       this.setState({
         optInMessage: message
       })
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', message)
+      this.msg.success('Message has been saved.')
     }
     render () {
+      var alertOptions = {
+        offset: 75,
+        position: 'top right',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
+      }
       return (
-        <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
+        <div style={{width: '100%'}}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[this.props.landingPage.pageId]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
+        </div>
       )
     }
   }
 
   function mapStateToProps (state) {
+    console.log('state in Landing Page- CreateMessage', state)
     return {
+      landingPage: state.landingPagesInfo.landingPage
     }
   }
 
   function mapDispatchToProps (dispatch) {
     return bindActionCreators({
+      updateLandingPageData: updateLandingPageData
     }, dispatch)
   }
   export default connect(mapStateToProps, mapDispatchToProps)(LandingPageMessage)

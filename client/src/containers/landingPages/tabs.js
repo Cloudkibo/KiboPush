@@ -38,7 +38,7 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'optInActions')
-    } else if (tab === 'optInAction') {
+    } else if (tab === 'optInActions') {
       $('#tab_4').addClass('active')
       $('#setup').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'setup')
@@ -57,7 +57,7 @@ class Tab extends React.Component {
       $('#tab_1').addClass('active')
       $('#initialState').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'initialState')
-    } else if (tab === 'optInAction') {
+    } else if (tab === 'optInActions') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'submittedState')
@@ -84,7 +84,7 @@ class Tab extends React.Component {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'submittedState')
-    } else if (tab === 'optInAction') {
+    } else if (tab === 'optInActions') {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'optInActions')
@@ -94,7 +94,11 @@ class Tab extends React.Component {
       this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'setup')
     }
   }
-
+  componentDidMount () {
+    if (this.props.landingPage.currentTab && this.props.landingPage.currentTab !== '') {
+      this.onTabClick(this.props.landingPage.currentTab)
+    }
+  }
   render () {
     console.log('render in tabs', this.props.landingPage)
     return (
@@ -107,7 +111,7 @@ class Tab extends React.Component {
             <a id='submittedState' className='broadcastTabs' onClick={() => { this.onTabClick('submittedState') }}>Submitted State </a>
           </li>
           <li>
-            <a id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInAction') }}>Opt-In Actions </a>
+            <a id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
           </li>
           <li>
             <a id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>

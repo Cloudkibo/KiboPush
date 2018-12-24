@@ -5,19 +5,16 @@
 
 import React from 'react'
 import { browserHistory } from 'react-router'
+import Footer from './footer'
 
 class OptInActions extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      optInMessage: this.props.optInMessage ? this.props.optInMessage : ''
-    }
     this.editMessage = this.editMessage.bind(this)
   }
   editMessage () {
     browserHistory.push({
-      pathname: `/createLandingPageMessage`,
-      state: {editMessage: this.state.optInMessage}
+      pathname: `/createLandingPageMessage`
     })
   }
   render () {
@@ -28,6 +25,9 @@ class OptInActions extends React.Component {
           <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='javascript:;'>
             <i className='fa fa-edit' />
           </a>
+        </div>
+        <div style={{marginTop: '50px'}}>
+          <Footer page='optInActions' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
         </div>
       </div>
     )

@@ -5,6 +5,7 @@
 
 import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import Footer from './footer'
 
 class SetUp extends React.Component {
   constructor (props) {
@@ -47,6 +48,9 @@ class SetUp extends React.Component {
             Copy Link
           </button>
         </CopyToClipboard>
+        <div style={{marginTop: '50px'}}>
+          <Footer page='setup' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+        </div>
       </div>
     )
   }
