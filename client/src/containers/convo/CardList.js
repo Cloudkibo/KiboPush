@@ -57,7 +57,7 @@ class Card extends React.Component {
       openWebsite: false,
       webviewsize: 'FULL',
       webviewurl: '',
-      webviewsizes: ['COMPACT ', 'TALL', 'FULL'],
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       defaultAction: ''
     }
   }
