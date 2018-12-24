@@ -75,13 +75,14 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       initialState: landingPageData.initialState,
       submittedState: landingPageData.submittedState,
       pageId: landingPageData.pageId,
+      optInMessage: landingPageData.optInMessage ? landingPageData.optInMessage : [],
       currentTab: landingPageData.currentTab
     }
     if (editLandingPage) {
       landingPage = editLandingPage
     } else if (updateKey === 'state') {
       landingPage[tabValue][updateKey][stateKey] = updateValue
-    } else if (updateKey === 'currentTab' || updateKey === 'pageId') {
+    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage') {
       landingPage[updateKey] = updateValue
     } else {
       landingPage[tabValue][updateKey] = updateValue

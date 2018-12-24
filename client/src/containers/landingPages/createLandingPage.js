@@ -16,7 +16,6 @@ class CreateLandingPage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      optInMessage: this.props.location.state ? this.props.location.state.message : [],
       isActive: props.location.state && props.location.state._id ? props.location.state.isActive : true,
       isEdit: false
     }
@@ -36,6 +35,7 @@ class CreateLandingPage extends React.Component {
         pageId: this.props.location.state.landingPage.pageId.pageId,
         initialState: this.props.location.state.landingPage.initialState,
         submittedState: this.props.location.state.landingPage.submittedState,
+        optInMessage: this.props.location.state.landingPage.optInMessage,
         currentTab: 'initialState'
       })
     }
@@ -44,14 +44,14 @@ class CreateLandingPage extends React.Component {
     this.props.editLandingPage(this.props.location.state.landingPage._id, {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
-      optInMessage: this.state.optInMessage,
+      optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
   }
   onSave () {
     this.props.createLandingPage({initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
-      pageId: this.props.location.state._id,
-      optInMessage: [],
+      pageId: this.props.landingPage.pageId,
+      optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
   }
   setStatus (value) {
