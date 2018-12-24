@@ -283,7 +283,7 @@ class CreateConvo extends React.Component {
         temp[i].title = obj.title
         temp[i].buttons = obj.buttons
         temp[i].description = obj.description
-        if (obj.default_action) {
+        if (!obj.default_action && obj.default_action !== '') {
           temp[i].default_action = obj.default_action
         } else if (temp[i].default_action) {
           delete temp[i].default_action

@@ -57,7 +57,8 @@ class Card extends React.Component {
       openWebsite: false,
       webviewsize: 'FULL',
       webviewurl: '',
-      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT ', 'TALL', 'FULL'],
+      defaultAction: ''
     }
   }
   onChangeWebviewSize (event) {
@@ -76,7 +77,8 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
     if (this.state.checkbox) {
       this.props.topElementStyle('LARGE')
@@ -95,7 +97,8 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
     if (this.state.checkbox) {
       this.props.topElementStyle('LARGE')
@@ -117,46 +120,18 @@ class Card extends React.Component {
     if (e.target.value) {
       this.setState({disabled: false})
     }
-    if (this.state.elementUrl !== '' || this.state.webviewurl !== '') {
-      let defaultAction
-      if (this.state.webviewurl !== '') {
-        defaultAction = {
-          type: 'web_url',
-          url: this.state.webviewurl, // User defined link,
-          messenger_extensions: true,
-          webview_height_ratio: this.state.webviewsize
-        }
-      }
-      if (this.state.elementUrl !== '') {
-        defaultAction = {
-          type: 'web_url', url: this.state.elementUrl
-        }
-      }
-      this.props.handleCard({id: this.props.id,
-        componentType: 'card',
-        fileurl: this.state.fileurl,
-        image_url: this.state.image_url,
-        fileName: this.state.fileName,
-        type: this.state.type,
-        size: this.state.size,
-        title: this.state.title,
-        description: this.state.subtitle,
-        buttons: this.state.button,
-        default_action: defaultAction
-      })
-    } else {
-      this.props.handleCard({id: this.props.id,
-        componentType: 'card',
-        fileurl: this.state.fileurl,
-        image_url: this.state.image_url,
-        fileName: this.state.fileName,
-        type: this.state.type,
-        size: this.state.size,
-        title: this.state.title,
-        description: this.state.subtitle,
-        buttons: this.state.button
-      })
-    }
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
     if (e.target.value) {
       this.props.topElementStyle('LARGE')
     } else {
@@ -230,7 +205,8 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
     this.setState({
       openPopover: false
@@ -294,7 +270,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
   }
   _onChange (event) {
   // Assuming only image
@@ -344,7 +322,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: event.target.value,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
     this.setState({
       title: event.target.value
     })
@@ -360,7 +340,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: event.target.value,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
     this.setState({
       subtitle: event.target.value
     })
@@ -380,7 +362,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
   }
 
   editButton (obj) {
@@ -402,7 +386,9 @@ class Card extends React.Component {
         size: this.state.size,
         title: this.state.title,
         description: this.state.subtitle,
-        buttons: this.state.button})
+        buttons: this.state.button,
+        default_action: this.state.defaultAction
+      })
     })
   }
   removeButton (obj) {
@@ -418,7 +404,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: temp})
+      buttons: temp,
+      default_action: this.state.defaultAction
+    })
   }
 
   setLoading () {
@@ -441,7 +429,9 @@ class Card extends React.Component {
       size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
   }
 
   render () {

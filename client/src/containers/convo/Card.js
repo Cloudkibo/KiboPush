@@ -56,7 +56,8 @@ class Card extends React.Component {
       webviewsize: 'FULL',
       webviewurl: '',
       elementUrl: '',
-      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT ', 'TALL', 'FULL'],
+      defaultAction: ''
     }
   }
   handleClick (e) {
@@ -85,9 +86,10 @@ class Card extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      title: event.target.value,
+      title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
   }
   showWebView () {
@@ -105,11 +107,17 @@ class Card extends React.Component {
         messenger_extensions: true,
         webview_height_ratio: this.state.webviewsize
       }
+      this.setState({
+        defaultAction: defaultAction
+      })
     }
     if (this.state.elementUrl !== '') {
       defaultAction = {
         type: 'web_url', url: this.state.elementUrl
       }
+      this.setState({
+        defaultAction: defaultAction
+      })
     }
     if (this.state.elementUrl !== '' || this.state.webviewurl !== '') {
       this.props.handleCard({id: this.props.id,
@@ -119,7 +127,7 @@ class Card extends React.Component {
         fileName: this.state.fileName,
         type: this.state.type,
         size: this.state.size,
-        title: event.target.value,
+        title: this.state.title,
         description: this.state.subtitle,
         buttons: this.state.button,
         default_action: defaultAction
@@ -138,9 +146,10 @@ class Card extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      title: event.target.value,
+      title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
   }
   closeWebsite () {
@@ -152,9 +161,10 @@ class Card extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      title: event.target.value,
+      title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
     })
   }
   changeWebviewUrl (e) {
@@ -243,7 +253,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: event.target.value,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
     this.setState({
       title: event.target.value
     })
@@ -259,7 +271,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: event.target.value,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
     this.setState({
       subtitle: event.target.value
     })
@@ -278,7 +292,9 @@ class Card extends React.Component {
         size: this.state.size,
         title: this.state.title,
         description: this.state.subtitle,
-        buttons: temp})
+        buttons: temp,
+        default_action: this.state.defaultAction
+      })
       console.log('after add button: ', temp)
     })
   }
@@ -300,7 +316,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: temp,
+      default_action: this.state.defaultAction
+    })
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
@@ -314,7 +332,9 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: temp})
+      buttons: temp,
+      default_action: this.state.defaultAction
+    })
   }
 
   setLoading () {
@@ -339,7 +359,9 @@ class Card extends React.Component {
       size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      default_action: this.state.defaultAction
+    })
   }
 
   render () {
