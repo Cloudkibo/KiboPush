@@ -11,6 +11,7 @@ import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import AlertContainer from 'react-alert'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -119,7 +120,7 @@ class Button extends React.Component {
           id: ''// messageId
         }
       }
-      this.props.addButton(data, this.props.onAdd)
+      this.props.addButton(data, this.props.onAdd, this.msg)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
@@ -128,7 +129,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.addButton(data, this.props.onAdd)
+        this.props.addButton(data, this.props.onAdd, this.msg)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -136,14 +137,14 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.addButton(data, this.props.onAdd)
+        this.props.addButton(data, this.props.onAdd, this.msg)
       }
     } else if (this.state.shareButton) {
       let data = {
         type: 'element_share',
         title: this.state.title
       }
-      this.props.addButton(data, this.props.onAdd)
+      this.props.addButton(data, this.props.onAdd, this.msg)
     } else if (this.state.webviewurl !== '') {
       let data = {
         type: 'web_url',
@@ -153,7 +154,7 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.addButton(data, this.props.onAdd)
+      this.props.addButton(data, this.props.onAdd, this.msg)
     }
     // this.setState({
     //   openPopover: false
@@ -201,8 +202,16 @@ class Button extends React.Component {
     this.setState({webviewurl: e.target.value})
   }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='ui-block hoverborder' style={this.props.styling} onClick={this.handleClick}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div>
           <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
             <h6> + Add Button </h6>

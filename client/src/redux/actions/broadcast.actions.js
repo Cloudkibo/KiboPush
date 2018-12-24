@@ -189,7 +189,7 @@ export function uploadRequest (data) {
   }
 }
 
-export function addButton (data, handleFunction) {
+export function addButton (data, handleFunction, msg) {
   console.log('the data is', data)
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
@@ -197,7 +197,15 @@ export function addButton (data, handleFunction) {
         console.log('Response: ', res.payload)
         handleFunction(res.payload)
       } else {
-        console.log(res.description)
+        console.log(res.payload)
+        if (msg) {
+          if (res.payload) {
+            msg.error(res.payload)
+          }
+          if (res.description) {
+            msg.error(res.description)
+          }
+        }
       }
     })
   }
