@@ -10,25 +10,19 @@ import Footer from './footer'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
 
 class InitialState extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      headingColor: '#000',
-      descriptionColor: '#000',
-      backgroundColor: '#fff',
       showHeadingPicker: false,
       showDescriptionPicker: false,
-      showBackgroundPicker: false,
-      selectedRadio: 'text',
-      mediaPlacement: 'aboveHeadline',
-      imgSrc: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/fa6b852e7b7201812178455.jpeg'
+      showBackgroundPicker: false
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
     this.handleColorChange = this.handleColorChange.bind(this)
-    this.handleNext = this.handleNext.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.handleMediaPlacement = this.handleMediaPlacement.bind(this)
     this._onChange = this._onChange.bind(this)
@@ -36,12 +30,15 @@ class InitialState extends React.Component {
   }
 
   componentDidMount () {
-    this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
   }
 
   handleImage (obj) {
     console.log('handleImage', obj)
-    this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+    if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', obj.image_url)
+    } else {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', obj.image_url, 'mediaLink')
+    }
   }
 
   _onChange (images) {
@@ -57,7 +54,7 @@ class InitialState extends React.Component {
 
       reader.onloadend = function (e) {
         this.setState({
-          imgSrc: [reader.result]
+          // imgSrc: [reader.result]
         })
       }.bind(this)
       this.props.uploadImage(file, this.props.pages, 'image', {
@@ -73,32 +70,41 @@ class InitialState extends React.Component {
   }
 
   handleMediaPlacement (e) {
-    this.setState({mediaPlacement: e.target.value})
-    this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, e.target.value)
-  }
-
-  handleNext () {
-    // this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+    if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaPlacement', e.target.value)
+    } else {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', e.target.value, 'mediaPlacement')
+    }
   }
 
   handleRadioButton (e) {
-    this.setState({
-      selectedRadio: e.currentTarget.value
-    })
-    this.props.setInitialState(e.target.value, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+    if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'pageTemplate', e.target.value)
+    } else {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', e.target.value, 'pageTemplate')
+    }
   }
 
   handleColorChange (color, value) {
     console.log('color.hex', color.hex)
     if (value === 'heading') {
-      this.setState({headingColor: color.hex})
-      this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, color.hex, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+      if (this.props.landingPage.currentTab === 'initialState') {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'titleColor', color.hex)
+      } else {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', color.hex, 'titleColor')
+      }
     } else if (value === 'description') {
-      this.setState({descriptionColor: color.hex})
-      this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, color.hex, this.state.imgSrc, this.state.mediaPlacement)
+      if (this.props.landingPage.currentTab === 'initialState') {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'descriptionColor', color.hex)
+      } else {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', color.hex, 'descriptionColor')
+      }
     } else if (value === 'background') {
-      this.setState({backgroundColor: color.hex})
-      this.props.setInitialState(this.state.selectedRadio, color.hex, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+      if (this.props.landingPage.currentTab === 'initialState') {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'backgroundColor', color.hex)
+      } else {
+        this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', color.hex, 'backgroundColor')
+      }
     }
   }
 
@@ -128,12 +134,13 @@ class InitialState extends React.Component {
     }
   }
   render () {
+    console.log('render in initialState.js', this.props.initialState)
     return (
       <div>
         <Popover isOpen={this.state.showHeadingPicker} target='heading' toggle={this.toggleColorPicker} color={this.state.headingColor} onChangeComplete={this.handleColorChange} />
         <Popover isOpen={this.state.showDescriptionPicker} target='description' toggle={this.toggleColorPicker} color={this.state.descriptionColor} onChangeComplete={this.handleColorChange} />
         <Popover isOpen={this.state.showBackgroundPicker} target='background' toggle={this.toggleColorPicker} color={this.state.backgroundColor} onChangeComplete={this.handleColorChange} />
-        {!this.props.submittedState &&
+        {this.props.landingPage.currentTab !== 'submittedState' &&
           <div>
             <label>Page Template:</label>
             <div className='row' style={{marginLeft: '5px'}}>
@@ -144,7 +151,7 @@ class InitialState extends React.Component {
                     value='text'
                     name='text'
                     onChange={this.handleRadioButton}
-                    checked={this.state.selectedRadio === 'text'} />
+                    checked={this.props.initialState.pageTemplate === 'text'} />
                   <label>Text & Media</label>
                 </div>
               </div>
@@ -155,7 +162,7 @@ class InitialState extends React.Component {
                     value='background'
                     name='background'
                     onChange={this.handleRadioButton}
-                    checked={this.state.selectedRadio === 'background'} />
+                    checked={this.props.initialState.pageTemplate === 'background'} />
                   <label>Media Background</label>
                 </div>
               </div>
@@ -166,15 +173,15 @@ class InitialState extends React.Component {
         <label>Colors:</label><br />
         <div className='row'>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='heading' showColorPicker={this.showColorPicker} backgroundColor={this.state.headingColor} title='Heading' />
+            <ColorPicker id='heading' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.titleColor} title='Heading' />
           </div>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='description' showColorPicker={this.showColorPicker} backgroundColor={this.state.descriptionColor} title='Description' />
+            <ColorPicker id='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.descriptionColor} title='Description' />
           </div>
         </div>
         <div className='row'>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='background' showColorPicker={this.showColorPicker} backgroundColor={this.state.backgroundColor} title='Background' />
+            <ColorPicker id='background' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.backgroundColor} title='Background' />
           </div>
         </div>
         <br />
@@ -192,32 +199,36 @@ class InitialState extends React.Component {
                     accept='image/*'
                     title=' '
                     onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
-                  {this.state.imgSrc === ''
-                ? <div className='align-center'>
+                  {this.props.initialState.mediaLink === ''
+                  ? <div className='align-center'>
                     <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                     <h4 style={{pointerEvents: 'none', zIndex: -1}}> Upload Image </h4>
-                    </div>
-                  : <img style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.state.imgSrc} />
-                }
-              </div>
+                  </div>
+                  : <img style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
+                  }
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <label>Image Placement:</label><br />
-        <div className='row'>
-          <div className='col-md-12 col-lg-12 col-sm-12'>
-            <select className='custom-select' id='m_form_status' value={this.state.mediaPlacement} onChange={this.handleMediaPlacement} style={{width: '100%'}}>
-              <option key='aboveHeadline' value='aboveHeadline'>Above Headline</option>
-              <option key='aboveDescription' value='aboveDescription'>Above Description</option>
-              <option key='belowDescription' value='belowDescription'>Below Description</option>
-              <option key='contentLeftSide' value='contentLeftSide'>Content Left Side</option>
-              <option key='contentRightSide' value='contentRightSide'>Content Right Side</option>
-            </select>
+        {(this.props.landingPage.currentTab === 'submittedState' || this.props.initialState.pageTemplate === 'text') &&
+        <div>
+          <label>Image Placement:</label><br />
+          <div className='row'>
+            <div className='col-md-12 col-lg-12 col-sm-12'>
+              <select className='custom-select' id='m_form_status' value={this.props.initialState.mediaPlacement} onChange={this.handleMediaPlacement} style={{width: '100%'}}>
+                <option key='aboveHeadline' value='aboveHeadline'>Above Headline</option>
+                <option key='aboveDescription' value='aboveDescription'>Above Description</option>
+                <option key='belowDescription' value='belowDescription'>Below Description</option>
+                <option key='contentLeftSide' value='contentLeftSide'>Content Left Side</option>
+                <option key='contentRightSide' value='contentRightSide'>Content Right Side</option>
+              </select>
+            </div>
           </div>
         </div>
+      }
         <br />
-        {!this.props.submittedState &&
+        {this.props.landingPage.currentTab !== 'submittedState' &&
           <Footer page='initialState' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
         }
       </div>
@@ -226,13 +237,16 @@ class InitialState extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state in initialState.js', state)
   return {
+    landingPage: state.landingPagesInfo.landingPage
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    uploadImage: uploadImage
+    uploadImage: uploadImage,
+    updateLandingPageData: updateLandingPageData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(InitialState)

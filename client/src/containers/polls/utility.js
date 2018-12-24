@@ -1,6 +1,8 @@
 import _ from 'underscore'
 
 export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers, polls) {
+  console.log('pageValue', pageValue)
+  console.log('subscribers', subscribers)
   let subscribersMatchPages = []
   let subscribersMatchLocale = []
   let subscribersMatchGender = []
@@ -66,7 +68,7 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
       }
     }
   }
-  console.log('subscribersMatchPolls', subscribersMatchPolls)
+  console.log('subscribersMatch', subscribersMatchPages)
   if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag, subscribersMatchPolls).length === 0) {
     return false
   }
@@ -80,5 +82,6 @@ function intersection (...arrays) {
       nonEmptyArrays.push(arrays[i])
     }
   }
+  console.log('intersection', _.intersection(...nonEmptyArrays))
   return _.intersection(...nonEmptyArrays)
 }

@@ -8,6 +8,9 @@ import InitialState from './initialState'
 import SubmittedState from './submittedState'
 import OptInActions from './optInActions'
 import Setup from './setup'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
 
 class Tab extends React.Component {
   constructor (props, context) {
@@ -30,15 +33,15 @@ class Tab extends React.Component {
     if (tab === 'initialState') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
-      this.props.setCurrentTab('submittedState')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'submittedState')
     } else if (tab === 'submittedState') {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
-      this.props.setCurrentTab('optInActions')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'optInActions')
     } else if (tab === 'optInAction') {
       $('#tab_4').addClass('active')
       $('#setup').addClass('active')
-      this.props.setCurrentTab('setup')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'setup')
     }
   }
   handleBack (tab) {
@@ -53,15 +56,15 @@ class Tab extends React.Component {
     if (tab === 'submittedState') {
       $('#tab_1').addClass('active')
       $('#initialState').addClass('active')
-      this.props.setCurrentTab('initialState')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'initialState')
     } else if (tab === 'optInAction') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
-      this.props.setCurrentTab('submittedState')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'submittedState')
     } else if (tab === 'setup') {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
-      this.props.setCurrentTab('optInActions')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'optInActions')
     }
   }
   onTabClick (tab) {
@@ -76,27 +79,24 @@ class Tab extends React.Component {
     if (tab === 'initialState') {
       $('#tab_1').addClass('active')
       $('#initialState').addClass('active')
-      this.props.setCurrentTab('initialState')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'initialState')
     } else if (tab === 'submittedState') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
-      this.props.setCurrentTab('submittedState')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'submittedState')
     } else if (tab === 'optInAction') {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
-      this.props.setCurrentTab('optInActions')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'optInActions')
     } else if (tab === 'setup') {
       $('#tab_4').addClass('active')
       $('#setup').addClass('active')
-      this.props.setCurrentTab('setup')
+      this.props.updateLandingPageData(this.props.landingPage, '', 'currentTab', 'setup')
     }
   }
-  componentDidMount () {
-    if (this.props.activeTab !== '') {
-      this.onTabClick(this.props.activeTab)
-    }
-  }
+
   render () {
+    console.log('render in tabs', this.props.landingPage)
     return (
       <div>
         <ul className='nav nav-tabs'>
@@ -115,10 +115,10 @@ class Tab extends React.Component {
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <InitialState setInitialState={this.props.setInitialState} handleNext={this.handleNext} handleBack={this.handleBack} />
+            <InitialState initialState={this.props.landingPage.initialState} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_2'>
-            <SubmittedState setSubmittedState={this.props.setSubmittedState} handleNext={this.handleNext} handleBack={this.handleBack} />
+            <SubmittedState handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
             <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
@@ -132,4 +132,16 @@ class Tab extends React.Component {
   }
 }
 
-export default Tab
+function mapStateToProps (state) {
+  console.log('state in tabs', state)
+  return {
+    landingPage: state.landingPagesInfo.landingPage
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    updateLandingPageData: updateLandingPageData
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Tab)

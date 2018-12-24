@@ -23,7 +23,7 @@ class LandingPage extends React.Component {
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
-      pageSelected: ''
+      pageSelected: {}
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -42,12 +42,17 @@ class LandingPage extends React.Component {
     this.setState({pageSelected: e.target.value})
   }
   gotoCreate () {
+    let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     browserHistory.push({
       pathname: `/createLandingPage`,
-      state: {pageId: this.state.pageSelected}
+      state: {pageId: pageId, _id: this.state.pageSelected}
     })
   }
-  onEdit () {
+  onEdit (landingPage) {
+    browserHistory.push({
+      pathname: `/createLandingPage`,
+      state: {module: 'edit', landingPage: landingPage}
+    })
   }
   showCreateDialog () {
     this.setState({isShowingCreate: true})
@@ -225,14 +230,14 @@ class LandingPage extends React.Component {
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{landingPage.pageId.pageName}</span></td>
                             <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{landingPage.title}</span></td>
+                              <span style={{width: '150px'}}>{'url or title'}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                                <Link to='/editLandingPage' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
                                     Edit
-                                </Link>
+                                </button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>
                                     Delete
                                 </button>
@@ -285,7 +290,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchLandingPages: fetchLandingPages,
     deleteLandingPage: deleteLandingPage,
-    loadMyPagesList: loadMyPagesList,
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)

@@ -225,24 +225,30 @@ class Dashboard extends React.Component {
     }
   }
   setChartData (graphData) {
-    if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
-      var broadcastData = graphData.broadcastsgraphdata
-      broadcastData = this.includeZeroCounts(broadcastData)
+    const url = window.location.hostname
+    if (url.includes('kiboengage.cloudkibo.com')) {
+      if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
+        var broadcastData = graphData.broadcastsgraphdata
+        broadcastData = this.includeZeroCounts(broadcastData)
+      }
+      if (graphData.pollsgraphdata && graphData.pollsgraphdata.length > 0) {
+        var pollsData = graphData.pollsgraphdata
+        pollsData = this.includeZeroCounts(pollsData)
+      }
+      if (graphData.surveysgraphdata && graphData.surveysgraphdata.length > 0) {
+        var surveysData = graphData.surveysgraphdata
+        surveysData = this.includeZeroCounts(surveysData)
+      }
+      let dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+      this.setState({chartData: dataChart})
+    } else {
+      if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
+        var sessionsData = graphData.sessionsgraphdata
+        sessionsData = this.includeZeroCounts(sessionsData)
+      }
+      let dataChart = this.prepareLineChartData([], [], [], sessionsData)
+      this.setState({chartData: dataChart})
     }
-    if (graphData.pollsgraphdata && graphData.pollsgraphdata.length > 0) {
-      var pollsData = graphData.pollsgraphdata
-      pollsData = this.includeZeroCounts(pollsData)
-    }
-    if (graphData.surveysgraphdata && graphData.surveysgraphdata.length > 0) {
-      var surveysData = graphData.surveysgraphdata
-      surveysData = this.includeZeroCounts(surveysData)
-    }
-    if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
-      var sessionsData = graphData.sessionsgraphdata
-      sessionsData = this.includeZeroCounts(sessionsData)
-    }
-    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData, sessionsData)
-    this.setState({chartData: dataChart})
   }
   includeZeroCounts (data) {
     var dataArray = []

@@ -16,7 +16,9 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
       if (res.status === 'success') {
         fileInfo.fileurl = res.payload
         console.log('fileInfo: ', fileInfo)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleFunction(fileInfo)
       } else {
         console.log(res.description)
@@ -48,7 +50,9 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         data.fileurl = res.payload
         data.image_url = res.payload.url
         console.log('fileInfo: ', data)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleUpload(data)
       } else {
         console.log(res.description)

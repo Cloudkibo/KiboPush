@@ -39,11 +39,13 @@ class Sidebar extends Component {
       segmentSubscribers: true,
       commentCapture: true,
       landingPages: true,
+      messageUs: true,
       messengerCode: true,
       smartReplies: false,
       templates: false,
       sequenceMessaging: false,
-      waitingResponse: false
+      waitingResponse: false,
+      isKiboChat: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -53,7 +55,7 @@ class Sidebar extends Component {
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       console.log('kibochat')
-      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false})
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, isKiboChat: true})
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       console.log('kiboEngage')
       this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
@@ -169,6 +171,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems () {
+  if(!this.state.isKiboChat) {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
         <a className='m-menu__link m-menu__toggle'>
@@ -195,6 +198,12 @@ class Sidebar extends Component {
         </div>
       </li>
     )
+  }
+    else {
+    return (
+    <div></div>
+  )
+  }
   }
 
   showLiveChatItem () {
@@ -267,6 +276,7 @@ class Sidebar extends Component {
             {this.showMessengerCode()}
             {this.showDiscoverTabs()}
             {this.showLandingPages()}
+            {this.showMessageUs()}
           </ul>
         </div>
       </li>
@@ -555,6 +565,28 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Landing Pages
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessageUs () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.messageUs) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messageUs' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Message Us
               </span>
             </Link>
           </li>

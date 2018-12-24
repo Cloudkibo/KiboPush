@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
 
 class Header extends React.Component {
   render () {
@@ -18,12 +17,24 @@ class Header extends React.Component {
           </div>
         </div>
         <div className='m-portlet__head-tools'>
-          <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
+          {this.props.isEdit
+          ? <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
             <span>Save</span>
           </button>
-          <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}}>
-            <span>Deactivate</span>
-          </Link>
+          : <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
+            <span>Save</span>
+          </button>
+        }
+          {this.props.isEdit && !this.props.isActive &&
+            <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.setStatus(true)}>
+              <span>Activate</span>
+            </button>
+          }
+          {this.props.isEdit && this.props.isActive &&
+            <button className='addLink btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.setStatus(false)}>
+              <span style={{color: 'black'}}>Deactivate</span>
+            </button>
+          }
         </div>
       </div>
     )

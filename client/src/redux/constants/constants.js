@@ -302,3 +302,4 @@ export const SHOW_IMAGE = 'SHOW_IMAGE'
 
 // constants for Landing Page
 export const SHOW_LANDING_PAGES = 'SHOW_LANDING_PAGES'
+export const UPDATE_LANDING_PAGE = 'UPDATE_LANDING_PAGE'
