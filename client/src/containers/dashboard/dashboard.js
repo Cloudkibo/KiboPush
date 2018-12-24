@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
-import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
+import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -69,6 +69,7 @@ class Dashboard extends React.Component {
     this.props.getuserdetails()
     this.props.loadMyPagesList()
     this.props.loadDashboardData()
+    this.props.updateSubscriptionPermission()
     this.props.loadSubscribersList()
     this.props.loadGraphData(0)
     this.props.loadTopPages()
@@ -600,6 +601,7 @@ function mapDispatchToProps (dispatch) {
     {
       updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
+      updateSubscriptionPermission: updateSubscriptionPermission,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersList: loadSubscribersList,
       createbroadcast: createbroadcast,
