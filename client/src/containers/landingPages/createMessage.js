@@ -43,7 +43,7 @@
       return (
         <div style={{width: '100%'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[this.props.landingPage.pageId]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
+          <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[this.state.pageId]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
         </div>
       )
     }
