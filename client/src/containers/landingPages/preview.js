@@ -14,20 +14,20 @@ class Preview extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      backgroundColor: props.landingPage.currentTab === 'initialState' ? props.landingPage.initialState.backgroundColor : props.landingPage.currentTab === 'submittedState' && props.landingPage.submittedState.state ? props.landingPage.submittedState.state.backgroundColor : '#fff',
-      backgroundImage: props.landingPage.currentTab === 'initialState' && props.landingPage.initialState.pageTemplate === 'background' && props.landingPage.initialState.mediaLink !== '' ? props.landingPage.initialState.mediaLink : ''
+      backgroundColor: props.landingPage.currentTab === 'initialState' || props.landingPage.currentTab === 'setup' ? props.landingPage.initialState.backgroundColor : props.landingPage.currentTab === 'submittedState' && props.landingPage.submittedState.state ? props.landingPage.submittedState.state.backgroundColor : '#fff',
+      backgroundImage: (props.landingPage.currentTab === 'initialState' || props.landingPage.currentTab === 'setup') && props.landingPage.initialState.pageTemplate === 'background' && props.landingPage.initialState.mediaLink !== '' ? props.landingPage.initialState.mediaLink : ''
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.landingPage.currentTab === 'initialState') {
+    if (nextProps.landingPage.currentTab === 'initialState' || nextProps.landingPage.currentTab === 'setup') {
       this.setState({backgroundColor: nextProps.landingPage.initialState.backgroundColor})
     } else if (nextProps.landingPage.currentTab === 'submittedState' && nextProps.landingPage.submittedState.state && nextProps.landingPage.submittedState.state.backgroundColor) {
       this.setState({backgroundColor: nextProps.landingPage.submittedState.state.backgroundColor})
     } else {
       this.setState({backgroundColor: '#fff'})
     }
-    if (nextProps.landingPage.currentTab === 'initialState' && nextProps.landingPage.initialState.pageTemplate === 'background' && nextProps.landingPage.initialState.mediaLink !== '') {
+    if ((nextProps.landingPage.currentTab === 'initialState' || nextProps.landingPage.currentTab === 'setup') && nextProps.landingPage.initialState.pageTemplate === 'background' && nextProps.landingPage.initialState.mediaLink !== '') {
       this.setState({backgroundImage: nextProps.landingPage.initialState.mediaLink})
     } else {
       this.setState({backgroundImage: ''})
