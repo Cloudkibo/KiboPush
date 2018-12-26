@@ -26,7 +26,7 @@ export function showAgentsList (data) {
 }
 
 export function createTeam (data) {
-  console.log('data for createTeam', data)
+  console.log('data forcreateTeam ', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
