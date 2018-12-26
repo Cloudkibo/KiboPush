@@ -11,9 +11,6 @@ class Media extends React.Component {
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <ReactPlayer
             url={this.props.videoUrl}
             controls
