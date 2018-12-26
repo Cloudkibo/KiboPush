@@ -85,19 +85,25 @@ class EditTeam extends React.Component {
     if (nextProps.teamAgents && nextProps.teamAgents.length > 0 && nextProps.teamPages && nextProps.teamPages.length > 0) {
       var agents = []
       var pages = []
-      console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < nextProps.teamAgents.length; i++) {
-        if (nextProps.teamAgents[i].teamId === this.props.location.state._id) {
+        console.log('nextProps.teamAgents[i].teamId_id', nextProps.teamAgents[i].teamId)
+        console.log('this.props.location.state._id', this.props.location.state._id)
+        if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
+          console.log('Push Agent')
           agents.push(nextProps.teamAgents[i].agentId)
+          console.log('agents', nextProps.teamAgents[i].agentId)
         }
       }
-      console.log('agents', agents)
       for (var a = 0; a < nextProps.teamPages.length; a++) {
-        if (nextProps.teamPages[a].teamId === this.props.location.state._id) {
+        console.log('nextProps.teamPages[a].teamId_id', nextProps.teamPages[a].teamId_id)
+        console.log('this.props.location.state._id', this.props.location.state._id)
+        if (nextProps.teamPages[a].teamId._id === this.props.location.state._id) {
+          console.log('Push Page')
           pages.push(nextProps.teamPages[a].pageId)
+          console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-      console.log('pages', pages)
+      
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }

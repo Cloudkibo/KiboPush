@@ -11,9 +11,6 @@ class Media extends React.Component {
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <ReactPlayer
             url={this.props.videoUrl}
             controls
@@ -23,7 +20,8 @@ class Media extends React.Component {
           />
           {
             this.props.buttons && this.props.buttons.length > 1 &&
-            this.props.buttons.splice(0, 1).map(b => (
+            this.props.buttons.map((b, i) => (
+              i > 0 &&
               <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
                 {b.title}
               </a>
