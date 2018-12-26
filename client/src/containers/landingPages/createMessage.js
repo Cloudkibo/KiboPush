@@ -15,7 +15,7 @@
       super(props, context)
       this.state = {
         optInMessage: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
-        pageId: ''
+        pageId: this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
@@ -26,12 +26,7 @@
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', message)
       this.msg.success('Message has been saved.')
     }
-    componentDidMount () {
-      let pageId = this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id
-      this.setState({
-        pageId: pageId
-      })
-    }
+
     render () {
       var alertOptions = {
         offset: 75,
