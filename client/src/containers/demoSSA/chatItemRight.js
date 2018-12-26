@@ -13,9 +13,6 @@ class ChatItemRight extends React.Component {
         <div className='m-messenger__message-body'>
           <div className='m-messenger__message-arrow' />
           <div className='m-messenger__message-content'>
-            <div className='m-messenger__message-username'>
-              You wrote:
-            </div>
             <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
               {this.props.message.text}
             </div>

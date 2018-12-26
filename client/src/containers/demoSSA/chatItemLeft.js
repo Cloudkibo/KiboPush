@@ -16,13 +16,13 @@ class ChatItemLeft extends React.Component {
     return (
       <div style={{minWidth: '200px', maxWidth: '200px'}} className='m-messenger__message m-messenger__message--in'>
         <div className='m-messenger__message-pic'>
-          <img src='http://cdn.cloudkibo.com/public/img/avatar71-sm.jpg' alt='' />
+          <img src='https://www.ssa.gov/framework/images/icons/svg/logo-red.svg' alt='' />
         </div>
         {
-          this.props.message.quick_replies
+          this.props.message.quick_replies && this.props.message.quick_replies.length > 0
           ? <QuickReply
             text={this.props.message.text}
-            buttons={this.props.message.quick_replies}
+            quick_replies={this.props.message.quick_replies}
             clickQuickReply={this.props.clickQuickReply}
           />
           : this.props.message.text
