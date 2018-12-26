@@ -10,9 +10,6 @@ class Text extends React.Component {
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <div style={{width: '200px'}} className='m-messenger__message-text'>
             {this.props.text}
           </div>

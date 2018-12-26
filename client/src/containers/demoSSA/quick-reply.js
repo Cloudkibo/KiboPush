@@ -10,15 +10,12 @@ class QuickReply extends React.Component {
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <div style={{width: '200px'}} className='m-messenger__message-text'>
             {this.props.text}
           </div>
           <div>
             {
-              this.props.buttons && this.props.buttons.length > 0 &&
+              this.props.quick_replies && this.props.quick_replies.length > 0 &&
               this.props.quick_replies.map(b => (
                 <button onClick={() => { this.props.clickQuickReply(b.title) }} style={{borderColor: '#36a3f7', margin: '3px'}} type='button' className='btn m-btn--pill btn-outline-info btn-sm'>
                   {b.title}
