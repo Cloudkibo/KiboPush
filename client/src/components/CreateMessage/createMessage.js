@@ -105,7 +105,8 @@ class LandingPageMessage extends React.Component {
   goBack () {
     if (this.props.module === 'landingPage') {
       browserHistory.push({
-        pathname: `/createLandingPage`
+        pathname: `/createLandingPage`,
+        state: {pageId: this.props.pageId, _id: this.props.pages[0]}
       })
     }
   }
