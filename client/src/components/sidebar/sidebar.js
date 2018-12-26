@@ -45,7 +45,8 @@ class Sidebar extends Component {
       templates: false,
       sequenceMessaging: false,
       waitingResponse: false,
-      isKiboChat: false
+      isKiboChat: false,
+      messengerAds: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -276,6 +277,7 @@ class Sidebar extends Component {
             {this.showMessengerCode()}
             {this.showDiscoverTabs()}
             {this.showLandingPages()}
+            {this.showMessengerAds()}
             {this.showMessageUs()}
           </ul>
         </div>
@@ -565,6 +567,28 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Landing Pages
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessengerAds () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.messengerAds) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messengerAds' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Messenger Ads
               </span>
             </Link>
           </li>
