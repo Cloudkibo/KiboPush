@@ -433,6 +433,8 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
+      console.log('this.props.location.state.pages', this.props.location.state.pages)
+      console.log('this.props.pages', this.props.pages)
       let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
       var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
