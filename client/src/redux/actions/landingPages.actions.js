@@ -17,6 +17,7 @@ export function showUpdatedData (data) {
 }
 
 export function fetchLandingPages () {
+  console.log('in fetchLandingPages')
   return (dispatch) => {
     callApi('landingPage').then(res => {
       console.log('response from fetchLandingPages', res)
