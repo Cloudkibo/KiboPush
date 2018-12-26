@@ -10,9 +10,6 @@ class Image extends React.Component {
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <a href={this.props.url} target='_blank'>
             <img
               src={this.props.url}

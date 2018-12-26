@@ -5,16 +5,24 @@
 import React from 'react'
 
 class Card extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.openCardUrl = this.openCardUrl.bind(this)
+  }
+
+  openCardUrl () {
+    if (this.props.card.default_action) {
+      window.open(this.props.card.default_action.url, '_blank')
+    }
+  }
+
   render () {
     return (
       <div className='m-messenger__message-body'>
         <div className='m-messenger__message-arrow' />
         <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            Bot replied:
-          </div>
           <div>
-            <a href={this.props.card.default_action ? this.props.card.default_action.url : ''} style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+            <div onClick={this.openCardUrl} style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
               <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                 <a href={this.props.card.image_url} target='_blank'>
                   <img style={{maxWidth: 180, borderRadius: '5px'}} src={this.props.card.image_url} />
@@ -32,7 +40,7 @@ class Card extends React.Component {
                   </a>
                 ))
               }
-            </a>
+            </div>
           </div>
         </div>
       </div>
