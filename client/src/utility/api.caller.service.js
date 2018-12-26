@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 
 export const API_URL = '/api'
 
-export default function callApi (endpoint, method = 'get', body) {
+export default function callApi (endpoint, method = 'get', body, type = 'kibopush') {
   let headers = {
     'content-type': 'application/json'
   }
@@ -19,7 +19,11 @@ export default function callApi (endpoint, method = 'get', body) {
       Authorization: `Bearer ${auth.getToken()}`
     })
   }
-  return fetch(`${API_URL}/${endpoint}`, {
+  let fetchUrl = ''
+  if (type === 'kibopush') {
+    fetchUrl = `${API_URL}/${endpoint}`
+  } else fetchUrl = endpoint
+  return fetch(fetchUrl, {
     headers,
     method,
     body: JSON.stringify(body)
