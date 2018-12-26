@@ -14,7 +14,8 @@
     constructor (props, context) {
       super(props, context)
       this.state = {
-        optInMessage: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : []
+        optInMessage: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
+        pageId: ''
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
@@ -24,6 +25,12 @@
       })
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', message)
       this.msg.success('Message has been saved.')
+    }
+    componentDidMount () {
+      let pageId = this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id
+      this.setState({
+        pageId: pageId
+      })
     }
     render () {
       var alertOptions = {
@@ -36,7 +43,7 @@
       return (
         <div style={{width: '100%'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[this.props.landingPage.pageId]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
+          <CreateMessage title='Landing Page Opt-In Message' module='landingPage' pages={[this.state.pageId]} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
         </div>
       )
     }
@@ -45,7 +52,8 @@
   function mapStateToProps (state) {
     console.log('state in Landing Page- CreateMessage', state)
     return {
-      landingPage: state.landingPagesInfo.landingPage
+      landingPage: state.landingPagesInfo.landingPage,
+      pages: state.pagesInfo.pages
     }
   }
 

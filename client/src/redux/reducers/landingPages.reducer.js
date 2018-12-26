@@ -30,6 +30,11 @@ const initialState = {
         mediaPlacement: 'aboveHeadline'
       }
     },
+    optInMessage: [{
+      id: new Date().getTime(),
+      text: 'Welcome {{user_first_name}}! Thankyou for subscribing. The next post is coming soon, stay tuned!    P.S. If you ever want to unsubscribe just type "stop"',
+      componentType: 'text'
+    }],
     currentTab: 'initialState',
     pageId: '',
     error: false
