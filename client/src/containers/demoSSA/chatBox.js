@@ -8,11 +8,71 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ChatItemLeft from './chatItemLeft'
 import ChatItemRight from './chatItemRight'
+import { getResponse, updateChat } from '../../redux/actions/demoSSA.actions'
 
 class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      textAreaValue: ''
+    }
+    this.scrollToBottom = this.scrollToBottom.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
+    this.onEnter = this.onEnter.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
+    this.clickQuickReply = this.clickQuickReply.bind(this)
+  }
+
+  scrollToBottom () {
+    this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight
+  }
+
+  handleTextChange (e) {
+    this.setState({textAreaValue: e.target.value})
+  }
+
+  onEnter (e) {
+    if (e.which === 13) {
+      this.sendMessage()
+    }
+  }
+
+  sendMessage () {
+    this.setState({textAreaValue: ''})
+    let data = {
+      message: {
+        text: this.state.textAreaValue
+      }
+    }
+    this.props.updateChat([data])
+    console.log('sendMessage data', data)
+    this.props.getResponse(data)
+  }
+
+  clickQuickReply (message) {
+    let data = {
+      message: {
+        text: message
+      }
+    }
+    this.props.updateChat([data])
+    console.log('sendMessage data', data)
+    this.props.getResponse(data)
+  }
+
+  componentDidMount () {
+    this.scrollToBottom()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.chat && nextProps.chat.length > 0) {
+      console.log('demoSSA responses', nextProps.chat)
+      this.scrollToBottom()
+    }
+  }
+
+  componentDidUpdate (nextProps) {
+    this.scrollToBottom()
   }
 
   render () {
@@ -29,22 +89,24 @@ class ChatBox extends React.Component {
                   <div style={{padding: '1rem 0 0 1rem', height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
                     <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                        <ChatItemRight />
-                        <ChatItemLeft type='text' />
-                        <ChatItemLeft type='image' />
-                        <ChatItemLeft type='card' />
-                        <ChatItemLeft type='media' />
-                        <ChatItemLeft type='quick-reply' />
+                        {
+                          this.props.chat && this.props.chat.length > 0 &&
+                          this.props.chat.map(c => (
+                            c.recipient
+                            ? <ChatItemLeft message={c.message} clickQuickReply={this.clickQuickReply} />
+                            : <ChatItemRight message={c.message} />
+                          ))
+                        }
                       </div>
                     </div>
                   </div>
                   <div style={{margin: '10px 0'}} className='m-messenger__seperator' />
                   <div style={{padding: '0 1rem 1rem 1rem'}} className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' className='m-messenger__form-input' />
+                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
-                      <a className='m-messenger__form-attachment'>
+                      <a onClick={this.sendMessage} className='m-messenger__form-attachment'>
                         <i className='flaticon-paper-plane' />
                       </a>
                     </div>
@@ -60,11 +122,16 @@ class ChatBox extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
-  return {}
+  console.log('DemoSSA state', state)
+  return {
+    chat: (state.demoSSAInfo.chat)
+  }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({
+    getResponse,
+    updateChat
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
