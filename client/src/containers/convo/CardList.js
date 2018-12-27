@@ -490,7 +490,7 @@ class Card extends React.Component {
                     </div>
                     <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                     <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
-                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Sizes</label>
                     <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                       {
                         this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
