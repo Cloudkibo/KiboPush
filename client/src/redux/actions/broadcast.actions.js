@@ -36,7 +36,7 @@ export function appendSentSeenData (data) {
     broadcasts[j].sent = pageBroadcastDelivered.length// total sent
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
-
+  console.log('updated broadcasts', broadcasts)
   return broadcasts
 }
 
