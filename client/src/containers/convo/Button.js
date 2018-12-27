@@ -29,7 +29,7 @@ class Button extends React.Component {
       sequenceValue: '',
       shareButton: false,
       webviewsize: 'FULL',
-      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT', 'TALL', 'FULL']
     }
     props.fetchAllSequence()
     this.handleClick = this.handleClick.bind(this)
@@ -74,7 +74,7 @@ class Button extends React.Component {
     this.setState({openUnsubscribe: true})
   }
   closeWebview () {
-    this.setState({openWebView: false, webviewurl: '', disabled: true})
+    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabled: true})
   }
   closeWebsite () {
     this.setState({openWebsite: false, url: '', disabled: true})
@@ -270,7 +270,7 @@ class Button extends React.Component {
                       </div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                       <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
-                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
                       <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                         {
                           this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
