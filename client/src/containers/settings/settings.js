@@ -55,7 +55,8 @@ class Settings extends React.Component {
       pro: false,
       isShowingModal: false,
       isDisableInput: false,
-      isDisableButton: false
+      isDisableButton: false,
+      isKiboChat: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -85,7 +86,12 @@ class Settings extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
   componentWillMount () {
+    let url = window.location.hostname
     console.log('this.props.location', this.props.location)
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
+      console.log('kibochat')
+      this.setState({isKiboChat: true})
+    }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
       this.setState({
         openTab: 'connectFb'
@@ -594,7 +600,7 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Welcome Message</span>
                       </a>
                     </li>
-                    { this.props.user && this.props.user.role === 'buyer' && (this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'all') &&
+                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
                     <li className='m-nav__item'>
                       {
                         this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'

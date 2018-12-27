@@ -172,39 +172,38 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems () {
-  if(!this.state.isKiboChat) {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
-          <span className='m-menu__link-text'>Broadcasting</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Broadcasting
-                </span>
-              </a>
-            </li>
-            {this.showBroadcastsItem()}
-            {this.showSurveysItem()}
-            {this.showPollsItem()}
-            {this.showSegmentSubscribers()}
-            {this.showTemplates()}
-          </ul>
-        </div>
-      </li>
-    )
-  }
-    else {
-    return (
-    <div></div>
-  )
-  }
+    if (!this.state.isKiboChat) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
+            <span className='m-menu__link-text'>Broadcasting</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Broadcasting
+                  </span>
+                </a>
+              </li>
+              {this.showBroadcastsItem()}
+              {this.showSurveysItem()}
+              {this.showPollsItem()}
+              {this.showSegmentSubscribers()}
+              {this.showTemplates()}
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
   }
 
   showLiveChatItem () {
