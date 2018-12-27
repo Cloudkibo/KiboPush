@@ -28,8 +28,11 @@ export function appendSentSeenData (data) {
 
   for (let j = 0; j < broadcasts.length; j++) {
     let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
+    console.log('pagebroadcast', pagebroadcast)
     let pageBroadcastDelivered = pagebroadcast.filter((c) => c.sent === true)
+    console.log('pageBroadcastDelivered', pageBroadcastDelivered)
     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    console.log('pagebroadcastTapped', pagebroadcastTapped)
     broadcasts[j].sent = pageBroadcastDelivered.length// total sent
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
