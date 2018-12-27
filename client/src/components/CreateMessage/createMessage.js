@@ -52,27 +52,27 @@ class LandingPageMessage extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'image') {
-        temp.push(<Image id={payload[i].id} pages={pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
+        temp.push(<Image id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'audio') {
-        temp.push(<Audio id={payload[i].id} pages={pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+        temp.push(<Audio id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'video') {
-        temp.push(<Video id={payload[i].id} pages={pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+        temp.push(<Video id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'file') {
-        temp.push(<File id={payload[i].id} pages={pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+        temp.push(<File id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push(<Card id={payload[i].id} pages={pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
+        temp.push(<Card id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -82,17 +82,17 @@ class LandingPageMessage extends React.Component {
             payload[i].cards[m].id = m
           }
         }
-        temp.push(<Gallery id={payload[i].id} pages={pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
+        temp.push(<Gallery id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push(<List id={payload[i].id} pages={pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
+        temp.push(<List id={payload[i].id} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'media') {
-        temp.push(<Media id={payload[i].id} pages={pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
+        temp.push(<Media id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})

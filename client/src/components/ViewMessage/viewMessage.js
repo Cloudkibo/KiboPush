@@ -67,7 +67,7 @@ class ViewMessage extends React.Component {
                             </div>
                             <div style={{maxWidth: '250px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
-                              <div className='m-messenger__message-content' style={{width: '250px'}}>
+                              <div className='m-messenger__message-content' style={{width: '200px'}}>
                                 {
                                   this.props.payload.map((b, index) => (
                                     b.componentType === 'video'
