@@ -1163,7 +1163,7 @@ class ChatBox extends React.Component {
                                           <div className='m-messenger__message-username'>
                                             {this.props.currentSession.subscriber_id.firstName} wrote
                                           </div>
-                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                          <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -1462,12 +1462,12 @@ class ChatBox extends React.Component {
                                               </div>
                                               {
                                                 validURL(msg.payload.text)
-                                                ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                                   <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
                                                     <p>{msg.payload.text}</p>
                                                   </a>
                                                 </div>
-                                                : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                : <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                                   {msg.payload.text}
                                                 </div>
                                               }
