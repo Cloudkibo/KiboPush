@@ -414,7 +414,7 @@ class CreateMessage extends React.Component {
                       Opt-In Message
                     </a>
                   </li>
-                  <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px', width: '200', marginLeft: '-20px', marginRight: '5px'}} />
+                  <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px', marginLeft: '-20px', marginRight: '5px'}} />
                   <li className='nav-item m-tabs__item'>
                     <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
                       Sure I do!
