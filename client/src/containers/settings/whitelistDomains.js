@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { saveWhiteListDomains } from '../../redux/actions/settings.actions'
+import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
 
 class WhiteListDomains extends React.Component {
   constructor (props, context) {
@@ -23,21 +22,35 @@ class WhiteListDomains extends React.Component {
     this.removeDomain = this.removeDomain.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
     this.handleSaveDomain = this.handleSaveDomain.bind(this)
-    props.loadMyPagesList()
+    this.handleFetch = this.handleFetch.bind(this)
+    this.handleDeleteDomain = this.handleDeleteDomain.bind(this)
+  }
+
+  handleFetch (resp) {
+    if (resp.status === 'success') {
+      this.setState({domains: resp.payload})
+    }
+  }
+  handleDeleteDomain (resp) {
+    if (resp.status === 'success') {
+      this.setState({domains: resp.payload})
+    }
   }
   handleSaveDomain (resp) {
-    var domains = resp.whitelist_domains
-    this.setState({
-      domains: domains,
-      domainText: ''
-    })
-    this.props.loadMyPagesList()
+    if (resp.status === 'success') {
+      var domains = resp.payload
+      this.setState({
+        domains: domains,
+        domainText: ''
+      })
+    }
   }
+
   selectPage () {
     if (this.props.pages && this.props.pages.length > 0) {
+      this.props.fetchWhiteListedDomains(this.props.pages[0].pageId, this.handleFetch)
       this.setState({
-        selectPage: this.props.pages[0],
-        domains: this.props.pages[0].whitelist_domains ? this.props.pages[0].whitelist_domains : []
+        selectPage: this.props.pages[0]
       })
     } else {
       this.setState({
@@ -57,10 +70,10 @@ class WhiteListDomains extends React.Component {
       if (page) {
         this.setState({
           selectPage: page,
-          domains: page.whitelist_domains,
           domainText: ''
         })
       }
+      this.props.fetchWhiteListedDomains(page.pageId, this.handleFetch)
     } else {
       this.setState({
         selectPage: {},
@@ -79,16 +92,8 @@ class WhiteListDomains extends React.Component {
     })
   }
   removeDomain (value) {
-    let domains = this.state.domains
-    let temp = []
-    for (var i = 0; i < domains.length; i++) {
-      if (domains[i] !== value) {
-        temp.push(domains[i])
-      }
-    }
-    this.setState({
-      domains: temp
-    })
+    var payload = {pageId: this.state.selectPage.pageId, whitelistDomains: value}
+    this.props.deleteDomain(payload, this.handleDeleteDomain)
   }
   saveDomain () {
     let domains = this.state.domains
@@ -186,8 +191,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList,
-    saveWhiteListDomains: saveWhiteListDomains
+    fetchWhiteListedDomains: fetchWhiteListedDomains,
+    saveWhiteListDomains: saveWhiteListDomains,
+    deleteDomain: deleteDomain
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhiteListDomains)
