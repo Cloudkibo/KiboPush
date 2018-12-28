@@ -13,6 +13,7 @@ import AboveDescription from './aboveDescription'
 import BelowDescription from './belowDescription'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class PreviewInitialSate extends React.Component {
   constructor (props, context) {
@@ -118,9 +119,10 @@ class PreviewInitialSate extends React.Component {
               currentTab={this.props.landingPage.currentTab} />
           }
           {this.props.fbAppId &&
-          <div className='fb-send-to-messenger'
-            messenger_app_id={this.props.fbAppId}
-            page_id={this.props.landingPage.pageId} />
+            <MessengerPlugin
+              appId={this.props.fbAppId}
+              pageId={JSON.stringify(this.props.landingPage.pageId)}
+            />
         }
       </div>
     )
