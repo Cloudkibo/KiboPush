@@ -44,8 +44,7 @@ class PreviewInitialSate extends React.Component {
           xfbml: true,
           version: 'v3.2'
         })
-      };
-      (function (d, s, id) {
+      }(function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0]
         if (d.getElementById(id)) { return }
         js = d.createElement(s); js.id = id

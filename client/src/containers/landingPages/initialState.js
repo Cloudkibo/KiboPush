@@ -137,9 +137,9 @@ class InitialState extends React.Component {
     console.log('render in initialState.js', this.props.initialState)
     return (
       <div>
-        <Popover isOpen={this.state.showHeadingPicker} target='heading' toggle={this.toggleColorPicker} color={this.state.headingColor} onChangeComplete={this.handleColorChange} />
-        <Popover isOpen={this.state.showDescriptionPicker} target='description' toggle={this.toggleColorPicker} color={this.state.descriptionColor} onChangeComplete={this.handleColorChange} />
-        <Popover isOpen={this.state.showBackgroundPicker} target='background' toggle={this.toggleColorPicker} color={this.state.backgroundColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showHeadingPicker} target={`${this.props.landingPage.currentTab}heading`} title='heading' toggle={this.toggleColorPicker} color={this.state.headingColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showDescriptionPicker} target={`${this.props.landingPage.currentTab}description`} title='description' toggle={this.toggleColorPicker} color={this.state.descriptionColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showBackgroundPicker} target={`${this.props.landingPage.currentTab}background`} title='background' toggle={this.toggleColorPicker} color={this.state.backgroundColor} onChangeComplete={this.handleColorChange} />
         {this.props.landingPage.currentTab !== 'submittedState' &&
           <div>
             <label>Page Template:</label>
@@ -173,15 +173,15 @@ class InitialState extends React.Component {
         <label>Colors:</label><br />
         <div className='row'>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='heading' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.titleColor} title='Heading' />
+            <ColorPicker id={`${this.props.landingPage.currentTab}heading`} name='heading' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.titleColor} title='Heading' />
           </div>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.descriptionColor} title='Description' />
+            <ColorPicker id={`${this.props.landingPage.currentTab}description`} name='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.descriptionColor} title='Description' />
           </div>
         </div>
         <div className='row'>
           <div className='col-md-6 col-lg-6 col-sm-6'>
-            <ColorPicker id='background' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.backgroundColor} title='Background' />
+            <ColorPicker id={`${this.props.landingPage.currentTab}background`} name='background' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.backgroundColor} title='Background' />
           </div>
         </div>
         <br />
