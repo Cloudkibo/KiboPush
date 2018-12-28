@@ -54,7 +54,7 @@ class PreviewInitialSate extends React.Component {
       }(document, 'script', 'facebook-jssdk'))
       document.body.appendChild(script)
       this.setState({loadScript: false})
-      FB.XFBML.parse()
+      window.FB.XFBML.parse()
     }
   }
 
