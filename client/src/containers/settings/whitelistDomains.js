@@ -34,6 +34,7 @@ class WhiteListDomains extends React.Component {
   handleDeleteDomain (resp) {
     if (resp.status === 'success') {
       this.setState({domains: resp.payload})
+      this.msg.success('Domain deleted successfully')
     }
   }
   handleSaveDomain (resp) {
@@ -43,6 +44,7 @@ class WhiteListDomains extends React.Component {
         domains: domains,
         domainText: ''
       })
+      this.msg.success('Domain saved successfully')
     }
   }
 
@@ -93,7 +95,7 @@ class WhiteListDomains extends React.Component {
   }
   removeDomain (value) {
     var payload = {page_id: this.state.selectPage.pageId, whitelistDomain: value}
-    this.props.deleteDomain(payload, this.handleDeleteDomain)
+    this.props.deleteDomain(payload, this.msg, this.handleDeleteDomain)
   }
   saveDomain () {
     let domains = this.state.domains
@@ -105,7 +107,7 @@ class WhiteListDomains extends React.Component {
     }
     domains.push(this.state.domainText)
     if (isWebURL(this.state.domainText)) {
-      var payload = {pageId: this.state.selectPage.pageId, whitelistDomains: domains}
+      var payload = {pageId: this.state.selectPage.pageId, whitelistDomains: [this.state.domainText]}
       this.props.saveWhiteListDomains(payload, this.msg, this.handleSaveDomain)
     } else {
       this.msg.error('Please enter a valid URL, including the protocol identifier (e.g. "https://"")')
