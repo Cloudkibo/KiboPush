@@ -37,14 +37,15 @@ class PreviewInitialSate extends React.Component {
     if (nextProps.fbAppId && this.state.loadScript) {
       console.log('in componentWillReceiveProps of fbappid')
       const script = document.createElement('script')
-      script.innerHTML = (window.fbAsyncInit = function () {
+      script.innerHTML = window.fbAsyncInit = function () {
         FB.init({
           appId: nextProps.fbAppId,
           autoLogAppEvents: true,
           xfbml: true,
           version: 'v3.2'
         })
-      })(function (d, s, id) {
+      };
+      (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0]
         if (d.getElementById(id)) { return }
         js = d.createElement(s); js.id = id
