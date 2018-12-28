@@ -25,7 +25,7 @@ class BelowDescription extends React.Component {
           </button>
         </center>
         : this.props.fbAppId &&
-        <center>
+        <center style={{marginLeft: '90px'}}>
           <MessengerPlugin
             appId={this.props.fbAppId}
             pageId={JSON.stringify(this.props.pageId)}
