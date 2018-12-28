@@ -25,7 +25,7 @@ class ContentRightSide extends React.Component {
               </button>
             </center>
             : this.props.fbAppId &&
-            <center style={{marginTop: '10px', marginLeft: '75px'}}>
+            <center style={{marginTop: '10px', marginLeft: '90px'}}>
               <MessengerPlugin
                 appId={this.props.fbAppId}
                 pageId={JSON.stringify(this.props.pageId)}
