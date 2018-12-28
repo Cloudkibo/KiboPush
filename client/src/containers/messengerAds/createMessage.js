@@ -14,7 +14,6 @@ import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
-import StickyDiv from 'react-stickydiv'
 import AlertContainer from 'react-alert'
 import { browserHistory } from 'react-router'
 

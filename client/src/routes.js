@@ -145,7 +145,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/CreateMessengerAdMessage',
+      pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
     })
   }
