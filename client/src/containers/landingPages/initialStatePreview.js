@@ -117,11 +117,6 @@ class PreviewInitialSate extends React.Component {
               pageId={this.props.landingPage.pageId}
               currentTab={this.props.landingPage.currentTab} />
           }
-          {this.props.fbAppId &&
-          <div className='fb-send-to-messenger'
-            messenger_app_id={this.props.fbAppId}
-            page_id={this.props.landingPage.pageId} />
-        }
       </div>
     )
   }
