@@ -4,21 +4,21 @@
  */
 
 import React from 'react'
-import Image from '../../containers/convo/Image'
-import List from '../../containers/convo/List'
-import Video from '../../containers/convo/Video'
-import Audio from '../../containers/convo/Audio'
-import File from '../../containers/convo/File'
-import Text from '../../containers/convo/Text'
-import Card from '../../containers/convo/Card'
-import Gallery from '../../containers/convo/Gallery'
-import Media from '../../containers/convo/Media'
-import { validateFields } from '../../containers/convo/utility'
+import Image from '../convo/Image'
+import List from '../convo/List'
+import Video from '../convo/Video'
+import Audio from '../convo/Audio'
+import File from '../convo/File'
+import Text from '../convo/Text'
+import Card from '../convo/Card'
+import Gallery from '../convo/Gallery'
+import Media from '../convo/Media'
+import { validateFields } from '../convo/utility'
 import StickyDiv from 'react-stickydiv'
 import AlertContainer from 'react-alert'
 import { browserHistory } from 'react-router'
 
-class LandingPageMessage extends React.Component {
+class CreateMessage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -26,7 +26,16 @@ class LandingPageMessage extends React.Component {
       broadcast: [],
       title: this.props.title ? this.props.title : '',
       pages: this.props.pages,
-      editMessage: this.props.editMessage ? this.props.editMessage : []
+      editMessage: [{
+        id: new Date().getTime(),
+        text: 'Welcome! Thank you for being interested in our product!\nThe next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
+        componentType: 'text',
+        buttons: [{
+          type: 'postback',
+          title: 'Sure I do!',
+          payload: 'JSONPOSTBACKPAYLOAD_ID'
+        }]
+      }]
     }
     this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
@@ -392,23 +401,38 @@ class LandingPageMessage extends React.Component {
               </div>
             </div>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-              <StickyDiv zIndex={1}>
+              {/*}<StickyDiv zIndex={1}>
                 <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                   <div style={{padding: '5px'}}>
                     <h3>{this.state.title ? this.state.title : 'Message Title'}</h3>
                   </div>
                 </div>
-              </StickyDiv>
+              </StickyDiv>*/}
+              <div className='ui-block' style={{marginBottom: '-22px', border: '1px solid rgb(204, 204, 204)', paddingLeft: '10px'}}>
+                <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
+                  <li className='nav-item m-tabs__item'>
+                    <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
+                      Opt-In Message
+                    </a>
+                  </li>
+                  <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px', width: '200', marginLeft: '-20px', marginRight: '5px'}} />
+                  <li className='nav-item m-tabs__item'>
+                    <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
+                      Sure I do!
+                    </a>
+                  </li>
+                </ul>
+              </div>
               <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                 {this.state.list}
               </div>
             </div>
           </div>
-        </div>
+            </div>
       </div>
     )
   }
 }
 
-export default LandingPageMessage
+export default CreateMessage
