@@ -105,9 +105,8 @@ class WhiteListDomains extends React.Component {
         return
       }
     }
-    domains.push(this.state.domainText)
     if (isWebURL(this.state.domainText)) {
-      var payload = {pageId: this.state.selectPage.pageId, whitelistDomains: [this.state.domainText]}
+      var payload = {page_id: this.state.selectPage.pageId, whitelistDomains: [this.state.domainText]}
       this.props.saveWhiteListDomains(payload, this.msg, this.handleSaveDomain)
     } else {
       this.msg.error('Please enter a valid URL, including the protocol identifier (e.g. "https://"")')
