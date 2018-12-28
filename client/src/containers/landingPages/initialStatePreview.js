@@ -33,28 +33,32 @@ class PreviewInitialSate extends React.Component {
     this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'description', e.target.value)
   }
 
+  loadsdk () {
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: this.props.fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) { return }
+      js = d.createElement(s); js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+    this.setState({loadScript: false})
+    if (window.FB) {
+      console.log('inside window.fb')
+      window.FB.XFBML.parse()
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.fbAppId && this.state.loadScript) {
-      console.log('in componentWillReceiveProps of fbappid')
-      const script = document.createElement('script')
-      script.innerHTML = window.fbAsyncInit = function () {
-        FB.init({
-          appId: nextProps.fbAppId,
-          autoLogAppEvents: true,
-          xfbml: true,
-          version: 'v3.2'
-        })
-      };
-      (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0]
-        if (d.getElementById(id)) { return }
-        js = d.createElement(s); js.id = id
-        js.src = 'https://connect.facebook.net/en_US/sdk.js'
-        fjs.parentNode.insertBefore(js, fjs)
-      }(document, 'script', 'facebook-jssdk'))
-      document.body.appendChild(script)
-      this.setState({loadScript: false})
-      window.FB.XFBML.parse()
+      loadsdk()
     }
   }
 
