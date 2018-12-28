@@ -22,6 +22,7 @@ class PreviewInitialSate extends React.Component {
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
+    this.loadsdk = this.loadsdk.bind(this)
     props.getFbAppId()
   }
 
@@ -58,7 +59,7 @@ class PreviewInitialSate extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.fbAppId && this.state.loadScript) {
-      loadsdk()
+      this.loadsdk()
     }
   }
 
