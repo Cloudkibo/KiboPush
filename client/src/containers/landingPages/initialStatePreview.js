@@ -34,10 +34,11 @@ class PreviewInitialSate extends React.Component {
     this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'description', e.target.value)
   }
 
-  loadsdk () {
+  loadsdk (fbAppId) {
+    console.log('inside loadsdk', fbAppId)
     window.fbAsyncInit = function () {
       FB.init({
-        appId: this.props.fbAppId,
+        appId: fbAppId,
         autoLogAppEvents: true,
         xfbml: true,
         version: 'v3.2'
@@ -59,7 +60,7 @@ class PreviewInitialSate extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.fbAppId && this.state.loadScript) {
-      this.loadsdk()
+      this.loadsdk(nextProps.fbAppId)
     }
   }
 

@@ -24,12 +24,13 @@ class ContentRightSide extends React.Component {
               </button>
             </center>
             : this.props.fbAppId &&
-            <div className='fb-send-to-messenger'
-              messenger_app_id={this.props.fbAppId}
-              page_id={this.props.pageId}
-              data-ref='send to messenger'
-              color='blue'
-              size='standard' />
+            <center style={{marginTop: '10px'}}>
+              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon'>
+                <span>
+                  <i className='la la-facebook-official' style={{fontSize: 'xx-large'}} />&nbsp;&nbsp;Send to Messenger
+                </span>
+              </button>
+            </center>
             }
           </div>
           <div className='col-md-4 col-lg-4 col-sm-4' style={{height: '400px', lineHeight: '400px'}}>
