@@ -450,7 +450,7 @@ export function fetchWhiteListedDomains (pageId, handleFetch) {
 
 export function deleteDomain (payload, msg, handleDelete) {
   return (dispatch) => {
-    callApi('pages/whitelistDomain', 'post', payload)
+    callApi('pages/deleteWhitelistDomain', 'post', payload)
       .then(res => {
         console.log('whitelisted domains', res)
         if (res.status === 'success') {

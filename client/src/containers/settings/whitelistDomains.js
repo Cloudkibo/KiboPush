@@ -92,7 +92,7 @@ class WhiteListDomains extends React.Component {
     })
   }
   removeDomain (value) {
-    var payload = {pageId: this.state.selectPage.pageId, whitelistDomains: value}
+    var payload = {page_id: this.state.selectPage.pageId, whitelistDomain: value}
     this.props.deleteDomain(payload, this.handleDeleteDomain)
   }
   saveDomain () {
