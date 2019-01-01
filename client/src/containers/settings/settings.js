@@ -758,7 +758,7 @@ class Settings extends React.Component {
                               </div>
                             </div>
                             {
-                              this.state.APIKey !== '' &&
+                              this.state.buttonState &&
                                 <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
                             }
                           </div>
