@@ -64,6 +64,7 @@ export function createMessage (data) {
   return (dispatch) => {
     callApi('sequenceMessaging/createMessage', 'post', data)
       .then(res => {
+        console.log('response from createMessage', res)
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
         }
