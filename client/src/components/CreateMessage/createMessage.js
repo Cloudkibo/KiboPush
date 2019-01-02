@@ -46,7 +46,7 @@ class LandingPageMessage extends React.Component {
     var temp = []
     for (var i = 0; i < payload.length; i++) {
       if (payload[i].componentType === 'text') {
-        temp.push(<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)
+        temp.push(<Text id={payload[i].id} pageId={this.props.pageId} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -71,7 +71,7 @@ class LandingPageMessage extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push(<Card id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
+        temp.push(<Card id={payload[i].id} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -81,17 +81,17 @@ class LandingPageMessage extends React.Component {
             payload[i].cards[m].id = m
           }
         }
-        temp.push(<Gallery id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
+        temp.push(<Gallery id={payload[i].id} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push(<List id={payload[i].id} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
+        temp.push(<List id={payload[i].id} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'media') {
-        temp.push(<Media id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
+        temp.push(<Media id={payload[i].id} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -164,6 +164,11 @@ class LandingPageMessage extends React.Component {
         temp[i].title = obj.title
         temp[i].buttons = obj.buttons
         temp[i].description = obj.description
+        if (obj.default_action && obj.default_action !== '') {
+          temp[i].default_action = obj.default_action
+        } else if (temp[i].default_action) {
+          delete temp[i].default_action
+        }
         isPresent = true
       }
     })
@@ -310,7 +315,7 @@ class LandingPageMessage extends React.Component {
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
               <div className='row' >
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
+                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} pageId={this.props.pageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                       <h6>Text</h6>
@@ -326,7 +331,7 @@ class LandingPageMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pages={this.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                       <h6>Card</h6>
@@ -334,7 +339,7 @@ class LandingPageMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pages={this.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                       <h6>Gallery</h6>
@@ -368,7 +373,7 @@ class LandingPageMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pages={this.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                       <h6>List</h6>
@@ -378,7 +383,7 @@ class LandingPageMessage extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pages={this.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                       <h6>Media</h6>
