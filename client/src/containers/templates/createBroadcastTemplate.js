@@ -64,13 +64,13 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState />)})
+          temp.push({content: (<Text id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState module='broadcastTemplate' />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp.push({content: (<Card id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)})
+          temp.push({content: (<Card id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard module='broadcastTemplate' />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
-          temp.push({content: (<Gallery id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Gallery id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module='broadcastTemplate' />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
           temp.push({content: (<Audio id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'video') {
@@ -78,9 +78,9 @@ class CreateBroadcastTemplate extends React.Component {
         } else if (this.props.template.payload[i].componentType === 'file') {
           temp.push({content: (<File id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'list') {
-          temp.push({content: (<List id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+          temp.push({content: (<List id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} module='broadcastTemplate' />)})
         } else if (this.props.template.payload[i].componentType === 'media') {
-          temp.push({content: (<Media id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={this.props.template.payload[i]} />)})
+          temp.push({content: (<Media id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={this.props.template.payload[i]} module='broadcastTemplate' />)})
         }
       }
       var options = this.state.categoryValue
@@ -434,7 +434,7 @@ class CreateBroadcastTemplate extends React.Component {
                         <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                           <div className='row' >
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }} >
+                              <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this, null, 'broadcastTemplate') }} >
                                 <div className='align-center'>
                                   <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                   <h6>Text</h6>
@@ -450,7 +450,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, 'broadcastTemplate') }}>
                                 <div className='align-center'>
                                   <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                   <h6>Card</h6>
@@ -458,7 +458,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, 'broadcastTemplate') }}>
                                 <div className='align-center'>
                                   <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                   <h6>Gallery</h6>
@@ -492,7 +492,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, 'broadcastTemplate') }}>
                                 <div className='align-center'>
                                   <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                   <h6>List</h6>
@@ -502,7 +502,7 @@ class CreateBroadcastTemplate extends React.Component {
                           </div>
                           <div className='row'>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, 'broadcastTemplate') }}>
                                 <div className='align-center'>
                                   <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                   <h6>Media</h6>
