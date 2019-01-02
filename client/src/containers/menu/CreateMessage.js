@@ -31,7 +31,7 @@ class CreateMessage extends React.Component {
       message: [],
       stayOpen: false,
       disabled: false,
-      pageValue: '',
+      pageId: '',
       isShowingModal: false,
       messageTitle: 'Message Title',
       showMessengerModal: false,
@@ -100,7 +100,7 @@ class CreateMessage extends React.Component {
       var index = this.props.currentMenuItem.clickedIndex.split('-')
       let pageId = this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage[0])[0].pageId
       this.setState({
-        pageValue: pageId
+        pageId: pageId
       })
       var payload = this.getPayloadByIndex(index)
       if (payload && payload.length > 0) {
@@ -563,7 +563,7 @@ class CreateMessage extends React.Component {
                 <h3>Connect to Messenger:</h3>
                 <MessengerPlugin
                   appId='1429073230510150'
-                  pageId={this.state.pageValue}
+                  pageId={this.state.pageId}
                   passthroughParams={this.props.user._id}
                   onClick={() => { this.setState({showMessengerModal: false}) }}
                 />
