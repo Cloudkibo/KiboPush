@@ -98,7 +98,7 @@ class CreateMessage extends React.Component {
     document.title = 'KiboPush | Menu'
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       var index = this.props.currentMenuItem.clickedIndex.split('-')
-      let pageId = this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage)[0].pageId
+      let pageId = this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage[0])[0].pageId
       this.setState({
         pageValue: pageId
       })
