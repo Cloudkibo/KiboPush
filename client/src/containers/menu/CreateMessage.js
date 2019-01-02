@@ -98,6 +98,10 @@ class CreateMessage extends React.Component {
     document.title = 'KiboPush | Menu'
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       var index = this.props.currentMenuItem.clickedIndex.split('-')
+      let pageId = this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage)[0].pageId
+      this.setState({
+        pageValue: pageId
+      })
       var payload = this.getPayloadByIndex(index)
       if (payload && payload.length > 0) {
         this.setEditComponents(payload, this.props.currentMenuItem.currentPage)
@@ -111,7 +115,7 @@ class CreateMessage extends React.Component {
     var message = []
     for (var i = 0; i < payload.length; i++) {
       if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
+        temp.push({content: (<Text id={payload[i].id} pageId={this.state.pageId} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -136,7 +140,7 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={payload[i].id} pages={pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        temp.push({content: (<Card id={payload[i].id} pageId={this.state.pageId} pages={pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -146,17 +150,17 @@ class CreateMessage extends React.Component {
             payload[i].cards[m].id = m
           }
         }
-        temp.push({content: (<Gallery id={payload[i].id} pages={pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        temp.push({content: (<Gallery id={payload[i].id} pageId={this.state.pageId} pages={pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push({content: (<List id={payload[i].id} pages={pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        temp.push({content: (<List id={payload[i].id} pageId={this.state.pageId} pages={pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'media') {
-        temp.push({content: (<Media id={payload[i].id} pages={pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
+        temp.push({content: (<Media id={payload[i].id} pageId={this.state.pageId} pages={pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -256,6 +260,11 @@ class CreateMessage extends React.Component {
         temp[i].title = obj.title
         temp[i].buttons = obj.buttons
         temp[i].description = obj.description
+        if (obj.default_action && obj.default_action !== '') {
+          temp[i].default_action = obj.default_action
+        } else if (temp[i].default_action) {
+          delete temp[i].default_action
+        }
         isPresent = true
       }
     })
@@ -447,7 +456,7 @@ class CreateMessage extends React.Component {
               <div>
                 <div className='row' >
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
+                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this, this.state.pageId) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                         <h6>Text</h6>
@@ -463,7 +472,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage, this.state.pageId) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                         <h6>Card</h6>
@@ -471,7 +480,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage, this.state.pageId) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                         <h6>Gallery</h6>
@@ -505,7 +514,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage, this.state.pageId) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                         <h6>List</h6>
@@ -515,7 +524,7 @@ class CreateMessage extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage, this.state.pageId) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                         <h6>Media</h6>
@@ -578,7 +587,8 @@ class CreateMessage extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    currentMenuItem: (state.menuInfo.currentMenuItem)
+    currentMenuItem: (state.menuInfo.currentMenuItem),
+    pages: (state.pagesInfo.pages)
   }
 }
 
