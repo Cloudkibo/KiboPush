@@ -107,6 +107,12 @@ class LandingPageMessage extends React.Component {
         pathname: `/createLandingPage`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0]}
       })
+    } else if (this.props.module === 'messengerRefURL') {
+      console.log('in back', this.props.module)
+      browserHistory.push({
+        pathname: `/createMessengerRefURL`,
+        state: {pageId: this.props.pageId, _id: this.props.pages[0]}
+      })
     }
   }
   saveMessage () {

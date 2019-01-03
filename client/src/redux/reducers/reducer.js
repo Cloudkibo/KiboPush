@@ -34,6 +34,7 @@ import {abandonedInfo} from './abandonedCarts.reducer'
 import {messengerCodeInfo} from './messengerCode.reducer'
 import {landingPagesInfo} from './landingPages.reducer'
 import {messengerAdsInfo} from './messengerAds.reducer'
+import {messengerRefURLInfo} from './messengerRefURL.reducer'
 import {demoSSAInfo} from './demoSSA.reducer'
 
 const appReducer = combineReducers({
@@ -71,7 +72,8 @@ const appReducer = combineReducers({
   messengerCodeInfo,
   landingPagesInfo,
   messengerAdsInfo,
-  demoSSAInfo
+  demoSSAInfo,
+  messengerRefURLInfo
 })
 
 export default appReducer
