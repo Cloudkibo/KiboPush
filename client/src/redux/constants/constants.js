@@ -309,3 +309,6 @@ export const SHOW_MESSENGER_ADS = 'SHOW_MESSENGER_ADS'
 
 // constants for DemoSSA
 export const UPDATE_DEMOSSA_CHAT = 'UPDATE_DEMOSSA_CHAT'
+
+// constants for Messenger Ref URL
+export const SHOW_MESSENGER_REF_URLS = 'SHOW_MESSENGER_REF_URLS'
