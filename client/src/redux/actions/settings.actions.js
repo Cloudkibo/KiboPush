@@ -9,6 +9,7 @@ export function enableSuccess (data) {
     data
   }
 }
+
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -288,8 +289,7 @@ export function saveWhiteListDomains (data, msg, handleResponse) {
     callApi('pages/whitelistDomain', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Domain saved successfully')
-          handleResponse(res.payload)
+          handleResponse(res)
         } else {
           msg.error(res.description)
         }
@@ -429,6 +429,33 @@ export function uploadCustomerInfoFile (data, msg) {
         console.log('response from msg', res)
         if (res.status === 'success') {
           msg.success('File uploaded successfully!')
+        }
+      })
+  }
+}
+export function fetchWhiteListedDomains (pageId, handleFetch) {
+  return (dispatch) => {
+    callApi(`pages/fetchWhitelistedDomains/${pageId}`)
+      .then(res => {
+        console.log('whitelisted domains', res)
+        if (res.status === 'success') {
+          handleFetch(res)
+        } else {
+          console.log(res.description)
+        }
+      })
+  }
+}
+
+export function deleteDomain (payload, msg, handleDelete) {
+  return (dispatch) => {
+    callApi('pages/deleteWhitelistDomain', 'post', payload)
+      .then(res => {
+        console.log('whitelisted domains', res)
+        if (res.status === 'success') {
+          handleDelete(res)
+        } else {
+          msg.error(res.description)
         }
       })
   }

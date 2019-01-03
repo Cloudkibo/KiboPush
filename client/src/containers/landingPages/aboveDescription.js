@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class AboveDescription extends React.Component {
   render () {
@@ -28,12 +29,13 @@ class AboveDescription extends React.Component {
           </button>
         </center>
         : this.props.fbAppId &&
-        <div className='fb-send-to-messenger'
-          messenger_app_id={this.props.fbAppId}
-          page_id={this.props.pageId}
-          data-ref='send to messenger'
-          color='blue'
-          size='standard' />
+        <center style={{marginLeft: '90px'}}>
+          <MessengerPlugin
+            appId={this.props.fbAppId}
+            pageId={JSON.stringify(this.props.pageId)}
+            size='large'
+          />
+        </center>
         }
       </div>
     )

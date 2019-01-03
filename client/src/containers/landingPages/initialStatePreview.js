@@ -22,6 +22,7 @@ class PreviewInitialSate extends React.Component {
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
+    this.loadsdk = this.loadsdk.bind(this)
     props.getFbAppId()
   }
 
@@ -33,27 +34,33 @@ class PreviewInitialSate extends React.Component {
     this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'description', e.target.value)
   }
 
+  loadsdk (fbAppId) {
+    console.log('inside loadsdk', fbAppId)
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) { return }
+      js = d.createElement(s); js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+    this.setState({loadScript: false})
+    if (window.FB) {
+      console.log('inside window.fb')
+      window.FB.XFBML.parse()
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.fbAppId && this.state.loadScript) {
-      console.log('in componentWillReceiveProps of fbappid')
-      const script = document.createElement('script')
-      script.innerHTML = window.fbAsyncInit = function () {
-        FB.init({
-          appId: nextProps.fbAppId,
-          autoLogAppEvents: true,
-          xfbml: true,
-          version: 'v3.2'
-        })
-      };
-      (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0]
-        if (d.getElementById(id)) { return }
-        js = d.createElement(s); js.id = id
-        js.src = 'https://connect.facebook.net/en_US/sdk.js'
-        fjs.parentNode.insertBefore(js, fjs)
-      }(document, 'script', 'facebook-jssdk'))
-      document.body.appendChild(script)
-      this.setState({loadScript: false})
+      this.loadsdk(nextProps.fbAppId)
     }
   }
 
@@ -110,11 +117,6 @@ class PreviewInitialSate extends React.Component {
               pageId={this.props.landingPage.pageId}
               currentTab={this.props.landingPage.currentTab} />
           }
-          {this.props.fbAppId &&
-          <div className='fb-send-to-messenger'
-            messenger_app_id={this.props.fbAppId}
-            page_id={this.props.landingPage.pageId} />
-        }
       </div>
     )
   }

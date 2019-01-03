@@ -697,7 +697,7 @@ class Settings extends React.Component {
                     }
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-delete' />
+                        <i className='m-nav__link-icon la la-list' />
                         <span className='m-nav__link-text'>Whitelist Domains</span>
                       </a>
                     </li>
@@ -758,7 +758,7 @@ class Settings extends React.Component {
                               </div>
                             </div>
                             {
-                              this.state.APIKey !== '' &&
+                              this.state.buttonState &&
                                 <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
                             }
                           </div>

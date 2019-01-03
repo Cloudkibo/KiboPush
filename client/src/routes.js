@@ -123,6 +123,7 @@ import DiscoverTabs from './containers/GrowthTools/discoverTabs'
 import LandingPageMessage from './containers/landingPages/createMessage'
 import DemoSSA from './containers/demoSSA/demoSSA'
 import MessengerAds from './containers/messengerAds/messengerAds'
+import CreateMessengerAdMessage from './containers/messengerAds/createMessage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -275,6 +276,7 @@ const routes = (
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
+    <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
