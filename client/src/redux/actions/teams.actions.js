@@ -37,6 +37,7 @@ export function createTeam (data) {
 }
 
 export function update (data) {
+  console.log('update team data', data)
   return (dispatch) => {
     callApi('teams/update', 'post', data)
       .then(res => {

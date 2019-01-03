@@ -132,17 +132,47 @@ class EditTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
+     // console.log('this.state.agentIds', this.state.agentIds)
+      console.log('this.state.pageIds', this.state.pageIds)
+      console.log('this.props.teamPages', this.props.teamPages)
+     // console.log('this.props.members', this.props.members)
+     // console.log('this.props.teamAgents', this.props.teamAgents)
       let pageIds = []
       let pageNames = []
+      console.log('this.state.agentIds.length', this.state.agentIds.length)
+      console.log('this.props.teamAgents.length', this.props.teamAgents.length)
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
-      }
+        var flag = true
+        for (var j = 0; j < this.props.teamAgents.length; j++) {
+          console.log('this.state.agentIds._id', this.state.agentIds._id)
+          console.log('this.props.teamAgents[j].agentId._id', this.props.teamAgents[j].agentId._id)
+           if(this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
+               flag=false
+               break
+           }
+        }
+        if (flag) {
+          this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
+
+        }
+  }
       for (var j = 0; j < this.state.pageIds.length; j++) {
+        var flag = true
+        for (var i = 0; i < this.props.teamPages.length; i++) {
+          if(this.state.pageIds[j]._id === this.props.teamPages[i].pageId._id) {
+            flag=false
+            break
+        }
+        if(flag) {
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
-      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
+    }
+    }
+       if(pageIds) {
+        this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
+       }
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
