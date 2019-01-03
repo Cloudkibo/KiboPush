@@ -176,6 +176,7 @@ class EditTeam extends React.Component {
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
+  
   }
   updateDescription (e) {
     this.setState({description: e.target.value})
@@ -224,6 +225,8 @@ class EditTeam extends React.Component {
     }
     this.setState({agentIds: temp})
     this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
+    this.props.fetchAgents(this.props.location.state._id)
+
   }
   changePage (page) {
     var temp = this.state.pageIds
@@ -262,6 +265,7 @@ class EditTeam extends React.Component {
     }
     this.setState({pageIds: temp})
     this.props.removePage({ pageId: page._id, teamId: this.props.location.state._id })
+    this.props.fetchPages(this.props.location.state._id)
     //  this.props.loadTeamsList()
   }
   exists (agent) {

@@ -76,6 +76,7 @@ export function removePage (data) {
 }
 
 export function removeAgent (data) {
+  console.log('data', data)
   return (dispatch) => {
     callApi('teams/removeAgent', 'post', data)
       .then(res => {
