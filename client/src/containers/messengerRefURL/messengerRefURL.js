@@ -13,7 +13,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
-class LandingPage extends React.Component {
+class MessengerRefURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -235,10 +235,10 @@ class LandingPage extends React.Component {
                               <span style={{width: '100px'}}>{messengerRefURL.ref_parameter}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(messengerRefURL)}>
                                     Edit
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(messengerRefURL._id)}>
                                     Delete
                                 </button>
                               </span>
@@ -293,4 +293,4 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)
+export default connect(mapStateToProps, mapDispatchToProps)(MessengerRefURL)
