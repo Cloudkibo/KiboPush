@@ -133,8 +133,9 @@ class EditTeam extends React.Component {
       this.msg.error('Please select one page atleast')
     } else {
      // console.log('this.state.agentIds', this.state.agentIds)
-      console.log('this.state.pageIds', this.state.pageIds)
-      console.log('this.props.teamPages', this.props.teamPages)
+     // console.log('this.state.pageIds', this.state.pageIds)
+     // console.log('this.props.teamPages', this.props.teamPages)
+      
      // console.log('this.props.members', this.props.members)
      // console.log('this.props.teamAgents', this.props.teamAgents)
       let pageIds = []
@@ -156,21 +157,32 @@ class EditTeam extends React.Component {
 
         }
   }
+
+   //   console.log('this.state.pageIds.length', this.state.pageIds.length)
+    //  console.log('this.props.teamPages.length', this.props.teamPages.length)
+      
       for (var j = 0; j < this.state.pageIds.length; j++) {
+       // console.log('j for loop')
         var flag = true
         for (var i = 0; i < this.props.teamPages.length; i++) {
+         // console.log('i for loop')
           if(this.state.pageIds[j]._id === this.props.teamPages[i].pageId._id) {
             flag=false
             break
         }
+      }
+       // console.log('flag', flag)
         if(flag) {
+       //   console.log('add page')
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
+    
     }
-    }
-       if(pageIds) {
+    console.log('pageIds', pageIds)
+       if(pageIds.length !== 0) {
+         console.log("pageIds in if condition")
         this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
        }
       this.setState({inCancel: false})
