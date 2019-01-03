@@ -124,6 +124,9 @@ import LandingPageMessage from './containers/landingPages/createMessage'
 import DemoSSA from './containers/demoSSA/demoSSA'
 import MessengerAds from './containers/messengerAds/messengerAds'
 import CreateMessengerAdMessage from './containers/messengerAds/createMessage'
+import MessengerRefURL from './containers/messengerRefURL/messengerRefURL'
+import CreateMessengerRefURL from './containers/messengerRefURL/create'
+import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -145,7 +148,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/dashboard',
+      pathname: '/createMessengerRefURL',
       state: { nextPathname: nextState.location.pathname }
     })
   }
@@ -277,6 +280,9 @@ const routes = (
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
+    <Route path='/messengerRefURL' component={MessengerRefURL} onEnter={requireAuth} />
+    <Route path='/createMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
+    <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
