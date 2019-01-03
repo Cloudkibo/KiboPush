@@ -495,7 +495,7 @@ class CreateMessage extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this, 'sequenceMessaging') }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this, null, 'sequenceMessaging') }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
