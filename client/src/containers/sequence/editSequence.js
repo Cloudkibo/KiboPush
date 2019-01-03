@@ -353,7 +353,7 @@ class CreateSequence extends React.Component {
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
     if (this.state.time === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId})
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     } else {
@@ -366,7 +366,7 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId})
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     }
