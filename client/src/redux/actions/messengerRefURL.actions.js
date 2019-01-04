@@ -48,6 +48,8 @@ export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
       reply: messengerRefURLData.reply,
       sequenceId: messengerRefURLData.sequenceId
     }
+    console.log('updateKey', updateKey)
+    console.log('updateValue', updateValue)
     if (edit) {
       messengerRefURL = edit
     } else {
