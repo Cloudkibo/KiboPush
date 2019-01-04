@@ -111,7 +111,7 @@ class LandingPageMessage extends React.Component {
       console.log('in back', this.props.module)
       browserHistory.push({
         pathname: `/createMessengerRefURL`,
-        state: {pageId: this.props.pageId, _id: this.props.pages[0]}
+        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'createMessage'}
       })
     }
   }

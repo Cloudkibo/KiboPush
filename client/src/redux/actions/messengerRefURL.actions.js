@@ -60,6 +60,8 @@ export function createURL (data, msg) {
       console.log('response from createMessengerRefURL', res)
       if (res.status === 'success') {
         msg.success('Messenger Ref URL saved successfully')
+      } else if (res.status !== 'success' && res.payload) {
+        msg.error(res.payload)
       } else {
         msg.error('Failed to save Messenger Ref URL')
       }
@@ -75,6 +77,8 @@ export function editURL (id, data, msg) {
       console.log('response from editURL', res)
       if (res.status === 'success') {
         msg.success('Messenger Ref URL saved successfully')
+      } else if (res.status !== 'success' && res.payload) {
+        msg.error(res.payload)
       } else {
         msg.error('Failed to save Messenger Ref URL')
       }
