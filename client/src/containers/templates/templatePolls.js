@@ -79,6 +79,8 @@ class templatePolls extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: '', category_value: this.state.filterValue}})
     }
     //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
     //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
@@ -105,12 +107,13 @@ class templatePolls extends React.Component {
   }
 
   onFilter (e) {
+    this.setState({filterValue: e.target.value})
     //  var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: e.target.value, category_value: this.state.filterValue}})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     } else {
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', category_value: this.state.filterValue}})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: ''}})
     }
     //   for (let i = 0; i < this.props.polls.length; i++) {
     //     if (e.target.value === 'all') {
