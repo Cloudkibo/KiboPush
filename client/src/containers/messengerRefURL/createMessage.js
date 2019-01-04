@@ -35,6 +35,8 @@
         time: 5000,
         transition: 'scale'
       }
+      console.log('messengerRefURLInfo', this.props.messengerRefURL)
+      console.log('this.props.pages', this.props.pages)
       return (
         <div style={{width: '100%'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
