@@ -123,6 +123,9 @@ class EditTeam extends React.Component {
     })
   }
   createTeam () {
+    this.props.fetchAgents(this.props.location.state._id)
+    this.props.fetchPages(this.props.location.state._id)
+
     if (this.state.name === '') {
       this.msg.error('Please write a name')
     } else if (this.state.description === '') {
@@ -241,6 +244,8 @@ class EditTeam extends React.Component {
 
   }
   changePage (page) {
+   console.log('this.props.teamAgents.length', this.props.teamAgents.length)
+
     var temp = this.state.pageIds
     if (page === 'All') {
       for (var i = 0; i < this.props.pages.length; i++) {
@@ -260,8 +265,11 @@ class EditTeam extends React.Component {
       }
     }
     this.setState({pageIds: temp})
+    console.log('this.props.teamAgents.length', this.props.teamAgents.length)
+
   }
   removePage (page) {
+
     var removed = this.state.removedPages
     removed.push(page)
     this.setState({removedPages: removed})
