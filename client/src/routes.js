@@ -148,7 +148,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/dashboard',
+      pathname: '/createMessengerRefURL',
       state: { nextPathname: nextState.location.pathname }
     })
   }

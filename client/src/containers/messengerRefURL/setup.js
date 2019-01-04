@@ -13,12 +13,14 @@ class SetUp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      url : `https://m.me/${props.messengerRefURL.pageId}?ref=${props.messengerRefURL.ref_parameter}`
+      inputValue: ''
     }
     this.changeRef = this.changeRef.bind(this)
   }
 
   changeRef (e) {
+    console.log('in changeRef')
+    this.setState({inputValue: e.target.value})
     this.props.updateData(this.props.messengerRefURL, 'ref_parameter', e.target.value)
   }
 
@@ -28,10 +30,10 @@ class SetUp extends React.Component {
         <div className='form-group m-form__group m--margin-top-10'>
           <span>Your messenger Ref URL: </span>
           <div className='form-control m-input m-input--air' readOnly style={{backgroundColor: 'white'}}>
-            <a href={this.state.url} target='_blank'>{this.state.url}</a>
+            <a href={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`} target='_blank'>{`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}</a>
           </div>
         </div>
-        <CopyToClipboard text={this.state.url}
+        <CopyToClipboard text={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}
           onCopy={() => {
             this.setState({copied: true})
             toastr.options = {

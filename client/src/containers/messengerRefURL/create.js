@@ -55,6 +55,9 @@ class CreateURL extends React.Component {
   }
 
   onSave () {
+    if (this.props.messengerRefURL.ref_parameter === '') {
+      return this.msg.error('Custom Ref paramter cannot be empty')
+    }
     if (this.props.location.state && this.props.location.state.messengerRefURL) {
       this.props.editURL({
         ref_parameter: this.props.messengerRefURL.ref_parameter,
