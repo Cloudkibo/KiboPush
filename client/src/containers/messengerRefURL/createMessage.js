@@ -15,7 +15,7 @@
       super(props, context)
       this.state = {
         reply: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
-        pageId: this.props.pages.filter((page) => page.pageId === this.props.messengerRefURL.pageId)[0]._id
+        pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
@@ -35,6 +35,8 @@
         time: 5000,
         transition: 'scale'
       }
+      console.log('messengerRefURLInfo', this.props.messengerRefURL)
+      console.log('this.props.pages', this.props.pages)
       return (
         <div style={{width: '100%'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

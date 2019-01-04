@@ -35,7 +35,9 @@ class CreateURL extends React.Component {
         sequenceId: this.props.location.state.messengerRefURL.sequenceId
       })
     } else {
+      console.log('this.props.location.state', this.props.location.state)
       this.props.updateData(this.props.messengerRefURL, 'ref_parameter', this.getRandomString())
+      this.props.updateData(this.props.messengerRefURL, 'pageId', this.props.location.state.pageId)
     }
   }
 

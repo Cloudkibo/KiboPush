@@ -41,6 +41,7 @@ class OptInActions extends React.Component {
     })
   }
   render () {
+    console.log('this.props.messengerRefURL', this.props.messengerRefURL)
     return (
       <div>
         <div className='form-group m-form__group'>

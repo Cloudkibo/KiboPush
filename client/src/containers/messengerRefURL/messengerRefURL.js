@@ -43,6 +43,7 @@ class MessengerRefURL extends React.Component {
   }
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
+    console.log('pageId', pageId)
     browserHistory.push({
       pathname: `/createMessengerRefURL`,
       state: {_id: this.state.pageSelected, pageId: pageId}
@@ -210,11 +211,11 @@ class MessengerRefURL extends React.Component {
                           </th>
                           <th data-field='url'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>URL</span>
+                            <span style={{width: '300px'}}>URL</span>
                           </th>
                           <th data-field='status'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Ref-Parameter</span>
+                            <span style={{width: '200px'}}>Ref-Parameter</span>
                           </th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -230,9 +231,9 @@ class MessengerRefURL extends React.Component {
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{messengerRefURL.pageId.pageName}</span></td>
                             <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{`https://m.me/${messengerRefURL.pageId.pageId}?ref=${messengerRefURL.ref_parameter}`}</span></td>
+                              <span style={{width: '300px'}}>{`https://m.me/${messengerRefURL.pageId.pageId}?ref=${messengerRefURL.ref_parameter}`}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{messengerRefURL.ref_parameter}</span></td>
+                              <span style={{width: '200px'}}>{messengerRefURL.ref_parameter}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(messengerRefURL)}>
