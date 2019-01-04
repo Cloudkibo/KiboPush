@@ -105,7 +105,6 @@ class templatePolls extends React.Component {
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value})
     //  var filtered = []
     if (e.target.value !== '') {
       this.setState({filter: true})
