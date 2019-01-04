@@ -5,22 +5,33 @@
 
 import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import {updateData} from '../../redux/actions/messengerRefURL.actions'
 
 class SetUp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      landingPageUrl: ''
+      url : `https://m.me/${props.messengerRefURL.pageId}?ref=${props.messengerRefURL.ref_parameter}`
     }
+    this.changeRef = this.changeRef.bind(this)
   }
+
+  changeRef (e) {
+    this.props.updateData(this.props.messengerRefURL, 'ref_parameter', e.target.value)
+  }
+
   render () {
     return (
       <div>
         <div className='form-group m-form__group m--margin-top-10'>
           <span>Your messenger Ref URL: </span>
-          <input className='form-control m-input m-input--air' readOnly style={{backgroundColor: 'white'}} />
+          <div className='form-control m-input m-input--air' readOnly style={{backgroundColor: 'white'}}>
+            <a href={this.state.url} target='_blank'>{this.state.url}</a>
+          </div>
         </div>
-        <CopyToClipboard text={this.state.landingPageUrl}
+        <CopyToClipboard text={this.state.url}
           onCopy={() => {
             this.setState({copied: true})
             toastr.options = {
@@ -50,11 +61,23 @@ class SetUp extends React.Component {
         <br /><br />
         <div className='form-group m-form__group m--margin-top-10'>
           <span>Custom Ref Parameter: </span>
-          <input className='form-control m-input m-input--air' />
+          <input className='form-control m-input m-input--air' value={this.props.messengerRefURL.ref_parameter} onChange={this.changeRef} />
         </div>
       </div>
     )
   }
 }
 
-export default SetUp
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    messengerRefURL: (state.messengerRefURLInfo.messengerRefURL)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    updateData: updateData
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SetUp)

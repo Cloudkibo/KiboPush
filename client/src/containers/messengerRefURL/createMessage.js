@@ -7,23 +7,23 @@
   import { connect } from 'react-redux'
   import { bindActionCreators } from 'redux'
   import CreateMessage from '../../components/CreateMessage/createMessage'
-  import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+  import { updateData } from '../../redux/actions/messengerRefURL.actions'
   import AlertContainer from 'react-alert'
 
   class MessengerRefURLMessage extends React.Component {
     constructor (props, context) {
       super(props, context)
       this.state = {
-        optInMessage: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
-        pageId: ''
+        reply: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
+        pageId: this.props.pages.filter((page) => page.pageId === this.props.messengerRefURL.pageId)[0]._id
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
     saveMessage (message) {
       this.setState({
-        optInMessage: message
+        reply: message
       })
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', message)
+      this.props.updateData(this.props.messengerRefURL, 'reply', message)
       this.msg.success('Message has been saved.')
     }
 
@@ -38,7 +38,7 @@
       return (
         <div style={{width: '100%'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <CreateMessage title='Opt-In Message' module='messengerRefURL' pages={[this.state.pageId]} pageId={this.props.landingPage.pageId} saveMessage={this.saveMessage} editMessage={this.state.optInMessage} />
+          <CreateMessage title='Opt-In Message' module='messengerRefURL' saveMessage={this.saveMessage} editMessage={this.state.reply} pages={[this.state.pageId]} pageId={this.props.messengerRefURL.pageId} />
         </div>
       )
     }
@@ -47,14 +47,14 @@
   function mapStateToProps (state) {
     console.log('state in Landing Page- CreateMessage', state)
     return {
-      landingPage: state.landingPagesInfo.landingPage,
+      messengerRefURL: state.messengerRefURLInfo.messengerRefURL,
       pages: state.pagesInfo.pages
     }
   }
 
   function mapDispatchToProps (dispatch) {
     return bindActionCreators({
-      updateLandingPageData: updateLandingPageData
+      updateData: updateData
     }, dispatch)
   }
   export default connect(mapStateToProps, mapDispatchToProps)(MessengerRefURLMessage)

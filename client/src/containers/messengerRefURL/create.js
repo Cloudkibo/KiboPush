@@ -6,16 +6,69 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import {createURL, editURL, updateData} from '../../redux/actions/messengerRefURL.actions'
+import crypto from 'crypto'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
     }
+    if (props.location.state && props.location.state.pageId) {
+      props.updateLandingPageData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+    }
+    props.fetchAllSequence()
+    this.onSave = this.onSave.bind(this)
   }
+
+  componentDidMount () {
+    if (this.props.location.state.module && this.props.location.state.module === 'edit') {
+      this.props.updateData(this.props.messengerRefURL, '', '', this.props.location.state.messengerRefURL)
+      this.props.updateData('', '', '', '', '', {
+        pageId: this.props.location.state.messengerRefURL.pageId.pageId,
+        ref_parameter: this.props.location.state.messengerRefURL.ref_parameter,
+        reply: this.props.location.state.messengerRefURL.reply,
+        sequenceId: this.props.location.state.messengerRefURL.sequenceId
+      })
+    } else {
+      this.props.updateData(this.props.messengerRefURL, 'ref_parameter', this.getRandomString())
+    }
+  }
+
+  getRandomString () {
+    let today = new Date()
+    let uid = crypto.randomBytes(5).toString('hex')
+    console.log('f' + uid + '' + today.getFullYear() + '' +
+            (today.getMonth() + 1) + '' + today.getDate() + '' +
+            today.getHours() + '' + today.getMinutes() + '' +
+        today.getSeconds())
+    return 'f' + uid + '' + today.getFullYear() + '' +
+            (today.getMonth() + 1) + '' + today.getDate() + '' +
+            today.getHours() + '' + today.getMinutes() + '' +
+        today.getSeconds()
+  }
+
+  onSave () {
+    if (this.props.location.state && this.props.location.state.messengerRefURL) {
+      this.props.editURL({
+        ref_parameter: this.props.messengerRefURL.ref_parameter,
+        reply: this.props.messengerRefURL.reply,
+        sequenceId: this.props.messengerRefURL.sequenceId
+      }, this.msg)
+    } else {
+      this.props.createURL({
+        pageId: this.props.location.state._id,
+        ref_parameter: this.props.messengerRefURL.ref_parameter,
+        reply: this.props.messengerRefURL.reply,
+        sequenceId: this.props.messengerRefURL.sequenceId
+      }, this.msg)
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -40,7 +93,7 @@ class CreateURL extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.onSave}>
                       <span>Save</span>
                     </button>
                   </div>
@@ -62,11 +115,17 @@ class CreateURL extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    messengerRefURL: state.messengerRefURLInfo.messengerRefURL,
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    createURL: createURL,
+    editURL: editURL,
+    updateData: updateData,
+    fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateURL)

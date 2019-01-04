@@ -45,7 +45,7 @@ class MessengerRefURL extends React.Component {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     browserHistory.push({
       pathname: `/createMessengerRefURL`,
-      state: {pageId: pageId, _id: this.state.pageSelected}
+      state: {_id: this.state.pageSelected, pageId: pageId}
     })
   }
   onEdit (messengerRefURL) {
