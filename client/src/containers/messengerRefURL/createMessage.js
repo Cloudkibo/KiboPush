@@ -45,7 +45,6 @@
   }
 
   function mapStateToProps (state) {
-    console.log('state in Landing Page- CreateMessage', state)
     return {
       messengerRefURL: state.messengerRefURLInfo.messengerRefURL,
       pages: state.pagesInfo.pages

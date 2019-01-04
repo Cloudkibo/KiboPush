@@ -19,7 +19,7 @@ class CreateURL extends React.Component {
     this.state = {
     }
     if (props.location.state && props.location.state.pageId) {
-      props.updateLandingPageData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+      props.updateData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
     }
     props.fetchAllSequence()
     this.onSave = this.onSave.bind(this)
