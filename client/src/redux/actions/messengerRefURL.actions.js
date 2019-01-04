@@ -2,6 +2,13 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
+export function showUpdatedData (data) {
+  return {
+    type: ActionTypes.UPDATE_MESSENGER_REF_URL,
+    data
+  }
+}
+
 export function showAllURLs (data) {
   return {
     type: ActionTypes.SHOW_MESSENGER_REF_URLS,
@@ -29,6 +36,51 @@ export function deleteURL (id, msg) {
         dispatch(fetchURLs())
       } else {
         msg.error('Failed to delete Messenger Ref URL')
+      }
+    })
+  }
+}
+export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
+  return (dispatch) => {
+    let messengerRefURL = {
+      pageId: messengerRefURLData.pageId,
+      ref_parameter: messengerRefURLData.ref_parameter,
+      reply: messengerRefURLData.reply,
+      sequenceId: messengerRefURLData.sequenceId
+    }
+    if (edit) {
+      messengerRefURL = edit
+    } else {
+      messengerRefURL[updateKey] = updateValue
+    }
+    dispatch(showUpdatedData(messengerRefURL))
+  }
+}
+export function createURL (data, msg) {
+  console.log('date for createMessengerRefURL', data)
+  return (dispatch) => {
+    callApi('pageReferrals', 'post', data)
+    .then(res => {
+      console.log('response from createMessengerRefURL', res)
+      if (res.status === 'success') {
+        msg.success('Messenger Ref URL saved successfully')
+      } else {
+        msg.error('Failed to save Messenger Ref URL')
+      }
+    })
+  }
+}
+
+export function editURL (id, data, msg) {
+  console.log('data for editURL', data)
+  return (dispatch) => {
+    callApi(`pageReferrals/edit`, 'post', data)
+    .then(res => {
+      console.log('response from editURL', res)
+      if (res.status === 'success') {
+        msg.success('Messenger Ref URL saved successfully')
+      } else {
+        msg.error('Failed to save Messenger Ref URL')
       }
     })
   }

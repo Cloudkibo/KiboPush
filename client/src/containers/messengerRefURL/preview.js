@@ -19,7 +19,7 @@ class Preview extends React.Component {
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
-          <ViewMessage payload={this.props.landingPage.optInMessage} />
+          <ViewMessage payload={this.props.messengerRefURL.reply} />
         </div>
       </div>
     )
@@ -28,7 +28,7 @@ class Preview extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    landingPage: state.landingPagesInfo.landingPage
+    messengerRefURL: state.messengerRefURLInfo.messengerRefURL
   }
 }
 
