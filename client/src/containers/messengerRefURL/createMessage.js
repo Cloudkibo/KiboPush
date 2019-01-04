@@ -15,7 +15,7 @@
       super(props, context)
       this.state = {
         reply: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
-        pageId: this.props.pages.filter((page) => page.pageId === this.props.messengerRefURL.pageId)[0]._id
+        pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id
       }
       this.saveMessage = this.saveMessage.bind(this)
     }
