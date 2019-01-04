@@ -79,6 +79,8 @@ class templateSurveys extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: '', category_value: this.state.filterValue}})
     }
     //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
     //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
