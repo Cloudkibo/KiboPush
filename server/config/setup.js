@@ -45,16 +45,16 @@ module.exports = function (app, httpapp, config) {
 
   if (config.env === 'production') {
     httpapp.get('*', (req, res) => {
-      res.redirect(`https://app.kibopush.com${req.url}`)
-    })
-  }
-
-  if (config.env === 'staging') {
-    httpapp.get('*', (req, res) => {
       res.redirect(`https://kiboengage.cloudkibo.com${req.url}`)
     })
     app.get('*', (req, res) => {
       res.redirect(`https://kiboengage.cloudkibo.com${req.url}`)
+    })
+  }
+
+  if (config.env === 'staging') {
+     httpapp.get('*', (req, res) => {
+      res.redirect(`https://staging.kibopush.com${req.url}`)
     })
   }
 
