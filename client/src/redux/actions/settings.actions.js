@@ -404,7 +404,7 @@ export function authenticatePassword (data, msg, handleAuthentication) {
       .then(res => {
         console.log('response from msg', res)
         if (res.status !== 'success') {
-          msg.error(res.description)
+          msg.error('Incorrect Password')
         }
         handleAuthentication(res)
       })
