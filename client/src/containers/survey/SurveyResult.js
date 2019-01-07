@@ -186,7 +186,7 @@ class SurveyResult extends React.Component {
                           </li>
                           {this.props.responses &&
                           <Response responses={this.props.responses.filter(
-                            (d) => d.questionId._id === c._id)}
+                            (d) => d.questionId === c._id)}
                             question={c} />
                           }
                         </div>
