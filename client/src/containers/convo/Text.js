@@ -130,6 +130,7 @@ class Text extends React.Component {
     })
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
+    this.props.removeJsonMessage(obj.button)
   }
 
   render () {
@@ -192,15 +193,15 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} module={this.props.module} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState && this.state.button.length < 3
         ? <div>
-          <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+          <Button parentMessageId={this.props.parentMessageId} button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+            <Button parentMessageId={this.props.parentMessageId} button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

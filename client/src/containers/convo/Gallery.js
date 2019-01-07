@@ -22,7 +22,7 @@ class Gallery extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} pages={props.pages} pageId={this.props.pageId} module={props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 1}, {element: <Card id={2} pages={props.pages} pageId={this.props.pageId} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 2}],
+      cards: [{element: <Card id={1} pages={props.pages} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 1}, {element: <Card id={2} pages={props.pages} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 2}],
       showPlus: false,
       pageNumber: 1,
       loading: false
@@ -34,7 +34,7 @@ class Gallery extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k} pages={this.props.pages} pageId={this.props.pageId} module={this.props.module} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} setLoading={this.setLoading} />, key: k})
+        tmp.push({element: <Card id={k} pages={this.props.pages} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} setLoading={this.setLoading} />, key: k})
       }
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
@@ -45,7 +45,7 @@ class Gallery extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i} pages={this.props.pages} pageId={this.props.pageId} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} setLoading={this.setLoading} />, key: i}
+        card = {element: <Card id={i} pages={this.props.pages} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} setLoading={this.setLoading} />, key: i}
         cards[i].id = i   // This is very important. Don't change it if you don't understand it
         cardMessage.push(cards[i])
         temp.push(card)
@@ -76,7 +76,7 @@ class Gallery extends React.Component {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card module={this.props.module} pageId={this.props.pageId} pages={this.props.pages} id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: timeStamp}]})
+    this.setState({cards: [...temp, {element: <Card module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: timeStamp}]})
     this.slider.slickNext()
   }
   setLoading (value) {

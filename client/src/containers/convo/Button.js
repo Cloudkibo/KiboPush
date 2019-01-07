@@ -29,7 +29,8 @@ class Button extends React.Component {
       sequenceValue: '',
       shareButton: false,
       webviewsize: 'FULL',
-      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
+      openCreateMessage: false
     }
     props.fetchAllSequence()
     this.handleClick = this.handleClick.bind(this)
@@ -51,11 +52,22 @@ class Button extends React.Component {
     this.closeShareButton = this.closeShareButton.bind(this)
     this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+    this.replyWithMessage = this.replyWithMessage.bind(this)
   }
+
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
       this.setState({webviewsize: event.target.value})
     }
+  }
+  replyWithMessage () {
+    let data = {
+      type: 'postback',
+      title: this.state.title,
+      payload: null
+    }
+    this.setState({openPopover: false})
+    this.props.onAdd(data)
   }
   shareButton () {
     this.setState({shareButton: true, disabled: false, title: 'Share'})
@@ -226,7 +238,7 @@ class Button extends React.Component {
                 <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
                 {
-                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView &&
+                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&
                   <div>
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
@@ -234,6 +246,15 @@ class Button extends React.Component {
                     { (!(this.props.module === 'broadcastTemplate' || this.props.module === 'sequenceMessaging')) &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
+                    </div>
+                    }
+                    { (this.props.module === 'messengerAd') &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={() => {
+                      this.setState({
+                        openCreateMessage: true
+                      })
+                    }}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Reply with a message</h7>
                     </div>
                     }
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
@@ -259,6 +280,20 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                    </div>
+                  </div>
+                }
+                {
+                  this.state.openCreateMessage &&
+                  <div className='card'>
+                    <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={() => {
+                      this.setState({openCreateMessage: false})
+                    }} />
+                    </h7>
+                    <div style={{padding: '10px'}} className='card-block'>
+                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                       Create Message
+                       </button>
                     </div>
                   </div>
                 }
@@ -323,11 +358,15 @@ class Button extends React.Component {
                     </div>
                   </div>
                 }
-                <hr style={{color: '#ccc'}} />
-                <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
-                <br />
-                <br />
+                { !this.state.openCreateMessage &&
+                  <div>
+                    <hr style={{color: '#ccc'}} />
+                    <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
+                    <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+                    <br />
+                    <br />
+                  </div>
+                }
               </div>
             </PopoverBody>
           </Popover>

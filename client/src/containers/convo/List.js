@@ -240,9 +240,9 @@ class List extends React.Component {
           }
           {this.state.buttons && this.state.buttons.length > 0
             ? this.state.buttons.map((obj, index) => {
-              return <EditButton pageId={this.props.pageId} module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+              return <EditButton pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
             })
-          : <Button module={this.props.module} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          : <Button module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       </div>

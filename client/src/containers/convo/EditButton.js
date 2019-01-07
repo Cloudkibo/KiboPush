@@ -28,7 +28,8 @@ class EditButton extends React.Component {
       openWebView: this.props.data.button.messenger_extensions,
       webviewurl: this.props.data.button.url,
       webviewsize: this.props.data.button.webviewsize,
-      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
+      openCreateMessage: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -49,19 +50,32 @@ class EditButton extends React.Component {
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.closeWebview = this.closeWebview.bind(this)
     this.showWebView = this.showWebView.bind(this)
+    this.replyWithMessage = this.replyWithMessage.bind(this)
   }
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
-      if (this.props.data.button.payload.action === 'subscribe') {
+      if (this.props.data.button.payload && this.props.data.button.payload.action && this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
-      } else if (this.props.data.button.payload.action === 'unsubscribe') {
+      } else if (this.props.data.button.payload && this.props.data.button.payload.action && this.props.data.button.payload.action === 'unsubscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
+      } else {
+        this.setState({openCreateMessage: true})
       }
     } else {
       this.setState({sequenceValue: this.props.data.button.url})
     }
   }
-
+  replyWithMessage () {
+    let data = {
+      type: 'postback',
+      title: this.state.title,
+      payload: this.props.data.button.payload
+    }
+    this.setState({
+      openPopover: false
+    })
+    this.props.replyWithMessage(data)
+  }
   showWebsite () {
     this.setState({openWebsite: true})
   }
@@ -192,6 +206,7 @@ class EditButton extends React.Component {
   handleRemove () {
     this.props.onRemove({
       id: this.props.data.id,
+      button: this.props.data.button,
       url: this.state.url, // User defined link,
       title: this.state.title // User defined label
     })
@@ -225,7 +240,7 @@ class EditButton extends React.Component {
               <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
-                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView &&
+                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !(this.state.openCreateMessage) &&
                 <div>
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
@@ -233,6 +248,15 @@ class EditButton extends React.Component {
                   { (!(this.props.module === 'broadcastTemplate' || this.props.module === 'sequenceMessaging')) &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open webview</h7>
+                  </div>
+                  }
+                  { (this.props.module === 'messengerAd') &&
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={() => {
+                    this.setState({
+                      openCreateMessage: true
+                    })
+                  }}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Reply with a message</h7>
                   </div>
                   }
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
@@ -258,6 +282,25 @@ class EditButton extends React.Component {
                   <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                   <div style={{padding: '10px'}} className='card-block'>
                     <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter link...' />
+                  </div>
+                </div>
+              }
+              {
+                this.state.openCreateMessage &&
+                <div className='card'>
+                  <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={() => {
+                    this.setState({openCreateMessage: false})
+                  }} />
+                  </h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    { this.props.data.button.type === 'postback' && this.props.data.button.payload
+                      ? <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                       Edit Message
+                       </button>
+                       : <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                        Create Message
+                      </button>
+                     }
                   </div>
                 </div>
               }
@@ -322,11 +365,15 @@ class EditButton extends React.Component {
                   </div>
                 </div>
               }
-              <hr style={{color: '#ccc'}} />
-              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove.bind(this)} className='btn pull-left'> Remove </button>
-              <br />
-              <br />
+              { !this.state.openCreateMessage &&
+                <div>
+                  <hr style={{color: '#ccc'}} />
+                  <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
+                  <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove.bind(this)} className='btn pull-left'> Remove </button>
+                  <br />
+                  <br />
+                </div>
+              }
             </div>
           </PopoverBody>
         </Popover>
