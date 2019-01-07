@@ -188,7 +188,7 @@ class Survey extends React.Component {
   gotoResults (survey) {
     this.props.history.push({
       pathname: `/surveyResult`,
-      state: survey._id
+      state: survey
     })
   }
   showDialogDelete (id) {
