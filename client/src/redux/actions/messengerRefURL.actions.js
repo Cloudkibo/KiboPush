@@ -42,20 +42,14 @@ export function deleteURL (id, msg) {
 }
 export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
   return (dispatch) => {
-    let messengerRefURL = {
-      pageId: messengerRefURLData.pageId,
-      ref_parameter: messengerRefURLData.ref_parameter,
-      reply: messengerRefURLData.reply,
-      sequenceId: messengerRefURLData.sequenceId
-    }
     console.log('updateKey', updateKey)
     console.log('updateValue', updateValue)
     if (edit) {
-      messengerRefURL = edit
+      messengerRefURLData = edit
     } else {
-      messengerRefURL[updateKey] = updateValue
+      messengerRefURLData[updateKey] = updateValue
     }
-    dispatch(showUpdatedData(messengerRefURL))
+    dispatch(showUpdatedData(messengerRefURLData))
   }
 }
 export function createURL (data, msg) {
@@ -66,6 +60,8 @@ export function createURL (data, msg) {
       console.log('response from createMessengerRefURL', res)
       if (res.status === 'success') {
         msg.success('Messenger Ref URL saved successfully')
+      } else if (res.status !== 'success' && res.payload) {
+        msg.error(res.payload)
       } else {
         msg.error('Failed to save Messenger Ref URL')
       }
@@ -81,6 +77,8 @@ export function editURL (id, data, msg) {
       console.log('response from editURL', res)
       if (res.status === 'success') {
         msg.success('Messenger Ref URL saved successfully')
+      } else if (res.status !== 'success' && res.payload) {
+        msg.error(res.payload)
       } else {
         msg.error('Failed to save Messenger Ref URL')
       }

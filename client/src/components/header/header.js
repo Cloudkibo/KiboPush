@@ -509,9 +509,9 @@ class Header extends React.Component {
                                   <div className='m-nav-grid__row'>
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibodash'))
-                                    ? <a href='#kibodash' onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
+                                    ? <a href='#kibodash' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-analytics' />
-                                      <span className='m-nav-grid__text'>KiboDash</span>
+                                      <span className='m-nav-grid__text'>KiboDash (Coming Soon)</span>
                                     </a>
                                     : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-analytics' />
@@ -521,9 +521,9 @@ class Header extends React.Component {
 
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibocommerce'))
-                                    ? <a href='#kibocommerce' onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item'>
+                                    ? <a href='#kibocommerce' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-truck' />
-                                      <span className='m-nav-grid__text'>KiboCommerce</span>
+                                      <span className='m-nav-grid__text'>KiboCommerce (Coming Soon)</span>
                                     </a>
                                     : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-truck' />
