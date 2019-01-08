@@ -323,7 +323,9 @@ class Card extends React.Component {
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     this.setState({button: temp})
-    this.props.removeJsonMessage(obj.button)
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -334,7 +336,8 @@ class Card extends React.Component {
       title: this.state.title,
       description: this.state.subtitle,
       buttons: temp,
-      default_action: this.state.defaultAction
+      default_action: this.state.defaultAction,
+      deletePayload: deletePayload
     })
   }
 

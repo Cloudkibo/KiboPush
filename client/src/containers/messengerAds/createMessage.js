@@ -292,22 +292,24 @@ class CreateMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
     for (var j = 0; j < obj.buttons.length; j++) {
       if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
         obj.buttons[j].payload = this.state.jsonMessages.length + 1
-        this.setNewJsonMessage(obj.button[j])
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
       }
     }
-    var jsonMessages = this.state.jsonMessages
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
     for (var k = 0; k < jsonMessages.length; k++) {
       if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
         jsonMessages[k].message = temp
-        this.setState({
-          jsonMessages: jsonMessages
-        })
-        break
       }
     }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleMedia (obj) {
@@ -343,6 +345,24 @@ class CreateMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleGallery (obj) {
@@ -362,7 +382,6 @@ class CreateMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
-    this.setState({broadcast: temp})
   }
 
   handleImage (obj) {
@@ -418,6 +437,24 @@ class CreateMessage extends React.Component {
     }
     console.log('temp', temp)
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   removeComponent (obj) {
@@ -444,7 +481,7 @@ class CreateMessage extends React.Component {
         jsonMessages[i].message = temp2
       }
     }
-    jsonMessages = this.removePayloadMessages(tempJsonPayloads, jsonMessagess)
+    jsonMessages = this.removePayloadMessages(tempJsonPayloads, jsonMessages)
     this.setState({
       jsonMessages: jsonMessages
     })

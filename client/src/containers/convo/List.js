@@ -207,7 +207,10 @@ class List extends React.Component {
   removeButton (obj) {
     //  var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
     this.setState({buttons: []})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: [], topElementStyle: this.state.topElementStyle})
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: [], topElementStyle: this.state.topElementStyle, deletePayload: deletePayload})
   }
   render () {
     var alertOptions = {

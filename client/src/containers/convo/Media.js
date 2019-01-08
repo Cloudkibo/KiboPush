@@ -166,6 +166,9 @@ class Media extends React.Component {
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     this.setState({button: temp})
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
       fileurl: this.state.fileurl,
@@ -174,7 +177,8 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      deletePayload: deletePayload})
   }
 
   setLoading () {
