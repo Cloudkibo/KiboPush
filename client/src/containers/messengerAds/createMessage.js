@@ -68,7 +68,7 @@ class CreateMessage extends React.Component {
     this.replyWithMessage = this.replyWithMessage.bind(this)
     this.showPayloadMessage = this.showPayloadMessage.bind(this)
     this.setNewJsonMessage = this.setNewJsonMessage.bind(this)
-    this.removeJsonMessage = this.removeJsonMessage.bind(this)
+    this.removePayloadMessages = this.removePayloadMessages.bind(this)
   }
   showPayloadMessage (data) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
@@ -82,28 +82,30 @@ class CreateMessage extends React.Component {
       }
     }
   }
-  removeJsonMessage (data) {
-    var jsonMessages = []
-    for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (this.state.jsonMessages[i].jsonMessageId !== data.payload) {
-        jsonMessages.push(this.state.jsonMessages[i])
+  removePayloadMessages (tempJsonPayloads, jsonMessages) {
+    var tempMessages = []
+    for (var l = 0; l < jsonMessages.length; l++) {
+      let removePayload = false
+      for (var m = 0; m < tempJsonPayloads.length; m++) {
+        if (tempJsonPayloads[m] === jsonMessages[l].jsonMessageId) {
+          removePayload = true
+        }
+      }
+      if (!removePayload) {
+        tempMessages.push(jsonMessages[l])
       }
     }
-    this.setState({
-      jsonMessages: jsonMessages
-    })
+    return tempMessages
   }
-  setNewJsonMessage (data) {
-    var jsonMessages = this.state.jsonMessages
+
+  setNewJsonMessage (data, jsonMessages) {
     var newMessage = {}
     newMessage.jsonMessageId = this.state.jsonMessages.length + 1
     newMessage.parentMessageId = this.state.selectedIndex
     newMessage.title = data.title
     newMessage.message = []
     jsonMessages.push(newMessage)
-    this.setState({
-      jsonMessages: jsonMessages
-    })
+    return jsonMessages
   }
   replyWithMessage (data) {
     console.log('Reply with message', data)
@@ -113,7 +115,10 @@ class CreateMessage extends React.Component {
     if (data.payload && data.payload !== '') {
       this.showPayloadMessage(data)
     } else {
-      this.setNewJsonMessage(data)
+      var jsonMessages = this.setNewJsonMessage(data, this.state.jsonMessages)
+      this.setState({
+        jsonMessages: jsonMessages
+      })
     }
   }
   jsonMessageClick (jsonMessageId) {
@@ -135,7 +140,7 @@ class CreateMessage extends React.Component {
     if (payload.length > 0) {
       for (var i = 0; i < payload.length; i++) {
         if (payload[i].componentType === 'text') {
-          temp.push(<Text id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeJsonMessage={this.removeJsonMessage} removeState />)
+          temp.push(<Text id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
@@ -235,24 +240,25 @@ class CreateMessage extends React.Component {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
     }
-
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
     for (var j = 0; j < obj.button.length; j++) {
       if (obj.button[j].type === 'postback' && !obj.button[j].payload) {
         obj.button[j].payload = this.state.jsonMessages.length + 1
-        this.setNewJsonMessage(obj.button[j])
+        jsonMessages = this.setNewJsonMessage(obj.button[j], jsonMessages)
       }
     }
-    var jsonMessages = this.state.jsonMessages
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
     for (var k = 0; k < jsonMessages.length; k++) {
       if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
         jsonMessages[k].message = temp
-        this.setState({
-          jsonMessages: jsonMessages
-        })
-        break
       }
     }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleCard (obj) {
@@ -286,6 +292,22 @@ class CreateMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        this.setNewJsonMessage(obj.button[j])
+      }
+    }
+    var jsonMessages = this.state.jsonMessages
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+        this.setState({
+          jsonMessages: jsonMessages
+        })
+        break
+      }
+    }
   }
 
   handleMedia (obj) {
@@ -402,26 +424,30 @@ class CreateMessage extends React.Component {
     console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    var tempJsonPayloads = []
     this.setState({list: temp, broadcast: temp2})
+
     var jsonMessages = this.state.jsonMessages
-    for (var i = 0; i < jsonMessages.length; i++) {
-      if (jsonMessages[i].jsonMessageId === this.state.selectedIndex) {
-        for (var j = 0; j < jsonMessages[i].message.length; j++) {
-          if (jsonMessages[i].message[j].id === obj.id) {
-            if (jsonMessages[i].message[j].buttons) {
-              for (var k = 0; k < jsonMessages[i].message[j].buttons.length; k++) {
-                this.removeJsonMessage(jsonMessages[k].message[j].buttons[k])
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (this.state.jsonMessages[i].jsonMessageId === this.state.selectedIndex) {
+        for (var j = 0; j < this.state.jsonMessages[i].message.length; j++) {
+          if (this.state.jsonMessages[i].message[j].id === obj.id) {
+            if (this.state.jsonMessages[i].message[j].buttons) {
+              for (var k = 0; k < this.state.jsonMessages[i].message[j].buttons.length; k++) {
+                if (this.state.jsonMessages[i].message[j].buttons[k].type === 'postback') {
+                  tempJsonPayloads.push(this.state.jsonMessages[i].message[j].buttons[k].payload)
+                }
               }
             }
           }
         }
         jsonMessages[i].message = temp2
-        this.setState({
-          jsonMessages: jsonMessages
-        })
-        break
       }
     }
+    jsonMessages = this.removePayloadMessages(tempJsonPayloads, jsonMessagess)
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
   render () {
     let timeStamp = new Date().getTime()

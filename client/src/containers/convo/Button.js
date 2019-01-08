@@ -66,7 +66,19 @@ class Button extends React.Component {
       title: this.state.title,
       payload: null
     }
-    this.setState({openPopover: false})
+    this.setState({
+      openPopover: false,
+      title: '',
+      url: '',
+      webviewurl: '',
+      sequenceValue: '',
+      openWebsite: false,
+      openWebView: false,
+      openSubscribe: false,
+      openUnsubscribe: false,
+      openCreateMessage: false,
+      shareButton: false
+    })
     this.props.onAdd(data)
   }
   shareButton () {

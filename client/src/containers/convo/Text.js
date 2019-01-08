@@ -117,6 +117,7 @@ class Text extends React.Component {
       }
       return elm
     })
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
     this.setState({button: temp})
   }
   removeButton (obj) {
@@ -128,9 +129,12 @@ class Text extends React.Component {
         this.state.button.splice(index, 1)
       }
     })
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
-    this.props.removeJsonMessage(obj.button)
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp, deletePayload: deletePayload})
   }
 
   render () {
@@ -197,11 +201,11 @@ class Text extends React.Component {
         }) : ''}
         {this.props.removeState && this.state.button.length < 3
         ? <div>
-          <Button parentMessageId={this.props.parentMessageId} button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
+          <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button parentMessageId={this.props.parentMessageId} button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
+            <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

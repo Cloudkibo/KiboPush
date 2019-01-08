@@ -323,6 +323,7 @@ class Card extends React.Component {
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     this.setState({button: temp})
+    this.props.removeJsonMessage(obj.button)
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,

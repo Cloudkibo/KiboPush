@@ -221,9 +221,11 @@ class EditButton extends React.Component {
       webviewurl: '',
       webviewsize: 'FULL'
     })
-    let temp = this.props.data.button.newUrl.split('/')
-    let id = temp[temp.length - 1]
-    this.props.deleteButton(id)
+    if (this.props.data.button && this.props.data.button.newUrl) {
+      let temp = this.props.data.button.newUrl.split('/')
+      let id = temp[temp.length - 1]
+      this.props.deleteButton(id)
+    }
   }
 
   render () {
