@@ -25,16 +25,33 @@ class CreateMessage extends React.Component {
       broadcast: [],
       title: this.props.title ? this.props.title : '',
       pages: this.props.pages,
-      editMessage: [{
-        id: new Date().getTime(),
-        text: 'Welcome! Thank you for being interested in our product!\nThe next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
-        componentType: 'text',
-        buttons: [{
-          type: 'postback',
-          title: 'Sure I do!',
-          payload: 'JSONPOSTBACKPAYLOAD_ID'
+      selectedIndex: 1,
+      jsonMessages: [{
+        jsonMessageId: 1,
+        title: 'Opt In Message',
+        parentMessageId: null,
+        message: [{
+          id: new Date().getTime(),
+          text: 'Welcome! Thank you for being interested in our product! The next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
+          componentType: 'text',
+          buttons: [{
+            type: 'postback',
+            title: 'Sure I do!',
+            payload: 2
+          }]
         }]
-      }]
+      },
+      {
+        jsonMessageId: 2,
+        title: 'Sure I do',
+        parentMessageId: 1,
+        message: [{
+          id: new Date().getTime() + 1,
+          text: 'Great. We will contact you as soon as we have a deal for you!',
+          componentType: 'text'
+        }]
+      }],
+      showOptInMessage: true
     }
     this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
@@ -47,84 +64,158 @@ class CreateMessage extends React.Component {
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
+    this.jsonMessageClick = this.jsonMessageClick.bind(this)
+    this.replyWithMessage = this.replyWithMessage.bind(this)
+    this.showPayloadMessage = this.showPayloadMessage.bind(this)
+    this.setNewJsonMessage = this.setNewJsonMessage.bind(this)
+    this.removePayloadMessages = this.removePayloadMessages.bind(this)
   }
-  setEditComponents () {
-    var payload = this.state.editMessage
-    var message = []
-    var temp = []
-    for (var i = 0; i < payload.length; i++) {
-      if (payload[i].componentType === 'text') {
-        temp.push(<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'image') {
-        temp.push(<Image id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'audio') {
-        temp.push(<Audio id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'video') {
-        temp.push(<Video id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'file') {
-        temp.push(<File id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'card') {
-        temp.push(<Card id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'gallery') {
-        if (payload[i].cards) {
-          for (var m = 0; m < payload[i].cards.length; m++) {
-            payload[i].cards[m].id = m
-          }
-        }
-        temp.push(<Gallery id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'list') {
-        temp.push(<List id={payload[i].id} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'media') {
-        temp.push(<Media id={payload[i].id} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
+  showPayloadMessage (data) {
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (this.state.jsonMessages[i].jsonMessageId === data.payload) {
+        this.setEditComponents(this.state.jsonMessages[i].message)
+        /* eslint-disable */
+          $('.nav-link m-tabs__link').removeClass('active')
+          $('#tab-' + this.state.jsonMessages[i].jsonMessageId ).addClass('active')
+        /* eslint-enable */
+        break
       }
     }
   }
-  componentDidMount () {
-    this.setEditComponents()
+  removePayloadMessages (tempJsonPayloads, jsonMessages) {
+    var tempMessages = []
+    for (var l = 0; l < jsonMessages.length; l++) {
+      let removePayload = false
+      for (var m = 0; m < tempJsonPayloads.length; m++) {
+        if (tempJsonPayloads[m] === jsonMessages[l].jsonMessageId) {
+          removePayload = true
+        }
+      }
+      if (!removePayload) {
+        tempMessages.push(jsonMessages[l])
+      }
+    }
+    return tempMessages
   }
-  goBack () {
-    if (this.props.module === 'landingPage') {
-      browserHistory.push({
-        pathname: `/createLandingPage`,
-        state: {pageId: this.props.pageId, _id: this.props.pages[0]}
+
+  setNewJsonMessage (data, jsonMessages) {
+    var newMessage = {}
+    newMessage.jsonMessageId = this.state.jsonMessages.length + 1
+    newMessage.parentMessageId = this.state.selectedIndex
+    newMessage.title = data.title
+    newMessage.message = []
+    jsonMessages.push(newMessage)
+    return jsonMessages
+  }
+  replyWithMessage (data) {
+    console.log('Reply with message', data)
+    /* eslint-disable */
+      $('.nav-link.m-tabs__link').removeClass('active')
+    /* eslint-enable */
+    if (data.payload && data.payload !== '') {
+      this.showPayloadMessage(data)
+    } else {
+      var jsonMessages = this.setNewJsonMessage(data, this.state.jsonMessages)
+      this.setState({
+        jsonMessages: jsonMessages
       })
     }
   }
-  saveMessage () {
-    if (!validateFields(this.state.broadcast, this.msg)) {
-      return
+  jsonMessageClick (jsonMessageId) {
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (this.state.jsonMessages[i].jsonMessageId === jsonMessageId) {
+        this.setEditComponents(this.state.jsonMessages[i].message)
+        this.setState({
+          selectedIndex: this.state.jsonMessages[i].jsonMessageId
+        })
+        break
+      }
     }
-    this.setState({
-      editMessage: this.state.broadcast
+  }
+
+  setEditComponents (editMessage) {
+    var payload = editMessage
+    var message = []
+    var temp = []
+    if (payload.length > 0) {
+      for (var i = 0; i < payload.length; i++) {
+        if (payload[i].componentType === 'text') {
+          temp.push(<Text id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'image') {
+          temp.push(<Image id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'audio') {
+          temp.push(<Audio id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'video') {
+          temp.push(<Video id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'file') {
+          temp.push(<File id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'card') {
+          temp.push(<Card id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'gallery') {
+          if (payload[i].cards) {
+            for (var m = 0; m < payload[i].cards.length; m++) {
+              payload[i].cards[m].id = m
+            }
+          }
+          temp.push(<Gallery id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'list') {
+          temp.push(<List id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        } else if (payload[i].componentType === 'media') {
+          temp.push(<Media id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
+          this.setState({list: temp})
+          message.push(payload[i])
+          this.setState({broadcast: message})
+        }
+      }
+    } else {
+      this.setState({
+        broadcast: [],
+        list: []
+      })
+    }
+  }
+  componentDidMount () {
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (!this.state.jsonMessages[i].parentMessageId) {
+        this.setEditComponents(this.state.jsonMessages[i].message)
+        this.setState({
+          selectedIndex: this.state.jsonMessages[i].jsonMessageId
+        })
+        break
+      }
+    }
+  }
+  goBack () {
+    this.props.history.push({
+      pathname: `/messengerAds`
     })
-    this.props.saveMessage(this.state.broadcast)
+  }
+  saveMessage () {
+    console.log('Save Call')
   }
   handleText (obj) {
     console.log('handleText', obj)
@@ -149,8 +240,25 @@ class CreateMessage extends React.Component {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
     }
-
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.button.length; j++) {
+      if (obj.button[j].type === 'postback' && !obj.button[j].payload) {
+        obj.button[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.button[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleCard (obj) {
@@ -172,6 +280,11 @@ class CreateMessage extends React.Component {
         temp[i].title = obj.title
         temp[i].buttons = obj.buttons
         temp[i].description = obj.description
+        if (obj.default_action && obj.default_action !== '') {
+          temp[i].default_action = obj.default_action
+        } else if (temp[i].default_action) {
+          delete temp[i].default_action
+        }
         isPresent = true
       }
     })
@@ -179,6 +292,24 @@ class CreateMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleMedia (obj) {
@@ -214,6 +345,24 @@ class CreateMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleGallery (obj) {
@@ -233,7 +382,6 @@ class CreateMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
-    this.setState({broadcast: temp})
   }
 
   handleImage (obj) {
@@ -289,15 +437,54 @@ class CreateMessage extends React.Component {
     }
     console.log('temp', temp)
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+    for (var j = 0; j < obj.buttons.length; j++) {
+      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
+        obj.buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
+      }
+    }
+    if (obj.deletePayload) {
+      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
+    }
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
-    console.log('temp', temp)
-    console.log('temp2', temp2)
+    var tempJsonPayloads = []
     this.setState({list: temp, broadcast: temp2})
+
+    var jsonMessages = this.state.jsonMessages
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (this.state.jsonMessages[i].jsonMessageId === this.state.selectedIndex) {
+        for (var j = 0; j < this.state.jsonMessages[i].message.length; j++) {
+          if (this.state.jsonMessages[i].message[j].id === obj.id) {
+            if (this.state.jsonMessages[i].message[j].buttons) {
+              for (var k = 0; k < this.state.jsonMessages[i].message[j].buttons.length; k++) {
+                if (this.state.jsonMessages[i].message[j].buttons[k].type === 'postback') {
+                  tempJsonPayloads.push(this.state.jsonMessages[i].message[j].buttons[k].payload)
+                }
+              }
+            }
+          }
+        }
+        jsonMessages[i].message = temp2
+      }
+    }
+    jsonMessages = this.removePayloadMessages(tempJsonPayloads, jsonMessages)
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
   render () {
     let timeStamp = new Date().getTime()
@@ -318,7 +505,7 @@ class CreateMessage extends React.Component {
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
               <div className='row' >
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
+                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                       <h6>Text</h6>
@@ -326,7 +513,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} pages={this.state.pages} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                       <h6>Image</h6>
@@ -334,7 +521,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pages={this.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                       <h6>Card</h6>
@@ -342,7 +529,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pages={this.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                       <h6>Gallery</h6>
@@ -352,7 +539,7 @@ class CreateMessage extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                       <h6>Audio</h6>
@@ -360,7 +547,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                       <h6>Video</h6>
@@ -368,7 +555,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                       <h6>File</h6>
@@ -376,7 +563,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pages={this.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List module='messengerAd' replyWithMessage={this.replyWithMessage} id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                       <h6>List</h6>
@@ -386,7 +573,7 @@ class CreateMessage extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pages={this.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                       <h6>Media</h6>
@@ -395,40 +582,32 @@ class CreateMessage extends React.Component {
                 </div>
               </div>
               <div className='row'>
-                <button style={{float: 'left', marginLeft: 20, marginTop: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Save </button>
+                <button style={{float: 'left', marginLeft: 20, marginTop: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary'> Save </button>
                 <button onClick={this.goBack} style={{float: 'left', marginLeft: 20, marginTop: '20px'}} className='btn btn-primary'> Back </button>
               </div>
             </div>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-              {/*}<StickyDiv zIndex={1}>
-                <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                  <div style={{padding: '5px'}}>
-                    <h3>{this.state.title ? this.state.title : 'Message Title'}</h3>
-                  </div>
-                </div>
-              </StickyDiv>*/}
               <div className='ui-block' style={{marginBottom: '-22px', border: '1px solid rgb(204, 204, 204)', paddingLeft: '10px'}}>
                 <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
-                  <li className='nav-item m-tabs__item'>
-                    <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
-                      Opt-In Message
-                    </a>
-                  </li>
-                  <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px', marginLeft: '-20px', marginRight: '5px'}} />
-                  <li className='nav-item m-tabs__item'>
-                    <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
-                      Sure I do!
-                    </a>
-                  </li>
+                  { this.state.jsonMessages.map((jsonMessage, index) => (
+                    <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
+                      <a id={'tab-' + jsonMessage.jsonMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
+                        {jsonMessage.title}
+                      </a>
+                      { (index < this.state.jsonMessages.length - 1) &&
+                      <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px'}} />
+                      }
+                    </li>
+                  ))
+                  }
                 </ul>
-              </div>
-              <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                {this.state.list}
+                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '10px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                  {this.state.list}
+                </div>
               </div>
             </div>
           </div>
-            </div>
+        </div>
       </div>
     )
   }

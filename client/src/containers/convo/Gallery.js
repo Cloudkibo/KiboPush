@@ -22,7 +22,7 @@ class Gallery extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} pages={props.pages} pageId={this.props.pageId} module={props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 1}, {element: <Card id={2} pages={props.pages} pageId={this.props.pageId} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 2}],
+      cards: [{element: <Card id={1} pages={props.pages} pageId={this.props.pageId} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 1}, {element: <Card id={2} pages={props.pages} pageId={this.props.pageId} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 2}],
       showPlus: false,
       pageNumber: 1,
       loading: false
