@@ -124,7 +124,38 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       currentTab: landingPageData.currentTab
     }
     if (editLandingPage) {
-      landingPage = editLandingPage
+      landingPage = {
+        initialState: editLandingPage.initialState,
+        submittedState: {
+          title: editLandingPage.submittedState.title,
+          description: editLandingPage.submittedState.description,
+          buttonText: editLandingPage.submittedState.buttonText,
+          actionType: editLandingPage.submittedState.actionType,
+          url: editLandingPage.submittedState.url ? editLandingPage.submittedState.url : '',
+          tab: editLandingPage.submittedState.tab ? editLandingPage.submittedState.tab : 'NEW_TAB',
+          state: {
+            backgroundColor: '#fff',
+            titleColor: '#000',
+            descriptionColor: '#000',
+            mediaType: 'image',
+            mediaLink: '',
+            mediaPlacement: 'aboveHeadline'
+          }
+        },
+        pageId: editLandingPage.pageId,
+        optInMessage: editLandingPage.optInMessage,
+        currentTab: editLandingPage.currentTab
+      }
+      if (editLandingPage.submittedState.state) {
+        landingPage.submittedState.state = {
+          backgroundColor: editLandingPage.submittedState.state.backgroundColor,
+          titleColor: editLandingPage.submittedState.state.titleColor,
+          descriptionColor: editLandingPage.submittedState.state.descriptionColor,
+          mediaType: editLandingPage.submittedState.state.mediaType,
+          mediaLink: editLandingPage.submittedState.state.mediaLink,
+          mediaPlacement: editLandingPage.submittedState.state.mediaPlacement
+        }
+      }
     } else if (updateKey === 'state') {
       console.log('inside state action', landingPageData)
       landingPage[tabValue][updateKey][stateKey] = updateValue
