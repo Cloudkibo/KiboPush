@@ -45,6 +45,7 @@ export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
     console.log('updateKey', updateKey)
     console.log('updateValue', updateValue)
     if (edit) {
+      console.log('edit', edit)
       messengerRefURLData = {
         pageId: edit.pageId,
         ref_parameter: edit.ref_parameter,
