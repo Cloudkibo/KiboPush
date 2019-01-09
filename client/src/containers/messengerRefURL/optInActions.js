@@ -5,7 +5,7 @@
 
 import React from 'react'
 import { browserHistory } from 'react-router'
-import Select from 'react-select'
+//  import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {updateData} from '../../redux/actions/messengerRefURL.actions'
@@ -53,7 +53,7 @@ class OptInActions extends React.Component {
             </a>
           </div>
         </div>
-        <div className='form-group m-form__group'>
+        {/* <div className='form-group m-form__group'>
           <span>Add Subscriber to Sequence: </span>
           <Select
             options={this.state.sequenceOptions}
@@ -62,6 +62,7 @@ class OptInActions extends React.Component {
             placeholder='Select Sequence...'
           />
         </div>
+        */}
       </div>
     )
   }

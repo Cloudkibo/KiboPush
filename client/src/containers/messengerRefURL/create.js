@@ -27,7 +27,6 @@ class CreateURL extends React.Component {
 
   componentDidMount () {
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
-      this.props.updateData(this.props.messengerRefURL, '', '', this.props.location.state.messengerRefURL)
       this.props.updateData('', '', '', '', '', {
         pageId: this.props.location.state.messengerRefURL.pageId.pageId,
         ref_parameter: this.props.location.state.messengerRefURL.ref_parameter,
