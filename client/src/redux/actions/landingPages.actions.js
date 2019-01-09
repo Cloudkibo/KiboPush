@@ -128,6 +128,7 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
     } else if (updateKey === 'state') {
       console.log('inside state action', landingPageData)
       landingPage[tabValue][updateKey][stateKey] = updateValue
+      console.log('landingPage in action', landingPage)
     } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage') {
       landingPage[updateKey] = updateValue
     } else {
