@@ -63,9 +63,9 @@ class viewSurvey extends React.Component {
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-                      <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.survey[0].title}</h3>
-                      <p><b>Description: </b>{this.props.survey[0].description}</p>
-                      <p><b>Category: </b>{this.props.survey[0].category.join(',')}</p>
+                      <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.survey.title}</h3>
+                      <p><b>Description: </b>{this.props.survey.description}</p>
+                      <p><b>Category: </b>{this.props.survey.category.join(',')}</p>
                     </div>
                   </div>
                 </div>
