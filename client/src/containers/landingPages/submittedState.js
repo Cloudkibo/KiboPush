@@ -26,12 +26,12 @@ class SubmittedState extends React.Component {
 
   handleRadioButton (e) {
     if (!this.props.landingPage.submittedState.state && e.target.value === 'SHOW_NEW_MESSAGE') {
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'backgroundColor', '#fff')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'titleColor', '#000')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'descriptionColor', '#000')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaType', 'image')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', '')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaPlacement', 'aboveHeadline')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#fff', 'backgroundColor')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#000', 'titleColor')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#000', 'descriptionColor')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', 'image', 'mediaType')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '', 'mediaLink')
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', 'aboveHeadline', 'mediaPlacement')
     }
     if (!this.props.landingPage.submittedState.tab && e.target.value === 'REDIRECT_TO_URL') {
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'url', '')
