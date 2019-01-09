@@ -25,18 +25,6 @@ class SubmittedState extends React.Component {
   }
 
   handleRadioButton (e) {
-    if (!this.props.landingPage.submittedState.state && e.target.value === 'SHOW_NEW_MESSAGE') {
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#fff', 'backgroundColor')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#000', 'titleColor')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '#000', 'descriptionColor')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', 'image', 'mediaType')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '', 'mediaLink')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', 'aboveHeadline', 'mediaPlacement')
-    }
-    if (!this.props.landingPage.submittedState.tab && e.target.value === 'REDIRECT_TO_URL') {
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'url', '')
-      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'tab', 'NEW_TAB')
-    }
     this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'actionType', e.target.value)
   }
   handleRadioTab (e) {
