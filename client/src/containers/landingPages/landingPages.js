@@ -23,7 +23,8 @@ class LandingPage extends React.Component {
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
-      pageSelected: {}
+      pageSelected: {},
+      pages: []
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -37,6 +38,7 @@ class LandingPage extends React.Component {
     this.onEdit = this.onEdit.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.changePage = this.changePage.bind(this)
+    this.updateAllowedPages = this.updateAllowedPages.bind(this)
   }
   changePage (e) {
     this.setState({pageSelected: e.target.value})
@@ -48,6 +50,19 @@ class LandingPage extends React.Component {
       state: {pageId: pageId, _id: this.state.pageSelected}
     })
   }
+  updateAllowedPages (pages, landingPages) {
+    var temp = pages.filter((page) => {
+      for (let i = 0; i < landingPages.length; i++) {
+        // console.log('Comparing the two', bots[i].pageId._id, page._id, bots[i].pageId._id === page._id)
+        if (landingPages[i].pageId._id === page._id) {
+          return false
+        }
+      }
+      return true
+    })
+    // console.log('Updating the allowed pages', temp)
+    this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
+  }
   onEdit (landingPage) {
     browserHistory.push({
       pathname: `/createLandingPage`,
@@ -55,6 +70,10 @@ class LandingPage extends React.Component {
     })
   }
   showCreateDialog () {
+    if (this.state.pages.length === 0) {
+      this.msg.error('You have already created landing pages for all pages.')
+      return
+    }
     this.setState({isShowingCreate: true})
   }
   closeCreateDialog () {
@@ -96,6 +115,10 @@ class LandingPage extends React.Component {
     }
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0]._id})
+    }
+    if (nextProps.pages && nextProps.pages.length > 0 && nextProps.landingPages) {
+      // this.state.pageSelected = nextProps.pages[0]._id
+      this.updateAllowedPages(nextProps.pages, nextProps.landingPages)
     }
   }
 
@@ -140,7 +163,7 @@ class LandingPage extends React.Component {
                   <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
                   <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                     {
-                      this.props.pages.map((page, i) => (
+                      this.state.pages.map((page, i) => (
                         <option key={i} value={page._id}>{page.pageName}</option>
                       ))
                     }
