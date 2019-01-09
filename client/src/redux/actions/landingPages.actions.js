@@ -148,6 +148,7 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       }
       if (editLandingPage.submittedState.state) {
         landingPage.submittedState.state = {
+          _id: editLandingPage.submittedState.state._id,
           backgroundColor: editLandingPage.submittedState.state.backgroundColor,
           titleColor: editLandingPage.submittedState.state.titleColor,
           descriptionColor: editLandingPage.submittedState.state.descriptionColor,
