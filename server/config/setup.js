@@ -47,9 +47,9 @@ module.exports = function (app, httpapp, config) {
     httpapp.get('*', (req, res) => {
       res.redirect(`https://app.kibopush.com${req.url}`)
     })
-    app.get('*', (req, res) => {
-      res.redirect(`https://app.kibopush.com${req.url}`)
-    })
+//     app.get('*', (req, res) => {
+//       res.redirect(`https://app.kibopush.com${req.url}`)
+//     })
   }
 
   if (config.env === 'staging') {
