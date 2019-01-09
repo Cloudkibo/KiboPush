@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchLandingPages, deleteLandingPage} from '../../redux/actions/landingPages.actions'
+import {fetchLandingPages, deleteLandingPage, setInitialState} from '../../redux/actions/landingPages.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -28,7 +28,7 @@ class LandingPage extends React.Component {
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
-
+    props.setInitialState()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
@@ -313,7 +313,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchLandingPages: fetchLandingPages,
     deleteLandingPage: deleteLandingPage,
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    setInitialState: setInitialState
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)
