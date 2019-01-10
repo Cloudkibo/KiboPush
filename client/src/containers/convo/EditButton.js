@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
-import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { Link } from 'react-router'
 
@@ -169,9 +169,6 @@ class EditButton extends React.Component {
         this.props.editButton(data, this.props.onEdit)
       }
     } else if (!this.state.webviewurl) {
-      if (!isWebViewUrl(this.state.webviewurl)) {
-        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
-      }
       let data = {
         id: this.props.index,
         type: 'web_url',
