@@ -86,7 +86,9 @@ class EditTemplate extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.survey) {
-      this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
+      console.log('nextprops.description', nextprops.description)
+
+      this.setState({title: nextprops.survey.title, description: nextprops.description, categoryValue: nextprops.survey.category[0]})
     }
 
     if (nextprops.questions) {
@@ -512,6 +514,7 @@ class EditTemplate extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.state.description', this.state.description)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
