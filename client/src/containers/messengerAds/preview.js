@@ -12,14 +12,23 @@ class Preview extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      previewOptInMessage: []
     }
   }
-
+  componentDidMount () {
+    for (var i = 0; i < this.props.messengerAd.jsonMessages.length; i++) {
+      if (!this.props.messengerAd.jsonMessages[i].parentMessageId) {
+        this.setState({
+          previewOptInMessage: this.props.messengerAd.jsonMessages[i].message
+        })
+      }
+    }
+  }
   render () {
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
-          <ViewMessage payload={[]} />
+          <ViewMessage payload={this.state.previewOptInMessage} />
         </div>
       </div>
     )
@@ -28,7 +37,7 @@ class Preview extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    messengerRefURL: state.messengerRefURLInfo.messengerRefURL
+    messengerAd: state.messengerAdsInfo.messengerAd
   }
 }
 

@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
 
 class WhiteListDomains extends React.Component {
@@ -106,6 +106,9 @@ class WhiteListDomains extends React.Component {
       }
     }
     if (isWebURL(this.state.domainText)) {
+      if (!isWebViewUrl(this.state.domainText)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
       var payload = {page_id: this.state.selectPage.pageId, whitelistDomains: [this.state.domainText]}
       this.props.saveWhiteListDomains(payload, this.msg, this.handleSaveDomain)
     } else {

@@ -13,27 +13,26 @@ class SetUp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      inputValue: ''
+      jsonCode: '<Json Code>',
+      copied: false
     }
-    this.changeRef = this.changeRef.bind(this)
-  }
-
-  changeRef (e) {
-    console.log('in changeRef')
-    this.setState({inputValue: e.target.value})
-    this.props.updateData(this.props.messengerRefURL, 'ref_parameter', e.target.value)
   }
 
   render () {
     return (
       <div>
-        <div className='form-group m-form__group m--margin-top-10'>
-          <span>Your messenger Ref URL: </span>
-          <div className='form-control m-input m-input--air' readOnly style={{backgroundColor: 'white'}}>
-            <a href={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`} target='_blank'>{`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}</a>
-          </div>
+        <div className='form-group m-form__group'>
+          <h3>Generated JSON Code</h3>
+          <p>The json code depends on the first items in your Opt-In message. Every time you change it, you will also need to copy the new JSON code.</p>
+          <textarea
+            className='form-control m-input m-input--solid'
+            id='exampleTextarea' rows='3'
+            placeholder='JSON code'
+            style={{minHeight: '200px', resize: 'none', maxLength: '160'}}
+            value={this.state.jsonCode}
+            readOnly />
         </div>
-        <CopyToClipboard text={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}
+        <CopyToClipboard text={this.state.jsonCode}
           onCopy={() => {
             this.setState({copied: true})
             toastr.options = {
@@ -60,11 +59,6 @@ class SetUp extends React.Component {
             Copy Link
           </button>
         </CopyToClipboard>
-        <br /><br />
-        <div className='form-group m-form__group m--margin-top-10'>
-          <span>Custom Ref Parameter: </span>
-          <input className='form-control m-input m-input--air' value={this.props.messengerRefURL.ref_parameter} onChange={this.changeRef} />
-        </div>
       </div>
     )
   }

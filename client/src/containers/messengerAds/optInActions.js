@@ -5,35 +5,19 @@
 
 import React from 'react'
 import { browserHistory } from 'react-router'
-import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {updateData} from '../../redux/actions/messengerRefURL.actions'
+import { updateCurrentJsonAd } from '../../redux/actions/messengerAds.actions'
 
 class OptInActions extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      sequenceValue: '',
-      sequenceOptions: []
     }
     this.editMessage = this.editMessage.bind(this)
-    this.handleSequence = this.handleSequence.bind(this)
   }
-  handleSequence (obj) {
-    this.setState({sequenceValue: obj.value})
-    this.props.updateData(this.props.messengerRefURL, 'sequenceId', obj.value)
-  }
+
   componentDidMount () {
-    if (this.props.sequences) {
-      let sequenceOptions = []
-      for (let a = 0; a < this.props.sequences.length; a++) {
-        if (this.props.sequences[a].sequence.trigger.event === 'subscribes_to_sequence') {
-          sequenceOptions.push({'value': this.props.sequences[a].sequence._id, 'label': this.props.sequences[a].sequence.name})
-        }
-      }
-      this.setState({sequenceOptions: sequenceOptions})
-    }
   }
   editMessage () {
     browserHistory.push({
@@ -41,7 +25,7 @@ class OptInActions extends React.Component {
     })
   }
   render () {
-    console.log('this.props.messengerRefURL', this.props.messengerRefURL)
+    console.log('this.props.messengerAds', this.props.messengerAd)
     return (
       <div>
         <div className='form-group m-form__group'>
@@ -60,14 +44,13 @@ class OptInActions extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    messengerRefURL: state.messengerRefURLInfo.messengerRefURL,
-    sequences: (state.sequenceInfo.sequences)
+    messengerAds: state.messengerAdsInfo.messengerAd
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateData: updateData
+    updateCurrentJsonAd: updateCurrentJsonAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OptInActions)

@@ -8,7 +8,25 @@ export function showAllMessengerAds (data) {
     data
   }
 }
+export function saveCurrentJsonAd (data) {
+  return {
+    type: ActionTypes.SAVE_CURRENT_JSON_AD,
+    data
+  }
+}
 
+export function updateCurrentJsonAd (messengerAd, updateKey, updateValue, edit) {
+  return (dispatch) => {
+    console.log('updateKey', updateKey)
+    console.log('updateValue', updateValue)
+    if (edit) {
+      messengerAd = edit
+    } else {
+      messengerAd[updateKey] = updateValue
+    }
+    dispatch(saveCurrentJsonAd(messengerAd))
+  }
+}
 export function fetchMessengerAds () {
   return (dispatch) => {
     callApi('jsonAd').then(res => {
@@ -30,5 +48,21 @@ export function deleteMessengerAd (id, msg) {
         msg.error('Failed to delete Messenger Ad')
       }
     })
+  }
+}
+
+export function saveMessengerAd (data, msg, handleSaveMessage) {
+  console.log('data in saveMessengerAd', data)
+  return (dispatch) => {
+    callApi('jsonAd', 'post', data)
+      .then(res => {
+        console.log('response from messengerAds', res)
+        if (res.status === 'success') {
+          handleSaveMessage(res.payload)
+          msg.succes('Message saved successfully')
+        } else {
+          msg.error('Unable to save message')
+        }
+      })
   }
 }

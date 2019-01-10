@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {} from '../../redux/actions/messengerAd.actions'
+import { updateCurrentJsonAd } from '../../redux/actions/messengerAds.actions'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
@@ -15,6 +15,9 @@ class CreateMessengerAd extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onSave = this.onSave.bind(this)
+    if (props.location.state && props.location.state.pageId) {
+      props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state.pageId)
+    }
   }
 
   componentDidMount () {
@@ -69,11 +72,13 @@ class CreateMessengerAd extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    messengerAd: (state.messengerAdsInfo.messengerAd)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    updateCurrentJsonAd: updateCurrentJsonAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateMessengerAd)
