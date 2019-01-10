@@ -4,6 +4,11 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
+import {
+  saveMessengerAd
+} from '../../redux/actions/messengerAd.actions'
+import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
 import List from '../convo/List'
 import Video from '../convo/Video'
@@ -69,6 +74,7 @@ class CreateMessage extends React.Component {
     this.showPayloadMessage = this.showPayloadMessage.bind(this)
     this.setNewJsonMessage = this.setNewJsonMessage.bind(this)
     this.removePayloadMessages = this.removePayloadMessages.bind(this)
+    this.handleSaveMessage = this.handleSaveMessage.bind(this)
   }
   showPayloadMessage (data) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
@@ -216,6 +222,14 @@ class CreateMessage extends React.Component {
   }
   saveMessage () {
     console.log('Save Call')
+    var payload = {pageId: this.props.location.state._id, jsonAdMessages: this.state.jsonMessages}
+    this.props.saveMessengerAd(payload, this.msg, this.handleSaveMessage)
+  }
+  handleSaveMessage (resp) {
+    console.log(resp)
+    this.setState({
+      jsonMessages: resp.jsonAdMessages
+    })
   }
   handleText (obj) {
     console.log('handleText', obj)
@@ -382,6 +396,17 @@ class CreateMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+    this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleImage (obj) {
@@ -399,6 +424,16 @@ class CreateMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleFile (obj) {
@@ -416,6 +451,16 @@ class CreateMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
   handleList (obj) {
     console.log('in create convo handleList', obj)
@@ -613,4 +658,19 @@ class CreateMessage extends React.Component {
   }
 }
 
-export default CreateMessage
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    pages: (state.pagesInfo.pages)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators(
+    {
+      saveMessengerAd: saveMessengerAd
+    },
+    dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateMessage)

@@ -44,7 +44,7 @@ class MessengerAds extends React.Component {
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     browserHistory.push({
-      pathname: `/createMessengerAdMessage`,
+      pathname: `/createAdMessage`,
       state: {pageId: pageId, _id: this.state.pageSelected}
     })
   }

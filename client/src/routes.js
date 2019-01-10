@@ -124,6 +124,7 @@ import LandingPageMessage from './containers/landingPages/createMessage'
 import DemoSSA from './containers/demoSSA/demoSSA'
 import MessengerAds from './containers/messengerAds/messengerAds'
 import CreateMessengerAdMessage from './containers/messengerAds/createMessage'
+import CreateAdMessage from './containers/messengerAds/createMessengerAd'
 import MessengerRefURL from './containers/messengerRefURL/messengerRefURL'
 import CreateMessengerRefURL from './containers/messengerRefURL/create'
 import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
@@ -280,6 +281,7 @@ const routes = (
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
+    <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
     <Route path='/messengerRefURL' component={MessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
