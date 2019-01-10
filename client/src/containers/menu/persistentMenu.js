@@ -7,7 +7,7 @@ import { transformData, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
@@ -136,10 +136,10 @@ class Menu extends React.Component {
     }
   }
   showWebsite () {
-    this.setState({openWebsite: true})
+    this.setState({openWebsite: true, openWebView: false, webviewurl: '', webviewsize: 'FULL'})
   }
   showWebView () {
-    this.setState({openWebView: true})
+    this.setState({openWebView: true, openWebsite: false, webUrl: ''})
   }
   closeWebview () {
     this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabledWebUrl: true})
@@ -359,12 +359,17 @@ class Menu extends React.Component {
         this.setState({
           webviewurl: menu.url,
           webviewsize: menu.webview_height_ratio,
-          openWebView: true
+          openWebView: true,
+          openWebsite: false,
+          webUrl: ''
         })
       } else {
         this.setState({
           webUrl: menu.url,
-          openWebsite: true
+          openWebsite: true,
+          webviewurl: '',
+          openWebView: false,
+          webviewsize: 'FULL'
         })
       }
     } else if (menu.type === 'nested') {
@@ -385,6 +390,7 @@ class Menu extends React.Component {
     console.log('Selected Index', this.state.selectedIndex)
   }
   handleRadioChange (e) {
+    var menuItems = this.state.menuItems
     this.setState({
       selectedRadio: e.currentTarget.value,
       isEditMessage: false
@@ -399,13 +405,33 @@ class Menu extends React.Component {
       }
       this.handleToggle()
     }
-    if (e.currentTarget.value === 'replyWithMessage') {
-      var menuItems = this.state.menuItems
+    if (e.currentTarget.value === 'openWebsite') {
+      this.setState({openWebView: false, openWebsite: false})
       if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
         menuItems[index[1]].submenu = []
       }
       if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
         menuItems[index[1]].submenu[index[2]].submenu = []
+      }
+    }
+    if (e.currentTarget.value === 'replyWithMessage') {
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
+        menuItems[index[1]].submenu = []
+        if (menuItems[index[1]].messenger_extensions) {
+          delete menuItems[index[1]].messenger_extensions
+        }
+        if (menuItems[index[1]].webview_height_ratio) {
+          delete menuItems[index[1]].webview_height_ratio
+        }
+      }
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
+        menuItems[index[1]].submenu[index[2]].submenu = []
+        if (menuItems[index[1]].submenu[index[2]].messenger_extensions) {
+          delete menuItems[index[1]].submenu[index[2]].messenger_extensions
+        }
+        if (menuItems[index[1]].submenu[index[2]].webview_height_ratio) {
+          delete menuItems[index[1]].submenu[index[2]].webview_height_ratio
+        }
       }
       this.setState({
         menuItems: menuItems
@@ -483,6 +509,12 @@ class Menu extends React.Component {
     if (menuItems[index].url) {
       delete menuItems[index].url
     }
+    if (menuItems[index].messenger_extensions) {
+      delete menuItems[index].messenger_extensions
+    }
+    if (menuItems[index].webview_height_ratio) {
+      delete menuItems[index].webview_height_ratio
+    }
     menuItems[index].type = 'nested'
     var submenus = menuItems[index].submenu
     submenus.push(newSubmenu)
@@ -517,6 +549,12 @@ class Menu extends React.Component {
     }
     if (menuItems[index].submenu[subIndex].url) {
       delete menuItems[index].submenu[subIndex].url
+    }
+    if (menuItems[index].submenu[subIndex].messenger_extensions) {
+      delete menuItems[index].submenu[subIndex].messenger_extensions
+    }
+    if (menuItems[index].webview_height_ratio) {
+      delete menuItems[index].submenu[subIndex].webview_height_ratio
     }
     menuItems[index].submenu[subIndex].type = 'nested'
     var nestedMenus = menuItems[index].submenu[subIndex].submenu
@@ -577,7 +615,9 @@ class Menu extends React.Component {
   }
   setWebUrl (event) {
     this.setState({
-      webUrl: event.target.value
+      webUrl: event.target.value,
+      openWebView: false,
+      webviewurl: ''
     })
     if (event.target.value !== '' && isWebURL(event.target.value)) {
       this.setState({
@@ -595,6 +635,9 @@ class Menu extends React.Component {
       url = this.state.webUrl
     } else if (this.state.openWebView && this.state.webviewurl !== '') {
       url = this.state.webviewurl
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
     }
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')

@@ -169,6 +169,9 @@ class EditButton extends React.Component {
         this.props.editButton(data, this.props.onEdit)
       }
     } else if (!this.state.webviewurl) {
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
       let data = {
         id: this.props.index,
         type: 'web_url',
@@ -252,7 +255,7 @@ class EditButton extends React.Component {
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open webview</h7>
                   </div>
                   }
-                  { (this.props.module === 'messengerAd') &&
+                  { (this.props.module === 'messengerAd') && !(this.props.isGalleryCard === 'true') &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={() => {
                     this.setState({
                       openCreateMessage: true

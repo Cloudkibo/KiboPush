@@ -20,6 +20,11 @@ export function isWebURL (value) {
   return regexp.test(value)
 }
 
+export function isWebViewUrl (value) {
+  let regexp = /^(http|https):///
+  return regexp.test(value)
+}
+
 export function doesPageHaveSubscribers (pages, pageId) {
   console.log('doesPageHaveSubscribers pages', pages)
   console.log('doesPageHaveSubscribers pageId', pageId)

@@ -4,6 +4,11 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
+import {
+  updateCurrentJsonAd
+} from '../../redux/actions/messengerAds.actions'
+import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
 import List from '../convo/List'
 import Video from '../convo/Video'
@@ -24,33 +29,9 @@ class CreateMessage extends React.Component {
       list: [],
       broadcast: [],
       title: this.props.title ? this.props.title : '',
-      pages: this.props.pages,
+      pageId: props.pages.filter((page) => page.pageId === props.messengerAd.pageId)[0]._id,
       selectedIndex: 1,
-      jsonMessages: [{
-        jsonMessageId: 1,
-        title: 'Opt In Message',
-        parentMessageId: null,
-        message: [{
-          id: new Date().getTime(),
-          text: 'Welcome! Thank you for being interested in our product! The next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
-          componentType: 'text',
-          buttons: [{
-            type: 'postback',
-            title: 'Sure I do!',
-            payload: 2
-          }]
-        }]
-      },
-      {
-        jsonMessageId: 2,
-        title: 'Sure I do',
-        parentMessageId: 1,
-        message: [{
-          id: new Date().getTime() + 1,
-          text: 'Great. We will contact you as soon as we have a deal for you!',
-          componentType: 'text'
-        }]
-      }],
+      jsonMessages: props.messengerAd.jsonMessages ? props.messengerAd.jsonMessages : [],
       showOptInMessage: true
     }
     this.handleMedia = this.handleMedia.bind(this)
@@ -69,6 +50,7 @@ class CreateMessage extends React.Component {
     this.showPayloadMessage = this.showPayloadMessage.bind(this)
     this.setNewJsonMessage = this.setNewJsonMessage.bind(this)
     this.removePayloadMessages = this.removePayloadMessages.bind(this)
+    this.handleSaveMessage = this.handleSaveMessage.bind(this)
   }
   showPayloadMessage (data) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
@@ -145,27 +127,27 @@ class CreateMessage extends React.Component {
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'image') {
-          temp.push(<Image id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
+          temp.push(<Image id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'audio') {
-          temp.push(<Audio id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          temp.push(<Audio id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'video') {
-          temp.push(<Video id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          temp.push(<Video id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'file') {
-          temp.push(<File id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
+          temp.push(<File id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'card') {
-          temp.push(<Card id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
+          temp.push(<Card id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
@@ -175,17 +157,17 @@ class CreateMessage extends React.Component {
               payload[i].cards[m].id = m
             }
           }
-          temp.push(<Gallery id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
+          temp.push(<Gallery id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'list') {
-          temp.push(<List id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
+          temp.push(<List id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'media') {
-          temp.push(<Media id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
+          temp.push(<Media id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
@@ -211,11 +193,24 @@ class CreateMessage extends React.Component {
   }
   goBack () {
     this.props.history.push({
-      pathname: `/messengerAds`
+      pathname: `/createAdMessage`
     })
   }
   saveMessage () {
     console.log('Save Call')
+    for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      if (this.state.jsonMessages[i].message.length < 1) {
+        return this.msg.error(`Postback message '${this.state.jsonMessages[i].title}' is empty`)
+      }
+    }
+    this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonMessage', this.state.jsonMessages)
+    this.msg.success('Message saved successfully')
+  }
+  handleSaveMessage (resp) {
+    console.log(resp)
+    this.setState({
+      jsonMessages: resp.jsonAdMessages
+    })
   }
   handleText (obj) {
     console.log('handleText', obj)
@@ -382,6 +377,17 @@ class CreateMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+    this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleImage (obj) {
@@ -399,6 +405,16 @@ class CreateMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
 
   handleFile (obj) {
@@ -416,6 +432,16 @@ class CreateMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
+    var jsonMessages = this.state.jsonMessages
+
+    for (var k = 0; k < jsonMessages.length; k++) {
+      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
+        jsonMessages[k].message = temp
+      }
+    }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
   }
   handleList (obj) {
     console.log('in create convo handleList', obj)
@@ -513,7 +539,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                       <h6>Image</h6>
@@ -521,7 +547,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                       <h6>Card</h6>
@@ -529,7 +555,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                       <h6>Gallery</h6>
@@ -539,7 +565,7 @@ class CreateMessage extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                       <h6>Audio</h6>
@@ -547,7 +573,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                       <h6>Video</h6>
@@ -555,7 +581,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={this.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pages={[this.state.pageId]} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                       <h6>File</h6>
@@ -563,7 +589,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List module='messengerAd' replyWithMessage={this.replyWithMessage} id={timeStamp} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List module='messengerAd' replyWithMessage={this.replyWithMessage} id={timeStamp} pageId={this.props.pageId} pages={[this.state.pageId]} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                       <h6>List</h6>
@@ -573,7 +599,7 @@ class CreateMessage extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={this.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.props.pageId} pages={[this.state.pageId]} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                       <h6>Media</h6>
@@ -613,4 +639,20 @@ class CreateMessage extends React.Component {
   }
 }
 
-export default CreateMessage
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    pages: (state.pagesInfo.pages),
+    messengerAd: (state.messengerAdsInfo.messengerAd)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators(
+    {
+      updateCurrentJsonAd: updateCurrentJsonAd
+    },
+    dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateMessage)
