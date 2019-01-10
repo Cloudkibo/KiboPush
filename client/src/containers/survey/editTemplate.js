@@ -86,9 +86,9 @@ class EditTemplate extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.survey) {
-      console.log('nextprops.description', nextprops.description)
-
-      this.setState({title: nextprops.survey.title, description: nextprops.description, categoryValue: nextprops.survey.category[0]})
+      console.log('nextprops.survey.description', nextprops.survey.description)
+      console.log('nextprops.survey', nextprops.survey)     
+      this.setState({title: nextprops.survey.title, description: nextprops.survey.description, categoryValue: nextprops.survey.category[0]})
     }
 
     if (nextprops.questions) {
