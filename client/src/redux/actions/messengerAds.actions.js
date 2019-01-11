@@ -37,6 +37,22 @@ export function fetchMessengerAds () {
     })
   }
 }
+export function fetchMessengerAd (jsonAdId) {
+  return (dispatch) => {
+    callApi(`jsonAd/${jsonAdId}`).then(res => {
+      console.log('response from fetchMessengerAd', res)
+      if (res.status === 'success' && res.payload) {
+        var data = res.payload
+        var payload = {
+          pageId: data.jsonAd.pageId,
+          jsonAdId: data.jsonAd._id,
+          jsonAdMessages: data.jsonAdMessages
+        }
+        dispatch(saveCurrentJsonAd(payload))
+      }
+    })
+  }
+}
 export function deleteMessengerAd (id, msg) {
   return (dispatch) => {
     callApi(`jsonAd/delete/${id}`, 'delete').then(res => {
@@ -51,14 +67,42 @@ export function deleteMessengerAd (id, msg) {
   }
 }
 
-export function saveMessengerAd (data, msg, handleSaveMessage) {
+export function saveJsonAd (data, msg) {
   console.log('data in saveMessengerAd', data)
   return (dispatch) => {
-    callApi('jsonAd', 'post', data)
+    callApi('jsonAd/create', 'post', data)
       .then(res => {
         console.log('response from messengerAds', res)
         if (res.status === 'success') {
-          handleSaveMessage(res.payload)
+          var data = res.payload
+          var payload = {
+            pageId: data.jsonAd.pageId,
+            jsonAdId: data.jsonAd._id,
+            jsonAdMessages: data.jsonAdMessages
+          }
+          dispatch(saveCurrentJsonAd(payload))
+          msg.succes('Json Ad saved successfully')
+        } else {
+          msg.error('Unable to save Json Ad')
+        }
+      })
+  }
+}
+
+export function editJsonAd (data, msg) {
+  console.log('data in saveMessengerAd', data)
+  return (dispatch) => {
+    callApi('jsonAd/edit', 'post', data)
+      .then(res => {
+        console.log('response from messengerAds', res)
+        if (res.status === 'success') {
+          var data = res.payload
+          var payload = {
+            pageId: data.jsonAd.pageId,
+            jsonAdId: data.jsonAd._id,
+            jsonAdMessages: data.jsonAdMessages
+          }
+          dispatch(saveCurrentJsonAd(payload))
           msg.succes('Message saved successfully')
         } else {
           msg.error('Unable to save message')

@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { updateCurrentJsonAd } from '../../redux/actions/messengerAds.actions'
+import { updateCurrentJsonAd, saveJsonAd, fetchMessengerAd } from '../../redux/actions/messengerAds.actions'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
@@ -15,15 +15,25 @@ class CreateMessengerAd extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onSave = this.onSave.bind(this)
-    if (props.location.state && props.location.state.pageId) {
-      props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state.pageId)
+    if (props.location.state) {
+      if (props.location.state.pageId) {
+        props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state.pageId)
+      }
+      if (props.location.state.module && props.location.state.module === 'edit') {
+        props.fetchMessengerAd(props.location.state.jsonAdId)
+      }
     }
   }
 
-  componentDidMount () {
-  }
-
   onSave () {
+    let payload = {}
+    if (props.location.state.module && props.location.state.module === 'edit') {
+      payload = {jsonAdId: this.props.messengerAd.jsonAdId, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      this.props.editJsonAd(payload, this.msg)
+    } else {
+      payload = {pageId: this.props.messengerAd.pageId, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      this.props.saveJsonAd(payload, this.msg)
+    }
   }
 
   render () {
@@ -78,7 +88,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateCurrentJsonAd: updateCurrentJsonAd
+    updateCurrentJsonAd: updateCurrentJsonAd,
+    saveJsonAd: saveJsonAd,
+    fetchMessengerAd: fetchMessengerAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateMessengerAd)

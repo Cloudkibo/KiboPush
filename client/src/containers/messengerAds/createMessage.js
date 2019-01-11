@@ -31,7 +31,7 @@ class CreateMessage extends React.Component {
       title: this.props.title ? this.props.title : '',
       pageId: props.pages.filter((page) => page.pageId === props.messengerAd.pageId)[0]._id,
       selectedIndex: 1,
-      jsonMessages: props.messengerAd.jsonMessages ? props.messengerAd.jsonMessages : [],
+      jsonMessages: props.messengerAd.jsonAdMessages ? props.messengerAd.jsonAdMessages : [],
       showOptInMessage: true
     }
     this.handleMedia = this.handleMedia.bind(this)
@@ -54,11 +54,11 @@ class CreateMessage extends React.Component {
   }
   showPayloadMessage (data) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (this.state.jsonMessages[i].jsonMessageId === data.payload) {
-        this.setEditComponents(this.state.jsonMessages[i].message)
+      if (this.state.jsonMessages[i].jsonAdMessageId === data.payload) {
+        this.setEditComponents(this.state.jsonMessages[i].messageContent)
         /* eslint-disable */
           $('.nav-link m-tabs__link').removeClass('active')
-          $('#tab-' + this.state.jsonMessages[i].jsonMessageId ).addClass('active')
+          $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
         /* eslint-enable */
         break
       }
@@ -69,7 +69,7 @@ class CreateMessage extends React.Component {
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
       for (var m = 0; m < tempJsonPayloads.length; m++) {
-        if (tempJsonPayloads[m] === jsonMessages[l].jsonMessageId) {
+        if (tempJsonPayloads[m] === jsonMessages[l].jsonAdMessageId) {
           removePayload = true
         }
       }
@@ -82,10 +82,10 @@ class CreateMessage extends React.Component {
 
   setNewJsonMessage (data, jsonMessages) {
     var newMessage = {}
-    newMessage.jsonMessageId = this.state.jsonMessages.length + 1
-    newMessage.parentMessageId = this.state.selectedIndex
+    newMessage.jsonAdMessageId = this.state.jsonMessages.length + 1
+    newMessage.jsonAdMessageParentId = this.state.selectedIndex
     newMessage.title = data.title
-    newMessage.message = []
+    newMessage.messageContent = []
     jsonMessages.push(newMessage)
     return jsonMessages
   }
@@ -103,12 +103,12 @@ class CreateMessage extends React.Component {
       })
     }
   }
-  jsonMessageClick (jsonMessageId) {
+  jsonMessageClick (jsonAdMessageId) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (this.state.jsonMessages[i].jsonMessageId === jsonMessageId) {
-        this.setEditComponents(this.state.jsonMessages[i].message)
+      if (this.state.jsonMessages[i].jsonAdMessageId === jsonAdMessageId) {
+        this.setEditComponents(this.state.jsonMessages[i].messageContent)
         this.setState({
-          selectedIndex: this.state.jsonMessages[i].jsonMessageId
+          selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
         })
         break
       }
@@ -182,10 +182,10 @@ class CreateMessage extends React.Component {
   }
   componentDidMount () {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (!this.state.jsonMessages[i].parentMessageId) {
-        this.setEditComponents(this.state.jsonMessages[i].message)
+      if (!this.state.jsonMessages[i].jsonAdMessageParentId) {
+        this.setEditComponents(this.state.jsonMessages[i].messageContent)
         this.setState({
-          selectedIndex: this.state.jsonMessages[i].jsonMessageId
+          selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
         })
         break
       }
@@ -199,7 +199,7 @@ class CreateMessage extends React.Component {
   saveMessage () {
     console.log('Save Call')
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (this.state.jsonMessages[i].message.length < 1) {
+      if (this.state.jsonMessages[i].messageContent.length < 1) {
         return this.msg.error(`Postback message '${this.state.jsonMessages[i].title}' is empty`)
       }
     }
@@ -247,8 +247,8 @@ class CreateMessage extends React.Component {
       jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
     }
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -298,8 +298,8 @@ class CreateMessage extends React.Component {
       jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
     }
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -351,8 +351,8 @@ class CreateMessage extends React.Component {
       jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
     }
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -381,8 +381,8 @@ class CreateMessage extends React.Component {
     var jsonMessages = this.state.jsonMessages
 
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -408,8 +408,8 @@ class CreateMessage extends React.Component {
     var jsonMessages = this.state.jsonMessages
 
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -435,8 +435,8 @@ class CreateMessage extends React.Component {
     var jsonMessages = this.state.jsonMessages
 
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -474,8 +474,8 @@ class CreateMessage extends React.Component {
       jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
     }
     for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonMessageId === this.state.selectedIndex) {
-        jsonMessages[k].message = temp
+      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+        jsonMessages[k].messageContent = temp
       }
     }
     this.setState({
@@ -492,19 +492,19 @@ class CreateMessage extends React.Component {
 
     var jsonMessages = this.state.jsonMessages
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (this.state.jsonMessages[i].jsonMessageId === this.state.selectedIndex) {
-        for (var j = 0; j < this.state.jsonMessages[i].message.length; j++) {
-          if (this.state.jsonMessages[i].message[j].id === obj.id) {
-            if (this.state.jsonMessages[i].message[j].buttons) {
-              for (var k = 0; k < this.state.jsonMessages[i].message[j].buttons.length; k++) {
-                if (this.state.jsonMessages[i].message[j].buttons[k].type === 'postback') {
-                  tempJsonPayloads.push(this.state.jsonMessages[i].message[j].buttons[k].payload)
+      if (this.state.jsonMessages[i].jsonAdMessageId === this.state.selectedIndex) {
+        for (var j = 0; j < this.state.jsonMessages[i].messageContent.length; j++) {
+          if (this.state.jsonMessages[i].messageContent[j].id === obj.id) {
+            if (this.state.jsonMessages[i].messageContent[j].buttons) {
+              for (var k = 0; k < this.state.jsonMessages[i].messageContent[j].buttons.length; k++) {
+                if (this.state.jsonMessages[i].messageContent[j].buttons[k].type === 'postback') {
+                  tempJsonPayloads.push(this.state.jsonMessages[i].messageContent[j].buttons[k].payload)
                 }
               }
             }
           }
         }
-        jsonMessages[i].message = temp2
+        jsonMessages[i].messageContent = temp2
       }
     }
     jsonMessages = this.removePayloadMessages(tempJsonPayloads, jsonMessages)
@@ -617,7 +617,7 @@ class CreateMessage extends React.Component {
                 <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
                   { this.state.jsonMessages.map((jsonMessage, index) => (
                     <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
-                      <a id={'tab-' + jsonMessage.jsonMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
+                      <a id={'tab-' + jsonMessage.jsonAdMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonAdMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
                         {jsonMessage.title}
                       </a>
                       { (index < this.state.jsonMessages.length - 1) &&
