@@ -16,10 +16,10 @@ class Preview extends React.Component {
     }
   }
   componentDidMount () {
-    for (var i = 0; i < this.props.messengerAd.jsonMessages.length; i++) {
-      if (!this.props.messengerAd.jsonMessages[i].parentMessageId) {
+    for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+      if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
         this.setState({
-          previewOptInMessage: this.props.messengerAd.jsonMessages[i].message
+          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent
         })
       }
     }
