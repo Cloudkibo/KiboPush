@@ -20,10 +20,10 @@ const initialState = {
       }]
     },
     {
-      jsonMessageId: 2,
+      jsonAdMessageId: 2,
       title: 'Sure I do',
-      parentMessageId: 1,
-      message: [{
+      jsonAdMessageParentId: 1,
+      messageContent: [{
         id: new Date().getTime() + 1,
         text: 'Great. We will contact you as soon as we have a deal for you!',
         componentType: 'text'
