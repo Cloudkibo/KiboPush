@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchMessengerAds, deleteMessengerAd} from '../../redux/actions/messengerAds.actions'
+import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../redux/actions/messengerAds.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -43,6 +43,7 @@ class MessengerAds extends React.Component {
   }
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
+    this.props.setDefaultAdMessage()
     browserHistory.push({
       pathname: `/createAdMessage`,
       state: {pageId: pageId, _id: this.state.pageSelected}
@@ -50,7 +51,7 @@ class MessengerAds extends React.Component {
   }
   onEdit (adId) {
     browserHistory.push({
-      pathname: `/createMessengerAd`,
+      pathname: `/createAdMessage`,
       state: {module: 'edit', jsonAdId: adId}
     })
   }
@@ -284,7 +285,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchMessengerAds: fetchMessengerAds,
     deleteMessengerAd: deleteMessengerAd,
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    setDefaultAdMessage: setDefaultAdMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerAds)

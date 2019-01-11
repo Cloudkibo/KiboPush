@@ -15,6 +15,12 @@ export function saveCurrentJsonAd (data) {
   }
 }
 
+export function setDefaultAdMessage (data) {
+  return {
+    type: ActionTypes.SET_DEFAULT_JSON_AD,
+    data
+  }
+}
 export function updateCurrentJsonAd (messengerAd, updateKey, updateValue, edit) {
   return (dispatch) => {
     console.log('updateKey', updateKey)
@@ -81,7 +87,7 @@ export function saveJsonAd (data, msg) {
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
-          msg.succes('Json Ad saved successfully')
+          msg.success('Json Ad saved successfully')
         } else {
           msg.error('Unable to save Json Ad')
         }
@@ -103,7 +109,7 @@ export function editJsonAd (data, msg) {
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
-          msg.succes('Message saved successfully')
+          msg.success('Message saved successfully')
         } else {
           msg.error('Unable to save message')
         }

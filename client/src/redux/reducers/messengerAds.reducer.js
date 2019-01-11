@@ -42,6 +42,10 @@ export function messengerAdsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         messengerAd: action.data
       })
+    case ActionTypes.SET_DEFAULT_JSON_AD:
+      return Object.assign({}, state, {
+        messengerAd: initialState.messengerAd
+      })
     default:
       return state
   }
