@@ -44,7 +44,7 @@ class OptInActions extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    messengerAds: state.messengerAdsInfo.messengerAd
+    messengerAd: state.messengerAdsInfo.messengerAd
   }
 }
 

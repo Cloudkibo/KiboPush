@@ -308,6 +308,7 @@ export const UPDATE_LANDING_PAGE = 'UPDATE_LANDING_PAGE'
 // constants for Messenger Ads
 export const SHOW_MESSENGER_ADS = 'SHOW_MESSENGER_ADS'
 export const SAVE_CURRENT_JSON_AD = 'SAVE_CURRENT_JSON_AD'
+export const SET_DEFAULT_JSON_AD = 'SET_DEFAULT_JSON_AD'
 
 // constants for DemoSSA
 export const UPDATE_DEMOSSA_CHAT = 'UPDATE_DEMOSSA_CHAT'

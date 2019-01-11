@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { updateCurrentJsonAd, saveJsonAd, fetchMessengerAd } from '../../redux/actions/messengerAds.actions'
+import { updateCurrentJsonAd, saveJsonAd, fetchMessengerAd, editJsonAd } from '../../redux/actions/messengerAds.actions'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
@@ -90,7 +90,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updateCurrentJsonAd: updateCurrentJsonAd,
     saveJsonAd: saveJsonAd,
-    fetchMessengerAd: fetchMessengerAd
+    fetchMessengerAd: fetchMessengerAd,
+    editJsonAd: editJsonAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateMessengerAd)
