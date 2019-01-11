@@ -4,11 +4,11 @@ const initialState = {
   messengerAd: {
     pageId: '',
     jsonAdId: '',
-    jsonMessages: [{
-      jsonMessageId: 1,
+    jsonAdMessages: [{
+      jsonAdMessageId: 1,
       title: 'Opt In Message',
-      parentMessageId: null,
-      message: [{
+      jsonAdMessageParentId: null,
+      messageContent: [{
         id: new Date().getTime(),
         text: 'Welcome! Thank you for being interested in our product! The next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
         componentType: 'text',
