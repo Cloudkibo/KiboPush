@@ -52,6 +52,7 @@ export function fetchMessengerAd (jsonAdId) {
         var payload = {
           pageId: data.jsonAd.pageId,
           jsonAdId: data.jsonAd._id,
+          title: data.jsonAd.title,
           jsonAdMessages: data.jsonAdMessages
         }
         dispatch(saveCurrentJsonAd(payload))
