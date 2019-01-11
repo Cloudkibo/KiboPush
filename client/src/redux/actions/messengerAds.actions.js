@@ -85,6 +85,7 @@ export function saveJsonAd (data, msg) {
           var payload = {
             pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
+            title: data.jsonAd.title,
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
@@ -107,6 +108,7 @@ export function editJsonAd (data, msg) {
           var payload = {
             pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
+            title: data.jsonAd.title,
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
