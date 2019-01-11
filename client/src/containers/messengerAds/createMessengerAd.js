@@ -27,7 +27,7 @@ class CreateMessengerAd extends React.Component {
 
   onSave () {
     let payload = {}
-    if (this.props.location.state.module && this.props.location.state.module === 'edit') {
+    if (this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== '') {
       payload = {jsonAdId: this.props.messengerAd.jsonAdId, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
       this.props.editJsonAd(payload, this.msg)
     } else {
