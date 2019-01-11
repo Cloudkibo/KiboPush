@@ -203,7 +203,7 @@ class CreateMessage extends React.Component {
         return this.msg.error(`Postback message '${this.state.jsonMessages[i].title}' is empty`)
       }
     }
-    this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonMessage', this.state.jsonMessages)
+    this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', this.state.jsonMessages)
     this.msg.success('Message saved successfully')
   }
   handleSaveMessage (resp) {
