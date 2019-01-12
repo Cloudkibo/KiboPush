@@ -43,7 +43,7 @@ export function fetchMessengerAds () {
     })
   }
 }
-export function fetchMessengerAd (jsonAdId) {
+export function fetchMessengerAd (jsonAdId, updatePreview) {
   return (dispatch) => {
     callApi(`jsonAd/${jsonAdId}`).then(res => {
       console.log('response from fetchMessengerAd', res)
@@ -55,6 +55,7 @@ export function fetchMessengerAd (jsonAdId) {
           title: data.jsonAd.title,
           jsonAdMessages: data.jsonAdMessages
         }
+        updatePreview()
         dispatch(saveCurrentJsonAd(payload))
       }
     })

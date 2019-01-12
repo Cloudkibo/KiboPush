@@ -24,7 +24,7 @@ class CreateMessengerAd extends React.Component {
         props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state.pageId)
       }
       if (props.location.state.module && props.location.state.module === 'edit') {
-        props.fetchMessengerAd(props.location.state.jsonAdId)
+        props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
       }
     }
   }
@@ -37,9 +37,7 @@ class CreateMessengerAd extends React.Component {
       }
     }
   }
-  componentWillReceiveProps () {
-    this.updatePreview()
-  }
+
   componentDidMount () {
     this.updatePreview()
   }
