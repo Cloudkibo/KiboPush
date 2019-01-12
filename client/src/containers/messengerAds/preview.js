@@ -12,7 +12,6 @@ class Preview extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      previewOptInMessage: this.props.previewOptInMessage
     }
   }
   componentDidMount () {
@@ -21,7 +20,7 @@ class Preview extends React.Component {
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
-          <ViewMessage payload={this.state.previewOptInMessage} />
+          <ViewMessage payload={this.props.previewOptInMessage} />
         </div>
       </div>
     )
