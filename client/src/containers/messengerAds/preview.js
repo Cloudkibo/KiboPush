@@ -12,17 +12,10 @@ class Preview extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      previewOptInMessage: []
+      previewOptInMessage: this.props.previewOptInMessage
     }
   }
   componentDidMount () {
-    for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
-      if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
-        this.setState({
-          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent
-        })
-      }
-    }
   }
   render () {
     return (

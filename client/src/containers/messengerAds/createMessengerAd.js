@@ -14,6 +14,9 @@ import Preview from './preview'
 class CreateMessengerAd extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      previewOptInMessage: []
+    }
     this.onSave = this.onSave.bind(this)
     if (props.location.state) {
       if (props.location.state.pageId) {
@@ -24,7 +27,15 @@ class CreateMessengerAd extends React.Component {
       }
     }
   }
-
+  componentWillReceiveProps () {
+    for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+      if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
+        this.setState({
+          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent
+        })
+      }
+    }
+  }
   onSave () {
     let payload = {}
     if (this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== '') {
@@ -68,7 +79,7 @@ class CreateMessengerAd extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <Tabs />
-                    <Preview />
+                    <Preview previewOptInMessage={this.state.previewOptInMessage} />
                   </div>
                 </div>
               </div>
