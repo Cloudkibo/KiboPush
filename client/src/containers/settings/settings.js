@@ -588,18 +588,6 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-exclamation' />
-                        <span className='m-nav__link-text'>Greeting Text</span>
-                      </a>
-                    </li>
-                    <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setWelcomeMessage} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-menu-button' />
-                        <span className='m-nav__link-text'>Welcome Message</span>
-                      </a>
-                    </li>
                     { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
                     <li className='m-nav__item'>
                       {
