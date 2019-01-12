@@ -55,8 +55,8 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
           title: data.jsonAd.title,
           jsonAdMessages: data.jsonAdMessages
         }
-        updatePreview()
         dispatch(saveCurrentJsonAd(payload))
+        updatePreview()
       }
     })
   }
