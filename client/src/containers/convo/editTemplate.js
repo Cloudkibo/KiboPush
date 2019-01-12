@@ -494,7 +494,7 @@ class EditTemplate extends React.Component {
           platform: 'facebook',
           payload: this.state.broadcast,
           isSegmented: isSegmentedValue,
-          segmentationPageIds: this.state.pageValue,
+          segmentationPageIds: this.props.location.state.pages,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
