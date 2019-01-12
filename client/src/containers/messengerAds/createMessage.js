@@ -60,6 +60,9 @@ class CreateMessage extends React.Component {
           $('.nav-link m-tabs__link').removeClass('active')
           $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
         /* eslint-enable */
+        this.setState({
+          selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
+        })
         break
       }
     }

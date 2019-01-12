@@ -43,7 +43,7 @@ class MessengerAds extends React.Component {
   }
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    this.props.setDefaultAdMessage()
+    this.props.setDefaultAdMessage(defaultAdMessage().messengerAd)
     browserHistory.push({
       pathname: `/createAdMessage`,
       state: {pageId: pageId, _id: this.state.pageSelected}
@@ -272,7 +272,38 @@ class MessengerAds extends React.Component {
     )
   }
 }
-
+function defaultAdMessage () {
+  const defaultMessage = { messengerAd: {
+    pageId: '',
+    jsonAdId: '',
+    jsonAdMessages: [{
+      jsonAdMessageId: 1,
+      title: 'Opt In Message',
+      jsonAdMessageParentId: null,
+      messageContent: [{
+        id: new Date().getTime(),
+        text: 'Welcome! Thank you for being interested in our product! The next post about it is coming soon, stay tuned!\nAre you interested in having a discount?',
+        componentType: 'text',
+        buttons: [{
+          type: 'postback',
+          title: 'Sure I do!',
+          payload: 2
+        }]
+      }]
+    },
+    {
+      jsonAdMessageId: 2,
+      title: 'Sure I do',
+      jsonAdMessageParentId: 1,
+      messageContent: [{
+        id: new Date().getTime() + 1,
+        text: 'Great. We will contact you as soon as we have a deal for you!',
+        componentType: 'text'
+      }]
+    }]
+  }}
+  return defaultMessage
+}
 function mapStateToProps (state) {
   console.log(state)
   return {
