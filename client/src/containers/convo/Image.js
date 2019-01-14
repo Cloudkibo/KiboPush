@@ -47,7 +47,7 @@ class Image extends React.Component {
         image_url: '',
         type: 'jpg', // jpg, png, gif
         size: ''
-      }, this.props.handleImage)
+      }, this.props.handleImage, this.setLoading)
     }
   }
 

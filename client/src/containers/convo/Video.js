@@ -15,7 +15,7 @@ import {
 import AlertContainer from 'react-alert'
 import ReactPlayer from 'react-player'
 
-import { uploadFile } from '../../redux/actions/convos.actions'
+import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -54,6 +54,17 @@ class Video extends React.Component {
         fileInfo.url = this.props.file.fileurl.url
       }
       this.setState({file: fileInfo, showPreview: true})
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: this.props.file.fileurl.url,
+        componentType: 'video',
+        id: this.props.file.fileurl.id,
+        name: this.props.file.fileName
+      }, { id: this.props.id,
+        componentType: 'video',
+        fileName: this.props.file.fileName,
+        type: this.props.file.type,
+        size: this.props.file.size
+      }, this.props.handleFile, this.setLoading)
     }
   }
 
@@ -196,7 +207,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Video)

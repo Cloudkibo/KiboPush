@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { uploadImage, uploadFile } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 
@@ -53,6 +53,34 @@ class Media extends React.Component {
     this.setState({showErrorDialogue: false})
   }
   componentDidMount () {
+    var video = this.props.media.type.match('video.*')
+    var image = this.props.media.type.match('image.*')
+    if (image) {
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: this.props.media.fileurl.url,
+        componentType: 'image',
+        id: this.props.media.fileurl.id,
+        name: this.props.media.fileurl.name
+      }, { fileurl: '',
+        fileName: this.props.media.fileurl.name,
+        type: this.props.media.type,
+        image_url: '',
+        size: this.props.media.size
+      }, this.updateImageUrl, this.setLoading)
+    }
+    if (video) {
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: this.props.media.fileurl.url,
+        componentType: 'video',
+        id: this.props.media.fileurl.id,
+        name: this.props.media.fileurl.name
+      }, { id: this.props.id,
+        componentType: 'video',
+        fileName: this.props.media.fileurl.name,
+        type: this.props.media.fileurl.type,
+        size: this.props.media.fileurl.size
+      }, this.updateFileUrl, this.setLoading)
+    }
     this.updateMediaDetails(this.props)
   }
   onFilesError (error, file) {
@@ -316,7 +344,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     uploadImage: uploadImage,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Media)
