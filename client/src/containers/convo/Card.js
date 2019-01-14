@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { uploadImage } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
@@ -185,6 +185,18 @@ class Card extends React.Component {
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
   componentDidMount () {
+    this.props.uploadTemplate({pages: this.props.pages,
+      url: this.props.cardDetails.image_url,
+      componentType: 'image',
+      id: this.props.cardDetails.fileurl.id,
+      name: this.props.cardDetails.fileName
+    }, { fileurl: '',
+      fileName: this.props.cardDetails.fileName,
+      type: this.props.cardDetails.type,
+      image_url: '',
+      size: this.props.cardDetails.size
+    }, this.updateImageUrl, this.setLoading)
+
     this.updateCardDetails(this.props)
   }
   componentWillReceiveProps (nextProps) {
@@ -495,6 +507,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({uploadImage: uploadImage}, dispatch)
+  return bindActionCreators({uploadImage: uploadImage, uploadTemplate: uploadTemplate}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Card)
