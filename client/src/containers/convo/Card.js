@@ -216,7 +216,7 @@ class Card extends React.Component {
   }
   componentDidMount () {
     this.props.uploadTemplate({pages: this.props.pages,
-      url: this.props.cardDetails.image_url,
+      url: this.props.cardDetails.fileurl.url,
       componentType: 'image',
       id: this.props.cardDetails.fileurl.id,
       name: this.props.cardDetails.fileName

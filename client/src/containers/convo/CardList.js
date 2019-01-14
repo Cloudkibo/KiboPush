@@ -271,7 +271,7 @@ class Card extends React.Component {
     console.log('this.props', this.props)
     this.updateCardDetails(this.props)
     this.props.uploadTemplate({pages: this.props.pages,
-      url: this.props.cardDetails.image_url,
+      url: this.props.cardDetails.fileurl.url,
       componentType: 'image',
       id: this.props.cardDetails.fileurl.id,
       name: this.props.cardDetails.fileName
