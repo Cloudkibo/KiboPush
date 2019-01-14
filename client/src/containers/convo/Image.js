@@ -11,7 +11,8 @@ import {
   clearAlertMessage,
   loadBroadcastsList,
   sendbroadcast,
-  uploadRequest
+  uploadRequest,
+  uploadTemplate
 } from '../../redux/actions/broadcast.actions'
 import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
@@ -155,7 +156,8 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
     uploadRequest: uploadRequest,
-    uploadImage: uploadImage
+    uploadImage: uploadImage,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)
