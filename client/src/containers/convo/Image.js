@@ -11,11 +11,10 @@ import {
   clearAlertMessage,
   loadBroadcastsList,
   sendbroadcast,
-  uploadRequest,
-  uploadTemplate
+  uploadRequest
 } from '../../redux/actions/broadcast.actions'
 import Halogen from 'halogen'
-import { uploadImage } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 
