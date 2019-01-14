@@ -192,7 +192,7 @@ class Card extends React.Component {
   }
   handleDone () {
     if (this.state.webviewurl !== '') {
-      this.props.checkWhitelistedDomains({domain: this.state.webviewurl}, this.handleWebView)
+      this.props.checkWhitelistedDomains({pageId: this.props.pageId, domain: this.state.webviewurl}, this.handleWebView)
     } else if (this.state.elementUrl !== '') {
       let defaultAction
       defaultAction = {

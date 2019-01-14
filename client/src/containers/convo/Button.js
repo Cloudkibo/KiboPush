@@ -53,6 +53,7 @@ class Button extends React.Component {
     this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
+    this.resetButton = this.resetButton.bind(this)
   }
 
   onChangeWebviewSize (event) {
@@ -132,60 +133,7 @@ class Button extends React.Component {
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
   }
-
-  handleDone () {
-    if (this.state.url !== '') {
-      let data = {
-        type: 'web_url',
-        url: this.state.url, // User defined link,
-        title: this.state.title, // User defined label
-        module: {
-          type: this.props.module,
-          id: ''// messageId
-        }
-      }
-      this.props.addButton(data, this.props.onAdd, this.msg)
-    } else if (this.state.sequenceValue !== '') {
-      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        let data = {
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'subscribe'
-        }
-        this.props.addButton(data, this.props.onAdd, this.msg)
-      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        let data = {
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'unsubscribe'
-        }
-        this.props.addButton(data, this.props.onAdd, this.msg)
-      }
-    } else if (this.state.shareButton) {
-      let data = {
-        type: 'element_share',
-        title: this.state.title
-      }
-      this.props.addButton(data, this.props.onAdd, this.msg)
-    } else if (this.state.webviewurl !== '') {
-      if (!isWebViewUrl(this.state.webviewurl)) {
-        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
-      }
-      let data = {
-        type: 'web_url',
-        url: this.state.webviewurl, // User defined link,
-        title: this.state.title, // User defined label
-        messenger_extensions: true,
-        webview_height_ratio: this.state.webviewsize,
-        pageId: this.props.pageId
-      }
-      this.props.addButton(data, this.props.onAdd, this.msg)
-    }
-    // this.setState({
-    //   openPopover: false
-    // })
+  resetButton () {
     this.setState({
       openPopover: false,
       title: '',
@@ -198,6 +146,60 @@ class Button extends React.Component {
       openUnsubscribe: false,
       shareButton: false
     })
+  }
+  handleDone () {
+    if (this.state.url !== '') {
+      let data = {
+        type: 'web_url',
+        url: this.state.url, // User defined link,
+        title: this.state.title, // User defined label
+        module: {
+          type: this.props.module,
+          id: ''// messageId
+        }
+      }
+      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+    } else if (this.state.sequenceValue !== '') {
+      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
+        let data = {
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
+        let data = {
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      }
+    } else if (this.state.shareButton) {
+      let data = {
+        type: 'element_share',
+        title: this.state.title
+      }
+      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+    } else if (this.state.webviewurl !== '') {
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
+      let data = {
+        type: 'web_url',
+        url: this.state.webviewurl, // User defined link,
+        title: this.state.title, // User defined label
+        messenger_extensions: true,
+        webview_height_ratio: this.state.webviewsize,
+        pageId: this.props.pageId
+      }
+      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+    }
+    // this.setState({
+    //   openPopover: false
+    // })
   }
 
   changeTitle (event) {
