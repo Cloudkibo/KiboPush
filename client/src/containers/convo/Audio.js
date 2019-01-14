@@ -61,7 +61,7 @@ class Audio extends React.Component {
       }, {
         id: this.props.id,
         componentType: 'audio',
-        fileName: this.props.file.name,
+        fileName: this.props.file.fileName,
         type: this.props.file.type,
         size: this.props.file.size
       }, this.props.handleFile, this.setLoading)
