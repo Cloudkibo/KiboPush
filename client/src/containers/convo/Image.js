@@ -34,13 +34,20 @@ class Image extends React.Component {
   componentDidMount () {
     if (this.props.image && this.props.image.url !== '') {
       console.log('in componentDidMount of Image', this.props.image)
-      this.setState({imgSrc: this.props.image, showPreview: true})
+      this.setState({imgSrc: this.props.image.url, showPreview: true})
       this.props.uploadTemplate({pages: this.props.pages,
         url: this.props.image.url,
         componentType: 'image',
         id: this.props.image.id,
         name: this.props.image.name
-      }, this.props.image, this.props.handleImage)
+      }, {id: this.props.id,
+        componentType: 'image',
+        fileName: this.props.image.name,
+        fileurl: '',
+        image_url: '',
+        type: file.type, // jpg, png, gif
+        size: file.size
+      }, this.props.handleImage)
     }
   }
 
