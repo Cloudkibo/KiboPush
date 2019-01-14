@@ -32,7 +32,9 @@ class Image extends React.Component {
   }
 
   componentDidMount () {
+    console.log('in componentDidMount of Image')
     if (this.props.image && this.props.image !== '') {
+      console.log('in componentDidMount of Image', this.props.image)
       this.setState({imgSrc: this.props.image, showPreview: true})
       this._onChange()
     }
@@ -44,6 +46,7 @@ class Image extends React.Component {
 
   _onChange (images) {
   // Assuming only image
+    console.log('in _onChange')
     var file = this.refs.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
