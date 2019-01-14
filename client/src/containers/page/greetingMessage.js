@@ -159,7 +159,15 @@ class GreetingMessage extends React.Component {
   }
   componentDidMount () {
     this.selectPage()
-    document.title = 'KiboPush | api_settings'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Greeting Message`;
   }
   closeZeroSubDialog () {
     this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})

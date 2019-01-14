@@ -31,6 +31,17 @@ class Usage extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
   }
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Usage`;
+  }
   showDialogUpdate (name, value) {
     console.log('name', name)
     console.log('value', value)

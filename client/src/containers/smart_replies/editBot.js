@@ -26,7 +26,15 @@ class EditBot extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Edit Bot'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Edit Bot`;
     if (this.props.location.state) {
       this.props.botDetails(this.props.location.state)
     }

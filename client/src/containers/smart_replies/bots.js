@@ -58,6 +58,18 @@ class Bot extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Bots`;
+  }
+
   showDialog () {
     if (this.state.pages.length === 0) {
       this.msg.error('You have already added bots on all pages.')

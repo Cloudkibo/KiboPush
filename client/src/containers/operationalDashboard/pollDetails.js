@@ -33,6 +33,16 @@ class ViewPollDetail extends React.Component {
     } else {
       this.props.loadPollDetails(this.props.currentPoll._id)
     }
+
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Poll Details`;
   }
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})

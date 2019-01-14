@@ -462,6 +462,15 @@ class CustomerMatching extends React.Component {
   componentDidMount () {
     this.scrollToTop()
     this.selectPage()
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Invite Using Phone Number`;
   }
 
   render () {
