@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import { uploadImage } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
@@ -270,6 +270,17 @@ class Card extends React.Component {
   componentDidMount () {
     console.log('this.props', this.props)
     this.updateCardDetails(this.props)
+    this.props.uploadTemplate({pages: this.props.pages,
+      url: this.props.cardDetails.image_url,
+      componentType: 'image',
+      id: this.props.cardDetails.fileurl.id,
+      name: this.props.cardDetails.fileName
+    }, { fileurl: '',
+      fileName: this.props.cardDetails.fileName,
+      type: this.props.cardDetails.type,
+      image_url: '',
+      size: this.props.cardDetails.size
+    }, this.updateImageUrl, this.setLoading)
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
@@ -644,6 +655,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({uploadImage: uploadImage, checkWhitelistedDomains: checkWhitelistedDomains}, dispatch)
+  return bindActionCreators({uploadImage: uploadImage, uploadTemplate: uploadTemplate, checkWhitelistedDomains: checkWhitelistedDomains}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Card)
