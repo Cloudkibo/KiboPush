@@ -32,11 +32,15 @@ class Image extends React.Component {
   }
 
   componentDidMount () {
-    console.log('in componentDidMount of Image')
-    if (this.props.image && this.props.image !== '') {
+    if (this.props.image && this.props.image.url !== '') {
       console.log('in componentDidMount of Image', this.props.image)
       this.setState({imgSrc: this.props.image, showPreview: true})
-      this._onChange()
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: this.props.image.url,
+        componentType: 'image',
+        id: this.props.image.id,
+        name: this.props.image.name
+      }, this.props.image, this.props.handleImage)
     }
   }
 

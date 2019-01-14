@@ -209,7 +209,7 @@ class EditTemplate extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'image') {
-        temp.push({content: (<Image id={payload[i].id} pages={this.props.location.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
+        temp.push({content: (<Image id={payload[i].id} pages={this.props.location.state.pages} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].fileurl} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})

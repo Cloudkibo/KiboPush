@@ -1,5 +1,6 @@
 // import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
@@ -58,5 +59,20 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         console.log(res.description)
       }
     })
+  }
+}
+export function uploadTemplate (dataTosend, data, handleUpload) {
+  console.log('data in uploadTemplate', dataTosend)
+  return (dispatch) => {
+    callApi('broadcasts/uploadTemplate', 'post', data)
+      .then(res => {
+        console.log('response from uploadTemplate', res)
+        data.fileurl = res.payload
+        if (dataTosend.componentType === 'image') {
+          data.image_url = res.payload.url
+        }
+        console.log('fileInfo: ', data)
+        handleUpload(data)
+      })
   }
 }
