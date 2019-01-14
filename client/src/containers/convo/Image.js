@@ -34,6 +34,7 @@ class Image extends React.Component {
   componentDidMount () {
     if (this.props.image && this.props.image !== '') {
       this.setState({imgSrc: this.props.image, showPreview: true})
+      this._onChange()
     }
   }
 
