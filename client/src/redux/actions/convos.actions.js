@@ -64,7 +64,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
 export function uploadTemplate (dataTosend, data, handleUpload) {
   console.log('data in uploadTemplate', dataTosend)
   return (dispatch) => {
-    callApi('broadcasts/uploadTemplate', 'post', data)
+    callApi('broadcasts/uploadTemplate', 'post', dataTosend)
       .then(res => {
         console.log('response from uploadTemplate', res)
         data.fileurl = res.payload
