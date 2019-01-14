@@ -228,8 +228,8 @@ class LiveChat extends React.Component {
         this.props.getSubscriberTags(nextProps.closeSessions[0].subscriber_id._id)
       }
     }
-    if (nextProps.unreadSession && this.props.openSessions.length > 0) {
-      var temp = this.props.openSessions
+    if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
+      var temp = nextProps.openSessions
       for (var z = 0; z < temp.length; z++) {
         if (temp[z]._id === nextProps.unreadSession) {
           temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
