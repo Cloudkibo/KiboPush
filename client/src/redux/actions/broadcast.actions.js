@@ -188,13 +188,16 @@ export function uploadRequest (data) {
   }
 }
 
-export function addButton (data, handleFunction, msg) {
+export function addButton (data, handleFunction, msg, resetButton) {
   console.log('the data is', data)
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
       if (res.status === 'success') {
         console.log('Response: ', res.payload)
         handleFunction(res.payload)
+        if (resetButton) {
+          resetButton()
+        }
       } else {
         console.log(res.payload)
         if (msg) {
@@ -210,11 +213,12 @@ export function addButton (data, handleFunction, msg) {
   }
 }
 
-export function editButton (data, handleFunction) {
+export function editButton (data, handleFunction, handleClose) {
   return (dispatch) => {
     callApi(`broadcasts/editButton`, 'post', data).then(res => {
       if (res.status === 'success') {
         handleFunction(res.payload)
+        handleClose()
       } else {
         console.log(res.description)
       }

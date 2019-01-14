@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { Link } from 'react-router'
 
@@ -62,7 +62,9 @@ class EditButton extends React.Component {
         this.setState({openCreateMessage: true})
       }
     } else {
-      this.setState({sequenceValue: this.props.data.button.url})
+      if (this.props.data.button.type !== 'web_url') {
+        this.setState({sequenceValue: this.props.data.button.url})
+      }
     }
   }
   replyWithMessage () {
@@ -147,8 +149,8 @@ class EditButton extends React.Component {
         newUrl: this.state.url, // User defined link,
         title: this.state.title // User defined label
       }
-      this.props.editButton(data, this.props.onEdit)
-    } else if (this.state.sequenceValue !== '') {
+      this.props.editButton(data, this.props.onEdit, this.handleClose)
+    } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
           id: this.props.index,
@@ -157,7 +159,7 @@ class EditButton extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.editButton(data, this.props.onEdit)
+        this.props.editButton(data, this.props.onEdit, this.handleClose)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           id: this.props.index,
@@ -166,9 +168,9 @@ class EditButton extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.editButton(data, this.props.onEdit)
+        this.props.editButton(data, this.props.onEdit, this.handleClose)
       }
-    } else if (!this.state.webviewurl) {
+    } else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
       }
@@ -181,11 +183,8 @@ class EditButton extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.editButton(data, this.props.onEdit)
+      this.props.editButton(data, this.props.onEdit, this.handleClose)
     }
-    this.setState({
-      openPopover: false
-    })
   }
 
   changeTitle (event) {
