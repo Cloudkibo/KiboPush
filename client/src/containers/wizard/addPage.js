@@ -51,7 +51,15 @@ class AddPage extends React.Component {
     this.msg.error('Please connect atleast one page')
   }
   componentDidMount () {
-    document.title = 'KiboPush | Add Pages'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Add Pages`;
     this.props.updateChecks({wizardSeen: true})
   }
 

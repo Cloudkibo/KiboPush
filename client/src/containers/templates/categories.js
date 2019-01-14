@@ -30,6 +30,18 @@ class Category extends React.Component {
     this.editCategory = this.editCategory.bind(this)
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Categories`;
+  }
+
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})

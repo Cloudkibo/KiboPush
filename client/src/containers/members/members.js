@@ -82,7 +82,15 @@ class Members extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
-    document.title = 'KiboPush | Members'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Members`;
     this.scrollToTop()
     // this.initializeConditionSelect(this.state.conditionSelect.options)
     // this.initializeActiveSelect(this.state.activeSelect.options)
