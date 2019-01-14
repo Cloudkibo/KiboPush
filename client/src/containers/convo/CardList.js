@@ -10,6 +10,7 @@ import Button from './Button'
 import EditButton from './EditButton'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Link } from 'react-router'
 
@@ -38,6 +39,8 @@ class Card extends React.Component {
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.closeWebsite = this.closeWebsite.bind(this)
     this.closeWebview = this.closeWebview.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
+    this.handleWebView = this.handleWebView.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -147,22 +150,57 @@ class Card extends React.Component {
     }
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
-  handleDone () {
-    let defaultAction
-    if (this.state.webviewurl !== '') {
-      defaultAction = {
-        type: 'web_url',
-        url: this.state.webviewurl, // User defined link,
-        messenger_extensions: true,
-        webview_height_ratio: this.state.webviewsize
+  handleWebView (resp) {
+    if (resp.status === 'success') {
+      if (resp.payload) {
+        let defaultAction
+        defaultAction = {
+          type: 'web_url',
+          url: this.state.webviewurl, // User defined link,
+          messenger_extensions: true,
+          webview_height_ratio: this.state.webviewsize
+        }
+        this.setState({
+          defaultAction: defaultAction
+        })
+        this.props.handleCard({id: this.props.id,
+          componentType: 'card',
+          fileurl: this.state.fileurl,
+          image_url: this.state.image_url,
+          fileName: this.state.fileName,
+          type: this.state.type,
+          size: this.state.size,
+          title: this.state.title,
+          description: this.state.subtitle,
+          buttons: this.state.button,
+          default_action: defaultAction
+        })
+        this.setState({
+          openPopover: false
+        })
+        if (this.state.checkbox) {
+          this.props.topElementStyle('LARGE')
+        } else {
+          this.props.topElementStyle('compact')
+        }
+      } else {
+        this.msg.error('Web view url is not whitelisted.')
       }
+    } else {
+      this.msg.error('Unable to verify whitelisted domains.')
     }
-    if (this.state.elementUrl !== '') {
+  }
+  handleDone () {
+    if (this.state.webviewurl !== '') {
+      this.props.checkWhitelistedDomains({domain: this.state.webviewurl}, this.handleWebView)
+    } else if (this.state.elementUrl !== '') {
+      let defaultAction
       defaultAction = {
         type: 'web_url', url: this.state.elementUrl
       }
-    }
-    if (this.state.elementUrl !== '' || this.state.webviewurl !== '') {
+      this.setState({
+        defaultAction: defaultAction
+      })
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -175,14 +213,14 @@ class Card extends React.Component {
         buttons: this.state.button,
         default_action: defaultAction
       })
-    }
-    this.setState({
-      openPopover: false
-    })
-    if (this.state.checkbox) {
-      this.props.topElementStyle('LARGE')
-    } else {
-      this.props.topElementStyle('compact')
+      this.setState({
+        openPopover: false
+      })
+      if (this.state.checkbox) {
+        this.props.topElementStyle('LARGE')
+      } else {
+        this.props.topElementStyle('compact')
+      }
     }
   }
   handleClick (e) {
@@ -194,8 +232,11 @@ class Card extends React.Component {
     }
     this.setState({openPopover: !this.state.openPopover})
   }
-  handleClose (e) {
-    this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false, checkbox: false})
+  handleClose () {
+    this.setState({openPopover: false})
+  }
+  handleRemove (e) {
+    this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false, checkbox: false, defaultAction: ''})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -206,7 +247,7 @@ class Card extends React.Component {
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button,
-      default_action: this.state.defaultAction
+      default_action: ''
     })
     this.setState({
       openPopover: false
@@ -505,7 +546,10 @@ class Card extends React.Component {
               }
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              {(this.state.defaultAction === '')
+              ? <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              : <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove} className='btn pull-left'> Remove </button>
+              }
               <br />
               <br />
             </div>
@@ -600,6 +644,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({uploadImage: uploadImage}, dispatch)
+  return bindActionCreators({uploadImage: uploadImage, checkWhitelistedDomains: checkWhitelistedDomains}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Card)

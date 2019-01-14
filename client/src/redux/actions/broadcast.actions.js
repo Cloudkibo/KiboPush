@@ -261,3 +261,11 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
       })
   }
 }
+export function checkWhitelistedDomains (data, handleFunction) {
+  console.log('the data is', data)
+  return (dispatch) => {
+    callApi(`pages/isWhitelisted`, 'post', data).then(res => {
+      handleFunction(res)
+    })
+  }
+}
