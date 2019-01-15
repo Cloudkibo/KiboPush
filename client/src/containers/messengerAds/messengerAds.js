@@ -287,6 +287,7 @@ function defaultAdMessage () {
   const defaultMessage = { messengerAd: {
     pageId: '',
     jsonAdId: '',
+    title: '',
     jsonAdMessages: [{
       jsonAdMessageId: 1,
       title: 'Opt In Message',

@@ -15,13 +15,15 @@ class CreateMessengerAd extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      previewOptInMessage: []
+      previewOptInMessage: [],
+      adTitle: ''
     }
+    this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)
     this.updatePreview = this.updatePreview.bind(this)
     if (props.location.state) {
-      if (props.location.state.pageId) {
-        props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state.pageId)
+      if (props.location.state._id) {
+        props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state._id)
       }
       if (props.location.state.module && props.location.state.module === 'edit') {
         props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
@@ -32,12 +34,20 @@ class CreateMessengerAd extends React.Component {
     for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
       if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
         this.setState({
-          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent
+          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
+          adTitle: this.props.messengerAd.title
         })
       }
     }
   }
-
+  changeTitle (e) {
+    this.setState({
+      adTitle: e.target.value
+    })
+    if (e.target.value !== '') {
+      this.props.updateCurrentJsonAd(this.props.messengerAd, 'title', e.target.value)
+    }
+  }
   componentDidMount () {
     this.updatePreview()
     const hostname =  window.location.hostname;
@@ -52,11 +62,15 @@ class CreateMessengerAd extends React.Component {
   }
   onSave () {
     let payload = {}
+    if (!this.state.adTitle || this.state.adTitle === '') {
+      this.msg.error('Please enter an Ad Title')
+      return
+    }
     if (this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== '') {
-      payload = {jsonAdId: this.props.messengerAd.jsonAdId, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      payload = {jsonAdId: this.props.messengerAd.jsonAdId, title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
       this.props.editJsonAd(payload, this.msg)
     } else {
-      payload = {pageId: this.props.messengerAd.pageId, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      payload = {pageId: this.props.messengerAd.pageId, title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
       this.props.saveJsonAd(payload, this.msg)
     }
   }
@@ -91,6 +105,17 @@ class CreateMessengerAd extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                  <div className='row' style={{marginBottom: '20px'}}>
+                    <label className='col-1 col-form-label'>
+                      Ad Title
+                    </label>
+                    <input id='title'
+                      type='text'
+                      className='form-control col-5'
+                      value={this.state.adTitle}
+                      onChange={this.changeTitle}
+                    />
+                  </div>
                   <div className='row'>
                     <Tabs />
                     <Preview previewOptInMessage={this.state.previewOptInMessage} />
