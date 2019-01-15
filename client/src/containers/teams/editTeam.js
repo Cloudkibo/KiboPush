@@ -131,9 +131,71 @@ class EditTeam extends React.Component {
     })
   }
   createTeam () {
-    this.props.fetchAgents(this.props.location.state._id)
-    this.props.fetchPages(this.props.location.state._id)
-
+  //   this.props.fetchAgents(this.props.location.state._id)
+  //   this.props.fetchPages(this.props.location.state._id)
+   //
+  //   if (this.state.name === '') {
+  //     this.msg.error('Please write a name')
+  //   } else if (this.state.description === '') {
+  //     this.msg.error('Please write a description')
+  //   } else if (this.state.agentIds.length === 0) {
+  //     this.msg.error('Please select one agent atleast')
+  //   } else if (this.state.pageIds.length === 0) {
+  //     this.msg.error('Please select one page atleast')
+  //   } else {
+  //     console.log('this.state.agentIds', this.state.agentIds)
+  //     console.log('this.state.pageIds', this.state.pageIds)
+  //     console.log('this.props.teamPages', this.props.teamPages)
+  //    // console.log('this.props.members', this.props.members)
+  //    // console.log('this.props.teamAgents', this.props.teamAgents)
+  //     let pageIds = []
+  //     let pageNames = []
+  //     console.log('this.state.agentIds.length', this.state.agentIds.length)
+  //     console.log('this.props.teamAgents.length', this.props.teamAgents.length)
+  //     for (var i = 0; i < this.state.agentIds.length; i++) {
+  //       var flag = true
+  //       for (var j = 0; j < this.props.teamAgents.length; j++) {
+  //         console.log('this.state.agentIds._id', this.state.agentIds._id)
+  //         console.log('this.props.teamAgents[j].agentId._id', this.props.teamAgents[j].agentId._id)
+  //         if (this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
+  //           flag = false
+  //           break
+  //         }
+  //       }
+  //       if (flag) {
+  //         this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
+  //       }
+  //     }
+   //
+  //  //   console.log('this.state.pageIds.length', this.state.pageIds.length)
+  //   //  console.log('this.props.teamPages.length', this.props.teamPages.length)
+   //
+  //     for (var a = 0; a < this.state.pageIds.length; a++) {
+  //      // console.log('j for loop')
+  //       var flag1 = true
+  //       for (var b = 0; b < this.props.teamPages.length; b++) {
+  //        // console.log('i for loop')
+  //         if (this.state.pageIds[a]._id === this.props.teamPages[b].pageId._id) {
+  //           flag1 = false
+  //           break
+  //         }
+  //       }
+  //      // console.log('flag', flag)
+  //       if (flag1) {
+  //      //   console.log('add page')
+  //         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+  //         pageIds.push(this.state.pageIds[j]._id)
+  //         pageNames.push(this.state.pageIds[j].pageName)
+  //       }
+  //     }
+  //     console.log('pageIds', pageIds)
+  //     if (pageIds.length !== 0) {
+  //       console.log('pageIds in if condition')
+  //       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
+  //     }
+  //     this.setState({inCancel: false})
+  //     this.msg.success('Changes saved successfully')
+  //   }
     if (this.state.name === '') {
       this.msg.error('Please write a name')
     } else if (this.state.description === '') {
@@ -143,56 +205,17 @@ class EditTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
-      console.log('this.state.agentIds', this.state.agentIds)
-      console.log('this.state.pageIds', this.state.pageIds)
-      console.log('this.props.teamPages', this.props.teamPages)
-     // console.log('this.props.members', this.props.members)
-     // console.log('this.props.teamAgents', this.props.teamAgents)
       let pageIds = []
       let pageNames = []
-      console.log('this.state.agentIds.length', this.state.agentIds.length)
-      console.log('this.props.teamAgents.length', this.props.teamAgents.length)
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        var flag = true
-        for (var j = 0; j < this.props.teamAgents.length; j++) {
-          console.log('this.state.agentIds._id', this.state.agentIds._id)
-          console.log('this.props.teamAgents[j].agentId._id', this.props.teamAgents[j].agentId._id)
-          if (this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
-            flag = false
-            break
-          }
-        }
-        if (flag) {
-          this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
-        }
+        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
       }
-
-   //   console.log('this.state.pageIds.length', this.state.pageIds.length)
-    //  console.log('this.props.teamPages.length', this.props.teamPages.length)
-
-      for (var a = 0; a < this.state.pageIds.length; a++) {
-       // console.log('j for loop')
-        var flag1 = true
-        for (var b = 0; b < this.props.teamPages.length; b++) {
-         // console.log('i for loop')
-          if (this.state.pageIds[a]._id === this.props.teamPages[b].pageId._id) {
-            flag1 = false
-            break
-          }
-        }
-       // console.log('flag', flag)
-        if (flag1) {
-       //   console.log('add page')
-          this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
-          pageIds.push(this.state.pageIds[j]._id)
-          pageNames.push(this.state.pageIds[j].pageName)
-        }
+      for (var j = 0; j < this.state.pageIds.length; j++) {
+        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+        pageIds.push(this.state.pageIds[j]._id)
+        pageNames.push(this.state.pageIds[j].pageName)
       }
-      console.log('pageIds', pageIds)
-      if (pageIds.length !== 0) {
-        console.log('pageIds in if condition')
-        this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
-      }
+      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
