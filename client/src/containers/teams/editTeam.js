@@ -88,7 +88,7 @@ class EditTeam extends React.Component {
     }
     document.title = `${title} | Edit Team`
   }
-  unique = (value, index, self) => {
+  unique (value, index, self) {
     return self.indexOf(value) === index
   }
 
