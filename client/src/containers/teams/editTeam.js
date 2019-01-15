@@ -88,8 +88,13 @@ class EditTeam extends React.Component {
     }
     document.title = `${title} | Edit Team`
   }
-  unique (value, index, self) {
-    return self.indexOf(value) === index
+  exists (id, array) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === id) {
+        return true
+      }
+    }
+    return false
   }
 
   componentWillReceiveProps (nextProps) {
@@ -101,8 +106,10 @@ class EditTeam extends React.Component {
         console.log('nextProps.teamAgents[i].teamId_id', nextProps.teamAgents[i].teamId)
         console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
-          console.log('Push Agent')
-          agents.push(nextProps.teamAgents[i].agentId)
+          if (!this.exists(nextProps.teamAgents[i].agentId._id)) {
+            console.log('Push Agent')
+            agents.push(nextProps.teamAgents[i].agentId)
+          }
           console.log('agents', nextProps.teamAgents[i].agentId)
         }
       }
@@ -110,8 +117,10 @@ class EditTeam extends React.Component {
         console.log('nextProps.teamPages[a].teamId_id', nextProps.teamPages[a].teamId_id)
         console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamPages[a].teamId._id === this.props.location.state._id) {
-          console.log('Push Page')
-          pages.push(nextProps.teamPages[a].pageId)
+          if (!this.exists(nextProps.teamPages[a].pageId._id)) {
+            console.log('Push Page')
+            pages.push(nextProps.teamPages[a].pageId)
+          }
           console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
