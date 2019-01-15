@@ -8,7 +8,6 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createJsonPayload } from '../../redux/actions/messengerAds.actions'
-import JSONPretty from 'react-json-pretty'
 
 class SetUp extends React.Component {
   constructor (props) {
