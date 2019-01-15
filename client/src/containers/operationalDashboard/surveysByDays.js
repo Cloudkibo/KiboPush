@@ -35,6 +35,20 @@ class SurveysInfo extends React.Component {
     this.onDaysChange = this.onDaysChange.bind(this)
     this.toggle = this.toggle.bind(this)
   }
+
+  componentDidMount () {
+    this.scrollToTop();
+
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Survey By Days`;  
+  }
   toggle () {
     this.props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.setState({showSurveys: !this.state.showSurveys})

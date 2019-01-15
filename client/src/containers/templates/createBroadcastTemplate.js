@@ -58,7 +58,15 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Create Broadcast Template'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Create Broadcast Template`;
     console.log('this.props.template', this.props.template)
     if (this.props.template) {
       var temp = this.state.list

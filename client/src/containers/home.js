@@ -5,7 +5,7 @@ import Dashboard from './dashboard/dashboard'
 
 class Home extends Component {
   componentDidMount () {
-
+    
   }
 
   render () {

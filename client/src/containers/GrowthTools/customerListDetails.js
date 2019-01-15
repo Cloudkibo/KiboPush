@@ -15,7 +15,7 @@ import NonSubscribersList from './nonSubscribersList'
 var json2csv = require('json2csv')
 
 class CustomerListDetails extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       subscribersData: [],
@@ -33,14 +33,26 @@ class CustomerListDetails extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidMount() {
+    const hostname = window.location.hostname;
+    let title = '';
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Customer List Details`;
+  }
+
+  componentWillReceiveProps(nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
       this.setState({ totalLength: nextProps.listDetail.length })
     }
   }
 
-  displayData (n, subscribers) {
+  displayData(n, subscribers) {
     let offset = n * 4
     let data = []
     let limit
@@ -54,9 +66,9 @@ class CustomerListDetails extends React.Component {
       data[index] = subscribers[i]
       index++
     }
-    this.setState({subscribersData: data, subscribersDataAll: subscribers})
+    this.setState({ subscribersData: data, subscribersDataAll: subscribers })
   }
-  prepareExportData () {
+  prepareExportData() {
     var data = []
     var subscriberObj = {}
     for (var i = 0; i < this.state.subscribersData.length; i++) {
@@ -75,7 +87,7 @@ class CustomerListDetails extends React.Component {
     }
     return data
   }
-  exportRecordsSubcribers () {
+  exportRecordsSubcribers() {
     var data = this.prepareExportData()
     var info = data
     var keys = []
@@ -92,11 +104,11 @@ class CustomerListDetails extends React.Component {
       }
     })
   }
-  handlePageClick (data) {
+  handlePageClick(data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
-  searchSubscriber (event) {
+  searchSubscriber(event) {
     var filtered = []
     for (let i = 0; i < this.props.listDetail.length; i++) {
       var fullName = this.props.listDetail[i].firstName + ' ' + this.props.listDetail[i].lastName
@@ -108,7 +120,7 @@ class CustomerListDetails extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
 
-  render () {
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -132,7 +144,7 @@ class CustomerListDetails extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  { this.props.listDetail && this.props.listDetail.length > 0
+                  {this.props.listDetail && this.props.listDetail.length > 0
                     ? <div>
                       <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                         <div className='row align-items-center'>
@@ -159,98 +171,98 @@ class CustomerListDetails extends React.Component {
                           }}>
                           <thead className='m-datatable__head'>
                             <tr className='m-datatable__row'
-                              style={{height: '53px'}}>
+                              style={{ height: '53px' }}>
                               <th data-field='Profile Picture'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Profile Picture</span>
                               </th>
                               <th data-field='Name'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Name</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Name</span>
                               </th>
                               <th data-field='Page'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Page</span>
                               </th>
                               <th data-field='PhoneNumber'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>PhoneNumber</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>PhoneNumber</span>
                               </th>
                               <th data-field='Email'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Email</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Email</span>
                               </th>
                               <th data-field='Source'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Source</span>
                               </th>
                               <th data-field='Locale'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Locale</span>
                               </th>
                               <th data-field='Gender'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px', overflow: 'inherit'}}>Gender</span>
+                                <span style={{ width: '100px', overflow: 'inherit' }}>Gender</span>
                               </th>
                             </tr>
                           </thead>
 
-                          <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                          <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
                             {
-                          this.state.subscribersData.map((subscriber, i) => (
-                            <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                              <td data-field='Profile Picture'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>
-                                  <img alt='pic'
-                                    src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                    className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
-                                />
-                                </span>
-                              </td>
+                              this.state.subscribersData.map((subscriber, i) => (
+                                <tr data-row={i}
+                                  className='m-datatable__row m-datatable__row--even'
+                                  style={{ height: '55px' }} key={i}>
+                                  <td data-field='Profile Picture'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>
+                                      <img alt='pic'
+                                        src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                        className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                      />
+                                    </span>
+                                  </td>
 
-                              <td data-field='Name'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>{subscriber.firstName} {subscriber.lastName}</span>
-                              </td>
+                                  <td data-field='Name'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>{subscriber.firstName} {subscriber.lastName}</span>
+                                  </td>
 
-                              <td data-field='Page'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.pageId.pageName}
-                                </span>
-                              </td>
-                              <td data-field='phoneNumber'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.phoneNumber}
-                                </span>
-                              </td>
-                              <td data-field='email'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.email}
-                                </span>
-                              </td>
-                              <td data-field='source'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
-                                </span>
-                              </td>
-                              <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
-                              <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
-                            </tr>
-                          ))
-                        }
+                                  <td data-field='Page'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>
+                                      {subscriber.pageId.pageName}
+                                    </span>
+                                  </td>
+                                  <td data-field='phoneNumber'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>
+                                      {subscriber.phoneNumber}
+                                    </span>
+                                  </td>
+                                  <td data-field='email'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>
+                                      {subscriber.email}
+                                    </span>
+                                  </td>
+                                  <td data-field='source'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{ width: '100px', overflow: 'inherit' }}>
+                                      {subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
+                                    </span>
+                                  </td>
+                                  <td data-field='Locale' className='m-datatable__cell'><span style={{ width: '100px', color: 'white' }} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                                  <td data-field='Gender' className='m-datatable__cell'><span style={{ width: '100px', color: 'white' }} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
+                                </tr>
+                              ))
+                            }
                           </tbody>
                         </table>
                         <ReactPaginate previousLabel={'previous'}
@@ -277,10 +289,10 @@ class CustomerListDetails extends React.Component {
                         </button>
                       </div>
                     </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
+                    : <div className='table-responsive'>
+                      <p> No data to display </p>
+                    </div>
+                  }
                 </div>
               </div>
               <NonSubscribersList />
@@ -296,14 +308,14 @@ class CustomerListDetails extends React.Component {
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
     listDetail: (state.listsInfo.listDetails),
     currentList: (state.listsInfo.currentList)
   }
 }
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     loadListDetails: loadListDetails

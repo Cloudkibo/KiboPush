@@ -50,8 +50,16 @@ class Teams extends React.Component {
   }
 
   componentDidMount () {
-    this.scrollToTop()
-    document.title = 'KiboPush | Broadcast'
+    this.scrollToTop();
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Teams`;
   }
 
   displayData (n, teams) {

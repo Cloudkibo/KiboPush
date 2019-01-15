@@ -33,6 +33,17 @@ class Features extends React.Component {
     this.handleCheckboxClick = this.handleCheckboxClick.bind(this)
     this.updatePermissions = this.updatePermissions.bind(this)
   }
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Features`;
+  }
   handleCheckboxClick (e) {
     console.log('in handleCheckboxClick')
     var permissionCheckboxes = this.state.permissionCheckboxes

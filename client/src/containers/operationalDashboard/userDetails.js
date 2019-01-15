@@ -41,6 +41,20 @@ class UserDetails extends React.Component {
     this.closeDialogLiveChat = this.closeDialogLiveChat.bind(this)
   }
 
+  componentDidMount () {
+    this.scrollToTop();
+
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | User Details`;  
+  }
+
   search (event, name) {
     if (event.target.value !== '') {
       this.setState({searchValue: event.target.value.toLowerCase()})

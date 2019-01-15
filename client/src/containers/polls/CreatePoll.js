@@ -73,7 +73,15 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModalGuideLines: false})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Create Poll'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Create Poll`;
   }
 
   showDialog () {

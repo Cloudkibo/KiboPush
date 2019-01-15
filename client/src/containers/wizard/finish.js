@@ -92,7 +92,15 @@ class Finish extends React.Component {
     }
   }
   componentDidMount () {
-    document.title = 'KiboPush | Getting Started'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Wizard`;
     var addScript = document.createElement('script')
     addScript.setAttribute('type', 'text/javascript')
     addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')

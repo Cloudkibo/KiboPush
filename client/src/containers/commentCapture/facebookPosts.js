@@ -45,7 +45,15 @@ class FacebookPosts extends React.Component {
   }
   componentDidMount () {
     $('#sidebarDiv').removeClass('hideSideBar')
-    document.title = 'KiboPush | Comment Capture'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Comment Capture`;
   }
   getPostText (payload) {
     var text = ''

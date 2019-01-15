@@ -32,6 +32,18 @@ class ListDetails extends React.Component {
     }
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | list Details`;
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)

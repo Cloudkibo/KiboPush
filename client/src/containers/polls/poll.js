@@ -193,6 +193,15 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Polls`;
   }
 
   gotoView (poll) {

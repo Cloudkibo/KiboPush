@@ -40,6 +40,19 @@ class LandingPage extends React.Component {
     this.changePage = this.changePage.bind(this)
     this.updateAllowedPages = this.updateAllowedPages.bind(this)
   }
+
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Landing Pages`;
+  }
+
   changePage (e) {
     this.setState({pageSelected: e.target.value})
   }
