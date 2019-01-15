@@ -7,7 +7,8 @@ import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {updateData} from '../../redux/actions/messengerRefURL.actions'
+import { createJsonPayload } from '../../redux/actions/messengerAds.actions'
+import JSONPretty from 'react-json-pretty'
 
 class SetUp extends React.Component {
   constructor (props) {
@@ -17,13 +18,170 @@ class SetUp extends React.Component {
       copied: false
     }
   }
-
+  getPayload () {
+    var jsonAd = {}
+    for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+      if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
+        jsonAd = this.props.messengerAd.jsonAdMessages[i]
+      }
+    }
+    let message = '{'
+    for (var j = 0; j < jsonAd.messageContent.length; j++) {
+      if (j !== jsonAd.messageContent.length - 1) {
+        message = message + `"message":` + JSON.stringify(this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)) + ','
+      } else {
+        message = message + `"message":` + JSON.stringify(this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)) + '}'
+      }
+    }
+    return message
+  }
+  prepareJsonPayload (optinMessage, jsonAdId) {
+    let payload = {}
+    let body = optinMessage
+    let text = body.text
+    var buttonPayload = []
+    if (body.buttons && body.buttons.length > 0) {
+      for (var i = 0; i < body.buttons.length; i++) {
+        var button = body.buttons[i]
+        if (button.payload && button.type === 'postback') {
+          button.payload = 'JSONAD_' + jsonAdId
+        }
+        buttonPayload.push(button)
+      }
+    } else {
+      buttonPayload = body.buttons
+    }
+    if (body.componentType === 'text' && !body.buttons) {
+      if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+        text = text.replace(
+          '{{user_full_name}}', fname + ' ' + lname)
+      }
+      if (body.text.includes('{{user_first_name}}')) {
+        text = text.replace(
+          '{{user_first_name}}', fname)
+      }
+      if (body.text.includes('{{user_last_name}}')) {
+        text = text.replace(
+          '{{user_last_name}}', lname)
+      }
+      payload = {
+        'text': text,
+        'metadata': 'This is a meta data'
+      }
+    } else if (body.componentType === 'text' && body.buttons) {
+      if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+        text = text.replace(
+          '{{user_full_name}}', fname + ' ' + lname)
+      }
+      if (body.text.includes('{{user_first_name}}')) {
+        text = text.replace(
+          '{{user_first_name}}', fname)
+      }
+      if (body.text.includes('{{user_last_name}}')) {
+        text = text.replace(
+          '{{user_last_name}}', lname)
+      }
+      payload = {
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'button',
+            'text': text,
+            'buttons': buttonPayload
+          }
+        }
+      }
+    } else if (['image', 'audio', 'file', 'video'].indexOf(
+      body.componentType) > -1) {
+      payload = {
+        'attachment': {
+          'type': body.componentType,
+          'payload': {
+            'attachment_id': body.fileurl.attachment_id
+          }
+        }
+      }
+    } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+      body.componentType) > -1) {
+      payload = {
+        'attachment': {
+          'type': 'image',
+          'payload': {
+            'url': body.fileurl
+          }
+        }
+      }
+    } else if (body.componentType === 'card') {
+      payload = {
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': body.title,
+                'image_url': body.image_url,
+                'subtitle': body.description,
+                'buttons': buttonPayload
+              }
+            ]
+          }
+        }
+      }
+    } else if (body.componentType === 'gallery') {
+      payload = {
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': body.cards
+          }
+        }
+      }
+    } else if (body.componentType === 'list') {
+      payload = {
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'list',
+            'top_element_style': body.topElementStyle,
+            'elements': body.listItems,
+            'buttons': buttonPayload
+          }
+        }
+      }
+    } else if (body.componentType === 'media') {
+      payload = {
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'media',
+            'elements': [
+              {
+                'attachment_id': body.fileurl.attachment_id,
+                'media_type': body.mediaType,
+                'buttons': buttonPayload
+              }
+            ]
+          }
+        }
+      }
+    }
+    return payload
+  }
+  componentDidMount () {
+    let payload = this.getPayload()
+    this.setState({
+      jsonCode: payload
+    })
+  }
   render () {
     return (
       <div>
         <div className='form-group m-form__group'>
           <h3>Generated JSON Code</h3>
           <p>The json code depends on the first items in your Opt-In message. Every time you change it, you will also need to copy the new JSON code.</p>
+
           <textarea
             className='form-control m-input m-input--solid'
             id='exampleTextarea' rows='3'
@@ -67,13 +225,13 @@ class SetUp extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    messengerRefURL: (state.messengerRefURLInfo.messengerRefURL)
+    messengerAd: state.messengerAdsInfo.messengerAd
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateData: updateData
+    createJsonPayload: createJsonPayload
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SetUp)
