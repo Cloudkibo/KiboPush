@@ -133,7 +133,7 @@ class Card extends React.Component {
           openPopover: false
         })
       } else {
-        this.msg.error('Web view url is not whitelisted.')
+        this.msg.error('The given domain is not whitelisted. Please add it to whitelisted domains.')
       }
     } else {
       this.msg.error('Unable to verify whitelisted domains.')

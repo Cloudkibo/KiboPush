@@ -13,6 +13,7 @@ import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -184,7 +185,7 @@ class Card extends React.Component {
           this.props.topElementStyle('compact')
         }
       } else {
-        this.msg.error('Web view url is not whitelisted.')
+        this.msg.error('The given domain is not whitelisted. Please add it to whitelisted domains.')
       }
     } else {
       this.msg.error('Unable to verify whitelisted domains.')
@@ -487,8 +488,16 @@ class Card extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(https://cdn.cloudkibo.com/public/icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
