@@ -79,15 +79,14 @@ class EditTeam extends React.Component {
       this.props.fetchPages(this.props.location.state._id)
       this.props.fetchAgents(this.props.location.state._id)
     }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-
-    document.title = `${title} | Edit Team`;
+    document.title = `${title} | Edit Team`
   }
   componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
@@ -112,7 +111,7 @@ class EditTeam extends React.Component {
           console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-      
+
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }
@@ -144,10 +143,9 @@ class EditTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
-     // console.log('this.state.agentIds', this.state.agentIds)
-     // console.log('this.state.pageIds', this.state.pageIds)
-     // console.log('this.props.teamPages', this.props.teamPages)
-      
+      console.log('this.state.agentIds', this.state.agentIds)
+      console.log('this.state.pageIds', this.state.pageIds)
+      console.log('this.props.teamPages', this.props.teamPages)
      // console.log('this.props.members', this.props.members)
      // console.log('this.props.teamAgents', this.props.teamAgents)
       let pageIds = []
@@ -159,48 +157,45 @@ class EditTeam extends React.Component {
         for (var j = 0; j < this.props.teamAgents.length; j++) {
           console.log('this.state.agentIds._id', this.state.agentIds._id)
           console.log('this.props.teamAgents[j].agentId._id', this.props.teamAgents[j].agentId._id)
-           if(this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
-               flag=false
-               break
-           }
+          if (this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
+            flag = false
+            break
+          }
         }
         if (flag) {
           this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
-
         }
-  }
+      }
 
    //   console.log('this.state.pageIds.length', this.state.pageIds.length)
     //  console.log('this.props.teamPages.length', this.props.teamPages.length)
-      
-      for (var j = 0; j < this.state.pageIds.length; j++) {
+
+      for (var a = 0; a < this.state.pageIds.length; a++) {
        // console.log('j for loop')
-        var flag = true
-        for (var i = 0; i < this.props.teamPages.length; i++) {
+        var flag1 = true
+        for (var b = 0; b < this.props.teamPages.length; b++) {
          // console.log('i for loop')
-          if(this.state.pageIds[j]._id === this.props.teamPages[i].pageId._id) {
-            flag=false
+          if (this.state.pageIds[a]._id === this.props.teamPages[b].pageId._id) {
+            flag1 = false
             break
+          }
+        }
+       // console.log('flag', flag)
+        if (flag1) {
+       //   console.log('add page')
+          this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+          pageIds.push(this.state.pageIds[j]._id)
+          pageNames.push(this.state.pageIds[j].pageName)
         }
       }
-       // console.log('flag', flag)
-        if(flag) {
-       //   console.log('add page')
-        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
-        pageIds.push(this.state.pageIds[j]._id)
-        pageNames.push(this.state.pageIds[j].pageName)
-      }
-    
-    }
-    console.log('pageIds', pageIds)
-       if(pageIds.length !== 0) {
-         console.log("pageIds in if condition")
+      console.log('pageIds', pageIds)
+      if (pageIds.length !== 0) {
+        console.log('pageIds in if condition')
         this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
-       }
+      }
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
-  
   }
   updateDescription (e) {
     this.setState({description: e.target.value})
@@ -250,11 +245,9 @@ class EditTeam extends React.Component {
     this.setState({agentIds: temp})
     this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
     this.props.fetchAgents(this.props.location.state._id)
-
   }
   changePage (page) {
-   console.log('this.props.teamAgents.length', this.props.teamAgents.length)
-
+    console.log('this.props.teamAgents.length', this.props.teamAgents.length)
     var temp = this.state.pageIds
     if (page === 'All') {
       for (var i = 0; i < this.props.pages.length; i++) {
@@ -275,10 +268,8 @@ class EditTeam extends React.Component {
     }
     this.setState({pageIds: temp})
     console.log('this.props.teamAgents.length', this.props.teamAgents.length)
-
   }
   removePage (page) {
-
     var removed = this.state.removedPages
     removed.push(page)
     this.setState({removedPages: removed})
