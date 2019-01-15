@@ -115,6 +115,7 @@ export function fetchPages (id) {
   return (dispatch) => {
     callApi(`teams/fetchPages/${id}`)
       .then(res => {
+        console.log('response from fetchPages', res)
         if (res.status === 'success') {
           console.log('fetchPages', res.payload)
           dispatch(showPagesList(res.payload))
