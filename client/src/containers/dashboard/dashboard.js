@@ -388,12 +388,20 @@ class Dashboard extends React.Component {
       // let addScript1 = document.createElement('script')
       // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       // document.body.appendChild(addScript1)
+
     }
     if (this.props.currentPage) {
       console.log('updating sentVsSeen currentPage')
       this.props.sentVsSeen(this.props.currentPage.pageId)
     }
-    document.title = 'KiboPush | Dashboard'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+    document.title = `${title} | Dashboard`;
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',

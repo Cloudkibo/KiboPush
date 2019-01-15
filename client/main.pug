@@ -5,8 +5,13 @@ doctype html
 html(lang="en")
   head
     meta(charset="utf-8")
-    title
-      | KiboPush | Sign In
+    if hostname.includes('kiboengage.cloudkibo.com')
+      title
+        | KiboEngage | Sign In
+    else if hostname.includes('kibochat.cloudkibo.com')
+      title
+        | KiboChat | Sign In
+
     meta(name="description" content="Latest updates and statistic charts")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
