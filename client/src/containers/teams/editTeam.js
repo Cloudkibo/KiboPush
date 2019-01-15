@@ -115,8 +115,8 @@ class EditTeam extends React.Component {
           console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-      console.log('pageIds after', pageIds)
-      console.log('agentIds after', agentIds)
+      console.log('pageIds after', pages)
+      console.log('agentIds after', agents)
       let uniquePageIds = pages.filter(this.unique)
       let uniqueAgentIds = agents.filter(this.unique)
       console.log('uniquePageIds', uniquePageIds)
