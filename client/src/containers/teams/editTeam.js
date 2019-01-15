@@ -126,10 +126,6 @@ class EditTeam extends React.Component {
       }
       console.log('pageIds after', pages)
       console.log('agentIds after', agents)
-      let uniquePageIds = pages.filter(this.unique)
-      let uniqueAgentIds = agents.filter(this.unique)
-      console.log('uniquePageIds', uniquePageIds)
-      console.log('uniqueAgentIds', uniqueAgentIds)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }
