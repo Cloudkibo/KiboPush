@@ -174,7 +174,15 @@ class CreateConvo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Create Broadcast'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Create Broadcast`;
     this.scrollToTop()
     this.initTab()
 

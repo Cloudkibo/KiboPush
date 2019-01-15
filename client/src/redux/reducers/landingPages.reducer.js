@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   landingPage: {
+    _id: '',
     initialState: {
       title: 'Here is your widget headline. Click here to change it!',
       description: 'We also put default text here. Make sure to turn it into a unique and valuable message.',

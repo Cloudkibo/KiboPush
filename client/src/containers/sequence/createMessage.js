@@ -195,7 +195,15 @@ class CreateMessage extends React.Component {
     }
   }
   componentDidMount () {
-    document.title = 'KiboPush | Edit Message'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Create Sequence Message`;
     this.scrollToTop()
     this.setState({convoTitle: this.props.location.state.title})
     if (this.props.location.state) {

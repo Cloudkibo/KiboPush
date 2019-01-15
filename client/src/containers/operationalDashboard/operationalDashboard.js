@@ -113,7 +113,15 @@ class OperationalDashboard extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Operational Dashboard'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Operational Dashboard`;
     this.scrollToTop()
   }
   handleClick (e) {

@@ -40,6 +40,19 @@ class LandingPage extends React.Component {
     this.changePage = this.changePage.bind(this)
     this.updateAllowedPages = this.updateAllowedPages.bind(this)
   }
+
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Landing Pages`;
+  }
+
   changePage (e) {
     this.setState({pageSelected: e.target.value})
   }
@@ -253,7 +266,7 @@ class LandingPage extends React.Component {
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{landingPage.pageId.pageName}</span></td>
                             <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{'url or title'}</span></td>
+                              <span style={{width: '150px'}}>{`https://kiboengage.cloudkibo.com/landingPage/${landingPage._id}`}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>

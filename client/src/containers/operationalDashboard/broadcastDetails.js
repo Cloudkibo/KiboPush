@@ -24,6 +24,15 @@ class ViewBroadcastTemplate extends React.Component {
       this.displayData(0, this.props.location.state.data.subscriber)
       this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
     }
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Broadcast Details`;
   }
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})

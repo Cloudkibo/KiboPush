@@ -64,6 +64,19 @@ class Plans extends React.Component {
     this.handleToggle = this.handleToggle.bind(this)
     this.makeDefault = this.makeDefault.bind(this)
   }
+
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Plans`;
+  }
+
   makeDefault (value) {
     var id = this.state.targetValue.split('-')
     this.setState({openPopover: false})

@@ -384,7 +384,16 @@ class Subscriber extends React.Component {
     this.setState({ removeTag: value })
   }
   componentDidMount () {
-    document.title = 'KiboPush | Subscribers'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Subscribers`;
+    
     if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
       this.setState({filterPage: pageId})

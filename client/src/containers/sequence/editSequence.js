@@ -442,7 +442,15 @@ class CreateSequence extends React.Component {
     } else if (this.props.location.state && this.props.location.state.module === 'view') {
       this.setState({sequenceId: this.props.location.state._id})
     }
-    document.title = 'KiboPush | Sequence Messaging'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Edit Sequence`;
   }
   updateName (e) {
     this.setState({name: e.target.value, error: false})

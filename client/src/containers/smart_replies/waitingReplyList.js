@@ -41,6 +41,18 @@ class WaitingReplyList extends React.Component {
     props.allLocales()
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Waiting Reply List`;
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.waitingReplyList) {
       console.log('waiting reply list ' + JSON.stringify(nextProps.waitingReplyList))
