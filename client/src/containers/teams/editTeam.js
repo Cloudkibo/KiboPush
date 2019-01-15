@@ -88,6 +88,10 @@ class EditTeam extends React.Component {
     }
     document.title = `${title} | Edit Team`
   }
+  unique = (value, index, self) => {
+    return self.indexOf(value) === index
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
     if (nextProps.teamAgents && nextProps.teamAgents.length > 0 && nextProps.teamPages && nextProps.teamPages.length > 0) {
@@ -111,7 +115,12 @@ class EditTeam extends React.Component {
           console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-
+      console.log('pageIds after', pageIds)
+      console.log('agentIds after', agentIds)
+      let uniquePageIds = pages.filter(this.unique)
+      let uniqueAgentIds = agents.filter(this.unique)
+      console.log('uniquePageIds', uniquePageIds)
+      console.log('uniqueAgentIds', uniqueAgentIds)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }
