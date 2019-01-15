@@ -67,6 +67,7 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
+  console.log('socket called', data)
   if (data.action === 'new_chat') {
     console.log('new message received from customer')
     store.dispatch(socketUpdate(data.payload))
@@ -87,15 +88,14 @@ socket.on('message', (data) => {
   } else if (data.action === 'poll_send') {
     console.log('poll send function called')
     store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
-    //store.dispatch(sentVsSeen())
+    // store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_send') {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
-    //store.dispatch(sentVsSeen())
-  }
-  else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
+    // store.dispatch(sentVsSeen())
+  } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadSubscribersList())
