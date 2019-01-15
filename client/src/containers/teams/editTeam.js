@@ -89,6 +89,8 @@ class EditTeam extends React.Component {
     document.title = `${title} | Edit Team`
   }
   exists (id, array) {
+    console.log('array', array)
+    console.log('id', id)
     for (let i = 0; i < array.length; i++) {
       if (array[i]._id === id) {
         return true
@@ -106,7 +108,7 @@ class EditTeam extends React.Component {
         console.log('nextProps.teamAgents[i].teamId_id', nextProps.teamAgents[i].teamId)
         console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
-          if (!this.exists(nextProps.teamAgents[i].agentId._id)) {
+          if (!this.exists(nextProps.teamAgents[i].agentId._id, agents)) {
             console.log('Push Agent')
             agents.push(nextProps.teamAgents[i].agentId)
           }
@@ -117,7 +119,7 @@ class EditTeam extends React.Component {
         console.log('nextProps.teamPages[a].teamId_id', nextProps.teamPages[a].teamId_id)
         console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamPages[a].teamId._id === this.props.location.state._id) {
-          if (!this.exists(nextProps.teamPages[a].pageId._id)) {
+          if (!this.exists(nextProps.teamPages[a].pageId._id, pages)) {
             console.log('Push Page')
             pages.push(nextProps.teamPages[a].pageId)
           }
