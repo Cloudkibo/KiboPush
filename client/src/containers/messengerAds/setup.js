@@ -24,15 +24,12 @@ class SetUp extends React.Component {
         jsonAd = this.props.messengerAd.jsonAdMessages[i]
       }
     }
-    let message = '{'
+    let jsonObject = []
     for (var j = 0; j < jsonAd.messageContent.length; j++) {
-      if (j !== jsonAd.messageContent.length - 1) {
-        message = message + `"message":` + JSON.stringify(this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)) + ','
-      } else {
-        message = message + `"message":` + JSON.stringify(this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)) + '}'
-      }
+      let messageJson = this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)
+      jsonObject.push({message: messageJson})
     }
-    return message
+    return JSON.stringify(jsonObject, null, 4)
   }
   prepareJsonPayload (optinMessage, jsonAdId) {
     let payload = {}
@@ -185,7 +182,7 @@ class SetUp extends React.Component {
             className='form-control m-input m-input--solid'
             id='exampleTextarea' rows='3'
             placeholder='JSON code'
-            style={{minHeight: '200px', resize: 'none', maxLength: '160'}}
+            style={{minHeight: '600px', resize: 'none', maxLength: '160'}}
             value={this.state.jsonCode}
             readOnly />
         </div>
