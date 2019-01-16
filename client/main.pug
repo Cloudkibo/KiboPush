@@ -5,10 +5,10 @@ doctype html
 html(lang="en")
   head
     meta(charset="utf-8")
-    if hostname.includes('kiboengage.cloudkibo.com')
+    if window.location.hostname.includes('kiboengage.cloudkibo.com')
       title
         | KiboEngage | Sign In
-    else if hostname.includes('kibochat.cloudkibo.com')
+    else if window.location.hostname.includes('kibochat.cloudkibo.com')
       title
         | KiboChat | Sign In
 
