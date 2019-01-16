@@ -27,7 +27,7 @@ class EditButton extends React.Component {
       shareButton: false,
       openWebView: this.props.data.button.messenger_extensions,
       webviewurl: this.props.data.button.url,
-      webviewsize: this.props.data.button.webviewsize,
+      webviewsize: this.props.data.button.webview_height_ratio,
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false
     }
