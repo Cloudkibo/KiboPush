@@ -21,6 +21,13 @@ export function setDefaultAdMessage (data) {
     data
   }
 }
+
+export function showJSONCode (data) {
+  return {
+    type: ActionTypes.SHOW_JSON_CODE,
+    data
+  }
+}
 export function updateCurrentJsonAd (messengerAd, updateKey, updateValue, edit) {
   return (dispatch) => {
     console.log('updateKey', updateKey)
@@ -119,4 +126,141 @@ export function editJsonAd (data, msg) {
         }
       })
   }
+}
+export function createJsonPayload (obj) {
+  return (dispatch) => {
+    var data = JSON.parse(obj)
+    var jsonAd = {}
+    for (var i = 0; i < data.length; i++) {
+      if (!data[i].jsonAdMessageParentId) {
+        jsonAd = data[i]
+        break
+      }
+    }
+    let jsonObject = []
+    for (var j = 0; j < jsonAd.messageContent.length; j++) {
+      let messageJson = prepareJsonPayload(data, jsonAd.messageContent[j])
+      jsonObject.push({message: messageJson})
+    }
+    dispatch(showJSONCode(JSON.stringify(jsonObject, null, 4)))
+  }
+}
+
+const prepareJsonPayload = (data, optinMessage) => {
+  let payload = {}
+  let body = optinMessage
+  let text = body.text
+  var buttonPayload = []
+  var button = {}
+  if (body.buttons && body.buttons.length > 0) {
+    for (var i = 0; i < body.buttons.length; i++) {
+      button = body.buttons[i]
+      var jsonAdMessageId
+      if (button.payload && button.type === 'postback') {
+        for (var j = 0; j < data.length; j++) {
+          if (button.payload === data[j].jsonAdMessageId) {
+            jsonAdMessageId = data[j]._id
+            break
+          }
+        }
+        button.payload = 'JSONAD-' + jsonAdMessageId
+      }
+      buttonPayload.push(button)
+    }
+  } else {
+    buttonPayload = body.buttons
+  }
+  if (body.componentType === 'text' && !body.buttons) {
+    payload = {
+      'text': text,
+      'metadata': 'This is a meta data'
+    }
+  } else if (body.componentType === 'text' && body.buttons) {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'button',
+          'text': text,
+          'buttons': buttonPayload
+        }
+      }
+    }
+  } else if (['image', 'audio', 'file', 'video'].indexOf(
+    body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': body.componentType,
+        'payload': {
+          'attachment_id': body.fileurl.attachment_id
+        }
+      }
+    }
+  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+    body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': 'image',
+        'payload': {
+          'url': body.fileurl
+        }
+      }
+    }
+  } else if (body.componentType === 'card') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': [
+            {
+              'title': body.title,
+              'image_url': body.image_url,
+              'subtitle': body.description,
+              'buttons': buttonPayload
+            }
+          ]
+        }
+      }
+    }
+  } else if (body.componentType === 'gallery') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': body.cards
+        }
+      }
+    }
+  } else if (body.componentType === 'list') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'list',
+          'top_element_style': body.topElementStyle,
+          'elements': body.listItems,
+          'buttons': buttonPayload
+        }
+      }
+    }
+  } else if (body.componentType === 'media') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'media',
+          'elements': [
+            {
+              'attachment_id': body.fileurl.attachment_id,
+              'media_type': body.mediaType,
+              'buttons': buttonPayload
+            }
+          ]
+        }
+      }
+    }
+  }
+  return payload
 }

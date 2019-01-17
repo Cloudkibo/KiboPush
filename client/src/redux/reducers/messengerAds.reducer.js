@@ -14,6 +14,10 @@ export function messengerAdsInfo (state = {}, action) {
       return Object.assign({}, state, {
         messengerAd: action.data
       })
+    case ActionTypes.SHOW_JSON_CODE:
+      return Object.assign({}, state, {
+        jsonCode: action.data
+      })
     default:
       return state
   }
