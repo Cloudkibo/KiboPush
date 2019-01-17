@@ -35,9 +35,12 @@ class Tab extends React.Component {
             </a>
           </li>
           <li className='nav-item m-tabs__item'>
-            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
+            { this.props.messengerAd.jsonAdId !== ''
+           ? <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
               Setup
             </a>
+           : <a>Setup</a>
+           }
           </li>
         </ul>
         <br />
@@ -56,6 +59,7 @@ class Tab extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    messengerAd: state.messengerAdsInfo.messengerAd
   }
 }
 
