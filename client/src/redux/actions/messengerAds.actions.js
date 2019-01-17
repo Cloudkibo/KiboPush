@@ -158,8 +158,8 @@ const prepareJsonPayload = (data, optinMessage) => {
       var jsonAdMessageId
       if (button.payload && button.type === 'postback') {
         for (var j = 0; j < data.length; j++) {
-          if (button.payload === data[j].jsonAdMessageId) {
-            jsonAdMessageId = data[j].jsonAdId
+          if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
+            jsonAdMessageId = data[j]._id
             break
           }
         }
