@@ -31,12 +31,14 @@ class CreateMessengerAd extends React.Component {
     }
   }
   updatePreview () {
-    for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
-      if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
-        this.setState({
-          previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
-          adTitle: this.props.messengerAd.title
-        })
+    if (this.props.messengerAd) {
+      for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+        if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
+          this.setState({
+            previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
+            adTitle: this.props.messengerAd.title
+          })
+        }
       }
     }
   }
@@ -50,15 +52,15 @@ class CreateMessengerAd extends React.Component {
   }
   componentDidMount () {
     this.updatePreview()
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Create Messenger Ad`;
+    document.title = `${title} | Create Messenger Ad`
   }
   onSave () {
     let payload = {}
