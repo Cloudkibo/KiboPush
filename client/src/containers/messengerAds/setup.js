@@ -22,16 +22,17 @@ class SetUp extends React.Component {
     for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
       if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
         jsonAd = this.props.messengerAd.jsonAdMessages[i]
+        break
       }
     }
     let jsonObject = []
     for (var j = 0; j < jsonAd.messageContent.length; j++) {
-      let messageJson = this.prepareJsonPayload(jsonAd.messageContent[j], jsonAd._id)
+      let messageJson = this.prepareJsonPayload(jsonAd.messageContent[j])
       jsonObject.push({message: messageJson})
     }
     return JSON.stringify(jsonObject, null, 4)
   }
-  prepareJsonPayload (optinMessage, jsonAdId) {
+  prepareJsonPayload (optinMessage) {
     let payload = {}
     let body = optinMessage
     let text = body.text
@@ -40,7 +41,13 @@ class SetUp extends React.Component {
       for (var i = 0; i < body.buttons.length; i++) {
         var button = body.buttons[i]
         if (button.payload && button.type === 'postback') {
-          button.payload = 'JSONAD_' + jsonAdId
+          for (var j = 0; j < this.props.messengerAd.jsonAdMessages.length; j++) {
+            if (button.payload === this.props.messengerAd.jsonAdMessages[j].jsonAdMessageId) {
+              var jsonAdMessageId = this.props.messengerAd.jsonAdMessages[i]._id
+              break
+            }
+          }
+          button.payload = 'JSONAD-' + jsonAdMessageId
         }
         buttonPayload.push(button)
       }
