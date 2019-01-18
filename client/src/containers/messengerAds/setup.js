@@ -35,7 +35,7 @@ class SetUp extends React.Component {
             value={this.props.jsonCode}
             readOnly />
         </div>
-        <CopyToClipboard text={this.state.jsonCode}
+        <CopyToClipboard text={this.props.jsonCode}
           onCopy={() => {
             this.setState({copied: true})
             toastr.options = {
@@ -59,7 +59,7 @@ class SetUp extends React.Component {
           }
         }>
           <button type='button' className='btn btn-success'>
-            Copy Link
+            Copy Code
           </button>
         </CopyToClipboard>
       </div>
