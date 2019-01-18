@@ -182,7 +182,7 @@ class MessengerAds extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenger Ads? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
+              Need help in understanding Messenger Ads? Here is the <a href='http://kibopush.com/messengerAds' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
