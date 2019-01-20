@@ -123,9 +123,8 @@ export function sendpoll (poll, msg) {
             dispatch(updatePollsListNew(response.payload))
             msg.success('Poll sent successfully')
             dispatch(sendPollSuccess())
-
           })
-} else {
+        } else {
           msg.error(res.description)
           dispatch(sendPollFailure())
         }
