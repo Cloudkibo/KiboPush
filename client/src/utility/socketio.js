@@ -90,7 +90,7 @@ socket.on('message', (data) => {
     store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_send') {
     console.log('survey send function called')
