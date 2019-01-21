@@ -94,7 +94,7 @@ socket.on('message', (data) => {
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_send') {
     console.log('survey send function called')
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
