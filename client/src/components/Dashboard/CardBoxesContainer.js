@@ -20,7 +20,7 @@ class CardBoxesContainer extends React.Component {
     return (
       <div className='col-xl-12'>
         <div className='row m-row--full-height'>
-          <div className='col-sm-3 col-md-3 col-lg-3' title='Total pages on Facebook'>
+          <div className='col-sm-3 col-md-3 col-lg-3' title='Number of Facebook pages you are admin of'>
             <Link to='/addPages' >
               <CardBox
                 style='brand'
@@ -29,7 +29,7 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           </div>
-          <div className='col-sm-3 col-md-3 col-lg-3' title='Total pages connected to KiboPush'>
+          <div className='col-sm-3 col-md-3 col-lg-3' title='Number of Facebook pages connected with our app'>
             <Link to='/addPages' >
               <CardBox
                 style='success'
@@ -38,19 +38,23 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           </div>
-          <div className='col-sm-3 col-md-3 col-lg-3' title='Total Subscribers'>
-            <CardBox
-              style='danger'
-              value={this.props.data.subscribers ? this.props.data.subscribers : 0}
-              label='Subscribers'
-            />
+          <div className='col-sm-3 col-md-3 col-lg-3' title='Number of subscribers'>
+            <Link to='/subscribers' >
+              <CardBox
+                style='danger'
+                value={this.props.data.subscribers ? this.props.data.subscribers : 0}
+                label='Subscribers'
+              />
+            </Link>
           </div>
-          <div className='col-sm-3 col-md-3 col-lg-3' title={url.includes('kibochat.cloudkibo.com') ? 'New Messages' : 'No.of Sequences Created'}>
-            <CardBox
-              style='accent'
-              value={url.includes('kibochat.cloudkibo.com') ? (this.props.data.unreadCount ? this.props.data.unreadCount : 0) : (this.props.data.sequences ? this.props.data.sequences : 0)}
-              label={url.includes('kibochat.cloudkibo.com') ? 'New Messages' : 'Sequences'}
-            />
+          <div className='col-sm-3 col-md-3 col-lg-3' title={url.includes('kibochat.cloudkibo.com') ? 'Number of new messages' : 'Nunmber of sequences created'}>
+            <Link to={url.includes('kibochat.cloudkibo.com') ? '/liveChat' : 'sequenceMessaging'} >
+              <CardBox
+                style='accent'
+                value={url.includes('kibochat.cloudkibo.com') ? (this.props.data.unreadCount ? this.props.data.unreadCount : 0) : (this.props.data.sequences ? this.props.data.sequences : 0)}
+                label={url.includes('kibochat.cloudkibo.com') ? 'New Messages' : 'Sequences'}
+              />
+            </Link>
           </div>
         </div>
       </div>
