@@ -146,7 +146,7 @@ class Autoposting extends React.Component {
                       Select all the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'
@@ -177,7 +177,7 @@ class Autoposting extends React.Component {
                       Select All the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'
