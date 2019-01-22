@@ -29,11 +29,11 @@ class CreateMessage extends React.Component {
       list: [],
       broadcast: [],
       title: this.props.title ? this.props.title : '',
-      pageId: props.messengerAd.pageId,
-      fbPageId: props.pages.filter((page) => page._id === props.messengerAd.pageId)[0].pageId,
       selectedIndex: 1,
       jsonMessages: props.messengerAd.jsonAdMessages ? props.messengerAd.jsonAdMessages : [],
-      showOptInMessage: true
+      showOptInMessage: true,
+      fbPageId: null,
+      pageId: null
     }
     this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
