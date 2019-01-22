@@ -130,7 +130,7 @@ class CreateMessengerAd extends React.Component {
                     />
                   </div>
                   <div className='row'>
-                    <Tabs setupState={this.state.setupState} switchSetupState={this.props.switchSetupState} />
+                    <Tabs setupState={this.state.setupState} switchSetupState={this.switchSetupState} />
                     <Preview previewOptInMessage={this.state.previewOptInMessage} />
                   </div>
                 </div>
