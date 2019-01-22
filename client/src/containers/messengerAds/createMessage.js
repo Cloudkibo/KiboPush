@@ -20,8 +20,6 @@ import Gallery from '../convo/Gallery'
 import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CreateMessage extends React.Component {
   constructor (props) {
