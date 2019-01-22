@@ -131,7 +131,7 @@ class CreateMessage extends React.Component {
           message.push(payload[i])
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'image') {
-          temp.push(<Image id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)
+          temp.push(<Image id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].fileurl} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})

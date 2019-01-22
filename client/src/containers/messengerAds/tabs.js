@@ -13,8 +13,7 @@ class Tab extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      currentTab: 'optInActions',
-      setupState: props.setupState
+      currentTab: 'optInActions'
     }
     this.changeTab = this.changeTab.bind(this)
     this.switchSetupState = this.switchSetupState.bind(this)
@@ -24,9 +23,7 @@ class Tab extends React.Component {
     this.setState({currentTab: value})
   }
   switchSetupState (value) {
-    this.setState({
-      setupState: value
-    })
+    this.props.switchSetupState(value)
   }
 
   componentDidMount () {
@@ -42,7 +39,7 @@ class Tab extends React.Component {
             </a>
           </li>
           <li className='nav-item m-tabs__item'>
-            { this.state.setupState
+            { this.props.setupState
            ? <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
               Setup
             </a>

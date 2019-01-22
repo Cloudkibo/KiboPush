@@ -23,12 +23,10 @@ class CreateMessengerAd extends React.Component {
     this.onSave = this.onSave.bind(this)
     this.updatePreview = this.updatePreview.bind(this)
     this.handleSave = this.handleSave.bind(this)
+    this.switchSetupState = this.switchSetupState.bind(this)
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
         props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
-        this.setState({
-          setupState: true
-        })
       }
     }
   }
@@ -43,11 +41,17 @@ class CreateMessengerAd extends React.Component {
         if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
           this.setState({
             previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
-            adTitle: this.props.messengerAd.title
+            adTitle: this.props.messengerAd.title,
+            setupState: true
           })
         }
       }
     }
+  }
+  switchSetupState (value) {
+    this.setState({
+      setupState: value
+    })
   }
   changeTitle (e) {
     this.setState({
@@ -126,7 +130,7 @@ class CreateMessengerAd extends React.Component {
                     />
                   </div>
                   <div className='row'>
-                    <Tabs setupState={this.state.setupState} />
+                    <Tabs setupState={this.state.setupState} switchSetupState={this.props.switchSetupState} />
                     <Preview previewOptInMessage={this.state.previewOptInMessage} />
                   </div>
                 </div>
