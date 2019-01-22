@@ -21,6 +21,7 @@ import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { browserHistory } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CreateMessage extends React.Component {
   constructor (props) {
@@ -53,6 +54,7 @@ class CreateMessage extends React.Component {
     this.removePayloadMessages = this.removePayloadMessages.bind(this)
     this.handleSaveMessage = this.handleSaveMessage.bind(this)
   }
+
   showPayloadMessage (data) {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
       if (this.state.jsonMessages[i].jsonAdMessageId === data.payload) {
@@ -214,6 +216,24 @@ class CreateMessage extends React.Component {
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
       if (this.state.jsonMessages[i].messageContent.length < 1) {
         return this.msg.error(`Postback message '${this.state.jsonMessages[i].title}' is empty`)
+      }
+      if (!validateFields(this.state.jsonMessages[i].messageContent, this.msg)) {
+        this.setEditComponents(this.state.jsonMessages[i].messageContent)
+        /* eslint-disable */
+          $('.nav-link.m-tabs__link').removeClass('active')
+          $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
+        /* eslint-enable */
+        this.setState({
+          selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
+        })
+        return
+      }
+    }
+    for (var j = 0; j < this.state.jsonMessages.length; j++) {
+      if (!this.state.jsonMessages[j].jsonAdMessageParentId) {
+        if (this.state.jsonMessages[j].messageContent.length > 5) {
+          return this.msg.error(`Opt-In Message cannot have more than 5 elements`)
+        }
       }
     }
     this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', this.state.jsonMessages)
@@ -542,6 +562,14 @@ class CreateMessage extends React.Component {
           <div className='row'>
 
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+              <div className='row ui-block'>
+                <div className='col-12' style={{display: 'flex'}}>
+                  <i className='flaticon-exclamation m--font-brand' />
+                  <span style={{marginLeft: '10px'}}>
+                    <p>Note: A person will get into your subscriber's list only if he presses a button with action :'Reply with a message'. So, keep in mind that the first message should contain a button.</p>
+                  </span>
+                </div>
+              </div>
               <div className='row' >
                 <div className='col-3'>
                   <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>

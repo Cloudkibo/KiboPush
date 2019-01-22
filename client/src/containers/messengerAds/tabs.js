@@ -39,7 +39,7 @@ class Tab extends React.Component {
             </a>
           </li>
           <li className='nav-item m-tabs__item'>
-            { this.props.setupState
+            { this.props.setupState === 'true'
            ? <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
               Setup
             </a>
