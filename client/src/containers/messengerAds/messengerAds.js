@@ -11,7 +11,6 @@ import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../r
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class MessengerAds extends React.Component {
   constructor (props, context) {
@@ -20,23 +19,17 @@ class MessengerAds extends React.Component {
       messengerAdsData: [],
       totalLength: 0,
       isShowingModalDelete: false,
-      isShowingCreate: false,
       deleteid: '',
-      showVideo: false,
-      pageSelected: {}
+      showVideo: false
     }
-    props.loadMyPagesList()
     props.fetchMessengerAds()
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeCreateDialog = this.closeCreateDialog.bind(this)
-    this.showCreateDialog = this.showCreateDialog.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
-    this.changePage = this.changePage.bind(this)
   }
   componentDidMount () {
     const hostname =  window.location.hostname;
@@ -49,15 +42,11 @@ class MessengerAds extends React.Component {
 
     document.title = `${title} | Messenger Ads`;
   }
-  changePage (e) {
-    this.setState({pageSelected: e.target.value})
-  }
+
   gotoCreate () {
-    let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     this.props.setDefaultAdMessage(defaultAdMessage().messengerAd)
     browserHistory.push({
-      pathname: `/createAdMessage`,
-      state: {pageId: pageId, _id: this.state.pageSelected}
+      pathname: `/createAdMessage`
     })
   }
   onEdit (adId) {
@@ -65,12 +54,6 @@ class MessengerAds extends React.Component {
       pathname: `/createAdMessage`,
       state: {module: 'edit', jsonAdId: adId._id}
     })
-  }
-  showCreateDialog () {
-    this.setState({isShowingCreate: true})
-  }
-  closeCreateDialog () {
-    this.setState({isShowingCreate: false})
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -140,35 +123,6 @@ class MessengerAds extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        {
-          this.state.isShowingCreate &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeCreateDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeCreateDialog}>
-              <h3>Create Messenger Ad JSON</h3>
-              <div className='m-form'>
-                <div className='form-group m-form__group'>
-                  <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
-                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
-                    {
-                      this.props.pages.map((page, i) => (
-                        <option key={i} value={page._id}>{page.pageName}</option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </div>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
-                    Create
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -198,7 +152,7 @@ class MessengerAds extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <Link onClick={this.gotoCreate} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -216,10 +170,6 @@ class MessengerAds extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Page</span>
-                          </th>
                           <th data-field='url'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Title</span>
@@ -236,7 +186,6 @@ class MessengerAds extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{messengerAd.pageId.pageName}</span></td>
                             <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>{messengerAd.title}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
@@ -285,7 +234,6 @@ class MessengerAds extends React.Component {
 }
 function defaultAdMessage () {
   const defaultMessage = { messengerAd: {
-    pageId: '',
     jsonAdId: '',
     title: '',
     jsonAdMessages: [{
@@ -319,8 +267,7 @@ function defaultAdMessage () {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    messengerAds: (state.messengerAdsInfo.messengerAds),
-    pages: (state.pagesInfo.pages)
+    messengerAds: (state.messengerAdsInfo.messengerAds)
   }
 }
 
@@ -328,7 +275,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchMessengerAds: fetchMessengerAds,
     deleteMessengerAd: deleteMessengerAd,
-    loadMyPagesList: loadMyPagesList,
     setDefaultAdMessage: setDefaultAdMessage
   }, dispatch)
 }

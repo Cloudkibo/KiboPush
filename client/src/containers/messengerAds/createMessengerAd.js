@@ -16,19 +16,23 @@ class CreateMessengerAd extends React.Component {
     super(props, context)
     this.state = {
       previewOptInMessage: [],
-      adTitle: ''
+      adTitle: '',
+      setupState: false
     }
     this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)
     this.updatePreview = this.updatePreview.bind(this)
+    this.handleSave = this.handleSave.bind(this)
     if (props.location.state) {
-      if (props.location.state._id) {
-        props.updateCurrentJsonAd(this.props.messengerAd, 'pageId', props.location.state._id)
-      }
       if (props.location.state.module && props.location.state.module === 'edit') {
         props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
       }
     }
+  }
+  handleSave () {
+    this.setState({
+      setupState: true
+    })
   }
   updatePreview () {
     if (this.props.messengerAd) {
@@ -70,10 +74,10 @@ class CreateMessengerAd extends React.Component {
     }
     if (this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== '') {
       payload = {jsonAdId: this.props.messengerAd.jsonAdId, title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
-      this.props.editJsonAd(payload, this.msg)
+      this.props.editJsonAd(payload, this.msg, this.handleSave)
     } else {
-      payload = {pageId: this.props.messengerAd.pageId, title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
-      this.props.saveJsonAd(payload, this.msg)
+      payload = {title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      this.props.saveJsonAd(payload, this.msg, this.handleSave)
     }
   }
 
@@ -119,7 +123,7 @@ class CreateMessengerAd extends React.Component {
                     />
                   </div>
                   <div className='row'>
-                    <Tabs />
+                    <Tabs setupState={this.state.setupState} />
                     <Preview previewOptInMessage={this.state.previewOptInMessage} />
                   </div>
                 </div>

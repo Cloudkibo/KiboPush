@@ -82,7 +82,7 @@ export function deleteMessengerAd (id, msg) {
   }
 }
 
-export function saveJsonAd (data, msg) {
+export function saveJsonAd (data, msg, handleSave) {
   console.log('data in saveMessengerAd', data)
   return (dispatch) => {
     callApi('jsonAd/create', 'post', data)
@@ -98,6 +98,7 @@ export function saveJsonAd (data, msg) {
           }
           dispatch(saveCurrentJsonAd(payload))
           msg.success('Json Ad saved successfully')
+          handleSave()
         } else {
           msg.error('Unable to save Json Ad')
         }
@@ -105,7 +106,7 @@ export function saveJsonAd (data, msg) {
   }
 }
 
-export function editJsonAd (data, msg) {
+export function editJsonAd (data, msg, handleEdit) {
   console.log('data in saveMessengerAd', data)
   return (dispatch) => {
     callApi('jsonAd/edit', 'post', data)
@@ -120,6 +121,7 @@ export function editJsonAd (data, msg) {
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
+          handleEdit()
           msg.success('Message saved successfully')
         } else {
           msg.error('Unable to save message')
@@ -192,7 +194,7 @@ const prepareJsonPayload = (data, optinMessage) => {
       'attachment': {
         'type': body.componentType,
         'payload': {
-          'attachment_id': body.fileurl.attachment_id
+          'url': body.fileurl.url
         }
       }
     }
@@ -253,7 +255,7 @@ const prepareJsonPayload = (data, optinMessage) => {
           'template_type': 'media',
           'elements': [
             {
-              'attachment_id': body.fileurl.attachment_id,
+              'url': body.fileurl.url,
               'media_type': body.mediaType,
               'buttons': buttonPayload
             }
