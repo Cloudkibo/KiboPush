@@ -81,7 +81,7 @@ class Card extends React.Component {
     }
   }
   handleClose () {
-    his.setState({openPopover: false})
+    this.setState({openPopover: false})
   }
   handleRemove () {
     this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false, defaultAction: ''})
