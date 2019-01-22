@@ -30,7 +30,7 @@ class CardBoxesContainer extends React.Component {
             </Link>
           </div>
           <div className='col-sm-3 col-md-3 col-lg-3' title='Number of Facebook pages connected with our app'>
-            <Link to='/addPages' >
+            <Link to='/pages' >
               <CardBox
                 style='success'
                 value={this.props.data.pages ? this.props.data.pages : 0}
