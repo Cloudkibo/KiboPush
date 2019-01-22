@@ -26,6 +26,9 @@ class CreateMessengerAd extends React.Component {
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
         props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
+        this.setState({
+          setupState: true
+        })
       }
     }
   }

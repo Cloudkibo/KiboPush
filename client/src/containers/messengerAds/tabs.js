@@ -14,7 +14,7 @@ class Tab extends React.Component {
     super(props, context)
     this.state = {
       currentTab: 'optInActions',
-      setupState: this.props.setupState
+      setupState: props.setupState
     }
     this.changeTab = this.changeTab.bind(this)
     this.switchSetupState = this.switchSetupState.bind(this)
