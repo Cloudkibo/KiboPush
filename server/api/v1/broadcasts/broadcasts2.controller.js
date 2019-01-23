@@ -141,7 +141,8 @@ const sendTestBroadcast = (companyUser, page, payload, req, res) => {
     let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
     let fname = temp[0]
     let lname = temp[1] ? temp[1] : ''
-    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res, req.body.fbMessageTag)
+    logger.serverLog(TAG, `${JSON.stringify(req.body.fbMessageTag)}`)
+    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res, null, null, req.body.fbMessageTag)
   })
 }
 
