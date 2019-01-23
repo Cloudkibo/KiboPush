@@ -77,7 +77,7 @@ class SubscriberSummary extends React.Component {
     if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
       var data = this.props.includeZeroCounts(nextprops.subscriberSummary.graphdata)
       console.log('includeZeroCounts', data)
-      let dataChart = this.prepareLineChartData(data)
+      let dataChart = this.prepareChartData(data)
       this.setState({data: dataChart})
     }
   }
