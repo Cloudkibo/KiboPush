@@ -483,7 +483,7 @@ class CreateConvo extends React.Component {
       this.msg.error('Only one page should be selected to test the broadcast')
     } else {
       let pageSelected = this.props.location.state.pages[0]
-      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId._id === pageSelected })
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
       if (check.length <= 0) {
         this.setState({showMessengerModal: true})
         return
