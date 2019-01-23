@@ -626,6 +626,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
 /* eslint-disable */
 function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, res, subscriberNumber, subscribersLength, fbMessageTag) {
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
+  logger.serverLog(TAG, `fbMessageTag: ${JSON.stringify(fbMessageTag)}`)
   let tag = "tag=" + encodeURIComponent(fbMessageTag)
   let messagingType = "messaging_type=" + encodeURIComponent("MESSAGE_TAG")
   let batch = []
@@ -639,6 +640,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
       batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message + "&" + messagingType +  "&" + tag})
     }
     if (index === (payload.length - 1)) {
+      logger.serverLog(TAG, `Batch: ${JSON.stringify(batch)}`)
       sendBroadcast(JSON.stringify(batch), page, res, subscriberNumber, subscribersLength)
     }
   })
