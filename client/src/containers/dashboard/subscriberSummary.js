@@ -298,7 +298,7 @@ class SubscriberSummary extends React.Component {
                     <XAxis dataKey='date' />
                     <YAxis />
                     <Tooltip />
-                    <Area type='monotone' dataKey='subscribersCount' name='Subscribers' stroke='#82ca9d' fill='#82ca9d' />
+                    <Area type='monotone' dataKey='count' name='Subscribers' stroke='#82ca9d' fill='#82ca9d' />
                   </AreaChart>
                 </ResponsiveContainer>
                 : <center>
