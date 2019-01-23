@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
 import {loadSubscriberSummary} from '../../redux/actions/dashboard.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import moment from 'moment'
 
 class SubscriberSummary extends React.Component {
   constructor (props, context) {
@@ -32,6 +33,7 @@ class SubscriberSummary extends React.Component {
     this.onInputChange = this.onInputChange.bind(this)
     this.showReport = this.showReport.bind(this)
     this.prepareChartData = this.prepareChartData.bind(this)
+    this.includeZeroCounts = this.includeZeroCounts.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -76,11 +78,40 @@ class SubscriberSummary extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
-      var data = this.props.includeZeroCounts(nextprops.subscriberSummary.graphdata)
+      var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
       console.log('includeZeroCounts', data)
       let dataChart = this.prepareChartData(data)
       this.setState({data: dataChart})
     }
+  }
+  includeZeroCounts (data) {
+    var dataArray = []
+    var index = 0
+    var varDate = moment()
+    for (var j = 0; j < data.length; j++) {
+      var recordId = data[j]._id
+      var date = `${recordId.year}-${recordId.month}-${recordId.day}`
+      var loopDate = moment(varDate).format('YYYY-MM-DD')
+      if (moment(date).isSame(loopDate, 'day')) {
+        var d = {}
+        d.date = loopDate
+        d.count = data[j].count
+        dataArray.push(d)
+        varDate = moment(varDate).subtract(1, 'days')
+        index = 0
+        break
+      }
+      index++
+    }
+    if (index === data.length) {
+      var obj = {}
+      obj.date = varDate.format('YYYY-MM-DD')
+      obj.count = 0
+      dataArray.push(obj)
+      varDate = moment(varDate).subtract(1, 'days')
+      index = 0
+    }
+    return dataArray.reverse()
   }
   prepareChartData (data) {
     var dataChart = []
