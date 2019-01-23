@@ -61,7 +61,7 @@ class SubscriberSummary extends React.Component {
       this.setState({isShowingModal: true})
     } else {
       this.setState({days: days})
-      this.props.loadSubscriberSummary({pageId: this.state.pageId, days: this.state.days})
+      this.props.loadSubscriberSummary({pageId: this.state.pageId, days: days})
     }
   }
   changePage (page) {
