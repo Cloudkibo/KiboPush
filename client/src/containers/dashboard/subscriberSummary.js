@@ -84,32 +84,49 @@ class SubscriberSummary extends React.Component {
       this.setState({data: dataChart})
     }
   }
+  exists (array, value) {
+    for (var i = 0; i < array.length; i++) {
+      if (array.date === value) {
+        return true
+      }
+    }
+    return false
+  }
   includeZeroCounts (data) {
     var dataArray = []
-    var index = 0
-    var varDate = moment()
+    // var index = 0
+    // var varDate = moment()
+    // for (var j = 0; j < data.length; j++) {
+    //   var recordId = data[j]._id
+    //   var date = `${recordId.year}-${recordId.month}-${recordId.day}`
+    //   var loopDate = moment(varDate).format('YYYY-MM-DD')
+    //   if (moment(date).isSame(loopDate, 'day')) {
+    //     var d = {}
+    //     d.date = loopDate
+    //     d.count = data[j].count
+    //     dataArray.push(d)
+    //     varDate = moment(varDate).subtract(1, 'days')
+    //     index = 0
+    //     break
+    //   }
+    //   index++
+    // }
+    // if (index === data.length) {
+    //   var obj = {}
+    //   obj.date = varDate.format('YYYY-MM-DD')
+    //   obj.count = 0
+    //   dataArray.push(obj)
+    //   varDate = moment(varDate).subtract(1, 'days')
+    //   index = 0
+    // }
     for (var j = 0; j < data.length; j++) {
       var recordId = data[j]._id
       var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      var loopDate = moment(varDate).format('YYYY-MM-DD')
-      if (moment(date).isSame(loopDate, 'day')) {
-        var d = {}
-        d.date = loopDate
-        d.count = data[j].count
-        dataArray.push(d)
-        varDate = moment(varDate).subtract(1, 'days')
-        index = 0
-        break
+      if (this.exists(dataArray, date) === false) {
+        dataArray.push({date: date, count: data[j].count})
+      } else {
+        dataArray[j].count = dataArray[j].count + data[j].count
       }
-      index++
-    }
-    if (index === data.length) {
-      var obj = {}
-      obj.date = varDate.format('YYYY-MM-DD')
-      obj.count = 0
-      dataArray.push(obj)
-      varDate = moment(varDate).subtract(1, 'days')
-      index = 0
     }
     return dataArray.reverse()
   }
