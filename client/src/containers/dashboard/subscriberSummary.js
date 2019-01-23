@@ -82,6 +82,8 @@ class SubscriberSummary extends React.Component {
       console.log('includeZeroCounts', data)
       let dataChart = this.prepareChartData(data)
       this.setState({data: dataChart})
+    } else {
+      this.setState({data: []})
     }
   }
   exists (array, value) {
