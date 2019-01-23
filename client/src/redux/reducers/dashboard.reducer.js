@@ -59,6 +59,10 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         locales: action.data
       })
+    case ActionTypes.UPDATE_SUBSCRIBER_SUMMARY:
+      return Object.assign({}, state, {
+        subscriberSummary: action.data
+      })
     default:
       return state
   }

@@ -7,6 +7,12 @@ export function updateDashboard (data) {
     data
   }
 }
+export function updateSubscriberSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_SUBSCRIBER_SUMMARY,
+    data
+  }
+}
 export function updateAllLocales (data) {
   console.log('Data Fetched From Subscribers', data)
   return {
@@ -93,7 +99,16 @@ export function loadPageSubscribersList (id, data) {
       })
   }
 }
-
+export function loadSubscriberSummary (data) {
+  console.log('data for loadSubscriberSummary', data)
+  return (dispatch) => {
+    callApi(`dashboard/subscriberSummary`, 'post', data)
+      .then(res => {
+        console.log('response from loadSubscriberSummary', res)
+        dispatch(updateSubscriberSummary(res.payload))
+      })
+  }
+}
 export function allLocales () {
   return (dispatch) => {
     callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))

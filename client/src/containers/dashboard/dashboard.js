@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
-import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission } from '../../redux/actions/dashboard.actions'
+import SubscriberSummary from './subscriberSummary'
+import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -73,6 +74,7 @@ class Dashboard extends React.Component {
     this.props.loadSubscribersList()
     this.props.loadGraphData(0)
     this.props.loadTopPages()
+    this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
@@ -232,6 +234,7 @@ class Dashboard extends React.Component {
         var broadcastData = graphData.broadcastsgraphdata
         broadcastData = this.includeZeroCounts(broadcastData)
       }
+      console.log('broadcastsData', broadcastData)
       if (graphData.pollsgraphdata && graphData.pollsgraphdata.length > 0) {
         var pollsData = graphData.pollsgraphdata
         pollsData = this.includeZeroCounts(pollsData)
@@ -241,6 +244,7 @@ class Dashboard extends React.Component {
         surveysData = this.includeZeroCounts(surveysData)
       }
       let dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+      console.log('dataChart', dataChart)
       this.setState({chartData: dataChart})
     } else {
       if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
@@ -535,6 +539,9 @@ class Dashboard extends React.Component {
               }
             </div>
             <div className='row'>
+              <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
+            </div>
+            <div className='row'>
               {
               this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com')
               ? <ProgressBoxKiboEngage pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
@@ -618,6 +625,7 @@ function mapDispatchToProps (dispatch) {
       sentVsSeen: sentVsSeen,
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,
+      loadSubscriberSummary: loadSubscriberSummary,
       validateUserAccessToken
     },
     dispatch)
