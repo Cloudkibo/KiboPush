@@ -333,7 +333,7 @@ class SubscriberSummary extends React.Component {
                   </AreaChart>
                 </ResponsiveContainer>
                 : <center>
-                  <span>No records to show for the selcted number of days</span>
+                  <span>No records to show for the applied filters</span>
                 </center>
               }
               </div>
