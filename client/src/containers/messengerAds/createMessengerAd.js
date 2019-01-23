@@ -17,7 +17,7 @@ class CreateMessengerAd extends React.Component {
     this.state = {
       previewOptInMessage: [],
       adTitle: '',
-      setupState: false
+      setupState: 'false'
     }
     this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -32,7 +32,7 @@ class CreateMessengerAd extends React.Component {
   }
   handleSave () {
     this.setState({
-      setupState: true
+      setupState: 'true'
     })
   }
   updatePreview () {
@@ -42,7 +42,7 @@ class CreateMessengerAd extends React.Component {
           this.setState({
             previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
             adTitle: this.props.messengerAd.title,
-            setupState: true
+            setupState: 'true'
           })
         }
       }

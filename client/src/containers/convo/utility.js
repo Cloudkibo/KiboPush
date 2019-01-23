@@ -2,7 +2,7 @@
   export function validateFields (broadcast, msg) {
     var isValid = true
     console.log('broadcast', broadcast)
-    
+
     for (let i = 0; i < broadcast.length; i++) {
       console.log('broadcast[i].fileurl', broadcast[i].fileurl)
       if (broadcast[i].componentType === 'text') {

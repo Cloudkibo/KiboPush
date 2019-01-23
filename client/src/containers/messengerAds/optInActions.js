@@ -20,7 +20,7 @@ class OptInActions extends React.Component {
   componentDidMount () {
   }
   editMessage () {
-    this.props.switchSetupState(false)
+    this.props.switchSetupState('false')
     browserHistory.push({
       pathname: `/createMessengerAdMessage`
     })
