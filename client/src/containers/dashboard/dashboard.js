@@ -529,9 +529,6 @@ class Dashboard extends React.Component {
               <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
-          <div className='row'>
-            <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
-          </div>
           {this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
           : <div>
