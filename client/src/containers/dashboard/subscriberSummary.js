@@ -67,15 +67,15 @@ class SubscriberSummary extends React.Component {
   changePage (page) {
     if (page === 'all') {
       this.setState({pageId: 'all'})
-      this.props.loadSubscriberSummary({pageId: page._id, days: this.state.days})
+      this.props.loadSubscriberSummary({pageId: 'all', days: this.state.days})
     } else {
       this.setState({pageId: page._id, selectedPage: page})
       this.props.loadSubscriberSummary({pageId: page._id, days: this.state.days})
     }
   }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphData.length > 0) {
-      var data = this.props.includeZeroCounts(nextprops.subscriberSummary.graphData)
+    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
+      var data = this.props.includeZeroCounts(nextprops.subscriberSummary.graphdata)
       console.log('includeZeroCounts', data)
       let dataChart = this.prepareLineChartData(data)
       this.setState({data: dataChart})
