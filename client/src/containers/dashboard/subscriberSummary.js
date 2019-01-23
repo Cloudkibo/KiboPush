@@ -31,6 +31,7 @@ class SubscriberSummary extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.onInputChange = this.onInputChange.bind(this)
     this.showReport = this.showReport.bind(this)
+    this.prepareChartData = this.prepareChartData.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
