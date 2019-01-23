@@ -87,7 +87,7 @@ class SubscriberSummary extends React.Component {
   exists (array, value) {
     for (var i = 0; i < array.length; i++) {
       if (array.date === value) {
-        return true
+        return i
       }
     }
     return false
@@ -122,10 +122,11 @@ class SubscriberSummary extends React.Component {
     for (var j = 0; j < data.length; j++) {
       var recordId = data[j]._id
       var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      if (this.exists(dataArray, date) === false) {
+      let val = this.exists(dataArray, date)
+      if (val === false) {
         dataArray.push({date: date, count: data[j].count})
       } else {
-        dataArray[j].count = dataArray[j].count + data[j].count
+        dataArray[val].count = dataArray[val].count + data[j].count
       }
     }
     return dataArray.reverse()
