@@ -1343,7 +1343,7 @@ class Subscriber extends React.Component {
                             </th>
                             <th data-field='Subscribed'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
+                              <span style={{width: '100px', overflow: 'inherit'}}>Subscribed</span>
                             </th>
                             <th data-field='Tag'
                               className='m-datatable__cell--center m-datatable__cell'>
@@ -1399,7 +1399,9 @@ class Subscriber extends React.Component {
                                 { subscriber.gender }
                               </span>
                             </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{moment(subscriber.datetime).fromNow()}</span></td>
+                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
+                              <span style={{width: '100px'}}>{moment(subscriber.datetime).fromNow()}</span>
+                            </td>
                             <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                               <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
                                 {
