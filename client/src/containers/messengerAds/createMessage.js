@@ -29,7 +29,8 @@ class CreateMessage extends React.Component {
       broadcast: [],
       title: this.props.title ? this.props.title : '',
       selectedIndex: 1,
-      jsonMessages: props.messengerAd.jsonAdMessages ? props.messengerAd.jsonAdMessages : [],
+      jsonMessageProps: props.messengerAd.jsonAdMessages ? JSON.stringify(props.messengerAd.jsonAdMessages) : '',
+      jsonMessages: [],
       showOptInMessage: true,
       fbPageId: null,
       pageId: null
@@ -185,15 +186,21 @@ class CreateMessage extends React.Component {
     }
   }
   componentDidMount () {
-    for (var i = 0; i < this.state.jsonMessages.length; i++) {
-      if (!this.state.jsonMessages[i].jsonAdMessageParentId) {
-        this.setEditComponents(this.state.jsonMessages[i].messageContent)
+    var jsonMessages = JSON.parse(this.state.jsonMessageProps)
+    var messageContent
+    for (var i = 0; i < jsonMessages.length; i++) {
+      if (!jsonMessages[i].jsonAdMessageParentId) {
+        messageContent = jsonMessages[i].messageContent
         this.setState({
-          selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
+          selectedIndex: jsonMessages[i].jsonAdMessageId
         })
         break
       }
     }
+    this.setState({
+      jsonMessages: jsonMessages
+    })
+    this.setEditComponents(messageContent)
     const hostname =  window.location.hostname;
     let title = '';
     if(hostname.includes('kiboengage.cloudkibo.com')) {
@@ -666,7 +673,8 @@ class CreateMessage extends React.Component {
                   ))
                   }
                 </ul>
-                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '10px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                  {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                   {this.state.list}
                 </div>
               </div>
