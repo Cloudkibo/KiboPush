@@ -31,7 +31,6 @@
     "test": "echo \"Code tests are under construction by Sojharo\" && exit 0"
   },
   "pre-commit": [
-    //"lint",
     "test"
   ],
   "repository": {
