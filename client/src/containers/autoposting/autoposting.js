@@ -155,7 +155,7 @@ class Autoposting extends React.Component {
                       Select all the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'
@@ -174,7 +174,7 @@ class Autoposting extends React.Component {
                 </div>
                 <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                   <div className='panel-body'>
-                  <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
+                    <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
                     <ul>
                       <li>
                       Go to Settings -> Webhooks on WordPress dashboard
@@ -186,7 +186,7 @@ class Autoposting extends React.Component {
                       Select All the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpressk'
                       </li>
                       <li>
                       Click on 'Add new webhook'

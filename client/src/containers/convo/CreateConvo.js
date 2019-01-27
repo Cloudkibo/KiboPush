@@ -479,10 +479,11 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    if (this.state.pageValue.length > 1 || this.state.pageValue.length === 0) {
+    if (this.props.location.state.pages.length > 1 || this.props.location.state.pages.length === 0) {
       this.msg.error('Only one page should be selected to test the broadcast')
     } else {
-      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
+      let pageSelected = this.props.location.state.pages[0]
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
       if (check.length <= 0) {
         this.setState({showMessengerModal: true})
         return
@@ -847,7 +848,7 @@ class CreateConvo extends React.Component {
                                     <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
                                     <MessengerPlugin
                                       appId={this.props.fbAppId}
-                                      pageId={JSON.stringify(this.state.pageValue[0])}
+                                      pageId={JSON.stringify(this.state.pageId)}
                                       passthroughParams={this.props.user._id}
                                       onClick={() => { this.setState({showMessengerModal: false}) }}
                                     />

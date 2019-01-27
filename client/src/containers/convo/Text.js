@@ -33,7 +33,7 @@ class Text extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.state = {
       button: props.buttons ? props.buttons : [],
-      text: props.txt ? props.txt : '',
+      text: props.message ? props.message : '',
       showEmojiPicker: false,
       count: 0,
       showUserOptions: false,
@@ -209,13 +209,16 @@ class Text extends React.Component {
         }
         </div>
       }
-        <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
-          <PopoverBody>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
-          </PopoverBody>
-        </Popover>
+        { !(this.props.module === 'messengerAd') &&
+          <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
+            <PopoverBody>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+            </PopoverBody>
+          </Popover>
+        }
+        { !(this.props.module === 'messengerAd') &&
         <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: (-75 - (35 * (this.state.numOfButtons * 0.915))), marginRight: '5px'}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',
@@ -232,6 +235,7 @@ class Text extends React.Component {
             </i>
           </div>
         </div>
+       }
       </div>
     )
   }

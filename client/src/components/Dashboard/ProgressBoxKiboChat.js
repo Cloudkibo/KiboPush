@@ -34,8 +34,8 @@ class ProgressBox extends React.Component {
     } else {
       progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
     }
-    progressRates.resolveRate = this.props.data.sessions.count !== 0 ? ((this.props.data.sessions.resolved / this.props.data.sessions.count) * 100).toFixed(1) + '%' : '0%'
-    progressRates.botResponseRate = this.props.data.bots.count !== 0 ? ((this.props.data.bots.responded / this.props.data.bots.count) * 100).toFixed(1) + '%' : '0%'
+    progressRates.resolveRate = this.props.data.sessions && this.props.data.sessions.count !== 0 ? ((this.props.data.sessions.resolved / this.props.data.sessions.count) * 100).toFixed(1) + '%' : '0%'
+    progressRates.botResponseRate = this.props.data.bots && this.props.data.bots.count !== 0 ? ((this.props.data.bots.responded / this.props.data.bots.count) * 100).toFixed(1) + '%' : '0%'
     return progressRates
   }
 
@@ -103,7 +103,7 @@ class ProgressBox extends React.Component {
           <div className='m-portlet__body'>
             <div className='tab-content'>
               <div className='row'>
-                <div className='col-6'>
+                {/* <div className='col-6'>
                   <div className='row'>
                     <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
@@ -132,13 +132,13 @@ class ProgressBox extends React.Component {
                     label='Unsubscribe rate'
                     progressStyle='brand'
                   />
-                </div>
-                <div className='col-3'>
+                </div> */}
+                <div className='col-6'>
                   <IconStack
                     path='/liveChat'
                     state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage}}
                     icon='flaticon-chat-1'
-                    title={this.props.data.sessions.count !== null ? this.props.data.sessions.count : 0}
+                    title={this.props.data.sessions && this.props.data.sessions.count !== null ? this.props.data.sessions.count : 0}
                     subtitle='Sessions'
                     iconStyle='success'
                   />
@@ -149,12 +149,12 @@ class ProgressBox extends React.Component {
                     progressStyle='success'
                   />
                 </div>
-                <div className='col-3'>
+                <div className='col-6'>
                   <IconStack
                     path='/bots'
                     state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage}}
                     icon='flaticon-questions-circular-button'
-                    title={this.props.data.bots.count !== null ? this.props.data.bots.count : 0}
+                    title={this.props.data.bots && this.props.data.bots.count !== null ? this.props.data.bots.count : 0}
                     subtitle='Bot Queries'
                     iconStyle='danger'
                   />

@@ -87,17 +87,14 @@ socket.on('message', (data) => {
     store.dispatch(sentVsSeen())
   } else if (data.action === 'poll_send') {
     console.log('poll send function called')
-    setTimeout(function () {
-      store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
-    }, 1000)
+    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_send') {
-    setTimeout(function () {
-      store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
-    }, 1000)
+    console.log('survey send function called')
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())

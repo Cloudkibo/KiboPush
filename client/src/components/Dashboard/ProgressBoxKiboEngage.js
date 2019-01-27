@@ -107,7 +107,7 @@ class ProgressBox extends React.Component {
           <div className='m-portlet__body'>
             <div className='tab-content'>
               <div className='row'>
-                <div className='col-6'>
+                {/* <div className='col-6'>
                   <div className='row'>
                     <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
@@ -130,14 +130,15 @@ class ProgressBox extends React.Component {
                       />
                     </div>
                   </div>
-                  <div className='m--space-30' />
+                  <div className='m--space-30' ></div>
                   <ProgressBar
                     rate={rates.unsubscribeRate}
                     label='Unsubscribe rate'
                     progressStyle='brand'
                   />
                 </div>
-                <div className='col-2'>
+                */}
+                <div className='col-4'>
                   <IconStack
                     path='/broadcasts'
                     state={{}}
@@ -153,7 +154,7 @@ class ProgressBox extends React.Component {
                     progressStyle='success'
                   />
                 </div>
-                <div className='col-2'>
+                <div className='col-4'>
                   <IconStack
                     path='/poll'
                     state={{}}
@@ -175,7 +176,7 @@ class ProgressBox extends React.Component {
                     progressStyle='danger'
                   />
                 </div>
-                <div className='col-2'>
+                <div className='col-4'>
                   <IconStack
                     path='/surveys'
                     state={{}}

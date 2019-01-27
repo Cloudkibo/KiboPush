@@ -18,6 +18,7 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import moment from 'moment'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -1340,9 +1341,9 @@ class Subscriber extends React.Component {
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
                             </th>
-                            <th data-field='Locale'
+                            <th data-field='Subscribed'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
+                              <span style={{width: '100px', overflow: 'inherit'}}>Subscribed</span>
                             </th>
                             <th data-field='Tag'
                               className='m-datatable__cell--center m-datatable__cell'>
@@ -1395,12 +1396,12 @@ class Subscriber extends React.Component {
                             </td>
                             <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
                               <span style={{width: '50px'}}>
-                                {
-                                  subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
-                                }
+                                { subscriber.gender }
                               </span>
                             </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
+                              <span style={{width: '100px'}}>{moment(subscriber.datetime).fromNow()}</span>
+                            </td>
                             <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                               <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
                                 {

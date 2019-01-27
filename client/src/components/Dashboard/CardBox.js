@@ -17,7 +17,7 @@ class CardBox extends React.Component {
     return (
       <div className={`m-portlet m-portlet--border-bottom-${this.props.style}`}>
         <div className='m-portlet__body'>
-          <div className='m-widget26'>
+          <div className='m-widget26' id={this.props.id}>
             <div className='m-widget26__number'>
               {this.props.value}
               <small>

@@ -16,10 +16,14 @@ class Tab extends React.Component {
       currentTab: 'optInActions'
     }
     this.changeTab = this.changeTab.bind(this)
+    this.switchSetupState = this.switchSetupState.bind(this)
   }
 
   changeTab (value) {
     this.setState({currentTab: value})
+  }
+  switchSetupState (value) {
+    this.props.switchSetupState(value)
   }
 
   componentDidMount () {
@@ -35,7 +39,7 @@ class Tab extends React.Component {
             </a>
           </li>
           <li className='nav-item m-tabs__item'>
-            { this.props.messengerAd && this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== ''
+            { this.props.setupState === 'true'
            ? <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
               Setup
             </a>
@@ -48,7 +52,7 @@ class Tab extends React.Component {
           <div className='tab-pane fade active in' id='tab_1'>
             {this.state.currentTab === 'setup'
             ? <Setup />
-            : <OptInActions />
+            : <OptInActions switchSetupState={this.switchSetupState} />
             }
           </div>
         </div>

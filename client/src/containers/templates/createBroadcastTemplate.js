@@ -72,7 +72,7 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState module='broadcastTemplate' />)})
+          temp.push({content: (<Text id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} message={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState module='broadcastTemplate' />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
