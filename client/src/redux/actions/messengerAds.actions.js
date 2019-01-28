@@ -166,6 +166,10 @@ const prepareJsonPayload = (data, optinMessage) => {
           }
         }
         button.payload = 'JSONAD-' + jsonAdMessageId
+      } else if (button.type === 'web_url') {
+        if (button.newUrl) {
+          delete button.newUrl
+        }
       }
       buttonPayload.push(button)
     }
