@@ -230,6 +230,22 @@ const prepareJsonPayload = (data, optinMessage) => {
       }
     }
   } else if (body.componentType === 'gallery') {
+    var cButtons = []
+    if (body.cards && body.cards.length > 0) {
+      var cardButtons = body.cards.buttons
+      if (cardButtons) {
+        for (var c = 0; c < cardButtons.length; c++) {
+          var cbutton = cardButtons[c]
+          if (cbutton.type === 'web_url') {
+            if (cbutton.newUrl) {
+              delete cbutton.newUrl
+            }
+          }
+          cButtons.push(button)
+        }
+        body.cards.buttons = cButtons
+      }
+    }
     payload = {
       'attachment': {
         'type': 'template',

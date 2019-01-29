@@ -17,7 +17,6 @@ import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
-import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 
@@ -35,7 +34,6 @@ class CreateMessage extends React.Component {
       fbPageId: null,
       pageId: null
     }
-    this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -168,11 +166,6 @@ class CreateMessage extends React.Component {
           this.setState({broadcast: message})
         } else if (payload[i].componentType === 'list') {
           temp.push(<List id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)
-          this.setState({list: temp})
-          message.push(payload[i])
-          this.setState({broadcast: message})
-        } else if (payload[i].componentType === 'media') {
-          temp.push(<Media id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
@@ -318,59 +311,6 @@ class CreateMessage extends React.Component {
         } else if (temp[i].default_action) {
           delete temp[i].default_action
         }
-        isPresent = true
-      }
-    })
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({broadcast: temp})
-    var jsonMessages = this.state.jsonMessages
-    for (var j = 0; j < obj.buttons.length; j++) {
-      if (obj.buttons[j].type === 'postback' && !obj.buttons[j].payload) {
-        obj.buttons[j].payload = this.state.jsonMessages.length + 1
-        jsonMessages = this.setNewJsonMessage(obj.buttons[j], jsonMessages)
-      }
-    }
-    if (obj.deletePayload) {
-      jsonMessages = this.removePayloadMessages([obj.deletePayload], jsonMessages)
-    }
-    for (var k = 0; k < jsonMessages.length; k++) {
-      if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
-        jsonMessages[k].messageContent = temp
-      }
-    }
-    this.setState({
-      jsonMessages: jsonMessages
-    })
-  }
-
-  handleMedia (obj) {
-    if (obj.error) {
-      if (obj.error === 'invalid image') {
-        this.msg.error('Please select an image of type jpg, gif, bmp or png')
-        return
-      }
-      if (obj.error === 'file size error') {
-        this.msg.error('File size cannot exceed 25MB')
-        return
-      }
-      if (obj.error === 'invalid file') {
-        this.msg.error('File is not valid')
-        return
-      }
-    }
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i].fileName = obj.fileName
-        temp[i].mediaType = obj.mediaType
-        temp[i].fileurl = obj.fileurl
-        temp[i].image_url = obj.image_url
-        temp[i].size = obj.size
-        temp[i].type = obj.type
-        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })
@@ -639,16 +579,6 @@ class CreateMessage extends React.Component {
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                       <h6>List</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
-                    <div className='align-center'>
-                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
-                      <h6>Media</h6>
                     </div>
                   </div>
                 </div>

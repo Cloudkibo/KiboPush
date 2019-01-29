@@ -87,7 +87,6 @@ class ViewMessage extends React.Component {
                                         controls
                                         onPlay={this.onTestURLAudio(b.fileurl.url)}
                                         width='100%'
-                                        height='auto'
                                         style={{width: '100%', height: 'auto'}}
                                       />
                                     </div>

@@ -27,6 +27,7 @@ class Media extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
       errorMsg: '',
       showErrorDialogue: false,
@@ -51,6 +52,13 @@ class Media extends React.Component {
 
   closeDialog () {
     this.setState({showErrorDialogue: false})
+  }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
   }
   componentDidMount () {
     if (this.props.media) {
