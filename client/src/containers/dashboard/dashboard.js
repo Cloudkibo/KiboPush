@@ -72,16 +72,16 @@ class Dashboard extends React.Component {
     this.setState({isShowingModalPro: true})
   }
   componentWillMount () {
-    // this.props.validateUserAccessToken(this.checkUserAccessToken)
-    // this.props.getuserdetails()
-    // this.props.loadMyPagesList()
-    // this.props.loadDashboardData()
-    // this.props.updateSubscriptionPermission()
-    // this.props.loadSubscribersList()
-    // this.props.loadGraphData(0)
-    // this.props.loadTopPages()
-    // this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
-    // this.props.loadSentSeen({pageId: 'all', days: '30'})
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.getuserdetails()
+    this.props.loadMyPagesList()
+    this.props.loadDashboardData()
+    this.props.updateSubscriptionPermission()
+    this.props.loadSubscribersList()
+    this.props.loadGraphData(0)
+    this.props.loadTopPages()
+    this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
+    this.props.loadSentSeen({pageId: 'all', days: '30'})
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
