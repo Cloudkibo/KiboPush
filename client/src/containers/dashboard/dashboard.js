@@ -11,7 +11,7 @@ import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import SubscriberSummary from './subscriberSummary'
-import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission } from '../../redux/actions/dashboard.actions'
+import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -25,8 +25,8 @@ import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
-import Reports from './reports'
-import TopPages from './topPages'
+// import Reports from './reports'
+// import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -45,7 +45,11 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      isShowingModalPro: false
+      isShowingModalPro: false,
+      isShowingModalDays: false,
+      days: 'all',
+      pageId: 'all',
+      selectedPage: {}
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -61,7 +65,22 @@ class Dashboard extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
+    this.changeDays = this.changeDays.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.onInputChange = this.onInputChange.bind(this)
+    this.showReport = this.showReport.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
+
+  showDialog () {
+    this.setState({isShowingModalDays: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModalDays: false})
+  }
+
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
@@ -75,6 +94,7 @@ class Dashboard extends React.Component {
     this.props.loadGraphData(0)
     this.props.loadTopPages()
     this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
+    this.props.loadSentSeen({pageId: 'all', days: 'all'})
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
@@ -223,9 +243,9 @@ class Dashboard extends React.Component {
       }
     }
 
-    if (!this.props.pages && nextprops.pages) {
-      this.props.sentVsSeen(nextprops.pages[0].pageId)
-    }
+    // if (!this.props.pages && nextprops.pages) {
+    //   this.props.sentVsSeen(nextprops.pages[0].pageId)
+    // }
   }
   setChartData (graphData) {
     const url = window.location.hostname
@@ -394,10 +414,10 @@ class Dashboard extends React.Component {
       // document.body.appendChild(addScript1)
 
     }
-    if (this.props.currentPage) {
-      console.log('updating sentVsSeen currentPage')
-      this.props.sentVsSeen(this.props.currentPage.pageId)
-    }
+    // if (this.props.currentPage) {
+    //   console.log('updating sentVsSeen currentPage')
+    //   this.props.sentVsSeen(this.props.currentPage.pageId)
+    // }
     const hostname =  window.location.hostname;
     let title = '';
     if(hostname.includes('kiboengage.cloudkibo.com')) {
@@ -417,16 +437,32 @@ class Dashboard extends React.Component {
   }
 
   changePage (page) {
-    let index = 0
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (page === this.props.pages[i].pageId) {
-        console.log('in if change page')
-        index = i
-        this.props.updateCurrentPage(this.props.pages[i])
-        break
-      }
+    // let index = 0
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (page === this.props.pages[i].pageId) {
+    //     console.log('in if change page')
+    //     index = i
+    //     this.props.updateCurrentPage(this.props.pages[i])
+    //     break
+    //   }
+    // }
+    // this.props.sentVsSeen(this.props.pages[index].pageId)
+    if (page === 'all') {
+      this.setState({pageId: 'all'})
+      this.props.loadSentSeen({pageId: 'all', days: this.state.days})
+    } else {
+      this.setState({pageId: page.pageId, selectedPage: page})
+      this.props.loadSentSeen({pageId: page.pageId, days: this.state.days})
     }
-    this.props.sentVsSeen(this.props.pages[index].pageId)
+  }
+
+  changeDays (days) {
+    if (days === 'other') {
+      this.setState({isShowingModalDays: true})
+    } else {
+      this.setState({days: days})
+      this.props.loadSentSeen({pageId: this.state.pageId, days: days})
+    }
   }
 
   showDropDown () {
@@ -437,6 +473,19 @@ class Dashboard extends React.Component {
     this.setState({showDropDown: false})
   }
 
+  onInputChange (e) {
+    console.log('days:', e.target.value)
+    this.setState({days: e.target.value})
+  }
+  showReport () {
+    this.setState({isShowingModalDays: false})
+    this.props.loadSentSeen({pageId: this.state.pageId, days: this.state.days})
+  }
+  onKeyDown (e) {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -482,6 +531,33 @@ class Dashboard extends React.Component {
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-primary' onClick={() => this.goToSettings()}>
                     Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalDays &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <div className='form-group m-form__group row' style={{padding: '30px'}}>
+                <span htmlFor='example-text-input' className='col-form-label'>
+                  Show records for last:&nbsp;&nbsp;
+                </span>
+                <div>
+                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days !== 'all' && this.state.days} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
+                </div>
+                <span htmlFor='example-text-input' className='col-form-label'>
+                &nbsp;&nbsp;days
+              </span>
+              </div>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.showReport()}>
+                    Show Report
                   </button>
                 </div>
               </div>
@@ -544,10 +620,24 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com')
-              ? <ProgressBoxKiboEngage pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
-              : <ProgressBoxKiboChat pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
+              ? <ProgressBoxKiboEngage
+                lineChartData={this.state.chartData}
+                pages={this.props.pages}
+                data={this.props.sentseendata}
+                changePage={this.changePage}
+                days={this.state.days}
+                pageId={this.state.pageId}
+                selectedPage={this.state.selectedPage} />
+              : <ProgressBoxKiboChat lineChartData={this.state.chartData}
+                pages={this.props.pages}
+                data={this.props.sentseendata}
+                changePage={this.changePage}
+                days={this.state.days}
+                pageId={this.state.pageId}
+                selectedPage={this.state.selectedPage} />
             }
             </div>
+            {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
@@ -563,6 +653,7 @@ class Dashboard extends React.Component {
                 selectedDays={this.state.selectedDays}
                 />
             </div>
+            */}
             <div className='row'>
               <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
                 {
@@ -626,6 +717,7 @@ function mapDispatchToProps (dispatch) {
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,
       loadSubscriberSummary: loadSubscriberSummary,
+      loadSentSeen: loadSentSeen,
       validateUserAccessToken
     },
     dispatch)

@@ -114,3 +114,14 @@ export function allLocales () {
     callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
+export function loadSentSeen (data) {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi(`dashboard/sentVsSeenNew`, 'post', data)
+      .then(res => {
+        console.log('sentVsSeen response', res)
+        dispatch(updateSentVsSeen(res.payload.datacounts))
+        dispatch(updateGraphData(res.payload.graphDatas))
+      })
+  }
+}
