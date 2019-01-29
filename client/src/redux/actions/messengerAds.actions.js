@@ -242,7 +242,7 @@ const prepareJsonPayload = (data, optinMessage) => {
                 delete cbutton.newUrl
               }
             }
-            cButtons.push(button)
+            cButtons.push(cbutton)
           }
           body.cards[m].buttons = cButtons
         }
