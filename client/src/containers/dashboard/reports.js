@@ -39,7 +39,7 @@ class Reports extends React.Component {
             <Line type='monotone' dataKey='sessionscount' name='Sessions' stroke='#A11644' activeDot={{r: 8}} />
           }
         </LineChart>
-        : <span>No reports to show for the applied filters</span>
+        : <span>No reports to show for the applied filters. Please change the filters</span>
       }
       </center>
     )

@@ -46,8 +46,7 @@ class Dashboard extends React.Component {
       loading: true,
       showDropDown: false,
       isShowingModalPro: false,
-      isShowingModalDays: false,
-      days: 'all',
+      days: '30',
       pageId: 'all',
       selectedPage: {}
     }
@@ -66,19 +65,7 @@ class Dashboard extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.onInputChange = this.onInputChange.bind(this)
-    this.showReport = this.showReport.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  showDialog () {
-    this.setState({isShowingModalDays: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModalDays: false})
   }
 
   showProDialog () {
@@ -94,7 +81,7 @@ class Dashboard extends React.Component {
     this.props.loadGraphData(0)
     this.props.loadTopPages()
     this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
-    this.props.loadSentSeen({pageId: 'all', days: 'all'})
+    this.props.loadSentSeen({pageId: 'all', days: '30'})
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
@@ -277,7 +264,7 @@ class Dashboard extends React.Component {
   }
   includeZeroCounts (data) {
     var dataArray = []
-    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
+    var days = this.state.days
     var index = 0
     var varDate = moment()
     for (var i = 0; i < days; i++) {
@@ -456,13 +443,9 @@ class Dashboard extends React.Component {
     }
   }
 
-  changeDays (days) {
-    if (days === 'other') {
-      this.setState({isShowingModalDays: true})
-    } else {
-      this.setState({days: days})
-      this.props.loadSentSeen({pageId: this.state.pageId, days: days})
-    }
+  changeDays (e) {
+    this.setState({days: e.target.value})
+    this.props.loadSentSeen({pageId: this.state.pageId, days: e.target.value})
   }
 
   showDropDown () {
@@ -473,14 +456,6 @@ class Dashboard extends React.Component {
     this.setState({showDropDown: false})
   }
 
-  onInputChange (e) {
-    console.log('days:', e.target.value)
-    this.setState({days: e.target.value})
-  }
-  showReport () {
-    this.setState({isShowingModalDays: false})
-    this.props.loadSentSeen({pageId: this.state.pageId, days: this.state.days})
-  }
   onKeyDown (e) {
     if (e.keyCode === 13) {
       e.preventDefault()
@@ -537,33 +512,6 @@ class Dashboard extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        {
-          this.state.isShowingModalDays &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <div className='form-group m-form__group row' style={{padding: '30px'}}>
-                <span htmlFor='example-text-input' className='col-form-label'>
-                  Show records for last:&nbsp;&nbsp;
-                </span>
-                <div>
-                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days !== 'all' && this.state.days} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
-                </div>
-                <span htmlFor='example-text-input' className='col-form-label'>
-                &nbsp;&nbsp;days
-              </span>
-              </div>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.showReport()}>
-                    Show Report
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -596,6 +544,16 @@ class Dashboard extends React.Component {
               Need help in understanding dashboard? Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
+          <ProgressBoxKiboEngage
+            lineChartData={this.state.chartData}
+            pages={this.props.pages}
+            data={this.props.sentseendata}
+            changePage={this.changePage}
+            days={this.state.days}
+            pageId={this.state.pageId}
+            selectedPage={this.state.selectedPage}
+            changeDays={this.changeDays}
+            onKeyDown={this.onKeyDown} />
           {
             this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
               (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
@@ -627,14 +585,19 @@ class Dashboard extends React.Component {
                 changePage={this.changePage}
                 days={this.state.days}
                 pageId={this.state.pageId}
-                selectedPage={this.state.selectedPage} />
-              : <ProgressBoxKiboChat lineChartData={this.state.chartData}
+                selectedPage={this.state.selectedPage}
+                changeDays={this.changeDays}
+                onKeyDown={this.onKeyDown} />
+              : <ProgressBoxKiboChat
+                lineChartData={this.state.chartData}
                 pages={this.props.pages}
                 data={this.props.sentseendata}
                 changePage={this.changePage}
                 days={this.state.days}
                 pageId={this.state.pageId}
-                selectedPage={this.state.selectedPage} />
+                selectedPage={this.state.selectedPage}
+                changeDays={this.changeDays}
+                onKeyDown={this.onKeyDown} />
             }
             </div>
             {/*
