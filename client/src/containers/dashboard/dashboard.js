@@ -544,16 +544,6 @@ class Dashboard extends React.Component {
               Need help in understanding dashboard? Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
-          <ProgressBoxKiboEngage
-            lineChartData={this.state.chartData}
-            pages={this.props.pages}
-            data={this.props.sentseendata}
-            changePage={this.changePage}
-            days={this.state.days}
-            pageId={this.state.pageId}
-            selectedPage={this.state.selectedPage}
-            changeDays={this.changeDays}
-            onKeyDown={this.onKeyDown} />
           {
             this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
               (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
