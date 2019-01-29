@@ -76,6 +76,7 @@ class Gallery extends React.Component {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
+    let timeStamp = new Date().getTime()
     this.setState({cards: [...temp, {element: <Card module={this.props.module} pageId={this.props.pageId} pages={this.props.pages} id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} setLoading={this.setLoading} isGalleryCard='true' />, key: timeStamp}]})
     this.slider.slickNext()
   }
