@@ -238,7 +238,7 @@ class SubscriberSummary extends React.Component {
               </ul>
               <ul className='m-portlet__nav'>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <span>Show records for </span>&nbsp;&nbsp;
+                  <span>{this.state.days === 'all' ? 'Show records for' : 'Show records for last'}</span>&nbsp;&nbsp;
                   <a onClick={this.showDaysDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                     {this.state.days === 'all' ? 'All' : this.state.days}
                   </a>&nbsp;&nbsp;

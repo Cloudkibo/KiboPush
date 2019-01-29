@@ -114,68 +114,21 @@ class ProgressBox extends React.Component {
               </ul>
               <ul className='m-portlet__nav'>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <span>Show records for </span>&nbsp;&nbsp;
-                  <a onClick={this.showDaysDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                    {this.props.days === 'all' ? 'All' : this.props.days}
-                  </a>&nbsp;&nbsp;
-                  <span className='m-nav__link-text'>
-                    Days
-                  </span>
-                  {
-                    this.state.showDaysDropDown &&
-                    <div className='m-dropdown__wrapper'>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <ul className='m-nav'>
-                              <li key={10} className='m-nav__item'>
-                                <a onClick={() => this.props.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  <span className='m-nav__link-text'>
-                                    Last 10
-                                  </span>
-                                </a>
-                              </li>
-                              <li key={30} className='m-nav__item'>
-                                <a onClick={() => this.props.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  <span className='m-nav__link-text'>
-                                    Last 30
-                                  </span>
-                                </a>
-                              </li>
-                              <li key={90} className='m-nav__item'>
-                                <a onClick={() => this.props.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  <span className='m-nav__link-text'>
-                                    Last 90
-                                  </span>
-                                </a>
-                              </li>
-                              <li key={'all'} className='m-nav__item'>
-                                <a onClick={() => this.props.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  <span className='m-nav__link-text'>
-                                    All
-                                  </span>
-                                </a>
-                              </li>
-                              <li key={'other'} className='m-nav__item'>
-                                <a onClick={() => this.props.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  <span className='m-nav__link-text'>
-                                    Other
-                                  </span>
-                                </a>
-                              </li>
-                              <li className='m-nav__separator m-nav__separator--fit' />
-                              <li className='m-nav__item'>
-                                <a onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                  Cancel
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
+                  <form className='m-form m-form--fit m-form--label-align-right'>
+                    <div className='m-portlet__body'>
+                      <div className='form-group m-form__group row'>
+                        <span htmlFor='example-text-input' className='col-form-label'>
+                          Show records for last:&nbsp;&nbsp;
+                        </span>
+                        <div>
+                          <input id='example-text-input' type='number' min='0' step='1' value={this.props.days} className='form-control' onKeyDown={this.props.onKeyDown} onChange={this.props.changeDays} />
                         </div>
+                        <span htmlFor='example-text-input' className='col-form-label'>
+                        &nbsp;&nbsp;days
+                      </span>
                       </div>
                     </div>
-                  }
+                  </form>
                 </li>
               </ul>
             </div>
