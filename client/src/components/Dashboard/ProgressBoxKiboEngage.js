@@ -6,17 +6,20 @@
 import React from 'react'
 import IconStack from './IconStack'
 import ProgressBar from './ProgressBar'
+import Reports from '../../containers/dashboard/reports'
 
 class ProgressBox extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      showDropDown: false
-
+      showDropDown: false,
+      showDaysDropDown: false
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.calculateProgressRates = this.calculateProgressRates.bind(this)
+    this.showDaysDropDown = this.showDaysDropDown.bind(this)
+    this.hideDaysDropDown = this.hideDaysDropDown.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -26,6 +29,12 @@ class ProgressBox extends React.Component {
   }
   hideDropDown () {
     this.setState({showDropDown: false})
+  }
+  showDaysDropDown () {
+    this.setState({showDaysDropDown: true})
+  }
+  hideDaysDropDown () {
+    this.setState({showDaysDropDown: false})
   }
   calculateProgressRates () {
     var progressRates = {}
@@ -51,18 +60,12 @@ class ProgressBox extends React.Component {
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
-            <div className='m-portlet__head-caption'>
-              <div className='m-portlet__head-title'>
-                <h3 className='m-portlet__head-text'>
-                  {this.props.selectedPage ? this.props.selectedPage.pageName : this.props.firstPage.pageName}
-                </h3>
-              </div>
-            </div>
             <div className='m-portlet__head-tools'>
-              <ul className='m-portlet__nav'>
-                <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+              <ul className='m-portlet__nav' style={{float: 'left'}}>
+                <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-left m-dropdown--align-push' data-dropdown-toggle='click'>
+                  <span>Select Page: </span>&nbsp;&nbsp;&nbsp;
                   <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                    Change Page
+                    {this.props.pageId === 'all' ? 'All' : this.props.selectedPage.pageName}
                   </a>
                   {
                     this.state.showDropDown &&
@@ -78,9 +81,9 @@ class ProgressBox extends React.Component {
                                 </span>
                               </li>
                               {
-                                this.props.pages.map((page, i) => (
+                                this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.props.changePage(page.pageId)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
@@ -88,9 +91,82 @@ class ProgressBox extends React.Component {
                                   </li>
                                 ))
                               }
+                              <li key={'all'} className='m-nav__item'>
+                                <a onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    All
+                                  </span>
+                                </a>
+                              </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
                                 <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                  Cancel
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </li>
+              </ul>
+              <ul className='m-portlet__nav'>
+                <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                  <span>Show records for </span>&nbsp;&nbsp;
+                  <a onClick={this.showDaysDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                    {this.props.days === 'all' ? 'All' : this.props.days}
+                  </a>&nbsp;&nbsp;
+                  <span className='m-nav__link-text'>
+                    Days
+                  </span>
+                  {
+                    this.state.showDaysDropDown &&
+                    <div className='m-dropdown__wrapper'>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <ul className='m-nav'>
+                              <li key={10} className='m-nav__item'>
+                                <a onClick={() => this.props.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    Last 10
+                                  </span>
+                                </a>
+                              </li>
+                              <li key={30} className='m-nav__item'>
+                                <a onClick={() => this.props.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    Last 30
+                                  </span>
+                                </a>
+                              </li>
+                              <li key={90} className='m-nav__item'>
+                                <a onClick={() => this.props.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    Last 90
+                                  </span>
+                                </a>
+                              </li>
+                              <li key={'all'} className='m-nav__item'>
+                                <a onClick={() => this.props.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    All
+                                  </span>
+                                </a>
+                              </li>
+                              <li key={'other'} className='m-nav__item'>
+                                <a onClick={() => this.props.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                  <span className='m-nav__link-text'>
+                                    Other
+                                  </span>
+                                </a>
+                              </li>
+                              <li className='m-nav__separator m-nav__separator--fit' />
+                              <li className='m-nav__item'>
+                                <a onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
                                 </a>
                               </li>
@@ -199,6 +275,8 @@ class ProgressBox extends React.Component {
                   />
                 </div>
               </div>
+              <br />
+              <Reports lineChartData={this.props.lineChartData} />
             </div>
           </div>
         </div>

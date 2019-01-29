@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
 import {loadSubscriberSummary} from '../../redux/actions/dashboard.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import moment from 'moment'
 
 class SubscriberSummary extends React.Component {
   constructor (props, context) {
@@ -167,7 +166,7 @@ class SubscriberSummary extends React.Component {
                   Show records for last:&nbsp;&nbsp;
                 </span>
                 <div>
-                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
+                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days !== 'all' && this.state.days} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
                 </div>
                 <span htmlFor='example-text-input' className='col-form-label'>
                 &nbsp;&nbsp;days
