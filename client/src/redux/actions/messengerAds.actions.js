@@ -230,12 +230,12 @@ const prepareJsonPayload = (data, optinMessage) => {
       }
     }
   } else if (body.componentType === 'gallery') {
-    var cButtons = []
     if (body.cards && body.cards.length > 0) {
       for (var m = 0; m < body.cards.length; m++) {
         var cardButtons = body.cards[m].buttons
         if (cardButtons) {
           for (var c = 0; c < cardButtons.length; c++) {
+            var cButtons = []
             var cbutton = cardButtons[c]
             if (cbutton.type === 'web_url') {
               if (cbutton.newUrl) {
@@ -245,6 +245,9 @@ const prepareJsonPayload = (data, optinMessage) => {
             cButtons.push(cbutton)
           }
           body.cards[m].buttons = cButtons
+        }
+        if (body.cards[m].fileurl) {
+          delete body.cards[m].fileurl
         }
       }
     }
