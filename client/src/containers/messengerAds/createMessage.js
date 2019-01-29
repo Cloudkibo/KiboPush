@@ -171,11 +171,6 @@ class CreateMessage extends React.Component {
           this.setState({list: temp})
           message.push(payload[i])
           this.setState({broadcast: message})
-        } else if (payload[i].componentType === 'media') {
-          temp.push(<Media id={payload[i].id} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)
-          this.setState({list: temp})
-          message.push(payload[i])
-          this.setState({broadcast: message})
         }
       }
     } else {
@@ -639,16 +634,6 @@ class CreateMessage extends React.Component {
                     <div className='align-center'>
                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                       <h6>List</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} module='messengerAd' replyWithMessage={this.replyWithMessage} pageId={this.state.fbPageId} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
-                    <div className='align-center'>
-                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
-                      <h6>Media</h6>
                     </div>
                   </div>
                 </div>
