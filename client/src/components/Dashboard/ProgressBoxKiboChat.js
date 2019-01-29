@@ -6,6 +6,7 @@
 import React from 'react'
 import IconStack from './IconStack'
 import ProgressBar from './ProgressBar'
+import Reports from '../../containers/dashboard/reports'
 
 class ProgressBox extends React.Component {
   constructor (props, context) {
@@ -195,6 +196,8 @@ class ProgressBox extends React.Component {
                   />
                 </div>
               </div>
+              <br />
+              <Reports lineChartData={this.props.lineChartData} />
             </div>
           </div>
         </div>
