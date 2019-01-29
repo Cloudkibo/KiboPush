@@ -215,19 +215,20 @@ class Card extends React.Component {
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
   componentDidMount () {
-    this.props.uploadTemplate({pages: this.props.pages,
-      url: this.props.cardDetails.fileurl.url,
-      componentType: 'image',
-      id: this.props.cardDetails.fileurl.id,
-      name: this.props.cardDetails.fileName
-    }, { fileurl: '',
-      fileName: this.props.cardDetails.fileName,
-      type: this.props.cardDetails.type,
-      image_url: '',
-      size: this.props.cardDetails.size
-    }, this.updateImageUrl, this.setLoading)
-
-    this.updateCardDetails(this.props)
+    if (this.props.cardDetails) {
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: this.props.cardDetails.fileurl.url,
+        componentType: 'image',
+        id: this.props.cardDetails.fileurl.id,
+        name: this.props.cardDetails.fileName
+      }, { fileurl: '',
+        fileName: this.props.cardDetails.fileName,
+        type: this.props.cardDetails.type,
+        image_url: '',
+        size: this.props.cardDetails.size
+      }, this.updateImageUrl, this.setLoading)
+      this.updateCardDetails(this.props)
+    }
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
