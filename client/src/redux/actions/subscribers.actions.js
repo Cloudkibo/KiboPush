@@ -116,7 +116,7 @@ export function allLocales () {
 
 export function unSubscribe (data, handleSubscription) {
   return (dispatch) => {
-    callApi('sessions/unSubscribe', 'post', data).then(res => {
+    callApi('subscribers/unSubscribe', 'post', data).then(res => {
       handleSubscription(res, 'unsub')
     })
   }
