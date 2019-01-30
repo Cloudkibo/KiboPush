@@ -331,7 +331,7 @@ export function changeStatus (data, handleActiveSession) {
 
 export function unSubscribe (data) {
   return (dispatch) => {
-    callApi('sessions/unSubscribe', 'post', data).then(res => {
+    callApi('subscribers/unSubscribe', 'post', data).then(res => {
       // dispatch(fetchSessions())
     })
   }
