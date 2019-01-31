@@ -162,13 +162,14 @@ class InviteSubscribers extends React.Component {
       platform: 'facebook',
       payload: [{ text: 'Hello! this is a test broadcast.', componentType: 'text' }],
       isSegmented: false,
-      segmentationPageIds: [this.state.selectPage.pageId],
+      segmentationPageIds: [this.state.selectPage._id],
       segmentationLocale: '',
       segmentationGender: '',
       segmentationTimeZone: '',
       title: 'Test Broadcast',
       segmentationList: '',
-      isList: false
+      isList: false,
+      fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
     this.msg.info('Sending test message...')
     this.props.sendBroadcast(data, this.msg)
