@@ -564,7 +564,7 @@ class EditTemplate extends React.Component {
         payload: this.state.broadcast,
         title: this.state.convoTitle,
         isSegmented: isSegmentedValue,
-        segmentationPageIds: this.state.pageValue,
+        segmentationPageIds: this.props.location.state.pages,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
         segmentationTags: tagIDs,
