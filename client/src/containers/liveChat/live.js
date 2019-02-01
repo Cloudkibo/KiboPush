@@ -160,7 +160,7 @@ class LiveChat extends React.Component {
     this.props.fetchUserChats(session._id, {page: 'first', number: 25})
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id)
-    this.props.getSubscriberTags(session.subscriber_id, this.msg)
+    this.props.getSubscriberTags(session.subscriber_id._id, this.msg)
   }
 
   handleSearch (e) {

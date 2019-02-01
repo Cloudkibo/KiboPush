@@ -82,7 +82,7 @@ export function createTag (tag, handleResponse, msg) {
 export function getSubscriberTags (id, msg) {
   console.log('Actions for getting subscriber Tag', id)
   return (dispatch) => {
-    callApi('tags/subscribertags/', 'post', {subscriberId: id._id})
+    callApi('tags/subscribertags/', 'post', {subscriberId: id})
       .then(res => {
         if (res.status === 'success' && res.payload) {
           dispatch(loadSubscriberTags(res.payload))
