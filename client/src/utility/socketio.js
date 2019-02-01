@@ -12,7 +12,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
-import { loadSubscribersList } from './../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 
 const socket = io('')
@@ -99,7 +99,7 @@ socket.on('message', (data) => {
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
-    // store.dispatch(loadSubscribersList())
+    store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))
