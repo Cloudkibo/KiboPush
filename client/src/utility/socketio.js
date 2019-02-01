@@ -99,7 +99,7 @@ socket.on('message', (data) => {
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
-    store.dispatch(loadSubscribersList())
+    // store.dispatch(loadSubscribersList())
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))
