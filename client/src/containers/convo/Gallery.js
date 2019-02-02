@@ -110,7 +110,11 @@ class Gallery extends React.Component {
       }
     })
     if (!isPresent) {
-      temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, fileurl: obj.fileurl, buttons: obj.buttons})
+      if (obj.default_action) {
+        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, fileurl: obj.fileurl, buttons: obj.buttons, default_action: obj.default_action})
+      } else {
+        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, fileurl: obj.fileurl, buttons: obj.buttons})
+      }
     }
     this.setState({broadcast: temp})
     this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: JSON.parse(JSON.stringify(this.state.broadcast))})
