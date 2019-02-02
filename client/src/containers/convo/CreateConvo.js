@@ -346,6 +346,9 @@ class CreateConvo extends React.Component {
     if (obj.cards) {
       obj.cards.forEach((d) => {
         delete d.id
+        if (d.fileurl) {
+          delete d.fileurl
+        }
       })
     }
     temp.map((data, i) => {
