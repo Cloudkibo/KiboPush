@@ -51,12 +51,13 @@ class Settings extends React.Component {
       saveStateNGP: null,
       planInfo: '',
       show: true,
-      openTab: 'showAPI',
+      openTab: 'resetPassword',
       pro: false,
       isShowingModal: false,
       isDisableInput: false,
       isDisableButton: false,
-      isKiboChat: false
+      isKiboChat: false,
+      hideAPI: true
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -555,7 +556,7 @@ class Settings extends React.Component {
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && !this.state.hideAPI &&
                       <li className='m-nav__item'>
                         {
                          this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
