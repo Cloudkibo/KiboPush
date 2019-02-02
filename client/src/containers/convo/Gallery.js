@@ -101,6 +101,11 @@ class Gallery extends React.Component {
         data.buttons = obj.buttons
         data.subtitle = obj.description
         data.fileurl = obj.fileurl
+        if (obj.default_action && obj.default_action !== '') {
+          data.default_action = obj.default_action
+        } else if (data.default_action) {
+          delete data.default_action
+        }
         isPresent = true
       }
     })
