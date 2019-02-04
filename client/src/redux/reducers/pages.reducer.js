@@ -29,7 +29,6 @@ export function pagesInfo (state = [], action) {
       })
     case ActionTypes.PAGE_CONNECT_WARNING:
       return Object.assign({}, state, {
-        otherPages: action.pages,
         page_connected: action.page_connected,
         message: ''
       })

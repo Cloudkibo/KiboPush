@@ -80,11 +80,9 @@ export function enablePage (page) {
         } else if (res.payload && res.payload.msg) {
           console.log('else if condition')
           // the page is already connected by some other user
-          //console.log('res.payload.msg', res.payload.msg)
+          // console.log('res.payload.msg', res.payload.msg)
           dispatch(userpageconnect(res.payload))
-          dispatch(addPages())
-
-          
+          // dispatch(addPages())
         } else {
           dispatch(addPages())
           dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))

@@ -39,15 +39,15 @@ class AddPage extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Add Pages`;
+    document.title = `${title} | Add Pages`
   }
 
   closeDialog () {
