@@ -213,7 +213,7 @@ export function addButton (data, handleFunction, msg, resetButton) {
   }
 }
 
-export function editButton (data, handleFunction, handleClose) {
+export function editButton (data, handleFunction, handleClose, msg) {
   return (dispatch) => {
     callApi(`broadcasts/editButton`, 'post', data).then(res => {
       if (res.status === 'success') {
@@ -222,7 +222,15 @@ export function editButton (data, handleFunction, handleClose) {
           handleClose()
         }
       } else {
-        console.log(res.description)
+        console.log(res.payload)
+        if (msg) {
+          if (res.payload) {
+            msg.error(res.payload)
+          }
+          if (res.description) {
+            msg.error(res.description)
+          }
+        }
       }
     })
   }
