@@ -137,14 +137,12 @@ class Profile extends React.Component {
     var payload = {}
     var selectedIds = []
     var index = 0
-    if (this.props.subscriberTags && this.props.subscriberTags.length > 0) {
-      for (var i = 0; i < this.props.subscriberTags.length; i++) {
-        if (this.props.subscriberTags[i].tag !== this.state.addTag.label) {
-          index++
-        }
+    for (var i = 0; i < this.props.subscriberTags.length; i++) {
+      if (this.props.subscriberTags[i].tag !== this.state.addTag.label) {
+        index++
       }
     }
-    if (index === 0 || index === this.props.subscriberTags.length) {
+    if (index === 0) {
       selectedIds.push(this.props.currentSession.subscriber_id._id)
     } else {
       this.msg.error('Tag is already assigned')
