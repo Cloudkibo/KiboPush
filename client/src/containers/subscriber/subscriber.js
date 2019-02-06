@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -124,6 +124,27 @@ class Subscriber extends React.Component {
     this.handleSequenceInd = this.handleSequenceInd.bind(this)
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
     this.handleFilterByPageInitial = this.handleFilterByPageInitial.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
+  }
+
+  profilePicError (e, subscriber) {
+    console.log('profile picture error', subscriber)
+    let fetchData = {
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      current_page: this.state.pageSelected,
+      filter: this.state.filter,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender,
+        page_value: this.state.filterByPage,
+        locale_value: this.state.filterByLocale,
+        tag_value: this.state.filterByTag,
+        status_value: this.state.status_value
+      }
+    }
+    this.props.updatePicture({subscriber}, fetchData)
   }
 
   getDate (datetime) {
@@ -385,15 +406,15 @@ class Subscriber extends React.Component {
     this.setState({ removeTag: value })
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Subscribers`;
+    document.title = `${title} | Subscribers`
 
     if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
@@ -859,7 +880,7 @@ class Subscriber extends React.Component {
     } else {
       this.setState({filterByPage: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
-       }
+    }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
     // this.setState({pageSelected: 0})
@@ -892,8 +913,7 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
-    }
-    else {
+    } else {
       this.setState({filterByGender: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
@@ -943,7 +963,6 @@ class Subscriber extends React.Component {
       if (e.target.value === 'subscribed') {
         this.setState({status_value: true})
         this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true}})
-
       } else {
         this.setState({status_value: false})
         this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: false}})
@@ -1369,6 +1388,7 @@ class Subscriber extends React.Component {
                                 style={{width: '100px', overflow: 'inherit'}}>
                                 <img alt='pic'
                                   src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                  onError={(e) => this.profilePicError(e, subscriber)}
                                   className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                               />
                               </span>
@@ -1686,7 +1706,8 @@ function mapDispatchToProps (dispatch) {
     unsubscribeToSequence: unsubscribeToSequence,
     getSubscriberSequences: getSubscriberSequences,
     subscribe: subscribe,
-    unSubscribe: unSubscribe
+    unSubscribe: unSubscribe,
+    updatePicture: updatePicture
   },
     dispatch)
 }
