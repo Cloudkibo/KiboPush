@@ -142,7 +142,7 @@ class Profile extends React.Component {
         index++
       }
     }
-    if (index === 0) {
+    if (index === this.props.subscriberTags.length) {
       selectedIds.push(this.props.currentSession.subscriber_id._id)
     } else {
       this.msg.error('Tag is already assigned')
