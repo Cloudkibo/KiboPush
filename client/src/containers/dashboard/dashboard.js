@@ -182,11 +182,12 @@ class Dashboard extends React.Component {
     console.log('in componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.emailVerified === false) {
-        browserHistory.push({
-          pathname: '/resendVerificationEmail'
-        })
-      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      // if (nextprops.user.emailVerified === false) {
+      //   browserHistory.push({
+      //     pathname: '/resendVerificationEmail'
+      //   })
+      // } else
+      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }

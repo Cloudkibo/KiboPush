@@ -35,7 +35,7 @@ class Signup extends React.Component {
       error: false,
       account_type: 'none',
       isShowingModal: false,
-      captchaSuccess: false,
+      captchaSuccess: true,
       mode: ''
     }
     this.check = this.check.bind(this)
