@@ -108,11 +108,11 @@ class AddPage extends React.Component {
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item'>
-                        {this.props.pages && this.props.pages.length === 0
-                        ? <Link className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled>
+                        {this.props.pages && this.props.pages.length > 0
+                        ? <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' >
                           Done
                         </Link>
-                        : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
+                        : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled>
                           Done
                         </Link>
                       }
