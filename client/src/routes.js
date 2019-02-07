@@ -149,7 +149,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/addfbpages',
+      pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
     })
   }
