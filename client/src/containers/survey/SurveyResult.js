@@ -17,6 +17,8 @@ class SurveyResult extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+     // totalSent: this.props.location.state.sent,
+      totalResponses: 0,
       show: false,
       isShowingModalPro: false
     }
@@ -59,8 +61,19 @@ class SurveyResult extends React.Component {
     })
   }
   componentWillReceiveProps (nextprops) {
+  //  var survey = this.props.location.state
+   // this.setState({totalSent: survey.sent})
+    if (nextprops.responses) {
+      if (nextprops.responses.length > 0) {
+        let totalResponses = 0
+        for (let i = 0; i < nextprops.responses.length; i++) {
+          totalResponses += nextprops.responses[i].count
+        }
+        this.setState({totalResponses: totalResponses})
+      }
     this.setState({show: true})
   }
+}
   exists (newSubscriber) {
     for (let i = 0; i < responseData.length; i++) {
       if (responseData[i].subscriberId === newSubscriber) {
@@ -121,7 +134,7 @@ class SurveyResult extends React.Component {
   render () {
     console.log('SurveyResult props', this.props)
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      /*<div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.survey &&
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -132,6 +145,8 @@ class SurveyResult extends React.Component {
           </div>
         </div>
         }
+        */
+       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
@@ -150,7 +165,56 @@ class SurveyResult extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Survey Report</h3>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
+        <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Title: {this.props.location.state.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body' style={{'display': 'flex'}}>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        { this.props.location.state.sent}
+                        <h5>
+                          Survey Sent So Far
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        { this.props.responses
+                        ? <div className='count-stat'>{this.state.totalResponses}
+                        </div>
+                        : <div className='count-stat'>{this.state.totalResponses}
+                        </div>
+                        }
+                        <h5>
+                          Survey Respones
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className='row'>
             <div
               className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
