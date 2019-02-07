@@ -202,7 +202,7 @@ class Dashboard extends React.Component {
         }
       } else if (!nextprops.pages || (nextprops.pages && nextprops.pages.length === 0)) {
         browserHistory.push({
-          pathname: '/inviteUsingLinkWizard'
+          pathname: '/addfbpages'
         })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
