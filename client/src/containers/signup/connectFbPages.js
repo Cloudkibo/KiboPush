@@ -112,7 +112,7 @@ class AddPage extends React.Component {
                         ? <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' >
                           Done
                         </Link>
-                        : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled>
+                        : <Link className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled>
                           Done
                         </Link>
                       }
