@@ -28,23 +28,21 @@ class AddPage extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
   }
 
-  componentWillMount () {
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
-  }
-
   componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-
+    console.log('in componentDidMount', document.getElementsByTagName('body')[0].className)
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
+    console.log('in componentDidMount', document.getElementsByTagName('body')[0])
     document.title = `${title} | Add Pages`
     /* eslint-disable */
      $('#sidebarDiv').addClass('hideSideBar')
@@ -110,9 +108,14 @@ class AddPage extends React.Component {
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item'>
-                        <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled={this.props.pages ? this.props.pages.length === 0 : true}>
+                        {this.props.pages && this.props.pages.length === 0
+                        ? <Link className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled>
                           Done
                         </Link>
+                        : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
+                          Done
+                        </Link>
+                      }
                       </li>
                     </ul>
                   </div>
