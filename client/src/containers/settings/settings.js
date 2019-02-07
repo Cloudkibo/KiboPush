@@ -558,21 +558,20 @@ class Settings extends React.Component {
                     </li>
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && !this.state.hideAPI &&
                       <li className='m-nav__item'>
-                        {
-                         this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                          ? <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>API</span>
-                          </a>
-                          : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>API&nbsp;&nbsp;&nbsp;
-                              <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                <span style={{color: '#34bfa3'}}>PRO</span>
-                              </span>
+                        {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                        <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon flaticon-share' />
+                          <span className='m-nav__link-text'>API</span>
+                        </a>
+                        {/*: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon flaticon-share' />
+                          <span className='m-nav__link-text'>API&nbsp;&nbsp;&nbsp;
+                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#34bfa3'}}>PRO</span>
                             </span>
-                          </a>
-                        }
+                          </span>
+                        </a>
+                      */}
                       </li>
                     }
                     <li className='m-nav__item'>
@@ -599,21 +598,20 @@ class Settings extends React.Component {
                     }
                     { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
                     <li className='m-nav__item'>
-                      {
-                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                          ? <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-list-2' />
-                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                          </a>
-                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-list-2' />
-                          <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
-                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                              <span style={{color: '#34bfa3'}}>PRO</span>
-                            </span>
+                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                      <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon flaticon-list-2' />
+                        <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                      </a>
+                      {/* }: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon flaticon-list-2' />
+                        <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
+                          <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                            <span style={{color: '#34bfa3'}}>PRO</span>
                           </span>
-                        </a>
-                      }
+                        </span>
+                      </a>
+                    */}
                     </li>
                     }
                     { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
@@ -626,13 +624,12 @@ class Settings extends React.Component {
                     }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      {
-                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                        ? <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon la la-plug' />
-                          <span className='m-nav__link-text'>Add KiboPush Widget</span>
-                        </a>
-                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                      <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon la la-plug' />
+                        <span className='m-nav__link-text'>Add KiboPush Widget</span>
+                      </a>
+                      {/* : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
                           <i className='m-nav__link-icon la la-plug' />
                           <span className='m-nav__link-text'>Add KiboPush Widget&nbsp;&nbsp;&nbsp;
                             <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
@@ -640,7 +637,7 @@ class Settings extends React.Component {
                             </span>
                           </span>
                         </a>
-                        }
+                        */}
                       </li>
                     }
                     <li className='m-nav__item'>
@@ -667,13 +664,12 @@ class Settings extends React.Component {
                   }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      {
-                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                         ? <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                           <i className='m-nav__link-icon la la-link' />
-                           <span className='m-nav__link-text'>Webhooks</span>
-                         </a>
-                         : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                      <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon la la-link' />
+                        <span className='m-nav__link-text'>Webhooks</span>
+                      </a>
+                        {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
                            <i className='m-nav__link-icon la la-link' />
                            <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
                              <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
@@ -681,7 +677,7 @@ class Settings extends React.Component {
                              </span>
                            </span>
                          </a>
-                       }
+                       */}
                     </li>
                     }
                     { this.props.user && this.props.user.role === 'buyer' &&
