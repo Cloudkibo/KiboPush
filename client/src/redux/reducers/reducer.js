@@ -36,6 +36,7 @@ import {landingPagesInfo} from './landingPages.reducer'
 import {messengerAdsInfo} from './messengerAds.reducer'
 import {messengerRefURLInfo} from './messengerRefURL.reducer'
 import {demoSSAInfo} from './demoSSA.reducer'
+import {customFieldInfo} from './customFields.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -73,7 +74,8 @@ const appReducer = combineReducers({
   landingPagesInfo,
   messengerAdsInfo,
   demoSSAInfo,
-  messengerRefURLInfo
+  messengerRefURLInfo,
+  customFieldInfo
 })
 
 export default appReducer
