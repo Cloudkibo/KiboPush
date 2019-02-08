@@ -200,10 +200,11 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
-      } else if (!nextprops.pages || (nextprops.pages && nextprops.pages.length === 0)) {
-        browserHistory.push({
-          pathname: '/addfbpages'
-        })
+      // } else if (!nextprops.pages || (nextprops.pages && nextprops.pages.length === 0)) {
+      //   console.log('nextprops pages', nextprops)
+      //   browserHistory.push({
+      //     pathname: '/addfbpages'
+      //   })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
