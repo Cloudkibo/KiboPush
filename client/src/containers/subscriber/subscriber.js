@@ -17,6 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
+import CustomFields from './customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 var json2csv = require('json2csv')
@@ -1004,6 +1005,10 @@ class Subscriber extends React.Component {
     }
 
     return (
+      <div>
+         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+            <CustomFields />
+          </div>
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
@@ -1616,6 +1621,10 @@ class Subscriber extends React.Component {
                             </PopoverBody>
                           </Popover>
                           <div className='row'>
+                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields:</span>
+                            <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-gear' />Manage Custom Fields</a>
+                          </div>
+                          <div className='row'>
                             <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
                             <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
                           </div>
@@ -1676,6 +1685,7 @@ class Subscriber extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }
