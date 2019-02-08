@@ -113,7 +113,7 @@ class Media extends React.Component {
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
-    if (file.size > 25000000) {
+    if (file.size > 10000000) {
       this.props.handleMedia({error: 'file size error'})
       return
     }

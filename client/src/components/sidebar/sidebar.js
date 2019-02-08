@@ -433,7 +433,8 @@ class Sidebar extends Component {
   }
 
   showSegmentSubscribers () {
-    if (this.state.segmentSubscribers && this.props.user && this.props.user.plan.customer_matching) {
+    // add paid plan check later
+    if (this.state.segmentSubscribers && this.props.user) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/segmentedLists' className='m-menu__link'>
@@ -452,8 +453,9 @@ class Sidebar extends Component {
   }
 
   showTemplates () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.templates) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
+    // add paid plan check later
+    if (this.props.user && this.state.templates) {
+      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser)) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/templates' className='m-menu__link'>
@@ -579,7 +581,7 @@ class Sidebar extends Component {
   }
 
   showMessengerRefURL () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       // include user persmissions
       if (this.state.messengerRefURL) {
         return (
@@ -684,44 +686,42 @@ class Sidebar extends Component {
     }
   }
   showInviteUsingPhoneNumber () {
-    if (this.props.user) {
-      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Invite Using Phone Numbers
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+    // add paid plan check later
+    if (this.props.user && this.state.phoneNumber) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Invite Using Phone Numbers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
   }
 
   showInviteSubscribers () {
-    if (this.props.user) {
-      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/inviteSubscribers' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Invite Subscribers
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+    // add paid plan check later
+    if (this.props.user && this.state.phoneNumber) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/inviteSubscribers' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Invite Subscribers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
   }
 
