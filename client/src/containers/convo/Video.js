@@ -101,7 +101,7 @@ class Video extends React.Component {
       var file = files[files.length - 1]
       this.setState({file: file})
       console.log('filesize', file.size)
-      if (file.size > 25000000) {
+      if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
@@ -155,7 +155,7 @@ class Video extends React.Component {
               onChange={this.onFilesChange}
               onError={this.onFilesError}
               accepts={['video/*']}
-              maxFileSize={25000000}
+              maxFileSize={10000000}
               minFileSize={0}
               clickable
             >
