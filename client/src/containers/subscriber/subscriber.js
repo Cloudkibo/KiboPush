@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -17,6 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
+import CustomFields from './customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 var json2csv = require('json2csv')
@@ -124,6 +125,33 @@ class Subscriber extends React.Component {
     this.handleSequenceInd = this.handleSequenceInd.bind(this)
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
     this.handleFilterByPageInitial = this.handleFilterByPageInitial.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
+  }
+
+  profilePicError (e, subscriber) {
+    console.log('profile picture error', subscriber)
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
+    let fetchData = {
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      current_page: this.state.pageSelected,
+      filter: this.state.filter,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender,
+        page_value: this.state.filterByPage,
+        locale_value: this.state.filterByLocale,
+        tag_value: this.state.filterByTag,
+        status_value: this.state.status_value
+      }
+    }
+    this.props.updatePicture({subscriber}, fetchData)
   }
 
   getDate (datetime) {
@@ -385,15 +413,15 @@ class Subscriber extends React.Component {
     this.setState({ removeTag: value })
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Subscribers`;
+    document.title = `${title} | Subscribers`
 
     if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
@@ -859,7 +887,7 @@ class Subscriber extends React.Component {
     } else {
       this.setState({filterByPage: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
-       }
+    }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
     // this.setState({pageSelected: 0})
@@ -892,8 +920,7 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
-    }
-    else {
+    } else {
       this.setState({filterByGender: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
@@ -943,7 +970,6 @@ class Subscriber extends React.Component {
       if (e.target.value === 'subscribed') {
         this.setState({status_value: true})
         this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true}})
-
       } else {
         this.setState({status_value: false})
         this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: false}})
@@ -985,6 +1011,10 @@ class Subscriber extends React.Component {
     }
 
     return (
+      <div>
+         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+            <CustomFields />
+          </div>
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
@@ -1369,6 +1399,7 @@ class Subscriber extends React.Component {
                                 style={{width: '100px', overflow: 'inherit'}}>
                                 <img alt='pic'
                                   src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                  onError={(e) => this.profilePicError(e, subscriber)}
                                   className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                               />
                               </span>
@@ -1596,6 +1627,10 @@ class Subscriber extends React.Component {
                             </PopoverBody>
                           </Popover>
                           <div className='row'>
+                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields:</span>
+                            <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-gear' />Manage Custom Fields</a>
+                          </div>
+                          <div className='row'>
                             <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
                             <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
                           </div>
@@ -1657,6 +1692,7 @@ class Subscriber extends React.Component {
           </div>
         </div>
       </div>
+      </div>
     )
   }
 }
@@ -1686,7 +1722,8 @@ function mapDispatchToProps (dispatch) {
     unsubscribeToSequence: unsubscribeToSequence,
     getSubscriberSequences: getSubscriberSequences,
     subscribe: subscribe,
-    unSubscribe: unSubscribe
+    unSubscribe: unSubscribe,
+    updatePicture: updatePicture
   },
     dispatch)
 }

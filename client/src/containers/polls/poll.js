@@ -402,18 +402,18 @@ class Poll extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to='/showTemplatePolls' className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                  Use Template
+                                </Link>
+                                {/* add paid plan check later
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>
-                                    Use Template&nbsp;&nbsp;&nbsp;
-                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                      <span style={{color: '#34bfa3'}}>PRO</span>
-                                    </span>
-                                  </button>
-                                }
+                                  Use Template&nbsp;&nbsp;&nbsp;
+                                  <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                    <span style={{color: '#34bfa3'}}>PRO</span>
+                                  </span>
+                                </button>
+                              */}
                               </div>
                             </div>
                           </ModalDialog>

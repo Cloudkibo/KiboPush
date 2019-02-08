@@ -581,22 +581,22 @@ class Targeting extends React.Component {
                   </div>
                   <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                     <div className='col-lg-8 col-md-8 col-sm-8'>
-                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                      ? <select id='selectPoll' style={{minWidth: 75 + '%'}} />
-                    : <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
-                      }
+                      {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'  */}
+                      <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                      {/* : <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled /> */}
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
-                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                      ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'  */ }
+                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                         <i className='la la-info-circle' />
                       </a>
-                      : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                      {/* add paid plan check later
+                        : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
                         <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                           <span style={{color: '#34bfa3'}}>PRO</span>
                         </span>
                       </a>
-                    }
+                      */}
                       {
                         this.state.showDropDownPoll &&
                         <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -614,22 +614,21 @@ class Targeting extends React.Component {
                   </div>
                   <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                     <div className='col-lg-8 col-md-8 col-sm-8'>
-                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                      ? <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
-                      : <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
-                    }
+                      {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'  */}
+                      <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                      {/* <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled /> */}
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
-                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                        ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                          <i className='la la-info-circle' />
-                        </a>
-                        : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                      {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
+                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                        <i className='la la-info-circle' />
+                      </a>
+                      {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
                           <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                             <span style={{color: '#34bfa3'}}>PRO</span>
                           </span>
                         </a>
-                      }
+                      */}
                       {
                        this.state.showDropDownSurvey &&
                        <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -661,16 +660,16 @@ class Targeting extends React.Component {
                     <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
-                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                    ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
+                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
-                    : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                    {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
                       <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                         <span style={{color: '#34bfa3'}}>PRO</span>
                       </span>
                     </a>
-                    }
+                    */}
                     {
                       this.state.showDropDownPoll &&
                       <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -691,16 +690,16 @@ class Targeting extends React.Component {
                     <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
-                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                    {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
                     ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
-                    : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                    {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
                       <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                         <span style={{color: '#34bfa3'}}>PRO</span>
                       </span>
                     </a>
-                    }
+                    */}
                     {
                       this.state.showDropDownSurvey &&
                       <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>

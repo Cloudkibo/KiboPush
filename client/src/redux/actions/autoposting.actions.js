@@ -98,6 +98,7 @@ export function editautoposting (data) {
 }
 
 export function loadAutopostingMessages (id, data) {
+  console.log('data for loadAutopostingMessages', data)
   return (dispatch) => {
     callApi(`autoposting_messages/getMessages/${id}`, 'post', data)
       .then(res => {

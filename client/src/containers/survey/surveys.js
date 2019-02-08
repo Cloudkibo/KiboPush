@@ -196,7 +196,7 @@ class Survey extends React.Component {
   gotoResults (survey) {
     this.props.history.push({
       pathname: `/surveyResult`,
-      state: survey._id
+      state: survey
     })
   }
   showDialogDelete (id) {
@@ -384,18 +384,17 @@ class Survey extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to='/showTemplateSurveys' className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
-                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                                  Use Template
+                                </Link>
+                                {/*: <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>
                                     </span>
                                   </button>
-                                }
+                                */}
                               </div>
                             </div>
                           </ModalDialog>

@@ -84,7 +84,7 @@ class File extends React.Component {
       this.setState({file: file})
       if (file.type === 'text/javascript' || file.type === 'text/exe') {
         this.msg.error('Cannot add js or exe files. Please select another file')
-      } else if (file.size > 25000000) {
+      } else if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
@@ -138,7 +138,7 @@ class File extends React.Component {
               onChange={this.onFilesChange}
               onError={this.onFilesError}
               accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-              maxFileSize={25000000}
+              maxFileSize={10000000}
               minFileSize={0}
               clickable
           >

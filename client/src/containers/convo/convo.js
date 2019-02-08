@@ -118,7 +118,7 @@ class Convo extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Broadcast`;  
+    document.title = `${title} | Broadcast`;
   }
 
   displayData (n, broadcasts) {
@@ -435,19 +435,18 @@ class Convo extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
-                                    Use Template
-                                  </button>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
+                                  Use Template
+                                </button>
+                                { /* add paid plan check later
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>
-                                    Use Template&nbsp;&nbsp;&nbsp;
-                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                      <span style={{color: '#34bfa3'}}>PRO</span>
-                                    </span>
-                                  </button>
-                                }
-
+                                  Use Template&nbsp;&nbsp;&nbsp;
+                                  <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                    <span style={{color: '#34bfa3'}}>PRO</span>
+                                  </span>
+                                </button>
+                                */}
                               </div>
                             </div>
                           </ModalDialog>

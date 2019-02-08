@@ -113,7 +113,7 @@ class Media extends React.Component {
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
-    if (file.size > 25000000) {
+    if (file.size > 10000000) {
       this.props.handleMedia({error: 'file size error'})
       return
     }
@@ -335,7 +335,7 @@ class Media extends React.Component {
           }
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
           <Button module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
