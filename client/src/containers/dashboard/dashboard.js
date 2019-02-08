@@ -187,12 +187,7 @@ class Dashboard extends React.Component {
       //     pathname: '/resendVerificationEmail'
       //   })
       // } else
-      if (nextprops.pages && nextprops.pages.length === 0) {
-        console.log('nextprops pages', nextprops)
-        browserHistory.push({
-          pathname: '/addfbpages'
-        })
-      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
@@ -205,11 +200,11 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
-      // } else if (nextprops.pages && nextprops.pages.length === 0) {
-      //   console.log('nextprops pages', nextprops)
-      //   browserHistory.push({
-      //     pathname: '/addfbpages'
-      //   })
+      } else if (nextprops.pages && nextprops.pages.length === 0) {
+        console.log('nextprops pages', nextprops)
+        browserHistory.push({
+          pathname: '/addfbpages'
+        })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
