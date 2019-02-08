@@ -96,9 +96,11 @@ class Video extends React.Component {
   }
 
   onFilesChange (files) {
+    console.log('files', files)
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
+      console.log('filesize', file.size)
       if (file.size > 25000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
