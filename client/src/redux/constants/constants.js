@@ -318,3 +318,6 @@ export const UPDATE_DEMOSSA_CHAT = 'UPDATE_DEMOSSA_CHAT'
 // constants for Messenger Ref URL
 export const SHOW_MESSENGER_REF_URLS = 'SHOW_MESSENGER_REF_URLS'
 export const UPDATE_MESSENGER_REF_URL = 'UPDATE_MESSENGER_REF_URL'
+
+// constants for custom fields
+export const LOAD_CUSTOM_FIELDS = 'LOAD_CUSTOM_FIELDS'
