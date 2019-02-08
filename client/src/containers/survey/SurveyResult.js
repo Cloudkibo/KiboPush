@@ -43,7 +43,7 @@ class SurveyResult extends React.Component {
     })
   }
   componentDidMount () {
-    this.props.loadsurveyresponses(this.props.location.state)
+    this.props.loadsurveyresponses(this.props.location.state._id)
     const hostname =  window.location.hostname;
     let title = '';
     if(hostname.includes('kiboengage.cloudkibo.com')) {
@@ -200,9 +200,9 @@ class SurveyResult extends React.Component {
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
                         { this.props.responses
-                        ? <div className='count-stat'>{this.state.totalResponses}
+                        ? <div className='count-stat'>{this.props.location.state.responses}
                         </div>
-                        : <div className='count-stat'>{this.state.totalResponses}
+                        : <div className='count-stat'>{this.props.location.state.responses}
                         </div>
                         }
                         <h5>
@@ -245,6 +245,7 @@ class SurveyResult extends React.Component {
                   }
                     <h4>Survey Questions</h4>
                     <br /><br />
+                   { this.props.location.state.responses ?
                     <ul className='list-group'>
                       {
                       this.props.questions &&
@@ -262,10 +263,17 @@ class SurveyResult extends React.Component {
                             (d) => d.questionId === c._id)}
                             question={c} />
                           }
+                        
                         </div>
                       ))
                     }
+                    
                     </ul>
+                    : <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+
+                    <h5> Currently there are no responses for this Survey.</h5>
+                    </div>
+                   }
                     <br />
                     <div className='add-options-message'>
                       <button className='btn btn-primary btn-sm pull-right'
