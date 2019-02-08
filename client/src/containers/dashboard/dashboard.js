@@ -180,7 +180,7 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user) {
+    if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
       // if (nextprops.user.emailVerified === false) {
       //   browserHistory.push({
