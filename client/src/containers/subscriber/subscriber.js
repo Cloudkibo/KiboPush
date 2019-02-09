@@ -17,7 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
-import CustomFields from './customfields'
+import CustomFields from './customFields/customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 var json2csv = require('json2csv')
