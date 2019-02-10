@@ -1009,34 +1009,31 @@ class Subscriber extends React.Component {
       overflow: 'inherit',
       color: '#818a91'
     }
-
     return (
       <div>
-         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <CustomFields />
-          </div>
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Manage Subscribers</h3>
+        <CustomFields />
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Manage Subscribers</h3>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='m-content'>
-          {
-            this.props.pages && this.props.pages.length === 0 &&
-            <AlertMessage type='page' />
-          }
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-technology m--font-accent' />
+          <div className='m-content'>
+            {
+              this.props.pages && this.props.pages.length === 0 &&
+              <AlertMessage type='page' />
+            }
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
+              </div>
+              <div className='m-alert__text'>
+                <a href='http://kibopush.com/subscribers/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
+              </div>
             </div>
-            <div className='m-alert__text'>
-              <a href='http://kibopush.com/subscribers/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
-            </div>
-          </div>
           <div className='row'>
             <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>

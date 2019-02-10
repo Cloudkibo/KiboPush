@@ -1,8 +1,9 @@
 import React from 'react'
-import { loadCustomFields, deleteCustomField } from '../../redux/actions/customFields.actions'
+import { loadCustomFields, deleteCustomField } from './../../../redux/actions/customFields.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import CreateCustomField from './createCustomField'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CustomFields extends React.Component {
@@ -13,15 +14,9 @@ class CustomFields extends React.Component {
     }
     this.deleteCustomField = this.deleteCustomField.bind(this)
     this.toBeDeletedId = this.toBeDeletedId.bind(this)
-    this.closeDeleteConfirmation = this.closeDeleteConfirmation.bind(this)
   }
   componentDidMount () {
     this.props.loadCustomFields()
-  }
-  closeDeleteConfirmation () {
-    const modal = document.getElementById('delete_confirmation_modal')
-    modal.classList.remove('show')
-    modal.classList.add('hide')
   }
   deleteCustomField () {
     this.props.deleteCustomField(this.state.deleteCustomFieldId, this.msg)
@@ -30,8 +25,6 @@ class CustomFields extends React.Component {
     })
   }
   toBeDeletedId (id) {
-    const modal = document.getElementById('delete_confirmation_modal')
-    modal.classList.add('show')
     this.setState({
       deleteCustomFieldId: id
     })
@@ -45,16 +38,18 @@ class CustomFields extends React.Component {
       transition: 'scale'
     }
     return (
-      <div style={{width: '1px'}}>
+      <div>
+        <CreateCustomField />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 1000}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-          <div style={{ transform: 'translate(0, 0)', marginLeft: '500px', marginTop: '150px' }} className='modal-dialog' role='document'>
+        <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
             <div className='modal-content' style={{ width: '400px' }} >
               <div style={{ display: 'block' }} className='modal-header'>
                 <h5 className='modal-title' id='exampleModalLabel'>
                   Are You Sure ?
                 </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close'
+                  data-dismiss='modal' aria-label='Close'>
                   <span aria-hidden='true'>
                     &times;
                   </span>
@@ -66,26 +61,27 @@ class CustomFields extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.deleteCustomField()
-                    this.closeDeleteConfirmation()
-                  }}>Yes
+                  }} data-dismiss='modal'>Yes
                 </button>
-                <button style={{float: 'right'}}
-                  className='btn btn-primary btn-sm'
-                  onClick={() => {
-                    this.closeDeleteConfirmation()
-                  }}>Cancel
+                <button style={{float: 'right'}} className='btn btn-primary btn-sm' data-dismiss='modal'>
+                  Cancel
                 </button>
               </div>
             </div>
           </div>
         </div>
+        <div id='cf_modal' style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
         <div style={{ transform: 'translate(0, 0)', marginLeft: '250px' }} className='modal-dialog' role='document'>
           <div className='modal-content' style={{ width: '900px', maxHeight: '530px', overflowY: 'auto', minHeight: '530px' }} >
-            <div style={{ display: 'block' }} className='modal-header'>
+            <div style={{ display: 'block', height: '70px' }} className='modal-header'>
               <h5 className='modal-title' id='exampleModalLabel'>
                 Custom Fields
             </h5>
-              <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+              <button style={{ marginTop: '-46px', marginLeft: '126px', borderRadius: '500px' }} type='button' className='btn btn-primary btn-sm'
+                data-toggle='modal' data-target='#create_modal'>
+                  Create Custom Field
+              </button>
+              <button style={{ marginTop: '-10px', opacity: '0.5', float: 'right' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                 <span aria-hidden='true'>
                   &times;
               </span>
@@ -176,6 +172,7 @@ class CustomFields extends React.Component {
               }
             </div>
           </div>
+        </div>
         </div>
       </div>
     )

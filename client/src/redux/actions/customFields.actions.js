@@ -22,6 +22,22 @@ export function loadCustomFields () {
   }
 }
 
+export function createCustomField (customField, msg) {
+  console.log('Actions for creating new Custom field', customField)
+  return (dispatch) => {
+    callApi('custom_fields', 'post', customField)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(loadCustomFields())
+          msg.success('New Custom Field Created')
+        } else {
+          dispatch(loadCustomFields())
+          msg.error(res.description)
+        }
+      })
+  }
+}
+
 export function deleteCustomField (customFieldId, msg) {
   console.log('Action for delete custom field')
   return (dispatch) => {
