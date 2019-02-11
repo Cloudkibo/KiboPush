@@ -17,7 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
-import CustomFields from './customfields'
+import CustomFields from './customFields/customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
@@ -1014,7 +1014,7 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
             <CustomFields />
           </div>
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
