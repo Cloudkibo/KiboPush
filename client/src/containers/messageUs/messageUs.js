@@ -7,6 +7,8 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class MessageUs extends React.Component {
   constructor (props, context) {
@@ -22,7 +24,8 @@ class MessageUs extends React.Component {
       'pageid': '',
       'showbutton': true,
       'fblink': 'https://m.me/',
-      'copied': false
+      'copied': false,
+      showVideo: false
     }
   }
 
@@ -95,6 +98,27 @@ class MessageUs extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='_E6gGHBEaEU'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-content'>
           {this.state.showbutton !== true &&
             <div
@@ -109,6 +133,15 @@ class MessageUs extends React.Component {
               </div>
             </div>
           }
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding Message Us Widget? Here is the <a href='http://kibopush.com/messageus/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
