@@ -480,27 +480,6 @@ class Dashboard extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='BUO39KcC3Po'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -514,6 +493,27 @@ class Dashboard extends React.Component {
                     Upgrade to Pro
                   </button>
                 </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: '100'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: '100'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='NhqPaGp3TF8'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -547,7 +547,8 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           {
