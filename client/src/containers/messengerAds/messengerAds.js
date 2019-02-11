@@ -11,6 +11,7 @@ import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../r
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class MessengerAds extends React.Component {
   constructor (props, context) {
@@ -105,6 +106,27 @@ class MessengerAds extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{ width: '680px', top: 100 }}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='MmneT96VVqI'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         {
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
