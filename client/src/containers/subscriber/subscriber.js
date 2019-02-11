@@ -1014,9 +1014,7 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999}} className='modal fade' id='cf_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <CustomFields />
-          </div>
+        <CustomFields />
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
