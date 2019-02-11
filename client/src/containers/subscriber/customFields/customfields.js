@@ -1,25 +1,34 @@
 import React from 'react'
-import { loadCustomFields, deleteCustomField } from './../../../redux/actions/customFields.actions'
+import { loadCustomFields, deleteCustomField, updateCustomField } from './../../../redux/actions/customFields.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import CreateCustomField from './createCustomField'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CustomFields extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      deleteCustomFieldId: ''
+      deleteCustomFieldId: '',
+      disabled: '',
+      toBeUpdateCustomField: {},
+      updatedName: '',
+      updatedDescription: '',
+      updateValueName: false,
+      updatevalueDescription: false
     }
     this.deleteCustomField = this.deleteCustomField.bind(this)
     this.toBeDeletedId = this.toBeDeletedId.bind(this)
+    this.editClick = this.editClick.bind(this)
+    this.onUpdateSubmit = this.onUpdateSubmit.bind(this)
+    this.onNameChange = this.onNameChange.bind(this)
+    this.onDescriptionChange = this.onDescriptionChange.bind(this)
   }
   componentDidMount () {
     this.props.loadCustomFields()
   }
-  deleteCustomField () {
-    this.props.deleteCustomField(this.state.deleteCustomFieldId, this.msg)
+  deleteCustomField (id) {
+    this.props.deleteCustomField(id, this.msg)
     this.setState({
       deleteCustomFieldId: ''
     })
@@ -28,6 +37,31 @@ class CustomFields extends React.Component {
     this.setState({
       deleteCustomFieldId: id
     })
+  }
+  editClick (field) {
+    this.setState({disabled: field._id, toBeUpdateCustomField: field})
+  }
+  remove () {
+    setTimeout(() => { this.setState({disabled: ''}) }, 100)
+  }
+  onNameChange (event) {
+    this.setState({updatedName: event.target.value, updateValueName: true})
+  }
+
+  onDescriptionChange (event) {
+    this.setState({updatedDescription: event.target.value, updatevalueDescription: true})
+  }
+  onUpdateSubmit () {
+    let data = {
+      customFieldId: this.state.disabled,
+      updated: {
+        description: this.state.updatedDescription
+      }
+    }
+    if (this.state.toBeUpdateCustomField.name !== this.state.updatedName) data.updated.name = this.state.updatedName
+    this.props.updateCustomField(data, this.msg)
+    this.setState({toBeUpdateCustomField: {}, disabled: '', updatedName: '', updatedDescription: '', updatevalueDescription: false, updateValueName: false})
+    this.props.loadCustomFields()
   }
   render () {
     var alertOptions = {
@@ -60,7 +94,7 @@ class CustomFields extends React.Component {
                 <button style={{float: 'right', marginLeft: '10px'}}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.deleteCustomField()
+                    this.deleteCustomField(this.state.deleteCustomFieldId)
                   }} data-dismiss='modal'>Yes
                 </button>
                 <button style={{float: 'right'}} className='btn btn-primary btn-sm' data-dismiss='modal'>
@@ -134,7 +168,11 @@ class CustomFields extends React.Component {
                           <td data-field='Name'
                             className='m-datatable__cell'>
                             <span style={{ width: '270px', overflow: 'inherit' }}>
-                              {field.name}
+                              <input type='text' id='name' className='form-control m-input'
+                                value={(this.state.disabled === field._id && this.state.updateValueName)
+                                ? this.state.updatedName
+                                : field.name}
+                                onChange={this.onNameChange} disabled={!(this.state.disabled === field._id)} />
                             </span></td>
                           <td data-field='Type'
                             className='m-datatable__cell'>
@@ -144,23 +182,45 @@ class CustomFields extends React.Component {
                           <td data-field='Description'
                             className='m-datatable__cell'>
                             <span style={{ width: '400px', overflow: 'inherit' }}>
-                              {field.description}
+                              <input type='text' id='description' className='form-control m-input'
+                                value={this.state.updatevalueDescription && this.state.disabled === field._id
+                                ? this.state.updatedDescription : field.description}
+                                onChange={this.onDescriptionChange} disabled={!(this.state.disabled === field._id)} />
                             </span></td>
-                          <td data-field='Action'
-                            className='m-datatable__cell'>
-                            <span style={{ width: '120px', overflow: 'inherit', display: 'inline-block' }}>
-                              <button style={{ margin: '4px' }}
-                                className='btn btn-primary btn-sm'>
-                                <i style={{ color: 'white', fontSize: '22px' }} className='la la-edit' />
-                              </button>
-                              <button style={{ margin: '4px' }} data-toggle='modal' data-target='#delete_confirmation_modal'
-                                className='btn btn-primary btn-sm'
-                                onClick={() => {
-                                  this.toBeDeletedId(field._id)
-                                }}>
-                                <i style={{ color: 'white', fontSize: '22px' }} className='la la-trash-o' />
-                              </button>
-                            </span></td>
+                          {this.state.disabled === field._id
+                            ? <td data-field='Action' className='m-datatable__cell'>
+                              <span style={{ width: '120px', overflow: 'inherit', display: 'inline-block' }}>
+                                <button style={{ margin: '4px' }} className='btn btn-success btn-sm'
+                                  onClick={() => {
+                                    this.onUpdateSubmit()
+                                  }}>
+                                  <i style={{ color: 'white', fontSize: '22px' }} className='la la-check' />
+                                </button>
+                                <button style={{ margin: '4px' }} className='btn btn-danger btn-sm'
+                                  onClick={() => {
+                                    this.remove()
+                                  }}>
+                                  <i style={{ color: 'white', fontSize: '22px' }} className='la la-remove' />
+                                </button>
+                              </span>
+                            </td>
+                            : <td data-field='Action' className='m-datatable__cell'>
+                              <span style={{ width: '120px', overflow: 'inherit', display: 'inline-block' }}>
+                                <button style={{ margin: '4px' }}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => { this.editClick(field) }}>
+                                  <i style={{ color: 'white', fontSize: '22px' }} className='la la-edit' />
+                                </button>
+                                <button style={{ margin: '4px' }} data-toggle='modal' data-target='#delete_confirmation_modal'
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.toBeDeletedId(field._id)
+                                  }}>
+                                  <i style={{ color: 'white', fontSize: '22px' }} className='la la-trash-o' />
+                                </button>
+                              </span>
+                            </td>
+                            }
                         </tr>
                       ))
                     }
@@ -187,7 +247,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadCustomFields: loadCustomFields,
-    deleteCustomField: deleteCustomField
+    deleteCustomField: deleteCustomField,
+    updateCustomField: updateCustomField
   },
     dispatch)
 }

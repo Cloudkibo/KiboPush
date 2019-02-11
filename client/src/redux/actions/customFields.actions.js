@@ -38,6 +38,25 @@ export function createCustomField (customField, msg) {
   }
 }
 
+export function updateCustomField (payload, msg) {
+  console.log('Actions for updating custom field', payload)
+  return (dispatch) => {
+    callApi('custom_fields/update', 'post', payload)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          msg.success('Custom Field has been updated')
+          dispatch(loadCustomFields())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to edit custom field. ${res.description}`)
+          } else {
+            msg.error('Unable to edit custom field')
+          }
+        }
+      })
+  }
+}
+
 export function deleteCustomField (customFieldId, msg) {
   console.log('Action for delete custom field')
   return (dispatch) => {
