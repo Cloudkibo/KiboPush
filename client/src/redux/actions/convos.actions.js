@@ -3,10 +3,21 @@ import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
+var url = 'http://localhost:3024'
+const hostname = window.location.hostname
+
+if (['skiboengage.cloudkibo.com', 'skibochat.cloudkibo.com'].indexOf(hostname) > -1) {
+  url = 'https://saccounts.cloudkibo.com'
+} else if (['kiboengage.cloudkibo.com', 'kibochat.cloudkibo.com'].indexOf(hostname) > -1) {
+  url = 'https://accounts.cloudkibo.com'
+}
+
 export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
+  console.log('hostname', hostname)
+
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${url}/uploadFile`, {
       method: 'post',
       body: filedata,
       // eslint-disable-next-line no-undef
@@ -39,7 +50,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
   fileData.append('componentType', componentType)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${url}/uploadFile`, {
       method: 'post',
       body: fileData,
       // eslint-disable-next-line no-undef
