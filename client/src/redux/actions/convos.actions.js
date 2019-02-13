@@ -39,7 +39,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
   fileData.append('componentType', componentType)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
       body: fileData,
       // eslint-disable-next-line no-undef
@@ -64,7 +64,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
 export function uploadTemplate (dataTosend, data, handleUpload, setLoading) {
   console.log('data in uploadTemplate', dataTosend)
   return (dispatch) => {
-    callApi('broadcasts/uploadTemplate', 'post', dataTosend)
+    callApi('uploadTemplate', 'post', dataTosend, 'accounts')
       .then(res => {
         console.log('response from uploadTemplate', res)
         data.fileurl = res.payload
