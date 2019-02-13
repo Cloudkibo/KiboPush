@@ -39,7 +39,6 @@ class CreateCustomField extends React.Component {
       createdBy: ''
     }
     this.props.createCustomField(data, this.handleResponse)
-    console.log('find me', this.state)
     event.preventDefault()
   }
 
@@ -53,7 +52,6 @@ class CreateCustomField extends React.Component {
       this.msg.error(res.description)
       this.setState({closeModal: ''})
     }
-    console.log('find me', this.state)
   }
 
   clear () {
