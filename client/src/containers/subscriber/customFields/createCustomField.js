@@ -3,7 +3,6 @@ import {createCustomField} from '../../../redux/actions/customFields.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CreateCustomField extends React.Component {
   constructor (props, context) {
@@ -42,9 +41,9 @@ class CreateCustomField extends React.Component {
   }
   clear () {
     this.setState({name: '', type: '', description: ''})
-    document.getElementById('name').value = ''
-    document.getElementById('type').value = ''
-    document.getElementById('description').value = ''
+    // document.getElementById('name').value = ''
+    // document.getElementById('type').value = ''
+    // document.getElementById('description').value = ''
   }
   render () {
     var alertOptions = {
@@ -78,7 +77,7 @@ class CreateCustomField extends React.Component {
                       <div className='' style={{marginTop: '10px'}}>
                         <label>Name:</label><i className='la la-question-circle' data-toggle='tooltip' title='By what name the field will apear!' />
                       </div>
-                      <input type='text' id='name' className='form-control m-input' onChange={this.nameHandleChange} required />
+                      <input type='text' id='name' className='form-control m-input' value={this.state.name} onChange={this.nameHandleChange} required />
                     </div>
                   </div>
                   <div className='col-md-4'>
@@ -87,7 +86,7 @@ class CreateCustomField extends React.Component {
                         <label>Type:</label><i className='la la-question-circle' data-toggle='tooltip' title='select any type, according to the nature of data' />
                       </div>
                       <div className='m-form__control'>
-                        <select className='custom-select' id='type' style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
+                        <select className='custom-select' id='type' value={this.state.type} style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
                           <option key='' value='' selected disabled>...Select...</option>
                           <option key='string' value='string'>String</option>
                           <option key='number' value='number'>Number</option>
@@ -103,7 +102,7 @@ class CreateCustomField extends React.Component {
                       <div className='' style={{marginTop: '10px'}}>
                         <label>Description: (Optional)</label><i className='la la-question-circle' data-toggle='tooltip' title='detail about the field for you and other admins' />
                       </div>
-                      <textarea onChange={this.descriptionHandleChange}
+                      <textarea value={this.state.description} onChange={this.descriptionHandleChange}
                         className='form-control m-input m-input--solid'
                         id='description' rows='3'
                         style={{height: '100px', resize: 'none'}} />

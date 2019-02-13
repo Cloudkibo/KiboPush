@@ -1,14 +1,12 @@
 // import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
-import { getAccountsUrl } from '../../utility/utils'
-
 export const API_URL = '/api'
 
 export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${getAccountsUrl()}/uploadFile`, {
+    fetch(`${API_URL}/broadcasts/upload`, {
       method: 'post',
       body: filedata,
       // eslint-disable-next-line no-undef
