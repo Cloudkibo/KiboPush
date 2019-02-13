@@ -186,8 +186,14 @@ class Header extends React.Component {
       'kibocommerce': {
         'staging': 'https://skibocommerce.cloudkibo.com/',
         'production': 'https://kibocommerce.cloudkibo.com/'
+      },
+      'kiboapi': {
+        'staging': 'https://skiboapi.cloudkibo.com/',
+        'production': 'https://kiboapi.cloudkibo.com/'
       }
     }
+
+    
 
     const environment = cookie.load('environment')
     console.log('environment header', environment)
@@ -545,6 +551,18 @@ class Header extends React.Component {
                                           : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboCommerce</span>
+                                          </a>
+                                      }
+
+                                      {
+                                        (!window.location.hostname.toLowerCase().includes('kiboapi'))
+                                          ? <a href='#kiboapi' className='m-nav-grid__item'>
+                                            <i className='m-nav-grid__icon flaticon-truck' />
+                                            <span className='m-nav-grid__text'>Kibo Api (Coming Soon)</span>
+                                          </a>
+                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                            <i className='m-nav-grid__icon flaticon-truck' />
+                                            <span className='m-nav-grid__text'>Kibo Api</span>
                                           </a>
                                       }
 
