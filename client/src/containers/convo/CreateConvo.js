@@ -601,8 +601,8 @@ class CreateConvo extends React.Component {
               Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
               <br />
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
-              <br />
-              View Facebook guidelines regarding images here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesImageDialog} >click here</Link>
+          
+              &ensp; and image guidelines: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesImageDialog} >click here</Link>
             </div>
           </div>
           <div className='row'>
