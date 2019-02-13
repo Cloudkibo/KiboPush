@@ -88,7 +88,7 @@ class CreateCustomField extends React.Component {
                       <div className='m-form__control'>
                         <select className='custom-select' id='type' value={this.state.type} style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
                           <option key='' value='' selected disabled>...Select...</option>
-                          <option key='string' value='string'>String</option>
+                          <option key='string' value='text'>Text</option>
                           <option key='number' value='number'>Number</option>
                           <option key='date' value='date'>Date</option>
                           <option key='datetime' value='datetime'>Date and Time</option>

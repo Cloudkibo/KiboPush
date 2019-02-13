@@ -15,7 +15,8 @@ class CustomFields extends React.Component {
       updatedName: '',
       updatedDescription: '',
       updateValueName: false,
-      updatevalueDescription: false
+      updatevalueDescription: false,
+      nameFieldEmpty: true,
     }
     this.deleteCustomField = this.deleteCustomField.bind(this)
     this.toBeDeletedId = this.toBeDeletedId.bind(this)
@@ -42,14 +43,17 @@ class CustomFields extends React.Component {
     this.setState({disabled: field._id, toBeUpdateCustomField: field})
   }
   remove () {
-    setTimeout(() => { this.setState({disabled: ''}) }, 100)
+    setTimeout(() => { this.setState({ disabled: '', updatedName: '', updatedDescription: '', updatevalueDescription: false, updateValueName: false }) }, 100)
   }
   onNameChange (event) {
-    this.setState({updatedName: event.target.value, updateValueName: true})
+    this.setState({updatedName: event.target.value, updateValueName: true, nameFieldEmpty: false})
+    if (event.target.value === '' || event.target.value === this.state.toBeUpdateCustomField.name) this.setState({nameFieldEmpty: true})
   }
 
   onDescriptionChange (event) {
     this.setState({updatedDescription: event.target.value, updatevalueDescription: true})
+    if (event.target.value !== this.state.toBeUpdateCustomField.description) this.setState({nameFieldEmpty: false})
+    else this.setState({nameFieldEmpty: true})
   }
   onUpdateSubmit () {
     let data = {
@@ -60,7 +64,7 @@ class CustomFields extends React.Component {
     }
     if (this.state.toBeUpdateCustomField.name !== this.state.updatedName) data.updated.name = this.state.updatedName
     this.props.updateCustomField(data, this.msg)
-    this.setState({toBeUpdateCustomField: {}, disabled: '', updatedName: '', updatedDescription: '', updatevalueDescription: false, updateValueName: false})
+    this.setState({toBeUpdateCustomField: {}, disabled: '', updatedName: '', updatedDescription: '', updatevalueDescription: false, updateValueName: false, nameFieldEmpty: true})
     this.props.loadCustomFields()
   }
   render () {
@@ -193,7 +197,7 @@ class CustomFields extends React.Component {
                                 <button style={{ margin: '4px' }} className='btn btn-success btn-sm'
                                   onClick={() => {
                                     this.onUpdateSubmit()
-                                  }}>
+                                  }} disabled={this.state.nameFieldEmpty}>
                                   <i style={{ color: 'white', fontSize: '22px' }} className='la la-check' />
                                 </button>
                                 <button style={{ margin: '4px' }} className='btn btn-danger btn-sm'
