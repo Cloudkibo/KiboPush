@@ -24,7 +24,7 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
   if (type === 'kibopush') {
     fetchUrl = `${API_URL}/${endpoint}`
   } else if (type === 'accounts') {
-    fetchUrl = `${getAccountsUrl()}/uploadTemplate`
+    fetchUrl = `${getAccountsUrl()}/${endpoint}`
   } else fetchUrl = endpoint
   return fetch(fetchUrl, {
     headers,

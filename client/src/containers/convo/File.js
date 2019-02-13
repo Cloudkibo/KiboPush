@@ -79,7 +79,6 @@ class File extends React.Component {
   }
 
   onFilesChange (files) {
-    console.log('files', files)
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
@@ -88,7 +87,6 @@ class File extends React.Component {
       } else if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
-        console.log('inside')
         var fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
@@ -104,7 +102,6 @@ class File extends React.Component {
           size: file.size
         }
         this.setState({loading: true, showPreview: false})
-        console.log('filedata in file', fileData)
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
     }
