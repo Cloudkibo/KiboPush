@@ -56,6 +56,8 @@ class Header extends React.Component {
   }
 
   render () {
+
+    console.log("window.location.hostname.toLowerCase().includes('kiboengage')", window.location.hostname.toLowerCase().includes('kiboengage'))
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
