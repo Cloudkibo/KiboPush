@@ -10,12 +10,14 @@ class CreateCustomField extends React.Component {
     this.state = {
       name: '',
       type: '',
-      description: ''
+      description: '',
+      closeModal: ''
     }
     this.nameHandleChange = this.nameHandleChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.typeHandleChange = this.typeHandleChange.bind(this)
     this.descriptionHandleChange = this.descriptionHandleChange.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
   }
   componentDidMount () {
   }
@@ -36,14 +38,24 @@ class CreateCustomField extends React.Component {
       companyId: '',
       createdBy: ''
     }
-    this.props.createCustomField(data, this.msg)
+    this.props.createCustomField(data, this.handleResponse)
     event.preventDefault()
   }
+
+  handleResponse (res) {
+    if (res.status === 'success' && res.payload) {
+      this.msg.success('New Custom Field Created')
+      this.setState({closeModal: 'modal'})
+      document.getElementById('create').click()
+      this.setState({closeModal: '', name: '', type: '', description: ''})
+    } else {
+      this.msg.error(res.description)
+      this.setState({closeModal: ''})
+    }
+  }
+
   clear () {
     this.setState({name: '', type: '', description: ''})
-    // document.getElementById('name').value = ''
-    // document.getElementById('type').value = ''
-    // document.getElementById('description').value = ''
   }
   render () {
     var alertOptions = {
@@ -112,7 +124,7 @@ class CreateCustomField extends React.Component {
               </div>
               <div className='modal-footer'>
                 <button className='btn btn-default' onClick={() => { this.clear() }}>Clear</button>
-                <button type='submit' className='btn btn-primary'>Create</button>
+                <button id='create' type='submit' className='btn btn-primary' data-dismiss={this.state.closeModal}>Create</button>
               </div>
             </form>
           </div>

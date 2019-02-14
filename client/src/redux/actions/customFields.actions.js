@@ -22,18 +22,13 @@ export function loadCustomFields () {
   }
 }
 
-export function createCustomField (customField, msg) {
+export function createCustomField (customField, handleResponse) {
   console.log('Actions for creating new Custom field', customField)
   return (dispatch) => {
     callApi('custom_fields', 'post', customField)
       .then(res => {
-        if (res.status === 'success' && res.payload) {
-          dispatch(loadCustomFields())
-          msg.success('New Custom Field Created')
-        } else {
-          dispatch(loadCustomFields())
-          msg.error(res.description)
-        }
+        dispatch(loadCustomFields())
+        handleResponse(res)
       })
   }
 }
