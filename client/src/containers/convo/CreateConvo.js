@@ -50,6 +50,7 @@ class CreateConvo extends React.Component {
       tagValue: [],
       isShowingModal: false,
       isShowingModalGuideLines: false,
+      isshowGuideLinesImageDialog: false,
       isShowingModalResetAlert: false,
       convoTitle: 'Broadcast Title',
       showMessengerModal: false,
@@ -95,6 +96,8 @@ class CreateConvo extends React.Component {
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
     this.closeInvalidSession = this.closeInvalidSession.bind(this)
+    this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
+    this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
   }
 
   onNext (e) {
@@ -208,6 +211,13 @@ class CreateConvo extends React.Component {
   }
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
+  }
+
+  showGuideLinesImageDialog () {
+    this.setState({isshowGuideLinesImageDialog: true})
+  }
+  closeGuideLinesImageDialog () {
+    this.setState({isshowGuideLinesImageDialog: false})
   }
 
   closeGuideLinesDialog () {
@@ -591,6 +601,8 @@ class CreateConvo extends React.Component {
               Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
               <br />
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+          
+              &ensp; and image guidelines: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesImageDialog} >click here</Link>
             </div>
           </div>
           <div className='row'>
@@ -833,6 +845,17 @@ class CreateConvo extends React.Component {
                                         </div>
                                       </div>
                                     </div>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
+                               {
+                                this.state.isshowGuideLinesImageDialog &&
+                                <ModalContainer style={{width: '500px'}}
+                                  onClose={this.closeGuideLinesImageDialog}>
+                                  <ModalDialog style={{width: '500px'}}
+                                    onClose={this.closeGuideLinesImageDialog}>
+                                   <p>Use the correct aspect ratio for your image. Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped. </p>
+
                                   </ModalDialog>
                                 </ModalContainer>
                               }
