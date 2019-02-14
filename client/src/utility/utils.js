@@ -39,3 +39,14 @@ export function doesPageHaveSubscribers (pages, pageId) {
   }
   return true
 }
+export function getAccountsUrl () {
+  var url = 'http://localhost:3024'
+  const hostname = window.location.hostname
+
+  if (['skiboengage.cloudkibo.com', 'skibochat.cloudkibo.com'].indexOf(hostname) > -1) {
+    url = 'https://saccounts.cloudkibo.com'
+  } else if (['kiboengage.cloudkibo.com', 'kibochat.cloudkibo.com'].indexOf(hostname) > -1) {
+    url = 'https://accounts.cloudkibo.com'
+  }
+  return url
+}

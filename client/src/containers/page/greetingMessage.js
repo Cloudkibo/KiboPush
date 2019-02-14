@@ -306,7 +306,8 @@ class GreetingMessage extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+              Need help in understanding greeting text? Here is the <a href='https://kibopush.com/greeting-text/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

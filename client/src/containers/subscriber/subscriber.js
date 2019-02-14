@@ -17,6 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
+import CustomFields from './customFields/customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
@@ -131,6 +132,12 @@ class Subscriber extends React.Component {
 
   profilePicError (e, subscriber) {
     console.log('profile picture error', subscriber)
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     let fetchData = {
       last_id: 'none',
       number_of_records: 10,
@@ -1006,6 +1013,8 @@ class Subscriber extends React.Component {
     }
 
     return (
+      <div>
+        <CustomFields />
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
@@ -1640,6 +1649,10 @@ class Subscriber extends React.Component {
                             </PopoverBody>
                           </Popover>
                           <div className='row'>
+                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields:</span>
+                            <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-gear' />Manage Custom Fields</a>
+                          </div>
+                          <div className='row'>
                             <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
                             <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
                           </div>
@@ -1700,6 +1713,7 @@ class Subscriber extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }

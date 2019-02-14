@@ -6,6 +6,7 @@ import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 import auth from './auth.service'
 import { browserHistory } from 'react-router'
+import { getAccountsUrl } from './utils'
 
 export const API_URL = '/api'
 
@@ -22,6 +23,8 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
   let fetchUrl = ''
   if (type === 'kibopush') {
     fetchUrl = `${API_URL}/${endpoint}`
+  } else if (type === 'accounts') {
+    fetchUrl = `${getAccountsUrl()}/${endpoint}`
   } else fetchUrl = endpoint
   return fetch(fetchUrl, {
     headers,

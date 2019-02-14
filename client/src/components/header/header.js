@@ -422,51 +422,59 @@ class Header extends React.Component {
                                   <div className='m-nav-grid m-nav-grid--skin-light'>
                                     <div className='m-nav-grid__row'>
                                       {
-                                        (this.props.subscribers &&
+                                        (window.location.hostname.toLowerCase().includes('kiboengage') 
+                                        && this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-file' />
                                             <span className='m-nav-grid__text'>Send New Broadcast</span>
                                           </Link>
-                                          : <Link to='/broadcasts' className='m-nav-grid__item'>
+                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-file' />
                                             <span className='m-nav-grid__text'>Send New Broadcast</span>
                                           </Link>
+                                          : null
                                       }
 
                                       {
-                                        (this.props.subscribers &&
+                                        (window.location.hostname.toLowerCase().includes('kiboengage') 
+                                        && this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/poll' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-time' />
                                             <span className='m-nav-grid__text'>Send New Poll</span>
                                           </Link>
-                                          : <Link to='/poll' className='m-nav-grid__item'>
+                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/poll' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-time' />
                                             <span className='m-nav-grid__text'>Send New Poll</span>
                                           </Link>
+                                         : null
+
                                       }
 
                                     </div>
                                     <div className='m-nav-grid__row'>
 
                                       {
-                                        (this.props.subscribers &&
+                                        (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/surveys' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-folder' />
                                             <span className='m-nav-grid__text'>Send New Survey</span>
                                           </Link>
-                                          : <Link to='/surveys' className='m-nav-grid__item'>
+                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/surveys' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-folder' />
                                             <span className='m-nav-grid__text'>Send New Survey</span>
                                           </Link>
+                                           : null
                                       }
-
+                                       { !window.location.hostname.toLowerCase().includes('kiboengage') ?
                                       <Link to='/bots' className='m-nav-grid__item'>
                                         <i className='m-nav-grid__icon flaticon-clipboard' />
                                         <span className='m-nav-grid__text'>Create New Bot</span>
                                       </Link>
+                                      : null 
+                                       }
                                     </div>
                                   </div>
                                 </div>
