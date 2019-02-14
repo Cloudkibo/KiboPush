@@ -30,7 +30,8 @@ class EditButton extends React.Component {
       webviewurl: this.props.data.button.messenger_extensions ? this.props.data.button.url : '',
       webviewsize: this.props.data.button.webview_height_ratio ? this.props.data.button.webview_height_ratio : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      openCreateMessage: false
+      openCreateMessage: false,
+      showSequenceMessage: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -332,13 +333,13 @@ class EditButton extends React.Component {
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
                   </div>
-                  {
+                  { this.state.showSequenceMessage &&
                     this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
                     </div>
                   }
-                  {
+                  { this.state.showSequenceMessage &&
                     this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
