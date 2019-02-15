@@ -211,7 +211,7 @@ class Page extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
