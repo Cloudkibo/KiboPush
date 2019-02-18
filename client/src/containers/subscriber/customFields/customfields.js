@@ -16,7 +16,7 @@ class CustomFields extends React.Component {
       updatedDescription: '',
       updateValueName: false,
       updatevalueDescription: false,
-      nameFieldEmpty: true,
+      nameFieldEmpty: true
     }
     this.deleteCustomField = this.deleteCustomField.bind(this)
     this.toBeDeletedId = this.toBeDeletedId.bind(this)
@@ -59,10 +59,10 @@ class CustomFields extends React.Component {
     let data = {
       customFieldId: this.state.disabled,
       updated: {
-        description: this.state.updatedDescription
+        description: this.state.updatedDescription.toLocaleLowerCase()
       }
     }
-    if (this.state.toBeUpdateCustomField.name !== this.state.updatedName) data.updated.name = this.state.updatedName
+    if (this.state.toBeUpdateCustomField.name !== this.state.updatedName) data.updated.name = this.state.updatedName.toLocaleLowerCase()
     this.props.updateCustomField(data, this.msg)
     this.setState({toBeUpdateCustomField: {}, disabled: '', updatedName: '', updatedDescription: '', updatevalueDescription: false, updateValueName: false, nameFieldEmpty: true})
     this.props.loadCustomFields()

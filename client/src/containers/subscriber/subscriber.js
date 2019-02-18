@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
+import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -66,7 +67,15 @@ class Subscriber extends React.Component {
       saveEnableIndividual: false,
       saveEnableSeq: false,
       saveEnableSeqInd: false,
-      showVideo: false
+      showVideo: false,
+      setFieldIndex: false,
+      show: false,
+      selectedField: {},
+      hoverId: '',
+      saveFieldValueButton: true,
+      oldSelectedFieldValue: '',
+      popoverSetCustomField: false,
+      customFieldOptions: []
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -74,7 +83,8 @@ class Subscriber extends React.Component {
     if (!this.props.location.state) {
       props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     }
-    props.loadTags()
+    // props.loadTags()
+    props.loadCustomFields()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleAddIndividual = this.handleAddIndividual.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
@@ -128,6 +138,85 @@ class Subscriber extends React.Component {
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
     this.handleFilterByPageInitial = this.handleFilterByPageInitial.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
+    this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
+    this.hoverOn = this.hoverOn.bind(this)
+    this.hoverOff = this.hoverOff.bind(this)
+    this.handleSetCustomField = this.handleSetCustomField.bind(this)
+    this.showToggle = this.showToggle.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+    this.saveCustomField = this.saveCustomField.bind(this)
+    this.showSetCustomField = this.showSetCustomField.bind(this)
+    this.toggleSetCustomField = this.toggleSetCustomField.bind(this)
+  }
+
+  showSetCustomField () {
+    this.setState({
+      popoverSetCustomField: true
+    })
+  }
+
+  toggleSetCustomField () {
+    this.setState({
+      popoverSetCustomField: !this.state.popoverSetCustomField
+    })
+  }
+
+  saveCustomField () {
+    let subscriberIds = [this.state.subscriber._id]
+    let temp = {
+      customFieldId: this.state.selectedField._id,
+      subscriberIds: subscriberIds,
+      value: this.state.selectedField.value
+    }
+    this.props.setCustomFieldValue(temp, this.handleResponse)
+  }
+
+  handleResponse (res) {
+    if (res.status === 'Success') {
+      this.msg.success('Value set successfully')
+      let temp = this.state.subscriber
+      this.state.subscriber.customFields.forEach((field, i) => {
+        if (this.state.selectedField._id === field._id) {
+          temp.customFields[i].value = this.state.selectedField.value
+          this.setState({subscriber: temp, setFieldIndex: false})
+        }
+      })
+    } else {
+      if (res.status === 'failed' && res.description) {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
+  handleSetCustomField (event) {
+    var temp = {
+      _id: this.state.selectedField._id,
+      name: this.state.selectedField.name,
+      type: this.state.selectedField.type,
+      value: event.target.value
+    }
+    if (this.state.oldSelectedFieldValue === event.target.value) {
+      this.setState({selectedField: temp, saveFieldValueButton: true})
+    } else {
+      this.setState({selectedField: temp, saveFieldValueButton: false})
+    }
+  }
+
+  toggleSetFieldPopover (field) {
+    this.setState({setFieldIndex: !this.state.setFieldIndex, selectedField: field, oldSelectedFieldValue: field.value})
+  }
+
+  showToggle () {
+    this.setState({show: !this.state.show})
+  }
+
+  hoverOn (id) {
+    this.setState({hoverId: id})
+  }
+  hoverOff () {
+    this.setState({hoverId: ''})
   }
 
   profilePicError (e, subscriber) {
@@ -199,7 +288,9 @@ class Subscriber extends React.Component {
     this.setState({showEditModal: true})
   }
   setSubscriber (s) {
-    this.setState({subscriber: s})
+    this.setState({subscriber: s}, () => {
+      console.log('find me', this.state.subscriber)
+    })
     this.props.getSubscriberSequences(s._id)
   }
   closeEditModal () {
@@ -995,6 +1086,55 @@ class Subscriber extends React.Component {
   }
 
   render () {
+    let setFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    if (this.state.selectedField.type === 'text') {
+      setFieldInput = <input
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'number') {
+      setFieldInput = <input
+        type='text'
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'date') {
+      setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='date' />
+    } else if (this.state.selectedField.type === 'datetime') {
+      setFieldInput = setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='datetime-local' />
+    } else if (this.state.selectedField.type === 'true/false') {
+      setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
+        <option key='' value='' selected disabled>...Select...</option>
+        <option key='true' value='true'>True</option>
+        <option key='false' value='false'>False</option>
+      </select>
+    }
+    var hoverOn = {
+      cursor: 'pointer',
+      border: '1px solid #3c3c7b',
+      width: '421px',
+      borderRadius: '30px',
+      marginBottom: '7px',
+      background: 'rgb(60, 60, 123, 0.5)'
+    }
+    var hoverOff = {
+      cursor: 'pointer',
+      border: '1px solid rgb(220, 220, 220)',
+      width: '421px',
+      borderRadius: '30px',
+      marginBottom: '7px',
+      background: 'white'
+    }
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -1210,11 +1350,12 @@ class Subscriber extends React.Component {
                                 <div style={{display: 'block'}}>
                                   <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
                                     <DropdownToggle caret>
-                                       Assign Tags in bulk
+                                      Bulk Actions
                                     </DropdownToggle>
                                     <DropdownMenu>
                                       <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                       <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
+                                      <DropdownItem onClick={this.showSetCustomField}>Set Custom Field</DropdownItem>
                                       <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                       <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                     </DropdownMenu>
@@ -1287,6 +1428,31 @@ class Subscriber extends React.Component {
                                           onClick={() => {
                                             this.removeTags()
                                             this.toggleRemove()
+                                          }}>Save
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </PopoverBody>
+                                </Popover>
+                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
+                                  <PopoverHeader>Set Custom Field</PopoverHeader>
+                                  <PopoverBody>
+                                    <div className='row' style={{minWidth: '250px'}}>
+                                      <div className='col-12'>
+                                        <label>Custom Field</label>
+                                        <Select.Creatable
+                                          options={this.state.options}
+                                          onChange={this.handleRemove}
+                                          value={this.state.removeTag}
+                                          placeholder='Enter Field Name'
+                                        />
+                                      </div>
+                                      <div className='col-12'>
+                                        <button style={{float: 'right', margin: '15px'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.removeTags()
+                                            this.toggleSetCustomField()
                                           }}>Save
                                         </button>
                                       </div>
@@ -1648,9 +1814,66 @@ class Subscriber extends React.Component {
                               </div>
                             </PopoverBody>
                           </Popover>
+                          <div className='row' style={{display: 'inline-block'}}>
+                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields: </span>
+                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                              ? <span>
+                                <a data-toggle='collapse' data-target='#customFields' style={{cursor: 'pointer', color: 'blue'}}
+                                  onClick={this.showToggle}>
+                                  {this.state.show
+                                  ? <span>Hide <i style={{fontSize: '12px'}} className='la la-angle-up ' /></span>
+                                  : <span>Show <i style={{fontSize: '12px'}} className='la la-angle-down ' /></span>
+                                  }
+                                </a>
+                                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px'}}><i className='la la-gear' /> Manage Fields</a>
+                              </span>
+                              : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px'}}><i className='la la-gear' /> Manage Fields</a>
+                            }
+                          </div>
                           <div className='row'>
-                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields:</span>
-                            <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-gear' />Manage Custom Fields</a>
+                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                            ? <div id='customFields' style={{padding: '15px'}} className='collapse'>
+                              {
+                                this.state.subscriber.customFields.map((field, i) => (
+                                  <div className='row'>
+                                    <div className='col-sm-12'>
+                                      <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
+                                        onMouseEnter={() => { this.hoverOn(field._id) }}
+                                        onMouseLeave={this.hoverOff}
+                                        style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                                        <span style={{marginLeft: '10px'}}>
+                                          <span style={{fontWeight: '100'}}>{field.name} : </span>
+                                          <span style={{color: '#3c3c7b'}}>{field.value !== '' ? field.value : 'Not Set'}</span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                                  }
+                              <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                                <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
+                                <PopoverBody>
+                                  <div className='row' style={{ minWidth: '250px' }}>
+                                    <div className='col-12'>
+                                      <label>Set Value</label>
+                                      {setFieldInput}
+                                    </div>
+                                    <button style={{ float: 'right', margin: '15px' }}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.saveCustomField()
+                                        this.toggleSetFieldPopover()
+                                      }}
+                                      disabled={this.state.saveFieldValueButton}>
+                                        Save
+                                      </button>
+                                  </div>
+                                </PopoverBody>
+                              </Popover>
+                            </div>
+                            : <div style={{padding: '15px', maxHeight: '120px'}}>
+                              <span>No Custom Field Found</span>
+                            </div> }
                           </div>
                           <div className='row'>
                             <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
@@ -1745,7 +1968,10 @@ function mapDispatchToProps (dispatch) {
     getSubscriberSequences: getSubscriberSequences,
     subscribe: subscribe,
     unSubscribe: unSubscribe,
-    updatePicture: updatePicture
+    updatePicture: updatePicture,
+    setCustomFieldValue: setCustomFieldValue,
+    loadCustomFields: loadCustomFields
+
   },
     dispatch)
 }
