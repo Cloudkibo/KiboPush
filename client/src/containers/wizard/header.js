@@ -56,7 +56,13 @@ class Header extends React.Component {
   }
 
   render () {
-
+    let liveChatLink = '';
+    let hostname = window.location.hostname;
+    if (hostname == 'skiboengage.cloudkibo.com') {
+      liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
+    } else if (hostname == 'kiboengage.cloudkibo.com') {
+      liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
+    }
     console.log("window.location.hostname.toLowerCase().includes('kiboengage')", window.location.hostname.toLowerCase().includes('kiboengage'))
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
@@ -206,10 +212,16 @@ class Header extends React.Component {
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <Link to='/liveChat' className='m-nav__link'>
+                                { window.location.hostname.toLowerCase().includes('kiboengage') ?
+                                    <a href={liveChatLink} target='_blank' className='m-nav__link'>
+                                      <i className='m-nav__link-icon flaticon-chat-1' />
+                                      <span className='m-nav__link-text'>Messages</span>
+                                    </a>
+                                    : <Link to='/liveChat' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-chat-1' />
                                     <span className='m-nav__link-text'>Messages</span>
                                   </Link>
+                                  }
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
