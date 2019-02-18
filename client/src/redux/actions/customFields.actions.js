@@ -62,11 +62,20 @@ export function deleteCustomField (customFieldId, msg) {
         dispatch(loadCustomFields())
       } else {
         if (res.status === 'failed' && res.description) {
-          msg.error(`Unable to delete tag. ${res.description}`)
+          msg.error(`Unable to delete Custom field. ${res.description}`)
         } else {
-          msg.error('Unable to delete tag')
+          msg.error('Unable to delete Custom Field')
         }
       }
+    })
+  }
+}
+
+export function setCustomFieldValue (body, handleResponse) {
+  return () => {
+    callApi('custom_field_subscribers/set_custom_field_value', 'post', body)
+    .then(res => {
+      handleResponse(res)
     })
   }
 }

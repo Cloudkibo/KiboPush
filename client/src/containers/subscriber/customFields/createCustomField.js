@@ -32,9 +32,9 @@ class CreateCustomField extends React.Component {
   }
   onSubmit (event) {
     let data = {
-      name: this.state.name,
-      type: this.state.type,
-      description: this.state.description,
+      name: this.state.name.toLowerCase(),
+      type: this.state.type.toLowerCase(),
+      description: this.state.description.toLocaleLowerCase(),
       companyId: '',
       createdBy: ''
     }
@@ -104,7 +104,7 @@ class CreateCustomField extends React.Component {
                           <option key='number' value='number'>Number</option>
                           <option key='date' value='date'>Date</option>
                           <option key='datetime' value='datetime'>Date and Time</option>
-                          <option key='boolean' value='boolean'>True/False</option>
+                          <option key='boolean' value='true/false'>True/False</option>
                         </select>
                       </div>
                     </div>
