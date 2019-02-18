@@ -550,7 +550,7 @@ class FacebookPosts extends React.Component {
                             <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
                               ref='selectImage' style={styles.inputf} />
                           </span>
-                          <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                          {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                             <span>
                               <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                 this.refs.selectVideo.click()
@@ -559,6 +559,7 @@ class FacebookPosts extends React.Component {
                             <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
                               ref='selectVideo' style={styles.inputf} />
                           </span>
+                          */}
                           <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
                             <PopoverBody>
                               <div>
