@@ -17,6 +17,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
+import PropTypes from 'prop-types'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -375,6 +376,20 @@ class GenericMessage extends React.Component {
     </div>
     )
   }
+}
+
+GenericMessage.propTypes = {
+  'convoTitle': PropTypes.string,
+  'handleChange': PropTypes.func.isRequired,
+  'location': PropTypes.object.isRequired,
+  'hiddenComponents': PropTypes.array,
+  'titleEditable': PropTypes.bool
+}
+
+GenericMessage.defaultProps = {
+  'convoTitle': 'Title',
+  'hiddenComponents': [],
+  'titleEditable': true
 }
 
 export default GenericMessage

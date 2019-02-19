@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class GenericMessageComponents extends React.Component {
   render () {
@@ -85,6 +86,15 @@ class GenericMessageComponents extends React.Component {
       </div>
     )
   }
+}
+
+GenericMessageComponents.propTypes = {
+  'addComponent': PropTypes.func.isRequired,
+  'hiddenComponents': PropTypes.array
+}
+
+GenericMessageComponents.defaultProps = {
+  'hiddenComponents': []
 }
 
 export default GenericMessageComponents
