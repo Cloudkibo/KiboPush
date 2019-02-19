@@ -45,7 +45,9 @@ class GenericMessage extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
     this.addComponent = this.addComponent.bind(this)
-    props.setReset(this.reset)
+    if (props.setReset) {
+      props.setReset(this.reset)
+    }
   }
 
   scrollToTop () {
@@ -382,6 +384,7 @@ GenericMessage.propTypes = {
   'convoTitle': PropTypes.string,
   'handleChange': PropTypes.func.isRequired,
   'location': PropTypes.object.isRequired,
+  'setReset': PropTypes.func,
   'hiddenComponents': PropTypes.array,
   'titleEditable': PropTypes.bool
 }
