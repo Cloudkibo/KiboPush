@@ -16,6 +16,7 @@ import Media from '../containers/convo/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
+import DragSortableList from 'react-drag-sortable'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -27,6 +28,7 @@ class GenericMessage extends React.Component {
       convoTitle: this.props.convoTitle ? this.props.convoTitle : 'Title',
       pageId: ''
     }
+    this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.handleMedia = this.handleMedia.bind(this)
@@ -42,11 +44,19 @@ class GenericMessage extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
 
-    props.setReset(this.showResetAlertDialog)
+    props.setReset(this.reset)
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+
+  reset (showDialog = true) {
+    if (showDialog) {
+      this.showResetAlertDialog()
+    } else {
+      this.newConvo()
+    }
   }
 
   showResetAlertDialog () {
@@ -253,7 +263,7 @@ class GenericMessage extends React.Component {
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
-    var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
+    var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
@@ -302,7 +312,7 @@ class GenericMessage extends React.Component {
                       <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                         <div className='row' >
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} pageId={this.state.pageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
+                            <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={timeStamp} pageId={this.state.pageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                 <h6>Text</h6>
@@ -310,7 +320,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                 <h6>Image</h6>
@@ -318,7 +328,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                 <h6>Card</h6>
@@ -326,7 +336,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                 <h6>Gallery</h6>
@@ -336,7 +346,7 @@ class GenericMessage extends React.Component {
                         </div>
                         <div className='row'>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                 <h6>Audio</h6>
@@ -344,7 +354,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                 <h6>Video</h6>
@@ -352,7 +362,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                                 <h6>File</h6>
@@ -360,7 +370,7 @@ class GenericMessage extends React.Component {
                             </div>
                           </div>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                 <h6>List</h6>
@@ -370,7 +380,7 @@ class GenericMessage extends React.Component {
                         </div>
                         <div className='row'>
                           <div className='col-3'>
-                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                            <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, {content: (<Media id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                               <div className='align-center'>
                                 <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                 <h6>Media</h6>
@@ -427,9 +437,8 @@ class GenericMessage extends React.Component {
                           }
                         <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                           {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                          {this.state.list}
+                          <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                         </div>
-
                       </div>
                     </div>
                   </div>

@@ -150,7 +150,8 @@ class CreateConvo extends React.Component {
   handleSendBroadcast (res) {
     if (res.status === 'success') {
       this.initTab()
-      this.setState({broadcast: [], list: [], resetTarget: true})
+      this.reset(false)
+      this.setState({resetTarget: true})
     } else if (res.status === 'INVALID_SESSION') {
       this.setState({showInvalidSession: true, invalidSessionMessage: res.description})
     }
