@@ -314,7 +314,7 @@ class GenericMessage extends React.Component {
             <div className='row'>
               <div className='col-12'>
                 <div className='row'>
-                  <GenericMessageComponents addComponent={this.addComponent} />
+                  <GenericMessageComponents hiddenComponents={this.props.hiddenComponents ? this.props.hiddenComponents : []} addComponent={this.addComponent} />
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     <StickyDiv zIndex={1}>
                       <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
