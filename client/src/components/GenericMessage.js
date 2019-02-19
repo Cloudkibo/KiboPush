@@ -22,12 +22,14 @@ import PropTypes from 'prop-types'
 class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     this.state = {
       list: [],
       broadcast: [],
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
-      pageId: ''
+      pageId: '',
+      hiddenComponents: hiddenComponents
     }
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -317,7 +319,7 @@ class GenericMessage extends React.Component {
             <div className='row'>
               <div className='col-12'>
                 <div className='row'>
-                  <GenericMessageComponents hiddenComponents={this.props.hiddenComponents} addComponent={this.addComponent} />
+                  <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.addComponent} />
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     <StickyDiv zIndex={1}>
                       <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
