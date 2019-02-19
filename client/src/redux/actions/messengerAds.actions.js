@@ -249,7 +249,7 @@ const prepareJsonPayload = (data, optinMessage) => {
         if (body.cards[m].fileurl) {
           delete body.cards[m].fileurl
         }
-        if (body.cards[m].id) {
+        if (body.cards[m].id !== null) {
           delete body.cards[m].id
         }
       }

@@ -35,7 +35,7 @@ class Image extends React.Component {
     if (this.props.image && this.props.image.url !== '') {
       console.log('in componentDidMount of Image', this.props.image)
       this.setState({imgSrc: this.props.image.url, showPreview: true})
-      if (this.props.module !== 'messengerAd') {
+      if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.image.url,
           componentType: 'image',
