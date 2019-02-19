@@ -272,17 +272,19 @@ class Card extends React.Component {
     console.log('this.props', this.props)
     this.updateCardDetails(this.props)
     if (this.props.cardDetails) {
-      this.props.uploadTemplate({pages: this.props.pages,
-        url: this.props.cardDetails.fileurl.url,
-        componentType: 'image',
-        id: this.props.cardDetails.fileurl.id,
-        name: this.props.cardDetails.fileName
-      }, { fileurl: '',
-        fileName: this.props.cardDetails.fileName,
-        type: this.props.cardDetails.type,
-        image_url: '',
-        size: this.props.cardDetails.size
-      }, this.updateImageUrl, this.setLoading)
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: this.props.cardDetails.fileurl.url,
+          componentType: 'image',
+          id: this.props.cardDetails.fileurl.id,
+          name: this.props.cardDetails.fileName
+        }, { fileurl: '',
+          fileName: this.props.cardDetails.fileName,
+          type: this.props.cardDetails.type,
+          image_url: '',
+          size: this.props.cardDetails.size
+        }, this.updateImageUrl, this.setLoading)
+      }
     }
   }
   componentWillReceiveProps (nextProps) {
