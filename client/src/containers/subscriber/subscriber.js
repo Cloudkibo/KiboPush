@@ -1487,8 +1487,13 @@ class Subscriber extends React.Component {
                                       <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                       <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                       <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                      <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
-                                      <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
+                                      <DropdownItem onClick={this.showSetCustomField}>Set Custom Field</DropdownItem>
+                                      { this.props.user.isSuperUser &&
+                                        <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
+                                      }
+                                      { this.props.user.isSuperUser &&
+                                        <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
+                                      }
                                     </DropdownMenu>
                                   </Dropdown>
                                   {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
@@ -2086,7 +2091,8 @@ function mapStateToProps (state) {
     tags: (state.tagsInfo.tags),
     customFields: (state.customFieldInfo.customFields),
     sequences: (state.sequenceInfo.sequences),
-    subscriberSequences: (state.sequenceInfo.subscriberSequences)
+    subscriberSequences: (state.sequenceInfo.subscriberSequences),
+    user: (state.basicInfo.user)
   }
 }
 

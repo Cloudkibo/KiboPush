@@ -65,17 +65,19 @@ class Media extends React.Component {
       var video = this.props.media.type.match('video.*')
       var image = this.props.media.type.match('image.*')
       if (image) {
-        this.props.uploadTemplate({pages: this.props.pages,
-          url: this.props.media.fileurl.url,
-          componentType: 'image',
-          id: this.props.media.fileurl.id,
-          name: this.props.media.fileurl.name
-        }, { fileurl: '',
-          fileName: this.props.media.fileurl.name,
-          type: this.props.media.type,
-          image_url: '',
-          size: this.props.media.size
-        }, this.updateImageUrl, this.setLoading)
+        if (this.props.pages) {
+          this.props.uploadTemplate({pages: this.props.pages,
+            url: this.props.media.fileurl.url,
+            componentType: 'image',
+            id: this.props.media.fileurl.id,
+            name: this.props.media.fileurl.name
+          }, { fileurl: '',
+            fileName: this.props.media.fileurl.name,
+            type: this.props.media.type,
+            image_url: '',
+            size: this.props.media.size
+          }, this.updateImageUrl, this.setLoading)
+        }
       }
       if (video) {
         this.props.uploadTemplate({pages: this.props.pages,
