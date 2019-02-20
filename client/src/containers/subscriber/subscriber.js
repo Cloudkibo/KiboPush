@@ -8,6 +8,7 @@ import { Link } from 'react-router'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
+import CreateCustomField from './customFields/createCustomField'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -18,7 +19,6 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
-import CustomFields from './customFields/customfields'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
@@ -75,7 +75,11 @@ class Subscriber extends React.Component {
       saveFieldValueButton: true,
       oldSelectedFieldValue: '',
       popoverSetCustomField: false,
-      customFieldOptions: []
+      customFieldOptions: [],
+      selectedBulkField: null,
+      saveBulkFieldDisable: true,
+      createCustomField: false
+
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -83,7 +87,7 @@ class Subscriber extends React.Component {
     if (!this.props.location.state) {
       props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     }
-    // props.loadTags()
+    props.loadTags()
     props.loadCustomFields()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleAddIndividual = this.handleAddIndividual.bind(this)
@@ -145,14 +149,104 @@ class Subscriber extends React.Component {
     this.showToggle = this.showToggle.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
     this.saveCustomField = this.saveCustomField.bind(this)
-    this.showSetCustomField = this.showSetCustomField.bind(this)
     this.toggleSetCustomField = this.toggleSetCustomField.bind(this)
+    this.handleSelectBulkCustomField = this.handleSelectBulkCustomField.bind(this)
+    this.handleBulkSetCustomField = this.handleBulkSetCustomField.bind(this)
+    this.selectedSubscribers = this.selectedSubscribers.bind(this)
+    this.createSetCustomFieldPayload = this.createSetCustomFieldPayload.bind(this)
+    this.saveSetCustomField = this.saveSetCustomField.bind(this)
+    this.handleBulkResponse = this.handleBulkResponse.bind(this)
   }
 
-  showSetCustomField () {
-    this.setState({
-      popoverSetCustomField: true
-    })
+  saveSetCustomField () {
+    var payload = this.createSetCustomFieldPayload()
+    if (payload.subscriberIds.length > 0) {
+      this.props.setCustomFieldValue(payload, this.handleBulkResponse)
+    } else {
+      if (this.msg) {
+        this.msg.error('Select relevant subscribers')
+      }
+    }
+  }
+  handleBulkResponse (res) {
+    if (res.status === 'Success') {
+      this.msg.success('Value set successfully')
+      let selectedSubscribers = this.selectedSubscribers()
+      let temp = this.state.subscribersData
+      selectedSubscribers.forEach((subscriberId, i) => {
+        this.state.subscribersData.forEach((subscriber, j) => {
+          if (subscriberId === subscriber._id) {
+            subscriber.customFields.forEach((field, k) => {
+              if (field._id === this.state.selectedBulkField._id) {
+                temp[j].customFields[k].value = this.state.selectedBulkField.value
+              }
+            })
+          }
+        })
+      })
+      this.setState({subscribersData: temp, popoverSetCustomField: !this.state.popoverSetCustomField, selectedBulkField: null})
+    } else {
+      if (res.status === 'failed') {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
+  createSetCustomFieldPayload () {
+    var subscribersIds = this.selectedSubscribers()
+    let temp = {
+      customFieldId: this.state.selectedBulkField._id,
+      subscriberIds: subscribersIds,
+      value: this.state.selectedBulkField.value
+    }
+    return temp
+  }
+
+  selectedSubscribers () {
+    var selectedIds = []
+    var subscribers = this.state.subscribersDataAll
+    for (var i = 0; i < subscribers.length; i++) {
+      if (subscribers[i].selected) {
+        selectedIds.push(subscribers[i]._id)
+      }
+    }
+    return selectedIds
+  }
+
+  handleBulkSetCustomField (event) {
+    var temp = {
+      _id: this.state.selectedBulkField._id,
+      label: this.state.selectedBulkField.label,
+      type: this.state.selectedBulkField.type,
+      value: event.target.value
+    }
+    this.setState({selectedBulkField: temp})
+  }
+
+  handleSelectBulkCustomField (value) {
+    console.log('findme', value)
+    var index = 0
+    if (value) {
+      for (var i = 0; i < this.props.customFields.length; i++) {
+        if (this.props.customFields[i].name !== value.label) {
+          index++
+        }
+      }
+      if (index === this.props.customFields.length) {
+      } else {
+        this.setState({
+          saveBulkFieldDisable: false,
+          selectedBulkField: value
+        })
+      }
+    } else {
+      this.setState({
+        saveBulkFieldDisable: true,
+        selectedBulkField: value
+      })
+    }
   }
 
   toggleSetCustomField () {
@@ -169,6 +263,7 @@ class Subscriber extends React.Component {
       value: this.state.selectedField.value
     }
     this.props.setCustomFieldValue(temp, this.handleResponse)
+    this.setState({setFieldIndex: !this.state.setFieldIndex})
   }
 
   handleResponse (res) {
@@ -182,7 +277,7 @@ class Subscriber extends React.Component {
         }
       })
     } else {
-      if (res.status === 'failed' && res.description) {
+      if (res.status === 'failed') {
         this.msg.error(`Unable to set Custom field value. ${res.description}`)
       } else {
         this.msg.error('Unable to set Custom Field value')
@@ -848,6 +943,15 @@ class Subscriber extends React.Component {
         options: tagOptions
       })
     }
+    if (nextProps.customFields) {
+      var fieldOptions = []
+      for (let a = 0; a < nextProps.customFields.length; a++) {
+        fieldOptions.push({'_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': ''})
+      }
+      this.setState({
+        customFieldOptions: fieldOptions
+      })
+    }
     if (nextProps.sequences) {
       let sequenceOptions = []
       for (let a = 0; a < nextProps.sequences.length; a++) {
@@ -1119,6 +1223,33 @@ class Subscriber extends React.Component {
         <option key='false' value='false'>False</option>
       </select>
     }
+    let setBulkFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    if (this.state.selectedBulkField) {
+      if (this.state.selectedBulkField.type === 'text' || this.state.selectedBulkField.type === 'number') {
+        setBulkFieldInput = <input
+          className='form-control m-input'
+          placeholder='value'
+          onChange={this.handleBulkSetCustomField}
+          value={this.state.selectedBulkField.value}
+      />
+      } else if (this.state.selectedBulkField.type === 'date') {
+        setBulkFieldInput = <input className='form-control m-input'
+          value={this.state.selectedBulkField.value}
+          onChange={this.handleBulkSetCustomField}
+          type='date' />
+      } else if (this.state.selectedBulkField.type === 'datetime') {
+        setBulkFieldInput = setFieldInput = <input className='form-control m-input'
+          value={this.state.selectedBulkField.value}
+          onChange={this.handleBulkSetCustomField}
+          type='datetime-local' />
+      } else if (this.state.selectedBulkField.type === 'true/false') {
+        setBulkFieldInput = <select className='custom-select' id='type' value={this.state.selectedBulkField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleBulkSetCustomField}>
+          <option key='' value='' selected disabled>...Select...</option>
+          <option key='true' value='true'>True</option>
+          <option key='false' value='false'>False</option>
+        </select>
+      }
+    }
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
@@ -1154,7 +1285,7 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-        <CustomFields />
+        <span id='createModal' data-toggle='modal' data-target='#create_modal'><CreateCustomField /></span>
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
@@ -1355,6 +1486,7 @@ class Subscriber extends React.Component {
                                     <DropdownMenu>
                                       <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                       <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
+                                      <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
                                       <DropdownItem onClick={this.showSetCustomField}>Set Custom Field</DropdownItem>
                                       { this.props.user.isSuperUser &&
                                         <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
@@ -1443,20 +1575,24 @@ class Subscriber extends React.Component {
                                   <PopoverBody>
                                     <div className='row' style={{minWidth: '250px'}}>
                                       <div className='col-12'>
-                                        <label>Custom Field</label>
-                                        <Select.Creatable
-                                          options={this.state.options}
-                                          onChange={this.handleRemove}
-                                          value={this.state.removeTag}
+                                        <label>Field</label>
+                                        <Select
+                                          options={this.state.customFieldOptions}
+                                          onChange={this.handleSelectBulkCustomField}
+                                          value={this.state.selectedBulkField}
                                           placeholder='Enter Field Name'
                                         />
                                       </div>
                                       <div className='col-12'>
+                                        <label>Value</label>
+                                        {setBulkFieldInput}
+                                      </div>
+                                      <div className='col-12'>
                                         <button style={{float: 'right', margin: '15px'}}
                                           className='btn btn-primary btn-sm'
+                                          disabled={this.state.saveBulkFieldDisable}
                                           onClick={() => {
-                                            this.removeTags()
-                                            this.toggleSetCustomField()
+                                            this.saveSetCustomField()
                                           }}>Save
                                         </button>
                                       </div>
@@ -1866,7 +2002,7 @@ class Subscriber extends React.Component {
                                       className='btn btn-primary btn-sm'
                                       onClick={() => {
                                         this.saveCustomField()
-                                        this.toggleSetFieldPopover()
+                                        // this.toggleSetFieldPopover()
                                       }}
                                       disabled={this.state.saveFieldValueButton}>
                                         Save
@@ -1953,6 +2089,7 @@ function mapStateToProps (state) {
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
+    customFields: (state.customFieldInfo.customFields),
     sequences: (state.sequenceInfo.sequences),
     subscriberSequences: (state.sequenceInfo.subscriberSequences),
     user: (state.basicInfo.user)
