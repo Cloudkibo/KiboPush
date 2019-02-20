@@ -333,8 +333,6 @@ class CreateConvo extends React.Component {
   }
 
   render () {
-    let timeStamp = new Date().getTime()
-    console.log('timeStamp', timeStamp)
     var alertOptions = {
       offset: 75,
       position: 'top right',
