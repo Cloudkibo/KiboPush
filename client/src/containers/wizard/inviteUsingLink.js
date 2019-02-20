@@ -89,15 +89,15 @@ class InviteSubscribers extends React.Component {
     }
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Getting Started`;
+    document.title = `${title} | Getting Started`
     var addScript = document.createElement('script')
     addScript.setAttribute('type', 'text/javascript')
     addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
@@ -284,12 +284,6 @@ class InviteSubscribers extends React.Component {
                             <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
                               <span>Subscribe Now</span>
                             </a>
-                            <br /><br /><br /><br />
-                            {this.state.sendTestMessage &&
-                              <button className='btn btn-primary' onClick={this.sendTestBroadcast}>
-                                <span>Send Test Message</span>
-                              </button>
-                            }
                           </center>
                         </div>
                       }

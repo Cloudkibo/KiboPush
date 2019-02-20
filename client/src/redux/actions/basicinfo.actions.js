@@ -106,8 +106,12 @@ export function getFbAppId () {
 }
 
 export function getAdminSubscriptions () {
+  console.log('in getAdminSubscriptions')
   return (dispatch) => {
-    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
+    callApi('adminsubscriptions').then(res => {
+      console.log('response from adminsubscriptions', res)
+      dispatch(storeAdminSubscriptions(res.payload))
+    })
   }
 }
 export function updateMode (data, user) {
