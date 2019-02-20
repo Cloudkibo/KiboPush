@@ -295,7 +295,7 @@ class GenericMessage extends React.Component {
       'List': (<List id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />),
       'Media': (<Media id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)
     }
-    this.msg.info('New Text Component Added')
+    this.msg.info(`New ${componentType} Component Added`)
     this.setState({list: [...temp, {content: components[componentType]}]})
     this[`handle${componentType}`]({id: timeStamp, text: '', button: []})
   }
