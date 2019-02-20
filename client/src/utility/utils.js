@@ -24,7 +24,24 @@ export function isWebViewUrl (value) {
   let regexp = /^(http|https):///
   return regexp.test(value)
 }
-
+export function isFacebookPageUrl (value) {
+  /* contains facebook url followed by alphabets, numerals or dot */
+  let regexp = /^(https?:\/\/)?(www\.)?facebook.com\/[.a-zA-Z0-9]*/g
+  return regexp.test(value)
+}
+export function isTwitterUrl (value) {
+  /* contains twitter url followed by alphabets, numerals or underscore */
+  let regexp = /^(https?:\/\/)?(www\.)?twitter.com\/[_a-zA-Z0-9]*/g
+  return regexp.test(value)
+}
+export function testUserName (userName) {
+  if (userName.length < 5) {
+    return false
+  }
+  /* must not end with .com or .net */
+  let regexp = /^(?!.*[.]com$)(?!.*[.]net$).*$/
+  return regexp.test(userName)
+}
 export function doesPageHaveSubscribers (pages, pageId) {
   console.log('doesPageHaveSubscribers pages', pages)
   console.log('doesPageHaveSubscribers pageId', pageId)
