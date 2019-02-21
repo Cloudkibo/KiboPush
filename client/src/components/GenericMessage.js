@@ -147,7 +147,7 @@ class GenericMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleCard (obj) {
@@ -181,7 +181,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleMedia (obj) {
@@ -217,7 +217,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleGallery (obj) {
@@ -238,7 +238,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleImage (obj) {
@@ -255,7 +255,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange(temp)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleFile (obj) {
@@ -271,8 +271,9 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
-    this.props.handleChange({broadcast: temp})
-    // this.setState({broadcast: temp})
+
+    this.setState({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
   handleList (obj) {
     console.log('in create convo handleList', obj)
@@ -293,7 +294,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp})
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   removeComponent (obj) {
@@ -303,7 +304,7 @@ class GenericMessage extends React.Component {
     console.log('temp', temp)
     console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2})
+    this.props.handleChange({broadcast: temp2}, obj)
   }
 
   newConvo () {
@@ -326,7 +327,7 @@ class GenericMessage extends React.Component {
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState module={this.props.module} />),
+        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleText({id: componentId, text: '', button: []}) }
       },
       'image': {
@@ -334,31 +335,31 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard module={this.props.module} />),
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
       },
       'gallery': {
-        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
       },
       'audio': {
-        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: ''}) }
       },
       'video': {
-        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: ''}) }
       },
       'file': {
-        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
       },
       'list': {
-        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }
       },
       'media': {
-        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: '', buttons: []}) }
       }
     }
@@ -455,7 +456,8 @@ GenericMessage.propTypes = {
   'titleEditable': PropTypes.bool,
   'broadcast': PropTypes.array,
   'module': PropTypes.string,
-  'pages': PropTypes.array
+  'pages': PropTypes.array,
+  'replyWithMessage': PropTypes.func
 }
 
 GenericMessage.defaultProps = {
