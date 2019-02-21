@@ -457,7 +457,7 @@ GenericMessage.propTypes = {
 GenericMessage.defaultProps = {
   'convoTitle': 'Title',
   'hiddenComponents': [],
-  'titleEditable': true,
+  'titleEditable': false,
   'location': {state: {
     'pages': []
   }},
