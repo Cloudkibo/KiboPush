@@ -112,7 +112,7 @@ class ViewMessage extends React.Component {
                                         </div>
                                         <div style={{marginTop: '10px', padding: '5px'}}>
                                           <div style={{textAlign: 'left', fontWeight: 'bold'}}>{b.title}</div>
-                                          <div style={{textAlign: 'left', color: '#ccc'}}>{b.description}</div>
+                                          <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{b.description}</div>
                                         </div>
                                       </div>
                                       {
@@ -137,7 +137,7 @@ class ViewMessage extends React.Component {
                                               </div>
                                               <div style={{marginTop: '10px', padding: '5px'}}>
                                                 <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
-                                                <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{card.subtitle}</div>
                                               </div>
                                             </div>
                                             {
@@ -203,7 +203,7 @@ class ViewMessage extends React.Component {
                                             <div className='row'>
                                               <div className={b.topElementStyle === 'LARGE' && i === 0 ? 'col-md-12' : 'col-md-4'} style={{marginLeft: '10px'}}>
                                                 <div style={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</div>
-                                                <div style={{textAlign: 'left', color: '#ccc'}}>{item.subtitle}</div>
+                                                <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{item.subtitle}</div>
                                               </div>
                                               {b.topElementStyle === 'LARGE' && i === 0
                                                 ? null
