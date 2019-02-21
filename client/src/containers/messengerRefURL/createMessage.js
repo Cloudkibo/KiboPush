@@ -83,7 +83,7 @@ class MessengerRefURLMessage extends React.Component {
             </div>
           </div>
         </div>
-        <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'landingPage'} />
+        <GenericMessage pages={[this.state.pageId]} broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'landingPage'} />
       </div>
     )
   }

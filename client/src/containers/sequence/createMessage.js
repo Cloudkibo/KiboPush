@@ -17,7 +17,6 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      list: [],
       broadcast: [],
       convoTitle: 'Broadcast Title',
       isShowingModalGuideLines: false
@@ -183,7 +182,7 @@ class CreateMessage extends React.Component {
                     <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
                   </div>
                 </div>
-                <GenericMessage broadcast={this.props.location.state ? this.props.location.state.payload : []} handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable location={this.props.location} module={'sequenceMessaging'} />
+                <GenericMessage broadcast={this.props.location.state ? this.props.location.state.payload : []} handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable module={'sequenceMessaging'} />
               </div>
             </div>
           </div>

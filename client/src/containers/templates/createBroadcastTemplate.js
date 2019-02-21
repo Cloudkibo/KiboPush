@@ -17,7 +17,6 @@ class CreateBroadcastTemplate extends React.Component {
     super(props, context)
     props.loadCategoriesList()
     this.state = {
-      list: [],
       broadcast: [],
       isShowingModal: false,
       convoTitle: props.template ? props.template.title : 'Broadcast Title',

@@ -67,6 +67,9 @@ class GenericMessage extends React.Component {
     if (this.props.convoTitle !== nextProps.convoTitle) {
       this.setState({convoTitle: nextProps.convoTitle})
     }
+    if (this.props.broadcast !== nextProps.broadcast) {
+      this.initializeList(nextProps.broadcast)
+    }
   }
 
   initializeList (broadcast) {
@@ -76,7 +79,7 @@ class GenericMessage extends React.Component {
       temp.push({content: component})
     }
     this.setState({list: temp, broadcast})
-    this.props.handleChange({broadcast, list: temp})
+    this.props.handleChange({broadcast})
   }
 
   scrollToTop () {
@@ -300,12 +303,12 @@ class GenericMessage extends React.Component {
     console.log('temp', temp)
     console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2, list: temp})
+    this.props.handleChange({broadcast: temp2})
   }
 
   newConvo () {
     this.setState({broadcast: [], list: []})
-    this.props.handleChange({broadcast: [], list: []})
+    this.props.handleChange({broadcast: []})
   }
 
   addComponent (componentType) {
@@ -326,35 +329,35 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleText({id: componentId, text: '', button: []}) }
       },
       'image': {
-        component: (<Image id={componentId} pages={this.props.location.state.pages} image={broadcast.image_url} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
+        component: (<Image id={componentId} pages={this.props.pages} image={broadcast.image_url} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.location.state.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard module={this.props.module} />),
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard module={this.props.module} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
       },
       'gallery': {
-        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.location.state.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
       },
       'audio': {
-        component: (<Audio id={componentId} pages={this.props.location.state.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: ''}) }
       },
       'video': {
-        component: (<Video id={componentId} pages={this.props.location.state.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: ''}) }
       },
       'file': {
-        component: (<File id={componentId} pages={this.props.location.state.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
       },
       'list': {
-        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.location.state.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }
       },
       'media': {
-        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.location.state.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} module={this.props.module} />),
+        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} module={this.props.module} />),
         handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: '', buttons: []}) }
       }
     }
@@ -446,21 +449,18 @@ class GenericMessage extends React.Component {
 GenericMessage.propTypes = {
   'convoTitle': PropTypes.string,
   'handleChange': PropTypes.func.isRequired,
-  'location': PropTypes.object,
   'setReset': PropTypes.func,
   'hiddenComponents': PropTypes.array,
   'titleEditable': PropTypes.bool,
   'broadcast': PropTypes.array,
-  'module': PropTypes.string
+  'module': PropTypes.string,
+  'pages': PropTypes.array
 }
 
 GenericMessage.defaultProps = {
   'convoTitle': 'Title',
   'hiddenComponents': [],
   'titleEditable': false,
-  'location': {state: {
-    'pages': []
-  }},
   'broadcast': []
 }
 

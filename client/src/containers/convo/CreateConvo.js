@@ -31,7 +31,6 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      list: [],
       broadcast: [],
       stayOpen: false,
       disabled: false,
@@ -525,7 +524,7 @@ class CreateConvo extends React.Component {
                       </ul>
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
-                          <GenericMessage handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable location={this.props.location} />
+                          <GenericMessage handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable pages={this.props.location.state.pages} />
                         </div>
                         {
                           this.props.location.state.module === 'convo' &&
