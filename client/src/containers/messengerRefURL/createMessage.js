@@ -6,41 +6,57 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import CreateMessage from '../../components/CreateMessage/createMessage'
-import { updateData } from '../../redux/actions/messengerRefURL.actions'
+import GenericMessage from '../../components/GenericMessage'
 import AlertContainer from 'react-alert'
+import { browserHistory } from 'react-router'
+import { validateFields } from '../../containers/convo/utility'
+import { updateData } from '../../redux/actions/messengerRefURL.actions'
 
 class MessengerRefURLMessage extends React.Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     this.state = {
-      reply: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
-      pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id
+      broadcast: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
+      pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
+      convoTitle: 'Opt-In Message'
     }
     this.saveMessage = this.saveMessage.bind(this)
+    this.goBack = this.goBack.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  componentDidMount() {
-    const hostname = window.location.hostname;
-    let title = '';
+  handleChange (broadcast) {
+    this.setState(broadcast)
+  }
+
+  componentDidMount () {
+    const hostname = window.location.hostname
+    let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Create Message`;
+    document.title = `${title} | Create Message`
   }
 
-  saveMessage(message) {
-    this.setState({
-      reply: message
+  goBack () {
+    browserHistory.push({
+      pathname: `/createMessengerRefURL`,
+      state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'createMessage'}
     })
-    this.props.updateData(this.props.messengerRefURL, 'reply', message)
+  }
+
+  saveMessage () {
+    if (!validateFields(this.state.broadcast, this.msg)) {
+      return
+    }
+    this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
     this.msg.success('Message has been saved.')
   }
 
-  render() {
+  render () {
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -51,22 +67,36 @@ class MessengerRefURLMessage extends React.Component {
     console.log('messengerRefURLInfo', this.props.messengerRefURL)
     console.log('this.props.pages', this.props.pages)
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{width: '100%'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <CreateMessage title='Opt-In Message' module='messengerRefURL' saveMessage={this.saveMessage} editMessage={this.state.reply} pages={[this.state.pageId]} pageId={this.props.messengerRefURL.pageId} />
+        <div className='m-content' style={{marginBottom: '-30px'}}>
+          <div className='row'>
+            <div className='col-12'>
+              <div className='pull-right'>
+                <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
+                Back
+              </button>
+                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
+                Save
+              </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'landingPage'} />
       </div>
     )
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     messengerRefURL: state.messengerRefURLInfo.messengerRefURL,
     pages: state.pagesInfo.pages
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updateData: updateData
   }, dispatch)
