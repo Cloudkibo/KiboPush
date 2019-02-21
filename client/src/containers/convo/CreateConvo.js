@@ -11,7 +11,6 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
@@ -64,7 +63,6 @@ class CreateConvo extends React.Component {
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
-    this.goBack = this.goBack.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
@@ -226,44 +224,39 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-
-    if (this.props.location.state && this.props.location.state.module === 'welcome') {
-      this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
+    console.log('this.props.location.state.pages', this.props.location.state.pages)
+    console.log('this.props.pages', this.props.pages)
+    let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
+    var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+    if (res === false) {
+      this.msg.error('No subscribers match the selected criteria')
     } else {
-      console.log('this.props.location.state.pages', this.props.location.state.pages)
-      console.log('this.props.pages', this.props.pages)
-      let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
-      var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
-      if (res === false) {
-        this.msg.error('No subscribers match the selected criteria')
-      } else {
-        let tagIDs = []
-        for (let i = 0; i < this.props.tags.length; i++) {
-          for (let j = 0; j < this.state.tagValue.length; j++) {
-            if (this.props.tags[i].tag === this.state.tagValue[j]) {
-              tagIDs.push(this.props.tags[i]._id)
-            }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
           }
         }
-        var data = {
-          platform: 'facebook',
-          payload: this.state.broadcast,
-          isSegmented: isSegmentedValue,
-          segmentationPageIds: this.props.location.state.pages,
-          segmentationLocale: this.state.localeValue,
-          segmentationGender: this.state.genderValue,
-          segmentationTags: tagIDs,
-          segmentationTimeZone: '',
-          title: this.state.convoTitle,
-          segmentationList: this.state.listSelected,
-          isList: isListValue,
-          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
-        }
-        //  this.setState({tabActive: 'broadcast'})
-        console.log('Sending Broadcast', data)
-        this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
-        this.msg.info('Sending broadcast.... You will be notified when it is sent.')
       }
+      var data = {
+        platform: 'facebook',
+        payload: this.state.broadcast,
+        isSegmented: isSegmentedValue,
+        segmentationPageIds: this.props.location.state.pages,
+        segmentationLocale: this.state.localeValue,
+        segmentationGender: this.state.genderValue,
+        segmentationTags: tagIDs,
+        segmentationTimeZone: '',
+        title: this.state.convoTitle,
+        segmentationList: this.state.listSelected,
+        isList: isListValue,
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
+      }
+        //  this.setState({tabActive: 'broadcast'})
+      console.log('Sending Broadcast', data)
+      this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
+      this.msg.info('Sending broadcast.... You will be notified when it is sent.')
     }
   }
 
@@ -323,12 +316,6 @@ class CreateConvo extends React.Component {
       }
       this.props.sendBroadcast(data, this.msg)
     }
-  }
-
-  goBack () {
-    this.props.history.push({
-      pathname: `/welcomeMessage`
-    })
   }
 
   render () {
@@ -473,14 +460,8 @@ class CreateConvo extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
-                      { this.props.location.state && this.props.location.state.module === 'welcome' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
-                          <button className='btn btn-primary' onClick={() => this.goBack()}>Back</button>
-                        </div>
-                      }
                       {
-                        this.state.tabActive === 'broadcast' && this.props.location.state.module === 'convo' &&
+                        this.state.tabActive === 'broadcast' &&
                         <div className='pull-right'>
                           <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.reset}>
                             Reset
@@ -491,7 +472,7 @@ class CreateConvo extends React.Component {
                         </div>
                       }
                       {
-                        this.state.tabActive === 'target' && this.props.location.state.module === 'convo' &&
+                        this.state.tabActive === 'target' &&
                         <div className='pull-right'>
                           <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                             Previous
@@ -512,26 +493,22 @@ class CreateConvo extends React.Component {
                         <li>
                           <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                         </li>
-                        {
-                          this.props.location.state && this.props.location.state.module === 'convo' &&
-                          <li>
-                            {this.state.broadcast.length > 0
+                        <li>
+                          {this.state.broadcast.length > 0
                             ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
                             : <a>Targeting</a>
                           }
-                          </li>
-                        }
+                        </li>
+
                       </ul>
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
                           <GenericMessage handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable pages={this.props.location.state.pages} />
                         </div>
-                        {
-                          this.props.location.state.module === 'convo' &&
-                          <div className='tab-pane' id='tab_2'>
-                            <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
-                          </div>
-                          }
+                        <div className='tab-pane' id='tab_2'>
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -572,7 +549,6 @@ function mapDispatchToProps (dispatch) {
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
-      createWelcomeMessage: createWelcomeMessage,
       getAdminSubscriptions: getAdminSubscriptions,
       loadTags: loadTags
     },

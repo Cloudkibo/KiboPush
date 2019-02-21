@@ -322,7 +322,8 @@ class GenericMessage extends React.Component {
   }
 
   getComponent (broadcast) {
-    let componentId = broadcast.id ? broadcast.id : new Date().getTime()
+    console.log('getting component', broadcast)
+    let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     let components = {
       'text': {
         component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState module={this.props.module} />),
