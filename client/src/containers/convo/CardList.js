@@ -647,7 +647,8 @@ class Card extends React.Component {
                   button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index}
                   data={{id: index, button: obj}}
                   onEdit={this.editButton}
-                  onRemove={this.removeButton} />
+                  onRemove={this.removeButton}
+                />
               </div>)
             }) : ''}
           </div>
