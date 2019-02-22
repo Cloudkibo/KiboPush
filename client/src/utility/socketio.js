@@ -8,11 +8,11 @@ import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
-// import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
+// import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
-import { loadSubscribersList } from './../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 
 const socket = io('')
@@ -67,6 +67,7 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
+  console.log('socket called', data)
   if (data.action === 'new_chat') {
     console.log('new message received from customer')
     store.dispatch(socketUpdate(data.payload))
@@ -84,13 +85,21 @@ socket.on('message', (data) => {
   } else if (data.action === 'poll_created') {
     store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())
+  } else if (data.action === 'poll_send') {
+    console.log('poll send function called')
+    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
+    // store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     store.dispatch(sentVsSeen())
+  } else if (data.action === 'survey_send') {
+    console.log('survey send function called')
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
+    // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
-    store.dispatch(loadSubscribersList())
+    store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))

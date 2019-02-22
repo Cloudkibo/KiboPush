@@ -15,9 +15,9 @@ exports.postPayload = {
       required: true
     },
     payload: {
-      type: 'object'
+      type: 'array'
     },
-    includeKeywords: {
+    includedKeywords: {
       type: 'array',
       items: {
         type: 'string',

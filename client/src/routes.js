@@ -4,7 +4,7 @@ import React from 'react'
 import App from './sub.app.js'
 import Home from './containers/home'
 import Login from './containers/login/new'
-import LoginSignup from './containers/login/loginSignup'
+import MessageUs from './containers/messageUs/messageUs'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
@@ -99,6 +99,7 @@ import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
+import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 import CreateBot from './containers/smart_replies/createBot'
 import EditBot from './containers/smart_replies/editBot'
 import ViewBot from './containers/smart_replies/viewBot'
@@ -108,6 +109,9 @@ import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
+import LandingPages from './containers/landingPages/landingPages'
+import CreateLandingPage from './containers/landingPages/createLandingPage'
+import MessengerCode from './containers/messengerCode/messengerCode'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
 import Permissions from './containers/permissions/permissions'
@@ -115,7 +119,15 @@ import Features from './containers/features/features'
 import Usage from './containers/usage/usage'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
-
+import DiscoverTabs from './containers/GrowthTools/discoverTabs'
+import LandingPageMessage from './containers/landingPages/createMessage'
+import DemoSSA from './containers/demoSSA/demoSSA'
+import MessengerAds from './containers/messengerAds/messengerAds'
+import CreateMessengerAdMessage from './containers/messengerAds/createMessage'
+import CreateAdMessage from './containers/messengerAds/createMessengerAd'
+import MessengerRefURL from './containers/messengerRefURL/messengerRefURL'
+import CreateMessengerRefURL from './containers/messengerRefURL/create'
+import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -145,7 +157,7 @@ function redirectAuthUsers (nextState, replace) {
 
 const routes = (
   <Route path='/' component={App}>
-    <IndexRoute component={LoginSignup} onEnter={redirectAuthUsers} />
+    <IndexRoute component={Home} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
     <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
@@ -184,6 +196,7 @@ const routes = (
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
+    <Route path='/discoverTabs' component={DiscoverTabs} onEnter={requireAuth} />
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
@@ -243,6 +256,7 @@ const routes = (
     <Route path='/teams' component={Teams} onEnter={requireAuth} />
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
+    <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
     <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
     <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
@@ -251,6 +265,9 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
+    <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
+    <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
@@ -260,6 +277,15 @@ const routes = (
     <Route path='/usage' component={Usage} onEnter={requireAuth} />
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
+    <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
+    <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
+    <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
+    <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
+    <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
+    <Route path='/messengerRefURL' component={MessengerRefURL} onEnter={requireAuth} />
+    <Route path='/createMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
+    <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
+    <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
 )

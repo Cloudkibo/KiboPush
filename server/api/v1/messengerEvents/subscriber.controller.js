@@ -21,6 +21,10 @@ const og = require('open-graph')
 const Bots = require('./../smart_replies/Bots.model')
 
 exports.subscriber = function (req, res) {
+  res.status(200).json({
+    status: 'success',
+    description: `received the payload`
+  })
   logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
   let phoneNumber = ''
   let subscriberSource = 'direct_message'
@@ -102,7 +106,7 @@ exports.subscriber = function (req, res) {
                   } else if (subscriberSource === 'chat_plugin') {
                     payload.source = 'chat_plugin'
                   }
-                  Subscribers.findOne({ _id: page._id, connected: true },
+                  Subscribers.findOne({ senderId: sender, pageId: page._id },
                     (err, subscriberFound) => {
                       if (err) logger.serverLog(TAG, err)
                       if (subscriberFound === null) {

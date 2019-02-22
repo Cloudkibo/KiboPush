@@ -84,7 +84,11 @@ export function getuserdetails () {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
-      dispatch(showuserdetails(res.payload))
+      if (res.status === 'Unauthorized') {
+        auth.logout()
+      } else {
+        dispatch(showuserdetails(res.payload))
+      }
     })
   }
 }
@@ -103,7 +107,10 @@ export function getFbAppId () {
 
 export function getAdminSubscriptions () {
   return (dispatch) => {
-    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
+    callApi('adminsubscriptions').then(res => {
+      console.log('response from adminsubscriptions', res)
+      dispatch(storeAdminSubscriptions(res.payload))
+    })
   }
 }
 export function updateMode (data, user) {

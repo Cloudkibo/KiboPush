@@ -7,8 +7,9 @@ export function appendSentSeenResponsesData (data) {
   let responsesCount = data.responsesCount
   for (let j = 0; j < polls.length; j++) {
     let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
-    polls[j].sent = pagepoll.length// total sent
+    let pagePollDelivered = pagepoll.filter((c) => c.sent === true)
     let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+    polls[j].sent = pagePollDelivered.length // total sent
     polls[j].seen = pagepollTapped.length // total tapped
     for (let i = 0; i < responsesCount.length; i++) {
       if (responsesCount[i]._id === polls[j]._id) {
@@ -117,12 +118,8 @@ export function sendpoll (poll, msg) {
         dispatch(sendpollresp(res.payload))
         console.log('sendpollresp', res)
         if (res.status === 'success') {
-          callApi(`polls/allPolls`, 'post', {last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}).then(response => {
-            console.log('After updating data', response)
-            dispatch(updatePollsListNew(response.payload))
-            msg.success('Poll sent successfully')
-            dispatch(sendPollSuccess())
-          })
+          msg.success('Poll sent successfully')
+          dispatch(sendPollSuccess())
         } else {
           msg.error(res.description)
           dispatch(sendPollFailure())

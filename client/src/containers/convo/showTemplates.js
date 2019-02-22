@@ -23,6 +23,18 @@ class ShowTemplates extends React.Component {
     this.gotoView = this.gotoView.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
   }
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Show Templates`;
+  }
+
   onBroadcastClick (e, page) {
     this.props.saveBroadcastInformation(page)
   }
@@ -138,7 +150,7 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/editTemplateBroadcast', state: this.props.location.state.pages}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/editTemplateBroadcast', state: {pages: this.props.location.state.pages}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
                                         </Link>
                                        </div>

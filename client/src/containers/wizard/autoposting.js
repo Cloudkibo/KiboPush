@@ -44,7 +44,15 @@ class Autoposting extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Autoposting'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Autoposting`;
     this.scrollToTop()
     var compProp = this.props
     registerAction({
@@ -138,7 +146,7 @@ class Autoposting extends React.Component {
                       Select all the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'
@@ -169,7 +177,7 @@ class Autoposting extends React.Component {
                       Select All the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'

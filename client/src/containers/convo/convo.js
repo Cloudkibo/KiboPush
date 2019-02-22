@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -51,6 +51,7 @@ class Convo extends React.Component {
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.gotoTemplates = this.gotoTemplates.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
@@ -82,10 +83,10 @@ class Convo extends React.Component {
         })
       }
       this.setState({filter: true, pageNumber: 0})
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: value}})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value}})
     } else if (value === '') {
       this.setState({selectedDays: '0', filter: false})
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: '0'}})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0'}})
     }
   }
   scrollToTop () {
@@ -108,7 +109,16 @@ class Convo extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
-    document.title = 'KiboPush | Broadcast'
+
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Broadcast`
   }
 
   displayData (n, broadcasts) {
@@ -131,11 +141,44 @@ class Convo extends React.Component {
   handlePageClick (data) {
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.allBroadcasts({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }}
+      )
     } else {
-      this.props.allBroadcasts({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }
+      })
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
@@ -153,6 +196,14 @@ class Convo extends React.Component {
       pathname: `/createBroadcast`,
       state: {module: 'convo', subscribers: this.props.subscribers, pages: this.state.pageValue}
     })
+  }
+
+  gotoTemplates () {
+    browserHistory.push(
+      {
+        pathname: '/showTemplateBroadcasts',
+        state: {pages: this.state.pageValue}
+      })
   }
 
   sendBroadcast (broadcast) {
@@ -257,6 +308,20 @@ class Convo extends React.Component {
     }
   }
 
+  doesPageHaveSubscribers (pageId) {
+    console.log('doesPageHaveSubscribers pageId', pageId[0])
+    if (this.props.pages && pageId[0]) {
+      let result = this.props.pages.find(page => {
+        return page._id === pageId[0]
+      })
+      console.log('doesPageHaveSubscribers result', result)
+      if (result) {
+        return result.subscribers > 0
+      }
+    }
+    return false
+  }
+
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -264,9 +329,9 @@ class Convo extends React.Component {
           ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false, top: 100}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false, top: 100}) }}>
               <div>
                 <YouTube
@@ -336,27 +401,15 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {
-                      this.props.subscribers && this.props.subscribers.length === 0
-                        ? <a href='#'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create New
-                              </span>
-                            </span>
-                          </button>
-                        </a>
-                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onClick={this.showDialog}>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
                               Create New
                             </span>
-                          </span>
-                        </button>
-                  }
+                      </span>
+                    </button>
+
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -377,24 +430,23 @@ class Convo extends React.Component {
                               </div>
                               <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                                <button style={{color: 'white'}} disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
                                   Create New Broadcast
-                                </Link>
+                                </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
+                                  Use Template
+                                </button>
+                                { /* add paid plan check later
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>
-                                    Use Template&nbsp;&nbsp;&nbsp;
-                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                      <span style={{color: '#34bfa3'}}>PRO</span>
-                                    </span>
-                                  </button>
-                                }
-
+                                  Use Template&nbsp;&nbsp;&nbsp;
+                                  <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                    <span style={{color: '#34bfa3'}}>PRO</span>
+                                  </span>
+                                </button>
+                                */}
                               </div>
                             </div>
                           </ModalDialog>

@@ -61,7 +61,15 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Survey'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Survey`;
   }
   componentWillMount () {
     this.props.loadSubscribersList()
@@ -188,7 +196,7 @@ class Survey extends React.Component {
   gotoResults (survey) {
     this.props.history.push({
       pathname: `/surveyResult`,
-      state: survey._id
+      state: survey
     })
   }
   showDialogDelete (id) {
@@ -218,7 +226,6 @@ class Survey extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendsurvey(survey, this.msg)
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
       this.setState({ pageNumber: 0 })
     }
   }
@@ -377,18 +384,17 @@ class Survey extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to='/showTemplateSurveys' className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
-                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                                  Use Template
+                                </Link>
+                                {/*: <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>
                                     </span>
                                   </button>
-                                }
+                                */}
                               </div>
                             </div>
                           </ModalDialog>
@@ -405,7 +411,13 @@ class Survey extends React.Component {
                             <button style={{float: 'right'}}
                               className='btn btn-primary btn-sm'
                               onClick={() => {
-                                this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                let loadData = {}
+                                if (this.state.pageNumber === 0) {
+                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                } else {
+                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                }
+                                this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
                             </button>

@@ -158,6 +158,7 @@ class ChatBox extends React.Component {
   }
 
   loadMoreMessage () {
+    console.log('loadMoreMessage called')
     this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id})
   }
 
@@ -206,23 +207,25 @@ class ChatBox extends React.Component {
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shouldLoad()) {
           this.loadMoreMessage()
+          // this.updateScrollTop()
         }
-        this.updateScrollTop()
       }
     })
 
     Events.scrollEvent.register('begin', function (to, element) {
-      console.log('begin', arguments)
+      // console.log('begin', arguments)
     })
 
     Events.scrollEvent.register('end', function (to, element) {
-      console.log('end', arguments)
+      // console.log('end', arguments)
     })
 
     scrollSpy.update()
   }
 
   updateScrollTop () {
+    console.log('previousScrollHeight', this.previousScrollHeight)
+    console.log('scrollHeight', this.refs.chatScroll.scrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
@@ -623,11 +626,11 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+    this.updateScrollTop()
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    this.updateScrollTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -1163,7 +1166,7 @@ class ChatBox extends React.Component {
                                           <div className='m-messenger__message-username'>
                                             {this.props.currentSession.subscriber_id.firstName} wrote
                                           </div>
-                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                          <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -1462,12 +1465,12 @@ class ChatBox extends React.Component {
                                               </div>
                                               {
                                                 validURL(msg.payload.text)
-                                                ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                                   <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
                                                     <p>{msg.payload.text}</p>
                                                   </a>
                                                 </div>
-                                                : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                : <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                                   {msg.payload.text}
                                                 </div>
                                               }
@@ -1500,7 +1503,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                            <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               {msg.payload.text}
                                             </div>
                                           </div>

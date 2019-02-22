@@ -32,6 +32,18 @@ class ListDetails extends React.Component {
     }
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | list Details`;
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
@@ -213,21 +225,21 @@ class ListDetails extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.pageName}
+                                  {subscriber.pageId.pageName}
                                 </span>
                               </td>
                               <td data-field='phoneNumber'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.phoneNumber}
+                                  {subscriber.phoneNumber && subscriber.phoneNumber !== '' ? subscriber.phoneNumber : '-'}
                                 </span>
                               </td>
                               <td data-field='email'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.email}
+                                  {subscriber.email && subscriber.email !== '' ? subscriber.email : '-'}
                                 </span>
                               </td>
                               <td data-field='source'

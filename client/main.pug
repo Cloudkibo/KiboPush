@@ -7,25 +7,40 @@ html(lang="en")
     meta(charset="utf-8")
     title
       | KiboPush | Sign In
+
     meta(name="description" content="Latest updates and statistic charts")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    script(type='text/javascript').
+      window.__url_development = "http://localhost:3000";
+      window.__url_production = "https://app.kibopush.com";
+      window.__url_staging = "https://staging.kibopush.com";
+    script(src="https://cdn.cloudkibo.com/public/scripts/kiboAuth.js")
+    script.
+      const hostname =  window.location.hostname;
+      let title = '';
+      if(hostname.includes('kiboengage.cloudkibo.com')) {
+        title = 'KiboEngage';
+      } else if (hostname.includes('kibochat.cloudkibo.com')) {
+        title = 'KiboChat';
+      }
+      document.title = `${title} | Dashboard`;
     //- script(type='text/javascript').
-    //-   window.__kibo_company_id = "5aae50b46f9da939b8659d12";
+    //-   window.__kibo_company_id = "5a71705eae76a333430b9f15";
     //-   document.addEventListener("DOMContentLoaded", function () {
     //-     console.log('running script')
     //-     var wa = document.createElement('script');
     //-     wa.type = 'text/javascript';
     //-     wa.async = true;
-    //-     wa.src = 'http://staging.kibopush.com/scripts/widgetAppSrc.js';
+    //-     wa.src = 'https://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js';
     //-     var s = document.getElementsByTagName('script')[0];
     //-     s.parentNode.insertBefore(wa, s);
     //-     setTimeout(function() {
     //-       console.log(window.__infoPayload)
     //-       let plugin = document.getElementsByClassName('fb-customerchat')[0]
-    //-       //plugin.setAttribute('ref', JSON.stringify(window.__infoPayload))
+    //-       plugin.setAttribute('ref', JSON.stringify(window.__infoPayload))
     //-       console.log(plugin)
-    //-       //- document.body.appendChild(plugin);
+    //-       // document.body.appendChild(plugin);
     //-     }, 5000)
     //-   });
     // script(src="https://kibopush-sojharo.ngrok.io/scripts/widgetAppSrc.js" type="text/javascript")
@@ -97,6 +112,7 @@ html(lang="en")
     link(rel="stylesheet" href="https://unpkg.com/react-select@1.2.0/dist/react-select.css")
     // Global site tag (gtag.js) - Google Analytics
     script(async="" src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1")
+
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -124,20 +140,20 @@ html(lang="en")
     #content.m-grid.m-grid--hor.m-grid--root.m-page
     //- script.
     //-   window.fbAsyncInit = function () {
-    //-   FB.init({
-    //-   appId: '132767517443810',
-    //-   autoLogAppEvents: true,
-    //-   xfbml: true,
-    //-   version: 'v2.12',
-    //-   })
+    //-     FB.init({
+    //-       appId: '132767517443810',
+    //-       autoLogAppEvents: true,
+    //-       xfbml: true,
+    //-       version: 'v2.12',
+    //-     })
     //-   };
     //-   (function (d, s, id) {
-    //-   var js, fjs = d.getElementsByTagName(s)[0]
-    //-   if (d.getElementById(id)) {return}
-    //-   js = d.createElement(s)
-    //-   js.id = id
-    //-   js.src = 'https://connect.facebook.net/en_US/sdk.js'
-    //-   fjs.parentNode.insertBefore(js, fjs)
+    //-     var js, fjs = d.getElementsByTagName(s)[0]
+    //-     if (d.getElementById(id)) {return}
+    //-     js = d.createElement(s)
+    //-     js.id = id
+    //-     js.src = 'https://connect.facebook.net/en_US/sdk.js'
+    //-     fjs.parentNode.insertBefore(js, fjs)
     //-   }(document, 'script', 'facebook-jssdk'))
     if environment === 'production'
       script(src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous")
@@ -196,4 +212,3 @@ html(lang="en")
     // begin::Page Snippets
     script(src="https://cdn.cloudkibo.com/public/assets/app/js/dashboard.js" type="text/javascript")
     // end::Page Snippets
-

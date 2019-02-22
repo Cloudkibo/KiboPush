@@ -82,11 +82,21 @@ class EditTemplate extends React.Component {
     this.setState({isShowingModal: false})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Add Survey'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Edit Template`;
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.survey) {
-      this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
+      console.log('nextprops.survey.description', nextprops.survey.description)
+      console.log('nextprops.survey', nextprops.survey)     
+      this.setState({title: nextprops.survey.title, description: nextprops.survey.description, categoryValue: nextprops.survey.category[0]})
     }
 
     if (nextprops.questions) {
@@ -512,6 +522,7 @@ class EditTemplate extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.state.description', this.state.description)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -533,7 +544,7 @@ class EditTemplate extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
                     </div>
                   </div>
                 </div>

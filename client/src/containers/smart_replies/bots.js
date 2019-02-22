@@ -12,6 +12,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import YouTube from 'react-youtube'
 
 class Bot extends React.Component {
   constructor (props, context) {
@@ -37,7 +38,8 @@ class Bot extends React.Component {
       showDropDown: false,
       responded: 0,
       total: 0,
-      notResponded: 0
+      notResponded: 0,
+      showVideo: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -56,6 +58,18 @@ class Bot extends React.Component {
     this.updateAllowedPages = this.updateAllowedPages.bind(this)
     this.showDropdown = this.showDropdown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
+  }
+
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Bots`;
   }
 
   showDialog () {
@@ -276,6 +290,27 @@ class Bot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='dhLolxFQPkE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -293,8 +328,8 @@ class Bot extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding bots? Here is the <a href='http://kibopush.com/bots/' target='_blank'>documentation</a>.
-              Or check out this <a>video tutorial</a>
+              Need help in understanding bots? Here is the <a href='http://kibopush.com/smart-replies/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
 

@@ -30,6 +30,17 @@ class PollsInfo extends React.Component {
     this.onDaysChange = this.onDaysChange.bind(this)
     this.toggle = this.toggle.bind(this)
   }
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Polls By Days`;
+  }
   toggle () {
     this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.setState({showPolls: !this.state.showPolls})

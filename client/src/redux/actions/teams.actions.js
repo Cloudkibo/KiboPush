@@ -26,15 +26,18 @@ export function showAgentsList (data) {
 }
 
 export function createTeam (data) {
+  console.log('data forcreateTeam ', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
+        console.log('response from createTeam', res)
         dispatch(loadTeamsList())
       })
   }
 }
 
 export function update (data) {
+  console.log('update team data', data)
   return (dispatch) => {
     callApi('teams/update', 'post', data)
       .then(res => {
@@ -73,6 +76,7 @@ export function removePage (data) {
 }
 
 export function removeAgent (data) {
+  console.log('data', data)
   return (dispatch) => {
     callApi('teams/removeAgent', 'post', data)
       .then(res => {
@@ -111,6 +115,7 @@ export function fetchPages (id) {
   return (dispatch) => {
     callApi(`teams/fetchPages/${id}`)
       .then(res => {
+        console.log('response from fetchPages', res)
         if (res.status === 'success') {
           console.log('fetchPages', res.payload)
           dispatch(showPagesList(res.payload))

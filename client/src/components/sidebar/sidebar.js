@@ -20,11 +20,11 @@ class Sidebar extends Component {
       loading: true,
       ignore: true,
       dashboard: true,
-      broadcasts: true,
-      surveys: true,
-      polls: true,
-      livechat: true,
-      autoposting: true,
+      broadcasts: false,
+      surveys: false,
+      polls: false,
+      livechat: false,
+      autoposting: false,
       persistentMenu: true,
       pages: true,
       subscribers: true,
@@ -38,15 +38,36 @@ class Sidebar extends Component {
       welcomeMessage: true,
       segmentSubscribers: true,
       commentCapture: true,
-      smartReplies: true,
-      templates: true,
-      sequenceMessaging: true,
-      waitingResponse: false
+      landingPages: true,
+      messengerRefURL: true,
+      messageUs: true,
+      messengerCode: true,
+      smartReplies: false,
+      templates: false,
+      sequenceMessaging: false,
+      waitingResponse: false,
+      isKiboChat: false,
+      messengerAds: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
   componentWillMount () {
+    let url = window.location.hostname
+    console.log('url', url)
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
+      console.log('kibochat')
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, isKiboChat: true})
+    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
+      console.log('kiboEngage')
+      this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
+    } else if (url === 'staging.kibopush.com') {
+      console.log('staging')
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    } else if (url.includes('localhost')) {
+      console.log('localhost')
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
@@ -61,7 +82,8 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
-    if (nextProps.user) {
+
+   /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
         surveys: nextProps.user.uiMode.surveys,
@@ -80,7 +102,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }
+    }   */
   }
 
   showAbandonedCarts () {
@@ -151,36 +173,42 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
-          <span className='m-menu__link-text'>Broadcasting</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Broadcasting
-                </span>
-              </a>
-            </li>
-            {this.showBroadcastsItem()}
-            {this.showSurveysItem()}
-            {this.showPollsItem()}
-            {this.showSegmentSubscribers()}
-            {this.showTemplates()}
-          </ul>
-        </div>
-      </li>
-    )
+    if (!this.state.isKiboChat) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
+            <span className='m-menu__link-text'>Broadcasting</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Broadcasting
+                  </span>
+                </a>
+              </li>
+              {this.showBroadcastsItem()}
+              {this.showSurveysItem()}
+              {this.showPollsItem()}
+              {this.showSegmentSubscribers()}
+              {this.showTemplates()}
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
   }
 
   showLiveChatItem () {
-    if (this.props.user && this.props.automated_options) {
+    if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
           (this.props.automated_options.automated_options === 'MIX_CHAT' ||
            this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
@@ -246,6 +274,12 @@ class Sidebar extends Component {
             {this.showCommentCapture()}
             {this.showInviteUsingPhoneNumber()}
             {this.showInviteSubscribers()}
+            {this.showMessengerCode()}
+            {this.showDiscoverTabs()}
+            {this.showLandingPages()}
+            {this.showMessengerAds()}
+            {this.showMessengerRefURL()}
+            {this.showMessageUs()}
           </ul>
         </div>
       </li>
@@ -399,7 +433,8 @@ class Sidebar extends Component {
   }
 
   showSegmentSubscribers () {
-    if (this.state.segmentSubscribers && this.props.user && this.props.user.plan.customer_matching) {
+    // add paid plan check later
+    if (this.state.segmentSubscribers && this.props.user) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/segmentedLists' className='m-menu__link'>
@@ -418,8 +453,9 @@ class Sidebar extends Component {
   }
 
   showTemplates () {
+    // add paid plan check later
     if (this.props.user && this.state.templates) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
+      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser)) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/templates' className='m-menu__link'>
@@ -459,7 +495,7 @@ class Sidebar extends Component {
   }
 
   showAutoPostingItem () {
-    if (this.props.user) {
+    if (this.props.user && this.props.user.isSuperUser) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
@@ -522,17 +558,18 @@ class Sidebar extends Component {
     }
   }
 
-  showInviteUsingPhoneNumber () {
-    if (this.props.user) {
-      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
+  showLandingPages () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.landingPages) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
+            <Link to='/landingPages' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Invite Using Phone Numbers
+                Landing Pages
               </span>
             </Link>
           </li>
@@ -543,17 +580,18 @@ class Sidebar extends Component {
     }
   }
 
-  showInviteSubscribers () {
+  showMessengerRefURL () {
     if (this.props.user) {
-      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
+      // include user persmissions
+      if (this.state.messengerRefURL) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/inviteSubscribers' className='m-menu__link'>
-              <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+            <Link to='/messengerRefURL' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Invite Subscribers
+                Messenger Ref URL
               </span>
             </Link>
           </li>
@@ -561,6 +599,129 @@ class Sidebar extends Component {
       } else {
         return (null)
       }
+    }
+  }
+
+  showMessengerAds () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.messengerAds) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messengerAds' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Messenger Ads
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessageUs () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.messageUs) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messageUs' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Message Us
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessengerCode () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.messengerCode) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messengerCode' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Messenger Code
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showDiscoverTabs () {
+    if (this.props.user) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/discoverTabs' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Discover Tabs
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+  showInviteUsingPhoneNumber () {
+    // add paid plan check later
+    if (this.props.user && this.state.phoneNumber) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Invite Using Phone Numbers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showInviteSubscribers () {
+    // add paid plan check later
+    if (this.props.user && this.state.phoneNumber) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/inviteSubscribers' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Invite Subscribers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
   }
 
@@ -736,6 +897,8 @@ class Sidebar extends Component {
   }
 
   render () {
+    console.log('this.state', this.state)
+
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }

@@ -23,7 +23,9 @@ const initialState = {
   sentseendata: {
     broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
     poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0},
-    survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0}
+    survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
+    sessions: {count: 0, resolved: 0},
+    bots: {count: 0, responded: 0}
   },
   topPages: []
 }
@@ -56,6 +58,10 @@ export function dashboardInfo (state = initialState, action) {
     case ActionTypes.LOAD_LOCALES_LIST_DASHBOARD:
       return Object.assign({}, state, {
         locales: action.data
+      })
+    case ActionTypes.UPDATE_SUBSCRIBER_SUMMARY:
+      return Object.assign({}, state, {
+        subscriberSummary: action.data
       })
     default:
       return state

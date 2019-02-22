@@ -31,6 +31,12 @@ import {permissionsInfo} from './permissions.reducer'
 import {featuresInfo} from './features.reducer'
 import {usageInfo} from './usage.reducer'
 import {abandonedInfo} from './abandonedCarts.reducer'
+import {messengerCodeInfo} from './messengerCode.reducer'
+import {landingPagesInfo} from './landingPages.reducer'
+import {messengerAdsInfo} from './messengerAds.reducer'
+import {messengerRefURLInfo} from './messengerRefURL.reducer'
+import {demoSSAInfo} from './demoSSA.reducer'
+import {customFieldInfo} from './customFields.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -63,7 +69,13 @@ const appReducer = combineReducers({
   permissionsInfo,
   featuresInfo,
   usageInfo,
-  abandonedInfo
+  abandonedInfo,
+  messengerCodeInfo,
+  landingPagesInfo,
+  messengerAdsInfo,
+  demoSSAInfo,
+  messengerRefURLInfo,
+  customFieldInfo
 })
 
 export default appReducer

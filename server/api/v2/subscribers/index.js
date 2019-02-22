@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../../../auth/auth.service')
 
-const controller = require('./pages.controller')
+const controller = require('./subscribers.controller')
 
 router.get('/',
   auth.isAuthenticated(),
@@ -16,7 +16,7 @@ router.get('/allLocales',
   auth.isAuthenticated(),
   controller.allLocales)
 
-router.get('/getAll',
+router.post('/getAll',
   auth.isAuthenticated(),
   controller.getAll)
 

@@ -159,7 +159,15 @@ class GreetingMessage extends React.Component {
   }
   componentDidMount () {
     this.selectPage()
-    document.title = 'KiboPush | api_settings'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Greeting Message`;
   }
   closeZeroSubDialog () {
     this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
@@ -298,7 +306,8 @@ class GreetingMessage extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+              Need help in understanding greeting text? Here is the <a href='https://kibopush.com/greeting-text/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

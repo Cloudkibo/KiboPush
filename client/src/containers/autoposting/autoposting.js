@@ -42,7 +42,15 @@ class Autoposting extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Autoposting'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Autoposting`;
     this.scrollToTop()
     var compProp = this.props
     registerAction({
@@ -125,7 +133,7 @@ class Autoposting extends React.Component {
           onClose={this.closeGuide}>
           <ModalDialog style={{width: '500px', top: '80px'}}
             onClose={this.closeGuide}>
-            <h4>Guielines for integrating WordPress blogs</h4>
+            <h4>Guidelines for integrating WordPress blogs</h4>
             <div className='panel-group accordion' id='accordion1'>
               <div className='panel panel-default'>
                 <div className='panel-heading guidelines-heading'>
@@ -147,7 +155,7 @@ class Autoposting extends React.Component {
                       Select all the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
                       <li>
                       Click on 'Add new webhook'
@@ -166,7 +174,7 @@ class Autoposting extends React.Component {
                 </div>
                 <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                   <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
+                    <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
                     <ul>
                       <li>
                       Go to Settings -> Webhooks on WordPress dashboard
@@ -178,7 +186,7 @@ class Autoposting extends React.Component {
                       Select All the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpressk'
                       </li>
                       <li>
                       Click on 'Add new webhook'
@@ -229,7 +237,7 @@ class Autoposting extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
+              Need help in understanding Auto Posting? Here is the <a href='https://kibopush.com/autoposting/' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>

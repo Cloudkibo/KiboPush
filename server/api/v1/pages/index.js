@@ -19,8 +19,6 @@ router.get('/',
 
 router.get('/allpages',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('manage_pages'),
-  auth.doesRolePermitsThisAction('pagesAccessPermission'),
   controller.allpages)
 
 router.post('/allConnectedPages',

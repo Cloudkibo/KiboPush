@@ -95,7 +95,15 @@ class LiveChat extends React.Component {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
-    document.title = 'KiboPush | Live Chat'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Live Chat`;
     if (!this.state.ignore) {
       this.setState({ignore: true})
     }
@@ -152,7 +160,7 @@ class LiveChat extends React.Component {
     this.props.fetchUserChats(session._id, {page: 'first', number: 25})
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id)
-    this.props.getSubscriberTags(session.subscriber_id, this.msg)
+    this.props.getSubscriberTags(session.subscriber_id._id, this.msg)
   }
 
   handleSearch (e) {
@@ -228,8 +236,8 @@ class LiveChat extends React.Component {
         this.props.getSubscriberTags(nextProps.closeSessions[0].subscriber_id._id)
       }
     }
-    if (nextProps.unreadSession && this.props.openSessions.length > 0) {
-      var temp = this.props.openSessions
+    if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
+      var temp = nextProps.openSessions
       for (var z = 0; z < temp.length; z++) {
         if (temp[z]._id === nextProps.unreadSession) {
           temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1

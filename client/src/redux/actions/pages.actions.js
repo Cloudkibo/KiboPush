@@ -40,7 +40,16 @@ export function pageNotPublished (data) {
   }
 }
 
+export function updateCurrentPage (data) {
+  console.log('in updateCurrentPage')
+  return {
+    type: ActionTypes.UPDATE_CURRENT_PAGE,
+    data
+  }
+}
+
 export function loadMyPagesList () {
+  console.log('load my page List')
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
@@ -64,14 +73,18 @@ export function enablePage (page) {
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
-        console.log('res.status', res)
+        console.log('res.payload', res.payload)
+        console.log('res.payload.msg', res.payload.msg)
         if (res.status === 'failed') {
           dispatch(pageNotPublished(res.description))
         } else if (res.payload && res.payload.msg) {
+          console.log('else if condition')
           // the page is already connected by some other user
+          // console.log('res.payload.msg', res.payload.msg)
           dispatch(userpageconnect(res.payload))
+          // dispatch(addPages())
         } else {
-          dispatch(updateOtherPages(res.payload.pages))
+          dispatch(addPages())
           dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
         }
       })
@@ -87,9 +100,13 @@ export function addPages () {
 }
 
 export function removePage (page) {
+  console.log('page data: ', page)
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
-      .then(res => dispatch(updatePagesList(res.payload)))
+      .then(res => {
+        console.log('res.payload', res.payload)
+        dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
+      })
   }
 }
 
@@ -97,7 +114,8 @@ export function removePageInAddPage (page) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
     .then(res => {
-      dispatch(updateOtherPages(res.payload))
+      console.log('res.payload', res.payload)
+      dispatch(addPages())
       dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
     })
   }
@@ -106,6 +124,13 @@ export function removePageInAddPage (page) {
 export function loadOtherPagesList () {
   return (dispatch) => {
     callApi('pages/otherPages')
+      .then(res => dispatch(updateOtherPages(res.payload)))
+  }
+}
+
+export function saveDomains () {
+  return (dispatch) => {
+    callApi('pages/whitelistDomain')
       .then(res => dispatch(updateOtherPages(res.payload)))
   }
 }

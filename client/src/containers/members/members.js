@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class Members extends React.Component {
   constructor (props, context) {
@@ -26,7 +27,8 @@ class Members extends React.Component {
       filterByName: '',
       filterByEmail: '',
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      showVideo: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -82,7 +84,15 @@ class Members extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
-    document.title = 'KiboPush | Members'
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Members`
     this.scrollToTop()
     // this.initializeConditionSelect(this.state.conditionSelect.options)
     // this.initializeActiveSelect(this.state.activeSelect.options)
@@ -118,6 +128,27 @@ class Members extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: 100}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='o0RZ_XlUqgo'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-subheader '>
@@ -146,14 +177,15 @@ class Members extends React.Component {
           </ModalContainer>
         }
         <div className='m-content'>
-          <div
+         <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
             role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              You can assign different roles to your members as well.
+              Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>

@@ -157,7 +157,15 @@ class EditTemplate extends React.Component {
     }
   }
   componentDidMount () {
-    document.title = 'KiboPush | Create Broadcast'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Welcome Message`;
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}

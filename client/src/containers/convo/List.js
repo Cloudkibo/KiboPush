@@ -26,7 +26,7 @@ class List extends React.Component {
     this.topElementStyle = this.topElementStyle.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card module={this.props.module} id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='compact' />, key: 1}, {element: <Card id={2} module={this.props.module} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='compact' topElementStyle={this.topElementStyle} />, key: 2}],
+      cards: [{element: <Card pageId={this.props.pageId} pages={this.props.pages} module={this.props.module} id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='compact' />, key: 1}, {element: <Card id={2} pageId={this.props.pageId} pages={this.props.pages} module={this.props.module} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='compact' topElementStyle={this.topElementStyle} />, key: 2}],
       showPlus: false,
       pageNumber: 2,
       buttons: [],
@@ -41,7 +41,7 @@ class List extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k} module={this.props.module} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
+        tmp.push({element: <Card pages={this.props.pages} pageId={this.props.pageId} id={k} module={this.props.module} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
       }
       console.log('list is', this.props)
       this.setState({cards: tmp, broadcast: this.props.cards, topElementStyle: this.props.list.topElementStyle, buttons: this.props.list.buttons})
@@ -54,7 +54,7 @@ class List extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i + 1} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.props.listDetails.topElementStyle} />, key: i}
+        card = {element: <Card pageId={this.props.pageId} pages={this.props.pages} id={i + 1} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.props.listDetails.topElementStyle} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -91,7 +91,7 @@ class List extends React.Component {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={timeStamp} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: timeStamp}]})
+    this.setState({cards: [...temp, {element: <Card pageId={this.props.pageId} pages={this.props.pages} id={timeStamp} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: timeStamp}]})
     this.slider.slickNext()
   }
 
@@ -112,7 +112,7 @@ class List extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.subtitle = obj.description
-        if (obj.default_action) {
+        if (obj.default_action && obj.default_action !== '') {
           data.default_action = obj.default_action
         } else if (data.default_action) {
           delete data.default_action
@@ -135,7 +135,7 @@ class List extends React.Component {
   addElement () {
     let timeStamp = new Date().getTime()
     var temp = this.state.cards
-    temp.push({element: <Card id={timeStamp} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: timeStamp})
+    temp.push({element: <Card pageId={this.props.pageId} pages={this.props.pages} id={timeStamp} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: timeStamp})
     this.setState({cards: temp, pageNumber: temp.length})
     console.log('temp in addElement', temp)
   }
@@ -207,7 +207,10 @@ class List extends React.Component {
   removeButton (obj) {
     //  var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
     this.setState({buttons: []})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: [], topElementStyle: this.state.topElementStyle})
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: [], topElementStyle: this.state.topElementStyle, deletePayload: deletePayload})
   }
   render () {
     var alertOptions = {
@@ -240,9 +243,9 @@ class List extends React.Component {
           }
           {this.state.buttons && this.state.buttons.length > 0
             ? this.state.buttons.map((obj, index) => {
-              return <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+              return <EditButton index={index} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
             })
-          : <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          : <Button module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       </div>

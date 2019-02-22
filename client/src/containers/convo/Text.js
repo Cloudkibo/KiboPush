@@ -33,7 +33,7 @@ class Text extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.state = {
       button: props.buttons ? props.buttons : [],
-      text: props.txt ? props.txt : '',
+      text: props.message ? props.message : '',
       showEmojiPicker: false,
       count: 0,
       showUserOptions: false,
@@ -117,6 +117,7 @@ class Text extends React.Component {
       }
       return elm
     })
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
     this.setState({button: temp})
   }
   removeButton (obj) {
@@ -128,8 +129,12 @@ class Text extends React.Component {
         this.state.button.splice(index, 1)
       }
     })
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp, deletePayload: deletePayload})
   }
 
   render () {
@@ -192,25 +197,28 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} module={this.props.module} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        {this.props.removeState
+        {this.props.removeState && this.state.button.length < 3
         ? <div>
-          <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+          <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+            <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }
-        <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
-          <PopoverBody>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
-            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
-          </PopoverBody>
-        </Popover>
+        { !(this.props.module === 'messengerAd') &&
+          <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
+            <PopoverBody>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+            </PopoverBody>
+          </Popover>
+        }
+        { !(this.props.module === 'messengerAd') &&
         <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: (-75 - (35 * (this.state.numOfButtons * 0.915))), marginRight: '5px'}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',
@@ -227,6 +235,7 @@ class Text extends React.Component {
             </i>
           </div>
         </div>
+       }
       </div>
     )
   }

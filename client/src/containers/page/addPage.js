@@ -28,6 +28,7 @@ class AddPage extends React.Component {
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
     }
     this.closeDialog = this.closeDialog.bind(this)
+    this.onDismissAlert = this.onDismissAlert.bind(this)
   }
 
   gotoView () {
@@ -39,7 +40,15 @@ class AddPage extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Add Pages'
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Add Pages`
   }
 
   closeDialog () {
@@ -65,7 +74,7 @@ class AddPage extends React.Component {
     })
   }
   onDismissAlert () {
-    this.setState({showAlert: false, alertmsg: ''})
+    this.props.addPages()
   }
   render () {
     console.log('addPage props', this.props)
@@ -117,7 +126,7 @@ class AddPage extends React.Component {
             <div className='col-xl-12'>
               {this.state.showAlert === true &&
                 <div className='alert alert-danger alert-dismissible fade show' role='alert'>
-                  <button type='button' className='close' data-dismiss='alert' aria-label='Close' />
+                  <button type='button' onClick={this.onDismissAlert} className='close' aria-label='Close' />
                   {this.state.alertmsg}
                   </div>
               }

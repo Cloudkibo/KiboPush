@@ -6,10 +6,11 @@ import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 import auth from './auth.service'
 import { browserHistory } from 'react-router'
+import { getAccountsUrl } from './utils'
 
 export const API_URL = '/api'
 
-export default function callApi (endpoint, method = 'get', body) {
+export default function callApi (endpoint, method = 'get', body, type = 'kibopush') {
   let headers = {
     'content-type': 'application/json'
   }
@@ -19,11 +20,18 @@ export default function callApi (endpoint, method = 'get', body) {
       Authorization: `Bearer ${auth.getToken()}`
     })
   }
-  return fetch(`${API_URL}/${endpoint}`, {
+  let fetchUrl = ''
+  if (type === 'kibopush') {
+    fetchUrl = `${API_URL}/${endpoint}`
+  } else if (type === 'accounts') {
+    fetchUrl = `${getAccountsUrl()}/${endpoint}`
+  } else fetchUrl = endpoint
+  return fetch(fetchUrl, {
     headers,
     method,
     body: JSON.stringify(body)
   }).then(response => {
+    console.log('response', response)
     if (response.statusText === 'Unauthorized') {
       auth.logout()
       browserHistory.push('/')

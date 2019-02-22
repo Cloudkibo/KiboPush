@@ -35,6 +35,18 @@ class templatePolls extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
+  componentDidMount () {
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Template Polls`;
+  }
+
   onPollClick (e, poll) {
     this.props.saveCurrentPoll(poll)
   }
@@ -79,6 +91,8 @@ class templatePolls extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: '', category_value: this.state.filterValue}})
     }
     //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
     //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
@@ -329,7 +343,7 @@ function mapDispatchToProps (dispatch) {
     {loadPollsListNew: loadPollsListNew,
       loadCategoriesList: loadCategoriesList,
       deletePoll: deletePoll,
-      saveCurrentPoll
+      saveCurrentPoll: saveCurrentPoll
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(templatePolls)

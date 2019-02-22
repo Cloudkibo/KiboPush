@@ -7,7 +7,7 @@ import { transformData, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
@@ -28,10 +28,15 @@ class Menu extends React.Component {
       selectPage: '',
       selectedIndex: 'menuPopover',
       disabledWebUrl: true,
+      webUrl: '',
       showPreview: false,
       isEditMessage: false,
       loading: false,
-      showVideo: false
+      showVideo: false,
+      openWebView: false,
+      openWebsite: false,
+      webviewsize: 'FULL',
+      webviewsizes: ['COMPACT', 'TALL', 'FULL']
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -60,6 +65,12 @@ class Menu extends React.Component {
     this.handleIndexByPage = this.handleIndexByPage.bind(this)
     this.initializeMenuItems = this.initializeMenuItems.bind(this)
     this.validatePostbackPayload = this.validatePostbackPayload.bind(this)
+    this.showWebsite = this.showWebsite.bind(this)
+    this.showWebView = this.showWebView.bind(this)
+    this.closeWebsite = this.closeWebsite.bind(this)
+    this.closeWebview = this.closeWebview.bind(this)
+    this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
+    this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -68,13 +79,21 @@ class Menu extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Menu'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Menu`;
     var compProp = this.props
     var self = this
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        if (this.state.selectPage === '') {
+        if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
         } else {
           compProp.getIndexBypage(this.state.selectPage.pageId, self.handleIndexByPage)
@@ -113,7 +132,7 @@ class Menu extends React.Component {
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage) {
+        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage[0]) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
@@ -122,6 +141,31 @@ class Menu extends React.Component {
       if (this.props.pages && this.props.pages.length > 0 && this.state.selectPage === '') {
         this.setState({selectPage: this.props.pages[0]})
       }
+    }
+  }
+  showWebsite () {
+    this.setState({openWebsite: true, openWebView: false, webviewurl: '', webviewsize: 'FULL'})
+  }
+  showWebView () {
+    this.setState({openWebView: true, openWebsite: false, webUrl: ''})
+  }
+  closeWebview () {
+    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabledWebUrl: true})
+  }
+  closeWebsite () {
+    this.setState({openWebsite: false, disabledWebUrl: true, webUrl: ''})
+  }
+  changeWebviewUrl (e) {
+    if (isWebURL(this.state.webviewurl)) {
+      this.setState({disabledWebUrl: false})
+    } else {
+      this.setState({disabledWebUrl: true})
+    }
+    this.setState({webviewurl: e.target.value})
+  }
+  onChangeWebviewSize (event) {
+    if (event.target.value !== -1) {
+      this.setState({webviewsize: event.target.value})
     }
   }
   validatePostbackPayload (indexVal) {
@@ -317,9 +361,25 @@ class Menu extends React.Component {
     if (menu.type === 'web_url') {
       this.setState({
         selectedRadio: 'openWebsite',
-        webUrl: menu.url,
         disabledWebUrl: false
       })
+      if (menu.messenger_extensions) {
+        this.setState({
+          webviewurl: menu.url,
+          webviewsize: menu.webview_height_ratio,
+          openWebView: true,
+          openWebsite: false,
+          webUrl: ''
+        })
+      } else {
+        this.setState({
+          webUrl: menu.url,
+          openWebsite: true,
+          webviewurl: '',
+          openWebView: false,
+          webviewsize: 'FULL'
+        })
+      }
     } else if (menu.type === 'nested') {
       this.setState({
         selectedRadio: 'openSubMenu'
@@ -338,6 +398,7 @@ class Menu extends React.Component {
     console.log('Selected Index', this.state.selectedIndex)
   }
   handleRadioChange (e) {
+    var menuItems = this.state.menuItems
     this.setState({
       selectedRadio: e.currentTarget.value,
       isEditMessage: false
@@ -352,13 +413,33 @@ class Menu extends React.Component {
       }
       this.handleToggle()
     }
-    if (e.currentTarget.value === 'replyWithMessage') {
-      var menuItems = this.state.menuItems
+    if (e.currentTarget.value === 'openWebsite') {
+      this.setState({openWebView: false, openWebsite: false})
       if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
         menuItems[index[1]].submenu = []
       }
       if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
         menuItems[index[1]].submenu[index[2]].submenu = []
+      }
+    }
+    if (e.currentTarget.value === 'replyWithMessage') {
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
+        menuItems[index[1]].submenu = []
+        if (menuItems[index[1]].messenger_extensions) {
+          delete menuItems[index[1]].messenger_extensions
+        }
+        if (menuItems[index[1]].webview_height_ratio) {
+          delete menuItems[index[1]].webview_height_ratio
+        }
+      }
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
+        menuItems[index[1]].submenu[index[2]].submenu = []
+        if (menuItems[index[1]].submenu[index[2]].messenger_extensions) {
+          delete menuItems[index[1]].submenu[index[2]].messenger_extensions
+        }
+        if (menuItems[index[1]].submenu[index[2]].webview_height_ratio) {
+          delete menuItems[index[1]].submenu[index[2]].webview_height_ratio
+        }
       }
       this.setState({
         menuItems: menuItems
@@ -436,6 +517,12 @@ class Menu extends React.Component {
     if (menuItems[index].url) {
       delete menuItems[index].url
     }
+    if (menuItems[index].messenger_extensions) {
+      delete menuItems[index].messenger_extensions
+    }
+    if (menuItems[index].webview_height_ratio) {
+      delete menuItems[index].webview_height_ratio
+    }
     menuItems[index].type = 'nested'
     var submenus = menuItems[index].submenu
     submenus.push(newSubmenu)
@@ -470,6 +557,12 @@ class Menu extends React.Component {
     }
     if (menuItems[index].submenu[subIndex].url) {
       delete menuItems[index].submenu[subIndex].url
+    }
+    if (menuItems[index].submenu[subIndex].messenger_extensions) {
+      delete menuItems[index].submenu[subIndex].messenger_extensions
+    }
+    if (menuItems[index].webview_height_ratio) {
+      delete menuItems[index].submenu[subIndex].webview_height_ratio
     }
     menuItems[index].submenu[subIndex].type = 'nested'
     var nestedMenus = menuItems[index].submenu[subIndex].submenu
@@ -530,7 +623,9 @@ class Menu extends React.Component {
   }
   setWebUrl (event) {
     this.setState({
-      webUrl: event.target.value
+      webUrl: event.target.value,
+      openWebView: false,
+      webviewurl: ''
     })
     if (event.target.value !== '' && isWebURL(event.target.value)) {
       this.setState({
@@ -543,6 +638,15 @@ class Menu extends React.Component {
     }
   }
   saveWebUrl (event) {
+    let url = ''
+    if (this.state.openWebsite && this.state.webUrl !== '') {
+      url = this.state.webUrl
+    } else if (this.state.openWebView && this.state.webviewurl !== '') {
+      url = this.state.webviewurl
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
+    }
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
     if (index && index.length > 1) {
@@ -553,21 +657,42 @@ class Menu extends React.Component {
             delete temp[index[1]].payload
           }
           temp[index[1]].type = 'web_url'
-          temp[index[1]].url = this.state.webUrl
+          temp[index[1]].url = url
+          if (this.state.openWebView && this.state.webviewurl !== '') {
+            temp[index[1]].messenger_extensions = true
+            temp[index[1]].webview_height_ratio = this.state.webviewsize
+          } else {
+            delete temp[index[1]].messenger_extensions
+            delete temp[index[1]].webview_height_ratio
+          }
           break
         case 'submenu':
           if (temp[index[1]].submenu[index[2]].payload) {
             delete temp[index[1]].submenu[index[2]].payload
           }
           temp[index[1]].submenu[index[2]].type = 'web_url'
-          temp[index[1]].submenu[index[2]].url = this.state.webUrl
+          temp[index[1]].submenu[index[2]].url = url
+          if (this.state.openWebView && this.state.webviewurl !== '') {
+            temp[index[1]].submenu[index[2]].messenger_extensions = true
+            temp[index[1]].submenu[index[2]].webview_height_ratio = this.state.webviewsize
+          } else {
+            delete temp[index[1]].submenu[index[2]].messenger_extensions
+            delete temp[index[1]].submenu[index[2]].webview_height_ratio
+          }
           break
         case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
           temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
-          temp[index[1]].submenu[index[2]].submenu[index[3]].url = this.state.webUrl
+          temp[index[1]].submenu[index[2]].submenu[index[3]].url = url
+          if (this.state.openWebView && this.state.webviewurl !== '') {
+            temp[index[1]].submenu[index[2]].submenu[index[3]].messenger_extensions = true
+            temp[index[1]].submenu[index[2]].submenu[index[3]].webview_height_ratio = this.state.webviewsize
+          } else {
+            delete temp[index[1]].submenu[index[2]].submenu[index[3]].messenger_extensions
+            delete temp[index[1]].submenu[index[2]].submenu[index[3]].webview_height_ratio
+          }
           break
         default:
           break
@@ -711,10 +836,54 @@ class Menu extends React.Component {
             {
               this.state.selectedRadio === 'openWebsite' &&
               <div style={{marginTop: '20px'}}>
-                <label>Website URL to open</label>
-                <input placeholder='Enter URL' style={{marginBottom: '20px'}} value={this.state.webUrl} onChange={this.setWebUrl} type='url' className='form-control' />
-                <button onClick={this.saveWebUrl} className='btn btn-success pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
-                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginBottom: '10px'}} onClick={this.handleToggle} className='btn pull-left'> Cancel </button>
+                {
+                  !this.state.openWebsite && !this.state.openWebView &&
+                  <div>
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                    </div>
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
+                    </div>
+                  </div>
+                }
+                {
+                  this.state.openWebsite &&
+                  <div className='card'>
+                    <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                    <div style={{padding: '10px'}} className='card-block'>
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>Website URL to open</label>
+                      <input className='form-control' placeholder='Enter URL' style={{marginBottom: '20px'}} value={this.state.webUrl} onChange={this.setWebUrl} type='url' />
+                    </div>
+                  </div>
+                }
+                {
+                  this.state.openWebView &&
+                  <div className='card'>
+                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                    <div style={{padding: '10px'}} className='card-block'>
+                      <div>
+                        <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                      </div>
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
+                      <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
+                      <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
+                        {
+                          this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
+                            <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+                }
+                { (this.state.openWebsite || this.state.openWebView) &&
+                <div style={{marginTop: '10px'}}>
+                  <button onClick={this.saveWebUrl} className='btn btn-success pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
+                  <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginBottom: '10px'}} onClick={this.handleToggle} className='btn pull-left'> Cancel </button>
+                </div>
+                }
               </div>
             }
             {

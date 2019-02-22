@@ -89,7 +89,15 @@ class InviteSubscribers extends React.Component {
     }
   }
   componentDidMount () {
-    document.title = 'KiboPush | Getting Started'
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Getting Started`
     var addScript = document.createElement('script')
     addScript.setAttribute('type', 'text/javascript')
     addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
@@ -154,13 +162,14 @@ class InviteSubscribers extends React.Component {
       platform: 'facebook',
       payload: [{ text: 'Hello! this is a test broadcast.', componentType: 'text' }],
       isSegmented: false,
-      segmentationPageIds: [this.state.selectPage.pageId],
+      segmentationPageIds: [this.state.selectPage._id],
       segmentationLocale: '',
       segmentationGender: '',
       segmentationTimeZone: '',
       title: 'Test Broadcast',
       segmentationList: '',
-      isList: false
+      isList: false,
+      fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
     this.msg.info('Sending test message...')
     this.props.sendBroadcast(data, this.msg)
@@ -275,12 +284,6 @@ class InviteSubscribers extends React.Component {
                             <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
                               <span>Subscribe Now</span>
                             </a>
-                            <br /><br /><br /><br />
-                            {this.state.sendTestMessage &&
-                              <button className='btn btn-primary' onClick={this.sendTestBroadcast}>
-                                <span>Send Test Message</span>
-                              </button>
-                            }
                           </center>
                         </div>
                       }

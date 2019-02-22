@@ -28,24 +28,11 @@ export function appendSentSeenData (data) {
 
   for (let j = 0; j < broadcasts.length; j++) {
     let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
-    let filterBySubscriber = []
-    pagebroadcast.map((c, i) => {
-      if (c.broadcastId === broadcasts[j]._id) {
-        for (var index = 0; index < filterBySubscriber.length; index++) {
-          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
-            break
-          }
-        }
-        if (index === filterBySubscriber.length) {
-          filterBySubscriber.push(c)
-        }
-      }
-    })
-    broadcasts[j].sent = filterBySubscriber.length// total sent
-    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
+    let pageBroadcastDelivered = pagebroadcast.filter((c) => c.sent === true)
+    let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    broadcasts[j].sent = pageBroadcastDelivered.length// total sent
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
-  //  var newBroadcast = broadcasts.reverse()
   return broadcasts
 }
 
@@ -201,27 +188,49 @@ export function uploadRequest (data) {
   }
 }
 
-export function addButton (data, handleFunction) {
+export function addButton (data, handleFunction, msg, resetButton) {
   console.log('the data is', data)
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
       if (res.status === 'success') {
         console.log('Response: ', res.payload)
         handleFunction(res.payload)
+        if (resetButton) {
+          resetButton()
+        }
       } else {
-        console.log(res.description)
+        console.log(res.payload)
+        if (msg) {
+          if (res.payload) {
+            msg.error(res.payload)
+          }
+          if (res.description) {
+            msg.error(res.description)
+          }
+        }
       }
     })
   }
 }
 
-export function editButton (data, handleFunction) {
+export function editButton (data, handleFunction, handleClose, msg) {
   return (dispatch) => {
     callApi(`broadcasts/editButton`, 'post', data).then(res => {
       if (res.status === 'success') {
         handleFunction(res.payload)
+        if (handleClose) {
+          handleClose()
+        }
       } else {
-        console.log(res.description)
+        console.log(res.payload)
+        if (msg) {
+          if (res.payload) {
+            msg.error(res.payload)
+          }
+          if (res.description) {
+            msg.error(res.description)
+          }
+        }
       }
     })
   }
@@ -245,7 +254,7 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
           if (res.status === 'success') {
             msg.success('Conversation successfully sent')
             // dispatch(sendBroadcastSuccess())
-          } else {
+          } else if (res.status !== 'INVALID_SESSION') {
             if (res.description) {
               msg.error(`${res.description}`)
             } else {
@@ -264,5 +273,13 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
           handleSendBroadcast(res)
         }
       })
+  }
+}
+export function checkWhitelistedDomains (data, handleFunction) {
+  console.log('the data is', data)
+  return (dispatch) => {
+    callApi(`pages/isWhitelisted`, 'post', data).then(res => {
+      handleFunction(res)
+    })
   }
 }

@@ -16,7 +16,7 @@ class Connect extends React.Component {
     this.skip = this.skip.bind(this)
   }
   componentWillMount () {
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
   componentWillUnmount () {
@@ -35,6 +35,15 @@ class Connect extends React.Component {
      $('#sidebarDiv').addClass('hideSideBar')
      $('#headerDiv').addClass('hideHeader')
      /* eslint-enable */
+     const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Facebook Connect`;
   }
   skip () {
     this.props.skip()

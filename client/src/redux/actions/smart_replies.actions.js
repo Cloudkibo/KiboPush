@@ -2,6 +2,13 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
+export function showUnansweredQueries (data) {
+  return {
+    type: ActionTypes.SHOW_UNANSWERED_QUERIES,
+    data
+  }
+}
+
 export function showBotsList (data) {
   return {
     type: ActionTypes.SHOW_BOTS,
@@ -198,6 +205,7 @@ export function loadWaitingSubscribers (id) {
     console.log('Calling load waiting subscribers api')
     callApi('bots/fetchWaitingSubscribers/', 'post', {botId: id})
       .then(res => {
+        console.log('response from loadWaitingSubscribers', res)
         if (res.status === 'success') {
           dispatch(showWaitingReplyList(res.payload))
         }
@@ -222,6 +230,7 @@ export function loadUnansweredQuestions (id) {
     console.log('Calling load unanswered questions api')
     callApi('bots/fetchUnansweredQueries/', 'post', {botId: id})
       .then(res => {
+        console.log('response from loadUnansweredQuestions', res)
         if (res.status === 'success') {
           dispatch(showUnansweredQueries(res.payload))
         }

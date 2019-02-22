@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { uploadImage, uploadFile } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 
@@ -27,6 +27,7 @@ class Media extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
       errorMsg: '',
       showErrorDialogue: false,
@@ -52,19 +53,61 @@ class Media extends React.Component {
   closeDialog () {
     this.setState({showErrorDialogue: false})
   }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
+  }
   componentDidMount () {
-    this.updateMediaDetails(this.props)
+    if (this.props.media) {
+      var video = this.props.media.type.match('video.*')
+      var image = this.props.media.type.match('image.*')
+      if (image) {
+        if (this.props.pages) {
+          this.props.uploadTemplate({pages: this.props.pages,
+            url: this.props.media.fileurl.url,
+            componentType: 'image',
+            id: this.props.media.fileurl.id,
+            name: this.props.media.fileurl.name
+          }, { fileurl: '',
+            fileName: this.props.media.fileurl.name,
+            type: this.props.media.type,
+            image_url: '',
+            size: this.props.media.size
+          }, this.updateImageUrl, this.setLoading)
+        }
+      }
+      if (video) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: this.props.media.fileurl.url,
+          componentType: 'video',
+          id: this.props.media.fileurl.id,
+          name: this.props.media.fileurl.name
+        }, { id: this.props.id,
+          componentType: 'video',
+          fileName: this.props.media.fileurl.name,
+          type: this.props.media.fileurl.type,
+          size: this.props.media.fileurl.size
+        }, this.updateFileUrl, this.setLoading)
+      }
+      this.updateMediaDetails(this.props)
+    }
   }
   onFilesError (error, file) {
     this.setState({errorMsg: error.message, showErrorDialogue: true})
   }
   updateMediaDetails (mediaProps) {
+    console.log('mediaProps', mediaProps)
     if (mediaProps.media && mediaProps.media !== '') {
       this.setState({
         //  id: cardProps.id,
+        showPreview: true,
         componentType: 'media',
-        imgSrc: mediaProps.media.image_url,
-        button: mediaProps.media.buttons
+        imgSrc: mediaProps.media.fileurl.url,
+        button: mediaProps.media.buttons,
+        mediaType: mediaProps.media.mediaType
       })
     }
   }
@@ -72,7 +115,7 @@ class Media extends React.Component {
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
-    if (file.size > 25000000) {
+    if (file.size > 10000000) {
       this.props.handleMedia({error: 'file size error'})
       return
     }
@@ -163,6 +206,9 @@ class Media extends React.Component {
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     this.setState({button: temp})
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
+    }
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
       fileurl: this.state.fileurl,
@@ -171,7 +217,8 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: this.state.button,
+      deletePayload: deletePayload})
   }
 
   setLoading () {
@@ -272,16 +319,16 @@ class Media extends React.Component {
               }
               {
                 this.state.showPreview && this.state.mediaType === 'image' &&
-                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.previewUrl} />
+                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
               }
               { this.state.showPreview && this.state.mediaType === 'video' &&
                 <div style={{padding: '10px'}}>
                   <ReactPlayer
-                    url={this.state.previewUrl}
+                    url={this.state.imgSrc}
                     controls
                     width='100%'
                     height='auto'
-                    onPlay={this.onTestURLVideo(this.state.previewUrl)}
+                    onPlay={this.onTestURLVideo(this.state.imgSrc)}
                   />
                 </div>
               }
@@ -290,10 +337,10 @@ class Media extends React.Component {
           }
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
-          <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          <Button module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
       </div>
     )
@@ -309,7 +356,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     uploadImage: uploadImage,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Media)

@@ -4,9 +4,9 @@ const TAG = 'api/menu/menu.controller.js'
 const utility = require('../utility')
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
-    utility.callApi(`menu/query`, 'post', {companyId: companyUser.companyId})
+    utility.callApi(`menu/query`, 'post', {companyId: companyUser.companyId}, req.headers.authorization)
     .then(menus => {
       res.status(200).json({
         status: 'success',
@@ -29,12 +29,12 @@ exports.index = function (req, res) {
 }
 
 exports.indexByPage = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
     utility.callApi(`menu/query`, 'post', {
       pageId: req.body.pageId,
       companyId: companyUser.companyId
-    })
+    }, req.headers.authorization)
     .then(menu => {
       return res.status(200).json({
         status: 'success',
@@ -57,17 +57,17 @@ exports.indexByPage = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
     utility.callApi(`pages/query`, 'post', {
       pageId: req.body.pageId,
       companyId: companyUser.companyId
-    })
+    }, req.headers.authorization)
     .then(page => {
       utility.callApi(`menu/query`, 'post', {
         pageId: req.body.pageId,
         companyId: companyUser.companyId
-      })
+      }, req.headers.authorization)
       .then(info => {
         if (!info) {
           utility.callApi(`menu`, 'post', {
@@ -75,7 +75,7 @@ exports.create = function (req, res) {
             userId: req.body.userId,
             companyId: companyUser.companyId,
             jsonStructure: req.body.jsonStructure
-          })
+          }, req.headers.authorization)
           .then(savedMenu => {
             require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
@@ -114,7 +114,7 @@ exports.create = function (req, res) {
           })
         })
         } else {
-          utility.callApi(`menu/${info._id}`, 'put', {jsonStructure: req.body.jsonStructure})
+          utility.callApi(`menu/${info._id}`, 'put', {jsonStructure: req.body.jsonStructure}, req.headers.authorization)
           .then(updated => {
             const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
 
@@ -145,7 +145,7 @@ exports.create = function (req, res) {
                   utility.callApi(`menu/query`, 'post', {
                     pageId: req.body.pageId,
                     companyId: companyUser.companyId
-                  })
+                  }, req.headers.authorization)
                   .then(updatedMenu => {
                     res.status(201).json({status: 'success', payload: updatedMenu})
                   })

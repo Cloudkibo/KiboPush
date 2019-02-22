@@ -30,7 +30,15 @@ class AutopostingMessages extends React.Component {
 
   componentDidMount () {
     this.scrollToTop()
-    document.title = 'KiboPush | Autoposting Messages'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Autoposting Messages`;
   }
 
   displayData (n, messages) {
@@ -63,9 +71,10 @@ class AutopostingMessages extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.autoposting_messages && nextProps.count) {
+    console.log('in componentWillReceiveProps', nextProps)
+    if (nextProps.autoposting_messages) {
       this.displayData(0, nextProps.autoposting_messages)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.autoposting_messages.length })
     }
   }
 

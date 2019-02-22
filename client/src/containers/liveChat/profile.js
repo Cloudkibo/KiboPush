@@ -365,19 +365,17 @@ class Profile extends React.Component {
                 </a>
                 <br />
                 {
-                  // {
-                  //   this.state.customerId !== '' &&
-                  //   <a
-                  //    onCick={() => {
-                  //      window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
-                  //    }}
-                  //    className='btn m-btn--pill    btn-primary'
-                  //   >
-                  //    <i className='fa fa-external-link' /> View Customer Details
-                  //   </a>
-                  // }
-                  // <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
+                  this.state.customerId !== '' &&
+                  <a style={{color: 'white'}}
+                    onClick={() => {
+                      window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
+                    }}
+                    className='btn m-btn--pill    btn-primary'
+                  >
+                    <i className='fa fa-external-link' /> View Customer Details
+                  </a>
                 }
+                <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
                 {
                   (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>

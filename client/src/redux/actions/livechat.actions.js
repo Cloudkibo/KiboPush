@@ -31,7 +31,7 @@ export function updateSessionsData (session, customerId) {
 
 export function showChatSessions (sessions) {
   var sorted = sessions.sort(function (a, b) {
-    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
   return {
@@ -52,7 +52,7 @@ export function updateUserChat (message, chat) {
 
 export function showOpenChatSessions (sessions, data) {
   var sorted = sessions.openSessions.sort(function (a, b) {
-    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
   if (data.first_page && (data.page_value !== '' || data.search_value !== '')) {
@@ -72,7 +72,7 @@ export function showOpenChatSessions (sessions, data) {
 
 export function showCloseChatSessions (sessions, firstPage) {
   var sorted = sessions.closedSessions.sort(function (a, b) {
-    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
   if (firstPage) {
@@ -331,7 +331,7 @@ export function changeStatus (data, handleActiveSession) {
 
 export function unSubscribe (data) {
   return (dispatch) => {
-    callApi('sessions/unSubscribe', 'post', data).then(res => {
+    callApi('subscribers/unSubscribe', 'post', data).then(res => {
       // dispatch(fetchSessions())
     })
   }

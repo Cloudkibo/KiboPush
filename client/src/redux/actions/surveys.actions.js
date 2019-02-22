@@ -9,8 +9,9 @@ export function appendSentSeenResponsesData (data) {
 
   for (let j = 0; j < surveys.length; j++) {
     let pagesurvey = pagesurveys.filter((c) => c.surveyId === surveys[j]._id)
-    surveys[j].sent = pagesurvey.length// total sent
+    let pageSurveyDelivered = pagesurvey.filter((c) => c.sent === true)
     let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+    surveys[j].sent = pageSurveyDelivered.length // total sent
     surveys[j].seen = pagesurveyTapped.length // total tapped
     surveys[j].responses = surveys[j].isresponded
   }
@@ -104,10 +105,6 @@ export function sendsurvey (survey, msg) {
         if (res.status === 'success') {
           msg.success('Survey sent successfully')
           dispatch(sendSurveySuccess())
-          callApi(`surveys/allSurveys`, 'post', data).then(response => {
-            console.log('response from surveys', response)
-            dispatch(showSurveysNew(response.payload))
-          })
         } else {
           msg.error(res.description)
           dispatch(sendSurveyFailure())

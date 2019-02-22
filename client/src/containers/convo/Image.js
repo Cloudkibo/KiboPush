@@ -14,7 +14,7 @@ import {
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
 import Halogen from 'halogen'
-import { uploadImage } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 
@@ -32,8 +32,24 @@ class Image extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.image && this.props.image !== '') {
-      this.setState({imgSrc: this.props.image, showPreview: true})
+    if (this.props.image && this.props.image.url !== '') {
+      console.log('in componentDidMount of Image', this.props.image)
+      this.setState({imgSrc: this.props.image.url, showPreview: true})
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: this.props.image.url,
+          componentType: 'image',
+          id: this.props.image.id,
+          name: this.props.image.name
+        }, {id: this.props.id,
+          componentType: 'image',
+          fileName: this.props.image.name,
+          fileurl: '',
+          image_url: '',
+          type: 'jpg', // jpg, png, gif
+          size: ''
+        }, this.props.handleImage, this.setLoading)
+      }
     }
   }
 
@@ -43,6 +59,7 @@ class Image extends React.Component {
 
   _onChange (images) {
   // Assuming only image
+    console.log('in _onChange')
     var file = this.refs.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -147,7 +164,8 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
     uploadRequest: uploadRequest,
-    uploadImage: uploadImage
+    uploadImage: uploadImage,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)

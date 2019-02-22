@@ -14,6 +14,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
+import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 
 class CreatePoll extends React.Component {
@@ -72,7 +73,15 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModalGuideLines: false})
   }
   componentDidMount () {
-    document.title = 'KiboPush | Create Poll'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Create Poll`;
   }
 
   showDialog () {
@@ -242,6 +251,7 @@ class CreatePoll extends React.Component {
       }
     }
   }
+
   render () {
     // const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -272,7 +282,7 @@ class CreatePoll extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
                     </div>
                   </div>
                 </div>
@@ -417,7 +427,9 @@ class CreatePoll extends React.Component {
                   </div>
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
-                      <button className='btn btn-primary'
+                      <button
+                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                        className='btn btn-primary'
                         onClick={() => {
                           this.checkValidation()
                         }}> Create Poll

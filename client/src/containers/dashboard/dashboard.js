@@ -7,11 +7,13 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import CardBoxes from '../../components/Dashboard/CardBoxes'
-import ProgressBox from '../../components/Dashboard/ProgressBox'
-import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
+import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
+import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
+import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
+import SubscriberSummary from './subscriberSummary'
+import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -23,8 +25,8 @@ import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
-import Reports from './reports'
-import TopPages from './topPages'
+// import Reports from './reports'
+// import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -35,12 +37,6 @@ var json2csv = require('json2csv')
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
-    props.loadMyPagesList()
-    props.loadDashboardData()
-    props.loadSubscribersList()
-    props.loadGraphData(0)
-    props.loadTopPages()
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
@@ -49,8 +45,10 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      pageLikesSubscribes: {},
-      isShowingModalPro: false
+      isShowingModalPro: false,
+      days: '30',
+      pageId: 'all',
+      selectedPage: {}
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -66,15 +64,25 @@ class Dashboard extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
+    this.changeDays = this.changeDays.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
+
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
-
-  componnentWillMount () {
+  componentWillMount () {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.getuserdetails()
+    this.props.loadMyPagesList()
+    this.props.loadDashboardData()
+    this.props.updateSubscriptionPermission()
+    this.props.loadSubscribersList()
+    this.props.loadGraphData(0)
+    this.props.loadTopPages()
+    this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
+    this.props.loadSentSeen({pageId: 'all', days: '30'})
   }
-
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
     if (response.status === 'failed') {
@@ -84,7 +92,6 @@ class Dashboard extends React.Component {
       })
     }
   }
-
   closeProDialog () {
     this.setState({isShowingModalPro: false})
   }
@@ -109,6 +116,7 @@ class Dashboard extends React.Component {
     return formattedData
   }
   prepareExportData () {
+    //console.log('prepareExportData')
     var data = []
     var dashboardObj = {}
     if (this.props.dashboard) {
@@ -126,12 +134,22 @@ class Dashboard extends React.Component {
       dashboardObj['Polls Sent/Seen'] = this.props.sentseendata.poll
       dashboardObj['Surveys Sent/Seen'] = this.props.sentseendata.survey
     }
+    console.log('this.props.graphData', this.props.graphData)
     if (this.props.graphData) {
-      dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
-      dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
-      dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
-      dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+      if (this.props.graphData.broadcastsgraphdata) {
+        dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
+      }
+      if (this.props.graphData.pollsgraphdata) {
+        dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
+      }
+      if (this.props.graphData.surveysgraphdata) {
+        dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
+      }
+      if (this.props.graphData.sessionsgraphdata) {
+        dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+      }    
     }
+   // console.log('this.props.topPages', this.props.topPages)
     if (this.props.topPages && this.props.topPages.length > 1) {
       for (var i = 0; i < this.props.topPages.length; i++) {
         dashboardObj['Top Page ' + (i + 1)] = this.props.topPages[i]
@@ -153,6 +171,7 @@ class Dashboard extends React.Component {
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
       } else {
+        console.log('call file download function')
         fileDownload(csv, 'Dashboard.csv')
       }
     })
@@ -173,13 +192,14 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user) {
+    if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.emailVerified === false) {
-        browserHistory.push({
-          pathname: '/resendVerificationEmail'
-        })
-      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      // if (nextprops.user.emailVerified === false) {
+      //   browserHistory.push({
+      //     pathname: '/resendVerificationEmail'
+      //   })
+      // } else
+      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
@@ -192,6 +212,11 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
+      } else if (nextprops.pages && nextprops.pages.length === 0) {
+        console.log('nextprops pages', nextprops)
+        browserHistory.push({
+          pathname: '/addfbpages'
+        })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
@@ -223,33 +248,41 @@ class Dashboard extends React.Component {
       }
     }
 
-    if (!this.props.pages && nextprops.pages) {
-      this.props.sentVsSeen(nextprops.pages[0].pageId)
-    }
+    // if (!this.props.pages && nextprops.pages) {
+    //   this.props.sentVsSeen(nextprops.pages[0].pageId)
+    // }
   }
   setChartData (graphData) {
-    if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
-      var broadcastData = graphData.broadcastsgraphdata
-      broadcastData = this.includeZeroCounts(broadcastData)
+    const url = window.location.hostname
+    if (url.includes('kiboengage.cloudkibo.com')) {
+      if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
+        var broadcastData = graphData.broadcastsgraphdata
+        broadcastData = this.includeZeroCounts(broadcastData)
+      }
+      console.log('broadcastsData', broadcastData)
+      if (graphData.pollsgraphdata && graphData.pollsgraphdata.length > 0) {
+        var pollsData = graphData.pollsgraphdata
+        pollsData = this.includeZeroCounts(pollsData)
+      }
+      if (graphData.surveysgraphdata && graphData.surveysgraphdata.length > 0) {
+        var surveysData = graphData.surveysgraphdata
+        surveysData = this.includeZeroCounts(surveysData)
+      }
+      let dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+      console.log('dataChart', dataChart)
+      this.setState({chartData: dataChart})
+    } else {
+      if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
+        var sessionsData = graphData.sessionsgraphdata
+        sessionsData = this.includeZeroCounts(sessionsData)
+      }
+      let dataChart = this.prepareLineChartData([], [], [], sessionsData)
+      this.setState({chartData: dataChart})
     }
-    if (graphData.pollsgraphdata && graphData.pollsgraphdata.length > 0) {
-      var pollsData = graphData.pollsgraphdata
-      pollsData = this.includeZeroCounts(pollsData)
-    }
-    if (graphData.surveysgraphdata && graphData.surveysgraphdata.length > 0) {
-      var surveysData = graphData.surveysgraphdata
-      surveysData = this.includeZeroCounts(surveysData)
-    }
-    if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
-      var sessionsData = graphData.sessionsgraphdata
-      sessionsData = this.includeZeroCounts(sessionsData)
-    }
-    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData, sessionsData)
-    this.setState({chartData: dataChart})
   }
   includeZeroCounts (data) {
     var dataArray = []
-    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
+    var days = this.state.days
     var index = 0
     var varDate = moment()
     for (var i = 0; i < days; i++) {
@@ -376,14 +409,28 @@ class Dashboard extends React.Component {
     console.log('location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
       console.log('in loadScript')
+      // TODO We need to correct this in future.
+      window.location.reload()
       // let addScript = document.createElement('script')
       // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
       // document.body.appendChild(addScript)
-      let addScript1 = document.createElement('script')
-      addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
-      document.body.appendChild(addScript1)
+      // let addScript1 = document.createElement('script')
+      // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
+      // document.body.appendChild(addScript1)
+
     }
-    document.title = 'KiboPush | Dashboard'
+    // if (this.props.currentPage) {
+    //   console.log('updating sentVsSeen currentPage')
+    //   this.props.sentVsSeen(this.props.currentPage.pageId)
+    // }
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+    document.title = `${title} | Dashboard`;
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',
@@ -395,26 +442,28 @@ class Dashboard extends React.Component {
   }
 
   changePage (page) {
-    let index = 0
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (page === this.props.pages[i].pageName) {
-        console.log('in if change page')
-        index = i
-        break
-      }
+    // let index = 0
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (page === this.props.pages[i].pageId) {
+    //     console.log('in if change page')
+    //     index = i
+    //     this.props.updateCurrentPage(this.props.pages[i])
+    //     break
+    //   }
+    // }
+    // this.props.sentVsSeen(this.props.pages[index].pageId)
+    if (page === 'all') {
+      this.setState({pageId: 'all'})
+      this.props.loadSentSeen({pageId: 'all', days: this.state.days})
+    } else {
+      this.setState({pageId: page.pageId, selectedPage: page})
+      this.props.loadSentSeen({pageId: page.pageId, days: this.state.days})
     }
-    console.log('')
-    this.props.sentVsSeen(this.props.pages[index].pageId)
-    this.setState({
-      pageLikesSubscribes: {
-        selectedPageName: this.props.pages[index].pageName,
-        likes: this.props.pages[index].likes,
-        subscribers: this.props.pages[index].subscribers,
-        unsubscribes: this.props.pages[index].unsubscribes
-      },
-      selectedPage: this.props.pages[index]
-    }
-      )
+  }
+
+  changeDays (e) {
+    this.setState({days: e.target.value})
+    this.props.loadSentSeen({pageId: this.state.pageId, days: e.target.value})
   }
 
   showDropDown () {
@@ -425,6 +474,11 @@ class Dashboard extends React.Component {
     this.setState({showDropDown: false})
   }
 
+  onKeyDown (e) {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -434,29 +488,9 @@ class Dashboard extends React.Component {
       transition: 'scale'
     }
     console.log('this.props.dashboard', this.props.dashboard)
+    const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='BUO39KcC3Po'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
         {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
@@ -471,6 +505,27 @@ class Dashboard extends React.Component {
                     Upgrade to Pro
                   </button>
                 </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: '100'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: '100'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='NhqPaGp3TF8'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -504,7 +559,8 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           {
@@ -522,15 +578,38 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
                 this.props.dashboard &&
-                <CardBoxes data={this.props.dashboard} />
+                <CardBoxesContainer data={this.props.dashboard} />
               }
             </div>
             <div className='row'>
+              <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
+            </div>
+            <div className='row'>
               {
-              this.props.pages && this.props.sentseendata &&
-              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.state.selectedPage} />
+              this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com')
+              ? <ProgressBoxKiboEngage
+                lineChartData={this.state.chartData}
+                pages={this.props.pages}
+                data={this.props.sentseendata}
+                changePage={this.changePage}
+                days={this.state.days}
+                pageId={this.state.pageId}
+                selectedPage={this.state.selectedPage}
+                changeDays={this.changeDays}
+                onKeyDown={this.onKeyDown} />
+              : <ProgressBoxKiboChat
+                lineChartData={this.state.chartData}
+                pages={this.props.pages}
+                data={this.props.sentseendata}
+                changePage={this.changePage}
+                days={this.state.days}
+                pageId={this.state.pageId}
+                selectedPage={this.state.selectedPage}
+                changeDays={this.changeDays}
+                onKeyDown={this.onKeyDown} />
             }
             </div>
+            {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
@@ -546,6 +625,7 @@ class Dashboard extends React.Component {
                 selectedDays={this.state.selectedDays}
                 />
             </div>
+            */}
             <div className='row'>
               <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
                 {
@@ -587,6 +667,7 @@ function mapStateToProps (state) {
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
+    currentPage: (state.pagesInfo.currentPage),
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages)
@@ -596,7 +677,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
+      updateSubscriptionPermission: updateSubscriptionPermission,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersList: loadSubscribersList,
       createbroadcast: createbroadcast,
@@ -605,6 +688,8 @@ function mapDispatchToProps (dispatch) {
       sentVsSeen: sentVsSeen,
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,
+      loadSubscriberSummary: loadSubscriberSummary,
+      loadSentSeen: loadSentSeen,
       validateUserAccessToken
     },
     dispatch)

@@ -12,15 +12,13 @@ exports.removeDuplicates = function (pages) {
     if (!exists(pagesToSend, pages[i].pageId)) {
       if (connectedPages.map((cp) => cp.pageId).indexOf(pages[i].pageId) !== -1) {
         pages[i].connected = true
-        pagesToSend.push(pages[0])
+        pagesToSend.push(pages[i])
       } else {
-        pagesToSend.push(pages[0])
+        pagesToSend.push(pages[i])
       }
     }
-    if ((pages.length - 1) === i) {
-      return pagesToSend
-    }
   }
+  return pagesToSend
 }
 
 exports.getCriterias = function (body, companyUser) {
@@ -34,7 +32,7 @@ exports.getCriterias = function (body, companyUser) {
       connected: true
     }
   } else {
-    search = new RegExp('.*' + body.filter_criteria.search_value + '.*', 'i')
+    search = '.*' + body.filter_criteria.search_value + '.*'
     findCriteria = Object.assign(findCriteria, {pageName: body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}})
   }
   if (body.first_page === 'first') {
@@ -72,4 +70,40 @@ function exists (list, content) {
     }
   }
   return false
+}
+
+exports.appendSubUnsub = (pages) => {
+  let pagesPayload = []
+  for (let i = 0; i < pages.length; i++) {
+    pagesPayload.push(pages[i])
+    pagesPayload[i].subscribers = 0
+    pagesPayload[i].unsubscribes = 0
+  }
+  return pagesPayload
+}
+
+exports.appendSubscribersCount = (pages, gotSubscribersCount) => {
+  let pagesPayload = pages
+  for (let i = 0; i < pagesPayload.length; i++) {
+    for (let j = 0; j < gotSubscribersCount.length; j++) {
+      if (pagesPayload[i]._id.toString() ===
+        gotSubscribersCount[j]._id.pageId.toString()) {
+        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+      }
+    }
+  }
+  return pagesPayload
+}
+
+exports.appendUnsubscribesCount = (pages, gotUnSubscribersCount) => {
+  let pagesPayload = pages
+  for (let i = 0; i < pagesPayload.length; i++) {
+    for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+      if (pagesPayload[i]._id.toString() ===
+        gotUnSubscribersCount[j]._id.pageId.toString()) {
+        pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+      }
+    }
+  }
+  return pagesPayload
 }

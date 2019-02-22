@@ -86,7 +86,7 @@ export function updateAllSubscribersListNew (data) {
 export function loadSubscribersList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
-    callApi('subscribers').then(res => dispatch(updateSubscribersList(res)))
+    callApi('subscribers').then(res => dispatch(updateSubscribersList(res.payload)))
   }
 }
 
@@ -94,6 +94,21 @@ export function loadAllSubscribersList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi('subscribers/allSubscribers').then(res => dispatch(updateAllSubscribersList(res)))
+  }
+}
+
+export function updatePicture (subscriberData, fetchData) {
+  console.log('updatePicture data', subscriberData)
+  return (dispatch) => {
+    callApi('subscribers/updatePicture', 'post', subscriberData).then(res => {
+      if (res.status === 'success') {
+        console.log('succesfully updated profile picture for ', subscriberData)
+        callApi('subscribers/getAll', 'post', fetchData).then(res => {
+          console.log('response from subscribers', res)
+          dispatch(updateAllSubscribersListNew(res.payload))
+        })
+      }
+    })
   }
 }
 
@@ -116,7 +131,7 @@ export function allLocales () {
 
 export function unSubscribe (data, handleSubscription) {
   return (dispatch) => {
-    callApi('sessions/unSubscribe', 'post', data).then(res => {
+    callApi('subscribers/unSubscribe', 'post', data).then(res => {
       handleSubscription(res, 'unsub')
     })
   }

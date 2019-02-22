@@ -45,7 +45,15 @@ class FacebookPosts extends React.Component {
   }
   componentDidMount () {
     $('#sidebarDiv').removeClass('hideSideBar')
-    document.title = 'KiboPush | Comment Capture'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Comment Capture`;
   }
   getPostText (payload) {
     var text = ''
@@ -162,7 +170,7 @@ class FacebookPosts extends React.Component {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100 }}
+            <ModalDialog style={{ width: '680px', top: 100 }}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -186,7 +194,7 @@ class FacebookPosts extends React.Component {
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogDelete}>
               <h3>Delete Post</h3>
-              <p>Are you sure you want to delete this post?</p>
+              <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {

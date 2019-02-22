@@ -13,6 +13,8 @@ import {
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class Invitations extends React.Component {
   constructor (props, context) {
@@ -23,7 +25,8 @@ class Invitations extends React.Component {
       invitationsDataAll: [],
       totalLength: 0,
       filterByName: '',
-      filterByEmail: ''
+      filterByEmail: '',
+      showVideo: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -58,7 +61,15 @@ class Invitations extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Invitations'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Invitations`;
   }
 
   cancelInvitation (invitation) {
@@ -76,6 +87,27 @@ class Invitations extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: 100}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='o0RZ_XlUqgo'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -91,8 +123,8 @@ class Invitations extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Here are the invitations that you have sent to people to join
-              your company.
+              Need help in understanding invitations? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>

@@ -15,7 +15,7 @@ import {
 import AlertContainer from 'react-alert'
 import ReactPlayer from 'react-player'
 
-import { uploadFile } from '../../redux/actions/convos.actions'
+import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -54,6 +54,19 @@ class Video extends React.Component {
         fileInfo.url = this.props.file.fileurl.url
       }
       this.setState({file: fileInfo, showPreview: true})
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: this.props.file.fileurl.url,
+          componentType: 'video',
+          id: this.props.file.fileurl.id,
+          name: this.props.file.fileName
+        }, { id: this.props.id,
+          componentType: 'video',
+          fileName: this.props.file.fileName,
+          type: this.props.file.type,
+          size: this.props.file.size
+        }, this.props.handleFile, this.setLoading)
+      }
     }
   }
 
@@ -85,10 +98,12 @@ class Video extends React.Component {
   }
 
   onFilesChange (files) {
+    console.log('files', files)
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
-      if (file.size > 25000000) {
+      console.log('filesize', file.size)
+      if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
@@ -142,7 +157,7 @@ class Video extends React.Component {
               onChange={this.onFilesChange}
               onError={this.onFilesError}
               accepts={['video/*']}
-              maxFileSize={25000000}
+              maxFileSize={10000000}
               minFileSize={0}
               clickable
             >
@@ -196,7 +211,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    uploadTemplate: uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Video)

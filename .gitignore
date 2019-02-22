@@ -38,10 +38,10 @@ build/Release
 node_modules/
 jspm_packages/
 client/public/js/bundle.js
+client/public/js/bundle_staging.js
 client/public/js/bundle.js.map
 client/public/dist/
 server/api/backdoor/my-file.csv
-public/
 
 # Typescript v1 declaration files
 typings/
@@ -67,6 +67,7 @@ typings/
 # ides
 .idea/
 broadcastFiles/
+plugins/
 
 # .DS_Store file often screated by Mac OS
 .DS_Store

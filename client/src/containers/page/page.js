@@ -94,6 +94,15 @@ class Page extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Page`;
   }
 
   componentWillReceiveProps (nextProps) {
@@ -164,9 +173,8 @@ class Page extends React.Component {
       //   }
       // }
     } else {
-      this.setState({filter: false, search_value: '', showingSearchResult: false})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
-
+      this.setState({filter: false, search_value: '', showingSearchResult: false})
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
@@ -203,7 +211,7 @@ class Page extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}

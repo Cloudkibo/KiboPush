@@ -15,6 +15,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
+import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 
 class AddSurvey extends React.Component {
@@ -132,7 +133,15 @@ class AddSurvey extends React.Component {
     })
   }
   componentDidMount () {
-    document.title = 'KiboPush | Add Survey'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Add Survey`;
   }
 
   componentWillReceiveProps (nextProps) {
@@ -554,6 +563,7 @@ class AddSurvey extends React.Component {
       }
     }
   }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -584,7 +594,7 @@ class AddSurvey extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
                     </div>
                   </div>
                 </div>
@@ -649,20 +659,24 @@ class AddSurvey extends React.Component {
                             <p>Do you want to send this survey right away or save it for later use? </p>
                             <div style={{width: '100%', textAlign: 'center'}}>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.closeDialog()
-                                  this.goToSend()
-                                }}>
+                                <button className='btn btn-primary'
+                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                  onClick={() => {
+                                    this.closeDialog()
+                                    this.goToSend()
+                                  }}>
                                   Send
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.createSurvey()
-                                  this.props.history.push({
-                                    pathname: '/surveys'
-                                  })
-                                }}>
+                                <button className='btn btn-primary'
+                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                  onClick={() => {
+                                    this.createSurvey()
+                                    this.props.history.push({
+                                      pathname: '/surveys'
+                                    })
+                                  }}>
                                   Save
                                 </button>
                               </div>
@@ -729,6 +743,7 @@ class AddSurvey extends React.Component {
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right'}}>
                       <button className='btn btn-primary'
+                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                         onClick={this.checkValidation}> Create Survey
                       </button>
                       <Link

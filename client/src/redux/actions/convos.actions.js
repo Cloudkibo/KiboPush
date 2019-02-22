@@ -1,11 +1,13 @@
 // import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import callApi from '../../utility/api.caller.service'
+import { getAccountsUrl } from '../../utility/utils'
 export const API_URL = '/api'
 
 export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
       body: filedata,
       // eslint-disable-next-line no-undef
@@ -16,7 +18,9 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
       if (res.status === 'success') {
         fileInfo.fileurl = res.payload
         console.log('fileInfo: ', fileInfo)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleFunction(fileInfo)
       } else {
         console.log(res.description)
@@ -36,7 +40,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
   fileData.append('componentType', componentType)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
       body: fileData,
       // eslint-disable-next-line no-undef
@@ -48,11 +52,31 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         data.fileurl = res.payload
         data.image_url = res.payload.url
         console.log('fileInfo: ', data)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleUpload(data)
       } else {
         console.log(res.description)
       }
     })
+  }
+}
+export function uploadTemplate (dataTosend, data, handleUpload, setLoading) {
+  console.log('data in uploadTemplate', dataTosend)
+  return (dispatch) => {
+    callApi('uploadTemplate', 'post', dataTosend, 'accounts')
+      .then(res => {
+        console.log('response from uploadTemplate', res)
+        data.fileurl = res.payload
+        if (dataTosend.componentType === 'image') {
+          data.image_url = res.payload.url
+        }
+        console.log('fileInfo: ', data)
+        if (setLoading) {
+          setLoading()
+        }
+        handleUpload(data)
+      })
   }
 }

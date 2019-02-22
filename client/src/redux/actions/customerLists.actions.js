@@ -83,7 +83,7 @@ export function loadCustomerLists () {
 }
 
 export function loadCustomerListsNew (data) {
-  console.log('data', data)
+  console.log('data in loadCustomerListsNew', data)
   return (dispatch) => {
     callApi('lists/getAll', 'post', data)
       .then(res => {
@@ -126,6 +126,7 @@ export function loadListDetails (id) {
 }
 
 export function createSubList (list, msg, handleCreateSubList) {
+  console.log('createSubList data: ', list)
   return (dispatch) => {
     callApi('lists/createList', 'post', list)
       .then(res => {
@@ -169,7 +170,7 @@ export function deleteList (id, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('List deleted')
-          dispatch(loadCustomerLists())
+          dispatch(loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete list. ${res.description}`)

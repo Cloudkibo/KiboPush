@@ -2,10 +2,10 @@ const utility = require('../utility')
 const logicLayer = require('./permissions.logiclayer')
 
 exports.updatePermissions = function (req, res) {
-  utility.callApi(`permission/genericFind`, 'post', { companyId: req.body.companyId, userId: req.body.userId })
+  utility.callApi(`permissions/query`, 'post', { companyId: req.body.companyId, userId: req.body.userId }, req.headers.authorization)
   .then(permission => {
-    permission = logicLayer.setPermissions(permission, req.body)
-    utility.callApi(`permission/updatePermissions`, 'post', {query: { companyId: req.body.companyId, userId: req.body.userId }, updated: permission})
+    permission = logicLayer.setPermissions(req.body)
+    utility.callApi(`permissions/${permission._id}`, 'put', permission, req.headers.authorization)
     .then(result => {
       res.status(201).json({status: 'success', payload: result})
     })
@@ -22,9 +22,9 @@ exports.updatePermissions = function (req, res) {
 }
 
 exports.fetchPermissions = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
-    utility.callApi(`permission/generic/${companyUser.companyId}`)
+    utility.callApi(`permissions/query`, 'post', {companyId: companyUser.companyId}, req.headers.authorization)
     .then(permissions => {
       res.status(200).json({
         status: 'success',

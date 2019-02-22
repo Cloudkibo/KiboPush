@@ -58,6 +58,7 @@ export function deleteMember (data, msg) {
 }
 
 export function updateMember (data) {
+  console.log('data', data)
   return (dispatch) => {
     callApi('company/updateRole', 'post', data)
     .then(res => dispatch(loadMembersList()))

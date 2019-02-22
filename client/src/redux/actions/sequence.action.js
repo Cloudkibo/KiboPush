@@ -64,6 +64,7 @@ export function createMessage (data) {
   return (dispatch) => {
     callApi('sequenceMessaging/createMessage', 'post', data)
       .then(res => {
+        console.log('response from createMessage', res)
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
         }
@@ -71,12 +72,12 @@ export function createMessage (data) {
   }
 }
 
-export function setSchedule (data, sequenceId) {
+export function setSchedule (data) {
   return (dispatch) => {
     callApi('sequenceMessaging/setSchedule', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          dispatch(fetchAllMessages(sequenceId))
+          dispatch(fetchAllMessages(data.sequenceId))
         }
       })
   }

@@ -5,8 +5,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
+import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
+import CreateCustomField from './customFields/createCustomField'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -18,6 +20,8 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import moment from 'moment'
+import YouTube from 'react-youtube'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -62,13 +66,29 @@ class Subscriber extends React.Component {
       status_value: '',
       saveEnableIndividual: false,
       saveEnableSeq: false,
-      saveEnableSeqInd: false
+      saveEnableSeqInd: false,
+      showVideo: false,
+      setFieldIndex: false,
+      show: false,
+      selectedField: {},
+      hoverId: '',
+      saveFieldValueButton: true,
+      oldSelectedFieldValue: '',
+      popoverSetCustomField: false,
+      customFieldOptions: [],
+      selectedBulkField: null,
+      saveBulkFieldDisable: true,
+      createCustomField: false
+
     }
     props.allLocales()
     props.fetchAllSequence()
     props.loadMyPagesList()
-    // props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+    if (!this.props.location.state) {
+      props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+    }
     props.loadTags()
+    props.loadCustomFields()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleAddIndividual = this.handleAddIndividual.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
@@ -121,6 +141,203 @@ class Subscriber extends React.Component {
     this.handleSequenceInd = this.handleSequenceInd.bind(this)
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
     this.handleFilterByPageInitial = this.handleFilterByPageInitial.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
+    this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
+    this.hoverOn = this.hoverOn.bind(this)
+    this.hoverOff = this.hoverOff.bind(this)
+    this.handleSetCustomField = this.handleSetCustomField.bind(this)
+    this.showToggle = this.showToggle.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+    this.saveCustomField = this.saveCustomField.bind(this)
+    this.toggleSetCustomField = this.toggleSetCustomField.bind(this)
+    this.handleSelectBulkCustomField = this.handleSelectBulkCustomField.bind(this)
+    this.handleBulkSetCustomField = this.handleBulkSetCustomField.bind(this)
+    this.selectedSubscribers = this.selectedSubscribers.bind(this)
+    this.createSetCustomFieldPayload = this.createSetCustomFieldPayload.bind(this)
+    this.saveSetCustomField = this.saveSetCustomField.bind(this)
+    this.handleBulkResponse = this.handleBulkResponse.bind(this)
+  }
+
+  saveSetCustomField () {
+    var payload = this.createSetCustomFieldPayload()
+    if (payload.subscriberIds.length > 0) {
+      this.props.setCustomFieldValue(payload, this.handleBulkResponse)
+    } else {
+      if (this.msg) {
+        this.msg.error('Select relevant subscribers')
+      }
+    }
+  }
+  handleBulkResponse (res) {
+    if (res.status === 'Success') {
+      this.msg.success('Value set successfully')
+      let selectedSubscribers = this.selectedSubscribers()
+      let temp = this.state.subscribersData
+      selectedSubscribers.forEach((subscriberId, i) => {
+        this.state.subscribersData.forEach((subscriber, j) => {
+          if (subscriberId === subscriber._id) {
+            subscriber.customFields.forEach((field, k) => {
+              if (field._id === this.state.selectedBulkField._id) {
+                temp[j].customFields[k].value = this.state.selectedBulkField.value
+              }
+            })
+          }
+        })
+      })
+      this.setState({subscribersData: temp, popoverSetCustomField: !this.state.popoverSetCustomField, selectedBulkField: null})
+    } else {
+      if (res.status === 'failed') {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
+  createSetCustomFieldPayload () {
+    var subscribersIds = this.selectedSubscribers()
+    let temp = {
+      customFieldId: this.state.selectedBulkField._id,
+      subscriberIds: subscribersIds,
+      value: this.state.selectedBulkField.value
+    }
+    return temp
+  }
+
+  selectedSubscribers () {
+    var selectedIds = []
+    var subscribers = this.state.subscribersDataAll
+    for (var i = 0; i < subscribers.length; i++) {
+      if (subscribers[i].selected) {
+        selectedIds.push(subscribers[i]._id)
+      }
+    }
+    return selectedIds
+  }
+
+  handleBulkSetCustomField (event) {
+    var temp = {
+      _id: this.state.selectedBulkField._id,
+      label: this.state.selectedBulkField.label,
+      type: this.state.selectedBulkField.type,
+      value: event.target.value
+    }
+    this.setState({selectedBulkField: temp})
+  }
+
+  handleSelectBulkCustomField (value) {
+    console.log('findme', value)
+    var index = 0
+    if (value) {
+      for (var i = 0; i < this.props.customFields.length; i++) {
+        if (this.props.customFields[i].name !== value.label) {
+          index++
+        }
+      }
+      if (index === this.props.customFields.length) {
+      } else {
+        this.setState({
+          saveBulkFieldDisable: false,
+          selectedBulkField: value
+        })
+      }
+    } else {
+      this.setState({
+        saveBulkFieldDisable: true,
+        selectedBulkField: value
+      })
+    }
+  }
+
+  toggleSetCustomField () {
+    this.setState({
+      popoverSetCustomField: !this.state.popoverSetCustomField
+    })
+  }
+
+  saveCustomField () {
+    let subscriberIds = [this.state.subscriber._id]
+    let temp = {
+      customFieldId: this.state.selectedField._id,
+      subscriberIds: subscriberIds,
+      value: this.state.selectedField.value
+    }
+    this.props.setCustomFieldValue(temp, this.handleResponse)
+    this.setState({setFieldIndex: !this.state.setFieldIndex})
+  }
+
+  handleResponse (res) {
+    if (res.status === 'Success') {
+      this.msg.success('Value set successfully')
+      let temp = this.state.subscriber
+      this.state.subscriber.customFields.forEach((field, i) => {
+        if (this.state.selectedField._id === field._id) {
+          temp.customFields[i].value = this.state.selectedField.value
+          this.setState({subscriber: temp, setFieldIndex: false})
+        }
+      })
+    } else {
+      if (res.status === 'failed') {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
+  handleSetCustomField (event) {
+    var temp = {
+      _id: this.state.selectedField._id,
+      name: this.state.selectedField.name,
+      type: this.state.selectedField.type,
+      value: event.target.value
+    }
+    if (this.state.oldSelectedFieldValue === event.target.value) {
+      this.setState({selectedField: temp, saveFieldValueButton: true})
+    } else {
+      this.setState({selectedField: temp, saveFieldValueButton: false})
+    }
+  }
+
+  toggleSetFieldPopover (field) {
+    this.setState({setFieldIndex: !this.state.setFieldIndex, selectedField: field, oldSelectedFieldValue: field.value})
+  }
+
+  showToggle () {
+    this.setState({show: !this.state.show})
+  }
+
+  hoverOn (id) {
+    this.setState({hoverId: id})
+  }
+  hoverOff () {
+    this.setState({hoverId: ''})
+  }
+
+  profilePicError (e, subscriber) {
+    console.log('profile picture error', subscriber)
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
+    let fetchData = {
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      current_page: this.state.pageSelected,
+      filter: this.state.filter,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender,
+        page_value: this.state.filterByPage,
+        locale_value: this.state.filterByLocale,
+        tag_value: this.state.filterByTag,
+        status_value: this.state.status_value
+      }
+    }
+    this.props.updatePicture({subscriber}, fetchData)
   }
 
   getDate (datetime) {
@@ -166,7 +383,9 @@ class Subscriber extends React.Component {
     this.setState({showEditModal: true})
   }
   setSubscriber (s) {
-    this.setState({subscriber: s})
+    this.setState({subscriber: s}, () => {
+      console.log('find me', this.state.subscriber)
+    })
     this.props.getSubscriberSequences(s._id)
   }
   closeEditModal () {
@@ -382,22 +601,31 @@ class Subscriber extends React.Component {
     this.setState({ removeTag: value })
   }
   componentDidMount () {
-    console.log('component did mount called')
-    document.title = 'KiboPush | Subscribers'
-    let filterStatusValue = ''
-    if (this.props.location.state) {
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Subscribers`
+
+    if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
       this.setState({filterPage: pageId})
+      let statusValue
       if (this.props.location.state.filterStatus === 'subscribed') {
-        filterStatusValue = true
+        statusValue = true
         this.setState({statusValue: 'subscribed'})
-      } else {
-        filterStatusValue = false
+      } else if (this.props.location.state.filterStatus === 'unsubscribed') {
+        statusValue = false
         this.setState({statusValue: 'unsubscribed'})
+      } else {
+        statusValue = ''
+        this.setState({statusValue: ''})
       }
-      this.handleFilterByPageInitial(pageId, filterStatusValue)
-    } else {
-      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+      this.handleFilterByPageInitial(pageId, statusValue)
     }
   }
   componentDidUpdate () {
@@ -636,11 +864,54 @@ class Subscriber extends React.Component {
   }
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          gender_value: this.state.filterByGender,
+          page_value: this.state.filterByPage,
+          locale_value: this.state.filterByLocale,
+          tag_value: this.state.filterByTag,
+          status_value: this.state.status_value
+        }
+      })
     } else if (this.state.pageSelected < data.selected) {
-      this.props.loadAllSubscribersListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({
+        current_page: this.state.pageSelected,
+        requested_page: data.selected,
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          gender_value: this.state.filterByGender,
+          page_value: this.state.filterByPage,
+          locale_value: this.state.filterByLocale,
+          tag_value: this.state.filterByTag,
+          status_value: this.state.status_value
+        }
+      })
     } else {
-      this.props.loadAllSubscribersListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.subscribers.length > 0 ? this.props.subscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({
+        current_page: this.state.pageSelected,
+        requested_page: data.selected,
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[0]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          gender_value: this.state.filterByGender,
+          page_value: this.state.filterByPage,
+          locale_value: this.state.filterByLocale,
+          tag_value: this.state.filterByTag,
+          status_value: this.state.status_value
+        }
+      })
     }
     this.setState({pageSelected: data.selected})
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -670,6 +941,15 @@ class Subscriber extends React.Component {
       }
       this.setState({
         options: tagOptions
+      })
+    }
+    if (nextProps.customFields) {
+      var fieldOptions = []
+      for (let a = 0; a < nextProps.customFields.length; a++) {
+        fieldOptions.push({'_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': ''})
+      }
+      this.setState({
+        customFieldOptions: fieldOptions
       })
     }
     if (nextProps.sequences) {
@@ -763,7 +1043,7 @@ class Subscriber extends React.Component {
     console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, filterByTag: e.target.value})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: e.target.value, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].tags) {
       //     for (var i = 0; i < filteredData[k].tags.length; i++) {
@@ -776,7 +1056,8 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '', status_value: this.state.status_value}})
+      this.setState({filterByTag: e.target.value})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -793,7 +1074,7 @@ class Subscriber extends React.Component {
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, filterByPage: e.target.value})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: e.target.value, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
       //     filtered.push(filteredData[k])
@@ -801,7 +1082,8 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: '', locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.setState({filterByPage: e.target.value})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -810,12 +1092,12 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByPageInitial (pageId, isSubscribed) {
-    this.setState({filterByPage: pageId, status_value: isSubscribed})
+    this.setState({filterByPage: pageId})
     if (pageId !== '' && pageId !== 'all') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
     } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: '', locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     }
   }
   handleFilterByGender (e) {
@@ -828,7 +1110,7 @@ class Subscriber extends React.Component {
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, filterByGender: e.target.value})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
       //     filtered.push(filteredData[k])
@@ -836,7 +1118,8 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: '', page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.setState({filterByGender: e.target.value})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -854,7 +1137,7 @@ class Subscriber extends React.Component {
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, filterByLocale: e.target.value})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: e.target.value, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
       //     filtered.push(filteredData[k])
@@ -862,7 +1145,8 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: '', tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      this.setState({filterByLocale: e.target.value})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -882,10 +1166,10 @@ class Subscriber extends React.Component {
       this.setState({filter: true})
       if (e.target.value === 'subscribed') {
         this.setState({status_value: true})
-        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: true}})
+        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true}})
       } else {
         this.setState({status_value: false})
-        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: false}})
+        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: false}})
       }
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
@@ -896,8 +1180,8 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({status_value: ''})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: ''}})
+      this.setState({status_value: e.target.value})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: ''}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -906,6 +1190,82 @@ class Subscriber extends React.Component {
   }
 
   render () {
+    let setFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    if (this.state.selectedField.type === 'text') {
+      setFieldInput = <input
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'number') {
+      setFieldInput = <input
+        type='text'
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'date') {
+      setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='date' />
+    } else if (this.state.selectedField.type === 'datetime') {
+      setFieldInput = setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='datetime-local' />
+    } else if (this.state.selectedField.type === 'true/false') {
+      setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
+        <option key='' value='' selected disabled>...Select...</option>
+        <option key='true' value='true'>True</option>
+        <option key='false' value='false'>False</option>
+      </select>
+    }
+    let setBulkFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    if (this.state.selectedBulkField) {
+      if (this.state.selectedBulkField.type === 'text' || this.state.selectedBulkField.type === 'number') {
+        setBulkFieldInput = <input
+          className='form-control m-input'
+          placeholder='value'
+          onChange={this.handleBulkSetCustomField}
+          value={this.state.selectedBulkField.value}
+      />
+      } else if (this.state.selectedBulkField.type === 'date') {
+        setBulkFieldInput = <input className='form-control m-input'
+          value={this.state.selectedBulkField.value}
+          onChange={this.handleBulkSetCustomField}
+          type='date' />
+      } else if (this.state.selectedBulkField.type === 'datetime') {
+        setBulkFieldInput = setFieldInput = <input className='form-control m-input'
+          value={this.state.selectedBulkField.value}
+          onChange={this.handleBulkSetCustomField}
+          type='datetime-local' />
+      } else if (this.state.selectedBulkField.type === 'true/false') {
+        setBulkFieldInput = <select className='custom-select' id='type' value={this.state.selectedBulkField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleBulkSetCustomField}>
+          <option key='' value='' selected disabled>...Select...</option>
+          <option key='true' value='true'>True</option>
+          <option key='false' value='false'>False</option>
+        </select>
+      }
+    }
+    var hoverOn = {
+      cursor: 'pointer',
+      border: '1px solid #3c3c7b',
+      width: '421px',
+      borderRadius: '30px',
+      marginBottom: '7px',
+      background: 'rgb(60, 60, 123, 0.5)'
+    }
+    var hoverOff = {
+      cursor: 'pointer',
+      border: '1px solid rgb(220, 220, 220)',
+      width: '421px',
+      borderRadius: '30px',
+      marginBottom: '7px',
+      background: 'white'
+    }
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -924,8 +1284,31 @@ class Subscriber extends React.Component {
     }
 
     return (
+      <div>
+        <span id='createModal' data-toggle='modal' data-target='#create_modal'><CreateCustomField /></span>
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: '100'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: '100'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='lFosatdcCCE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -943,7 +1326,8 @@ class Subscriber extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              <a href='http://kibopush.com/subscribers/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
+              Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -1097,13 +1481,19 @@ class Subscriber extends React.Component {
                                 <div style={{display: 'block'}}>
                                   <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
                                     <DropdownToggle caret>
-                                       Assign Tags in bulk
+                                      Bulk Actions
                                     </DropdownToggle>
                                     <DropdownMenu>
                                       <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                       <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
-                                      <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
-                                      <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
+                                      <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
+                                      <DropdownItem onClick={this.showSetCustomField}>Set Custom Field</DropdownItem>
+                                      { this.props.user.isSuperUser &&
+                                        <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
+                                      }
+                                      { this.props.user.isSuperUser &&
+                                        <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
+                                      }
                                     </DropdownMenu>
                                   </Dropdown>
                                   {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
@@ -1174,6 +1564,35 @@ class Subscriber extends React.Component {
                                           onClick={() => {
                                             this.removeTags()
                                             this.toggleRemove()
+                                          }}>Save
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </PopoverBody>
+                                </Popover>
+                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
+                                  <PopoverHeader>Set Custom Field</PopoverHeader>
+                                  <PopoverBody>
+                                    <div className='row' style={{minWidth: '250px'}}>
+                                      <div className='col-12'>
+                                        <label>Field</label>
+                                        <Select
+                                          options={this.state.customFieldOptions}
+                                          onChange={this.handleSelectBulkCustomField}
+                                          value={this.state.selectedBulkField}
+                                          placeholder='Enter Field Name'
+                                        />
+                                      </div>
+                                      <div className='col-12'>
+                                        <label>Value</label>
+                                        {setBulkFieldInput}
+                                      </div>
+                                      <div className='col-12'>
+                                        <button style={{float: 'right', margin: '15px'}}
+                                          className='btn btn-primary btn-sm'
+                                          disabled={this.state.saveBulkFieldDisable}
+                                          onClick={() => {
+                                            this.saveSetCustomField()
                                           }}>Save
                                         </button>
                                       </div>
@@ -1280,9 +1699,9 @@ class Subscriber extends React.Component {
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
                             </th>
-                            <th data-field='Locale'
+                            <th data-field='Subscribed'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
+                              <span style={{width: '100px', overflow: 'inherit'}}>Subscribed</span>
                             </th>
                             <th data-field='Tag'
                               className='m-datatable__cell--center m-datatable__cell'>
@@ -1308,6 +1727,7 @@ class Subscriber extends React.Component {
                                 style={{width: '100px', overflow: 'inherit'}}>
                                 <img alt='pic'
                                   src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                  onError={(e) => this.profilePicError(e, subscriber)}
                                   className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                               />
                               </span>
@@ -1335,12 +1755,12 @@ class Subscriber extends React.Component {
                             </td>
                             <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
                               <span style={{width: '50px'}}>
-                                {
-                                  subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
-                                }
+                                { subscriber.gender }
                               </span>
                             </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
+                              <span style={{width: '100px'}}>{moment(subscriber.datetime).fromNow()}</span>
+                            </td>
                             <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                               <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
                                 {
@@ -1475,19 +1895,11 @@ class Subscriber extends React.Component {
                               }
                             </div>
                             <div className='col-md-4'>
-                              {
-                                this.state.subscriber.source === 'customer_matching'
-                                ? <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Phone Number</span>
-                                </div>
-                                : <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Direct Message</span>
-                                </div>
-                              }
+                              <div>
+                                <span style={{fontWeight: 600}}>Source:</span>
+                                <br />
+                                <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                              </div>
                             </div>
                           </div>
                           <br />
@@ -1542,6 +1954,67 @@ class Subscriber extends React.Component {
                               </div>
                             </PopoverBody>
                           </Popover>
+                          <div className='row' style={{display: 'inline-block'}}>
+                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields: </span>
+                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                              ? <span>
+                                <a data-toggle='collapse' data-target='#customFields' style={{cursor: 'pointer', color: 'blue'}}
+                                  onClick={this.showToggle}>
+                                  {this.state.show
+                                  ? <span>Hide <i style={{fontSize: '12px'}} className='la la-angle-up ' /></span>
+                                  : <span>Show <i style={{fontSize: '12px'}} className='la la-angle-down ' /></span>
+                                  }
+                                </a>
+                                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px'}}><i className='la la-gear' /> Manage Fields</a>
+                              </span>
+                              : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px'}}><i className='la la-gear' /> Manage Fields</a>
+                            }
+                          </div>
+                          <div className='row'>
+                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                            ? <div id='customFields' style={{padding: '15px'}} className='collapse'>
+                              {
+                                this.state.subscriber.customFields.map((field, i) => (
+                                  <div className='row'>
+                                    <div className='col-sm-12'>
+                                      <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
+                                        onMouseEnter={() => { this.hoverOn(field._id) }}
+                                        onMouseLeave={this.hoverOff}
+                                        style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                                        <span style={{marginLeft: '10px'}}>
+                                          <span style={{fontWeight: '100'}}>{field.name} : </span>
+                                          <span style={{color: '#3c3c7b'}}>{field.value !== '' ? field.value : 'Not Set'}</span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                                  }
+                              <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                                <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
+                                <PopoverBody>
+                                  <div className='row' style={{ minWidth: '250px' }}>
+                                    <div className='col-12'>
+                                      <label>Set Value</label>
+                                      {setFieldInput}
+                                    </div>
+                                    <button style={{ float: 'right', margin: '15px' }}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.saveCustomField()
+                                        // this.toggleSetFieldPopover()
+                                      }}
+                                      disabled={this.state.saveFieldValueButton}>
+                                        Save
+                                      </button>
+                                  </div>
+                                </PopoverBody>
+                              </Popover>
+                            </div>
+                            : <div style={{padding: '15px', maxHeight: '120px'}}>
+                              <span>No Custom Field Found</span>
+                            </div> }
+                          </div>
                           <div className='row'>
                             <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
                             <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
@@ -1604,6 +2077,7 @@ class Subscriber extends React.Component {
           </div>
         </div>
       </div>
+      </div>
     )
   }
 }
@@ -1615,8 +2089,10 @@ function mapStateToProps (state) {
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
+    customFields: (state.customFieldInfo.customFields),
     sequences: (state.sequenceInfo.sequences),
-    subscriberSequences: (state.sequenceInfo.subscriberSequences)
+    subscriberSequences: (state.sequenceInfo.subscriberSequences),
+    user: (state.basicInfo.user)
   }
 }
 
@@ -1633,7 +2109,11 @@ function mapDispatchToProps (dispatch) {
     unsubscribeToSequence: unsubscribeToSequence,
     getSubscriberSequences: getSubscriberSequences,
     subscribe: subscribe,
-    unSubscribe: unSubscribe
+    unSubscribe: unSubscribe,
+    updatePicture: updatePicture,
+    setCustomFieldValue: setCustomFieldValue,
+    loadCustomFields: loadCustomFields
+
   },
     dispatch)
 }

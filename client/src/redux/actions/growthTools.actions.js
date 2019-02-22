@@ -2,7 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
-import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+import { loadCustomerListsNew } from '../../redux/actions/customerLists.actions'
 export const API_URL = '/api'
 var json2csv = require('json2csv')
 
@@ -67,7 +67,7 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
       console.log('respone', res)
       handleResponse(res)
       dispatch(sendresp(res))
-      dispatch(loadCustomerLists())
+      dispatch(loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'}))
     })
   }
 }
@@ -78,7 +78,7 @@ export function sendPhoneNumbers (data) {
       .then(res => {
         console.log('Response', res)
         dispatch(sendresp(res))
-        dispatch(loadCustomerLists())
+        dispatch(loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'}))
       }
     )
   }

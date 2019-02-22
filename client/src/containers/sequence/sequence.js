@@ -118,7 +118,15 @@ class Sequence extends React.Component {
 
   componentDidMount () {
     this.scrollToTop()
-    document.title = 'KiboPush | Sequence Messaging'
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Sequence`;
   }
   updateName (e) {
     this.setState({ name: e.target.value, error: false })

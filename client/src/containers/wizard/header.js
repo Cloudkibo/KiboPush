@@ -56,6 +56,14 @@ class Header extends React.Component {
   }
 
   render () {
+    let liveChatLink = '';
+    let hostname = window.location.hostname;
+    if (hostname == 'skiboengage.cloudkibo.com') {
+      liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
+    } else if (hostname == 'kiboengage.cloudkibo.com') {
+      liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
+    }
+    console.log("window.location.hostname.toLowerCase().includes('kiboengage')", window.location.hostname.toLowerCase().includes('kiboengage'))
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
@@ -105,51 +113,56 @@ class Header extends React.Component {
                                 <div className='m-nav-grid m-nav-grid--skin-light'>
                                   <div className='m-nav-grid__row'>
                                     {
-                                    (this.props.subscribers &&
+                                    (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                     this.props.subscribers.length === 0)
                                     ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/broadcasts' className='m-nav-grid__item'>
+                                    : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
+                                    : null
                                   }
 
                                     {
-                                    (this.props.subscribers &&
+                                    (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                     this.props.subscribers.length === 0)
                                     ? <Link to='/poll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
-                                    : <Link to='/poll' className='m-nav-grid__item'>
+                                    : (window.location.hostname.toLowerCase().includes('kiboengage')) ?<Link to='/poll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
+                                     : null
                                   }
 
                                   </div>
                                   <div className='m-nav-grid__row'>
 
                                     {
-                                    (this.props.subscribers &&
+                                    (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                     this.props.subscribers.length === 0)
                                      ? <Link to='/surveys' className='m-nav-grid__item'>
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>
-                                     : <Link to='/surveys' className='m-nav-grid__item'>
+                                     : (window.location.hostname.toLowerCase().includes('kiboengage')) ?<Link to='/surveys' className='m-nav-grid__item'>
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>
+                                      : null
                                   }
-
+                                    {!window.location.hostname.toLowerCase().includes('kiboengage') ?
                                     <Link to='/bots' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
                                       <span className='m-nav-grid__text'>Create New Bot</span>
                                     </Link>
+                                     : null
+                                    }
                                   </div>
                                 </div>
                               </div>
@@ -199,10 +212,16 @@ class Header extends React.Component {
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <Link to='/liveChat' className='m-nav__link'>
+                                { window.location.hostname.toLowerCase().includes('kiboengage') ?
+                                    <a href={liveChatLink} target='_blank' className='m-nav__link'>
+                                      <i className='m-nav__link-icon flaticon-chat-1' />
+                                      <span className='m-nav__link-text'>Messages</span>
+                                    </a>
+                                    : <Link to='/liveChat' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-chat-1' />
                                     <span className='m-nav__link-text'>Messages</span>
                                   </Link>
+                                  }
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
@@ -219,7 +238,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a onClick={() => { auth.logout() }} href='/' className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                  <a onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                     Logout
                                   </a>
                                 </li>

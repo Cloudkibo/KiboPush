@@ -7,6 +7,12 @@ export function updateDashboard (data) {
     data
   }
 }
+export function updateSubscriberSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_SUBSCRIBER_SUMMARY,
+    data
+  }
+}
 export function updateAllLocales (data) {
   console.log('Data Fetched From Subscribers', data)
   return {
@@ -36,6 +42,7 @@ export function updateTopPages (data) {
   }
 }
 export function updateSentVsSeen (data) {
+  console.log('sentVsSeen Data', data)
   return {
     type: ActionTypes.UPDATE_SENT_VS_SEEN,
     data
@@ -50,17 +57,32 @@ export function loadDashboardData () {
   }
 }
 
+export function updateSubscriptionPermission () {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi('dashboard/updateSubscriptionPermission')
+      .then(res => {
+      })
+  }
+}
+
 export function sentVsSeen (pageId) {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi(`dashboard/sentVsSeen/${pageId}`)
-      .then(res => dispatch(updateSentVsSeen(res.payload)))
+      .then(res => {
+        console.log('sentVsSeen response', res)
+        dispatch(updateSentVsSeen(res.payload))
+      })
   }
 }
 export function loadGraphData (days) {
+  console.log('days', days)
   return (dispatch) => {
     callApi(`dashboard/graphData/${days}`)
-      .then(res => dispatch(updateGraphData(res.payload)))
+      .then(res => {
+        console.log('res.payload', res.payload)
+        dispatch(updateGraphData(res.payload))})
   }
 }
 export function loadTopPages () {
@@ -80,9 +102,29 @@ export function loadPageSubscribersList (id, data) {
       })
   }
 }
-
+export function loadSubscriberSummary (data) {
+  console.log('data for loadSubscriberSummary', data)
+  return (dispatch) => {
+    callApi(`dashboard/subscriberSummary`, 'post', data)
+      .then(res => {
+        console.log('response from loadSubscriberSummary', res)
+        dispatch(updateSubscriberSummary(res.payload))
+      })
+  }
+}
 export function allLocales () {
   return (dispatch) => {
     callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
+  }
+}
+export function loadSentSeen (data) {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi(`dashboard/sentVsSeenNew`, 'post', data)
+      .then(res => {
+        console.log('sentVsSeen response', res)
+        dispatch(updateSentVsSeen(res.payload.datacounts))
+        dispatch(updateGraphData(res.payload.graphDatas))
+      })
   }
 }

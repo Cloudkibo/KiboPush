@@ -73,6 +73,15 @@ class SegmentedList extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Segmented Lists`;
   }
   handlePageClick (data) {
     if (data.selected === 0) {
@@ -87,18 +96,24 @@ class SegmentedList extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists && nextProps.count) {
-      var lists = []
-      for (var i = 0; i < nextProps.customerLists.length; i++) {
-        if (!(nextProps.customerLists[i].initialList)) {
-          lists.push(nextProps.customerLists[i])
-        } else {
-          if (nextProps.customerLists[i].content && nextProps.customerLists[i].content.length > 0) {
-            lists.push(nextProps.customerLists[i])
-          }
-        }
-      }
-      this.displayData(0, lists)
+      console.log('Will Receive Propes called after deletion')
+      // var lists = []
+      // for (var i = 0; i < nextProps.customerLists.length; i++) {
+      //   if (!(nextProps.customerLists[i].initialList)) {
+      //     lists.push(nextProps.customerLists[i])
+      //   } else {
+      //     if (nextProps.customerLists[i].content && nextProps.customerLists[i].content.length > 0) {
+      //       lists.push(nextProps.customerLists[i])
+      //     }
+      //   }
+      // }
+      // this.displayData(0, lists)
+      // this.setState({ totalLength: nextProps.count })
+      this.displayData(0, nextProps.customerLists)
       this.setState({ totalLength: nextProps.count })
+    }
+    else {
+      this.setState({customerLists: nextProps.customerLists})
     }
   }
 
@@ -157,7 +172,7 @@ class SegmentedList extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
@@ -193,7 +208,7 @@ class SegmentedList extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segment-subscribers/' target='_blank'>Click Here </a>
+              Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segmented-subscribers/' target='_blank'>Click Here </a>
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>

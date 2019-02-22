@@ -5,9 +5,9 @@ const utility = require('../utility')
 const logicLayer = require('./commentCapture.logiclayer')
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
-    utility.callApi(`comment_capture/query`, 'post', {companyId: companyUser.companyId})
+    utility.callApi(`comment_capture/query`, 'post', {companyId: companyUser.companyId}, req.headers.authorization)
     .then(posts => {
       res.status(200).json({
         status: 'success',
@@ -30,7 +30,7 @@ exports.index = function (req, res) {
 }
 
 exports.viewPost = function (req, res) {
-  utility.callApi(`comment_capture/${req.params.id}`)
+  utility.callApi(`comment_capture/${req.params.id}`, 'get', {}, req.headers.authorization)
   .then(post => {
     res.status(200).json({
       status: 'success',
@@ -46,7 +46,7 @@ exports.viewPost = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`)
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
   .then(companyUser => {
     utility.callApi(`comment_capture`, 'post', {
       pageId: req.body.pageId,
@@ -54,9 +54,9 @@ exports.create = function (req, res) {
       userId: req.user._id,
       reply: req.body.reply,
       payload: req.body.payload,
-      includedKeywords: req.body.includeKeywords,
+      includedKeywords: req.body.includedKeywords,
       excludedKeywords: req.body.excludedKeywords
-    })
+    }, req.headers.authorization)
     .then(postCreated => {
       require('./../../../config/socketio').sendMessageToClient({
         room_id: companyUser.companyId,
@@ -70,7 +70,7 @@ exports.create = function (req, res) {
           }
         }
       })
-      utility.callApi(`pages/${req.body.pageId}`)
+      utility.callApi(`pages/${req.body.pageId}`, 'get', {}, req.headers.authorization)
       .then(page => {
         let currentUser
         if (req.user.facebookInfo) {
@@ -94,7 +94,7 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG, err)
                 }
                 let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
-                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}})
+                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}}, req.headers.authorization)
                 .then(result => {
                   res.status(201).json({status: 'success', payload: postCreated})
                 })
@@ -113,7 +113,7 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG, err)
                 }
                 let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
-                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}})
+                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}}, req.headers.authorization)
                 .then(result => {
                   res.status(201).json({status: 'success', payload: postCreated})
                 })
@@ -132,7 +132,7 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG, err)
                 }
                 let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
-                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}})
+                utility.callApi(`comment_capture/update`, 'put', {query: {_id: postCreated._id}, newPayload: {post_id: postId}, options: {}}, req.headers.authorization)
                 .then(result => {
                   res.status(201).json({status: 'success', payload: postCreated})
                 })
@@ -168,7 +168,7 @@ exports.create = function (req, res) {
   })
 }
 exports.edit = function (req, res) {
-  utility.callApi(`comment_capture/${req.body.postId}`, 'put', {includedKeywords: req.body.includedKeywords, excludedKeywords: req.body.excludedKeywords})
+  utility.callApi(`comment_capture/update`, 'put', {query: {_id: req.body.postId}, newPayload: {includedKeywords: req.body.includedKeywords, excludedKeywords: req.body.excludedKeywords}, options: {}}, req.headers.authorization)
   .then(result => {
     res.status(201).json({status: 'success', payload: result})
   })
@@ -180,7 +180,7 @@ exports.edit = function (req, res) {
   })
 }
 exports.delete = function (req, res) {
-  utility.callApi(`comment_capture/${req.params.id}`, 'delete')
+  utility.callApi(`comment_capture/${req.params.id}`, 'delete', {}, req.headers.authorization)
   .then(result => {
     res.status(201).json({status: 'success', payload: result})
   })

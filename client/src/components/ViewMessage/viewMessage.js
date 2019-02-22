@@ -39,7 +39,7 @@ class ViewMessage extends React.Component {
       prevArrow: <LeftArrow />
     }
     return (
-      <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: '500px', height: 'auto', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
+      <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: 'auto', height: 'auto', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
         <div style={{border: '1px solid #f2f2f2', borderRadius: '2px', display: 'block', height: '100%', position: 'relative', width: '100%', textAlign: 'center', zIndex: 2, overflow: 'hidden'}}>
           <div style={{background: '#f7f7f8', borderBottom: '1px solid #c8c7cc', zIndex: 10, position: 'relative'}}>
             <div style={{display: 'inline-block', margin: '5px'}}>
@@ -67,7 +67,7 @@ class ViewMessage extends React.Component {
                             </div>
                             <div style={{maxWidth: '250px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
-                              <div className='m-messenger__message-content' style={{width: '250px'}}>
+                              <div className='m-messenger__message-content' style={{width: '200px'}}>
                                 {
                                   this.props.payload.map((b, index) => (
                                     b.componentType === 'video'
@@ -87,7 +87,7 @@ class ViewMessage extends React.Component {
                                         controls
                                         onPlay={this.onTestURLAudio(b.fileurl.url)}
                                         width='100%'
-                                        height='auto'
+                                        height='50px'
                                         style={{width: '100%', height: 'auto'}}
                                       />
                                     </div>
@@ -112,7 +112,7 @@ class ViewMessage extends React.Component {
                                         </div>
                                         <div style={{marginTop: '10px', padding: '5px'}}>
                                           <div style={{textAlign: 'left', fontWeight: 'bold'}}>{b.title}</div>
-                                          <div style={{textAlign: 'left', color: '#ccc'}}>{b.description}</div>
+                                          <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{b.description}</div>
                                         </div>
                                       </div>
                                       {
@@ -137,7 +137,7 @@ class ViewMessage extends React.Component {
                                               </div>
                                               <div style={{marginTop: '10px', padding: '5px'}}>
                                                 <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
-                                                <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{card.subtitle}</div>
                                               </div>
                                             </div>
                                             {
@@ -166,6 +166,35 @@ class ViewMessage extends React.Component {
                                         ))
                                       }
                                     </div>
+                                    : b.componentType === 'media'
+                                    ? <div>
+                                      <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                        <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                          { b.mediaType === 'image' &&
+                                            <a href={b.fileurl.url} target='_blank'>
+                                              <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
+                                            </a>
+                                           }
+                                          { b.mediaType === 'video' &&
+                                            <ReactPlayer
+                                              url={b.fileurl.url}
+                                              controls
+                                              width='100%'
+                                              height='140px'
+                                              onPlay={this.onTestURLVideo(b.fileurl.url)}
+                                            />
+                                          }
+                                        </div>
+                                      </div>
+                                      {
+                                        b.buttons && b.buttons.length > 0 &&
+                                        b.buttons.map((button, i) => (
+                                          <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                            <span>{button.title}</span>
+                                          </a>
+                                        ))
+                                      }
+                                    </div>
                                     : b.componentType === 'list' &&
                                     <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
                                       {b.listItems.map((item, i) => (
@@ -174,7 +203,7 @@ class ViewMessage extends React.Component {
                                             <div className='row'>
                                               <div className={b.topElementStyle === 'LARGE' && i === 0 ? 'col-md-12' : 'col-md-4'} style={{marginLeft: '10px'}}>
                                                 <div style={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</div>
-                                                <div style={{textAlign: 'left', color: '#ccc'}}>{item.subtitle}</div>
+                                                <div style={{textAlign: 'left', color: 'rgb(140, 140, 140)'}}>{item.subtitle}</div>
                                               </div>
                                               {b.topElementStyle === 'LARGE' && i === 0
                                                 ? null

@@ -13,6 +13,9 @@ router.get('/',
   auth.doesRolePermitsThisAction('autopostingPermission'),
   controller.index)
 
+router.get('/plugin',
+  controller.getPlugin)
+
 router.post('/create',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('autoposting'),

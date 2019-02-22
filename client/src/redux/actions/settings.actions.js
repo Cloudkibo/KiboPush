@@ -9,6 +9,7 @@ export function enableSuccess (data) {
     data
   }
 }
+
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -84,6 +85,7 @@ export function showWebhookResponse (data) {
   }
 }
 export function enable (API) {
+  console.log('API', API)
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
       .then(res => {
@@ -282,7 +284,18 @@ export function saveGreetingMessage (data, msg) {
       })
   }
 }
-
+export function saveWhiteListDomains (data, msg, handleResponse) {
+  return (dispatch) => {
+    callApi('pages/whitelistDomain', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          handleResponse(res)
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
 export function saveResponseMethod (data, msg) {
   console.log('data for saveResponseMethod', data)
   return (dispatch) => {
@@ -391,7 +404,7 @@ export function authenticatePassword (data, msg, handleAuthentication) {
       .then(res => {
         console.log('response from msg', res)
         if (res.status !== 'success') {
-          msg.error(res.description)
+          msg.error('Incorrect Password')
         }
         handleAuthentication(res)
       })
@@ -406,6 +419,44 @@ export function cancelDeletion (msg, handleCancel) {
           msg.success('Request to cancel deletion process has been sent to admin.')
         }
         handleCancel(res)
+      })
+  }
+}
+export function uploadCustomerInfoFile (data, msg) {
+  return (dispatch) => {
+    callApi('demoApp/uploadCustomerInfo', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('File uploaded successfully!')
+        }
+      })
+  }
+}
+export function fetchWhiteListedDomains (pageId, handleFetch) {
+  return (dispatch) => {
+    callApi(`pages/fetchWhitelistedDomains/${pageId}`)
+      .then(res => {
+        console.log('whitelisted domains', res)
+        if (res.status === 'success') {
+          handleFetch(res)
+        } else {
+          console.log(res.description)
+        }
+      })
+  }
+}
+
+export function deleteDomain (payload, msg, handleDelete) {
+  return (dispatch) => {
+    callApi('pages/deleteWhitelistDomain', 'post', payload)
+      .then(res => {
+        console.log('whitelisted domains', res)
+        if (res.status === 'success') {
+          handleDelete(res)
+        } else {
+          msg.error(res.description)
+        }
       })
   }
 }

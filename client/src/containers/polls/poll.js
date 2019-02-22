@@ -193,6 +193,15 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Polls`;
   }
 
   gotoView (poll) {
@@ -236,19 +245,20 @@ class Poll extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendpoll(poll, this.msg)
-      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
+      console.log('data send')
       this.setState({ pageNumber: 0 })
     }
   }
   render () {
     console.log('poll props', this.props)
+    console.log('polls local state', this.state)
     var alertOptions = {
       offset: 75,
       position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
-      
+
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -392,18 +402,18 @@ class Poll extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {
-                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to='/showTemplatePolls' className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                  Use Template
+                                </Link>
+                                {/* add paid plan check later
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>
-                                    Use Template&nbsp;&nbsp;&nbsp;
-                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                      <span style={{color: '#34bfa3'}}>PRO</span>
-                                    </span>
-                                  </button>
-                                }
+                                  Use Template&nbsp;&nbsp;&nbsp;
+                                  <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                    <span style={{color: '#34bfa3'}}>PRO</span>
+                                  </span>
+                                </button>
+                              */}
                               </div>
                             </div>
                           </ModalDialog>
@@ -420,7 +430,13 @@ class Poll extends React.Component {
                             <button style={{float: 'right'}}
                               className='btn btn-primary btn-sm'
                               onClick={() => {
-                                this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                let loadData = {}
+                                if (this.state.pageNumber === 0) {
+                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                } else {
+                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                }
+                                this.props.deletePoll(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
                             </button>

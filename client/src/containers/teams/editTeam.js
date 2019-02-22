@@ -40,6 +40,7 @@ class EditTeam extends React.Component {
     this.removePage = this.removePage.bind(this)
     this.exists = this.exists.bind(this)
     this.existsPage = this.existsPage.bind(this)
+    this.existsValue = this.existsValue.bind(this)
     this.cancel = this.cancel.bind(this)
   }
   showDropDown () {
@@ -79,25 +80,55 @@ class EditTeam extends React.Component {
       this.props.fetchPages(this.props.location.state._id)
       this.props.fetchAgents(this.props.location.state._id)
     }
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+    document.title = `${title} | Edit Team`
   }
+  existsValue (id, array) {
+    console.log('array in exists', array)
+    console.log('id in exists', id)
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === id) {
+        return true
+      }
+    }
+    return false
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
     if (nextProps.teamAgents && nextProps.teamAgents.length > 0 && nextProps.teamPages && nextProps.teamPages.length > 0) {
       var agents = []
       var pages = []
-      console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < nextProps.teamAgents.length; i++) {
-        if (nextProps.teamAgents[i].teamId === this.props.location.state._id) {
-          agents.push(nextProps.teamAgents[i].agentId)
+        console.log('nextProps.teamAgents[i].teamId_id', nextProps.teamAgents[i].teamId)
+        console.log('this.props.location.state._id', this.props.location.state._id)
+        if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
+          if (this.existsValue(nextProps.teamAgents[i].agentId._id, agents) === false) {
+            console.log('Push Agent')
+            agents.push(nextProps.teamAgents[i].agentId)
+          }
+          console.log('agents', nextProps.teamAgents[i].agentId)
         }
       }
-      console.log('agents', agents)
       for (var a = 0; a < nextProps.teamPages.length; a++) {
-        if (nextProps.teamPages[a].teamId === this.props.location.state._id) {
-          pages.push(nextProps.teamPages[a].pageId)
+        console.log('nextProps.teamPages[a].teamId_id', nextProps.teamPages[a].teamId_id)
+        console.log('this.props.location.state._id', this.props.location.state._id)
+        if (nextProps.teamPages[a].teamId._id === this.props.location.state._id) {
+          if (this.existsValue(nextProps.teamPages[a].pageId._id, pages) === false) {
+            console.log('Push Page')
+            pages.push(nextProps.teamPages[a].pageId)
+          }
+          console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-      console.log('pages', pages)
+      console.log('pageIds after', pages)
+      console.log('agentIds after', agents)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }
@@ -117,6 +148,71 @@ class EditTeam extends React.Component {
     })
   }
   createTeam () {
+  //   this.props.fetchAgents(this.props.location.state._id)
+  //   this.props.fetchPages(this.props.location.state._id)
+   //
+  //   if (this.state.name === '') {
+  //     this.msg.error('Please write a name')
+  //   } else if (this.state.description === '') {
+  //     this.msg.error('Please write a description')
+  //   } else if (this.state.agentIds.length === 0) {
+  //     this.msg.error('Please select one agent atleast')
+  //   } else if (this.state.pageIds.length === 0) {
+  //     this.msg.error('Please select one page atleast')
+  //   } else {
+  //     console.log('this.state.agentIds', this.state.agentIds)
+  //     console.log('this.state.pageIds', this.state.pageIds)
+  //     console.log('this.props.teamPages', this.props.teamPages)
+  //    // console.log('this.props.members', this.props.members)
+  //    // console.log('this.props.teamAgents', this.props.teamAgents)
+  //     let pageIds = []
+  //     let pageNames = []
+  //     console.log('this.state.agentIds.length', this.state.agentIds.length)
+  //     console.log('this.props.teamAgents.length', this.props.teamAgents.length)
+  //     for (var i = 0; i < this.state.agentIds.length; i++) {
+  //       var flag = true
+  //       for (var j = 0; j < this.props.teamAgents.length; j++) {
+  //         console.log('this.state.agentIds._id', this.state.agentIds._id)
+  //         console.log('this.props.teamAgents[j].agentId._id', this.props.teamAgents[j].agentId._id)
+  //         if (this.state.agentIds[i]._id === this.props.teamAgents[j].agentId._id) {
+  //           flag = false
+  //           break
+  //         }
+  //       }
+  //       if (flag) {
+  //         this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
+  //       }
+  //     }
+   //
+  //  //   console.log('this.state.pageIds.length', this.state.pageIds.length)
+  //   //  console.log('this.props.teamPages.length', this.props.teamPages.length)
+   //
+  //     for (var a = 0; a < this.state.pageIds.length; a++) {
+  //      // console.log('j for loop')
+  //       var flag1 = true
+  //       for (var b = 0; b < this.props.teamPages.length; b++) {
+  //        // console.log('i for loop')
+  //         if (this.state.pageIds[a]._id === this.props.teamPages[b].pageId._id) {
+  //           flag1 = false
+  //           break
+  //         }
+  //       }
+  //      // console.log('flag', flag)
+  //       if (flag1) {
+  //      //   console.log('add page')
+  //         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+  //         pageIds.push(this.state.pageIds[j]._id)
+  //         pageNames.push(this.state.pageIds[j].pageName)
+  //       }
+  //     }
+  //     console.log('pageIds', pageIds)
+  //     if (pageIds.length !== 0) {
+  //       console.log('pageIds in if condition')
+  //       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
+  //     }
+  //     this.setState({inCancel: false})
+  //     this.msg.success('Changes saved successfully')
+  //   }
     if (this.state.name === '') {
       this.msg.error('Please write a name')
     } else if (this.state.description === '') {
@@ -188,8 +284,10 @@ class EditTeam extends React.Component {
     }
     this.setState({agentIds: temp})
     this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
+    this.props.fetchAgents(this.props.location.state._id)
   }
   changePage (page) {
+    console.log('this.props.teamAgents.length', this.props.teamAgents.length)
     var temp = this.state.pageIds
     if (page === 'All') {
       for (var i = 0; i < this.props.pages.length; i++) {
@@ -209,6 +307,7 @@ class EditTeam extends React.Component {
       }
     }
     this.setState({pageIds: temp})
+    console.log('this.props.teamAgents.length', this.props.teamAgents.length)
   }
   removePage (page) {
     var removed = this.state.removedPages
@@ -226,6 +325,7 @@ class EditTeam extends React.Component {
     }
     this.setState({pageIds: temp})
     this.props.removePage({ pageId: page._id, teamId: this.props.location.state._id })
+    this.props.fetchPages(this.props.location.state._id)
     //  this.props.loadTeamsList()
   }
   exists (agent) {

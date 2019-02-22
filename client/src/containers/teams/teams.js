@@ -12,6 +12,7 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class Teams extends React.Component {
   constructor (props, context) {
@@ -22,7 +23,8 @@ class Teams extends React.Component {
       filterValue: '',
       searchValue: '',
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      showVideo: false
     }
     props.loadTeamsList()
     this.displayData = this.displayData.bind(this)
@@ -50,8 +52,16 @@ class Teams extends React.Component {
   }
 
   componentDidMount () {
-    this.scrollToTop()
-    document.title = 'KiboPush | Broadcast'
+    this.scrollToTop();
+    const hostname =  window.location.hostname;
+    let title = '';
+    if(hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage';
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat';
+    }
+
+    document.title = `${title} | Teams`;
   }
 
   displayData (n, teams) {
@@ -177,6 +187,27 @@ class Teams extends React.Component {
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: 100}}
+            onClose={() => { this.setState({showVideo: false, top: 100}) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
+              onClose={() => { this.setState({showVideo: false, top: 100}) }}>
+              <div>
+                <YouTube
+                  videoId='U4x9QA8zNhQ'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -200,14 +231,14 @@ class Teams extends React.Component {
               <h3 className='m-subheader__title'>Manage Teams</h3>
             </div>
           </div>
-          <div className='m-content'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
-              </div>
-              <div className='m-alert__text'>
-                Need help in understanding teams? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>.
-              </div>
+        </div>
+        <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>. Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
