@@ -39,10 +39,12 @@ class CreateMessage extends React.Component {
     this.setState(broadcast)
     if (event) {
       var jsonMessages = this.state.jsonMessages
-      for (var j = 0; j < event.button.length; j++) {
-        if (event.button[j].type === 'postback' && !event.button[j].payload) {
-          event.button[j].payload = this.state.jsonMessages.length + 1
-          jsonMessages = this.setNewJsonMessage(event.button[j], jsonMessages)
+      if (event.button) {
+        for (var j = 0; j < event.button.length; j++) {
+          if (event.button[j].type === 'postback' && !event.button[j].payload) {
+            event.button[j].payload = this.state.jsonMessages.length + 1
+            jsonMessages = this.setNewJsonMessage(event.button[j], jsonMessages)
+          }
         }
       }
       if (event.deletePayload) {
