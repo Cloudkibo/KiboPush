@@ -200,6 +200,7 @@ exports.getAll = function (req, res) {
   }
 }
   */
+  logger.serverLog(TAG, `subscriber query: ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
       if (err) {
