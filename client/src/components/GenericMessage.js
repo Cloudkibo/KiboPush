@@ -343,15 +343,15 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
       },
       'audio': {
-        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: ''}) }
       },
       'video': {
-        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: ''}) }
       },
       'file': {
-        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
       },
       'list': {
