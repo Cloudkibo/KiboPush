@@ -319,7 +319,7 @@ class GenericMessage extends React.Component {
     console.log('component retrieved', component)
     this.msg.info(`New ${componentType} component added`)
     this.setState({list: [...temp, {content: component.component}]})
-    component.handler()
+    // component.handler()
   }
 
   getComponent (broadcast) {
