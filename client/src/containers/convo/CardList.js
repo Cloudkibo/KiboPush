@@ -640,7 +640,14 @@ class Card extends React.Component {
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
-                <EditButton index={index} pageId={this.props.pageId} module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+                <EditButton
+                  index={index}
+                  pageId={this.props.pageId}
+                  module={this.props.module}
+                  button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index}
+                  data={{id: index, button: obj}}
+                  onEdit={this.editButton}
+                  onRemove={this.removeButton} />
               </div>)
             }) : ''}
           </div>
