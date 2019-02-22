@@ -17,7 +17,7 @@ class CreateBroadcastTemplate extends React.Component {
     super(props, context)
     props.loadCategoriesList()
     this.state = {
-      broadcast: [],
+      broadcast: this.props.template ? this.props.template.payload : [],
       isShowingModal: false,
       convoTitle: props.template ? props.template.title : 'Broadcast Title',
       showAddCategoryDialog: false,
@@ -236,7 +236,13 @@ class CreateBroadcastTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                <GenericMessage broadcast={this.props.template ? this.props.template.payload : []} handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable module={'broadcastTemplate'} />
+                <GenericMessage
+                  broadcast={this.state.broadcast}
+                  handleChange={this.handleChange}
+                  setReset={reset => { this.reset = reset }}
+                  convoTitle={this.state.convoTitle}
+                  titleEditable
+                  module={'broadcastTemplate'} />
               </div>
             </div>
           </div>
