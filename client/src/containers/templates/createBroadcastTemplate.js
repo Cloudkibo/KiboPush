@@ -17,6 +17,7 @@ class CreateBroadcastTemplate extends React.Component {
     super(props, context)
     props.loadCategoriesList()
     this.state = {
+      buttonActions: ['open website', 'add share'],
       broadcast: this.props.template ? this.props.template.payload : [],
       isShowingModal: false,
       convoTitle: props.template ? props.template.title : 'Broadcast Title',
@@ -242,7 +243,7 @@ class CreateBroadcastTemplate extends React.Component {
                   setReset={reset => { this.reset = reset }}
                   convoTitle={this.state.convoTitle}
                   titleEditable
-                  module={'broadcastTemplate'} />
+                  buttonActions={this.state.buttonActions} />
               </div>
             </div>
           </div>

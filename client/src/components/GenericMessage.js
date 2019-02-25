@@ -327,7 +327,7 @@ class GenericMessage extends React.Component {
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleText({id: componentId, text: '', button: []}) }
       },
       'image': {
@@ -335,31 +335,31 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
       },
       'gallery': {
-        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
       },
       'audio': {
-        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: ''}) }
       },
       'video': {
-        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: ''}) }
       },
       'file': {
-        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
       },
       'list': {
-        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }
       },
       'media': {
-        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} module={this.props.module} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: '', buttons: []}) }
       }
     }

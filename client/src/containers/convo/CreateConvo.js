@@ -30,6 +30,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      buttonActions: ['open website', 'open webview', 'add share'],
       broadcast: [],
       stayOpen: false,
       disabled: false,
@@ -503,7 +504,13 @@ class CreateConvo extends React.Component {
                       </ul>
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
-                          <GenericMessage handleChange={this.handleChange} setReset={reset => { this.reset = reset }} convoTitle={this.state.convoTitle} titleEditable pages={this.props.location.state.pages} />
+                          <GenericMessage
+                            handleChange={this.handleChange}
+                            setReset={reset => { this.reset = reset }}
+                            convoTitle={this.state.convoTitle}
+                            titleEditable
+                            pages={this.props.location.state.pages}
+                            buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
                           <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />

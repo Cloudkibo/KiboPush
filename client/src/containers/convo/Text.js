@@ -197,19 +197,19 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState && this.state.button.length < 3
         ? <div>
-          <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
+          <Button buttonLimit={3} button_id={this.props.id} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
+            <Button buttonLimit={3} button_id={this.props.id} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }
-        { !(this.props.module === 'messengerAd') &&
+        { (this.props.buttonActions.indexOf('create message') > -1) &&
           <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
             <PopoverBody>
               <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
@@ -218,7 +218,7 @@ class Text extends React.Component {
             </PopoverBody>
           </Popover>
         }
-        { !(this.props.module === 'messengerAd') &&
+        { (this.props.buttonActions.indexOf('create message') === -1) &&
         <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: (-75 - (35 * (this.state.numOfButtons * 0.915))), marginRight: '5px'}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',
