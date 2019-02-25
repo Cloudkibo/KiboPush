@@ -542,7 +542,7 @@ class Header extends React.Component {
                                           </a>
                                       }
 
-                                      {
+                                      {/*
                                         (!window.location.hostname.toLowerCase().includes('kibocommerce'))
                                           ? <a href='#kibocommerce' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-truck' />
@@ -552,7 +552,7 @@ class Header extends React.Component {
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboCommerce</span>
                                           </a>
-                                      }
+                                      */}
 
                                       {
                                         (!window.location.hostname.toLowerCase().includes('kiboapi'))
