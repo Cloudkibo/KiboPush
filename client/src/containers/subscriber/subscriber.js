@@ -9,6 +9,7 @@ import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePi
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
 import CreateCustomField from './customFields/createCustomField'
+import CustomFields from './customFields/customfields'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -1285,7 +1286,8 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-        <span id='createModal' data-toggle='modal' data-target='#create_modal'><CreateCustomField /></span>
+        <CustomFields />
+        <CreateCustomField />
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
