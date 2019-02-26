@@ -21,7 +21,9 @@ class BusinessGatewayHome extends React.Component {
       phoneColumn: '',
       columnAlerts: false,
       dict: {},
-      selectPage: {}
+      selectPage: {},
+      tabActive: 'Home'
+
     }
     this.parseCSV = this.parseCSV.bind(this)
     this.onFilesChange = this.onFilesChange.bind(this)
@@ -33,9 +35,22 @@ class BusinessGatewayHome extends React.Component {
     this.checkValidation = this.checkValidation.bind(this)
     this.redirectToPushMessage = this.redirectToPushMessage.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
+    this.homePage = this.homePage.bind(this)
   }
   removeFile () {
     this.setState({ file: '', showFileColumns: false, columns: [], fileContent: [], fileErrors: [], phoneColumn: '', columnAlerts: false, dict: {} })
+  }
+  homePage () {
+    if (this.state.tabActive === 'broadcast') {
+    $('#titleBroadcast').removeClass('active')
+    $('#Home').addClass('active')
+    this.setState({tabActive: 'Home'})
+    }
+    else if (this.state.tabActive === 'targeting') {
+      $('#titleTarget').removeClass('active')
+      $('#Home').addClass('active')
+      this.setState({tabActive: 'Home'})
+      }
   }
   onChangeValue (event) {
     if (event.target.value !== -1) {
@@ -58,7 +73,6 @@ class BusinessGatewayHome extends React.Component {
     }
   }
   componentDidMount () {
-    this.scrollToTop()
     this.selectPage()
     const hostname =  window.location.hostname;
     let title = '';
@@ -89,7 +103,13 @@ class BusinessGatewayHome extends React.Component {
       this.msg.error('Please select valid data')
       return
     }
-    this.redirectToPushMessage()
+
+    $('#Home').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'broadcast'})
+
+   // this.redirectToPushMessage()
   }
   redirectToPushMessage () {
     this.props.history.push({
@@ -304,7 +324,7 @@ class BusinessGatewayHome extends React.Component {
       `<div className='m-subheader '>
         <div className='d-flex align-items-center'>
         `<div className='mr-auto'>
-        `<h3 className='m-subheader__title'>Invite using
+        `<h3 className='m-subheader__title'>send message through
             Phone Number (Experimental Feature)</h3>
         </div>
         </div>
@@ -340,6 +360,39 @@ class BusinessGatewayHome extends React.Component {
               For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
             </div>
           </div>
+          <div className='row'>
+            <div className='col-12'>
+              <div className='pull-right'>
+              {
+                this.state.fileContent.length === 0
+                  ?
+                  <button className='btn btn-primary' style={{marginRight: '10px'}} disabled='true'>Next</button>
+                   :<button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.checkValidation} >Next</button>
+
+                }
+                </div>
+              </div>
+            </div>
+          <div className='row'>
+                    <div className='col-12'>
+                      <ul className='nav nav-tabs'>
+                        <li>
+                          <a id='Home' className='broadcastTabs active' onClick={this.homePage}>Home </a>
+                        </li>
+                        <li>
+                          {
+                             <a id='titleBroadcast' className='broadcastTabs' >Broadcast </a>
+                          }
+                        </li>
+                        <li>
+                          {
+                             <a id='titleTarget' className='broadcastTabs'>Targeting </a>
+                          }
+                        </li>
+
+                      </ul>
+           </div>
+           </div>
       <div className='row'>
         <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
         <div className='m-portlet m-portlet--mobile'>
@@ -351,15 +404,7 @@ class BusinessGatewayHome extends React.Component {
                   </h3>
                 </div>
               </div>
-              <div className='m-portlet__head-tools'>
-                {
-                this.state.fileContent.length === 0
-                  ?
-                  <button className='btn btn-primary' disabled='true'>Next</button>
-                   :<button className='btn btn-primary' onClick={this.checkValidation} >Next</button>
-
-                }
-              </div>
+              
             </div>
             <div className='m-portlet__body'>
             <div className='form-group m-form__group row'>
