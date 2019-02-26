@@ -47,7 +47,8 @@ class Sidebar extends Component {
       sequenceMessaging: false,
       waitingResponse: false,
       isKiboChat: false,
-      messengerAds: true
+      messengerAds: true,
+      businessGateway: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -66,7 +67,7 @@ class Sidebar extends Component {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     } else if (url.includes('localhost')) {
       console.log('localhost')
-      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true, businessGateway: true})
     }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
@@ -896,6 +897,25 @@ class Sidebar extends Component {
     }
   }
 
+  showBusinessGateway () {
+    if (this.props.user && this.state.businessGateway) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/businessGateway' className='m-menu__link'>
+            <i className='m-menu__link-icon flaticon-network'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Business Gateway
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   render () {
     console.log('this.state', this.state)
 
@@ -927,6 +947,7 @@ class Sidebar extends Component {
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
                   {this.showSettings()}
+                  {this.showBusinessGateway()}
                   {this.showUserGuide()}
                 </ul>
               }
