@@ -16,6 +16,7 @@ class MessengerRefURLMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      buttonActions: ['open website', 'open webview', 'add share'],
       broadcast: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
       pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
       convoTitle: 'Opt-In Message'
@@ -83,7 +84,13 @@ class MessengerRefURLMessage extends React.Component {
             </div>
           </div>
         </div>
-        <GenericMessage pages={[this.state.pageId]} broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'landingPage'} />
+        <GenericMessage
+          pages={[this.state.pageId]}
+          broadcast={this.state.broadcast}
+          handleChange={this.handleChange}
+          convoTitle={this.state.convoTitle}
+          buttonActions={this.state.buttonActions}
+          />
       </div>
     )
   }

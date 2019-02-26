@@ -435,7 +435,7 @@ class Card extends React.Component {
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
                   </div>
-                  { (!(this.props.module === 'broadcastTemplate' || this.props.module === 'sequenceMessaging' || this.props.module === 'messengerAd')) &&
+                  { (this.props.buttonActions.indexOf('open webview') > -1) &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
                   </div>
@@ -526,10 +526,10 @@ class Card extends React.Component {
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} pageId={this.props.pageId} module={this.props.module} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} isGalleryCard={this.props.isGalleryCard} />
+          return <EditButton index={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} isGalleryCard={this.props.isGalleryCard} />
         }) : ''}
         { this.state.button.length < 3 &&
-          <Button module={this.props.module} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} isGalleryCard={this.props.isGalleryCard} />
+          <Button buttonLimit={3} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} isGalleryCard={this.props.isGalleryCard} />
         }
       </div>
     )

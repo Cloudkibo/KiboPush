@@ -313,15 +313,18 @@ class EditButton extends React.Component {
               {
                 !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !(this.state.openCreateMessage) &&
                 <div>
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
-                  </div>
-                  { (!(this.props.module === 'broadcastTemplate' || this.props.module === 'sequenceMessaging' || this.props.module === 'messengerAd')) &&
+                  {
+                  (this.props.buttonActions.indexOf('open website') > -1) &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                    </div>
+                  }
+                  { (this.props.buttonActions.indexOf('open webview') > -1) &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open webview</h7>
                   </div>
                   }
-                  { (this.props.module === 'messengerAd') && !(this.props.isGalleryCard === 'true') &&
+                  { (this.props.buttonActions.indexOf('create message') > -1) && !(this.props.isGalleryCard === 'true') &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={() => {
                     this.setState({
                       openCreateMessage: true
@@ -330,17 +333,20 @@ class EditButton extends React.Component {
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Reply with a message</h7>
                   </div>
                   }
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
-                  </div>
+                  {
+                    (this.props.buttonActions.indexOf('add share') > -1) &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
+                    </div>
+                  }
                   { this.state.showSequenceMessage &&
-                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
+                    (this.props.buttonActions.indexOf('subscribe sequence') > -1) && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
                     </div>
                   }
                   { this.state.showSequenceMessage &&
-                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
+                    (this.props.buttonActions.indexOf('unsubscribe sequence') > -1) && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
                     </div>
