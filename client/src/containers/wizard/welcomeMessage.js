@@ -19,30 +19,21 @@ import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/acti
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
-import Image from '../convo/Image'
-import Video from '../convo/Video'
-import Audio from '../convo/Audio'
-import File from '../convo/File'
-import Text from '../convo/Text'
-import Card from '../convo/Card'
-import Gallery from '../convo/Gallery'
-import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
+import GenericMessage from '../../components/GenericMessage'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      list: [],
+      buttonActions: ['open website', 'open webview', 'add share'],
+      convoTitle: 'Welcome Message',
       broadcast: [],
-      stayOpen: false,
-      disabled: false,
       pageValue: '',
-      stay: false,
       previewMessage: '',
       welcomeMessage: false,
       switchState: false
@@ -52,25 +43,17 @@ class EditTemplate extends React.Component {
     props.loadCustomerLists()
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
-    this.handleText = this.handleText.bind(this)
-    this.handleCard = this.handleCard.bind(this)
-    this.handleGallery = this.handleGallery.bind(this)
-    this.handleImage = this.handleImage.bind(this)
-    this.handleFile = this.handleFile.bind(this)
-    this.removeComponent = this.removeComponent.bind(this)
-    this.setEditComponents = this.setEditComponents.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.viewGreetingMessage = this.viewGreetingMessage.bind(this)
     this.closePreviewDialog = this.closePreviewDialog.bind(this)
     this.pageChange = this.pageChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
   componentWillReceiveProps (nextprops) {
     if (this.state.pageValue === '') {
       this.initializeSwitch(nextprops.pages[0].isWelcomeMessageEnabled, nextprops.pages[0]._id)
-      this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled })
-      this.setEditComponents(nextprops.pages[0].welcomeMessage)
+      this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
-    //  this.setEditComponents(nextprops.pages[0].welcomeMessage)
   }
   initializeSwitch (state, id) {
     var self = this
@@ -109,63 +92,21 @@ class EditTemplate extends React.Component {
         /* eslint-enable */
         // }
         // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
-        this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
-        this.setEditComponents(this.props.pages[i].welcomeMessage)
+        this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled, broadcast: this.props.pages[i].welcomeMessage})
       }
     }
   }
-  setEditComponents (payload) {
-    var temp = []
-    var message = []
-    for (var i = 0; i < payload.length; i++) {
-      if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={false} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'image') {
-        temp.push({content: (<Image id={payload[i].id} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'audio') {
-        temp.push({content: (<Audio id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'video') {
-        temp.push({content: (<Video id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'file') {
-        temp.push({content: (<File id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
-        this.setState({list: temp})
-        message.push(payload[i])
-        this.setState({broadcast: message})
-      }
-    }
-  }
+
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Welcome Message`;
+    document.title = `${title} | Welcome Message`
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
@@ -173,110 +114,9 @@ class EditTemplate extends React.Component {
 
     this.setState({page: {options: options}})
   }
-  handleText (obj) {
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i].text = obj.text
-        if (obj.button.length > 0) {
-          temp[i].buttons = obj.button
-        } else {
-          delete temp[i].buttons
-        }
-        isPresent = true
-      }
-    })
 
-    if (!isPresent) {
-      if (obj.button.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button})
-      } else {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text'})
-      }
-    }
-
-    this.setState({broadcast: temp})
-  }
-
-  handleCard (obj) {
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i].fileName = obj.fileName
-        temp[i].image_url = obj.image_url
-        temp[i].fileurl = obj.fileurl
-        temp[i].size = obj.size
-        temp[i].type = obj.type
-        temp[i].title = obj.title
-        temp[i].buttons = obj.buttons
-        temp[i].description = obj.description
-        isPresent = true
-      }
-    })
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({broadcast: temp})
-  }
-
-  handleGallery (obj) {
-    var temp = this.state.broadcast
-    var isPresent = false
-    obj.cards.forEach((d) => {
-      delete d.id
-    })
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i].cards = obj.cards
-        isPresent = true
-      }
-    })
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({broadcast: temp})
-  }
-
-  handleImage (obj) {
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i] = obj
-        isPresent = true
-      }
-    })
-
-    if (!isPresent) {
-      temp.push(obj)
-    }
-
-    this.setState({broadcast: temp})
-  }
-
-  handleFile (obj) {
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i] = obj
-        isPresent = true
-      }
-    })
-
-    if (!isPresent) {
-      temp.push(obj)
-    }
-
-    this.setState({broadcast: temp})
-  }
-
-  removeComponent (obj) {
-    var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
-    var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
-    this.setState({list: temp, broadcast: temp2})
+  handleChange (broadcast) {
+    this.setState(broadcast)
   }
 
   sendConvo () {
@@ -307,7 +147,6 @@ class EditTemplate extends React.Component {
       }
     }
     this.props.createWelcomeMessage({_id: this.state.pageValue, welcomeMessage: this.state.broadcast}, this.msg)
-    this.setState({stay: true})
   }
 
   initializePageSelect (pageOptions) {
@@ -335,7 +174,7 @@ class EditTemplate extends React.Component {
       self.setState({ pageValue: selectedOptions })
       for (var i = 0; i < self.props.pages.length; i++) {
         if (selectedOptions === self.props.pages[i].pageId) {
-          self.setEditComponents(this.props.pages[0].welcomeMessage)
+          this.setState({broadcast: this.props.pages[0].welcomeMessage})
         }
       }
     })
@@ -354,7 +193,6 @@ class EditTemplate extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    // const { disabled, stayOpen } = this.state
 
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -413,7 +251,11 @@ class EditTemplate extends React.Component {
                       </div>
                       <br />
                       <center>
-                        <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' style={{width: '560px'}} />
+                        <GenericMessage
+                          broadcast={this.state.broadcast}
+                          handleChange={this.handleChange}
+                          convoTitle={this.state.convoTitle}
+                          buttonActions={this.state.buttonActions} />
                       </center>
                       <div className='row'>
                         <div className='col-lg-6 m--align-left' >
