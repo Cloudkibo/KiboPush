@@ -48,7 +48,7 @@ class Sidebar extends Component {
       waitingResponse: false,
       isKiboChat: false,
       messengerAds: true,
-      businessGateway: true
+      businessGateway: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
