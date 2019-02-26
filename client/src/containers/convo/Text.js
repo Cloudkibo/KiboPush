@@ -209,7 +209,7 @@ class Text extends React.Component {
         }
         </div>
       }
-        { (this.props.buttonActions.indexOf('create message') > -1) &&
+        { (this.props.buttonActions.indexOf('create message') === -1) &&
           <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
             <PopoverBody>
               <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
