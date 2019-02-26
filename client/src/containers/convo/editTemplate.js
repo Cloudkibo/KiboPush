@@ -14,7 +14,8 @@ class EditTemplate extends React.Component {
     super(props, context)
     this.state = {
       broadcast: [],
-      convoTitle: 'Welcome Message'
+      convoTitle: 'Welcome Message',
+      buttonActions: ['open website', 'open webview', 'add share']
     }
     this.goBack = this.goBack.bind(this)
     this.saveMessage = this.saveMessage.bind(this)
@@ -95,7 +96,7 @@ class EditTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'broadcastTemplate'} />
+                <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} buttonActions={this.state.buttonActions} />
               </div>
             </div>
           </div>
