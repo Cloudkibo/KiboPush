@@ -115,7 +115,7 @@ export function editJsonAd (data, msg, handleEdit) {
         if (res.status === 'success') {
           var data = res.payload
           var payload = {
-            pageId: data.jsonAd.pageId,
+            // pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
             title: data.jsonAd.title,
             jsonAdMessages: data.jsonAdMessages
