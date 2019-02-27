@@ -22,6 +22,10 @@ A clear and concise description of what you expected to happen.
 
 **Front End or Backend End issue**
 
+**Issue found during the automated/manual end to end test**
+Y/N
+If Y when was this last working
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
