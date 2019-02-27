@@ -18,6 +18,7 @@ import {
   loadMyPagesListNew
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
+import {getCurrentProduct} from '../../utility/utils'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -32,7 +33,7 @@ class AddPage extends React.Component {
       timeout: 2000,
       showWarning: false,
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : '',
-      isShowingModal: (props.location && props.location.state) ? false : true
+      isShowingModal: !((props.location && props.location.state))
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
@@ -51,15 +52,15 @@ class AddPage extends React.Component {
     this.msg.error('Please connect atleast one page')
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Add Pages`;
+    document.title = `${title} | Add Pages`
     this.props.updateChecks({wizardSeen: true})
   }
 
@@ -138,7 +139,7 @@ class AddPage extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='1' pages={this.props.pages} showError={this.showError} user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 6 : (this.props.user.uiMode.mode === 'kibochat') ? 5 : 5} />
+                  <Sidebar step='1' pages={this.props.pages} showError={this.showError} user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 6 : 5} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
