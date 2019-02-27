@@ -32,7 +32,8 @@ class CreateMessengerAd extends React.Component {
   }
   handleSave () {
     this.setState({
-      setupState: 'true'
+      setupState: 'true',
+      adTitle: this.props.messengerAd.title
     })
   }
   updatePreview () {
@@ -61,6 +62,7 @@ class CreateMessengerAd extends React.Component {
     }
   }
   componentDidMount () {
+    this.setState({adTitle: this.props.messengerAd.title})
     this.updatePreview()
     const hostname = window.location.hostname
     let title = ''
@@ -79,7 +81,7 @@ class CreateMessengerAd extends React.Component {
       return
     }
     if (this.props.messengerAd.jsonAdId && this.props.messengerAd.jsonAdId !== '') {
-      payload = {jsonAdId: this.props.messengerAd.jsonAdId, title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
+      payload = {jsonAdId: this.props.messengerAd.jsonAdId, title: this.props.messengerAd.title, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
       this.props.editJsonAd(payload, this.msg, this.handleSave)
     } else {
       payload = {title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}

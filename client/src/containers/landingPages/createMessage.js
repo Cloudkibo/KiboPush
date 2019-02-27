@@ -16,6 +16,7 @@
     constructor (props, context) {
       super(props, context)
       this.state = {
+        buttonActions: ['open website', 'open webview', 'add share'],
         broadcast: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
         pageId: this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id,
         convoTitle: 'Landing Page Opt-In Message'
@@ -82,7 +83,11 @@
               </div>
             </div>
           </div>
-          <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'landingPage'} />
+          <GenericMessage
+            broadcast={this.state.broadcast}
+            handleChange={this.handleChange}
+            convoTitle={this.state.convoTitle}
+            buttonActions={this.state.buttonActions} />
         </div>
       )
     }

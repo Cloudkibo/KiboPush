@@ -14,6 +14,7 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      buttonActions: ['open website', 'open webview', 'add share'],
       broadcast: [],
       convoTitle: 'Message',
       itemMenus: []
@@ -202,7 +203,12 @@ class CreateMessage extends React.Component {
             </div>
           </div>
         </div>
-        <GenericMessage pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null} broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} />
+        <GenericMessage
+          pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null}
+          broadcast={this.state.broadcast}
+          handleChange={this.handleChange}
+          convoTitle={this.state.convoTitle}
+          buttonActions={this.state.buttonActions} />
       </div>
     )
   }

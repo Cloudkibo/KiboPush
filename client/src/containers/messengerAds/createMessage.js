@@ -17,6 +17,7 @@ class CreateMessage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      buttonActions: ['open website', 'create message', 'add share'],
       broadcast: [],
       convoTitle: this.props.title ? this.props.title : '',
       selectedIndex: 1,
@@ -257,7 +258,13 @@ class CreateMessage extends React.Component {
             </div>
           </div>
         </div>
-        <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} module={'messengerAd'} replyWithMessage={this.replyWithMessage} />
+        <GenericMessage
+          hiddenComponents={['media']}
+          broadcast={this.state.broadcast}
+          handleChange={this.handleChange}
+          convoTitle={this.state.convoTitle}
+          buttonActions={this.state.buttonActions}
+          replyWithMessage={this.replyWithMessage} />
       </div>
     )
   }
