@@ -1,96 +1,137 @@
-/* eslint-disable no-undef */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import PropTypes from 'prop-types'
+import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import {
-  unSubscribe,
-  assignToTeam,
-  assignToAgent,
-  sendNotifications,
-  fetchTeamAgents
-} from '../../redux/actions/livechat.actions'
+import MAPCUSTOMER from './mapCustomer'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
-import { assignTags, unassignTags, loadTags, createTag, getSubscriberTags } from '../../redux/actions/tags.actions'
-import AlertContainer from 'react-alert'
-import MapCustomer from './mapCustomer'
 
-// import Image from 'react-image-resizer'
-//  import ChatBox from './chatbox'
-
-class Profile extends React.Component {
+class ProfileArea extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isShowingModal: false,
-      subscriber: '',
-      page: '',
-      teamValue: '',
+      showUnsubscribeModal: false,
+      isAssigned: '',
+      role: '',
+      assignedTeam: '',
+      assignAgent: '',
       teamObject: {},
-      agentValue: '',
-      agentObject: {},
       showAssignTeam: false,
+      teamValue: '',
+      agentObject: {},
       showAssignAgent: false,
+      agentValue: '',
       popoverAddTagOpen: false,
       addTag: '',
       removeTag: '',
-      tagOptions: [],
-      saveEnable: false,
-      assignedTeam: '',
-      assignedAgent: '',
-      Role: '',
-      assignAdmin: false,
-      assignAgent: false,
-      isAssigned: '',
-      customerId: this.props.currentSession.customerId ? this.props.currentSession.customerId : ''
+      tagOptions: this.props.tagOptions,
+      saveEnable: false
     }
-    props.loadTags()
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.unassignTeam = this.unassignTeam.bind(this)
+    this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
+    this.onTeamChange = this.onTeamChange.bind(this)
+    this.unassignAgent = this.unassignAgent.bind(this)
+    this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
+    this.onAgentChange = this.onAgentChange.bind(this)
+    this.assignToAgent = this.assignToAgent.bind(this)
+    this.showAddTag = this.showAddTag.bind(this)
+    this.removeTags = this.removeTags.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
-    this.showAddTag = this.showAddTag.bind(this)
     this.addTags = this.addTags.bind(this)
-    this.removeTags = this.removeTags.bind(this)
-    this.handleSaveTags = this.handleSaveTags.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.onTeamChange = this.onTeamChange.bind(this)
-    this.onAgentChange = this.onAgentChange.bind(this)
-    this.assignToTeam = this.assignToTeam.bind(this)
-    this.assignToAgent = this.assignToAgent.bind(this)
-    this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
-    this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
-    this.handleAgents = this.handleAgents.bind(this)
-    this.unassignTeam = this.unassignTeam.bind(this)
-    this.unassignAgent = this.unassignAgent.bind(this)
-    this.updateCustomerId = this.updateCustomerId.bind(this)
   }
 
-  componentWillMount () {
-    if (this.props.currentSession.is_assigned) {
-      if (this.props.currentSession.assigned_to.type === 'agent') {
-        this.setState({
-          assignedAgent: this.props.currentSession.assigned_to.name,
-          Role: this.props.currentSession.assigned_to.type,
-          isAssigned: this.props.currentSession.is_assigned
-        })
-      } else {
-        this.setState({
-          assignedTeam: this.props.currentSession.assigned_to.name,
-          Role: this.props.currentSession.assigned_to.type,
-          isAssigned: this.props.currentSession.is_assigned
-        })
+  showDialog (subscriber, page) {
+    this.setState({showUnsubscribeModal: true})
+  }
+
+  closeDialog () {
+    this.setState({showUnsubscribeModal: false})
+  }
+
+  unassignTeam () {
+    this.setState({isAssigned: false})
+    let data = {
+      teamId: this.state.teamObject._id,
+      teamName: this.state.teamObject.name,
+      subscriberId: this.props.activeSession._id,
+      isAssigned: false
+    }
+    this.props.fetchTeamAgents(this.state.teamObject._id)
+    this.props.assignToTeam(data)
+  }
+
+  toggleAssignTeam () {
+    this.setState({showAssignTeam: !this.state.showAssignTeam})
+  }
+
+  onTeamChange (e) {
+    let team = {}
+    for (let i = 0; i < this.props.teams.length; i++) {
+      if (this.props.teams[i]._id === e.target.value) {
+        team = this.props.teams[i]
+        break
       }
+    }
+    this.setState({teamValue: e.target.value, teamObject: team, assignedTeam: team.name})
+  }
+
+  unassignAgent () {
+    this.setState({isAssigned: false})
+    let data = {
+      agentId: this.state.agentObject._id,
+      agentName: this.state.agentObject.name,
+      subscriberId: this.props.activeSession._id,
+      isAssigned: false
+    }
+    this.props.assignToAgent(data)
+    if (this.state.agentObject._id !== this.props.user._id) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been assigned to you.`,
+        category: {type: 'chat_session', id: this.props.activeSession._id},
+        agentIds: [this.state.agentObject._id],
+        companyId: this.props.activeSession.companyId
+      }
+      this.props.sendNotifications(notificationsData)
     }
   }
 
-  updateCustomerId (id) {
-    this.setState({customerId: id})
+  toggleAssignAgent () {
+    this.setState({showAssignAgent: !this.state.showAssignAgent})
+  }
+
+  onAgentChange (e) {
+    let agent = {}
+    for (let i = 0; i < this.props.agents.length; i++) {
+      if (this.props.agents[i]._id === e.target.value) {
+        agent = this.props.agents[i]
+        break
+      }
+    }
+    this.setState({agentValue: e.target.value, agentObject: agent, assignedAgent: agent.name})
+  }
+
+  assignToAgent () {
+    this.setState({showAssignAgent: !this.state.showAssignAgent, role: 'agent', assignAgent: false, isAssigned: true})
+    let data = {
+      agentId: this.state.agentObject._id,
+      agentName: this.state.agentObject.name,
+      sessionId: this.props.activeSession._id,
+      isAssigned: true
+    }
+    this.props.assignToAgent(data)
+    if (this.state.agentObject._id !== this.props.user._id) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been assigned to you.`,
+        category: {type: 'chat_session', id: this.props.activeSession._id},
+        agentIds: [this.state.agentObject._id],
+        companyId: this.props.activeSession.companyId
+      }
+      this.props.sendNotifications(notificationsData)
+    }
   }
 
   showAddTag () {
@@ -99,11 +140,25 @@ class Profile extends React.Component {
       popoverAddTagOpen: true
     })
   }
+
+  removeTags (value) {
+    var payload = {}
+    var selectedIds = []
+    selectedIds.push(this.props.activeSession._id)
+    payload.subscribers = selectedIds
+    this.setState({
+      removeTag: value
+    })
+    payload.tagId = value
+    this.props.unassignTags(payload, this.msg)
+  }
+
   toggleAdd () {
     this.setState({
       popoverAddTagOpen: !this.state.popoverAddTagOpen
     })
   }
+
   handleAdd (value) {
     var index = 0
     if (value) {
@@ -127,6 +182,7 @@ class Profile extends React.Component {
       })
     }
   }
+
   handleCreateTag () {
     this.setState({
       saveEnable: false
@@ -143,163 +199,31 @@ class Profile extends React.Component {
       }
     }
     if (index === this.props.subscriberTags.length) {
-      selectedIds.push(this.props.currentSession._id)
+      selectedIds.push(this.props.activeSession._id)
     } else {
       this.msg.error('Tag is already assigned')
       return
     }
     payload.subscribers = selectedIds
     payload.tagId = this.state.addTag.value
-    this.props.assignTags(payload, this.handleSaveTags, this.msg)
-  }
-  removeTags (value) {
-    var payload = {}
-    var selectedIds = []
-    selectedIds.push(this.props.currentSession._id)
-    payload.subscribers = selectedIds
-    this.setState({
-      removeTag: value
-    })
-    payload.tagId = value
-    this.props.unassignTags(payload, this.handleSaveTags, this.msg)
-  }
-  handleSaveTags () {
-    var subscriberId = this.props.currentSession._id
-    this.props.getSubscriberTags(subscriberId, this.msg)
-  }
-  showDialog (subscriber, page) {
-    this.setState({isShowingModal: true, subscriber: subscriber, page: page})
+    this.props.assignTags(payload, this.msg)
   }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  onTeamChange (e) {
-    let team = {}
-
-    for (let i = 0; i < this.props.teams.length; i++) {
-      if (this.props.teams[i]._id === e.target.value) {
-        team = this.props.teams[i]
-        break
+  componentWillMount () {
+    if (this.props.activeSession.is_assigned) {
+      if (this.props.activeSession.assigned_to.type === 'agent') {
+        this.setState({
+          assignedAgent: this.props.activeSession.assigned_to.name,
+          role: this.props.activeSession.assigned_to.type,
+          isAssigned: this.props.activeSession.is_assigned
+        })
+      } else {
+        this.setState({
+          assignedTeam: this.props.activeSession.assigned_to.name,
+          role: this.props.activeSession.assigned_to.type,
+          isAssigned: this.props.activeSession.is_assigned
+        })
       }
-    }
-    console.log('The team name  is', team.name)
-    // this.setState({assignedTeam: team.name})
-    this.setState({teamValue: e.target.value, teamObject: team, assignedTeam: team.name})
-  }
-
-  onAgentChange (e) {
-    let agent = {}
-
-    for (let i = 0; i < this.props.agents.length; i++) {
-      if (this.props.agents[i]._id === e.target.value) {
-        agent = this.props.agents[i]
-        break
-      }
-    }
-    this.setState({agentValue: e.target.value, agentObject: agent, assignedAgent: agent.name})
-  }
-
-  assignToAgent () {
-    this.setState({showAssignAgent: !this.state.showAssignAgent, Role: 'agent', assignAgent: false, isAssigned: true})
-    let data = {
-      agentId: this.state.agentObject._id,
-      agentName: this.state.agentObject.name,
-      sessionId: this.props.currentSession._id,
-      isAssigned: true
-    }
-    this.props.assignToAgent(data)
-    if (this.state.agentObject._id !== this.props.user._id) {
-      let notificationsData = {
-        message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to you.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
-        agentIds: [this.state.agentObject._id],
-        companyId: this.props.currentSession.companyId
-      }
-      this.props.sendNotifications(notificationsData)
-    }
-  }
-
-  handleAgents (teamAgents) {
-    let agentIds = []
-    for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
-      }
-    }
-    if (agentIds.length > 0) {
-      let notificationsData = {
-        message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to your team ${this.state.teamObject.name}.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
-        agentIds: agentIds,
-        companyId: this.props.currentSession.companyId
-      }
-      this.props.sendNotifications(notificationsData)
-    }
-  }
-
-  assignToTeam () {
-    this.setState({ showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
-    let data = {
-      teamId: this.state.teamObject._id,
-      teamName: this.state.teamObject.name,
-      sessionId: this.props.currentSession._id,
-      isAssigned: true
-    }
-    this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
-    this.props.assignToTeam(data)
-  }
-
-  toggleAssignTeam () {
-    this.setState({showAssignTeam: !this.state.showAssignTeam})
-  }
-  toggleAssignAgent () {
-    this.setState({showAssignAgent: !this.state.showAssignAgent})
-  }
-
-  unassignTeam () {
-    this.setState({isAssigned: false})
-    let data = {
-      teamId: this.state.teamObject._id,
-      teamName: this.state.teamObject.name,
-      sessionId: this.props.currentSession._id,
-      isAssigned: false
-    }
-    this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
-    this.props.assignToTeam(data)
-
-    console.log('The value of unassigned is ', this.state.isAssigned)
-  }
-  unassignAgent () {
-    this.setState({isAssigned: false})
-    let data = {
-      agentId: this.state.agentObject._id,
-      agentName: this.state.agentObject.name,
-      sessionId: this.props.currentSession._id,
-      isAssigned: false
-    }
-    this.props.assignToAgent(data)
-    if (this.state.agentObject._id !== this.props.user._id) {
-      let notificationsData = {
-        message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to you.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
-        agentIds: [this.state.agentObject._id],
-        companyId: this.props.currentSession.companyId
-      }
-      this.props.sendNotifications(notificationsData)
-    }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.tags) {
-      var tagOptions = []
-      for (var i = 0; i < nextProps.tags.length; i++) {
-        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
-      }
-      this.setState({
-        tagOptions: tagOptions
-      })
     }
   }
 
@@ -311,71 +235,50 @@ class Profile extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-
     return (
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-            this.state.isShowingModal &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <h3>Unsubscribe</h3>
-                <p>Are you sure you want to Unsubscribe this Subscriber?</p>
-                <div style={{width: '100%', textAlign: 'center'}}>
-                  <div style={{display: 'inline-block', padding: '5px'}}>
-                    <button className='btn btn-primary' onClick={(e) => {
-                      this.props.changeActiveSessionFromChatbox()
-                      this.props.unSubscribe({subscriber_id: this.state.subscriber, page_id: this.state.page})
-                      this.closeDialog()
-                    }}>
-                      Yes
-                    </button>
-                  </div>
-                  <div style={{display: 'inline-block', padding: '5px'}}>
-                    <button className='btn btn-primary' onClick={this.closeDialog}>
-                      No
-                    </button>
-                  </div>
-                </div>
-              </ModalDialog>
-            </ModalContainer>
-          }
         <div className='m-portlet m-portlet--full-height'>
           <div style={{padding: '0rem 1.5rem'}} className='m-portlet__body'>
             <div className='m-card-profile'>
               <div className='m-card-profile__pic'>
                 <div className='m-card-profile__pic-wrapper'>
-                  <img style={{width: '80px', height: '80px'}} src={this.props.currentSession.profilePic} alt='' />
+                  <img style={{width: '80px', height: '80px'}} src={this.props.activeSession.profilePic} alt='' />
                 </div>
               </div>
               <div className='m-card-profile__details'>
                 <span className='m-card-profile__name'>
-                  {this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName}
+                  {this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName}
                 </span>
-                {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession._id, this.props.currentSession.pageId._id)} style={{color: '#716aca', cursor: 'pointer'}}>
-                      (Unsubscribe)
-                    </a>
-                  }
+                {
+                  this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                  <a className='m-card-profile__email m-link' onClick={() => this.showDialog()} style={{color: '#716aca', cursor: 'pointer'}}>
+                    (Unsubscribe)
+                  </a>
+                }
                 <br />
                 <a className='m-card-profile__email m-link'>
-                  {this.props.currentSession.gender + ', ' + this.props.currentSession.locale}
+                  {this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
                 </a>
                 <br />
                 {
-                  this.state.customerId !== '' &&
+                  this.props.user.isSuperUser && this.props.activeSession.customerId &&
                   <a style={{color: 'white'}}
                     onClick={() => {
-                      window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
+                      window.open(`http://demoapp.cloudkibo.com/${this.props.activeSession.customerId}`, '_blank', 'fullscreen=yes')
                     }}
                     className='btn m-btn--pill    btn-primary'
                   >
                     <i className='fa fa-external-link' /> View Customer Details
                   </a>
                 }
-                <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
+                {
+                  this.props.user.isSuperUser &&
+                  <MAPCUSTOMER
+                    currentSession={this.props.activeSession}
+                    msg={this.msg}
+                  />
+                }
                 {
                   (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
@@ -384,14 +287,14 @@ class Profile extends React.Component {
                       <div style={{marginBottom: '20px'}}>
                         <span className='m--font-bolder'>Team:</span>
                         <span> {
-                          this.state.Role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
+                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
-                        <span> {this.state.Role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
+                        <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
                       </div>
                     }
                     {
-                      (this.state.assignAdmin || this.state.isAssigned) && this.state.Role === 'team'
+                      this.state.isAssigned && this.state.role === 'team'
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
@@ -441,7 +344,7 @@ class Profile extends React.Component {
                       </div>
                     }
                     {
-                      (this.state.assignAgent || this.state.isAssigned) && this.state.Role === 'agent'
+                      this.state.isAssigned && this.state.role === 'agent'
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
@@ -551,33 +454,54 @@ class Profile extends React.Component {
             </div>
           </div>
         </div>
+        {
+            this.state.showUnsubscribeModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialog}>
+                <h3>Unsubscribe</h3>
+                <p>Are you sure you want to Unsubscribe this Subscriber?</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={(e) => {
+                      this.props.changeActiveSession('none')
+                      this.props.unSubscribe({subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id})
+                      this.closeDialog()
+                    }}>
+                      Yes
+                    </button>
+                  </div>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={this.closeDialog}>
+                      No
+                    </button>
+                  </div>
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
       </div>
     )
   }
 }
 
-function mapStateToProps (state) {
-  console.log(state)
-  return {
-    chat: (state.liveChat.chat),
-    user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags),
-    subscriberTags: (state.tagsInfo.subscriberTags)
-  }
+ProfileArea.propTypes = {
+  'teams': PropTypes.array.isRequired,
+  'agents': PropTypes.array.isRequired,
+  'subscriberTags': PropTypes.array.isRequired,
+  'activeSession': PropTypes.object.isRequired,
+  'changeActiveSession': PropTypes.func.isRequired,
+  'unSubscribe': PropTypes.func.isRequired,
+  'user': PropTypes.object.isRequired,
+  'fetchTeamAgents': PropTypes.func.isRequired,
+  'assignToTeam': PropTypes.func.isRequired,
+  'assignToAgent': PropTypes.func.isRequired,
+  'sendNotifications': PropTypes.func.isRequired,
+  'unassignTags': PropTypes.func.isRequired,
+  'tags': PropTypes.array.isRequired,
+  'createTag': PropTypes.func.isRequired,
+  'assignTags': PropTypes.func.isRequired
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    unSubscribe: unSubscribe,
-    assignToAgent: assignToAgent,
-    assignToTeam: assignToTeam,
-    assignTags: assignTags,
-    unassignTags: unassignTags,
-    loadTags: loadTags,
-    createTag: createTag,
-    getSubscriberTags: getSubscriberTags,
-    sendNotifications: sendNotifications,
-    fetchTeamAgents: fetchTeamAgents
-  }, dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default ProfileArea

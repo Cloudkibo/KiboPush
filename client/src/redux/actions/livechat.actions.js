@@ -30,7 +30,13 @@ export function updateSessionsData (session, customerId) {
 }
 
 export function showChatSessions (sessions) {
-  var sorted = sessions.sort(function (a, b) {
+  var subscribers = sessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    return s
+  })
+  var sorted = subscribers.sort(function (a, b) {
     return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
@@ -51,7 +57,13 @@ export function updateUserChat (message, chat) {
 }
 
 export function showOpenChatSessions (sessions, data) {
-  var sorted = sessions.openSessions.sort(function (a, b) {
+  var subscribers = sessions.openSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    return s
+  })
+  var sorted = subscribers.sort(function (a, b) {
     return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
@@ -71,7 +83,13 @@ export function showOpenChatSessions (sessions, data) {
 }
 
 export function showCloseChatSessions (sessions, firstPage) {
-  var sorted = sessions.closedSessions.sort(function (a, b) {
+  var subscribers = sessions.closedSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    return s
+  })
+  var sorted = subscribers.sort(function (a, b) {
     return new Date(b.lastDateTime) - new Date(a.lastDateTime)
   })
   console.log('sorted sessions', sorted)
@@ -89,6 +107,10 @@ export function showCloseChatSessions (sessions, firstPage) {
   }
 }
 export function updateChatSessions (session, appendDeleteInfo) {
+  console.log('session in updateChatSessions', session)
+  // let name = session.name.split(' ')
+  // session.firstName = name[0]
+  // session.lastName = name[1]
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
     session,

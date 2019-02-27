@@ -418,12 +418,12 @@ class ChatBox extends React.Component {
   setMessageData (session, payload) {
     var data = ''
     data = {
-      sender_id: session.page_id._id, // this is the page id: _id of Pageid
-      recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
-      sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-      recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+      sender_id: session.pageId._id, // this is the page id: _id of Pageid
+      recipient_id: session._id, // this is the subscriber id: _id of subscriberId
+      sender_fb_id: session.pageId.pageId, // this is the (facebook) :page id of pageId
+      recipient_fb_id: session.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
       session_id: session._id,
-      company_id: session.company_id, // this is admin id till we have companies
+      company_id: session.companyId, // this is admin id till we have companies
       payload: payload, // this where message content will go
       url_meta: this.state.urlmeta,
       datetime: new Date().toString(),
@@ -631,7 +631,7 @@ class ChatBox extends React.Component {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
   }
@@ -683,10 +683,10 @@ class ChatBox extends React.Component {
     console.log('agentIds', agentIds)
     if (agentIds.length > 0) {
       let notificationsData = {
-        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+        message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been marked resolved by ${this.props.user.name}.`,
         category: {type: 'chat_session', id: this.props.currentSession._id},
         agentIds: agentIds,
-        companyId: this.props.currentSession.company_id
+        companyId: this.props.currentSession.companyId
       }
       this.props.sendNotifications(notificationsData)
     }
@@ -701,10 +701,10 @@ class ChatBox extends React.Component {
     }
     if (agentIds.length > 0) {
       let notificationsData = {
-        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+        message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been reopened by ${this.props.user.name}.`,
         category: {type: 'chat_session', id: this.props.currentSession._id},
         agentIds: agentIds,
-        companyId: this.props.currentSession.company_id
+        companyId: this.props.currentSession.companyId
       }
       this.props.sendNotifications(notificationsData)
     }
@@ -724,10 +724,10 @@ class ChatBox extends React.Component {
       if (status === 'resolved' && this.props.currentSession.is_assigned) {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
-            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+            message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been marked resolved by ${this.props.user.name}.`,
             category: {type: 'chat_session', id: this.props.currentSession._id},
             agentIds: [this.props.currentSession.assigned_to.id],
-            companyId: this.props.currentSession.company_id
+            companyId: this.props.currentSession.companyId
           }
           this.props.sendNotifications(notificationsData)
         } else if (this.props.currentSession.assigned_to.type === 'team') {
@@ -736,10 +736,10 @@ class ChatBox extends React.Component {
       } else if (status === 'new' && this.props.currentSession.is_assigned) {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
-            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+            message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been reopened by ${this.props.user.name}.`,
             category: {type: 'chat_session', id: this.props.currentSession._id},
             agentIds: [this.props.currentSession.assigned_to.id],
-            companyId: this.props.currentSession.company_id
+            companyId: this.props.currentSession.companyId
           }
           this.props.sendNotifications(notificationsData)
         } else if (this.props.currentSession.assigned_to.type === 'team') {
@@ -1028,7 +1028,7 @@ class ChatBox extends React.Component {
                                   }
                                   <div style={{minWidth: '200px', maxWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
                                     <div className='m-messenger__message-pic'>
-                                      <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
+                                      <img src={this.props.currentSession.profilePic} alt='' />
                                     </div>
                                     <div className='m-messenger__message-body'>
                                       <div className='m-messenger__message-arrow' />
@@ -1037,7 +1037,7 @@ class ChatBox extends React.Component {
                                         ? (
                                           <div className='m-messenger__message-content'>
                                             <div className='m-messenger__message-username'>
-                                              {this.props.currentSession.subscriber_id.firstName} shared
+                                              {this.props.currentSession.firstName} shared
                                             </div>
                                             {
                                               msg.payload.attachments.map((att, index) => (
@@ -1096,7 +1096,7 @@ class ChatBox extends React.Component {
                                         : msg.url_meta
                                         ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared a link
+                                            {this.props.currentSession.firstName} shared a link
                                           </div>
                                           <div style={{clear: 'both', display: 'block'}}>
                                             <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
@@ -1156,7 +1156,7 @@ class ChatBox extends React.Component {
                                         : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                         ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} reacted
+                                            {this.props.currentSession.firstName} reacted
                                           </div>
                                           <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
@@ -1164,7 +1164,7 @@ class ChatBox extends React.Component {
                                         </div>
                                         : <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} wrote
+                                            {this.props.currentSession.firstName} wrote
                                           </div>
                                           <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}

@@ -51,7 +51,7 @@ import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToM
 import Autoposting from './containers/autoposting/autoposting'
 import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
-import LiveChat from './containers/liveChat/live'
+import LiveChat from './containers/liveChat/livechat'
 import Settings from './containers/settings/settings'
 import CreateSurvey from './containers/templates/createSurvey'
 import CreateTemplatePoll from './containers/templates/createPoll'
