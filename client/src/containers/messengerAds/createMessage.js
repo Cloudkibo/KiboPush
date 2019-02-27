@@ -259,6 +259,7 @@ class CreateMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          hiddenComponents={['media']}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}

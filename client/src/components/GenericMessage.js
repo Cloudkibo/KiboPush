@@ -457,7 +457,8 @@ GenericMessage.propTypes = {
   'broadcast': PropTypes.array,
   'module': PropTypes.string,
   'pages': PropTypes.array,
-  'replyWithMessage': PropTypes.func
+  'replyWithMessage': PropTypes.func,
+  'buttonActions': PropTypes.array.isRequired
 }
 
 GenericMessage.defaultProps = {
