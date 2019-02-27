@@ -77,9 +77,12 @@ export function sentVsSeen (pageId) {
   }
 }
 export function loadGraphData (days) {
+  console.log('days', days)
   return (dispatch) => {
     callApi(`dashboard/graphData/${days}`)
-      .then(res => dispatch(updateGraphData(res.payload)))
+      .then(res => {
+        console.log('res.payload', res.payload)
+        dispatch(updateGraphData(res.payload))})
   }
 }
 export function loadTopPages () {

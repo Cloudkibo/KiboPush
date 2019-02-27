@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -30,12 +30,24 @@ class AddChannel extends React.Component {
       type: type
     })
     if (type === 'facebook') {
-      if (!isWebURL(this.facebookSubscriptionUrl.value)) {
+      if (!isWebURL(this.facebookSubscriptionUrl.value) || !isFacebookPageUrl(this.facebookSubscriptionUrl.value)) {
         incorrectUrl = true
       }
+      if (!incorrectUrl) {
+        var usernameFacebook = this.facebookSubscriptionUrl.value.substr(this.facebookSubscriptionUrl.value.lastIndexOf('/') + 1)
+        if (!testUserName(usernameFacebook)) {
+          incorrectUrl = true
+        }
+      }
     } else if (type === 'twitter') {
-      if (!isWebURL(this.twitterSubscriptionUrl.value)) {
+      if (!isWebURL(this.twitterSubscriptionUrl.value) || !isTwitterUrl(this.twitterSubscriptionUrl.value)) {
         incorrectUrl = true
+      }
+      if (!incorrectUrl) {
+        var userNameTwitter = this.twitterSubscriptionUrl.value.substr(this.twitterSubscriptionUrl.value.lastIndexOf('/') + 1)
+        if (!testUserName(userNameTwitter)) {
+          incorrectUrl = true
+        }
       }
     } else if (type === 'wordpress') {
       if (!isWebURL(this.wordpressSubscriptionUrl.value)) {

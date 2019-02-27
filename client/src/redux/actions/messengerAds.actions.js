@@ -115,7 +115,7 @@ export function editJsonAd (data, msg, handleEdit) {
         if (res.status === 'success') {
           var data = res.payload
           var payload = {
-            pageId: data.jsonAd.pageId,
+            // pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
             title: data.jsonAd.title,
             jsonAdMessages: data.jsonAdMessages
@@ -264,6 +264,30 @@ const prepareJsonPayload = (data, optinMessage) => {
       }
     }
   } else if (body.componentType === 'list') {
+    if (body.listItems && body.listItems.length > 0) {
+      for (var l = 0; l < body.listItems.length; l++) {
+        var listButtons = body.listItems[l].buttons
+        if (listButtons) {
+          for (var u = 0; u < listButtons.length; u++) {
+            var lButtons = []
+            var lbutton = listButtons[u]
+            if (lbutton.type === 'web_url') {
+              if (lbutton.newUrl) {
+                delete lbutton.newUrl
+              }
+            }
+            lButtons.push(lbutton)
+          }
+          body.listItems[l].buttons = lButtons
+        }
+        if (body.listItems[l].fileurl) {
+          delete body.listItems[l].fileurl
+        }
+        if (body.listItems[l].id !== null) {
+          delete body.listItems[l].id
+        }
+      }
+    }
     payload = {
       'attachment': {
         'type': 'template',

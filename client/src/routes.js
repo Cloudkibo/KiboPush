@@ -128,6 +128,8 @@ import CreateAdMessage from './containers/messengerAds/createMessengerAd'
 import MessengerRefURL from './containers/messengerRefURL/messengerRefURL'
 import CreateMessengerRefURL from './containers/messengerRefURL/create'
 import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
+import BusinessGatewayHome from './containers/businessGateway/home'
+import PushMessage from './containers/businessGateway/pushMessage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -285,6 +287,8 @@ const routes = (
     <Route path='/messengerRefURL' component={MessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
+    <Route path='/businessGateway' component={BusinessGatewayHome} onEnter={requireAuth} />
+    <Route path='/createPushMessage' component={PushMessage} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

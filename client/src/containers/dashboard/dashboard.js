@@ -116,6 +116,7 @@ class Dashboard extends React.Component {
     return formattedData
   }
   prepareExportData () {
+    //console.log('prepareExportData')
     var data = []
     var dashboardObj = {}
     if (this.props.dashboard) {
@@ -133,12 +134,22 @@ class Dashboard extends React.Component {
       dashboardObj['Polls Sent/Seen'] = this.props.sentseendata.poll
       dashboardObj['Surveys Sent/Seen'] = this.props.sentseendata.survey
     }
+    console.log('this.props.graphData', this.props.graphData)
     if (this.props.graphData) {
-      dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
-      dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
-      dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
-      dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+      if (this.props.graphData.broadcastsgraphdata) {
+        dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
+      }
+      if (this.props.graphData.pollsgraphdata) {
+        dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
+      }
+      if (this.props.graphData.surveysgraphdata) {
+        dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
+      }
+      if (this.props.graphData.sessionsgraphdata) {
+        dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+      }    
     }
+   // console.log('this.props.topPages', this.props.topPages)
     if (this.props.topPages && this.props.topPages.length > 1) {
       for (var i = 0; i < this.props.topPages.length; i++) {
         dashboardObj['Top Page ' + (i + 1)] = this.props.topPages[i]
@@ -160,6 +171,7 @@ class Dashboard extends React.Component {
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
       } else {
+        console.log('call file download function')
         fileDownload(csv, 'Dashboard.csv')
       }
     })
