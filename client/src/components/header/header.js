@@ -531,7 +531,7 @@ class Header extends React.Component {
                                       }
                                     </div>
                                     <div className='m-nav-grid__row'>
-                                      {
+                                      {/*
                                         (!window.location.hostname.toLowerCase().includes('kibodash'))
                                           ? <a href='#kibodash' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-analytics' />
@@ -540,7 +540,7 @@ class Header extends React.Component {
                                           : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-analytics' />
                                             <span className='m-nav-grid__text'>KiboDash</span>
-                                          </a>
+                                          </a>*/
                                       }
 
                                       {/*
@@ -556,14 +556,14 @@ class Header extends React.Component {
                                       */}
 
                                       {
-                                        (!window.location.hostname.toLowerCase().includes('kiboapi'))
-                                          ? <a href='#kiboapi' className='m-nav-grid__item'>
+                                        (!window.location.hostname.toLowerCase().includes('KiboLite'))
+                                          ? <a href='#KiboLite' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-truck' />
-                                            <span className='m-nav-grid__text'>Kibo Api (Coming Soon)</span>
+                                            <span className='m-nav-grid__text'>KiboLite(Coming Soon)</span>
                                           </a>
                                           : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-truck' />
-                                            <span className='m-nav-grid__text'>Kibo Api</span>
+                                            <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
                                       }
 
