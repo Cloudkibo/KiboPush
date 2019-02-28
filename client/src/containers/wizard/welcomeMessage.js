@@ -252,6 +252,7 @@ class EditTemplate extends React.Component {
                       <br />
                       <center>
                         <GenericMessage
+                          noDefaultHeight
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
