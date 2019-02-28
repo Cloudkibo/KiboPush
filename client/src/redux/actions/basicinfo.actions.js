@@ -167,3 +167,32 @@ export function validateUserAccessToken (cb) {
     })
   }
 }
+
+export function updateShowIntegrations (data, browserHistory) {
+  return (dispatch) => {
+    callApi('users/updateShowIntegrations', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(getuserdetails())
+      } else {
+        console.log('Failed to update show integrations!')
+      }
+      if (browserHistory) {
+        browserHistory.push({
+          pathname: '/dashboard'
+        })
+      }
+    })
+  }
+}
+
+export function disconnectFacebook () {
+  return (dispatch) => {
+    callApi('users/disconnectFacebook').then(res => {
+      if (res.status === 'success') {
+        dispatch(getuserdetails())
+      } else {
+        console.log('Failed to update show integrations!')
+      }
+    })
+  }
+}

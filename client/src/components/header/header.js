@@ -5,7 +5,7 @@
 import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
-import { getuserdetails, updateMode } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, updateShowIntegrations, updateMode } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
@@ -14,7 +14,7 @@ import Notification from 'react-web-notification'
 import cookie from 'react-cookie'
 
 class Header extends React.Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     props.fetchNotifications()
     this.state = {
@@ -32,30 +32,35 @@ class Header extends React.Component {
     this.timeSince = this.timeSince.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.showDropDown = this.showDropDown.bind(this)
+    this.logout = this.logout.bind(this)
   }
-  showDropDown() {
+  logout () {
+    this.props.updateShowIntegrations({showIntegrations: true})
+    auth.logout()
+  }
+  showDropDown () {
     console.log('showDropDown')
     this.setState({ showDropDown: true })
     this.changeMode = this.changeMode.bind(this)
   }
-  changeMode(mode) {
+  changeMode (mode) {
     this.props.updateMode({ mode: mode }, this.props.user)
   }
-  changeStatus(e, id) {
+  changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
 
-  toggleSidebar() {
+  toggleSidebar () {
     /* eslint-disable */
     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
   }
-  handleNotificationOnShow() {
+  handleNotificationOnShow () {
     this.setState({ ignore: true })
     this.props.resetSocket()
   }
 
-  onNotificationClick() {
+  onNotificationClick () {
     window.focus()
     browserHistory.push({
       pathname: '/live',
@@ -64,7 +69,7 @@ class Header extends React.Component {
     this.setState({ ignore: true })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ ignore: false })
@@ -103,7 +108,7 @@ class Header extends React.Component {
       this.setState({ seenNotifications: seen, unseenNotifications: unseen })
     }
   }
-  getPlanInfo(plan) {
+  getPlanInfo (plan) {
     var planInfo
     if (plan === 'plan_A') {
       planInfo = 'Individual, Premium Account'
@@ -118,10 +123,10 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
-  componentWillMount() {
+  componentWillMount () {
     this.props.getuserdetails()
   }
-  timeSince(date) {
+  timeSince (date) {
     var newDate = new Date(date)
     var seconds = Math.floor((new Date() - newDate) / 1000)
 
@@ -149,7 +154,7 @@ class Header extends React.Component {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  gotoView(id, _id, type) {
+  gotoView (id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
       browserHistory.push({
@@ -169,7 +174,7 @@ class Header extends React.Component {
     }
   }
 
-  goToSubProduct(product) {
+  goToSubProduct (product) {
     let productUrls = {
       'kiboengage': {
         'staging': 'https://skiboengage.cloudkibo.com/',
@@ -193,20 +198,17 @@ class Header extends React.Component {
       }
     }
 
-    
-
     const environment = cookie.load('environment')
     console.log('environment header', environment)
     window.location.replace(productUrls[product][environment])
   }
 
-  render() {
-    
-    let liveChatLink = '';
-    let hostname = window.location.hostname;
-    if (hostname == 'skiboengage.cloudkibo.com') {
+  render () {
+    let liveChatLink = ''
+    let hostname = window.location.hostname
+    if (hostname === 'skiboengage.cloudkibo.com') {
       liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
-    } else if (hostname == 'kiboengage.cloudkibo.com') {
+    } else if (hostname === 'kiboengage.cloudkibo.com') {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
 
@@ -428,8 +430,8 @@ class Header extends React.Component {
                                   <div className='m-nav-grid m-nav-grid--skin-light'>
                                     <div className='m-nav-grid__row'>
                                       {
-                                        (window.location.hostname.toLowerCase().includes('kiboengage') 
-                                        && this.props.subscribers &&
+                                        (window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                        this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-file' />
@@ -443,8 +445,8 @@ class Header extends React.Component {
                                       }
 
                                       {
-                                        (window.location.hostname.toLowerCase().includes('kiboengage') 
-                                        && this.props.subscribers &&
+                                        (window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                        this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/poll' className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-time' />
@@ -474,12 +476,11 @@ class Header extends React.Component {
                                           </Link>
                                            : null
                                       }
-                                       { !window.location.hostname.toLowerCase().includes('kiboengage') ?
+                                      {!window.location.hostname.toLowerCase().includes('kiboengage') &&
                                       <Link to='/bots' className='m-nav-grid__item'>
                                         <i className='m-nav-grid__icon flaticon-clipboard' />
                                         <span className='m-nav-grid__text'>Create New Bot</span>
                                       </Link>
-                                      : null 
                                        }
                                     </div>
                                   </div>
@@ -626,15 +627,15 @@ class Header extends React.Component {
                                     </li>
                                   }
                                   <li className='m-nav__item'>
-                                  { window.location.hostname.toLowerCase().includes('kiboengage') ?
-                                    <a href={liveChatLink} target='_blank' className='m-nav__link'>
+                                    {window.location.hostname.toLowerCase().includes('kiboengage')
+                                    ? <a href={liveChatLink} target='_blank' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>Messages</span>
                                     </a>
                                     : <Link to='/liveChat' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
+                                      <i className='m-nav__link-icon flaticon-chat-1' />
+                                      <span className='m-nav__link-text'>Messages</span>
+                                    </Link>
                                   }
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
@@ -652,7 +653,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <a onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <a onClick={() => { this.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                   </a>
                                   </li>
@@ -678,7 +679,7 @@ class Header extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   console.log('state in header', state)
   return {
     user: (state.basicInfo.user),
@@ -690,13 +691,14 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
     fetchNotifications: fetchNotifications,
     resetSocket: resetSocket,
     markRead: markRead,
-    updateMode: updateMode
+    updateMode: updateMode,
+    updateShowIntegrations
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
