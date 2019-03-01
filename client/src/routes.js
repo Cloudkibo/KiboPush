@@ -132,7 +132,6 @@ import CreateMessengerRefURL from './containers/messengerRefURL/create'
 import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
-import TargetMessage from './containers/businessGateway/targetMessage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
