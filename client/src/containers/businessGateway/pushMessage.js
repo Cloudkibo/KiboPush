@@ -1,26 +1,52 @@
 import React from 'react'
-import { Link } from 'react-router'
-import Files from 'react-files'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Select from 'react-select'
-import AlertContainer from 'react-alert'
-import Papa from 'papaparse'
+import GenericMessage from '../../components/GenericMessage'
+import { updateCurrentCustomersInfo } from '../../redux/actions/businessGateway.actions'
+import Footer from './footer'
 
 class PushMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      convoTitle: 'Push Message',
+      broadcast: this.props.customersInfo ? this.props.customersInfo.pushMessage : [],
+      buttonActions: ['open website', 'open webview', 'add share']
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleNext = this.handleNext.bind(this)
+  }
+  handleChange (broadcast) {
+    this.setState(broadcast)
+  }
+  handleNext () {
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'pushMessage', this.state.broadcast)
+    this.props.handleNext('pushMessage')
   }
   render () {
-      return (<h1>  broadcast page</h1> )
+    return (
+      <div>
+        <GenericMessage
+          pages={[this.props.page ? this.props.page._id : null]}
+          broadcast={this.state.broadcast}
+          handleChange={this.handleChange}
+          convoTitle={this.state.convoTitle}
+          buttonActions={this.state.buttonActions} />
+        <Footer tab='pushMessage' handleNext={this.handleNext} handleBack={this.props.handleBack} />
+      </div>
+    )
   }
-
 }
 function mapStateToProps (state) {
-    console.log('in mapStateToProps', state)
-    return {
-      pages: state.pagesInfo.pages
-    }
+  return {
+    pages: state.pagesInfo.pages,
+    customersInfo: state.businessGatewayInfo.customersInfo
   }
-export default connect(mapStateToProps)(PushMessage)
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    updateCurrentCustomersInfo: updateCurrentCustomersInfo
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PushMessage)
