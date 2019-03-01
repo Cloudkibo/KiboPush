@@ -51,11 +51,12 @@ class createSurvey extends React.Component {
     document.title = `${title} | Edit Survey`;
   }
   componentWillReceiveProps (nextprops) {
+    console.log('nextprops', nextprops)
     if (nextprops.categories) {
       let options = []
-      for (var j = 0; j < nextprops.survey[0].category.length; j++) {
+      for (var j = 0; j < nextprops.survey.category.length; j++) {
         for (var i = 0; i < nextprops.categories.length; i++) {
-          if (nextprops.categories[i].name === nextprops.survey[0].category[j]) {
+          if (nextprops.categories[i].name === nextprops.survey.category[j]) {
             options.push({id: nextprops.categories[i]._id, text: nextprops.categories[i].name, selected: true})
           }
         }
@@ -68,7 +69,7 @@ class createSurvey extends React.Component {
       this.initializeCategorySelect(options)
     }
     if (nextprops.survey) {
-      this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
+      this.setState({title: nextprops.survey.title, description: nextprops.survey.description, categoryValue: nextprops.survey.category})
     }
     if (nextprops.questions) {
       this.setState({surveyQuestions: nextprops.questions})

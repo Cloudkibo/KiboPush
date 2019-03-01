@@ -34,6 +34,8 @@ import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
+// import Dashboard from './containers/dashboard/dashboard'
+import FacebookIntegration from './containers/integrations/facebookIntegration'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -290,7 +292,7 @@ const routes = (
     <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
     <Route path='/businessGateway' component={BusinessGatewayHome} onEnter={requireAuth} />
     <Route path='/createPushMessage' component={PushMessage} onEnter={requireAuth} />
-    <Route path='/targetMessage' component={TargetMessage} onEnter={requireAuth} />
+    <Route path='/facebookIntegration' component={FacebookIntegration} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
