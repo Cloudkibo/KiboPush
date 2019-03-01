@@ -10,13 +10,14 @@ import FileSelect from './fileSelect'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { updateCurrentCustomersInfo, setDefaultCustomersInfo, sendPushMessage} from '../../redux/actions/businessGateway.actions'
+import { updateCurrentCustomersInfo, setDefaultCustomersInfo, sendPushMessage } from '../../redux/actions/businessGateway.actions'
+import { validateFields } from '../convo/utility'
 
 class Home extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isSaveEnabled: true,
+      isSaveEnabled: false,
       page: this.props.pages ? this.props.pages[0] : null,
       fileColumns: [],
       updateSegmentation: false,
@@ -26,10 +27,12 @@ class Home extends React.Component {
     this.onTabClick = this.onTabClick.bind(this)
     this.handleNext = this.handleNext.bind(this)
     this.handleBack = this.handleBack.bind(this)
+    this.setSaveEnable = this.setSaveEnable.bind(this)
     this.updateMessageComponents = this.updateMessageComponents.bind(this)
     this.updateSegmentationConditions = this.updateSegmentationConditions.bind(this)
     this.validateSegmentation = this.validateSegmentation.bind(this)
     this.getCustomersInfoPayload = this.getCustomersInfoPayload.bind(this)
+    this.validateInput = this.validateInput.bind(this)
     let defaultPushMessage = this.defaultPushMessage()
     this.props.setDefaultCustomersInfo(defaultPushMessage.pushMesage)
   }
@@ -38,7 +41,22 @@ class Home extends React.Component {
       page: page
     })
   }
+  setSaveEnable (customersInfo) {
+    var paramsValid = true
+    if (!customersInfo.phoneColumn || (customersInfo.phoneColumn && customersInfo.phoneColumn === '')) {
+      paramsValid = false
+    } else if (!customersInfo.page) {
+      paramsValid = false
+    } else if (!customersInfo.file) {
+      paramsValid = false
+    } else if (!customersInfo.pushMessage || (customersInfo.pushMessage && customersInfo.pushMessage.length < 1)) {
+      paramsValid = false
+    }
 
+    this.setState({
+      isSaveEnabled: paramsValid
+    })
+  }
   validateSegmentation () {
     let errors = false
     let errorMessages = []
@@ -84,7 +102,6 @@ class Home extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      fileData.append('message', JSON.stringify(this.props.customersInfo.pushMessage))
       fileData.append('page_id', this.props.customersInfo.page._id)
       fileData.append('phoneColumn', this.props.customersInfo.phoneColumn.value)
       fileData.append('columns', this.props.customersInfo.columns.join(','))
@@ -92,17 +109,32 @@ class Home extends React.Component {
       return fileData
     }
   }
+  validateInput () {
+    var isValidMessage = validateFields(this.props.customersInfo.pushMessage, this.msg)
+    if (isValidMessage) {
+      var isValidSegmentation = this.validateSegmentation()
+      if (isValidSegmentation) {
+        this.setState({segmentationErrors: []})
+        return true
+      } else {
+        this.onTabClick('targetCustomers')
+        return false
+      }
+    } else {
+      this.onTabClick('pushMessage')
+      return false
+    }
+  }
   onSave () {
-    var isValid = this.validateSegmentation()
-
+    var isValid = this.validateInput()
     if (isValid) {
-      this.setState({segmentationErrors: []})
-      this.props.sendPushMessage(this.getCustomersInfoPayload(), this.msg)
+      this.props.sendPushMessage(this.getCustomersInfoPayload(), this.props.customersInfo.pushMessage, this.msg)
     }
   }
   defaultPushMessage () {
     const defaultMessage = { pushMesage: {
       file: null,
+      isSaveEnabled: false,
       columns: [],
       columnsArray: [],
       filter: [],
@@ -210,24 +242,18 @@ class Home extends React.Component {
                           <a id='selectFile' className='broadcastTabs active' onClick={() => { this.onTabClick('selectFile') }}>Select File</a>
                         </li>
                         <li>
-                          { this.state.isSaveEnabled
-                            ? <a id='pushMessage' className='broadcastTabs' onClick={() => { this.onTabClick('pushMessage') }}>Create Push Message</a>
-                            : <a>Create Push Message</a>
-                          }
+                          <a id='pushMessage' className='broadcastTabs' onClick={() => { this.onTabClick('pushMessage') }}>Create Push Message</a>
                         </li>
                         <li>
-                          { this.state.isSaveEnabled
-                            ? <a id='targetCustomers' className='broadcastTabs' onClick={() => { this.onTabClick('targetCustomers') }}>Target Customers</a>
-                            : <a>Target Customers</a>
-                          }
+                          <a id='targetCustomers' className='broadcastTabs' onClick={() => { this.onTabClick('targetCustomers') }}>Target Customers</a>
                         </li>
                       </ul>
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
-                          <FileSelect updateMessageComponents={this.updateMessageComponents} updateSegmentationConditions={this.updateSegmentationConditions} handleNext={this.handleNext} handleBack={this.handleBack} />
+                          <FileSelect setSaveEnable={this.setSaveEnable} updateMessageComponents={this.updateMessageComponents} updateSegmentationConditions={this.updateSegmentationConditions} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <PushMessage page={this.state.page} handleNext={this.handleNext} handleBack={this.handleBack} />
+                          <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_3'>
                           <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} handleNext={this.handleNext} handleBack={this.handleBack} />

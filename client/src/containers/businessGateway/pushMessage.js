@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import GenericMessage from '../../components/GenericMessage'
 import { updateCurrentCustomersInfo } from '../../redux/actions/businessGateway.actions'
 import Footer from './footer'
+import AlertContainer from 'react-alert'
+import { validateFields } from '../convo/utility'
 
 class PushMessage extends React.Component {
   constructor (props, context) {
@@ -18,14 +20,28 @@ class PushMessage extends React.Component {
   }
   handleChange (broadcast) {
     this.setState(broadcast)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'pushMessage', this.state.broadcast, this.props.setSaveEnable)
   }
   handleNext () {
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'pushMessage', this.state.broadcast)
-    this.props.handleNext('pushMessage')
+    if (this.state.broadcast.length < 1) {
+      this.msg.error('Create a message to send to your customers')
+      return
+    }
+    if (validateFields(this.state.broadcast, this.msg)) {
+      this.props.handleNext('pushMessage')
+    }
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <GenericMessage
           pages={[this.props.page ? this.props.page._id : null]}
           broadcast={this.state.broadcast}

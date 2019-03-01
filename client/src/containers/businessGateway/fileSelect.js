@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router'
 import Files from 'react-files'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -38,7 +37,9 @@ class FileSelect extends React.Component {
   }
   removeFile () {
     this.setState({ file: '', showFileColumns: false, columns: [], fileContent: [], fileErrors: [], phoneColumn: '', columnAlerts: false, dict: {} })
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', null)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', null, this.props.setSaveEnable)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columnsArray', [], this.props.setSaveEnable)
+    this.props.updateSegmentationConditions([])
   }
   handleNext (tab) {
     if (this.checkValidation()) {
@@ -60,12 +61,12 @@ class FileSelect extends React.Component {
         })
       }
       this.props.updateMessageComponents(page)
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', page)
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', page, this.props.setSaveEnable)
     } else {
       this.setState({
         selectPage: {}
       })
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', null)
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', null, this.props.setSaveEnable)
     }
   }
   componentDidMount () {
@@ -84,12 +85,12 @@ class FileSelect extends React.Component {
       this.setState({
         selectPage: this.props.pages[0]
       })
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', this.props.pages[0])
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', this.props.pages[0], this.props.setSaveEnable)
     } else {
       this.setState({
         selectPage: {}
       })
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', null)
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'page', null, this.props.setSaveEnable)
     }
   }
   checkValidation () {
@@ -125,10 +126,12 @@ class FileSelect extends React.Component {
         }
       }
     }
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'phoneColumn', this.state.phoneColumn)
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columns', columns)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'phoneColumn', this.state.phoneColumn, this.props.setSaveEnable)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columns', columns, this.props.setSaveEnable)
     this.props.updateSegmentationConditions(this.state.columns)
-    this.closeDialogFileColumns()
+    this.setState({
+      showFileColumns: false,
+      columnAlerts: false})
   }
 
   onFilesChange (files) {
@@ -146,7 +149,7 @@ class FileSelect extends React.Component {
         return
       }
       this.parseCSV(self, fileSelected)
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', files[0])
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', files[0], this.props.setSaveEnable)
     }
   }
   parseCSV (self, file) {
@@ -179,7 +182,7 @@ class FileSelect extends React.Component {
         }
         console.log('columnsArray:', columnsArray)
         console.log('fileContent:', results.data)
-        self.props.updateCurrentCustomersInfo(self.props.customersInfo, 'columnsArray', columnsArray)
+        self.props.updateCurrentCustomersInfo(self.props.customersInfo, 'columnsArray', columnsArray, this.props.setSaveEnable)
       }
     })
   }
@@ -215,7 +218,8 @@ class FileSelect extends React.Component {
   closeDialogFileColumns () {
     this.setState({
       showFileColumns: false,
-      columnAlerts: false
+      columnAlerts: false,
+      dict: {}
     })
   }
 
@@ -297,7 +301,8 @@ class FileSelect extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.setState({
-                    phoneColumn: ''
+                    phoneColumn: '',
+                    dict: {}
                   })
                   this.closeDialogFileColumns()
                 }}>Cancel
@@ -334,22 +339,24 @@ class FileSelect extends React.Component {
                 </div>
               </div>
              : <div className='m-dropzone dropzone dz-clickable' id='m-dropzone-one'>
-               <Files
-                 className='file-upload-area'
-                 onChange={this.onFilesChange}
-                 onError={this.onFilesError}
-                 accepts={[
-                   'text/comma-separated-values',
-                   'text/csv',
-                   'application/csv',
-                   '.csv',
-                   'application/vnd.ms-excel']}
-                 multiple={false}
-                 maxFileSize={25000000}
-                 minFileSize={0}
-                 clickable>
-                 <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
-               </Files>
+               <div style={{marginTop: '30px'}}>
+                 <Files
+                   className='file-upload-area'
+                   onChange={this.onFilesChange}
+                   onError={this.onFilesError}
+                   accepts={[
+                     'text/comma-separated-values',
+                     'text/csv',
+                     'application/csv',
+                     '.csv',
+                     'application/vnd.ms-excel']}
+                   multiple={false}
+                   maxFileSize={25000000}
+                   minFileSize={0}
+                   clickable>
+                   <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
+                 </Files>
+               </div>
              </div>
             }
           </div>

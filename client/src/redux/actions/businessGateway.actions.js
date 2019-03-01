@@ -1,16 +1,20 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import { removeButtonOldurl } from './actions.utility'
 export const API_URL = '/api'
 
-export function updateCurrentCustomersInfo (customerInfo, updateKey, updateValue) {
+export function updateCurrentCustomersInfo (customerInfo, updateKey, updateValue, enableSave) {
   return (dispatch) => {
     console.log('updateKey', updateKey)
     console.log('updateValue', updateValue)
     customerInfo[updateKey] = updateValue
-    dispatch(saveCurrentCustomesrInfo(customerInfo))
+    dispatch(saveCurrentCustomersInfo(customerInfo))
+    if (enableSave) {
+      enableSave(customerInfo)
+    }
   }
 }
-export function saveCurrentCustomesrInfo (data) {
+export function saveCurrentCustomersInfo (data) {
   return {
     type: ActionTypes.SAVE_CURRENT_CUSTOMERS_INFO,
     data
@@ -22,7 +26,11 @@ export function setDefaultCustomersInfo (data) {
     data
   }
 }
-export function sendPushMessage (filedata, msg) {
+export function sendPushMessage (filedata, pushMessage, msg) {
+  var messageData = removeButtonOldurl({payload: pushMessage})
+  if (filedata) {
+    filedata.append('message', JSON.stringify(messageData.payload))
+  }
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/businessGateway/uploadCSV`, {

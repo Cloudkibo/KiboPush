@@ -16,6 +16,7 @@ class TargetCustomers extends React.Component {
     this.changeCondition = this.changeCondition.bind(this)
     this.changeCriteria = this.changeCriteria.bind(this)
     this.changeText = this.changeText.bind(this)
+    this.resetCondition = this.resetCondition.bind(this)
   }
 
   addCondition () {
@@ -25,6 +26,13 @@ class TargetCustomers extends React.Component {
     this.setState({
       conditions: conditions
     })
+  }
+  resetCondition () {
+    var conditions = [{condition: '', criteria: '', text: ''}]
+    this.setState({
+      conditions: conditions
+    })
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeCondition (e, index) {
     let conditions = this.state.conditions
@@ -45,6 +53,7 @@ class TargetCustomers extends React.Component {
       }
     }
     this.setState({conditions: conditions})
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
     let conditions = this.state.conditions
@@ -55,6 +64,7 @@ class TargetCustomers extends React.Component {
       }
     }
     this.setState({conditions: conditions})
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   removeCondition (e, index) {
     let tempConditions = this.state.conditions
@@ -186,6 +196,9 @@ class TargetCustomers extends React.Component {
             </table>
             <button style={{margin: '15px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
              + Add Condition
+           </button>
+            <button style={{marginRight: '15px'}} className='m-btn m-btn--pill m-btn--hover-success btn btn-sm btn-secondary' onClick={this.resetCondition}>
+              Reset
            </button>
           </div>
         </div>
