@@ -228,30 +228,32 @@ class Sidebar extends Component {
   }
 
   showAutomationItems () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-share' title='Automation' />
-          <span className='m-menu__link-text'>Automation</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Automation
-                </span>
-              </a>
-            </li>
-            {this.showSmartRespliesItem()}
-            {this.showAutoPostingItem()}
-            {this.showSequenceMessaging()}
-          </ul>
-        </div>
-      </li>
-    )
+    if (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-share' title='Automation' />
+            <span className='m-menu__link-text'>Automation</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Automation
+                  </span>
+                </a>
+              </li>
+              {this.showSmartRespliesItem()}
+              {this.showAutoPostingItem()}
+              {this.showSequenceMessaging()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
   }
 
   showGrowthToolsItems () {
