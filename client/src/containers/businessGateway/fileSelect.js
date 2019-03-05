@@ -34,12 +34,24 @@ class FileSelect extends React.Component {
     this.checkValidation = this.checkValidation.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
     this.handleNext = this.handleNext.bind(this)
+    this.selectColumns = this.selectColumns.bind(this)
   }
   removeFile () {
     this.setState({ file: '', showFileColumns: false, columns: [], fileContent: [], fileErrors: [], phoneColumn: '', columnAlerts: false, dict: {} })
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', null, this.props.setSaveEnable)
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columnsArray', [], this.props.setSaveEnable)
     this.props.updateSegmentationConditions([])
+  }
+  selectColumns () {
+    var checkList = {}
+    for (var i = 0; i < this.props.customersInfo.columns.length; i++) {
+      checkList[this.props.customersInfo.columns[i]] = true
+    }
+    this.setState({
+      phoneColumn: this.props.customersInfo ? this.props.customersInfo.phoneColumn : '',
+      showFileColumns: true,
+      dict: checkList
+    })
   }
   handleNext (tab) {
     if (this.checkValidation()) {
@@ -248,65 +260,67 @@ class FileSelect extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showFileColumns &&
-          <ModalContainer style={{width: '680px', top: '100px'}}
+          <ModalContainer style={{width: '680px', top: '100px', overflow: 'hidden'}}
             onClose={this.closeDialogFileColumns}>
-            <ModalDialog style={{width: '680px', top: '100px'}}
+            <ModalDialog style={{width: '680px', top: '100px', overflow: 'hidden'}}
               onClose={this.closeDialogFileColumns}>
-              <div className='form-group m-form__group row'>
-                <label className='col-lg-5 col-form-label'>
-                  Select phone number column
-                </label>
-                <div className='col-lg-5'>
-                  <Select
-                    options={this.state.columns}
-                    onChange={this.handlePhoneColumn}
-                    value={this.state.phoneColumn}
-                    placeholder='Select Field'
-                  />
-                </div>
-                { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
-                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
-                  </span>
-                }
-              </div>
-              <div className='form-group m-form__group row'>
-                <label className='col-lg-5 col-form-label'>
-                  Select Other columns(Optional)
-                </label>
-              </div>
-              {
-              this.state.columns.map((column) => {
-                return (<div className='form-group m-form__group row'>
+              <div style={{overflowX: 'hidden', overflowY: 'scroll', width: '650px', height: '370'}}>
+                <div className='form-group m-form__group row' >
                   <label className='col-lg-5 col-form-label'>
-                    {column.value}
+                    Select phone number column
                   </label>
-                  { this.state.phoneColumn === column
-                    ? <div className='col-lg-5'>
-                      <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked='true' disabled='true' />
-                    </div>
-                    : <div className='col-lg-5'>
-                      <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked={this.state.dict[column.value]} />
-                    </div>
-                  }
-                </div>)
-              })
-            }
-              <button style={{float: 'right', marginLeft: '10px'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.saveColumns()
-                }}>Save
-              </button>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.setState({
-                    phoneColumn: '',
-                    dict: {}
-                  })
-                  this.closeDialogFileColumns()
-                }}>Cancel
-              </button>
+                  <div className='col-lg-5'>
+                    <Select
+                      options={this.state.columns}
+                      onChange={this.handlePhoneColumn}
+                      value={this.state.phoneColumn}
+                      placeholder='Select Field'
+                    />
+                    { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
+                      <span style={{color: 'red'}}>Select a field</span>
+                      </span>
+                    }
+                  </div>
+                </div>
+                <div className='form-group m-form__group row'>
+                  <label className='col-lg-5 col-form-label'>
+                    Select Other columns(Optional)
+                  </label>
+                </div>
+                {
+                this.state.columns.map((column) => {
+                  return (<div className='form-group m-form__group row'>
+                    <label className='col-lg-5 col-form-label'>
+                      {column.value}
+                    </label>
+                    { this.state.phoneColumn === column
+                      ? <div className='col-lg-5'>
+                        <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked='true' disabled='true' />
+                      </div>
+                      : <div className='col-lg-5'>
+                        <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked={this.state.dict[column.value]} />
+                      </div>
+                    }
+                  </div>)
+                })
+              }
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.saveColumns()
+                  }}>Save
+                </button>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.setState({
+                      phoneColumn: '',
+                      dict: {}
+                    })
+                    this.closeDialogFileColumns()
+                  }}>Cancel
+                </button>
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -335,7 +349,7 @@ class FileSelect extends React.Component {
                     <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                   </span>
                   <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                  {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
+                  {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={this.selectColumns} className='btn m-btn--pill btn-success'>Select Columns</button>}
                 </div>
               </div>
              : <div className='m-dropzone dropzone dz-clickable' id='m-dropzone-one'>
