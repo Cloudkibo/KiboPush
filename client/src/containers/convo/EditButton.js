@@ -15,7 +15,7 @@ import AlertContainer from 'react-alert'
 class EditButton extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('this.props', this.props)
+    console.log('EditButton this.props', this.props)
     this.state = {
       openPopover: false,
       title: this.props.data.button.type === 'element_share' ? 'Share' : this.props.data.button.title,
@@ -56,6 +56,7 @@ class EditButton extends React.Component {
     this.setButtonProperties = this.setButtonProperties.bind(this)
   }
   componentDidMount () {
+    console.log('this.props.data', this.props.data)
     if (this.props.data.button.type === 'postback') {
       if (this.props.data.button.payload && this.props.data.button.payload.action && this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
@@ -78,6 +79,10 @@ class EditButton extends React.Component {
     }
     this.setState({
       openPopover: false
+    })
+    this.props.onEdit({
+      id: this.props.index,
+      button: data
     })
     this.props.replyWithMessage(data)
   }
@@ -182,7 +187,7 @@ class EditButton extends React.Component {
       webviewurl: this.props.data.button.messenger_extensions ? this.props.data.button.url : '',
       webviewsize: this.props.data.button.webview_height_ratio ? this.props.data.button.webview_height_ratio : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      openCreateMessage: false
+      openCreateMessage: !!(!this.props.data.button.sequenceValue && this.props.data.button.type === 'postback')
     })
   }
   handleClose (e) {

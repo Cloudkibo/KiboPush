@@ -38,6 +38,7 @@ class CreateMessage extends React.Component {
 
   handleChange (broadcast, event) {
     this.setState(broadcast)
+    console.log('messengerAd broadcast', broadcast)
     if (event) {
       var jsonMessages = this.state.jsonMessages
       if (event.button) {
@@ -51,8 +52,10 @@ class CreateMessage extends React.Component {
       if (event.deletePayload) {
         jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
       }
+      console.log('selectedIndex', this.state.selectedIndex)
       for (var k = 0; k < jsonMessages.length; k++) {
         if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
+          console.log(`editing ${k} jsonMesssage`)
           jsonMessages[k].messageContent = broadcast.broadcast
         }
       }
@@ -69,8 +72,11 @@ class CreateMessage extends React.Component {
           $('.nav-link m-tabs__link').removeClass('active')
           $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
         /* eslint-enable */
+        let jsonMessages = this.state.jsonMessages
+        jsonMessages[this.state.selectedIndex].title = data.title
         this.setState({
-          convoTitle: this.state.jsonMessages[i].title,
+          jsonMessages: jsonMessages,
+          convoTitle: data.title,
           broadcast: this.state.jsonMessages[i].messageContent,
           selectedIndex: this.state.jsonMessages[i].jsonAdMessageId
         })
@@ -109,6 +115,7 @@ class CreateMessage extends React.Component {
       $('.nav-link.m-tabs__link').removeClass('active')
     /* eslint-enable */
     if (data.payload && data.payload !== '') {
+      console.log('showing payload message')
       this.showPayloadMessage(data)
     } else {
       var jsonMessages = this.setNewJsonMessage(data, this.state.jsonMessages)
