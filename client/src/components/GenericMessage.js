@@ -28,7 +28,7 @@ class GenericMessage extends React.Component {
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
-      pageId: '',
+      pageId: this.props.pageId,
       hiddenComponents: hiddenComponents
     }
     this.reset = this.reset.bind(this)
@@ -458,6 +458,7 @@ GenericMessage.propTypes = {
   'module': PropTypes.string,
   'pages': PropTypes.array,
   'replyWithMessage': PropTypes.func,
+  'pageId': PropTypes.string,
   'buttonActions': PropTypes.array.isRequired
 }
 
