@@ -48,9 +48,11 @@ function redirectToLogoutAccounts () {
   let redirectUrls = {
     'skiboengage': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://skiboengage.cloudkibo.com',
     'skibochat': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://skibochat.cloudkibo.com',
+    'skibolite': 'https://saccounts.cloudkibo.com/auth/logout?continue=http://skibolite.cloudkibo.com',
     'staging': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://staging.kibopush.com',
     'kiboengage': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kiboengage.cloudkibo.com',
     'kibochat': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kibochat.cloudkibo.com',
+    'kibolite': 'https://accounts.cloudkibo.com/auth/logout?continue=http:/kibolite.cloudkibo.com',
     'app': 'https://accounts.cloudkibo.com/auth/logout?continue=https://app.kibopush.com'
   }
   let products = Object.keys(redirectUrls)
