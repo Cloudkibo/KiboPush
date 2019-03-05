@@ -34,6 +34,9 @@ class AddChannel extends React.Component {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
+        if (this.facebookSubscriptionUrl.value.substring(this.facebookSubscriptionUrl.value.length - 1) === '/') {
+          this.facebookSubscriptionUrl.value = this.facebookSubscriptionUrl.value.substring(0, (this.facebookSubscriptionUrl.value.length - 1))
+        }
         var usernameFacebook = this.facebookSubscriptionUrl.value.substr(this.facebookSubscriptionUrl.value.lastIndexOf('/') + 1)
         if (!testUserName(usernameFacebook)) {
           incorrectUrl = true
@@ -44,13 +47,16 @@ class AddChannel extends React.Component {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
+        if (this.twitterSubscriptionUrl.value.substring(this.twitterSubscriptionUrl.value.length - 1) === '/') {
+          this.twitterSubscriptionUrl.value = this.twitterSubscriptionUrl.value.substring(0, (this.twitterSubscriptionUrl.value.length - 1))
+        }
         var userNameTwitter = this.twitterSubscriptionUrl.value.substr(this.twitterSubscriptionUrl.value.lastIndexOf('/') + 1)
         if (!testUserName(userNameTwitter)) {
           incorrectUrl = true
         }
       }
     } else if (type === 'wordpress') {
-      if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
+      if (!isWebURL(this.wordpressSubscriptionUrl.value) && (this.wordpressSubscriptionUrl.value.includes('facebook.com') || this.wordpressSubscriptionUrl.value.includes('twitter.com'))) {
         incorrectUrl = true
       }
     }
