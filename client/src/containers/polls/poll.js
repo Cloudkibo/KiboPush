@@ -116,7 +116,7 @@ class Poll extends React.Component {
   }
 
   closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
+    this.setState({isShowingModalDelete: false, pageNumber: 0 })
   }
   componentWillMount () {
    // this.props.loadSubscribersList()
@@ -431,11 +431,8 @@ class Poll extends React.Component {
                               className='btn btn-primary btn-sm'
                               onClick={() => {
                                 let loadData = {}
-                                if (this.state.pageNumber === 0) {
-                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                } else {
-                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                }
+                                loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                
                                 this.props.deletePoll(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
