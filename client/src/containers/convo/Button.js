@@ -299,7 +299,7 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openWebsite &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
@@ -308,7 +308,7 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openCreateMessage &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={() => {
                       this.setState({openCreateMessage: false})
                     }} />
@@ -322,7 +322,7 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openWebView &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
