@@ -205,7 +205,7 @@ class Survey extends React.Component {
   }
 
   closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
+    this.setState({isShowingModalDelete: false, pageNumber: 0 })
   }
   gotoCreate () {
     browserHistory.push({
@@ -412,11 +412,7 @@ class Survey extends React.Component {
                               className='btn btn-primary btn-sm'
                               onClick={() => {
                                 let loadData = {}
-                                if (this.state.pageNumber === 0) {
-                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                } else {
-                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                }
+                                loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
                                 this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete

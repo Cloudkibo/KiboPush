@@ -251,7 +251,6 @@ class Button extends React.Component {
             </PopoverHeader>
             <PopoverBody>
               <div>
-                <div style={{marginBottom: '10px'}}>Add up to {this.props.buttonLimit} {this.props.buttonLimit > 1 ? 'buttons' : 'button'}</div>
                 <h6>Button Title:</h6>
                 <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
