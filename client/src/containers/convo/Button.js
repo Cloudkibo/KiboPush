@@ -130,6 +130,17 @@ class Button extends React.Component {
 
   handleClose (e) {
     this.setState({openPopover: false, title: '', url: ''})
+    if (this.state.openWebsite === true) {
+      this.closeWebsite()
+    } else if (this.state.openWebView === true) {
+      this.closeWebview()
+    } else if (this.state.shareButton === true) {
+      this.closeShareButton()
+    } else if (this.state.openSubscribe === true) {
+      this.closeSubscribe()
+    } else if (this.state.openUnsubscribe === true) {
+      this.closeUnsubscribe()
+    }
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
