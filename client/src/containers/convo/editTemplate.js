@@ -15,7 +15,8 @@ class EditTemplate extends React.Component {
     this.state = {
       broadcast: [],
       convoTitle: 'Welcome Message',
-      buttonActions: ['open website', 'open webview', 'add share']
+      buttonActions: ['open website', 'open webview', 'add share'],
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     }
     this.goBack = this.goBack.bind(this)
     this.saveMessage = this.saveMessage.bind(this)
@@ -96,7 +97,7 @@ class EditTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                <GenericMessage broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} buttonActions={this.state.buttonActions} />
+                <GenericMessage pageId={this.state.pageId} broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} buttonActions={this.state.buttonActions} />
               </div>
             </div>
           </div>
@@ -108,6 +109,7 @@ class EditTemplate extends React.Component {
 
 function mapStateToProps (state) {
   return {
+      pages: (state.pagesInfo.pages)
   }
 }
 
