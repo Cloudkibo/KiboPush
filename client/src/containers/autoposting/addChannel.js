@@ -25,25 +25,36 @@ class AddChannel extends React.Component {
   }
   createAutoposting (type) {
     var autopostingData = {}
+    var isWebUrl
     var incorrectUrl = false
     this.setState({
       type: type
     })
     if (type === 'facebook') {
-      if (!isWebURL(this.facebookSubscriptionUrl.value) || !isFacebookPageUrl(this.facebookSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.facebookSubscriptionUrl.value)
+      var isFacebookPage = isFacebookPageUrl(this.facebookSubscriptionUrl.value)
+      if (!isWebUrl || !isFacebookPage) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
+        if (this.facebookSubscriptionUrl.value.substring(this.facebookSubscriptionUrl.value.length - 1) === '/') {
+          this.facebookSubscriptionUrl.value = this.facebookSubscriptionUrl.value.substring(0, (this.facebookSubscriptionUrl.value.length - 1))
+        }
         var usernameFacebook = this.facebookSubscriptionUrl.value.substr(this.facebookSubscriptionUrl.value.lastIndexOf('/') + 1)
         if (!testUserName(usernameFacebook)) {
           incorrectUrl = true
         }
       }
     } else if (type === 'twitter') {
-      if (!isWebURL(this.twitterSubscriptionUrl.value) || !isTwitterUrl(this.twitterSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.twitterSubscriptionUrl.value)
+      var isTwitterPage = isTwitterUrl(this.twitterSubscriptionUrl.value)
+      if (!isWebUrl || !isTwitterPage) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
+        if (this.twitterSubscriptionUrl.value.substring(this.twitterSubscriptionUrl.value.length - 1) === '/') {
+          this.twitterSubscriptionUrl.value = this.twitterSubscriptionUrl.value.substring(0, (this.twitterSubscriptionUrl.value.length - 1))
+        }
         var userNameTwitter = this.twitterSubscriptionUrl.value.substr(this.twitterSubscriptionUrl.value.lastIndexOf('/') + 1)
         if (!testUserName(userNameTwitter)) {
           incorrectUrl = true
@@ -52,6 +63,11 @@ class AddChannel extends React.Component {
     } else if (type === 'wordpress') {
       if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
         incorrectUrl = true
+      }
+      if (!incorrectUrl) {
+        if (this.wordpressSubscriptionUrl.value.includes('facebook.com') || this.wordpressSubscriptionUrl.value.includes('twitter.com')) {
+          incorrectUrl = true
+        }
       }
     }
     switch (type) {

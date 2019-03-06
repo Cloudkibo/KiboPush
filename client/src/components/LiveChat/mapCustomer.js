@@ -50,7 +50,6 @@ class MapCustomer extends React.Component {
       customerId: this.state.selectedCustomer.value
     }
     this.props.appendSubscriber(data, this.props.currentSession, this.props.msg)
-    this.props.updateCustomerId(this.state.selectedCustomer.value)
   }
 
   render () {

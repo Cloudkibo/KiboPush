@@ -17,7 +17,8 @@ class CreateMessage extends React.Component {
       buttonActions: ['open website', 'open webview', 'add share'],
       broadcast: [],
       convoTitle: 'Message',
-      itemMenus: []
+      itemMenus: [],
+      pageId: this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage[0])[0].pageId
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
@@ -204,6 +205,7 @@ class CreateMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          pageId={this.state.pageId}
           pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}

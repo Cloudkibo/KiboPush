@@ -68,6 +68,9 @@ class Sidebar extends Component {
     } else if (url.includes('localhost')) {
       console.log('localhost')
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true, businessGateway: true})
+    } else if (url === 'skibolite.cloudkibo.com' || url === 'kibolite.cloudkibo.com') {
+      console.log('kibolite')
+      this.setState({broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, livechat: false, smartReplies: false, waitingResponse: false, businessGateway: true, isKiboLite: true})
     }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
@@ -174,7 +177,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems () {
-    if (!this.state.isKiboChat) {
+    if (!this.state.isKiboChat && !this.state.isKiboLite) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -228,63 +231,71 @@ class Sidebar extends Component {
   }
 
   showAutomationItems () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-share' title='Automation' />
-          <span className='m-menu__link-text'>Automation</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Automation
-                </span>
-              </a>
-            </li>
-            {this.showSmartRespliesItem()}
-            {this.showAutoPostingItem()}
-            {this.showSequenceMessaging()}
-          </ul>
-        </div>
-      </li>
-    )
+    if (!this.state.isKiboLite) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-share' title='Automation' />
+            <span className='m-menu__link-text'>Automation</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Automation
+                  </span>
+                </a>
+              </li>
+              {this.showSmartRespliesItem()}
+              {this.showAutoPostingItem()}
+              {this.showSequenceMessaging()}
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
   }
 
   showGrowthToolsItems () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
-          <span className='m-menu__link-text'>Growth Tools</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Growth Tools
-                </span>
-              </a>
-            </li>
-            {this.showCommentCapture()}
-            {this.showInviteUsingPhoneNumber()}
-            {this.showInviteSubscribers()}
-            {this.showMessengerCode()}
-            {this.showDiscoverTabs()}
-            {this.showLandingPages()}
-            {this.showMessengerAds()}
-            {this.showMessengerRefURL()}
-            {this.showMessageUs()}
-          </ul>
-        </div>
-      </li>
-    )
+    if (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
+            <span className='m-menu__link-text'>Growth Tools</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Growth Tools
+                  </span>
+                </a>
+              </li>
+              {this.showCommentCapture()}
+              {this.showInviteUsingPhoneNumber()}
+              {this.showInviteSubscribers()}
+              {this.showMessengerCode()}
+              {this.showDiscoverTabs()}
+              {this.showLandingPages()}
+              {this.showMessengerAds()}
+              {this.showMessengerRefURL()}
+              {this.showMessageUs()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
   }
 
   showManagePagesItems () {

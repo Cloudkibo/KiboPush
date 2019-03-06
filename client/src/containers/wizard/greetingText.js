@@ -16,6 +16,7 @@ import ViewScreen from '../settings/viewScreen'
 import Header from './header'
 import Sidebar from './sidebar'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import {getCurrentProduct} from '../../utility/utils'
 
 const styles = {
   iconclass: {
@@ -171,15 +172,15 @@ class GreetingMessage extends React.Component {
   }
   componentDidMount () {
     this.selectPage()
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Greeting Text`;
+    document.title = `${title} | Greeting Text`
   }
   selectPage () {
     if (this.props.pages && this.props.pages.length > 0) {
@@ -267,7 +268,7 @@ class GreetingMessage extends React.Component {
               <div className='m-portlet__body m-portlet__body--no-padding'>
                 <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                   <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                    <Sidebar step='2' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
+                    <Sidebar step='2' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                     <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                       <div className='m-portlet__head'>
                         <div className='m-portlet__head-caption'>
@@ -360,7 +361,7 @@ class GreetingMessage extends React.Component {
                       </div>
                       <br />
                       <div className='col-9' />
-                          {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
+                      {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                              <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
                               <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>

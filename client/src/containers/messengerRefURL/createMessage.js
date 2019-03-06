@@ -85,6 +85,7 @@ class MessengerRefURLMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          pageId={this.props.messengerRefURL.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}

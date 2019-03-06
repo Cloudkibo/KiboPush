@@ -24,9 +24,12 @@ class CreateMessengerAd extends React.Component {
     this.updatePreview = this.updatePreview.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.switchSetupState = this.switchSetupState.bind(this)
+    console.log(props.location.state)
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
-        props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
+        props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview, () => {
+          this.updatePreview()
+        })
       }
     }
   }
@@ -62,8 +65,6 @@ class CreateMessengerAd extends React.Component {
     }
   }
   componentDidMount () {
-    this.setState({adTitle: this.props.messengerAd.title})
-    this.updatePreview()
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {

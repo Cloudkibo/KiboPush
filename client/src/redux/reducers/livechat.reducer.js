@@ -11,7 +11,6 @@ const initialState = {
 }
 
 export function liveChat (state = initialState, action) {
-  console.log('action type', action.type)
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {

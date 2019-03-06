@@ -53,7 +53,7 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: ''
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -179,10 +179,6 @@ class CreateConvo extends React.Component {
         comp.setState({showMessengerModal: false})
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
       }
-    })
-    let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
-    this.setState({
-      pageId: pageId
     })
   }
 
@@ -514,6 +510,7 @@ class CreateConvo extends React.Component {
                             setReset={reset => { this.reset = reset }}
                             convoTitle={this.state.convoTitle}
                             titleEditable
+                            pageId={this.state.pageId}
                             pages={this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
                         </div>

@@ -28,7 +28,7 @@ class GenericMessage extends React.Component {
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
-      pageId: '',
+      pageId: this.props.pageId,
       hiddenComponents: hiddenComponents
     }
     this.reset = this.reset.bind(this)
@@ -432,7 +432,7 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                    <div className='ui-block' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
@@ -458,6 +458,7 @@ GenericMessage.propTypes = {
   'module': PropTypes.string,
   'pages': PropTypes.array,
   'replyWithMessage': PropTypes.func,
+  'pageId': PropTypes.string,
   'buttonActions': PropTypes.array.isRequired
 }
 

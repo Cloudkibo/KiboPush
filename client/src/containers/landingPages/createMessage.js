@@ -84,6 +84,7 @@
             </div>
           </div>
           <GenericMessage
+            pageId={this.props.landingPage.pageId}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             convoTitle={this.state.convoTitle}

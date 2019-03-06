@@ -130,6 +130,17 @@ class Button extends React.Component {
 
   handleClose (e) {
     this.setState({openPopover: false, title: '', url: ''})
+    if (this.state.openWebsite === true) {
+      this.closeWebsite()
+    } else if (this.state.openWebView === true) {
+      this.closeWebview()
+    } else if (this.state.shareButton === true) {
+      this.closeShareButton()
+    } else if (this.state.openSubscribe === true) {
+      this.closeSubscribe()
+    } else if (this.state.openUnsubscribe === true) {
+      this.closeUnsubscribe()
+    }
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -251,7 +262,6 @@ class Button extends React.Component {
             </PopoverHeader>
             <PopoverBody>
               <div>
-                <div style={{marginBottom: '10px'}}>Add up to {this.props.buttonLimit} {this.props.buttonLimit > 1 ? 'buttons' : 'button'}</div>
                 <h6>Button Title:</h6>
                 <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
@@ -300,7 +310,7 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openWebsite &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
@@ -309,7 +319,7 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openCreateMessage &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={() => {
                       this.setState({openCreateMessage: false})
                     }} />
@@ -323,9 +333,12 @@ class Button extends React.Component {
                 }
                 {
                   this.state.openWebView &&
-                  <div className='card'>
+                  <div className='card' style={{width: '200px'}}>
                     <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
+                      <div>
+                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank'>here.</a>
+                      </div>
                       <div>
                         <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
                       </div>
