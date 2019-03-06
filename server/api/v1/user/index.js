@@ -23,5 +23,6 @@ router.get('/addAccountType', controller.addAccountType)
 router.post('/enableDelete', auth.isAuthenticated(), controller.enableDelete)
 router.get('/cancelDeletion', auth.isAuthenticated(), controller.cancelDeletion)
 router.post('/changeUIMode', auth.isAuthenticated(), controller.changeMode)
+router.get('/validateUserAccessToken', auth.isAuthenticated(), controller.validateUserAccessToken)
 
 module.exports = router
