@@ -44,6 +44,7 @@ class PushMessage extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <GenericMessage
           pages={[this.props.page ? this.props.page._id : null]}
+          pageId={this.props.page.pageId}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}

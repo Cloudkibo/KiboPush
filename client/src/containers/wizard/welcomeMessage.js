@@ -37,7 +37,8 @@ class EditTemplate extends React.Component {
       pageValue: '',
       previewMessage: '',
       welcomeMessage: false,
-      switchState: false
+      switchState: false,
+      pageId: this.props.pages.filter((page) => page._id === this.props.pages[0]._id)[0].pageId
     }
     props.getuserdetails()
     props.loadSubscribersList()
@@ -82,7 +83,9 @@ class EditTemplate extends React.Component {
       this.setState({pageValue: event})
       return
     }
-    this.setState({pageValue: event.target.value})
+
+    var pageId = this.props.pages.filter((page) => page._id === event.target.value)[0].pageId
+    this.setState({pageValue: event.target.value, pageId: pageId})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
         console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
@@ -254,6 +257,7 @@ class EditTemplate extends React.Component {
                       <center>
                         <GenericMessage
                           noDefaultHeight
+                          pageId={this.state.pageId}
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
