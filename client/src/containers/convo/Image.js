@@ -54,13 +54,7 @@ class Image extends React.Component {
   }
 
   setLoading () {
-    this.setState({loading: false}, () => {
-      console.log('this.image after finished loading', this.image)
-      if (this.image) {
-        console.log('image width after finished loading', this.image.width)
-        console.log('image height after finished loading', this.image.height)
-      }
-    })
+    this.setState({loading: false})
   }
 
   _onChange (images) {
@@ -110,6 +104,11 @@ class Image extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
+    }
+    if (this.image) {
+      console.log('image', this.image)
+      console.log('image width', this.image.width)
+      console.log('image height', this.image.height)
     }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>

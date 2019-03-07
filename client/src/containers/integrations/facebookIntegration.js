@@ -18,6 +18,7 @@ class FacebookIntegration extends React.Component {
     }
     this.updateShowIntegrations = this.updateShowIntegrations.bind(this)
     this.disconnectFacebook = this.disconnectFacebook.bind(this)
+    this.reconnectFacebook = this.reconnectFacebook.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
   }
 
@@ -27,6 +28,11 @@ class FacebookIntegration extends React.Component {
 
   disconnectFacebook () {
     this.setState({showModal: true})
+  }
+
+  reconnectFacebook () {
+    window.location.replace('/auth/facebook')
+    this.props.updateShowIntegrations({showIntegrations: false})
   }
 
   closeDialog () {
@@ -102,7 +108,7 @@ class FacebookIntegration extends React.Component {
               {
                 this.props.user && this.props.user.facebookInfo && this.props.user.connectFacebook
                 ? <div className='m-stack__item m-stack__item--center' style={{textAlign: 'center', paddingTop: 25}}>
-                  <a href='/auth/facebook' style={{borderColor: '#716aca'}} className='btn btn-outline-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                  <a href='#' onClick={this.reconnectFacebook} style={{borderColor: '#716aca'}} className='btn btn-outline-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                     <span>
                       <i className='la la-refresh' />
                       <span>Re-Connect My Facebook Account</span>
