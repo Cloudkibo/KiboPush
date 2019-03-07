@@ -54,13 +54,12 @@ class Image extends React.Component {
   }
 
   setLoading () {
-    this.setState({loading: false}, () => {
-      console.log('this.file after finished loading', this.file)
-      if (this.file) {
-        console.log('image width after finished loading', this.file.width)
-        console.log('image height after finished loading', this.file.height)
-      }
-    })
+    console.log('this.file after finished loading', this.image)
+    if (this.image) {
+      console.log('image width after finished loading', this.image.width)
+      console.log('image height after finished loading', this.image.height)
+    }
+    this.setState({loading: false})
   }
 
   _onChange (images) {
@@ -140,7 +139,7 @@ class Image extends React.Component {
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+              : <img ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }
