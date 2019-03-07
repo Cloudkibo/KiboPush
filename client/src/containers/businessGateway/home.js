@@ -19,6 +19,11 @@ class Home extends React.Component {
     this.state = {
       isSaveEnabled: false,
       page: this.props.pages ? this.props.pages[0] : null,
+      defaultMessage: [{
+        id: new Date().getTime(),
+        text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
+        componentType: 'text'
+      }],
       fileColumns: [],
       updateSegmentation: false,
       segmentationErrors: []
@@ -37,8 +42,14 @@ class Home extends React.Component {
     this.props.setDefaultCustomersInfo(defaultPushMessage.pushMesage)
   }
   updateMessageComponents (page) {
+    var pushMessage = [{
+      id: new Date().getTime(),
+      text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
+      componentType: 'text'
+    }]
     this.setState({
-      page: page
+      page: page,
+      defaultMessage: pushMessage
     })
   }
   setSaveEnable (customersInfo) {
@@ -261,7 +272,7 @@ class Home extends React.Component {
                           <FileSelect setSaveEnable={this.setSaveEnable} updateMessageComponents={this.updateMessageComponents} updateSegmentationConditions={this.updateSegmentationConditions} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} handleNext={this.handleNext} handleBack={this.handleBack} />
+                          <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} defaultMessage={this.state.defaultMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_3'>
                           <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} handleNext={this.handleNext} handleBack={this.handleBack} />

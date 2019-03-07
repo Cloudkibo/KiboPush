@@ -12,22 +12,22 @@ class PushMessage extends React.Component {
     super(props, context)
     this.state = {
       convoTitle: 'Push Message',
-      broadcast: this.props.customersInfo ? this.props.customersInfo.pushMessage : [],
       buttonActions: ['open website', 'open webview', 'add share']
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleNext = this.handleNext.bind(this)
   }
-  handleChange (broadcast) {
-    this.setState(broadcast)
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'pushMessage', this.state.broadcast, this.props.setSaveEnable)
+  handleChange (message) {
+    var broadcast = message.broadcast
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'pushMessage', broadcast, this.props.setSaveEnable)
   }
   handleNext () {
-    if (this.state.broadcast.length < 1) {
+    var broadcast = this.props.customersInfo.pushMessage
+    if (broadcast.length < 1) {
       this.msg.error('Create a message to send to your customers')
       return
     }
-    if (validateFields(this.state.broadcast, this.msg)) {
+    if (validateFields(broadcast, this.msg)) {
       this.props.handleNext('pushMessage')
     }
   }
@@ -45,7 +45,7 @@ class PushMessage extends React.Component {
         <GenericMessage
           pages={[this.props.page ? this.props.page._id : null]}
           pageId={this.props.page.pageId}
-          broadcast={this.state.broadcast}
+          broadcast={this.props.defaultMessage}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
           hideUserOptions
