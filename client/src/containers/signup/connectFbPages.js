@@ -10,7 +10,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   addPages,
   enablePage,
-  removePageInAddPage
+  removePageInAddPage,
+  loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import $ from 'jquery'
@@ -24,6 +25,9 @@ class AddPage extends React.Component {
       showAlert: false,
       alertmsg: '',
       showWarning: false
+    }
+    if (!props.pages) {
+      props.loadMyPagesList()
     }
     this.closeDialog = this.closeDialog.bind(this)
   }
@@ -178,7 +182,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
-    addPages: addPages
+    addPages: addPages,
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddPage)
