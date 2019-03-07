@@ -60,10 +60,10 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
-    console.log('this.refs.file', this.refs.file)
-    console.log('image width', this.refs.file.width)
-    console.log('image height', this.refs.file.height)
-    var file = this.refs.file.files[0]
+    console.log('this.file', this.file)
+    console.log('image width', this.file.width)
+    console.log('image height', this.file.height)
+    var file = this.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -77,9 +77,9 @@ class Image extends React.Component {
         this.setState({
           imgSrc: [reader.result]
         }, () => {
-          console.log('this.refs.file after onloadend', this.refs.file)
-          console.log('image width after onloadend', this.refs.file.width)
-          console.log('image height after onloadend', this.refs.file.height)
+          console.log('this.file after onloadend', this.file)
+          console.log('image width after onloadend', this.file.width)
+          console.log('image height after onloadend', this.file.height)
         })
       }
 
@@ -125,7 +125,7 @@ class Image extends React.Component {
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <input
-              ref='file'
+              ref={el => { this.file = el }}
               type='file'
               name='user[image]'
               multiple='true'
