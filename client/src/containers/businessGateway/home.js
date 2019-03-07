@@ -44,7 +44,7 @@ class Home extends React.Component {
   updateMessageComponents (page) {
     var pushMessage = [{
       id: new Date().getTime(),
-      text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
+      text: `Please subscribe to my page '${page.pageName}' by typing 'Yes'`,
       componentType: 'text'
     }]
     this.setState({
@@ -153,7 +153,7 @@ class Home extends React.Component {
       phoneColumn: '',
       pushMessage: [{
         id: new Date().getTime(),
-        text: `Please subscribe to my page by typing 'Yes'`,
+        text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
         componentType: 'text'
       }]
     }}
