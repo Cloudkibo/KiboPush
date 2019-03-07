@@ -142,7 +142,7 @@ class Home extends React.Component {
       phoneColumn: '',
       pushMessage: [{
         id: new Date().getTime(),
-        text: 'Subscribe to page',
+        text: `Please subscribe to my page by typing 'Yes'`,
         componentType: 'text'
       }]
     }}

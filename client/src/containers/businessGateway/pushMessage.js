@@ -48,6 +48,7 @@ class PushMessage extends React.Component {
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
+          hideUserOptions
           buttonActions={this.state.buttonActions} />
         <Footer tab='pushMessage' handleNext={this.handleNext} handleBack={this.props.handleBack} />
       </div>
