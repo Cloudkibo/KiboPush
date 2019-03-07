@@ -217,6 +217,14 @@ class Home extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding broadcasts through KiboLite? Here is the <a href='http://kibopush.com/kibolite/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
@@ -224,7 +232,7 @@ class Home extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Business Gateway
+                        Broadcast
                       </h3>
                     </div>
                   </div>
