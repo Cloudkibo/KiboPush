@@ -26,6 +26,7 @@ class AddPage extends React.Component {
       alertmsg: '',
       showWarning: false
     }
+    console.log('AddPage props constructor', props)
     if (!props.pages) {
       props.loadMyPagesList()
     }

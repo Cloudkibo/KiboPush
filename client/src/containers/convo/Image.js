@@ -54,12 +54,13 @@ class Image extends React.Component {
   }
 
   setLoading () {
-    console.log('this.file after finished loading', this.image)
-    if (this.image) {
-      console.log('image width after finished loading', this.image.width)
-      console.log('image height after finished loading', this.image.height)
-    }
-    this.setState({loading: false})
+    this.setState({loading: false}, () => {
+      console.log('this.image after finished loading', this.image)
+      if (this.image) {
+        console.log('image width after finished loading', this.image.width)
+        console.log('image height after finished loading', this.image.height)
+      }
+    })
   }
 
   _onChange (images) {
