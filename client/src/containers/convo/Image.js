@@ -66,10 +66,12 @@ class Image extends React.Component {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
         return
       }
+      console.log('image file', file)
       var reader = new FileReader()
       reader.readAsDataURL(file)
 
       reader.onloadend = function (e) {
+        console.log('FileReader', reader)
         this.setState({
           imgSrc: [reader.result]
         })
