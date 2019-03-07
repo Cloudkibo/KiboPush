@@ -43,7 +43,8 @@ class Media extends React.Component {
       file: '',
       previewUrl: '',
       mediaType: '',
-      styling: {minHeight: 30, maxWidth: 400}
+      styling: {minHeight: 30, maxWidth: 400},
+      buttonActions: this.props.buttonActions.slice(0, 2)
     }
   }
   showDialog (page) {
@@ -337,10 +338,10 @@ class Media extends React.Component {
           }
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} pageId={this.props.pageId} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
-          <Button buttonLimit={3} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          <Button buttonLimit={3} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} pages={this.props.pages} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
       </div>
     )

@@ -41,7 +41,7 @@ class Text extends React.Component {
       styling: {
         minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'
       },
-      buttonActions: this.state.buttonActions.splice(0, 1)
+      buttonActions: this.props.buttonActions.slice(0, 2)
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
