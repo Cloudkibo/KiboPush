@@ -61,6 +61,8 @@ class Image extends React.Component {
   // Assuming only image
     console.log('in _onChange')
     console.log('this.refs.file', this.refs.file)
+    console.log('image width', this.refs.file.width)
+    console.log('image height', this.refs.file.height)
     var file = this.refs.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -73,9 +75,6 @@ class Image extends React.Component {
 
       reader.onloadend = function (e) {
         console.log('FileReader', reader)
-        console.log('this.refs.file after onloadend', this.refs.file)
-        console.log('image width', this.refs.file.width)
-        console.log('image height', this.refs.file.height)
         this.setState({
           imgSrc: [reader.result]
         })
