@@ -73,12 +73,15 @@ class Image extends React.Component {
       var reader = new FileReader()
       reader.readAsDataURL(file)
 
-      reader.onloadend = function (e) {
+      reader.onloadend = (e) => {
         console.log('FileReader', reader)
+        console.log('this.refs.file after onloadend', this.refs.file)
+        console.log('image width after onloadend', this.refs.file.width)
+        console.log('image height after onloadend', this.refs.file.height)
         this.setState({
           imgSrc: [reader.result]
         })
-      }.bind(this)
+      }
 
       this.setState({
         showPreview: false,
