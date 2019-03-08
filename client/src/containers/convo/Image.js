@@ -115,7 +115,7 @@ class Image extends React.Component {
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {!this.state.loading &&
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 15 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 20 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
