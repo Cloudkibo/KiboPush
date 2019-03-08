@@ -319,7 +319,7 @@ class FacebookPosts extends React.Component {
     })
   }
   replyChange (e) {
-    if ((e.target.value && e.target.value !== '') && (this.state.facebookPost !== '' || this.state.attachments.length > 0)) {
+    if ((e.target.value && e.target.value !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
       })
