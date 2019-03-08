@@ -1,4 +1,9 @@
 export function getSubList (data, conditions, pages, joiningCondition, responses) {
+  console.log('data', data)
+  console.log('conditions', conditions)
+  console.log('pages', pages)
+  console.log('joiningCondition', joiningCondition)
+  console.log('responses', responses)
   var filteredData = []
   var field = ''
   var text = ''
@@ -18,6 +23,7 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
             }
           }
         } else if (field === 'tag') {
+          console.log('obj.tags.length', obj.tags.length)
           for (let i = 0; i < obj.tags.length; i++) {
             let tag = obj.tags[i]
             if (tag.toLowerCase() === text.toLowerCase()) {

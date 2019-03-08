@@ -151,7 +151,7 @@ class FacebookPosts extends React.Component {
   removeAttachment (attachment) {
     console.log('remove attachment', attachment)
     var id = attachment.id
-    var facebookPost = this.state.facebookPost
+    var facebookPost = []
     var attachments = []
     for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
@@ -318,7 +318,7 @@ class FacebookPosts extends React.Component {
     })
   }
   replyChange (e) {
-    if ((e.target.value && e.target.value !== '') && (this.state.facebookPost !== '' || this.state.attachments.length > 0)) {
+    if ((e.target.value && e.target.value !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
       })
@@ -547,7 +547,7 @@ class FacebookPosts extends React.Component {
                                 this.refs.selectImage.click()
                               }} />
                             </span>
-                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
+                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
                               ref='selectImage' style={styles.inputf} />
                           </span>
                           {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>

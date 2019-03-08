@@ -507,7 +507,7 @@ class Sidebar extends Component {
   }
 
   showAutoPostingItem () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
@@ -917,7 +917,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Business Gateway
+              Broadcast
             </span>
           </Link>
         </li>
@@ -951,6 +951,7 @@ class Sidebar extends Component {
                   {this.showOperationalDashboard()}
                   {this.showDashboard()}
                   {this.showSubscribersItem()}
+                  {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
@@ -958,7 +959,6 @@ class Sidebar extends Component {
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
                   {this.showSettings()}
-                  {this.showBusinessGateway()}
                   {this.showUserGuide()}
                 </ul>
               }

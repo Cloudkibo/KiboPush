@@ -30,15 +30,15 @@ class AutopostingMessages extends React.Component {
 
   componentDidMount () {
     this.scrollToTop()
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Autoposting Messages`;
+    document.title = `${title} | Autoposting Messages`
   }
 
   displayData (n, messages) {
@@ -60,11 +60,27 @@ class AutopostingMessages extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'first', last_id: 'none', number_of_records: 10})
+      this.props.loadAutopostingMessages(this.props.location.state.id, {first_page: 'first', last_id: 'none', number_of_records: 10})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'next', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
+      this.props.loadAutopostingMessages(this.props.location.state.id,
+        {
+          first_page: 'next',
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none',
+          number_of_records: 10
+        }
+      )
     } else {
-      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'previous', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[0]._id : 'none', number_of_records: 10})
+      this.props.loadAutopostingMessages(this.props.location.state.id,
+        {
+          first_page: 'previous',
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[0]._id : 'none',
+          number_of_records: 10
+        }
+      )
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.autoposting_messages)

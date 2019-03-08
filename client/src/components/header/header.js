@@ -192,9 +192,9 @@ class Header extends React.Component {
         'staging': 'https://skibocommerce.cloudkibo.com/',
         'production': 'https://kibocommerce.cloudkibo.com/'
       },
-      'kiboapi': {
-        'staging': 'https://skiboapi.cloudkibo.com/',
-        'production': 'https://kiboapi.cloudkibo.com/'
+      'KiboLite': {
+        'staging': 'http://skibolite.cloudkibo.com/',
+        'production': 'http://kibolite.cloudkibo.com/'
       }
     }
 
@@ -557,9 +557,9 @@ class Header extends React.Component {
 
                                       {
                                         (!window.location.hostname.toLowerCase().includes('KiboLite'))
-                                          ? <a href='#KiboLite' className='m-nav-grid__item'>
+                                          ? <a href='#KiboLite' onClick={() => { this.goToSubProduct('KiboLite') }} className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-truck' />
-                                            <span className='m-nav-grid__text'>KiboLite(Coming Soon)</span>
+                                            <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
                                           : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-truck' />

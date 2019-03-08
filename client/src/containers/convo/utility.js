@@ -74,6 +74,12 @@
         }
       }
       if (broadcast[i].componentType === 'gallery') {
+        console.log('in gallery component')
+        if (broadcast[i].cards.length === 0) {
+          msg.error('Card in gallery must have at least title, Substitle, image and button.')
+          isValid = false
+          break
+        }
         for (let j = 0; j < broadcast[i].cards.length; j++) {
           if (!broadcast[i].cards[j].buttons) {
             msg.error('Card in gallery must have at least one button.')
