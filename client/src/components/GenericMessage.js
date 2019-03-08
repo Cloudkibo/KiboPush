@@ -335,7 +335,7 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
       },
       'gallery': {
