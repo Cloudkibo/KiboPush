@@ -421,7 +421,7 @@ class CreateSubList extends React.Component {
           <option disabled selected value=''>Select a Tag</option>
           {
             this.props.tags && this.props.tags.length > 0 && this.props.tags.map((tag, i) => (
-              <option key={i} value={tag._id}>{tag.tag}</option>
+              <option key={i} value={tag.tag}>{tag.tag}</option>
             ))
         }
         </select>
