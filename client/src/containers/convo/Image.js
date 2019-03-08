@@ -76,6 +76,12 @@ class Image extends React.Component {
         console.log('FileReader', reader)
         this.setState({
           imgSrc: [reader.result]
+        }, () => {
+          console.log('this.image in onloadend', this.image)
+          if (this.image) {
+            console.log('image width in onloadend', this.image.width)
+            console.log('image height in onloadend', this.image.height)
+          }
         })
       }
 
@@ -104,11 +110,6 @@ class Image extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
-    }
-    console.log('this.image in render', this.image)
-    if (this.image) {
-      console.log('image width in render', this.image.width)
-      console.log('image height in render', this.image.height)
     }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
