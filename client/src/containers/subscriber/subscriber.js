@@ -1288,9 +1288,9 @@ class Subscriber extends React.Component {
       <div>
         <CustomFields />
         <CreateCustomField />
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: '100'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -1311,14 +1311,14 @@ class Subscriber extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-subheader '>
+          <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Subscribers</h3>
             </div>
           </div>
         </div>
-        <div className='m-content'>
+          <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&
             <AlertMessage type='page' />
@@ -2077,7 +2077,7 @@ class Subscriber extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+        </div>
       </div>
     )
   }

@@ -32,7 +32,7 @@ class Image extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.image) {
+    if (this.props.image && this.props.image.url) {
       console.log('in componentDidMount of Image', this.props.image)
       this.setState({imgSrc: this.props.image.url, showPreview: true})
       if (this.props.pages) {
