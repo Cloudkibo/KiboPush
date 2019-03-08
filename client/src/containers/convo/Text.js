@@ -209,7 +209,7 @@ class Text extends React.Component {
         }
         </div>
       }
-        { (this.props.buttonActions.indexOf('create message') === -1) &&
+        { (!this.props.hideUserOptions) &&
           <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
             <PopoverBody>
               <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
@@ -218,7 +218,7 @@ class Text extends React.Component {
             </PopoverBody>
           </Popover>
         }
-        { (this.props.buttonActions.indexOf('create message') === -1) &&
+        { (!this.props.hideUserOptions) &&
         <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: (-75 - (35 * (this.state.numOfButtons * 0.915))), marginRight: '5px'}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',

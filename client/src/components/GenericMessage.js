@@ -327,7 +327,7 @@ class GenericMessage extends React.Component {
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
         handler: () => { this.handleText({id: componentId, text: '', button: []}) }
       },
       'image': {
@@ -459,7 +459,8 @@ GenericMessage.propTypes = {
   'pages': PropTypes.array,
   'replyWithMessage': PropTypes.func,
   'pageId': PropTypes.string,
-  'buttonActions': PropTypes.array.isRequired
+  'buttonActions': PropTypes.array.isRequired,
+  'hideUserOptions': PropTypes.array.bool
 }
 
 GenericMessage.defaultProps = {
