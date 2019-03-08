@@ -151,7 +151,7 @@ class FacebookPosts extends React.Component {
   removeAttachment (attachment) {
     console.log('remove attachment', attachment)
     var id = attachment.id
-    var facebookPost = this.state.facebookPost
+    var facebookPost = []
     var attachments = []
     for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
@@ -163,6 +163,7 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
+    console.log('facebookPost', facebookPost)
     console.log('attachments', attachments)
   }
   handleUpload (res, fileData) {
@@ -318,7 +319,7 @@ class FacebookPosts extends React.Component {
     })
   }
   replyChange (e) {
-    if ((e.target.value && e.target.value !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
+    if ((e.target.value && e.target.value !== '') && (this.state.facebookPost !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
       })
