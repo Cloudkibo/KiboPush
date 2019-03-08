@@ -507,7 +507,7 @@ class Sidebar extends Component {
   }
 
   showAutoPostingItem () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
