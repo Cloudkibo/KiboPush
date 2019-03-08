@@ -151,7 +151,7 @@ class FacebookPosts extends React.Component {
   removeAttachment (attachment) {
     console.log('remove attachment', attachment)
     var id = attachment.id
-    var facebookPost = this.state.facebookPost
+    var facebookPost = []
     var attachments = []
     for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
