@@ -219,8 +219,14 @@ class Card extends React.Component {
       })
       if (this.state.checkbox) {
         this.props.topElementStyle('LARGE')
+        this.setState({
+          openPopover: false
+        })
       } else {
         this.props.topElementStyle('compact')
+        this.setState({
+          openPopover: false
+        })
       }
     }
   }
