@@ -57,20 +57,9 @@ class Image extends React.Component {
     this.setState({loading: false})
   }
 
-  componentDidUpdate () {
-    console.log('this.image in componentDidUpdate', this.image)
-    if (this.image) {
-      console.log('image width in componentDidUpdate', this.image.width)
-      console.log('image height in componentDidUpdate', this.image.height)
-    }
-  }
-
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
-    console.log('this.file', this.file)
-    console.log('image width', this.file.width)
-    console.log('image height', this.file.height)
     var file = this.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -104,6 +93,13 @@ class Image extends React.Component {
 
   // TODO: concat files
   }
+
+  onImgLoad = ({ target: img }) => {
+    console.log('image after load', {
+      width: img.width,
+      height: img.height
+    })
+  };
 
   render () {
     var alertOptions = {
@@ -142,7 +138,7 @@ class Image extends React.Component {
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+              : <img onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }
