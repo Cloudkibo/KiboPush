@@ -96,10 +96,7 @@ class Image extends React.Component {
   }
 
   onImgLoad (e) {
-    console.log('image after load', {
-      width: e.target.img.width,
-      height: e.target.img.height
-    })
+    console.log('image event after load', e)
   }
 
   render () {
