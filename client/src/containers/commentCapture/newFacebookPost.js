@@ -128,6 +128,16 @@ class FacebookPosts extends React.Component {
         selectedPage: selectedPage
       })
     }
+
+    if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
+      this.setState({
+        disabled: false
+      })
+    } else {
+      this.setState({
+        disabled: true
+      })
+    }
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
