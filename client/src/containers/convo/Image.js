@@ -96,6 +96,7 @@ class Image extends React.Component {
   }
 
   onImgLoad (e) {
+    e.persist()
     console.log('image event after load', e)
   }
 
