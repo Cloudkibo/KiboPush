@@ -27,7 +27,9 @@ class Image extends React.Component {
     this.state = {
       imgSrc: '',
       showPreview: false,
-      loading: false
+      loading: false,
+      imgWidth: null,
+      imgHeight: null
     }
     this.onImgLoad = this.onImgLoad.bind(this)
   }
@@ -98,6 +100,7 @@ class Image extends React.Component {
   onImgLoad (e) {
     e.persist()
     console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
+    this.setState({imgWidth: e.target.width, imgHeight: e.target.height})
   }
 
   render () {
@@ -112,13 +115,13 @@ class Image extends React.Component {
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {!this.state.loading &&
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 15 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
         }
-        <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
+        <div className='ui-block hoverborder' style={(this.state.imgWidth ? {minHeight: (this.state.imgHeight + 25) + 'px', minWidth: (this.state.imgWidth + 25) + 'px'} : {minHeight: 100, maxWidth: 400, padding: 25})}>
           {
           this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
