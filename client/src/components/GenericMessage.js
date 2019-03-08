@@ -327,15 +327,15 @@ class GenericMessage extends React.Component {
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
         handler: () => { this.handleText({id: componentId, text: '', button: []}) }
       },
       'image': {
-        component: (<Image id={componentId} pages={this.props.pages} image={broadcast.image_url} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
+        component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} button={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
       },
       'gallery': {
@@ -459,7 +459,8 @@ GenericMessage.propTypes = {
   'pages': PropTypes.array,
   'replyWithMessage': PropTypes.func,
   'pageId': PropTypes.string,
-  'buttonActions': PropTypes.array.isRequired
+  'buttonActions': PropTypes.array.isRequired,
+  'hideUserOptions': PropTypes.array.bool
 }
 
 GenericMessage.defaultProps = {

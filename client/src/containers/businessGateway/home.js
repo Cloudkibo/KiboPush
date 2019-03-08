@@ -19,6 +19,11 @@ class Home extends React.Component {
     this.state = {
       isSaveEnabled: false,
       page: this.props.pages ? this.props.pages[0] : null,
+      defaultMessage: [{
+        id: new Date().getTime(),
+        text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
+        componentType: 'text'
+      }],
       fileColumns: [],
       updateSegmentation: false,
       segmentationErrors: []
@@ -37,8 +42,14 @@ class Home extends React.Component {
     this.props.setDefaultCustomersInfo(defaultPushMessage.pushMesage)
   }
   updateMessageComponents (page) {
+    var pushMessage = [{
+      id: new Date().getTime(),
+      text: `Please subscribe to my page '${page.pageName}' by typing 'Yes'`,
+      componentType: 'text'
+    }]
     this.setState({
-      page: page
+      page: page,
+      defaultMessage: pushMessage
     })
   }
   setSaveEnable (customersInfo) {
@@ -142,7 +153,7 @@ class Home extends React.Component {
       phoneColumn: '',
       pushMessage: [{
         id: new Date().getTime(),
-        text: 'Subscribe to page',
+        text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
         componentType: 'text'
       }]
     }}
@@ -217,6 +228,14 @@ class Home extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding broadcasts through KiboLite? Here is the <a href='http://kibopush.com/kibolite/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
@@ -224,7 +243,7 @@ class Home extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Business Gateway
+                        Broadcast
                       </h3>
                     </div>
                   </div>
@@ -253,7 +272,7 @@ class Home extends React.Component {
                           <FileSelect setSaveEnable={this.setSaveEnable} updateMessageComponents={this.updateMessageComponents} updateSegmentationConditions={this.updateSegmentationConditions} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} handleNext={this.handleNext} handleBack={this.handleBack} />
+                          <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} defaultMessage={this.state.defaultMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_3'>
                           <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} handleNext={this.handleNext} handleBack={this.handleBack} />

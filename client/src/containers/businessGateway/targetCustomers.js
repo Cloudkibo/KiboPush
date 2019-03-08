@@ -32,7 +32,7 @@ class TargetCustomers extends React.Component {
     this.setState({
       conditions: conditions
     })
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', [])
   }
   changeCondition (e, index) {
     let conditions = this.state.conditions

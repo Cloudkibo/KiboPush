@@ -8,6 +8,7 @@ import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import GenericMessage from '../../components/GenericMessage'
+import { validateFields } from '../convo/utility'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
@@ -28,6 +29,9 @@ class EditTemplate extends React.Component {
   }
 
   saveMessage () {
+    if (!validateFields(this.state.broadcast, this.msg)) {
+      return
+    }
     this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: this.state.broadcast}, this.msg)
   }
 
@@ -109,7 +113,7 @@ class EditTemplate extends React.Component {
 
 function mapStateToProps (state) {
   return {
-      pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages)
   }
 }
 
