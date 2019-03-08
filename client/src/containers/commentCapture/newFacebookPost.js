@@ -163,7 +163,6 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
-    console.log('facebookPost', facebookPost)
     console.log('attachments', attachments)
   }
   handleUpload (res, fileData) {
