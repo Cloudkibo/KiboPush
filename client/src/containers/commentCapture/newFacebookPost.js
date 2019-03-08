@@ -547,7 +547,7 @@ class FacebookPosts extends React.Component {
                                 this.refs.selectImage.click()
                               }} />
                             </span>
-                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
+                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
                               ref='selectImage' style={styles.inputf} />
                           </span>
                           {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
