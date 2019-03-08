@@ -29,6 +29,7 @@ class Image extends React.Component {
       showPreview: false,
       loading: false
     }
+    this.onImgLoad = this.onImgLoad.bind(this)
   }
 
   componentDidMount () {
@@ -94,12 +95,12 @@ class Image extends React.Component {
   // TODO: concat files
   }
 
-  onImgLoad = ({ target: img }) => {
+  onImgLoad (e) {
     console.log('image after load', {
-      width: img.width,
-      height: img.height
+      width: e.target.img.width,
+      height: e.target.img.height
     })
-  };
+  }
 
   render () {
     var alertOptions = {
