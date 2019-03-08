@@ -57,6 +57,14 @@ class Image extends React.Component {
     this.setState({loading: false})
   }
 
+  componentDidUpdate () {
+    console.log('this.image in componentDidUpdate', this.image)
+    if (this.image) {
+      console.log('image width in componentDidUpdate', this.image.width)
+      console.log('image height in componentDidUpdate', this.image.height)
+    }
+  }
+
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
@@ -76,12 +84,6 @@ class Image extends React.Component {
         console.log('FileReader', reader)
         this.setState({
           imgSrc: [reader.result]
-        }, () => {
-          console.log('this.image in onloadend', this.image)
-          if (this.image) {
-            console.log('image width in onloadend', this.image.width)
-            console.log('image height in onloadend', this.image.height)
-          }
         })
       }
 
