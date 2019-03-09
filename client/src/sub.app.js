@@ -81,6 +81,9 @@ class App extends Component {
         )
       }
     }, 500)
+    return (
+      {interval}
+    )
   }
 }
 
