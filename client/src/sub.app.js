@@ -12,11 +12,18 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      path: '/'
+      path: '/',
+      loading: true
     }
   }
 
   componentDidMount () {
+    let interval = setInterval(() => {
+      if (auth.loggedIn()) {
+        this.setState({loading: false})
+        clearInterval(interval)
+      }
+    }, 500)
     this.unlisten = browserHistory.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
@@ -45,44 +52,34 @@ class App extends Component {
     return false
   }
   render () {
-    var interval = setInterval(() => {
-      if (auth.loggedIn()) {
-        clearInterval(interval)
-        return (
-          <div>
-            { ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
-               ? <div>
-                 <Header />
-                 <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                   <Sidebar />
-                   { this.props.children }
-                 </div>
-               </div>
-               : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) > -1
-               ? <div>
-                 <SimpleHeader />
-                 <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                   { this.props.children }
-                 </div>
-               </div>
-               : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                 { this.props.children }
-               </div>
-            }
-          </div>
-        )
-      } else {
-        return (
-          <div className='align-center'>
+    return (
+      <div>
+        { this.state.loading
+          ? <div className='align-center'>
             <center>
               <Halogen.RingLoader color='#FF5E3A' />
             </center>
           </div>
-        )
-      }
-    }, 500)
-    return (
-      {interval}
+          : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
+           ? <div>
+             <Header />
+             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+               <Sidebar />
+               { this.props.children }
+             </div>
+           </div>
+           : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) > -1
+           ? <div>
+             <SimpleHeader />
+             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+               { this.props.children }
+             </div>
+           </div>
+           : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+             { this.props.children }
+           </div>
+        }
+      </div>
     )
   }
 }
