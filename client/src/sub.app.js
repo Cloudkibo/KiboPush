@@ -44,29 +44,33 @@ class App extends Component {
     return false
   }
   render () {
-    return (
-      <div>
-        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
-           ? <div>
-             <Header />
-             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               <Sidebar />
-               { this.props.children }
-             </div>
-           </div>
-           : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) > -1
-           ? <div>
-             <SimpleHeader />
-             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               { this.props.children }
-             </div>
-           </div>
-           : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-             { this.props.children }
-           </div>
-        }
-      </div>
-    )
+    setInterval(() => {
+      if (auth.loggedIn()) {
+        return (
+          <div>
+            { ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
+               ? <div>
+                 <Header />
+                 <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+                   <Sidebar />
+                   { this.props.children }
+                 </div>
+               </div>
+               : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) > -1
+               ? <div>
+                 <SimpleHeader />
+                 <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+                   { this.props.children }
+                 </div>
+               </div>
+               : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+                 { this.props.children }
+               </div>
+            }
+          </div>
+        )
+      }
+    }, 500)
   }
 }
 
