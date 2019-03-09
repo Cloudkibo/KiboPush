@@ -4,6 +4,7 @@ import Header from './components/header/header'
 import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
+import Halogen from 'halogen'
 import { browserHistory } from 'react-router'
 import $ from 'jquery'
 
@@ -68,6 +69,14 @@ class App extends Component {
                  { this.props.children }
                </div>
             }
+          </div>
+        )
+      } else {
+        return (
+          <div className='align-center'>
+            <center>
+              <Halogen.RingLoader color='#FF5E3A' />
+            </center>
           </div>
         )
       }
