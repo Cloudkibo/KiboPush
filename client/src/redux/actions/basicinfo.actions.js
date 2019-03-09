@@ -178,7 +178,8 @@ export function updateShowIntegrations (data, browserHistory) {
       }
       if (browserHistory) {
         browserHistory.push({
-          pathname: '/dashboard'
+          pathname: '/dashboard',
+          state: {loadScript: true}
         })
       }
     })
