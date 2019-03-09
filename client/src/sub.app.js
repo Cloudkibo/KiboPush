@@ -44,8 +44,9 @@ class App extends Component {
     return false
   }
   render () {
-    setInterval(() => {
+    var interval = setInterval(() => {
       if (auth.loggedIn()) {
+        clearInterval(interval)
         return (
           <div>
             { ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
