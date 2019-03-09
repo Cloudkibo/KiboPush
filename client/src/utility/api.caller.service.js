@@ -21,6 +21,7 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
     })
   }
   let fetchUrl = ''
+  console.log('headers sent from client', headers)
   if (type === 'kibopush') {
     fetchUrl = `${API_URL}/${endpoint}`
   } else if (type === 'accounts') {

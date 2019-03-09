@@ -147,7 +147,7 @@ class Dashboard extends React.Component {
       }
       if (this.props.graphData.sessionsgraphdata) {
         dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
-      }    
+      }
     }
    // console.log('this.props.topPages', this.props.topPages)
     if (this.props.topPages && this.props.topPages.length > 1) {
@@ -417,7 +417,6 @@ class Dashboard extends React.Component {
       // let addScript1 = document.createElement('script')
       // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       // document.body.appendChild(addScript1)
-
     }
     // if (this.props.currentPage) {
     //   console.log('updating sentVsSeen currentPage')
