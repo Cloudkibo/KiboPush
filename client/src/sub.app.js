@@ -4,7 +4,6 @@ import Header from './components/header/header'
 import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
-import Halogen from 'halogen'
 import { browserHistory } from 'react-router'
 import $ from 'jquery'
 
@@ -12,18 +11,11 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      path: '/',
-      loading: true
+      path: '/'
     }
   }
 
   componentDidMount () {
-    let interval = setInterval(() => {
-      if (auth.loggedIn()) {
-        this.setState({loading: false})
-        clearInterval(interval)
-      }
-    }, 500)
     this.unlisten = browserHistory.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
@@ -54,13 +46,7 @@ class App extends Component {
   render () {
     return (
       <div>
-        { this.state.loading
-          ? <div className='align-center'>
-            <center>
-              <Halogen.RingLoader color='#FF5E3A' />
-            </center>
-          </div>
-          : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
+        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
