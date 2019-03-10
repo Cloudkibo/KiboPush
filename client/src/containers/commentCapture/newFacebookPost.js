@@ -149,22 +149,23 @@ class FacebookPosts extends React.Component {
     })
   }
   removeAttachment (attachment) {
-    console.log('remove attachment', attachment)
     var id = attachment.id
     var facebookPost = this.state.facebookPost
     var attachments = []
     for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
         attachments.push(this.state.attachments[i])
-        facebookPost.push(this.state.attachments[i])
+      }
+    }
+    for (let i = 0; i < this.state.facebookPost.length; i++) {
+      if (this.state.facebookPost[i].id === id) {
+        facebookPost.splice(i, 1)
       }
     }
     this.setState({
       attachments: attachments,
       facebookPost: facebookPost
     })
-    console.log('this.state.facebookPost', this.state.facebookPost)
-    console.log('attachments', attachments)
   }
   handleUpload (res, fileData) {
     this.setState({
