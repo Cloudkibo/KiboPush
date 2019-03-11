@@ -460,3 +460,20 @@ export function deleteDomain (payload, msg, handleDelete) {
       })
   }
 }
+
+export function updatePlatform (data, msg, clearFields) {
+  console.log('data for updatePlatform', data)
+  return (dispatch) => {
+    callApi('company/updatePlatform', 'post', data)
+      .then(res => {
+        console.log('response from updatePlatform', res)
+        if (res.status === 'success') {
+          dispatch(getAutomatedOptions())
+          msg.success('Saved Successfully')
+        } else {
+          msg.error(res.description)
+          dispatch(clearFields())
+        }
+      })
+  }
+}

@@ -19,6 +19,7 @@ import ChatWidget from './chatWidget'
 import ResponseMethods from './responseMethods'
 import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
+import Configuration from './configuration'
 import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -51,7 +52,7 @@ class Settings extends React.Component {
       saveStateNGP: null,
       planInfo: '',
       show: true,
-      openTab: 'resetPassword',
+      openTab: 'configuration',
       pro: false,
       isShowingModal: false,
       isDisableInput: false,
@@ -64,6 +65,7 @@ class Settings extends React.Component {
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
     this.setReset = this.setReset.bind(this)
     this.setResetPass = this.setResetPass.bind(this)
+    this.setConfiguration = this.setConfiguration.bind(this)
     this.setAPI = this.setAPI.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -188,6 +190,11 @@ class Settings extends React.Component {
       openTab: 'resetPassword'
     })
   }
+  setConfiguration () {
+    this.setState({
+      openTab: 'configuration'
+    })
+  }
   setPermissions () {
     this.setState({
       openTab: 'permissions'
@@ -247,15 +254,15 @@ class Settings extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Api Settings`;
+    document.title = `${title} | Api Settings`
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
@@ -387,9 +394,9 @@ class Settings extends React.Component {
       var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
-    if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
-      this.setResetPass()
-    }
+    // if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
+    //   this.setResetPass()
+    // }
     if (nextProps.apiEnable) {
       if (this.state.disable === false) {
         this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
@@ -574,6 +581,12 @@ class Settings extends React.Component {
                       */}
                       </li>
                     }
+                    <li className='m-nav__item'>
+                      <a className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-settings' />
+                        <span className='m-nav__link-text'>Configuration</span>
+                      </a>
+                    </li>
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
@@ -873,6 +886,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'whitelistDomains' &&
               <WhiteListDomains />
+            }
+            { this.state.openTab === 'configuration' &&
+              <Configuration />
             }
           </div>
         </div>
