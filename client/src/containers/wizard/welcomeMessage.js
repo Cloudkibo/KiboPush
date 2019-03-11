@@ -26,6 +26,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import GenericMessage from '../../components/GenericMessage'
 import {getCurrentProduct} from '../../utility/utils'
+import { validateFields } from '../convo/utility'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
@@ -124,31 +125,8 @@ class EditTemplate extends React.Component {
   }
 
   sendConvo () {
-    if (this.state.broadcast.length === 0) {
+    if (!validateFields(this.state.broadcast, this.msg)) {
       return
-    }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'text') {
-        if (this.state.broadcast[i].text === '') {
-          return this.msg.error('Text cannot be empty')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
     }
     this.props.createWelcomeMessage({_id: this.state.pageValue, welcomeMessage: this.state.broadcast}, this.msg)
   }
