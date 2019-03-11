@@ -196,10 +196,10 @@ class Sidebar extends Component {
                 </a>
               </li>
               {this.showBroadcastsItem()}
-              {this.showSurveysItem()}
-              {this.showPollsItem()}
-              {this.showSegmentSubscribers()}
-              {this.showTemplates()}
+              {this.props.user && this.props.user.platform === 'messenger' && this.showSurveysItem()}
+              {this.props.user && this.props.user.platform === 'messenger' && this.showPollsItem()}
+              {this.props.user && this.props.user.platform === 'messenger' && this.showSegmentSubscribers()}
+              {this.props.user && this.props.user.platform === 'messenger' && this.showTemplates()}
             </ul>
           </div>
         </li>
@@ -231,7 +231,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems () {
-    if (!this.state.isKiboLite) {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -264,7 +264,7 @@ class Sidebar extends Component {
   }
 
   showGrowthToolsItems () {
-    if (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021') {
+    if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -299,35 +299,37 @@ class Sidebar extends Component {
   }
 
   showManagePagesItems () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
-          <span className='m-menu__link-text'>Manage Pages</span>
-          <i className='m-menu__ver-arrow la la-angle-right' />
-        </a>
-        <div className='m-menu__submenu'>
-          <span className='m-menu__arrow' />
-          <ul className='m-menu__subnav'>
-            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a className='m-menu__link'>
-                <span className='m-menu__link-text'>
-                  Manage Pages
-                </span>
-              </a>
-            </li>
-            {this.showPagesItem()}
-            {this.showPersistentMenuItem()}
-            {this.showWelcomeMessageItem()}
-            {this.showGreetingText()}
-          </ul>
-        </div>
-      </li>
-    )
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
+            <span className='m-menu__link-text'>Manage Pages</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Manage Pages
+                  </span>
+                </a>
+              </li>
+              {this.showPagesItem()}
+              {this.showPersistentMenuItem()}
+              {this.showWelcomeMessageItem()}
+              {this.showGreetingText()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
   }
 
   showOrganizationItems () {
-    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+    if (this.props.user && this.props.user.platform === 'messenger' && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -909,7 +911,7 @@ class Sidebar extends Component {
   }
 
   showBusinessGateway () {
-    if (this.props.user && this.state.businessGateway) {
+    if (this.props.user && this.state.businessGateway && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/businessGateway' className='m-menu__link'>
