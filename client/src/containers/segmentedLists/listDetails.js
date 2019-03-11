@@ -110,7 +110,8 @@ class ListDetails extends React.Component {
   searchSubscriber (event) {
     var filtered = []
     for (let i = 0; i < this.props.listDetail.length; i++) {
-      if (this.props.listDetail[i].firstName.toLowerCase().includes((event.target.value).toLowerCase()) || this.props.listDetail[i].lastName.toLowerCase().includes((event.target.value).toLowerCase())) {
+      let fullName = this.props.listDetail[i].firstName.toLowerCase() + ' ' + this.props.listDetail[i].lastName.toLowerCase()
+      if (fullName.includes((event.target.value).toLowerCase())) {
         filtered.push(this.props.listDetail[i])
       }
     }

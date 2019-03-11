@@ -214,15 +214,15 @@ class Card extends React.Component {
         buttons: this.state.button,
         default_action: defaultAction
       })
-      this.setState({
-        openPopover: false
-      })
       if (this.state.checkbox) {
         this.props.topElementStyle('LARGE')
       } else {
         this.props.topElementStyle('compact')
       }
     }
+    this.setState({
+      openPopover: false
+    })
   }
   handleClick (e) {
     if (this.state.elementUrl !== '' && isWebURL(this.state.elementUrl)) {

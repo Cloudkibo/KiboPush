@@ -5,13 +5,20 @@
 import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
-import { getuserdetails, updateShowIntegrations, updateMode } from '../../redux/actions/basicinfo.actions'
+import {
+  getuserdetails,
+  updateShowIntegrations,
+  disconnectFacebook,
+  updateMode,
+  updatePlatform
+} from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { browserHistory, Link } from 'react-router'
 import Notification from 'react-web-notification'
 import cookie from 'react-cookie'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -23,7 +30,8 @@ class Header extends React.Component {
       seenNotifications: [],
       unseenNotifications: [],
       showDropDown: false,
-      mode: 'All'
+      mode: 'All',
+      showModal: false
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -33,6 +41,14 @@ class Header extends React.Component {
     this.changeStatus = this.changeStatus.bind(this)
     this.showDropDown = this.showDropDown.bind(this)
     this.logout = this.logout.bind(this)
+    this.showDisconnectFacebook = this.showDisconnectFacebook.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+  closeDialog () {
+    this.setState({showModal: false})
+  }
+  showDisconnectFacebook () {
+    this.setState({showModal: true})
   }
   logout () {
     this.props.updateShowIntegrations({showIntegrations: true})
@@ -41,7 +57,7 @@ class Header extends React.Component {
   showDropDown () {
     console.log('showDropDown')
     this.setState({ showDropDown: true })
-    this.changeMode = this.changeMode.bind(this)
+    // this.changeMode = this.changeMode.bind(this)
   }
   changeMode (mode) {
     this.props.updateMode({ mode: mode }, this.props.user)
@@ -268,6 +284,42 @@ class Header extends React.Component {
               </button>
               <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark'>
                 <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
+                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                    <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
+                    <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                      {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : 'SMS'}
+                    </a>
+                    {
+                      this.state.showDropDown &&
+                      <div className='m-dropdown__wrapper'>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                        <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__body'>
+                            <div className='m-dropdown__content'>
+                              <ul className='m-nav'>
+                                <li key={'messenger'} className='m-nav__item'>
+                                  <a onClick={() => this.props.updatePlatform({platform: 'messenger'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <i className='m-nav__link-icon fa fa-facebook-square' />
+                                    <span className='m-nav__link-text'>
+                                      Messenger
+                                    </span>
+                                  </a>
+                                </li>
+                                <li key={'sms'} className='m-nav__item'>
+                                  <a onClick={() => this.props.updatePlatform({platform: 'sms'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <i className='m-nav__link-icon flaticon flaticon-chat-1' />
+                                    <span className='m-nav__link-text'>
+                                      SMS
+                                    </span>
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </li>
                   {
                     this.props.user && this.props.user.isSuperUser
                       ? <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
@@ -540,7 +592,8 @@ class Header extends React.Component {
                                           : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-analytics' />
                                             <span className='m-nav-grid__text'>KiboDash</span>
-                                          </a>*/
+                                          </a>
+                                        */
                                       }
 
                                       {/*
@@ -638,6 +691,12 @@ class Header extends React.Component {
                                     </Link>
                                   }
                                   </li>
+                                  <li className='m-nav__item'>
+                                    <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
+                                      <i className='m-nav__link-icon la la-unlink' />
+                                      <span className='m-nav__link-text'>Disconnect Facebook</span>
+                                    </a>
+                                  </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
                                     <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>
@@ -653,7 +712,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <a onClick={() => { this.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <a onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                   </a>
                                   </li>
@@ -674,6 +733,25 @@ class Header extends React.Component {
             </div>
           </div>
         </div>
+        {
+          this.state.showModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <h3>Disconnet Facebook Account</h3>
+              <p>Are you sure you want to disconnect your Facebook account?</p>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.props.disconnectFacebook()
+                  this.closeDialog()
+                  this.logout()
+                }}>Yes
+              </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </header>
     )
   }
@@ -698,7 +776,9 @@ function mapDispatchToProps (dispatch) {
     resetSocket: resetSocket,
     markRead: markRead,
     updateMode: updateMode,
-    updateShowIntegrations
+    updateShowIntegrations,
+    disconnectFacebook,
+    updatePlatform
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
