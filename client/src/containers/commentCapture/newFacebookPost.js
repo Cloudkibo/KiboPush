@@ -67,6 +67,21 @@ class FacebookPosts extends React.Component {
     this.previewImages = this.previewImages.bind(this)
     this.previewVideo = this.previewVideo.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
+    this.validationCommentCapture = this.validationCommentCapture.bind(this)
+  }
+
+  validationCommentCapture () {
+
+    if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
+      this.setState({
+        disabled: false
+      })
+    } else {
+      this.setState({
+        disabled: true
+      })
+    }
+
   }
 
   componentDidMount () {
@@ -129,15 +144,6 @@ class FacebookPosts extends React.Component {
       })
     }
 
-    if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
-      this.setState({
-        disabled: false
-      })
-    } else {
-      this.setState({
-        disabled: true
-      })
-    }
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -147,6 +153,7 @@ class FacebookPosts extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
+    console.log(' componentWillReceiveProps called')
   }
   previewImages () {
     this.setState({
@@ -172,8 +179,9 @@ class FacebookPosts extends React.Component {
     this.setState({
       attachments: attachments,
       facebookPost: facebookPost
+    }, () => {
+      this.validationCommentCapture()
     })
-    console.log('attachments', attachments)
   }
   handleUpload (res, fileData) {
     this.setState({
@@ -185,6 +193,7 @@ class FacebookPosts extends React.Component {
       })
     }
     if (res.status === 'success') {
+
       var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
       var attachment = []
       attachment.push(attachComponent)
@@ -203,7 +212,7 @@ class FacebookPosts extends React.Component {
         })
       }
     }
-    console.log('res.payload', res.paylaod)
+    this.validationCommentCapture()
   }
   validateKeywords () {
     var errors = false
