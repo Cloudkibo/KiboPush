@@ -101,7 +101,14 @@ class EditTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                <GenericMessage pageId={this.state.pageId} broadcast={this.state.broadcast} handleChange={this.handleChange} convoTitle={this.state.convoTitle} buttonActions={this.state.buttonActions} />
+                <GenericMessage
+                  pageId={this.state.pageId}
+                  pages={this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])}
+                  broadcast={this.state.broadcast}
+                  handleChange={this.handleChange}
+                  convoTitle={this.state.convoTitle}
+                  buttonActions={this.state.buttonActions}
+                />
               </div>
             </div>
           </div>
