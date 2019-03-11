@@ -284,42 +284,45 @@ class Header extends React.Component {
               </button>
               <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark'>
                 <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                    <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
-                    <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                      {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : 'SMS'}
-                    </a>
-                    {
-                      this.state.showDropDown &&
-                      <div className='m-dropdown__wrapper'>
-                        <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
-                        <div className='m-dropdown__inner'>
-                          <div className='m-dropdown__body'>
-                            <div className='m-dropdown__content'>
-                              <ul className='m-nav'>
-                                <li key={'messenger'} className='m-nav__item'>
-                                  <a onClick={() => this.props.updatePlatform({platform: 'messenger'})} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                    <i className='m-nav__link-icon fa fa-facebook-square' />
-                                    <span className='m-nav__link-text'>
-                                      Messenger
-                                    </span>
-                                  </a>
-                                </li>
-                                <li key={'sms'} className='m-nav__item'>
-                                  <a onClick={() => this.props.updatePlatform({platform: 'sms'})} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                    <i className='m-nav__link-icon flaticon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>
-                                      SMS
-                                    </span>
-                                  </a>
-                                </li>
-                              </ul>
+                  {
+                    this.props.user && this.props.user.isSuperUser &&
+                    <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                      <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
+                      <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                        {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : 'SMS'}
+                      </a>
+                      {
+                        this.state.showDropDown &&
+                        <div className='m-dropdown__wrapper'>
+                          <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                          <div className='m-dropdown__inner'>
+                            <div className='m-dropdown__body'>
+                              <div className='m-dropdown__content'>
+                                <ul className='m-nav'>
+                                  <li key={'messenger'} className='m-nav__item'>
+                                    <a onClick={() => this.props.updatePlatform({platform: 'messenger'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                      <i className='m-nav__link-icon fa fa-facebook-square' />
+                                      <span className='m-nav__link-text'>
+                                        Messenger
+                                      </span>
+                                    </a>
+                                  </li>
+                                  <li key={'sms'} className='m-nav__item'>
+                                    <a onClick={() => this.props.updatePlatform({platform: 'sms'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                      <i className='m-nav__link-icon flaticon flaticon-chat-1' />
+                                      <span className='m-nav__link-text'>
+                                        SMS
+                                      </span>
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    }
-                  </li>
+                      }
+                    </li>
+                  }
                   {
                     this.props.user && this.props.user.isSuperUser
                       ? <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
