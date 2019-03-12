@@ -28,6 +28,7 @@ class ViewMessage extends React.Component {
   }
 
   render () {
+    console.log('this.props.payload', this.props.payload)
     var settings = {
       arrows: true,
       dots: false,
@@ -119,7 +120,8 @@ class ViewMessage extends React.Component {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
                                           <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                            <span>{button.title}</span>
+                                            
+                                            <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
                                         ))
                                       }
@@ -144,7 +146,7 @@ class ViewMessage extends React.Component {
                                               card.buttons && card.buttons.length > 0 &&
                                               card.buttons.map((button, i) => (
                                                 <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                                  <span>{button.title}</span>
+                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
                                             }
@@ -216,7 +218,7 @@ class ViewMessage extends React.Component {
                                               item.buttons && item.buttons.length > 0 &&
                                               item.buttons.map((button, i) => (
                                                 <a key={i} href={'//' + button.url} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                                  <span>{button.title}</span>
+                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
                                             }
@@ -226,7 +228,7 @@ class ViewMessage extends React.Component {
                                         {b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
                                           <a key={i} href={'//' + button.url} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                            <span>{button.title}</span>
+                                             <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
                                         ))
                                         }
