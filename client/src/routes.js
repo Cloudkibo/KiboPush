@@ -133,6 +133,7 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import auth from './utility/auth.service'
+import ChatWidget from './containers/chatWidget/chatWidget'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -283,6 +284,7 @@ const routes = (
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
+    <Route path='/chatWidget' component={ChatWidget} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
