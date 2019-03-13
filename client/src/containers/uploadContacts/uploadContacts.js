@@ -45,27 +45,33 @@ class UploadContacts extends React.Component {
     this.saveColumns = this.saveColumns.bind(this)
     this.parseCSV = this.parseCSV.bind(this)
     this.addManually = this.addManually.bind(this)
+    this.clearFields = this.clearFields.bind(this)
   }
   addManually () {
     if (this.state.number === '' || this.state.name === '') {
-      console.log('in first if')
-      this.setState({manualError: 'emptyFields'})
+      this.setState({manualError: 'Please fill all the fields'})
     } else if (!this.validate('number')) {
-      console.log('in second if')
-      this.setState({manualError: 'invalidNumber'})
+      this.setState({manualError: 'This number is invalid. Please enter a valid number'})
     } else {
-      console.log('in else')
-      let temp = this.state.manualNumbers
-      let name = this.state.name
-      let number = this.state.number
-      temp.push({name: name, number: number})
-      this.setState({name: '', number: '', manualNumbers: temp, manualError: ''})
-      console.log('temp', temp)
+      let duplicate = this.state.manualNumbers.filter((number) => number.number === this.state.number)
+      if (duplicate && duplicate.length > 0) {
+        this.setState({manualError: 'This number is already added'})
+      } else {
+        let temp = this.state.manualNumbers
+        temp.push({name: this.state.name, number: this.state.number})
+        this.setState({name: '', number: '', manualNumbers: temp, manualError: ''})
+      }
     }
   }
-  removeNumber (index) {
-    let removed = this.state.manualNumbers.splice(i, 1)
+  removeNumber (e, index) {
+    let removed = this.state.manualNumbers
+    removed.splice(index, 1)
+    console.log('index', index)
+    console.log('removed', removed)
     this.setState({manualNumbers: removed})
+    if (removed.length === 0) {
+      this.setState({manually: false})
+    }
   }
   changeName (e) {
     this.setState({name: e.target.value})
@@ -127,10 +133,14 @@ class UploadContacts extends React.Component {
         this.uploadFile(file[0])
       }
     } else if (this.state.manualNumbers && this.state.manualNumbers.length > 0) {
-      this.props.uploadNumbers({numbers: this.state.manualNumbers}, this.msg)
+      this.props.uploadNumbers({numbers: this.state.manualNumbers}, this.msg, this.clearFields)
     } else {
       this.msg.error('Please upload a file or enter numbers manually')
     }
+  }
+
+  clearFields () {
+    this.setState({manualNumbers: [], manually: false, file: ''})
   }
 
   removeFile () {
@@ -253,7 +263,7 @@ class UploadContacts extends React.Component {
         this.setState({
           loading: true
         })
-        this.props.uploadFile(fileData, this.msg)
+        this.props.uploadFile(fileData, this.msg, this.clearFields)
       }
     }
   }
@@ -356,40 +366,6 @@ class UploadContacts extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        {
-          this.state.showManual &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={this.closeDialogManual}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={this.closeDialogManual}>
-              <div className='form-group m-form__group row'>
-                <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Name:</label>
-                <div className='col-7 input-group'>
-                  <input className='form-control m-input' required ref='name' onChange={this.changeName} />
-                </div>
-              </div>
-              <div className='form-group m-form__group row'>
-                <label className='col-3 col-form-label' style={{textAlign: 'left'}}>
-                  Phone Number:
-                </label>
-                <div className='col-7 input-group'>
-                  <input className='form-control m-input' required ref='number' onChange={this.changeNumber} />
-                </div>
-              </div>
-              {this.state.manualError !== '' &&
-                <center>
-                  <span style={{color: 'red', paddingLeft: '14px'}}>
-                    {this.state.manualError === 'emptyFields' ? 'Please fill all the fields' : 'Invalid phone number'}</span>
-                </center>
-              }
-              <br />
-              <button style={{float: 'right', marginLeft: '10px'}}
-                className='btn btn-primary btn-sm' type='button'
-                onClick={this.saveManual}>Save
-              </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -438,7 +414,7 @@ class UploadContacts extends React.Component {
                         <center>
                           <div className='tab-pane active col-md-8 col-lg-8 col-sm-8' id='m_widget4_tab1_content'>
                             <div className='m-widget4' >
-                              { this.state.manualNumbers.map((user, i) => (
+                              {this.state.manualNumbers && this.state.manualNumbers.length > 0 && this.state.manualNumbers.map((user, i) => (
                                 <div className='m-widget4__item' style={{paddingBottom: 0}}>
                                   <div className='m-widget4__info' style={{display: 'inherit'}}>
                                     <span className='m-widget4__title'>
@@ -454,18 +430,18 @@ class UploadContacts extends React.Component {
                                     <br />
                                   </div>
                                   <div className='m-widget4__ext'>
-                                    <i className='fa fa-times-circle' style={{cursor: 'pointer', paddingBottom: '1.5rem'}} onClick={this.removeNumber(i)} />
+                                    <i className='fa fa-times-circle' style={{cursor: 'pointer', paddingBottom: '1.5rem'}} onClick={(e) => { this.removeNumber(e, i) }} />
                                   </div>
                                 </div>
                               ))}
                             </div>
                           </div>
-                          <input className='form-control m-input' onChange={this.changeName} placeholder='Enter name here...' />
+                          <input className='form-control m-input' onChange={this.changeName} value={this.state.name} placeholder='Enter name here...' />
                           <br />
-                          <input className='form-control m-input' onChange={this.changeNumber} placeholder='Enter number here...' />
+                          <input className='form-control m-input' onChange={this.changeNumber} value={this.state.number} placeholder='Enter number here...' />
                           {this.state.manualError !== '' &&
                           <div><span style={{color: 'red', paddingLeft: '14px'}}>
-                            {this.state.manualError !== '' && this.state.manualError === 'emptyFields' ? 'Please fill all the fields' : 'Invalid phone number'}</span>
+                            {this.state.manualError}</span>
                             <br />
                           </div>
                           }
