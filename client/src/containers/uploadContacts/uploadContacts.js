@@ -6,29 +6,280 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
-import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
-import AlertContainer from 'react-alert'
-import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { uploadNumbers, uploadFile } from '../../redux/actions/uploadContacts.actions'
 import Files from 'react-files'
+import Papa from 'papaparse'
+import Select from 'react-select'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
-class MessengerCode extends React.Component {
+class UploadContacts extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedPage: {},
-      ref: '',
-      resoltion: '1000',
-      image: '',
-      showVideo: false
+      file: '',
+      manualNumbers: [],
+      name: '',
+      number: '',
+      fileErrors: [],
+      manualError: '',
+      showFileColumns: false,
+      columns: [],
+      nameColumn: '',
+      phoneColumn: '',
+      columnAlerts: false,
+      fileContent: [],
+      manually: false
     }
-    props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
-
-    this.onPageChange = this.onPageChange.bind(this)
-    this.onResolutionChange = this.onResolutionChange.bind(this)
-    this.onRefChange = this.onRefChange.bind(this)
+    this.removeNumber = this.removeNumber.bind(this)
+    this.changeNumber = this.changeNumber.bind(this)
+    this.changeName = this.changeName.bind(this)
+    this.closeDialogFileColumns = this.closeDialogFileColumns.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.validate = this.validate.bind(this)
+    this.onFilesChange = this.onFilesChange.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
+    this.removeFile = this.removeFile.bind(this)
+    this.handleNameColumn = this.handleNameColumn.bind(this)
+    this.handlePhoneColumn = this.handlePhoneColumn.bind(this)
+    this.saveColumns = this.saveColumns.bind(this)
+    this.parseCSV = this.parseCSV.bind(this)
+    this.addManually = this.addManually.bind(this)
+  }
+  addManually () {
+    if (this.state.number === '' || this.state.name === '') {
+      console.log('in first if')
+      this.setState({manualError: 'emptyFields'})
+    } else if (!this.validate('number')) {
+      console.log('in second if')
+      this.setState({manualError: 'invalidNumber'})
+    } else {
+      console.log('in else')
+      let temp = this.state.manualNumbers
+      let name = this.state.name
+      let number = this.state.number
+      temp.push({name: name, number: number})
+      this.setState({name: '', number: '', manualNumbers: temp, manualError: ''})
+      console.log('temp', temp)
+    }
+  }
+  removeNumber (index) {
+    let removed = this.state.manualNumbers.splice(i, 1)
+    this.setState({manualNumbers: removed})
+  }
+  changeName (e) {
+    this.setState({name: e.target.value})
+  }
+  changeNumber (e) {
+    this.setState({number: e.target.value})
+  }
+  saveColumns () {
+    if (this.state.phoneColumn === '' || this.state.nameColumn === '') {
+      this.setState({
+        columnAlerts: true
+      })
+      return
+    }
+    if (this.state.phoneColumn.value === this.state.nameColumn.value) {
+      this.setState({
+        columnAlerts: true
+      })
+      return
+    }
+    this.setState({
+      disabled: false
+    })
+    this.closeDialogFileColumns()
+  }
+  closeDialogFileColumns () {
+    this.setState({
+      showFileColumns: false,
+      columnAlerts: false
+    })
+  }
+  handleNameColumn (value) {
+    if (!value) {
+      this.setState({
+        nameColumn: ''
+      })
+    } else {
+      this.setState({
+        nameColumn: value
+      })
+    }
+  }
+  handlePhoneColumn (value) {
+    if (!value) {
+      this.setState({
+        phoneColumn: ''
+      })
+    } else {
+      this.setState({
+        phoneColumn: value
+      })
+    }
+  }
+  onSubmit () {
+    var file = this.state.file
+    if (file && file.length > 0) {
+      var hasErrors = this.validateFileContent()
+      if (!hasErrors) {
+        this.uploadFile(file[0])
+      }
+    } else if (this.state.manualNumbers && this.state.manualNumbers.length > 0) {
+      this.props.uploadNumbers({numbers: this.state.manualNumbers}, this.msg)
+    } else {
+      this.msg.error('Please upload a file or enter numbers manually')
+    }
+  }
+
+  removeFile () {
+    this.setState({file: ''})
+  }
+
+  onFilesChange (files) {
+    var self = this
+    if (files.length > 0) {
+      this.setState({
+        file: files,
+        fileErrors: [],
+        nameColumn: '',
+        phoneColumn: '',
+        disabled: true
+      })
+      var fileSelected = files[0]
+      if (fileSelected.extension !== 'csv') {
+        this.setState({
+          fileErrors: [{errorMsg: 'Please select a file with .csv extension'}]
+        })
+        return
+      }
+      this.parseCSV(self, fileSelected)
+    }
+  }
+  validateFileContent () {
+    var content = this.state.fileContent
+    var columnsArray = content[0]
+    var indexName = ''
+    var indexPhone = ''
+    var faulty = false
+    var errors = []
+    for (let i = 0; i < columnsArray.length; i++) {
+      if (this.state.phoneColumn.value === columnsArray[i]) {
+        indexPhone = i
+      }
+      if (this.state.nameColumn.value === columnsArray[i]) {
+        indexName = i
+      }
+    }
+    for (let i = 1; i < content.length; i++) {
+      var record = content[i]
+      var recordName = record[indexName]
+      var recordPhone = record[indexPhone]
+      if (content.length === 2 && record && record.length === 1 && record[0] === '') {
+        faulty = true
+        let error = {errorMsg: 'No records found'}
+        errors.push(error)
+        break
+      }
+      // eslint-disable-next-line
+      let regexp = /^[0-9+\(\)#\.\s\/ext-]+$/
+      if (recordName && recordName.length > 50) {
+        faulty = true
+        let error = {errorMsg: 'File consists of customer names that is too long'}
+        this.msg.error('File consists of customer names that are too long')
+        errors.push(error)
+        break
+      }
+      if (recordPhone && ((recordPhone.length > 0 && recordPhone.length < 5) || !regexp.test(recordPhone))) {
+        faulty = true
+        let error = {errorMsg: 'File consists of invalid phone numbers'}
+        this.msg.error('File consists of invalid phone numbers')
+        errors.push(error)
+        break
+      }
+    }
+    if (faulty) {
+      this.setState({
+        fileErrors: errors,
+        disabled: true
+      })
+    }
+    return faulty
+  }
+  parseCSV (self, file) {
+    Papa.parse(file, {
+      complete: function (results) {
+        console.log('Finished:', results.data)
+        var faulty = false
+        if (results.data && results.data.length > 0) {
+          var columnsArray = []
+          var columns = results.data[0]
+          for (var i = 0; i < columns.length; i++) {
+            if (columns[i] !== '') {
+              columnsArray.push({'value': columns[i], 'label': columns[i]})
+            } else {
+              faulty = true
+              break
+            }
+          }
+          if (faulty) {
+            self.setState({
+              fileErrors: [{errorMsg: 'Incorrect data format'}]
+            })
+            return
+          }
+          self.setState({
+            columns: columnsArray,
+            showFileColumns: true,
+            fileContent: results.data
+          })
+        }
+      }
+    })
+  }
+
+  uploadFile (file) {
+    if (file && file !== '') {
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('phoneColumn', this.state.phoneColumn.value)
+      fileData.append('nameColumn', this.state.nameColumn.value)
+
+      if (this.validate('file')) {
+        this.setState({
+          loading: true
+        })
+        this.props.uploadFile(fileData, this.msg)
+      }
+    }
+  }
+  onFilesError (error) {
+    // this.setState({
+    //   fileErrors: [{errorMsg: error.message}]
+    // })
+    this.msg.error(error.message)
+  }
+
+  validate (type) {
+    var errors = false
+    if (type === 'file') {
+      if (this.state.file === '') {
+        this.setState({
+          fileErrors: [{errorMsg: 'Upload a file'}]
+        })
+        errors = true
+      }
+    } else if (type === 'number') {
+      const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+      if (!this.state.number.match(regex)) {
+        errors = true
+      }
+    }
+    return !errors
   }
 
   componentDidMount () {
@@ -42,66 +293,8 @@ class MessengerCode extends React.Component {
     document.title = `${title} | Upload Contacts`
   }
 
-  onPageChange (event) {
-    console.log('event', event.target.value)
-    if (event.target.value !== -1) {
-      let page
-      for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i]._id === event.target.value) {
-          page = this.props.pages[i]
-          break
-        }
-      }
-      if (page) {
-        this.setState({
-          selectedPage: page
-        })
-      }
-    } else {
-      this.setState({
-        selectedPage: {}
-      })
-    }
-  }
-
-  onResolutionChange (event) {
-    this.setState({resoltion: event.target.value})
-  }
-
-  onRefChange (event) {
-    this.setState({ref: event.target.value})
-  }
-
-  onSubmit (event) {
-    if (parseInt(this.state.resoltion) < 100 || parseInt(this.state.resoltion) > 2000) {
-      this.msg.error('Resolution must be between 100 to 2000 px')
-      return
-    }
-    if (this.state.ref !== '') {
-      this.props.requestMessengerCode({
-        pageId: this.state.selectedPage.pageId,
-        image_size: parseInt(this.state.resoltion),
-        data: {ref: this.state.ref}
-      })
-    } else {
-      this.props.requestMessengerCode({pageId: this.state.selectedPage.pageId, image_size: parseInt(this.state.resoltion)})
-    }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    console.log('nextProps in pages', nextProps)
-    console.log('nextProps in image', nextProps.image)
-    if (nextProps.pages) {
-      this.setState({
-        selectedPage: nextProps.pages[0]
-      })
-    }
-    if (nextProps.image) {
-      this.setState({image: nextProps.image})
-    }
-  }
-
   render () {
+    console.log('in render')
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -111,32 +304,96 @@ class MessengerCode extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='xpVyOxXvZPE'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                />
+          this.state.showFileColumns &&
+          <ModalContainer style={{width: '680px'}}>
+            <ModalDialog style={{width: '680px'}}>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer names
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handleNameColumn}
+                    value={this.state.nameColumn}
+                    placeholder='Select Field'
+                  />
+                </div>
+                { this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
               </div>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer phone numbers
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handlePhoneColumn}
+                    value={this.state.phoneColumn}
+                    placeholder='Select Field'
+                  />
+                </div>
+                { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
+              </div>
+              { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
+                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                </span>
+              }
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.saveColumns()
+                }}>Save
+              </button>
             </ModalDialog>
           </ModalContainer>
         }
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showManual &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={this.closeDialogManual}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={this.closeDialogManual}>
+              <div className='form-group m-form__group row'>
+                <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Name:</label>
+                <div className='col-7 input-group'>
+                  <input className='form-control m-input' required ref='name' onChange={this.changeName} />
+                </div>
+              </div>
+              <div className='form-group m-form__group row'>
+                <label className='col-3 col-form-label' style={{textAlign: 'left'}}>
+                  Phone Number:
+                </label>
+                <div className='col-7 input-group'>
+                  <input className='form-control m-input' required ref='number' onChange={this.changeNumber} />
+                </div>
+              </div>
+              {this.state.manualError !== '' &&
+                <center>
+                  <span style={{color: 'red', paddingLeft: '14px'}}>
+                    {this.state.manualError === 'emptyFields' ? 'Please fill all the fields' : 'Invalid phone number'}</span>
+                </center>
+              }
+              <br />
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm' type='button'
+                onClick={this.saveManual}>Save
+              </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Upload Contacts</h3>
+              <h3 className='m-subheader__title'>Customer Base</h3>
             </div>
           </div>
         </div>
@@ -144,13 +401,85 @@ class MessengerCode extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Upload Contacts
+                      </h3>
+                    </div>
+                  </div>
+                </div>
                 <div className='m-portlet__body'>
                   <div className='form-group m-form__group row'>
                     <label className='col-2 col-form-label' />
                     <div className='col-lg-6 col-md-9 col-sm-12'>
-                      <div className='m-dropzone dropzone dz-clickable'
+                      {
+                        this.state.file !== ''
+                        ? <div className='m-dropzone dropzone dz-clickable'
+                          id='m-dropzone-one'>
+                          <div style={{marginTop: '10%'}}>
+                            <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
+                              <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
+                            </span>
+                            <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
+                            {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Edit Columns</button>}
+                          </div>
+                          <span className='m-form__help'>
+                            {
+                              this.state.fileErrors.map(
+                                m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                              )
+                            }
+                          </span>
+                        </div>
+                      : this.state.manually
+                      ? <div className='m-dropzone dropzone dz-clickable' id='m-dropzone-one'>
+                        <center>
+                          <div className='tab-pane active col-md-8 col-lg-8 col-sm-8' id='m_widget4_tab1_content'>
+                            <div className='m-widget4' >
+                              { this.state.manualNumbers.map((user, i) => (
+                                <div className='m-widget4__item' style={{paddingBottom: 0}}>
+                                  <div className='m-widget4__info' style={{display: 'inherit'}}>
+                                    <span className='m-widget4__title'>
+                                      <span>
+                                        {user.name}
+                                      </span>
+                                    </span>
+                                    <span className='m-widget4__info'>
+                                      <span>
+                                        {user.number}
+                                      </span>
+                                    </span>
+                                    <br />
+                                  </div>
+                                  <div className='m-widget4__ext'>
+                                    <i className='fa fa-times-circle' style={{cursor: 'pointer', paddingBottom: '1.5rem'}} onClick={this.removeNumber(i)} />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <input className='form-control m-input' onChange={this.changeName} placeholder='Enter name here...' />
+                          <br />
+                          <input className='form-control m-input' onChange={this.changeNumber} placeholder='Enter number here...' />
+                          {this.state.manualError !== '' &&
+                          <div><span style={{color: 'red', paddingLeft: '14px'}}>
+                            {this.state.manualError !== '' && this.state.manualError === 'emptyFields' ? 'Please fill all the fields' : 'Invalid phone number'}</span>
+                            <br />
+                          </div>
+                          }
+                          <br />
+                          <button className='btn btn-primary' onClick={() => { this.addManually() }}>
+                            Add
+                          </button>
+                        </center>
+                      </div>
+                      : <div className='m-dropzone dropzone dz-clickable'
                         id='m-dropzone-one'>
-                        <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
+                        <button style={{cursor: 'pointer'}} onClick={() => {
+                          this.setState({manually: true})
+                        }} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
                         <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
                         <Files
                           className='file-upload-area'
@@ -169,6 +498,14 @@ class MessengerCode extends React.Component {
                           <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
                         </Files>
                       </div>
+                    }
+                    </div>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                      <button style={{float: 'right'}} className='btn btn-primary' onClick={this.onSubmit}>
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -182,17 +519,14 @@ class MessengerCode extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
-    pages: (state.pagesInfo.pages),
-    image: (state.messengerCodeInfo.image)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesListNew: loadMyPagesListNew,
-    requestMessengerCode: requestMessengerCode
+    uploadNumbers,
+    uploadFile
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(MessengerCode)
+export default connect(mapStateToProps, mapDispatchToProps)(UploadContacts)

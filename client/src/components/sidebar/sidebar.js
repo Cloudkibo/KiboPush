@@ -954,12 +954,11 @@ class Sidebar extends Component {
   }
 
   uploadContacts () {
-    console.log('in uploadContacts')
     if (this.props.user && this.props.user.platform === 'sms') {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContacts' className='m-menu__link'>
-            <i className='m-menu__link-icon flaticon-network'>
+            <i className='m-menu__link-icon fa fa-id-card-o'>
               <span />
             </i>
             <span className='m-menu__link-text'>
@@ -975,7 +974,6 @@ class Sidebar extends Component {
 
   render () {
     console.log('this.state', this.state)
-    console.log('in sidebar render')
 
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
