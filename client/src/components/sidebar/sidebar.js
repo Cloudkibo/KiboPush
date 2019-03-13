@@ -212,22 +212,22 @@ class Sidebar extends Component {
   }
 
   showLiveChatItem () {
-    if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
-          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
-              <span className='m-menu__link-text'>Live Chat (Beta)</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
+    // if (this.props.user) {
+    //   if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
+    //       (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+    //        this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+    //     return (
+    //       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+    //         <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
+    //           <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
+    //           <span className='m-menu__link-text'>Live Chat (Beta)</span>
+    //         </Link>
+    //       </li>
+    //     )
+    //   } else {
+    return (null)
+      // }
+    // }
   }
 
   showAutomationItems () {
@@ -929,8 +929,29 @@ class Sidebar extends Component {
     }
   }
 
+  uploadContacts () {
+    console.log('in uploadContacts')
+    if (this.props.user && this.props.user.platform === 'sms') {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/uploadContacts' className='m-menu__link'>
+            <i className='m-menu__link-icon flaticon-network'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Upload Contacts
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   render () {
     console.log('this.state', this.state)
+    console.log('in sidebar render')
 
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
@@ -955,6 +976,8 @@ class Sidebar extends Component {
                   {this.showSubscribersItem()}
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
+                  {this.uploadContacts()}
+                  {this.showSubscribersItem()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
                   {this.showGrowthToolsItems()}
