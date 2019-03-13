@@ -9,6 +9,19 @@ class ViewMessage extends React.Component {
     super(props, context)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.state = {
+      payload: []
+    }
+  }
+
+  componentDidMount () {
+    console.log('this.state.payload.jsonAdMessages', this.props.payload.jsonAdMessages)
+    if (this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) {
+      var payload = this.props.payload.jsonAdMessages[0].messageContent
+      this.setState({payload: payload})
+      console.log('payload', payload)
+     }
+
   }
 
   onTestURLVideo (url) {
@@ -70,7 +83,7 @@ class ViewMessage extends React.Component {
                               <div className='m-messenger__message-arrow' />
                               <div className='m-messenger__message-content' style={{width: '200px'}}>
                                 {
-                                  this.props.payload.map((b, index) => (
+                                  this.state.payload.map((b, index) => (
                                     b.componentType === 'video'
                                     ? <div key={index}>
                                       <ReactPlayer
