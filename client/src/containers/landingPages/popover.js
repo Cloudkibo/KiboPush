@@ -9,7 +9,7 @@ import { Popover, PopoverBody } from 'reactstrap'
 
 class PopOver extends React.Component {
   render () {
-    console.log('target in popover', this.props.target)
+    console.log('this.props.color', this.props.color)
     return (
       <Popover placement='left' isOpen={this.props.isOpen} className='greetingPopover' target={this.props.target} toggle={() => this.props.toggle(this.props.title)}>
         <PopoverBody style={{padding: '0'}}>

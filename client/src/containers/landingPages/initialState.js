@@ -137,9 +137,9 @@ class InitialState extends React.Component {
     console.log('render in initialState.js', this.props.initialState)
     return (
       <div>
-        <Popover isOpen={this.state.showHeadingPicker} target={`${this.props.landingPage.currentTab}heading`} title='heading' toggle={this.toggleColorPicker} color={this.state.headingColor} onChangeComplete={this.handleColorChange} />
-        <Popover isOpen={this.state.showDescriptionPicker} target={`${this.props.landingPage.currentTab}description`} title='description' toggle={this.toggleColorPicker} color={this.state.descriptionColor} onChangeComplete={this.handleColorChange} />
-        <Popover isOpen={this.state.showBackgroundPicker} target={`${this.props.landingPage.currentTab}background`} title='background' toggle={this.toggleColorPicker} color={this.state.backgroundColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showHeadingPicker} target={`${this.props.landingPage.currentTab}heading`} title='heading' toggle={this.toggleColorPicker} color={this.props.initialState.titleColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showDescriptionPicker} target={`${this.props.landingPage.currentTab}description`} title='description' toggle={this.toggleColorPicker} color={this.props.initialState.descriptionColor} onChangeComplete={this.handleColorChange} />
+        <Popover isOpen={this.state.showBackgroundPicker} target={`${this.props.landingPage.currentTab}background`} title='background' toggle={this.toggleColorPicker} color={this.props.initialState.backgroundColor} onChangeComplete={this.handleColorChange} />
         {this.props.landingPage.currentTab !== 'submittedState' &&
           <div>
             <label>Page Template:</label>
