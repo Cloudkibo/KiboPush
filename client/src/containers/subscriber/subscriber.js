@@ -835,12 +835,13 @@ class Subscriber extends React.Component {
         'Profile Picture': subscriber.profilePic,
         'Name': `${subscriber.firstName} ${subscriber.lastName}`,
         'Page': subscriber.pageId.pageName,
-        'PhoneNumber': subscriber.phoneNumber,
+        'PhoneNumber': subscriber.phoneNumber ? subscriber.phoneNumber : '',
         'Email': subscriber.email,
         'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
         'Locale': subscriber.locale,
         'Gender': subscriber.gender,
-        'tags': subscriber.tags
+        'tags': subscriber.tags,
+        'SubscriberId': subscriber._id
       }
       data.push(subscriberObj)
     }

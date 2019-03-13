@@ -37,18 +37,19 @@ class ChatWidget extends React.Component {
       transition: 'scale'
     }
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-          <div className='m-portlet__head'>
-            <div className='m-portlet__head-tools'>
-              <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                <li className='nav-item m-tabs__item'>
-                  <span className='nav-link m-tabs__link active'>
-                    <i className='flaticon-share m--hide' />
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-tools'>
+                <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
+                  <li className='nav-item m-tabs__item'>
+                    <span className='nav-link m-tabs__link active'>
+                      <i className='flaticon-share m--hide' />
                     How to add KiboPush widget?
                   </span>
-                </li>
-              </ul>
+                  </li>
+                </ul>
             </div>
           </div>
           <div className='tab-content'>
@@ -111,6 +112,7 @@ class ChatWidget extends React.Component {
           </div>
         </div>
       </div>
+    </div>
     )
   }
 }

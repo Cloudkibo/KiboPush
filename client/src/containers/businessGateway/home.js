@@ -54,7 +54,7 @@ class Home extends React.Component {
   }
   setSaveEnable (customersInfo) {
     var paramsValid = true
-    if (!customersInfo.phoneColumn || (customersInfo.phoneColumn && customersInfo.phoneColumn === '')) {
+    if ((customersInfo.phoneColumn === '') && (customersInfo.subscriberIdColumn === '')) {
       paramsValid = false
     } else if (!customersInfo.page) {
       paramsValid = false
@@ -74,6 +74,10 @@ class Home extends React.Component {
     let conditionErrors = []
     let conditionError = {}
     let isErrorInCondition = false
+    if (this.props.customersInfo.filter.length === 1 && this.props.customersInfo.filter[0].condition === '' && this.props.customersInfo.filter[0].criteria === '' && this.props.customersInfo.filter[0].text === '') {
+      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', [])
+      return !errors
+    }
     for (let i = 0; i < this.props.customersInfo.filter.length; i++) {
       if (this.props.customersInfo.filter[i].condition === '') {
         isErrorInCondition = true
@@ -115,6 +119,7 @@ class Home extends React.Component {
       fileData.append('filesize', file.size)
       fileData.append('page_id', this.props.customersInfo.page._id)
       fileData.append('phoneColumn', this.props.customersInfo.phoneColumn.value)
+      fileData.append('subscriberIdColumn', this.props.customersInfo.subscriberIdColumn.value)
       fileData.append('columns', this.props.customersInfo.columns.join(','))
       fileData.append('filter', JSON.stringify(this.props.customersInfo.filter))
       return fileData
@@ -151,6 +156,7 @@ class Home extends React.Component {
       filter: [],
       page: null,
       phoneColumn: '',
+      subscriberIdColumn: '',
       pushMessage: [{
         id: new Date().getTime(),
         text: `Please subscribe to my page '${this.props.pages[0].pageName}' by typing 'Yes'`,
@@ -275,7 +281,7 @@ class Home extends React.Component {
                           <PushMessage setSaveEnable={this.setSaveEnable} page={this.state.page} defaultMessage={this.state.defaultMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                         <div className='tab-pane' id='tab_3'>
-                          <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} handleNext={this.handleNext} handleBack={this.handleBack} />
+                          <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} handleNext={this.handleNext} handleBack={this.handleBack} />
                         </div>
                       </div>
                     </div>
