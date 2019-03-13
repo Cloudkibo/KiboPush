@@ -486,7 +486,6 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('in dashboard render')
     console.log('this.props.dashboard', this.props.dashboard)
     const url = window.location.hostname
     return (

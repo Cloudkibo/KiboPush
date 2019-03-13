@@ -213,22 +213,22 @@ class Sidebar extends Component {
   }
 
   showLiveChatItem () {
-    // if (this.props.user) {
-    //   if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
-    //       (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-    //        this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
-    //     return (
-    //       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-    //         <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
-    //           <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
-    //           <span className='m-menu__link-text'>Live Chat (Beta)</span>
-    //         </Link>
-    //       </li>
-    //     )
-    //   } else {
-    return (null)
-      // }
-    // }
+    if (this.props.user) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
+          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
+              <span className='m-menu__link-text'>Live Chat (Beta)</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
   }
 
   showAutomationItems () {
@@ -999,7 +999,6 @@ class Sidebar extends Component {
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
-                  {this.showSubscribersItem()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
                   {this.showGrowthToolsItems()}
