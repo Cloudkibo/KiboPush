@@ -575,15 +575,15 @@ class Settings extends React.Component {
                       </li>
                     }
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-settings' />
-                        <span className='m-nav__link-text'>Configuration</span>
-                      </a>
-                    </li>
-                    <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
                         <span className='m-nav__link-text'>Change Password</span>
+                      </a>
+                    </li>
+                    <li className='m-nav__item'>
+                      <a className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-settings' />
+                        <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&

@@ -953,6 +953,25 @@ class Sidebar extends Component {
     }
   }
 
+  uploadContacts () {
+    if (this.props.user && this.props.user.platform === 'sms') {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/uploadContacts' className='m-menu__link'>
+            <i className='m-menu__link-icon fa fa-id-card-o'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Upload Contacts
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   render () {
     console.log('this.state', this.state)
 
@@ -979,6 +998,7 @@ class Sidebar extends Component {
                   {this.showSubscribersItem()}
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
+                  {this.uploadContacts()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
                   {this.showGrowthToolsItems()}
