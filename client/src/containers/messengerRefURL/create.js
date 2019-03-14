@@ -65,8 +65,11 @@ class CreateURL extends React.Component {
     if (this.props.messengerRefURL.ref_parameter === '') {
       return this.msg.error('Custom Ref paramter cannot be empty')
     }
+    console.log('this.props.location.state', this.props.location.state)
+    console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state && this.props.location.state.messengerRefURL) {
       this.props.editURL({
+        _id: this.props.location.state.messengerRefURL._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
