@@ -76,7 +76,7 @@ class CreateURL extends React.Component {
       }, this.msg)
     } else {
       this.props.createURL({
-        pageId: this.props.location.state._id,
+        pageId: this.props.location.state._id._id === undefined ? this.props.location.state._id : this.props.location.state._id._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
