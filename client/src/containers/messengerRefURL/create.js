@@ -26,6 +26,7 @@ class CreateURL extends React.Component {
   }
 
   componentDidMount () {
+    console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData('', '', '', {
         pageId: this.props.location.state.messengerRefURL.pageId.pageId,
@@ -33,7 +34,7 @@ class CreateURL extends React.Component {
         reply: this.props.location.state.messengerRefURL.reply,
         sequenceId: this.props.location.state.messengerRefURL.sequenceId
       })
-    } else if (!this.props.location.state.module) {
+    } else if (this.props.location.state.module && this.props.location.state.module === 'createMessage') {
       console.log('this.props.location.state', this.props.location.state)
       this.props.updateData(this.props.messengerRefURL, 'ref_parameter', this.getRandomString())
       this.props.updateData(this.props.messengerRefURL, 'pageId', this.props.location.state.pageId)
@@ -67,7 +68,7 @@ class CreateURL extends React.Component {
     }
     console.log('this.props.location.state', this.props.location.state)
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
-    if (this.props.location.state && this.props.location.state.messengerRefURL) {
+    if (this.props.location.state && this.props.location.state.messengerRefURL && this.props.location.state.module === 'edit') {
       this.props.editURL({
         _id: this.props.location.state.messengerRefURL._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
@@ -115,7 +116,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs />
+                    <Tabs module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
                     <Preview />
                   </div>
                 </div>
