@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {createURL, editURL, updateData} from '../../redux/actions/messengerRefURL.actions'
+import {createURL, editURL, updateData, resetState} from '../../redux/actions/messengerRefURL.actions'
 import crypto from 'crypto'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
@@ -18,10 +18,15 @@ class CreateURL extends React.Component {
     super(props, context)
     this.state = {
     }
-    if (props.location.state && props.location.state.pageId) {
-      props.updateData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+
+    if (props.location.state.module === 'createMessage') {
+    //  props.resetState()
+      if (props.location.state && props.location.state.pageId) {
+        console.log('this.props.messengerRefURL in constructer function if', this.props.messengerRefURL)
+        props.updateData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+      }
+      props.fetchAllSequence()
     }
-    props.fetchAllSequence()
     this.onSave = this.onSave.bind(this)
   }
 
@@ -77,15 +82,17 @@ class CreateURL extends React.Component {
       }, this.msg)
     } else {
       this.props.createURL({
-        pageId: this.props.location.state._id._id === undefined ? this.props.location.state._id : this.props.location.state._id._id,
+        pageId: this.props.location.state._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
     }
+    this.props.resetState()
   }
 
   render () {
+    console.log('this.props.messengerRefURL in render create function', this.props.messengerRefURL)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -141,6 +148,7 @@ function mapDispatchToProps (dispatch) {
     createURL: createURL,
     editURL: editURL,
     updateData: updateData,
+    resetState: resetState,
     fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
