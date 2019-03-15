@@ -165,7 +165,7 @@ class Sidebar extends Component {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
+            <Link to={this.props.user.platform === 'sms' ? '/smsSubscribers' : '/subscribers'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
             </Link>
@@ -390,7 +390,7 @@ class Sidebar extends Component {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/broadcasts' className='m-menu__link'>
+            <Link to={this.props.user.platform === 'sms' ? 'smsBroadcasts' : '/broadcasts'} className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>

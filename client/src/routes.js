@@ -135,6 +135,8 @@ import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContacts/uploadContacts'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
+import SmsSubscribers from './containers/uploadContacts/contacts'
+import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -296,6 +298,8 @@ const routes = (
     <Route path='/createPushMessage' component={PushMessage} onEnter={requireAuth} />
     <Route path='/facebookIntegration' component={FacebookIntegration} onEnter={requireAuth} />
     <Route path='/uploadContacts' component={UploadContacts} onEnter={requireAuth} />
+    <Route path='/smsSubscribers' component={SmsSubscribers} onEnter={requireAuth} />
+    <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

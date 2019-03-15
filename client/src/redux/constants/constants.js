@@ -325,3 +325,9 @@ export const UPDATE_MESSENGER_REF_URL = 'UPDATE_MESSENGER_REF_URL'
 
 // constants for custom fields
 export const LOAD_CUSTOM_FIELDS = 'LOAD_CUSTOM_FIELDS'
+
+// constants for contacts
+export const LOAD_CONTACTS_LIST = 'LOAD_CONTACTS_LIST'
+
+// constants for smsBroadcasts
+export const LOAD_SMS_BROADCASTS_LIST = 'LOAD_SMS_BROADCASTS_LIST'
