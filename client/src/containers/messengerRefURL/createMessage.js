@@ -43,10 +43,21 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   goBack () {
+    console.log('In go back method')
+    console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefSelectedURL)
+    console.log('this.props.location.state.module', this.props.location.state.module)
+    if (this.props.location.state.module === 'edit') {
+      browserHistory.push({
+        pathname: `/createMessengerRefURL`,
+        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: this.props.location.state.messengerRefSelectedURL}
+      })
+    }
+   else {
     browserHistory.push({
       pathname: `/createMessengerRefURL`,
       state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'createMessage'}
     })
+   }
   }
 
   saveMessage () {

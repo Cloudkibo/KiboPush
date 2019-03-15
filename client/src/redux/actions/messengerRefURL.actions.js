@@ -75,7 +75,7 @@ export function createURL (data, msg) {
   }
 }
 
-export function editURL (id, data, msg) {
+export function editURL (data, msg) {
   console.log('data for editURL', data)
   return (dispatch) => {
     callApi(`pageReferrals/edit`, 'post', data)
