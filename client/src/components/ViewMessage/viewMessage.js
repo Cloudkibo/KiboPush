@@ -10,7 +10,7 @@ class ViewMessage extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.state = {
-      payload: []
+      payload: this.props.payload
     }
   }
 
