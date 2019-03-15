@@ -41,6 +41,7 @@ class Card extends React.Component {
     this.handleRemove = this.handleRemove.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
     this.handleWebView = this.handleWebView.bind(this)
+    this.onImgLoad = this.onImgLoad.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -63,6 +64,13 @@ class Card extends React.Component {
       defaultAction: ''
     }
   }
+
+  onImgLoad (e) {
+    e.persist()
+    console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
+    this.setState({imgWidth: e.target.width, imgHeight: e.target.height})
+  }
+
   handleClick (e) {
     if (this.state.elementUrl !== '' && isWebURL(this.state.elementUrl)) {
       this.setState({disabled: false, openWebsite: true})
@@ -508,7 +516,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img style={{maxWidth: 235, maxHeight: 235, padding: 15}} src={this.state.imgSrc} />
+            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 235, padding: 15}} src={this.state.imgSrc} />
            }
           </div>
           }

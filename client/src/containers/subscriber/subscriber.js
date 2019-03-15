@@ -876,7 +876,7 @@ class Subscriber extends React.Component {
           gender_value: this.state.filterByGender,
           page_value: this.state.filterByPage,
           locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag,
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
           status_value: this.state.status_value
         }
       })
@@ -893,7 +893,7 @@ class Subscriber extends React.Component {
           gender_value: this.state.filterByGender,
           page_value: this.state.filterByPage,
           locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag,
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
           status_value: this.state.status_value
         }
       })
@@ -910,7 +910,7 @@ class Subscriber extends React.Component {
           gender_value: this.state.filterByGender,
           page_value: this.state.filterByPage,
           locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag,
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
           status_value: this.state.status_value
         }
       })
@@ -1289,7 +1289,7 @@ class Subscriber extends React.Component {
       <div>
         <CustomFields />
         <CreateCustomField />
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&

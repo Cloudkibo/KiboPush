@@ -132,7 +132,9 @@ import CreateMessengerRefURL from './containers/messengerRefURL/create'
 import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMessage'
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
+import UploadContacts from './containers/uploadContacts/uploadContacts'
 import auth from './utility/auth.service'
+import ChatWidget from './containers/chatWidget/chatWidget'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -283,6 +285,7 @@ const routes = (
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
+    <Route path='/chatWidget' component={ChatWidget} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
@@ -292,6 +295,7 @@ const routes = (
     <Route path='/businessGateway' component={BusinessGatewayHome} onEnter={requireAuth} />
     <Route path='/createPushMessage' component={PushMessage} onEnter={requireAuth} />
     <Route path='/facebookIntegration' component={FacebookIntegration} onEnter={requireAuth} />
+    <Route path='/uploadContacts' component={UploadContacts} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

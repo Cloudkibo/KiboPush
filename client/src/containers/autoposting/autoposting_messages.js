@@ -112,7 +112,7 @@ class AutopostingMessages extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding this page? Click <a>here</a>.
+              Need help in understanding this page? Here is the <a href='https://kibopush.com/autoposting/' target='_blank'>documentation</a>.
             </div>
           </div>
           <div className='row'>

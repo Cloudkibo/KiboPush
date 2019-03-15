@@ -25,6 +25,7 @@ class UnansweredQueries extends React.Component {
       filteredData: ''
     }
     this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
     this.getDateAndTime = this.getDateAndTime.bind(this)
     props.loadUnansweredQuestions(this.props.location.state)
     props.loadMyPagesList()
@@ -32,15 +33,15 @@ class UnansweredQueries extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Unanswered Queries`;
+    document.title = `${title} | Unanswered Queries`
   }
 
   componentWillReceiveProps (nextProps) {
@@ -65,26 +66,26 @@ class UnansweredQueries extends React.Component {
       this.setState({ locales: nextProps.locales })
     }
   }
-  displayData (n, subscribers) {
-    let offset = n * 4
+
+  displayData (n, questions) {
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > subscribers.length) {
-      limit = subscribers.length
+    if ((offset + 10) > questions.length) {
+      limit = questions.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      data[index] = subscribers[i]
+      data[index] = questions[i]
       index++
     }
-    console.log({ data })
-    this.setState({ questionsList: data })
+    this.setState({questionsList: data})
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.state.waitingList)
+    this.displayData(data.selected, this.props.unansweredQueriesList)
   }
 
   getDateAndTime (timestamp) {
