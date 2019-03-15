@@ -458,6 +458,8 @@ class Card extends React.Component {
               <p>This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.
                 We recommend using the correct aspect ratio for your image.
                 Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.
+                Alternatively, you can use a combination of the image component and text component if you don't
+                want any cropping/scaling on the image.
               </p>
             </ModalDialog>
           </ModalContainer>
