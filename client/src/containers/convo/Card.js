@@ -43,6 +43,8 @@ class Card extends React.Component {
     this.handleToggle = this.handleToggle.bind(this)
     this.handleWebView = this.handleWebView.bind(this)
     this.onImgLoad = this.onImgLoad.bind(this)
+    this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
+    this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
