@@ -9,6 +9,14 @@ export function showBroadcasts (data) {
   }
 }
 
+export function showTwilioNumbers (data) {
+  console.log('data in showTwilioNumbers', data)
+  return {
+    type: ActionTypes.LOAD_TWILIO_NUMBERS,
+    twilioNumbers: data
+  }
+}
+
 export function loadBroadcastsList (data) {
   console.log('data for loadBroadcastsList', data)
   return (dispatch) => {
@@ -16,6 +24,29 @@ export function loadBroadcastsList (data) {
       .then(res => {
         console.log('response from loadBroadcastsList', res)
         dispatch(showBroadcasts(res.payload))
+      })
+  }
+}
+
+export function loadTwilioNumbers () {
+  return (dispatch) => {
+    callApi('smsBroadcasts/getTwilioNumbers')
+      .then(res => {
+        console.log('response from loadTwilioNumbers', res)
+        dispatch(showTwilioNumbers(res.payload))
+      })
+  }
+}
+
+export function sendBroadcast (data, clearFields) {
+  console.log('data for sendBroadcast', data)
+  return (dispatch) => {
+    callApi('smsBroadcasts/sendBroadcast', 'post', data)
+      .then(res => {
+        console.log('response from sendBroadcast', res)
+        if (res.status === 'success') {
+          dispatch(clearFields())
+        }
       })
   }
 }

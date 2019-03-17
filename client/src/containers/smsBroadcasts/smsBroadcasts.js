@@ -4,9 +4,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { browserHistory } from 'react-router'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -14,12 +16,38 @@ class SmsBroadcast extends React.Component {
     this.state = {
       broadcastsData: [],
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      isShowingModal: false,
+      numberValue: ''
     }
 
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    props.loadTwilioNumbers()
 
     this.displayData = this.displayData.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
+    this.onNumberChange = this.onNumberChange.bind(this)
+  }
+
+  onNumberChange (e) {
+    this.setState({numberValue: e.target.value})
+  }
+
+  gotoCreate (broadcast) {
+    browserHistory.push({
+      pathname: `/createsmsBroadcast`,
+      state: {number: this.state.numberValue}
+    })
+  }
+
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
 
   displayData (n, broadcasts) {
@@ -75,11 +103,16 @@ class SmsBroadcast extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('in componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
     } else {
       this.setState({ broadcastsData: [], totalLength: 0 })
+    }
+    if (nextProps.twilioNumbers && nextProps.twilioNumbers.length > 0) {
+      console.log('inside', nextProps.twilioNumbers[0])
+      this.setState({numberValue: nextProps.twilioNumbers[0]})
     }
   }
 
@@ -87,6 +120,32 @@ class SmsBroadcast extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
+          {
+            this.state.isShowingModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialog}>
+                <h3>Create Broadcast</h3>
+                <p>Select your Twilio Number to send broadcast from:</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div className='form-group m-form__group'>
+                    <select className='custom-select' style={{width: '100%'}} value={this.state.numberValue} onChange={this.onNumberChange} >
+                      {this.props.twilioNumbers && this.props.twilioNumbers.length > 0 && this.props.twilioNumbers.map((number) => (
+                        <option value={number}>{number}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <br />
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                      Create New Broadcast
+                    </button>
+                  </div>
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Broadcasts</h3>
@@ -106,6 +165,15 @@ class SmsBroadcast extends React.Component {
                           Broadcasts
                         </h3>
                       </div>
+                    </div>
+                    <div className='m-portlet__head-tools'>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>Create New</span>
+                        </span>
+                      </button>
+
                     </div>
                   </div>
                   <div className='m-portlet__body'>
@@ -188,13 +256,15 @@ class SmsBroadcast extends React.Component {
 function mapStateToProps (state) {
   return {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
-    count: (state.smsBroadcastsInfo.count)
+    count: (state.smsBroadcastsInfo.count),
+    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList
+    loadBroadcastsList,
+    loadTwilioNumbers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

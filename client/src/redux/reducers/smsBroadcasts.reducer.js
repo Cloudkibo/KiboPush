@@ -7,6 +7,11 @@ export function smsBroadcastsInfo (state = [], action) {
         broadcasts: action.broadcasts,
         count: action.count
       })
+    case ActionTypes.LOAD_TWILIO_NUMBERS:
+      console.log('action', action)
+      return Object.assign({}, state, {
+        twilioNumbers: action.twilioNumbers
+      })
     default:
       return state
   }
