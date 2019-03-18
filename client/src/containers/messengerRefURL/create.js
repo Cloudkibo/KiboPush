@@ -87,8 +87,6 @@ class CreateURL extends React.Component {
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
-      this.props.resetState()
-
     }
   }
 
