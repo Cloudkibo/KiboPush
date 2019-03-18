@@ -113,6 +113,7 @@ class MessengerRefURL extends React.Component {
   }
 
   render () {
+    console.log('this.props.messengerRefURLs', this.props.messengerRefURLs)
     var alertOptions = {
       offset: 14,
       position: 'top right',
