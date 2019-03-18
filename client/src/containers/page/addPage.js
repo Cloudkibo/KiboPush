@@ -143,10 +143,10 @@ class AddPage extends React.Component {
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item'>
                         {this.props.location.state && this.props.location.state.module === 'page'
-                          ? <Link to='/pages' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
+                          ? <Link to='/pages' className='btn m-btn--pill btn-success'>
                               Done
                             </Link>
-                            : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
+                            : <Link to='/dashboard' className='btn m-btn--pill btn-success'>
                                 Done
                               </Link>
                           }
