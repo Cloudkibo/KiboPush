@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchURLs, deleteURL} from '../../redux/actions/messengerRefURL.actions'
+import {fetchURLs, deleteURL, resetState} from '../../redux/actions/messengerRefURL.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -54,6 +54,7 @@ class MessengerRefURL extends React.Component {
     this.setState({pageSelected: e.target.value})
   }
   gotoCreate () {
+    this.props.resetState()
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     console.log('pageId', pageId)
     browserHistory.push({
@@ -304,6 +305,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchURLs: fetchURLs,
     deleteURL: deleteURL,
+    resetState: resetState,
     loadMyPagesList: loadMyPagesList
   }, dispatch)
 }

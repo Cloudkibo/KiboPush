@@ -34,7 +34,7 @@ class CreateURL extends React.Component {
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData('', '', '', {
-        pageId: this.props.location.state.messengerRefURL.pageId.pageId,
+        pageId: this.props.location.state.messengerRefURL.pageId.pageId === undefined ? this.props.location.state.messengerRefURL.pageId : this.props.location.state.messengerRefURL.pageId.pageId,
         ref_parameter: this.props.location.state.messengerRefURL.ref_parameter,
         reply: this.props.location.state.messengerRefURL.reply,
         sequenceId: this.props.location.state.messengerRefURL.sequenceId
@@ -87,8 +87,9 @@ class CreateURL extends React.Component {
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
+      this.props.resetState()
+
     }
-    this.props.resetState()
   }
 
   render () {
@@ -124,7 +125,9 @@ class CreateURL extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <Tabs module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
-                    <Preview />
+                    {
+                      this.props.location.state.module === 'edit' ? <Preview selectedmessengerRefURL={this.props.location.state.messengerRefURL} /> : <Preview />
+                    }
                   </div>
                 </div>
               </div>
