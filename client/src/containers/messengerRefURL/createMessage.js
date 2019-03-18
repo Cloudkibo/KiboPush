@@ -46,12 +46,12 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   goBack () {
-    console.log('In go back method messengerRefURL', this.props.messengerRefURL)
-    console.log('this.props.pageId', this.props.pageId)
     if (this.props.location.state.module === 'edit') {
+      var new_messengerRefURL = this.props.location.state.messengerRefSelectedURL
+      new_messengerRefURL['reply'] = this.props.messengerRefURL.reply
       browserHistory.push({
         pathname: `/createMessengerRefURL`,
-        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: this.props.location.state.messengerRefSelectedURL}
+        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: new_messengerRefURL}
       })
     }
    else {
@@ -63,10 +63,24 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   saveMessage () {
+    console.log('this.state.broadcast', this.state.broadcast)
+
+    //console.log('In go saveMessage method messengerRefURL', this.props.messengerRefSelectedURL)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    if (this.props.location.state.module === 'edit') {
+      var edit = {
+        pageId: this.props.messengerRefURL.pageId,
+        ref_parameter: this.props.messengerRefURL.ref_parameter,
+        reply: this.state.broadcast,
+        sequenceId: this.props.messengerRefURL.sequenceId
+      }
+    this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
+    }
+    else {
     this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
+    }
     this.msg.success('Message has been saved.')
   }
 
@@ -78,9 +92,10 @@ class MessengerRefURLMessage extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('messengerRefURLInfo', this.props.messengerRefURL)
-    console.log('this.props.pages', this.props.pages)
-    console.log('this.state.pageId', this.state.pageId)
+   // console.log('this.props.location.state.messengerRefSelectedURL', this.props.location.state.messengerRefSelectedURL)
+    //console.log('this.props.messengerRefURL', this.props.messengerRefURL)
+   // console.log('this.props.pages', this.props.pages)
+  //  console.log('this.state.pageId', this.state.pageId)
     console.log('this.state.broadcast', this.state.broadcast)
     return (
       <div style={{width: '100%'}}>

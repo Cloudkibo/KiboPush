@@ -25,7 +25,7 @@ export function messengerRefURLInfo (state = initialState, action) {
       })
     case ActionTypes.UPDATE_MESSENGER_REF_URL:
       console.log('ActionTypes.UPDATE_MESSENGER_REF_URL', ActionTypes.UPDATE_MESSENGER_REF_URL)
-
+      console.log('action.data', action.data)
       return Object.assign({}, state, {
         messengerRefURL: action.data
       })

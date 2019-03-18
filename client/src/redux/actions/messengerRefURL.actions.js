@@ -58,7 +58,9 @@ export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
         ref_parameter: edit.ref_parameter,
         reply: edit.reply,
         sequenceId: edit.sequenceId
+
       }
+     // messengerRefURLData[updateKey] = updateValue
     } else {
       messengerRefURLData[updateKey] = updateValue
     }
