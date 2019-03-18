@@ -13,6 +13,7 @@ export function pagesInfo (state = [], action) {
         currentPage: action.data
       })
     case ActionTypes.LOAD_PAGES_LIST:
+      console.log('ActionTypes.LOAD_PAGES_LIST in Pages.reducer')
       return Object.assign({}, state, {
         pages: action.data
       })

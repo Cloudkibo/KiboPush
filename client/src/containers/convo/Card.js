@@ -15,6 +15,7 @@ import AlertContainer from 'react-alert'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
 import { Link } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -42,6 +43,8 @@ class Card extends React.Component {
     this.handleToggle = this.handleToggle.bind(this)
     this.handleWebView = this.handleWebView.bind(this)
     this.onImgLoad = this.onImgLoad.bind(this)
+    this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
+    this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -61,14 +64,28 @@ class Card extends React.Component {
       webviewurl: '',
       elementUrl: '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      defaultAction: ''
+      defaultAction: '',
+      isshowGuideLinesImageDialog: false
     }
+  }
+
+  showGuideLinesImageDialog () {
+    this.setState({isshowGuideLinesImageDialog: true})
+  }
+  closeGuideLinesImageDialog () {
+    this.setState({isshowGuideLinesImageDialog: false})
   }
 
   onImgLoad (e) {
     e.persist()
     console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
-    this.setState({imgWidth: e.target.width, imgHeight: e.target.height})
+    let imgWidth = e.target.width
+    let imgHeight = e.target.height
+    let aspectRatio = imgWidth / imgHeight
+    console.log('aspect ratio of image', aspectRatio)
+    if (aspectRatio > 2 || aspectRatio < 1.8) {
+      this.showGuideLinesImageDialog()
+    }
   }
 
   handleClick (e) {
@@ -432,6 +449,21 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.isshowGuideLinesImageDialog &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeGuideLinesImageDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeGuideLinesImageDialog}>
+              <p>This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.
+                We recommend using the correct aspect ratio for your image.
+                Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.
+                Alternatively, you can use a combination of the image component and text component if you don't
+                want any cropping/scaling on the image.
+              </p>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>

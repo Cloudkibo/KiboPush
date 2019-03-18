@@ -29,8 +29,10 @@ class UploadContacts extends React.Component {
       phoneColumn: '',
       columnAlerts: false,
       fileContent: [],
-      manually: false
+      manually: false,
+      dict: {}
     }
+    this.handleInputChange = this.handleInputChange.bind(this)
     this.removeNumber = this.removeNumber.bind(this)
     this.changeNumber = this.changeNumber.bind(this)
     this.changeName = this.changeName.bind(this)
@@ -46,6 +48,16 @@ class UploadContacts extends React.Component {
     this.parseCSV = this.parseCSV.bind(this)
     this.addManually = this.addManually.bind(this)
     this.clearFields = this.clearFields.bind(this)
+  }
+  handleInputChange (event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name.trim()
+    let dictCopy = this.state.dict
+    dictCopy[name] = value
+    this.setState({
+      dict: dictCopy
+    })
   }
   addManually () {
     if (this.state.number === '' || this.state.name === '') {
@@ -66,8 +78,6 @@ class UploadContacts extends React.Component {
   removeNumber (e, index) {
     let removed = this.state.manualNumbers
     removed.splice(index, 1)
-    console.log('index', index)
-    console.log('removed', removed)
     this.setState({manualNumbers: removed})
     if (removed.length === 0) {
       this.setState({manually: false})
@@ -104,6 +114,9 @@ class UploadContacts extends React.Component {
     })
   }
   handleNameColumn (value) {
+    this.setState({
+      columnAlerts: false
+    })
     if (!value) {
       this.setState({
         nameColumn: ''
@@ -115,6 +128,9 @@ class UploadContacts extends React.Component {
     }
   }
   handlePhoneColumn (value) {
+    this.setState({
+      columnAlerts: false
+    })
     if (!value) {
       this.setState({
         phoneColumn: ''
@@ -140,11 +156,11 @@ class UploadContacts extends React.Component {
   }
 
   clearFields () {
-    this.setState({manualNumbers: [], manually: false, file: ''})
+    this.setState({manualNumbers: [], manually: false, file: '', dict: {}, nameColumn: '', phoneColumn: ''})
   }
 
   removeFile () {
-    this.setState({file: ''})
+    this.setState({file: '', nameColumn: '', phoneColumn: '', dict: {}})
   }
 
   onFilesChange (files) {
@@ -227,7 +243,7 @@ class UploadContacts extends React.Component {
           var columns = results.data[0]
           for (var i = 0; i < columns.length; i++) {
             if (columns[i] !== '') {
-              columnsArray.push({'value': columns[i], 'label': columns[i]})
+              columnsArray.push({'value': columns[i].trim(), 'label': columns[i].trim()})
             } else {
               faulty = true
               break
@@ -250,6 +266,13 @@ class UploadContacts extends React.Component {
   }
 
   uploadFile (file) {
+    let otherColumns = []
+    for (var key in this.state.dict) {
+      if (key !== this.state.phoneColumn.value && key !== this.state.nameColumn.value && this.state.dict[key]) {
+        otherColumns.push(key)
+      }
+    }
+    console.log('otherColumns', otherColumns)
     if (file && file !== '') {
       var fileData = new FormData()
       fileData.append('file', file)
@@ -258,6 +281,7 @@ class UploadContacts extends React.Component {
       fileData.append('filesize', file.size)
       fileData.append('phoneColumn', this.state.phoneColumn.value)
       fileData.append('nameColumn', this.state.nameColumn.value)
+      fileData.append('otherColumns', otherColumns)
 
       if (this.validate('file')) {
         this.setState({
@@ -304,7 +328,6 @@ class UploadContacts extends React.Component {
   }
 
   render () {
-    console.log('in render')
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -319,7 +342,7 @@ class UploadContacts extends React.Component {
           this.state.showFileColumns &&
           <ModalContainer style={{width: '680px'}}>
             <ModalDialog style={{width: '680px'}}>
-              <div className='form-group m-form__group col-12'>
+              <div className='form-group m-form__group row'>
                 <label className='col-lg-12 col-form-label'>
                   Select column for customer names
                 </label>
@@ -336,7 +359,7 @@ class UploadContacts extends React.Component {
                   </span>
                 }
               </div>
-              <div className='form-group m-form__group col-12'>
+              <div className='form-group m-form__group row'>
                 <label className='col-lg-12 col-form-label'>
                   Select column for customer phone numbers
                 </label>
@@ -354,15 +377,48 @@ class UploadContacts extends React.Component {
                 }
               </div>
               { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
-                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                <span style={{color: 'red'}}> You cannot select same fields for both columns</span>
                 </span>
               }
-              <button style={{float: 'right', marginLeft: '10px'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.saveColumns()
-                }}>Save
-              </button>
+              {this.state.columns.length > 2 &&
+              <div style={{background: 'whitesmoke', padding: '10px', borderRadius: '5px', width: '98%'}}>
+                <div className='form-group m-form__group row'>
+                  <label className='col-lg-5 col-form-label'>
+                    Select Other columns (Optional)
+                  </label>
+                </div>
+                {
+                  this.state.columns.map((column) => {
+                    return (<div className='form-group m-form__group row'>
+                      <label className='col-lg-5 col-form-label'>
+                        {column.value}
+                      </label>
+                      { this.state.phoneColumn === column || this.state.nameColumn === column
+                        ? <div className='col-lg-5'>
+                          <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked='true' disabled='true' />
+                        </div>
+                        : this.state.dict[column.value]
+                        ? <div className='col-lg-5'>
+                          <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked='true' />
+                        </div>
+                        : <div className='col-lg-5'>
+                          <input name={column.value} type='checkbox' onChange={this.handleInputChange} checked={this.state.dict[column.value]} />
+                        </div>
+                      }
+                    </div>)
+                  })
+              }
+              </div>
+            }
+              <br />
+              <center>
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.saveColumns()
+                  }} disabled={this.state.phoneColumn === '' || this.state.nameColumn === ''}>Save
+                </button>
+              </center>
             </ModalDialog>
           </ModalContainer>
         }
@@ -448,6 +504,9 @@ class UploadContacts extends React.Component {
                           <br />
                           <button className='btn btn-primary' onClick={() => { this.addManually() }}>
                             Add
+                          </button>
+                          <button className='btn btn-primary' onClick={this.clearFields} style={{marginLeft: '10px'}}>
+                            Back
                           </button>
                         </center>
                       </div>

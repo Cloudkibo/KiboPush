@@ -16,6 +16,7 @@ class Preview extends React.Component {
   }
 
   render () {
+    console.log('this.props.messengerRefURL.reply in Perview Component', this.props.messengerRefURL.reply)
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>

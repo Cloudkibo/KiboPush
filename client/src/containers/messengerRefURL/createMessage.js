@@ -15,9 +15,12 @@ import { updateData } from '../../redux/actions/messengerRefURL.actions'
 class MessengerRefURLMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
+    console.log('props.messengerRefURL.pageId in MessengerRefURLMessage', props.messengerRefURL.pageId)
+    console.log('props.pages', props.pages)
+
     this.state = {
       buttonActions: ['open website', 'open webview', 'add share'],
-      broadcast: this.props.messengerRefURL.reply ? this.props.messengerRefURL.reply : [],
+      broadcast: props.messengerRefURL.reply ? props.messengerRefURL.reply : [],
       pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
       convoTitle: 'Opt-In Message'
     }
@@ -43,10 +46,20 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   goBack () {
+    console.log('In go back method messengerRefURL', this.props.messengerRefURL)
+    console.log('this.props.pageId', this.props.pageId)
+    if (this.props.location.state.module === 'edit') {
+      browserHistory.push({
+        pathname: `/createMessengerRefURL`,
+        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: this.props.location.state.messengerRefSelectedURL}
+      })
+    }
+   else {
     browserHistory.push({
       pathname: `/createMessengerRefURL`,
-      state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'createMessage'}
+      state: {pageId: this.props.pageId, _id: this.state.pageId}
     })
+   }
   }
 
   saveMessage () {
@@ -67,6 +80,8 @@ class MessengerRefURLMessage extends React.Component {
     }
     console.log('messengerRefURLInfo', this.props.messengerRefURL)
     console.log('this.props.pages', this.props.pages)
+    console.log('this.state.pageId', this.state.pageId)
+    console.log('this.state.broadcast', this.state.broadcast)
     return (
       <div style={{width: '100%'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

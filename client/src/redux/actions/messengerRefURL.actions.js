@@ -16,6 +16,12 @@ export function showAllURLs (data) {
   }
 }
 
+export function resetState () {
+  return {
+    type: ActionTypes.RESET_STATE_REF_URL
+  }
+}
+
 export function fetchURLs () {
   console.log('in fetchURLs')
   return (dispatch) => {
@@ -42,6 +48,7 @@ export function deleteURL (id, msg) {
 }
 export function updateData (messengerRefURLData, updateKey, updateValue, edit) {
   return (dispatch) => {
+    console.log('messengerRefURLData', messengerRefURLData)
     console.log('updateKey', updateKey)
     console.log('updateValue', updateValue)
     if (edit) {
@@ -75,7 +82,7 @@ export function createURL (data, msg) {
   }
 }
 
-export function editURL (id, data, msg) {
+export function editURL (data, msg) {
   console.log('data for editURL', data)
   return (dispatch) => {
     callApi(`pageReferrals/edit`, 'post', data)

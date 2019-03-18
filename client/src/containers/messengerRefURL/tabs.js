@@ -45,7 +45,7 @@ class Tab extends React.Component {
           <div className='tab-pane fade active in' id='tab_1'>
             {this.state.currentTab === 'setup'
             ? <Setup />
-            : <OptInActions />
+            : <OptInActions module={this.props.module} messengerRefSelectedURL={this.props.messengerRefURL} />
             }
           </div>
         </div>

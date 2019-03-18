@@ -38,6 +38,8 @@ import {messengerRefURLInfo} from './messengerRefURL.reducer'
 import {demoSSAInfo} from './demoSSA.reducer'
 import {customFieldInfo} from './customFields.reducer'
 import {businessGatewayInfo} from './businessGateway.reducer'
+import {contactsInfo} from './contacts.reducer'
+import {smsBroadcastsInfo} from './smsBroadcasts.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -77,7 +79,9 @@ const appReducer = combineReducers({
   demoSSAInfo,
   messengerRefURLInfo,
   customFieldInfo,
-  businessGatewayInfo
+  businessGatewayInfo,
+  contactsInfo,
+  smsBroadcastsInfo
 })
 
 export default appReducer

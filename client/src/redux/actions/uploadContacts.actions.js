@@ -1,6 +1,15 @@
 import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
+import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
+
+export function showContacts (data) {
+  return {
+    type: ActionTypes.LOAD_CONTACTS_LIST,
+    contacts: data.contacts,
+    count: data.count
+  }
+}
 
 export function uploadFile (filedata, msg, clearFields) {
   return (dispatch) => {
@@ -33,5 +42,16 @@ export function uploadNumbers (data, msg, clearFields) {
         }
       }
     )
+  }
+}
+
+export function loadContactsList (data) {
+  console.log('data for loadContactsList', data)
+  return (dispatch) => {
+    callApi('contacts', 'post', data)
+      .then(res => {
+        console.log('response from loadContactsList', res)
+        dispatch(showContacts(res.payload))
+      })
   }
 }

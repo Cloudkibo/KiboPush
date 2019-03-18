@@ -204,7 +204,9 @@ class TargetCustomers extends React.Component {
            </button>
           </div>
         </div>
+        {this.props.handleNext && this.props.handleBack &&
         <Footer tab='targetCustomers' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+        }
       </div>
     )
   }

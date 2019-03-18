@@ -322,6 +322,14 @@ export const UPDATE_DEMOSSA_CHAT = 'UPDATE_DEMOSSA_CHAT'
 // constants for Messenger Ref URL
 export const SHOW_MESSENGER_REF_URLS = 'SHOW_MESSENGER_REF_URLS'
 export const UPDATE_MESSENGER_REF_URL = 'UPDATE_MESSENGER_REF_URL'
+export const RESET_STATE_REF_URL = 'RESET_STATE_REF_URL'
 
 // constants for custom fields
 export const LOAD_CUSTOM_FIELDS = 'LOAD_CUSTOM_FIELDS'
+
+// constants for contacts
+export const LOAD_CONTACTS_LIST = 'LOAD_CONTACTS_LIST'
+
+// constants for smsBroadcasts
+export const LOAD_SMS_BROADCASTS_LIST = 'LOAD_SMS_BROADCASTS_LIST'
+export const LOAD_TWILIO_NUMBERS = 'LOAD_TWILIO_NUMBERS'

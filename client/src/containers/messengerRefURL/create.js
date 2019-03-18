@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {createURL, editURL, updateData} from '../../redux/actions/messengerRefURL.actions'
+import {createURL, editURL, updateData, resetState} from '../../redux/actions/messengerRefURL.actions'
 import crypto from 'crypto'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
@@ -18,14 +18,20 @@ class CreateURL extends React.Component {
     super(props, context)
     this.state = {
     }
-    if (props.location.state && props.location.state.pageId) {
-      props.updateData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+
+    if (props.location.state.module === 'createMessage') {
+    //  props.resetState()
+      if (props.location.state && props.location.state.pageId) {
+        console.log('this.props.messengerRefURL in constructer function if', this.props.messengerRefURL)
+        props.updateData(this.props.messengerRefURL, 'pageId', props.location.state.pageId)
+      }
+      props.fetchAllSequence()
     }
-    props.fetchAllSequence()
     this.onSave = this.onSave.bind(this)
   }
 
   componentDidMount () {
+    console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData('', '', '', {
         pageId: this.props.location.state.messengerRefURL.pageId.pageId,
@@ -33,7 +39,7 @@ class CreateURL extends React.Component {
         reply: this.props.location.state.messengerRefURL.reply,
         sequenceId: this.props.location.state.messengerRefURL.sequenceId
       })
-    } else if (!this.props.location.state.module) {
+    } else if (this.props.location.state.module && this.props.location.state.module === 'createMessage') {
       console.log('this.props.location.state', this.props.location.state)
       this.props.updateData(this.props.messengerRefURL, 'ref_parameter', this.getRandomString())
       this.props.updateData(this.props.messengerRefURL, 'pageId', this.props.location.state.pageId)
@@ -67,23 +73,26 @@ class CreateURL extends React.Component {
     }
     console.log('this.props.location.state', this.props.location.state)
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
-    if (this.props.location.state && this.props.location.state.messengerRefURL) {
+    if (this.props.location.state && this.props.location.state.messengerRefURL && this.props.location.state.module === 'edit') {
       this.props.editURL({
+        _id: this.props.location.state.messengerRefURL._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
     } else {
       this.props.createURL({
-        pageId: this.props.location.state._id._id === undefined ? this.props.location.state._id : this.props.location.state._id._id,
+        pageId: this.props.location.state._id,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
     }
+    this.props.resetState()
   }
 
   render () {
+    console.log('this.props.messengerRefURL in render create function', this.props.messengerRefURL)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -114,7 +123,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs />
+                    <Tabs module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
                     <Preview />
                   </div>
                 </div>
@@ -139,6 +148,7 @@ function mapDispatchToProps (dispatch) {
     createURL: createURL,
     editURL: editURL,
     updateData: updateData,
+    resetState: resetState,
     fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
