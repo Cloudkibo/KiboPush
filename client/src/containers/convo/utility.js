@@ -75,8 +75,8 @@
       }
       if (broadcast[i].componentType === 'gallery') {
         console.log('in gallery component')
-        if (broadcast[i].cards.length === 0) {
-          msg.error('Card in gallery must have at least title, Substitle, image and button.')
+        if (broadcast[i].cards.length <= 2) {
+          msg.error('Both Card in gallery must have at least title, Substitle, image and button.')
           isValid = false
           break
         }
