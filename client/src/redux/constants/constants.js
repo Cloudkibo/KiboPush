@@ -333,3 +333,8 @@ export const LOAD_CONTACTS_LIST = 'LOAD_CONTACTS_LIST'
 // constants for smsBroadcasts
 export const LOAD_SMS_BROADCASTS_LIST = 'LOAD_SMS_BROADCASTS_LIST'
 export const LOAD_TWILIO_NUMBERS = 'LOAD_TWILIO_NUMBERS'
+
+// constants for smsChat
+export const FETCH_SESSIONS = 'FETCH_SESSIONS'
+export const FETCH_CHAT = 'FETCH_CHAT'
+export const UPDATE_SESSION = 'UPDATE_SESSION'

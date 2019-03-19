@@ -40,6 +40,7 @@ import {customFieldInfo} from './customFields.reducer'
 import {businessGatewayInfo} from './businessGateway.reducer'
 import {contactsInfo} from './contacts.reducer'
 import {smsBroadcastsInfo} from './smsBroadcasts.reducer'
+import {smsChatInfo} from './smsChat.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -81,7 +82,8 @@ const appReducer = combineReducers({
   customFieldInfo,
   businessGatewayInfo,
   contactsInfo,
-  smsBroadcastsInfo
+  smsBroadcastsInfo,
+  smsChatInfo
 })
 
 export default appReducer
