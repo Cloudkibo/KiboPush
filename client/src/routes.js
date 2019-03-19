@@ -138,6 +138,7 @@ import ChatWidget from './containers/chatWidget/chatWidget'
 import SmsSubscribers from './containers/uploadContacts/contacts'
 import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
+import SmsChat from './containers/smsChat/smsChat'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -302,6 +303,7 @@ const routes = (
     <Route path='/smsSubscribers' component={SmsSubscribers} onEnter={requireAuth} />
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
+    <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
