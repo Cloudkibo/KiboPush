@@ -10,7 +10,7 @@ class ViewMessage extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.state = {
-      payload: this.props.payload
+      payload: (this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) ? this.props.payload.jsonAdMessages[0].messageContent : this.props.payload
     }
   }
 

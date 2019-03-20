@@ -97,6 +97,7 @@ class Media extends React.Component {
     }
   }
   onFilesError (error, file) {
+    console.log('error.message', error.message)
     this.setState({errorMsg: error.message, showErrorDialogue: true})
   }
   updateMediaDetails (mediaProps) {
@@ -117,7 +118,10 @@ class Media extends React.Component {
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
     if (file.size > 10000000) {
-      this.props.handleMedia({error: 'file size error'})
+      var error = {
+        message: 'file size is less than or equal to 10MB'
+      }
+      this.onFilesError(error, true)
       return
     }
     if (!video && !image) {
@@ -293,6 +297,7 @@ class Media extends React.Component {
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>
+          
             <input
               ref='file'
               type='file'
@@ -300,6 +305,9 @@ class Media extends React.Component {
               multiple='true'
               accept='image/*, video/*'
               title=' '
+              maxFileSize={10000000}
+              minFileSize={0}
+              clickable
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             <div style={{width: '100%'}}>
               {
