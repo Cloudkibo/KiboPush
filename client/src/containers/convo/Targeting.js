@@ -101,7 +101,10 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
-    this.setState({pageValue: [options[0].id]})
+    this.setState({pageValue: [options[0].id]}, () => {
+      let currentPageSubscribers = this.props.subscribers.filter(subscriber => { return subscriber.pageId.pageId === this.state.pageValue[0] })
+      this.setState({subscribers: currentPageSubscribers})
+    })
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})

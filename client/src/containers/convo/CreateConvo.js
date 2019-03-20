@@ -180,6 +180,8 @@ class CreateConvo extends React.Component {
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
       }
     })
+    let currentPageSubscribers = this.props.subscribers.filter(subscriber => { return subscriber.pageId.pageId === this.state.pageValue[0] })
+    this.setState({subscribers: currentPageSubscribers})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -515,7 +517,7 @@ class CreateConvo extends React.Component {
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} component='broadcast' />
                         </div>
 
                       </div>
