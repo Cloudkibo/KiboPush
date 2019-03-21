@@ -162,7 +162,7 @@ class CreatePoll extends React.Component {
     })
   }
 
-  checkValidation (noDialog) {
+  checkValidation () {
     if (this.state.option1 === '' || this.state.option2 === '' ||
       this.state.option3 === '' || this.state.statement === '') {
       console.log('vald' + this.state.option1 + ' ' + this.state.option2 + ' ' + this.state.option3 + ' ' + this.state.statement)
