@@ -41,9 +41,12 @@ class FileSelect extends React.Component {
     this.handleRadioButton = this.handleRadioButton.bind(this)
   }
   removeFile () {
-    this.setState({ file: '', showFileColumns: false, columns: [], fileContent: [], fileErrors: [], phoneColumn: '', enableSaveColumns: false, dict: {} })
+    this.setState({ file: '', showFileColumns: false, columns: [], fileContent: [], fileErrors: [], phoneColumn: '', subscriberIdColumn: '', enableSaveColumns: false, dict: {}, selectedRadio: '' })
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'file', null, this.props.setSaveEnable)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columns', [], this.props.setSaveEnable)
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'columnsArray', [], this.props.setSaveEnable)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'phoneColumn', '', this.props.setSaveEnable)
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'subscriberIdColumn', '', this.props.setSaveEnable)
     this.props.updateSegmentationConditions([])
   }
   handleRadioButton (e) {
@@ -305,7 +308,8 @@ class FileSelect extends React.Component {
     this.setState({
       showFileColumns: false,
       columnAlerts: false,
-      dict: {}
+      dict: {},
+      enableSaveColumns: false
     })
   }
 
