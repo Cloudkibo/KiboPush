@@ -53,7 +53,7 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0]
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -427,7 +427,7 @@ class CreateConvo extends React.Component {
               <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
               <MessengerPlugin
                 appId={this.props.fbAppId}
-                pageId={JSON.stringify(this.state.pageId)}
+                pageId={JSON.stringify(this.state.pageId.pageId)}
                 passthroughParams={this.props.user._id}
                 onClick={() => { this.setState({showMessengerModal: false}) }}
               />
@@ -510,12 +510,12 @@ class CreateConvo extends React.Component {
                             setReset={reset => { this.reset = reset }}
                             convoTitle={this.state.convoTitle}
                             titleEditable
-                            pageId={this.state.pageId}
+                            pageId={this.state.pageId.pageId}
                             pages={this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='broadcast' />
                         </div>
 
                       </div>
