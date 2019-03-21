@@ -135,6 +135,7 @@ export function getSubscriberReachEstimation (page, subscribers) {
       console.log('page subscribers less than subscriberLimitForBatchAPI')
       dispatch(updateSubscriberReachEstimation(subscribers.length))
     } else {
+      dispatch(updateSubscriberReachEstimation(null))
       callApi(`broadcasts/retrieveReachEstimation/${page._id}`)
       .then(res => {
         console.log('retrieveReachEstimation res.payload', res.payload)

@@ -62,6 +62,7 @@ class Targeting extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
     this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
+    this.initializeSubscribers = this.initializeSubscribers.bind(this)
     props.loadTags()
     props.loadCustomerLists()
   }
@@ -117,6 +118,7 @@ class Targeting extends React.Component {
     this.initializePageSelect(options)
     this.initializePollSelect(pollOptions)
     this.initializeSurveySelect(surveyOptions)
+    this.initializeSubscribers(this.props)
     /* eslint-disable */
     $('.selectSegmentation').addClass('hideSegmentation')
     $('.selectList').addClass('hideSegmentation')
@@ -126,13 +128,6 @@ class Targeting extends React.Component {
     if (this.props.component !== 'survey') {
       $('.surveyFilter').addClass('hideSegmentation')
     }
-
-    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.props.page.pageId )
-    console.log('currentPageSubscribers', currentPageSubscribers)
-    this.setState({subscribers: currentPageSubscribers}, () => {
-      this.subscriberReachEstimation()
-    })
-    
     /* eslint-enable */
   }
 
@@ -500,6 +495,19 @@ class Targeting extends React.Component {
     if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
     }
+    console.log('current pageId', this.props.page.pageId)
+    console.log('next pageId', nextProps.page.pageId)
+    if (this.props.page.pageId !== nextProps.page.pageId) {
+      this.initializeSubscribers(nextProps)
+    }
+  }
+
+  initializeSubscribers (props) {
+    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === props.page.pageId)
+    console.log('currentPageSubscribers', currentPageSubscribers)
+    this.setState({subscribers: currentPageSubscribers}, () => {
+      this.subscriberReachEstimation()
+    })
   }
 
   render () {
@@ -530,12 +538,14 @@ class Targeting extends React.Component {
             <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
           </span>
           }
-          { this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+          { this.props.component === 'poll' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
+            <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this poll after 30 mins of ending the conversation.</p>
           </span>
           }
-          { this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+          { this.props.component === 'survey' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
+            <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
           </span>
           }
         </div>
