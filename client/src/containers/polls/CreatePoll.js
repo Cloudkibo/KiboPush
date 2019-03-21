@@ -106,15 +106,13 @@ class CreatePoll extends React.Component {
     this.setState({tabActive: 'poll'})
   }
   onTargetClick (e) {
-    if (this.checkValidation()) {
-      /* eslint-disable */
-        $('#tab_1').removeClass('active')
-        $('#tab_2').addClass('active')
-        $('#titleBroadcast').removeClass('active')
-        $('#titleTarget').addClass('active')
-        /* eslint-enable */
-      this.setState({tabActive: 'target', resetTarget: false})
-    }
+  /* eslint-disable */
+    $('#tab_1').removeClass('active')
+    $('#tab_2').addClass('active')
+    $('#titleBroadcast').removeClass('active')
+    $('#titleTarget').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target', resetTarget: false})
   }
 
   componentWillReceiveProps (nextProps) {
