@@ -3,6 +3,7 @@ import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+import {getSubscriberReachEstimation} from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -60,9 +61,15 @@ class Targeting extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
+    this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
     props.loadTags()
     props.loadCustomerLists()
   }
+
+  subscriberReachEstimation () {
+    this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
+  }
+
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
@@ -101,10 +108,7 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
-    this.setState({pageValue: [options[0].id]}, () => {
-      let currentPageSubscribers = this.props.subscribers.filter(subscriber => { return subscriber.pageId.pageId === this.state.pageValue[0] })
-      this.setState({subscribers: currentPageSubscribers})
-    })
+    this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
@@ -122,8 +126,16 @@ class Targeting extends React.Component {
     if (this.props.component !== 'survey') {
       $('.surveyFilter').addClass('hideSegmentation')
     }
+
+    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.props.page.pageId )
+    console.log('currentPageSubscribers', currentPageSubscribers)
+    this.setState({subscribers: currentPageSubscribers}, () => {
+      this.subscriberReachEstimation()
+    })
+    
     /* eslint-enable */
   }
+
   showSubscriptionMsg (pageSelected) {
     for (let i = 0; i < this.props.pages.length; i++) {
       console.log('pageSelected', pageSelected)
@@ -755,6 +767,7 @@ class Targeting extends React.Component {
               </div>
             </div>
           </div>
+          <h4>{`Subscriber Reach Estimation: ${this.props.currentReachEstimation ? this.props.currentReachEstimation : 'Calculating...'}`}</h4>
         </div>
       </div>
     )
@@ -768,7 +781,8 @@ function mapStateToProps (state) {
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
     surveys: (state.surveysInfo.surveys),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    currentReachEstimation: (state.pagesInfo.currentReachEstimation)
   }
 }
 
@@ -776,7 +790,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getAllPollResults: getAllPollResults,
     loadCustomerLists: loadCustomerLists,
-    loadTags: loadTags
+    loadTags: loadTags,
+    getSubscriberReachEstimation
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Targeting)
