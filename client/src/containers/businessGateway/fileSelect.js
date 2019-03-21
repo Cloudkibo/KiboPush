@@ -82,7 +82,8 @@ class FileSelect extends React.Component {
     }
     if (!value) {
       this.setState({
-        subscriberIdColumn: ''
+        subscriberIdColumn: '',
+        enableSaveColumns: false
       })
     } else {
       this.setState({
@@ -286,7 +287,8 @@ class FileSelect extends React.Component {
     }
     if (!value) {
       this.setState({
-        phoneColumn: ''
+        phoneColumn: '',
+        enableSaveColumns: false
       })
     } else {
       this.setState({
