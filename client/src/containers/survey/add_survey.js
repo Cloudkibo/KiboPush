@@ -61,6 +61,7 @@ class AddSurvey extends React.Component {
     this.initTab = this.initTab.bind(this)
     this.onSurveyClick = this.onSurveyClick.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
+    this.checkSurveyErrors = this.checkSurveyErrors.bind(this)
   }
 
   onNext (e) {
