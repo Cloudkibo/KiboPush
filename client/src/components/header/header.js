@@ -222,7 +222,8 @@ class Header extends React.Component {
         'production': 'https://kibolite.cloudkibo.com/'
       },
       'KiboAPI': {
-        'production': 'https://kiboapi.cloudkibo.com/'
+        'production': 'https://kiboapi.cloudkibo.com/',
+        'staging': 'https://kiboapi.cloudkibo.com/'
       }
     }
 
