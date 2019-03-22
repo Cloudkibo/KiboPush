@@ -549,6 +549,7 @@ class Targeting extends React.Component {
           </span>
           }
         </div>
+        <h5 style={{paddingLeft: '20px', paddingBottom: '0px', marginBottom: '30px'}}>This {this.props.component} will be sent to <strong>{this.props.currentReachEstimation ? this.props.currentReachEstimation : 'calculating...'}</strong> subscribers</h5>
         <div className='col-12' style={{paddingLeft: '20px'}}>
           {this.state.showSubscriptionMsg &&
           <div style={{paddingBottom: '10px'}}>
@@ -777,7 +778,6 @@ class Targeting extends React.Component {
               </div>
             </div>
           </div>
-          <h4>{`Subscriber Reach Estimation: ${this.props.currentReachEstimation ? this.props.currentReachEstimation : 'Calculating...'}`}</h4>
         </div>
       </div>
     )

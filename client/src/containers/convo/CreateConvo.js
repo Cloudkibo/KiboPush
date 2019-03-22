@@ -236,6 +236,7 @@ class CreateConvo extends React.Component {
           }
         }
       }
+      let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
       var data = {
         platform: 'facebook',
         payload: this.state.broadcast,
@@ -248,7 +249,8 @@ class CreateConvo extends React.Component {
         title: this.state.convoTitle,
         segmentationList: this.state.listSelected,
         isList: isListValue,
-        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
+        subscribersCount: currentPageSubscribers.length
       }
         //  this.setState({tabActive: 'broadcast'})
       console.log('Sending Broadcast', data)
