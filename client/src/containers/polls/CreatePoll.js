@@ -290,6 +290,7 @@ class CreatePoll extends React.Component {
             }
           }
         }
+        let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
         var data = {
           platform: 'Facebook',
           datetime: Date.now(),
@@ -304,7 +305,8 @@ class CreatePoll extends React.Component {
           isList: isListValue,
           segmentationPoll: this.state.pollValue,
           segmentationList: this.state.listSelected,
-          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
+          subscribersCount: currentPageSubscribers
         }
         console.log('Sending Poll', data)
         this.props.sendPollDirectly(data, this.msg)

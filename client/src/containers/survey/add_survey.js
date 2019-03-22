@@ -603,6 +603,7 @@ class AddSurvey extends React.Component {
               }
             }
           }
+          let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey
@@ -618,7 +619,8 @@ class AddSurvey extends React.Component {
             segmentationSurvey: this.state.surveyValue,
             segmentationTags: tagIDs,
             isList: isListValue,
-            segmentationList: this.state.listSelected
+            segmentationList: this.state.listSelected,
+            subscribersCount: currentPageSubscribers.length
           }
           console.log('Sending Survey', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
