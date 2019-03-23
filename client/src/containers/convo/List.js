@@ -145,7 +145,7 @@ class List extends React.Component {
     console.log('this.state.broadcast', this.state.broadcast)
     console.log('this.state.cards', this.state.cards)
     if (this.state.cards.length < 3) {
-      this.msg.error('A List must have atleast 2 elements')
+      this.msg.error('A List must have at least 2 complete elements')
     } else {
       // var temp = this.state.cards.filter((elm, index) => {
       //   console.log('index', index)

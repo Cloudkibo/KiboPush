@@ -112,7 +112,7 @@
       }
       if (broadcast[i].componentType === 'list') {
         if (broadcast[i].listItems && broadcast[i].listItems.length < 2) {
-          msg.error('A list must have atleast 2 elements')
+          msg.error('A list must have at least 2 complete elements')
           isValid = false
           break
         }
