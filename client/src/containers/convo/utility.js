@@ -76,7 +76,7 @@
       if (broadcast[i].componentType === 'gallery') {
         console.log('in gallery component')
         if (broadcast[i].cards.length < 2) {
-          msg.error('Card in gallery must have at least one button.')
+          msg.error('In gallery must have at least two filled cards.')
           isValid = false
           break
         }
