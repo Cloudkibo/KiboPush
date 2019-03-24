@@ -119,7 +119,7 @@ class Media extends React.Component {
     var image = file.type.match('image.*')
     if (file.size > 10000000) {
       var error = {
-        message: 'file size is less than or equal to 10MB'
+        message: 'FILE SIZE CANNOT EXCEED 10MB'
       }
       this.onFilesError(error, true)
       return
