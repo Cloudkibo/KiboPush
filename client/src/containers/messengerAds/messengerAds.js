@@ -47,7 +47,8 @@ class MessengerAds extends React.Component {
   gotoCreate () {
     this.props.setDefaultAdMessage(defaultAdMessage().messengerAd)
     browserHistory.push({
-      pathname: `/createAdMessage`
+      pathname: `/createAdMessage`,
+      state: {module: 'create'}
     })
   }
   onEdit (adId) {
