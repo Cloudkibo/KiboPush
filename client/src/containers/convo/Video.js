@@ -128,7 +128,7 @@ class Video extends React.Component {
 
   onFilesError (error, file) {
     var err = {
-      message: 'file size is less than or equal to 10MB'
+      message: 'FILE SIZE CANNOT EXCEED 10MB'
     }
     this.setState({errorMsg: err.message, showDialog: true})
   }
