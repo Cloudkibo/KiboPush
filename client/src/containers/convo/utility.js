@@ -75,8 +75,8 @@
       }
       if (broadcast[i].componentType === 'gallery') {
         console.log('in gallery component')
-        if (broadcast[i].cards.length <= 2) {
-          msg.error('Both Card in gallery must have at least title, Substitle, image and button.')
+        if (broadcast[i].cards.length < 2) {
+          msg.error('In gallery must have at least two filled cards.')
           isValid = false
           break
         }
@@ -112,7 +112,7 @@
       }
       if (broadcast[i].componentType === 'list') {
         if (broadcast[i].listItems && broadcast[i].listItems.length < 2) {
-          msg.error('A list must have atleast 2 elements')
+          msg.error('A list must have at least 2 complete elements')
           isValid = false
           break
         }

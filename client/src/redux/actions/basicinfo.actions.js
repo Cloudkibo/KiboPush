@@ -93,6 +93,18 @@ export function getuserdetails () {
   }
 }
 
+export function updatePicture () {
+  return (dispatch) => {
+    callApi('users/updatePicture')
+      .then(res => {
+        console.log('response from updatePicture', res)
+        if (res.status === 'success') {
+          dispatch(getuserdetails())
+        }
+      })
+  }
+}
+
 export function getAutomatedOptions () {
   return (dispatch) => {
     callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))

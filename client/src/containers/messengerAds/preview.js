@@ -17,11 +17,11 @@ class Preview extends React.Component {
   componentDidMount () {
   }
   render () {
-    console.log('this.props.previewOptInMessage', this.props.messengerAd)
+    console.log('this.props.previewOptInMessage', this.props.previewOptInMessage)
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
-          <ViewMessage payload={this.props.messengerAd} />
+          <ViewMessage payload={(this.props.previewOptInMessage && this.props.previewOptInMessage.length !==0) ? this.props.previewOptInMessage : this.props.messengerAd} />
         </div>
       </div>
     )

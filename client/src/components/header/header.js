@@ -10,7 +10,8 @@ import {
   updateShowIntegrations,
   disconnectFacebook,
   updateMode,
-  updatePlatform
+  updatePlatform,
+  updatePicture
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -43,7 +44,15 @@ class Header extends React.Component {
     this.logout = this.logout.bind(this)
     this.showDisconnectFacebook = this.showDisconnectFacebook.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
   }
+
+  profilePicError (e) {
+    console.log('profile picture error for user')
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
+    this.props.updatePicture()
+  }
+
   closeDialog () {
     this.setState({showModal: false})
   }
@@ -209,8 +218,12 @@ class Header extends React.Component {
         'production': 'https://kibocommerce.cloudkibo.com/'
       },
       'KiboLite': {
-        'staging': 'http://skibolite.cloudkibo.com/',
-        'production': 'http://kibolite.cloudkibo.com/'
+        'staging': 'https://skibolite.cloudkibo.com/',
+        'production': 'https://kibolite.cloudkibo.com/'
+      },
+      'KiboAPI': {
+        'production': 'https://kiboapi.cloudkibo.com/',
+        'staging': 'https://kiboapi.cloudkibo.com/'
       }
     }
 
@@ -622,7 +635,17 @@ class Header extends React.Component {
                                             <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
                                       }
-
+                                      {
+                                        (!window.location.hostname.toLowerCase().includes('kiboapi'))
+                                          ? <a href='#KiboAPI' onClick={() => { this.goToSubProduct('KiboAPI') }} className='m-nav-grid__item'>
+                                            <i className='m-nav-grid__icon flaticon-share' />
+                                            <span className='m-nav-grid__text'>KiboAPI</span>
+                                          </a>
+                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                            <i className='m-nav-grid__icon flaticon-share' />
+                                            <span className='m-nav-grid__text'>KiboAPI</span>
+                                          </a>
+                                      }
                                     </div>
                                   </div>
                                 </div>
@@ -636,7 +659,7 @@ class Header extends React.Component {
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-topbar__userpic'>
                             <div style={{ display: 'inline-block', marginRight: '5px' }}>
-                              <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                              <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                             </div>
                             <div style={{ display: 'inline-block', height: '41px' }}>
                               <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
@@ -781,7 +804,8 @@ function mapDispatchToProps (dispatch) {
     updateMode: updateMode,
     updateShowIntegrations,
     disconnectFacebook,
-    updatePlatform
+    updatePlatform,
+    updatePicture
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

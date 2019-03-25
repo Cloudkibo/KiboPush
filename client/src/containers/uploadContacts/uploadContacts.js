@@ -209,7 +209,7 @@ class UploadContacts extends React.Component {
         break
       }
       // eslint-disable-next-line
-      let regexp = /^[0-9+\(\)#\.\s\/ext-]+$/
+      let regexp = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
       if (recordName && recordName.length > 50) {
         faulty = true
         let error = {errorMsg: 'File consists of customer names that is too long'}
@@ -494,7 +494,7 @@ class UploadContacts extends React.Component {
                           </div>
                           <input className='form-control m-input' onChange={this.changeName} value={this.state.name} placeholder='Enter name here...' />
                           <br />
-                          <input className='form-control m-input' onChange={this.changeNumber} value={this.state.number} placeholder='Enter number here...' />
+                          <input className='form-control m-input' onChange={this.changeNumber} value={this.state.number} placeholder='Enter number here... (e.g. +921122335566)' />
                           {this.state.manualError !== '' &&
                           <div><span style={{color: 'red', paddingLeft: '14px'}}>
                             {this.state.manualError}</span>

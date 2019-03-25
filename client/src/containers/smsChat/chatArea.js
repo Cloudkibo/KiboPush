@@ -166,8 +166,8 @@ class ChatBox extends React.Component {
     if (e.which === 13) {
       if (this.state.textAreaValue !== '') {
         let data = {
-          senderNumber: this.props.chat[0].senderNumber,
-          recipientNumber: this.props.activeSession.number,
+          senderNumber: this.props.chat[0].recipientNumber,
+          recipientNumber: this.props.chat[0].senderNumber,
           contactId: this.props.activeSession._id,
           payload: {componentType: 'text', text: this.state.textAreaValue},
           datetime: new Date().toString(),
