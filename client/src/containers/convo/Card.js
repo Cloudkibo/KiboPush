@@ -64,7 +64,7 @@ class Card extends React.Component {
       webviewurl: '',
       elementUrl: '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      defaultAction: '',
+      defaultAction: this.props.default_action ? this.props.default_action : '',
       isshowGuideLinesImageDialog: false
     }
   }
@@ -240,6 +240,7 @@ class Card extends React.Component {
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
   componentDidMount () {
+    console.log('cardProps.cardDetails', this.props.cardDetails)
     if (this.props.cardDetails) {
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
@@ -261,6 +262,7 @@ class Card extends React.Component {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {
+    console.log('cardProps.cardDetails', cardProps.cardDetails)
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       this.setState({
         //  id: cardProps.id,
@@ -279,6 +281,15 @@ class Card extends React.Component {
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
+    }
+    console.log('defaultAction in card', this.state.defaultAction)
+    if (this.state.defaultAction !== '') {
+       if (this.state.defaultAction.type === 'web_url') {
+         this.setState({elementUrl: this.state.defaultAction.url})
+       }
+       else {
+        this.setState({webviewurl: this.state.defaultAction.url})
+       }
     }
   }
   _onChange () {

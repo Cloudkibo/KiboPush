@@ -75,13 +75,18 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoEdit (page) {
-    browserHistory.push({
-      pathname: `/editTemplateBroadcast`,
-      state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
-    })
+    var default_action= page.welcomeMessage[0].default_action
+    page.welcomeMessage[0].default_action=default_action
+    console.log('pagein edit', default_action)
+    console.log( 'page.welcomeMessage',  page.welcomeMessage)
+     browserHistory.push({
+       pathname: `/editTemplateBroadcast`,
+       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage, default_action: default_action}
+     })
   }
 
   gotoView (page) {
+    console.log('page.welcomeMessage',page)
     browserHistory.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
@@ -89,6 +94,7 @@ class WelcomeMessage extends React.Component {
   }
 
   render () {
+    console.log('this.props.pages',this.props.pages)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -196,7 +202,10 @@ class WelcomeMessage extends React.Component {
                                         </button>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.gotoEdit(page)}>
+                                         <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => {
+                                           console.log('page before edit', page)
+                                           this.gotoEdit(page)
+                                         }}>
                                          Edit Message
                                        </button>
                                        </div>
