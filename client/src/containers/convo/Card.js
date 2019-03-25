@@ -455,12 +455,16 @@ class Card extends React.Component {
             onClose={this.closeGuideLinesImageDialog}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeGuideLinesImageDialog}>
-              <p>This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.
-                We recommend using the correct aspect ratio for your image.
-                Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.
-                Alternatively, you can use a combination of the image component and text component if you don't
-                want any cropping/scaling on the image.
-              </p>
+              <h4>⚠️ This image may be cropped or scaled</h4>
+              <br />
+              <h6><i class='flaticon-exclamation m--font-brand' /> This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.</h6>
+              <br />
+              <ul>
+                <li>Aspect ratio is the ratio of width to height of the image.</li>
+                <li>Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.</li>
+                <li> Alternatively, you can use a combination of the image component and text component if you don't
+                want any cropping/scaling on the image.</li>
+              </ul>
             </ModalDialog>
           </ModalContainer>
         }
