@@ -29,6 +29,7 @@ class EditTemplate extends React.Component {
   }
 
   saveMessage () {
+    console.log('this.state.broadcast in welcome message', this.state.broadcast)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
@@ -42,6 +43,7 @@ class EditTemplate extends React.Component {
   }
 
   componentDidMount () {
+    console.log('this.props.location.state.default_action', this.props.location.state.default_action)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -53,7 +55,9 @@ class EditTemplate extends React.Component {
     document.title = `${title} | Edit Template`
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.payload) {
-      this.setState({broadcast: this.props.location.state.payload})
+      var data = this.props.location.state.payload
+      data[0].default_action = this.props.location.state.default_action
+      this.setState({broadcast: data})
     }
   }
 
@@ -62,6 +66,8 @@ class EditTemplate extends React.Component {
   }
 
   render () {
+    var broadcast = this.state.broadcast
+    console.log('broadcast in edit template', broadcast)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -108,6 +114,7 @@ class EditTemplate extends React.Component {
                   handleChange={this.handleChange}
                   convoTitle={this.state.convoTitle}
                   buttonActions={this.state.buttonActions}
+                  default_action={this.props.location.state.default_action ? this.props.location.state.default_action : ''}
                 />
               </div>
             </div>
