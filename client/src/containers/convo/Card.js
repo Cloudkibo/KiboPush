@@ -468,7 +468,7 @@ class Card extends React.Component {
               onClose={this.closeGuideLinesImageDialog}>
               <h4>⚠️ This image may be cropped or scaled</h4>
               <br />
-              <h6><i class='flaticon-exclamation m--font-brand' /> This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.</h6>
+              <h6><i className='flaticon-exclamation m--font-brand' /> This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.</h6>
               <br />
               <ul>
                 <li>Aspect ratio is the ratio of width to height of the image.</li>
