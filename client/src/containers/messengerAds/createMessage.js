@@ -167,9 +167,18 @@ class CreateMessage extends React.Component {
     document.title = `${title} | Create Message`
   }
   goBack () {
-    this.props.history.push({
-      pathname: `/createAdMessage`
-    })
+    if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0){
+      this.props.history.push({
+        pathname: `/createAdMessage`,
+        state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
+      })
+    }
+    else {
+      this.props.history.push({
+        pathname: `/createAdMessage`,
+        state: {module: 'create'}
+      })
+    }   
   }
   saveMessage () {
     console.log('Save Call')
