@@ -199,33 +199,49 @@ class Dashboard extends React.Component {
       //     pathname: '/resendVerificationEmail'
       //   })
       // } else
-      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio) {
         browserHistory.push({
-          pathname: '/connectFb',
-          state: { account_type: 'individual' }
+          pathname: '/integrations'
         })
-      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
-        if (nextprops.pages && nextprops.pages.length === 0) {
-          console.log('going to push')
-          browserHistory.push({
-            pathname: '/connectFb',
-            state: { account_type: 'team' }
-          })
-        }
-      } else if (nextprops.pages && nextprops.pages.length === 0) {
+      } else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: {showCancel: 'sms'}
+        })
+      } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: {showCancel: 'messenger'}
+        })
+      }
+      // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      //   browserHistory.push({
+      //     pathname: '/connectFb',
+      //     state: { account_type: 'individual' }
+      //   })
+      // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
+      //   if (nextprops.pages && nextprops.pages.length === 0) {
+      //     console.log('going to push')
+      //     browserHistory.push({
+      //       pathname: '/connectFb',
+      //       state: { account_type: 'team' }
+      //     })
+      //   }
+      // }
+      else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
         console.log('nextprops pages', nextprops)
         browserHistory.push({
           pathname: '/addfbpages'
         })
-      } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+      } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
           pathname: '/inviteUsingLinkWizard'
         })
-      } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+      } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
-      } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
         // this means 0 subscribers
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
@@ -538,7 +554,7 @@ class Dashboard extends React.Component {
         </div>
         <div className='m-content'>
           {
-            this.props.pages && this.props.pages.length === 0 &&
+            this.props.user && this.props.user.platform === 'messenger' && this.props.pages && this.props.pages.length === 0 &&
             <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-exclamation-1' style={{color: 'white'}} />
@@ -669,7 +685,8 @@ function mapStateToProps (state) {
     currentPage: (state.pagesInfo.currentPage),
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
-    topPages: (state.dashboardInfo.topPages)
+    topPages: (state.dashboardInfo.topPages),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
