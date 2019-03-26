@@ -79,8 +79,8 @@ class Card extends React.Component {
   onImgLoad (e) {
     e.persist()
     console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
-    let imgWidth = e.target.width
-    let imgHeight = e.target.height
+    let imgWidth = e.target.naturalWidth
+    let imgHeight = e.target.naturalHeight
     let aspectRatio = imgWidth / imgHeight
     console.log('aspect ratio of image', aspectRatio)
     if (aspectRatio > 2 || aspectRatio < 1.8) {
