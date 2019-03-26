@@ -267,12 +267,11 @@ class Card extends React.Component {
     console.log('cardProps.cardDetails', cardProps.cardDetails)
     console.log('defaultAction in card', cardProps.cardDetails.default_action)
     if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
-       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
-         this.setState({elementUrl: cardProps.cardDetails.default_action.url})
-       }
-       else {
+      if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+      } else {
         this.setState({webviewurl: cardProps.cardDetails.default_action.url})
-       }
+      }
     }
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       this.setState({
@@ -293,7 +292,6 @@ class Card extends React.Component {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
     }
-
   }
   _onChange () {
   // Assuming only image
@@ -552,7 +550,7 @@ class Card extends React.Component {
           {
           this.state.loading
           ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+          : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
             <input
@@ -566,7 +564,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 235, padding: 15}} src={this.state.imgSrc} />
+            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
            }
           </div>
           }
