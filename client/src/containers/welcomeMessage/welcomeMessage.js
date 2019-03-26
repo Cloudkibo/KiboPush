@@ -75,13 +75,13 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoEdit (page) {
-    var default_action= page.welcomeMessage[0].default_action
-    page.welcomeMessage[0].default_action=default_action
-    console.log('pagein edit', default_action)
-    console.log( 'page.welcomeMessage',  page.welcomeMessage)
+    //var default_action= page.welcomeMessage[0].default_action
+    //page.welcomeMessage[0].default_action=default_action
+  //  console.log('pagein edit', default_action)
+   console.log( 'page.welcomeMessage',  page.welcomeMessage)
      browserHistory.push({
        pathname: `/editTemplateBroadcast`,
-       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage, default_action: default_action}
+       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
      })
   }
 

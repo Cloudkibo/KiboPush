@@ -46,7 +46,7 @@ class App extends Component {
   render () {
     return (
       <div>
-        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) === -1
+        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -54,7 +54,7 @@ class App extends Component {
                { this.props.children }
              </div>
            </div>
-           : ['/addfbpages', '/facebookIntegration'].indexOf(this.state.path) > -1
+           : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
            ? <div>
              <SimpleHeader />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>

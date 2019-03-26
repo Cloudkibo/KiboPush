@@ -64,7 +64,7 @@ class Card extends React.Component {
       webviewurl: '',
       elementUrl: '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      defaultAction: this.props.default_action ? this.props.default_action : '',
+      defaultAction: '',
       isshowGuideLinesImageDialog: false
     }
   }
@@ -241,6 +241,7 @@ class Card extends React.Component {
   }
   componentDidMount () {
     console.log('cardProps.cardDetails', this.props.cardDetails)
+    this.setState({default_action: this.props.cardDetails.default_action})
     if (this.props.cardDetails) {
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
@@ -252,7 +253,8 @@ class Card extends React.Component {
           fileName: this.props.cardDetails.fileName,
           type: this.props.cardDetails.type,
           image_url: '',
-          size: this.props.cardDetails.size
+          size: this.props.cardDetails.size,
+          default_action: this.props.cardDetails.default_action
         }, this.updateImageUrl, this.setLoading)
       }
       this.updateCardDetails(this.props)
@@ -263,6 +265,14 @@ class Card extends React.Component {
   }
   updateCardDetails (cardProps) {
     console.log('cardProps.cardDetails', cardProps.cardDetails)
+    console.log('defaultAction in card', cardProps.cardDetails.default_action)
+    if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
+      if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+      } else {
+        this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+      }
+    }
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       this.setState({
         //  id: cardProps.id,
@@ -280,14 +290,6 @@ class Card extends React.Component {
         this.setState({ subtitle: cardProps.cardDetails.subtitle })
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
-      }
-    }
-    console.log('defaultAction in card', this.state.defaultAction)
-    if (this.state.defaultAction !== '') {
-      if (this.state.defaultAction.type === 'web_url') {
-        this.setState({elementUrl: this.state.defaultAction.url})
-      } else {
-        this.setState({webviewurl: this.state.defaultAction.url})
       }
     }
   }
