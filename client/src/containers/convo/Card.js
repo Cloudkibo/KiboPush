@@ -284,12 +284,11 @@ class Card extends React.Component {
     }
     console.log('defaultAction in card', this.state.defaultAction)
     if (this.state.defaultAction !== '') {
-       if (this.state.defaultAction.type === 'web_url') {
-         this.setState({elementUrl: this.state.defaultAction.url})
-       }
-       else {
+      if (this.state.defaultAction.type === 'web_url') {
+        this.setState({elementUrl: this.state.defaultAction.url})
+      } else {
         this.setState({webviewurl: this.state.defaultAction.url})
-       }
+      }
     }
   }
   _onChange () {
@@ -549,7 +548,7 @@ class Card extends React.Component {
           {
           this.state.loading
           ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+          : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
             <input
@@ -563,7 +562,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 235, padding: 15}} src={this.state.imgSrc} />
+            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
            }
           </div>
           }
