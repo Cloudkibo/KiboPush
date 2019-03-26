@@ -76,7 +76,7 @@ export function uploadTemplate (dataTosend, data, handleUpload, setLoading) {
         if (setLoading) {
           setLoading()
         }
-       // handleUpload(data)
+        handleUpload(data)
       })
   }
 }
