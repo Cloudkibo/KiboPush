@@ -161,6 +161,7 @@ class GenericMessage extends React.Component {
     var isPresent = false
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        console.log('enter in function')
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
         temp[i].image_url = obj.image_url
@@ -172,6 +173,7 @@ class GenericMessage extends React.Component {
         if (obj.default_action && obj.default_action !== '') {
           temp[i].default_action = obj.default_action
         } else if (temp[i].default_action) {
+          console.log('delete default action')
           delete temp[i].default_action
         }
         isPresent = true
