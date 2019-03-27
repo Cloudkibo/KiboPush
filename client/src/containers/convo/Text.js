@@ -48,6 +48,7 @@ class Text extends React.Component {
     this.getName = this.getName.bind(this)
     this.toggleUserOptions = this.toggleUserOptions.bind(this)
     this.showUserOptions = this.showUserOptions.bind(this)
+    this.removeAllButtons = this.removeAllButtons.bind(this)
   }
   componentDidMount () {
     if (this.props.message && this.props.message !== '') {
@@ -138,6 +139,19 @@ class Text extends React.Component {
     this.props.handleText({id: this.props.id, text: this.state.text, button: temp, deletePayload: deletePayload})
   }
 
+  removeAllButtons () {
+    let buttons = this.state.button.slice()
+    for (let i = 0; i < buttons.length; i++) {
+      let data = {id: i, button: buttons[i]}
+      this.removeButton({
+        id: data.id,
+        button: data.button,
+        url: data.button.url,
+        title: data.button.title
+      })
+    }
+  }
+
   render () {
     let textStyles
     if (this.props.removeState) {
@@ -149,7 +163,7 @@ class Text extends React.Component {
 
       <div className='broadcast-component' style={textStyles}>
         {this.props.removeState &&
-          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px' }}>
+          <div onClick={() => { this.props.onRemove({id: this.props.id}, this.removeAllButtons) }} style={{ float: 'right', height: 20 + 'px' }}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
