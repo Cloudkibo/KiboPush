@@ -300,7 +300,7 @@ class Card extends React.Component {
           this.setState({elementUrl: cardProps.cardDetails.default_action.url})
         }
         else {
-         this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+          this.setState({webviewurl: cardProps.cardDetails.default_action.url, webviewsize: cardProps.cardDetails.default_action.webview_height_ratio})
         }
      }
       this.setState({
