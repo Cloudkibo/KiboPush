@@ -94,7 +94,10 @@ class CreateLandingPage extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <Tabs />
+                      {
+                          this.props.location.state.module === 'edit' ? <Tabs module={this.props.location.state.module} landing_page_id={this.props.location.state.landingPage._id} /> : <Tabs />
+                      }
+                      
                     </div>
                     <Preview />
                   </div>

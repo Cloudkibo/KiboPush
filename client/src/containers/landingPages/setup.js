@@ -11,7 +11,7 @@ class SetUp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      landingPageUrl: ''
+      landingPageUrl: `https://kiboengage.cloudkibo.com/landingPage/${this.props.landing_page_id}`    
     }
   }
   render () {

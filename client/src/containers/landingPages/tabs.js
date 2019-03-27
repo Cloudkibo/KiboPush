@@ -128,7 +128,7 @@ class Tab extends React.Component {
             <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_4'>
-            <Setup handleNext={this.handleNext} handleBack={this.handleBack} />
+            <Setup handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} landing_page_id={this.props.landing_page_id} />
           </div>
         </div>
       </div>
