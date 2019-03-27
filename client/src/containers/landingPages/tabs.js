@@ -113,9 +113,12 @@ class Tab extends React.Component {
           <li>
             <a id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
           </li>
-          <li>
+          {
+            this.props.module === 'edit' &&
+            <li>
             <a id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
           </li>
+          }
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
@@ -125,11 +128,13 @@ class Tab extends React.Component {
             <SubmittedState handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
-            <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} />
+            <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
           </div>
+          { this.props.module === 'edit' &&
           <div className='tab-pane' id='tab_4'>
             <Setup handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} landing_page_id={this.props.landing_page_id} />
           </div>
+          }
         </div>
       </div>
     )

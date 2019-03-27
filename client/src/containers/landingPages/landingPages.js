@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState} from '../../redux/actions/landingPages.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -24,7 +25,9 @@ class LandingPage extends React.Component {
       deleteid: '',
       showVideo: false,
       pageSelected: {},
-      pages: []
+      pages: [],
+      isSetupShow: false,
+      landing_Page_Url: '' 
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -39,6 +42,9 @@ class LandingPage extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
     this.changePage = this.changePage.bind(this)
     this.updateAllowedPages = this.updateAllowedPages.bind(this)
+    this.perviewLink = this.perviewLink.bind(this)
+    this.setupLandingPage = this.setupLandingPage.bind(this)
+    this.closeDialogSetup = this.closeDialogSetup.bind(this)
   }
 
   componentDidMount () {
@@ -135,6 +141,16 @@ class LandingPage extends React.Component {
     }
   }
 
+  perviewLink (id) {
+    window.open(`https://kiboengage.cloudkibo.com/landingPage/${id}`, '_blank')
+  }
+  setupLandingPage (id) {
+    console.log('true in setup landing page')
+    this.setState({isSetupShow: true, landing_Page_Url: `https://kiboengage.cloudkibo.com/landingPage/${id}`})
+  }
+  closeDialogSetup () {
+    this.setState({isSetupShow: false})
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -161,6 +177,48 @@ class LandingPage extends React.Component {
                   this.closeDialogDelete()
                 }}>Delete
               </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isSetupShow &&
+          <ModalContainer style={{width: '600px'}}
+            onClose={this.closeDialogSetup}>
+            <ModalDialog style={{width: '600px'}}
+              onClose={this.closeDialogSetup}>
+      <div>
+        <div className='form-group m-form__group m--margin-top-10'>
+            Landing Page URL
+            <input className='form-control m-input m-input--air' value={this.state.landing_Page_Url} />
+        </div>
+        <CopyToClipboard text={this.state.landing_Page_Url}
+          onCopy={() => {
+            this.setState({copied: true})
+            toastr.options = {
+              'closeButton': true,
+              'debug': false,
+              'newestOnTop': false,
+              'progressBar': false,
+              'positionClass': 'toast-bottom-right',
+              'preventDuplicates': false,
+              'showDuration': '300',
+              'hideDuration': '1000',
+              'timeOut': '5000',
+              'extendedTimeOut': '1000',
+              'showEasing': 'swing',
+              'hideEasing': 'linear',
+              'showMethod': 'fadeIn',
+              'hideMethod': 'fadeOut'
+            }
+
+            toastr.success('Link Copied Successfully', 'Copied!')
+          }
+        }>
+          <button type='button' className='btn btn-success'>
+            Copy Link
+          </button>
+        </CopyToClipboard>
+        </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -244,17 +302,13 @@ class LandingPage extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Page</span>
                           </th>
-                          <th data-field='url'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Landing Page URL</span>
-                          </th>
                           <th data-field='status'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Status</span>
                           </th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Actions</span>
+                            <span style={{width: '290px'}}>Actions</span>
                           </th>
                         </tr>
                       </thead>
@@ -265,17 +319,21 @@ class LandingPage extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{landingPage.pageId.pageName}</span></td>
-                            <td data-field='url' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{`https://kiboengage.cloudkibo.com/landingPage/${landingPage._id}`}</span></td>
-                            <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
+                           <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>
+                              <span style={{width: '290px'}}>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
                                     Edit
                                 </button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>
                                     Delete
+                                </button>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.perviewLink(landingPage._id)}>
+                                    Perview
+                                </button>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.setupLandingPage(landingPage._id)}>
+                                    Setup
                                 </button>
                               </span>
                             </td>
