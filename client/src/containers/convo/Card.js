@@ -277,9 +277,9 @@ class Card extends React.Component {
       this.setState({
         //  id: cardProps.id,
         componentType: 'card',
-        title: cardProps.cardDetails.title,
-        imgSrc: cardProps.cardDetails.image_url,
-        button: cardProps.cardDetails.buttons,
+        title: cardProps.cardDetails.title ? cardProps.cardDetails.title : '',
+        imgSrc: cardProps.cardDetails.image_url ? cardProps.cardDetails.image_url : '',
+        button: cardProps.cardDetails.buttons ? cardProps.cardDetails.buttons : [],
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
         image_url: cardProps.cardDetails.image_url,
