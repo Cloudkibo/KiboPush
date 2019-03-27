@@ -90,58 +90,51 @@ class LiveChat extends React.Component {
     console.log('State in live chat', this.state)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.loading
-          ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-            className='align-center'>
-            <center><Halogen.RingLoader color='#716aca' /></center>
-          </div>
-          : <div className='m-content'>
-            {
-              this.props.sessions.length > 0
-              ? <div className='row'>
-                <SESSIONSAREA
-                  sessions={this.props.sessions}
-                  count={this.props.count}
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  fetchSessions={this.fetchSessions}
-                  user={this.props.user}
-                />
-                {
-                  Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
-                  <div className='col-xl-8'>
-                    <div className='m-portlet m-portlet--full-height'>
-                      <div style={{textAlign: 'center'}} className='m-portlet__body'>
-                        <p>Please select a session to view its chat.</p>
-                      </div>
+        <div className='m-content'>
+          {
+            this.props.sessions && this.props.sessions.length > 0
+            ? <div className='row'>
+              <SESSIONSAREA
+                sessions={this.props.sessions}
+                count={this.props.count}
+                activeSession={this.state.activeSession}
+                changeActiveSession={this.changeActiveSession}
+                fetchSessions={this.fetchSessions}
+                user={this.props.user}
+              />
+              {
+                Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
+                <div className='col-xl-8'>
+                  <div className='m-portlet m-portlet--full-height'>
+                    <div style={{textAlign: 'center'}} className='m-portlet__body'>
+                      <p>Please select a session to view its chat.</p>
                     </div>
                   </div>
-                }
-                {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                  <CHATAREA
-                    activeSession={this.state.activeSession}
-                    changeActiveSession={this.changeActiveSession}
-                    user={this.props.user}
-                    sessions={this.props.sessions}
-                    disableScroll={this.disableScroll}
-                    updateUnreadCount={this.updateUnreadCount}
-                  />
-                }
-                {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                  <PROFILEAREA
-                    activeSession={this.state.activeSession}
-                    changeActiveSession={this.changeActiveSession}
-                    user={this.props.user}
-                  />
+                </div>
               }
-              </div>
-              : <p>No data to display</p>
+              {
+                Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                <CHATAREA
+                  activeSession={this.state.activeSession}
+                  changeActiveSession={this.changeActiveSession}
+                  user={this.props.user}
+                  sessions={this.props.sessions}
+                  disableScroll={this.disableScroll}
+                  updateUnreadCount={this.updateUnreadCount}
+                />
+              }
+              {
+                Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                <PROFILEAREA
+                  activeSession={this.state.activeSession}
+                  changeActiveSession={this.changeActiveSession}
+                  user={this.props.user}
+                />
             }
-          </div>
-        }
+            </div>
+            : <p>No data to display</p>
+          }
+        </div>
       </div>
     )
   }

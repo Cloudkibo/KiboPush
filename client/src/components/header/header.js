@@ -141,8 +141,8 @@ class Header extends React.Component {
       planInfo = 'Individual, Free Account'
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
-    } else if (plan === 'plan_C') {
-      planInfo = 'Team, Free Account)'
+    } else if (plan === 'plan_D') {
+      planInfo = 'Team, Free Account'
     } else {
       planInfo = ''
     }
@@ -218,8 +218,12 @@ class Header extends React.Component {
         'production': 'https://kibocommerce.cloudkibo.com/'
       },
       'KiboLite': {
-        'staging': 'http://skibolite.cloudkibo.com/',
-        'production': 'http://kibolite.cloudkibo.com/'
+        'staging': 'https://skibolite.cloudkibo.com/',
+        'production': 'https://kibolite.cloudkibo.com/'
+      },
+      'KiboAPI': {
+        'production': 'https://kiboapi.cloudkibo.com/',
+        'staging': 'https://kiboapi.cloudkibo.com/'
       }
     }
 
@@ -631,7 +635,17 @@ class Header extends React.Component {
                                             <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
                                       }
-
+                                      {
+                                        (!window.location.hostname.toLowerCase().includes('kiboapi'))
+                                          ? <a href='#KiboAPI' onClick={() => { this.goToSubProduct('KiboAPI') }} className='m-nav-grid__item'>
+                                            <i className='m-nav-grid__icon flaticon-share' />
+                                            <span className='m-nav-grid__text'>KiboAPI</span>
+                                          </a>
+                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                            <i className='m-nav-grid__icon flaticon-share' />
+                                            <span className='m-nav-grid__text'>KiboAPI</span>
+                                          </a>
+                                      }
                                     </div>
                                   </div>
                                 </div>

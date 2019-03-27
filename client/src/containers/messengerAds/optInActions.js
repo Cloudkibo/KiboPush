@@ -22,7 +22,8 @@ class OptInActions extends React.Component {
   editMessage () {
     this.props.switchSetupState('false')
     browserHistory.push({
-      pathname: `/createMessengerAdMessage`
+      pathname: `/createMessengerAdMessage`,
+      state: {jsonAdId: this.props.jsonAdId}
     })
   }
   render () {

@@ -1,4 +1,4 @@
-import {getAutomatedOptions} from './basicinfo.actions'
+import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
@@ -461,18 +461,21 @@ export function deleteDomain (payload, msg, handleDelete) {
   }
 }
 
-export function updatePlatform (data, msg, clearFields) {
-  console.log('data for updatePlatform', data)
+export function updatePlatformSettings (data, msg, clearFields) {
+  console.log('data for updatePlatformSettings', data)
   return (dispatch) => {
     callApi('company/updatePlatform', 'post', data)
       .then(res => {
-        console.log('response from updatePlatform', res)
+        console.log('response from updatePlatformSettings', res)
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
           msg.success('Saved Successfully')
         } else {
           msg.error(res.description)
-          dispatch(clearFields())
+          if (clearFields) {
+            dispatch(clearFields())
+          }
         }
       })
   }

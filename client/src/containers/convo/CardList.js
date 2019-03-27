@@ -272,6 +272,7 @@ class Card extends React.Component {
     console.log('this.props', this.props)
     this.updateCardDetails(this.props)
     if (this.props.cardDetails) {
+      this.setState({default_action: this.props.cardDetails.default_action})
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.cardDetails.fileurl.url,
@@ -282,7 +283,8 @@ class Card extends React.Component {
           fileName: this.props.cardDetails.fileName,
           type: this.props.cardDetails.type,
           image_url: '',
-          size: this.props.cardDetails.size
+          size: this.props.cardDetails.size,
+          default_action: this.props.cardDetails.default_action
         }, this.updateImageUrl, this.setLoading)
       }
     }
@@ -291,7 +293,16 @@ class Card extends React.Component {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {
+    console.log('cardProps.cardDetails', cardProps.cardDetails)
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
+      if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
+        if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
+          this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+        }
+        else {
+         this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+        }
+     }
       this.setState({
         //  id: cardProps.id,
         componentType: 'card',

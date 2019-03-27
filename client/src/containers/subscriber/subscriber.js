@@ -1051,7 +1051,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByTag: e.target.value})
+      this.setState({filterByTag: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1077,7 +1077,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByPage: e.target.value})
+      this.setState({filterByPage: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1113,7 +1113,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByGender: e.target.value})
+      this.setState({filterByGender: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1140,7 +1140,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByLocale: e.target.value})
+      this.setState({filterByLocale: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1175,7 +1175,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({status_value: e.target.value})
+      this.setState({status_value: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: ''}})
     }
     // this.setState({filteredData: filteredData})
@@ -1285,8 +1285,10 @@ class Subscriber extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           {
-            this.state.showVideo &&
-            <ModalContainer style={{width: '680px', top: '100'}}
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: '100'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: '100'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <ModalDialog style={{width: '680px', top: '100'}}
                 onClose={() => { this.setState({showVideo: false}) }}>
@@ -1305,6 +1307,14 @@ class Subscriber extends React.Component {
               </ModalDialog>
             </ModalContainer>
           }
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Manage Subscribers</h3>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -1336,7 +1346,6 @@ class Subscriber extends React.Component {
                           Page Subscribers
                         </h3>
                       </div>
-                    </div>
                     <div className='m-portlet__head-tools'>
                       {this.props.pages && this.props.pages.length > 0
                         ? <Link to='/invitesubscribers' disabled>
@@ -2068,6 +2077,7 @@ class Subscriber extends React.Component {
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>

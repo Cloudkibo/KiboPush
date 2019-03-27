@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { updatePlatform } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -49,7 +49,7 @@ class Webhook extends React.Component {
 
   submit () {
     this.setState({isShowingModal: false})
-    this.props.updatePlatform({twilio: {
+    this.props.updatePlatformSettings({twilio: {
       accountSID: this.state.SID,
       authToken: this.state.token
     }}, this.msg, this.clearFields)
@@ -176,7 +176,7 @@ function mapStateToProps (state) {
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updatePlatform: updatePlatform,
+    updatePlatformSettings: updatePlatformSettings,
     getAutomatedOptions: getAutomatedOptions
   }, dispatch)
 }

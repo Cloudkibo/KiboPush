@@ -21,6 +21,7 @@ class Footer extends React.Component {
                 </button>
               }
             </div>
+            { this.props.module === 'edit' ?
             <div className='col-lg-6 m--align-right'>
               {(this.props.page !== 'submit' && this.props.page !== 'setup') &&
                 <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.page)}>
@@ -29,8 +30,22 @@ class Footer extends React.Component {
                     <i className='la la-arrow-right' />
                   </span>
                 </button>
+            
               }
             </div>
+              : (this.props.component === undefined ) &&
+              <div className='col-lg-6 m--align-right'>
+              {(this.props.page !== 'submit' && this.props.page !== 'setup') &&
+                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.page)}>
+                  <span>
+                    <span>Next</span>&nbsp;&nbsp;
+                    <i className='la la-arrow-right' />
+                  </span>
+                </button>
+            
+              }
+            </div>
+            }
           </div>
         </div>
       </div>

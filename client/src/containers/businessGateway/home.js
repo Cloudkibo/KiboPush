@@ -12,6 +12,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { updateCurrentCustomersInfo, setDefaultCustomersInfo, sendPushMessage } from '../../redux/actions/businessGateway.actions'
 import { validateFields } from '../convo/utility'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class Home extends React.Component {
   constructor (props, context) {
@@ -26,7 +28,8 @@ class Home extends React.Component {
       }],
       fileColumns: [],
       updateSegmentation: false,
-      segmentationErrors: []
+      segmentationErrors: [],
+      showVideo: false
     }
     this.onSave = this.onSave.bind(this)
     this.onTabClick = this.onTabClick.bind(this)
@@ -233,13 +236,34 @@ class Home extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: '100'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: '100'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='lJ67AmaYsTM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts through KiboLite? Here is the <a href='http://kibopush.com/kibolite/' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts through KiboLite? Here is the <a href='http://kibopush.com/kibolite/' target='_blank'>documentation</a> Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>.
             </div>
           </div>
           <div className='row'>

@@ -36,6 +36,7 @@ import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 // import Dashboard from './containers/dashboard/dashboard'
 import FacebookIntegration from './containers/integrations/facebookIntegration'
+import Integrations from './containers/integrations/integrations'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -304,6 +305,7 @@ const routes = (
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
+    <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

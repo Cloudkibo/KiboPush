@@ -8,7 +8,8 @@ import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBr
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
+import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -21,6 +22,7 @@ class SmsBroadcast extends React.Component {
       numberValue: ''
     }
 
+    props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadTwilioNumbers()
 
@@ -121,6 +123,21 @@ class SmsBroadcast extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
           {
+            this.props.contacts && this.props.contacts.length === 0 &&
+            <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation-1' style={{color: 'white'}} />
+                <span />
+              </div>
+              <div className='m-alert__text'>
+                <strong>
+                0 Subscribers!&nbsp;
+                </strong>
+                You do not have any subscribers. Please click <Link style={{cursor: 'pointer'}} to='/uploadContacts' >here</Link> to add subscribers
+              </div>
+            </div>
+          }
+          {
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -167,7 +184,7 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
                         <span>
                           <i className='la la-plus' />
                           <span>Create New</span>
@@ -257,14 +274,16 @@ function mapStateToProps (state) {
   return {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
     count: (state.smsBroadcastsInfo.count),
-    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers)
+    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
+    contacts: (state.contactsInfo.contacts)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
-    loadTwilioNumbers
+    loadTwilioNumbers,
+    loadContactsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

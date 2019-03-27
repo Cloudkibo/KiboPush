@@ -27,7 +27,7 @@ class OptInActions extends React.Component {
           </a>
         </div>
         <div style={{marginTop: '50px'}}>
-          <Footer page='optInActions' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+          <Footer page='optInActions' handleNext={this.props.handleNext} handleBack={this.props.handleBack} module={this.props.module} component='optInAction' />
         </div>
       </div>
     )

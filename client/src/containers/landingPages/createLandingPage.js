@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { browserHistory } from 'react-router'
 import { createLandingPage, updateLandingPageData, editLandingPage } from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
@@ -62,6 +63,10 @@ class CreateLandingPage extends React.Component {
       pageId: this.props.location.state._id,
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
+      console.log('hello ji!')
+      browserHistory.push({
+        pathname: `/landingPages`,
+      })
   }
   setStatus (value) {
     this.setState({isActive: value})
@@ -89,7 +94,10 @@ class CreateLandingPage extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <Tabs />
+                      {
+                          this.props.location.state.module === 'edit' ? <Tabs module={this.props.location.state.module} landing_page_id={this.props.location.state.landingPage._id} /> : <Tabs />
+                      }
+                      
                     </div>
                     <Preview />
                   </div>

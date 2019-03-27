@@ -429,8 +429,8 @@ class CreateConvo extends React.Component {
               <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
               <MessengerPlugin
                 appId={this.props.fbAppId}
-                pageId={JSON.stringify(this.state.pageId.pageId)}
-                passthroughParams={this.props.user._id}
+                pageId={JSON.stringify(this.state.pageId)}
+                passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
                 onClick={() => { this.setState({showMessengerModal: false}) }}
               />
             </ModalDialog>

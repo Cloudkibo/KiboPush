@@ -46,7 +46,7 @@ class UnansweredQueries extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.unansweredQueriesList) {
-      console.log('unanswered questions list ' + JSON.stringify(nextProps.unansweredQueriesList))
+      // console.log('unanswered questions list ' + JSON.stringify(nextProps.unansweredQueriesList))
       this.displayData(0, nextProps.unansweredQueriesList)
       this.setState({ totalLength: nextProps.unansweredQueriesList.length })
     } else {
@@ -81,6 +81,9 @@ class UnansweredQueries extends React.Component {
       data[index] = questions[i]
       index++
     }
+    data.sort(function (a, b) {
+      return new Date(b.datetime) - new Date(a.datetime)
+    })
     this.setState({questionsList: data})
   }
 
@@ -183,7 +186,7 @@ class UnansweredQueries extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}

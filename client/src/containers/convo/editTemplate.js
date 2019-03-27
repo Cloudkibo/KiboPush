@@ -9,12 +9,15 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import GenericMessage from '../../components/GenericMessage'
 import { validateFields } from '../convo/utility'
-
+import {
+  loadMyPagesList
+} from '../../redux/actions/pages.actions'
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       broadcast: [],
+      selectedPage: [],
       convoTitle: 'Welcome Message',
       buttonActions: ['open website', 'open webview', 'add share'],
       pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
@@ -29,6 +32,7 @@ class EditTemplate extends React.Component {
   }
 
   saveMessage () {
+    console.log('this.state.broadcast in welcome message', this.state.broadcast)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
@@ -42,6 +46,8 @@ class EditTemplate extends React.Component {
   }
 
   componentDidMount () {
+    this.props.loadMyPagesList()
+    console.log('this.props.location.state.default_action', this.props.location.state.default_action)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -53,7 +59,18 @@ class EditTemplate extends React.Component {
     document.title = `${title} | Edit Template`
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.payload) {
+      var data = this.props.location.state.payload
+      console.log('data in did mount method', data)
+     // data[0].default_action = this.props.location.state.default_action
       this.setState({broadcast: this.props.location.state.payload})
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if(nextProps.pages !== this.props.pages) {
+    var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
+    console.log('PageSelected', pages[0])
+    this.setState({selectedPage: pages[0].welcomeMessage}) 
     }
   }
 
@@ -62,6 +79,10 @@ class EditTemplate extends React.Component {
   }
 
   render () {
+   // var broadcast = this.state.broadcast
+    console.log('pages ine edit template', this.props.pages)
+    console.log('this.state.selectedPage', this.state.selectedPage)
+    console.log('this.props.location.state.pages[0])',this.props.location.state.pages[0])
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -108,6 +129,7 @@ class EditTemplate extends React.Component {
                   handleChange={this.handleChange}
                   convoTitle={this.state.convoTitle}
                   buttonActions={this.state.buttonActions}
+                  default_action={this.props.location.state.default_action ? this.props.location.state.default_action : ''}
                 />
               </div>
             </div>
@@ -127,7 +149,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      createWelcomeMessage: createWelcomeMessage
+      createWelcomeMessage: createWelcomeMessage,
+      loadMyPagesList: loadMyPagesList
     },
     dispatch)
 }
