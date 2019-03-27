@@ -79,8 +79,8 @@ class Card extends React.Component {
   onImgLoad (e) {
     e.persist()
     console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
-    let imgWidth = e.target.width
-    let imgHeight = e.target.height
+    let imgWidth = e.target.naturalWidth
+    let imgHeight = e.target.naturalHeight
     let aspectRatio = imgWidth / imgHeight
     console.log('aspect ratio of image', aspectRatio)
     if (aspectRatio > 2 || aspectRatio < 1.8) {
@@ -240,6 +240,8 @@ class Card extends React.Component {
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
   componentDidMount () {
+    console.log('cardProps.cardDetails', this.props.cardDetails)
+    this.setState({default_action: this.props.cardDetails.default_action})
     if (this.props.cardDetails) {
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
@@ -251,7 +253,8 @@ class Card extends React.Component {
           fileName: this.props.cardDetails.fileName,
           type: this.props.cardDetails.type,
           image_url: '',
-          size: this.props.cardDetails.size
+          size: this.props.cardDetails.size,
+          default_action: this.props.cardDetails.default_action
         }, this.updateImageUrl, this.setLoading)
       }
       this.updateCardDetails(this.props)
@@ -261,6 +264,15 @@ class Card extends React.Component {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {
+    console.log('cardProps.cardDetails', cardProps.cardDetails)
+    console.log('defaultAction in card', cardProps.cardDetails.default_action)
+    if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
+      if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+      } else {
+        this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+      }
+    }
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       this.setState({
         //  id: cardProps.id,
@@ -455,12 +467,16 @@ class Card extends React.Component {
             onClose={this.closeGuideLinesImageDialog}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeGuideLinesImageDialog}>
-              <p>This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.
-                We recommend using the correct aspect ratio for your image.
-                Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.
-                Alternatively, you can use a combination of the image component and text component if you don't
-                want any cropping/scaling on the image.
-              </p>
+              <h4>⚠️ This image may be cropped or scaled</h4>
+              <br />
+              <h6><i className='flaticon-exclamation m--font-brand' /> This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.</h6>
+              <br />
+              <ul>
+                <li>Aspect ratio is the ratio of width to height of the image.</li>
+                <li>Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.</li>
+                <li> Alternatively, you can use a combination of the image component and text component if you don't
+                want any cropping/scaling on the image.</li>
+              </ul>
             </ModalDialog>
           </ModalContainer>
         }
@@ -534,7 +550,7 @@ class Card extends React.Component {
           {
           this.state.loading
           ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+          : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
             <input
@@ -548,7 +564,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 235, padding: 15}} src={this.state.imgSrc} />
+            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
            }
           </div>
           }
