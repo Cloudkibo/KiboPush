@@ -241,8 +241,8 @@ class Card extends React.Component {
   }
   componentDidMount () {
     console.log('cardProps.cardDetails', this.props.cardDetails)
-    this.setState({default_action: this.props.cardDetails.default_action})
     if (this.props.cardDetails) {
+      this.setState({default_action: this.props.cardDetails.default_action})
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.cardDetails.fileurl.url,
