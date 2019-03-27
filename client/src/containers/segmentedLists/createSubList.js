@@ -185,7 +185,7 @@ class CreateSubList extends React.Component {
   }
 
   editSubList (content) {
-    let listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, '_id': this.props.currentList._id}
+    let listPayload = {'content': content, 'conditions': this.state.conditions, 'newListName': this.state.newListName, 'listName': this.props.currentList.listName}
     this.props.editList(listPayload, this.msg, this.handleEditList)
   }
   onUpdate () {

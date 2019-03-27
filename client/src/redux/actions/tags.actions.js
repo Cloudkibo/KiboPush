@@ -94,10 +94,10 @@ export function getSubscriberTags (id, msg) {
       })
   }
 }
-export function deleteTag (id, msg) {
-  console.log('Actions for deleteing Tag', id)
+export function deleteTag (tag, msg) {
+  console.log('Actions for deleteing Tag', tag)
   return (dispatch) => {
-    callApi('tags/delete/', 'post', {tagId: id})
+    callApi('tags/delete/', 'post', {tag})
       .then(res => {
         if (res.status === 'success') {
           msg.success(`${res.description}`)
