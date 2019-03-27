@@ -1058,7 +1058,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByTag: e.target.value})
+      this.setState({filterByTag: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1084,7 +1084,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByPage: e.target.value})
+      this.setState({filterByPage: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1147,7 +1147,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({filterByLocale: e.target.value})
+      this.setState({filterByLocale: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value}})
     }
     // this.setState({filteredData: filteredData})
@@ -1182,7 +1182,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({status_value: e.target.value})
+      this.setState({status_value: ''})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: ''}})
     }
     // this.setState({filteredData: filteredData})
@@ -1315,8 +1315,8 @@ class Subscriber extends React.Component {
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Manage Subscribers</h3>
-            </div>
+                <h3 className='m-subheader__title'>Manage Subscribers</h3>
+              </div>
             </div>
           </div>
           <div className='m-content'>
@@ -1326,16 +1326,16 @@ class Subscriber extends React.Component {
           }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
-              <i className='flaticon-technology m--font-accent' />
-            </div>
+                <i className='flaticon-technology m--font-accent' />
+              </div>
               <div className='m-alert__text'>
               Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-            </div>
+              </div>
             </div>
             <div className='row'>
               <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet m-portlet--mobile'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
@@ -2075,7 +2075,7 @@ class Subscriber extends React.Component {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
             </div>
           </div>
         </div>
