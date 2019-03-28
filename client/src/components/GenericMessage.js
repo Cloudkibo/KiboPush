@@ -301,7 +301,7 @@ class GenericMessage extends React.Component {
     this.props.handleChange({broadcast: temp}, obj)
   }
 
-  removeComponent (obj, cb) {
+  removeComponent (obj) {
     console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
@@ -309,9 +309,6 @@ class GenericMessage extends React.Component {
     console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
     this.props.handleChange({broadcast: temp2}, obj)
-    if (cb) {
-      cb()
-    }
   }
 
   newConvo () {

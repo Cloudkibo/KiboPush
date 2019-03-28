@@ -39,6 +39,7 @@ class CreateMessage extends React.Component {
   handleChange (broadcast, event) {
     this.setState(broadcast)
     console.log('messengerAd broadcast', broadcast)
+    console.log('messengerAd event', event)
     if (event) {
       var jsonMessages = this.state.jsonMessages
       if (event.button) {
@@ -50,7 +51,12 @@ class CreateMessage extends React.Component {
         }
       }
       if (event.deletePayload) {
-        jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+        console.log('deleting jsonMessage', event.deletePayload)
+        if (typeof event.deletePayload[Symbol.iterator] === 'function') {
+          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages)
+        } else {
+          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+        }
       }
       console.log('selectedIndex', this.state.selectedIndex)
       for (var k = 0; k < jsonMessages.length; k++) {
@@ -59,8 +65,11 @@ class CreateMessage extends React.Component {
           jsonMessages[k].messageContent = broadcast.broadcast
         }
       }
+      console.log('jsonMessages2', jsonMessages)
       this.setState({
         jsonMessages: jsonMessages
+      }, () => {
+        console.log('jsonMessages state updated', this.state.jsonMessages)
       })
     }
   }
@@ -167,18 +176,17 @@ class CreateMessage extends React.Component {
     document.title = `${title} | Create Message`
   }
   goBack () {
-    if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0){
+    if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0) {
       this.props.history.push({
         pathname: `/createAdMessage`,
         state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
       })
-    }
-    else {
+    } else {
       this.props.history.push({
         pathname: `/createAdMessage`,
         state: {module: 'create'}
       })
-    }   
+    }
   }
   saveMessage () {
     console.log('Save Call')
