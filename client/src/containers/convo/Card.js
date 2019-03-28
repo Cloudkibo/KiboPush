@@ -48,7 +48,7 @@ class Card extends React.Component {
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
-      button: props.buttons ? props.buttons : [],
+      buttons: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
@@ -119,7 +119,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: ''
     })
   }
@@ -151,7 +151,7 @@ class Card extends React.Component {
           size: this.state.size,
           title: this.state.title,
           description: this.state.subtitle,
-          buttons: this.state.button,
+          buttons: this.state.buttons,
           default_action: defaultAction
         })
         this.setState({
@@ -184,7 +184,7 @@ class Card extends React.Component {
         size: this.state.size,
         title: this.state.title,
         description: this.state.subtitle,
-        buttons: this.state.button,
+        buttons: this.state.buttons,
         default_action: defaultAction
       })
       this.setState({
@@ -203,7 +203,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
   }
@@ -218,7 +218,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
   }
@@ -279,7 +279,7 @@ class Card extends React.Component {
         componentType: 'card',
         title: cardProps.cardDetails.title ? cardProps.cardDetails.title : '',
         imgSrc: cardProps.cardDetails.image_url ? cardProps.cardDetails.image_url : '',
-        button: cardProps.cardDetails.buttons ? cardProps.cardDetails.buttons : [],
+        buttons: cardProps.cardDetails.buttons ? cardProps.cardDetails.buttons : [],
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
         image_url: cardProps.cardDetails.image_url,
@@ -335,7 +335,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: event.target.value,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     this.setState({
@@ -353,7 +353,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: event.target.value,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     this.setState({
@@ -362,9 +362,9 @@ class Card extends React.Component {
   }
 
   addButton (obj) {
-    var temp = this.state.button
+    var temp = this.state.buttons
     temp.push(obj)
-    this.setState({button: temp}, () => {
+    this.setState({buttons: temp}, () => {
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -382,13 +382,13 @@ class Card extends React.Component {
   }
 
   editButton (obj) {
-    var temp = this.state.button.map((elm, index) => {
+    var temp = this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    this.setState({button: temp})
+    this.setState({buttons: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -403,8 +403,8 @@ class Card extends React.Component {
     })
   }
   removeButton (obj) {
-    var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
-    this.setState({button: temp})
+    var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
+    this.setState({buttons: temp})
     if (obj.button && obj.button.type === 'postback') {
       var deletePayload = obj.button.payload
     }
@@ -445,7 +445,7 @@ class Card extends React.Component {
       size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
   }
@@ -540,7 +540,7 @@ class Card extends React.Component {
           </PopoverBody>
         </Popover>
         { this.props.singleCard && !this.state.loading &&
-          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
@@ -581,10 +581,10 @@ class Card extends React.Component {
             }
           </div>
         </div>
-        {(this.state.button) ? this.state.button.map((obj, index) => {
+        {(this.state.buttons) ? this.state.buttons.map((obj, index) => {
           return <EditButton index={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} isGalleryCard={this.props.isGalleryCard} />
         }) : ''}
-        { this.state.button.length < 3 &&
+        { this.state.buttons.length < 3 &&
           <Button buttonLimit={3} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} isGalleryCard={this.props.isGalleryCard} />
         }
       </div>
