@@ -129,8 +129,8 @@ class GenericMessage extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         temp[i].text = obj.text
-        if (obj.button.length > 0) {
-          temp[i].buttons = obj.button
+        if (obj.buttons.length > 0) {
+          temp[i].buttons = obj.buttons
         } else {
           delete temp[i].buttons
         }
@@ -139,8 +139,8 @@ class GenericMessage extends React.Component {
     })
 
     if (!isPresent) {
-      if (obj.button.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button})
+      if (obj.buttons.length > 0) {
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.buttons})
       } else {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }

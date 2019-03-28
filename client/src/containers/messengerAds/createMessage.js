@@ -42,11 +42,12 @@ class CreateMessage extends React.Component {
     console.log('messengerAd event', event)
     if (event) {
       var jsonMessages = this.state.jsonMessages
-      if (event.button) {
-        for (var j = 0; j < event.button.length; j++) {
-          if (event.button[j].type === 'postback' && !event.button[j].payload) {
-            event.button[j].payload = this.state.jsonMessages.length + 1
-            jsonMessages = this.setNewJsonMessage(event.button[j], jsonMessages)
+      console.log('jsonMessages0', jsonMessages)
+      if (event.buttons) {
+        for (var j = 0; j < event.buttons.length; j++) {
+          if (event.buttons[j].type === 'postback' && !event.buttons[j].payload) {
+            event.buttons[j].payload = this.state.jsonMessages.length + 1
+            jsonMessages = this.setNewJsonMessage(event.buttons[j], jsonMessages)
           }
         }
       }
@@ -59,6 +60,7 @@ class CreateMessage extends React.Component {
         }
       }
       console.log('selectedIndex', this.state.selectedIndex)
+      console.log('jsonMessages1', jsonMessages)
       for (var k = 0; k < jsonMessages.length; k++) {
         if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
           console.log(`editing ${k} jsonMesssage`)
@@ -82,7 +84,7 @@ class CreateMessage extends React.Component {
           $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
         /* eslint-enable */
         let jsonMessages = this.state.jsonMessages
-        jsonMessages[this.state.selectedIndex].title = data.title
+        jsonMessages[i].title = data.title
         this.setState({
           jsonMessages: jsonMessages,
           convoTitle: data.title,
@@ -110,6 +112,7 @@ class CreateMessage extends React.Component {
   }
 
   setNewJsonMessage (data, jsonMessages) {
+    console.log('setNewJsonMessage', data)
     var newMessage = {}
     newMessage.jsonAdMessageId = this.state.jsonMessages.length + 1
     newMessage.jsonAdMessageParentId = this.state.selectedIndex

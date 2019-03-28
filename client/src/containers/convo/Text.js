@@ -32,7 +32,7 @@ class Text extends React.Component {
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
     this.state = {
-      button: props.buttons ? props.buttons : [],
+      buttons: props.buttons ? props.buttons : [],
       text: props.message ? props.message : '',
       showEmojiPicker: false,
       count: 0,
@@ -54,9 +54,9 @@ class Text extends React.Component {
       this.setState({text: this.props.message})
     }
     if (this.props.buttons && this.props.buttons.length > 0) {
-      if (this.state.button.length < 1) {
+      if (this.state.buttons.length < 1) {
         this.setState({
-          button: this.props.buttons
+          buttons: this.props.buttons
         })
       }
     }
@@ -88,7 +88,7 @@ class Text extends React.Component {
     var message = this.state.text + `{{${name}}}`
     var textCount = 160 - message.length
     if (textCount > 0) {
-      this.props.handleText({id: this.props.id, text: message, button: this.state.button})
+      this.props.handleText({id: this.props.id, text: message, buttons: this.state.buttons})
       this.setState({
         count: textCount,
         text: message,
@@ -100,42 +100,39 @@ class Text extends React.Component {
   }
 
   handleChange (event) {
-    this.props.handleText({id: this.props.id, text: event.target.value, button: this.state.button})
+    this.props.handleText({id: this.props.id, text: event.target.value, buttons: this.state.buttons})
     this.setState({text: event.target.value})
   }
 
   addButton (obj) {
-    var temp = this.state.button
+    var temp = this.state.buttons
     temp.push(obj)
 
-    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
+    this.setState({buttons: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, buttons: this.state.buttons})
   }
   editButton (obj) {
-    var temp = this.state.button.map((elm, index) => {
+    var temp = this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
-    this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp})
+    this.setState({buttons: temp})
   }
   removeButton (obj) {
-    // var temp = this.state.button.filter((elm, index) => {
-    //   return index !== obj.id
-    // })
-    this.state.button.map((elm, index) => {
+    this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
-        this.state.button.splice(index, 1)
+        this.state.buttons.splice(index, 1)
       }
     })
-    if (obj.button && obj.button.type === 'postback') {
-      var deletePayload = obj.button.payload
+    if (obj.button && obj.buttons.type === 'postback') {
+      var deletePayload = obj.buttons.payload
     }
     var temp = this.state.button
-    this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, button: temp, deletePayload: deletePayload})
+    this.setState({buttons: temp, numOfButtons: --this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp, deletePayload: deletePayload})
   }
 
   render () {
@@ -149,7 +146,7 @@ class Text extends React.Component {
 
       <div className='broadcast-component' style={textStyles}>
         {this.props.removeState &&
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.button.map((button) => button.payload)}) }} style={{ float: 'right', height: 20 + 'px' }}>
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{ float: 'right', height: 20 + 'px' }}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
@@ -197,15 +194,15 @@ class Text extends React.Component {
           */}
         </div>
 
-        {(this.state.button) ? this.state.button.map((obj, index) => {
+        {(this.state.buttons) ? this.state.buttons.map((obj, index) => {
           return <EditButton index={index} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        {this.props.removeState && this.state.button.length < 3
+        {this.props.removeState && this.state.buttons.length < 3
         ? <div>
           <Button buttonLimit={3} button_id={this.props.id} pageId={this.props.pageId} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
-          {this.state.button.length < 1 &&
+          {this.state.buttons.length < 1 &&
             <Button buttonLimit={3} button_id={this.props.id} pageId={this.props.pageId} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
