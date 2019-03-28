@@ -79,8 +79,8 @@ class Subscriber extends React.Component {
       customFieldOptions: [],
       selectedBulkField: null,
       saveBulkFieldDisable: true,
-      createCustomField: false
-
+      createCustomField: false,
+      selectedTagValue: ''
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -157,6 +157,7 @@ class Subscriber extends React.Component {
     this.createSetCustomFieldPayload = this.createSetCustomFieldPayload.bind(this)
     this.saveSetCustomField = this.saveSetCustomField.bind(this)
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
+    this.updateOption = this.updateOption.bind(this)
   }
 
   saveSetCustomField () {
@@ -394,16 +395,23 @@ class Subscriber extends React.Component {
     this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
   }
   handleAddIndividual (value) {
+    console.log('handleAddIndividual', value)
     var index = 0
     if (value) {
+      var data = String(value.label).toLowerCase()
+      value.label = data
+      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
-        if (this.props.tags[i].tag !== value.label) {
+        if (this.props.tags[i].tag !== data) {
           index++
         }
       }
       if (index === this.props.tags.length) {
-        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+        this.props.createTag(data, this.handleCreateTag, this.msg)
       } else {
+        if (value.className) {
+          this.updateOption()
+        }
         this.setState({
           saveEnableIndividual: true,
           addTagIndividual: value
@@ -426,17 +434,26 @@ class Subscriber extends React.Component {
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
+ 
   handleAdd (value) {
+    console.log('this.state.saveEnable', value)
     var index = 0
     if (value) {
+      var data = String(value.label).toLowerCase()
+      value.label = data
+      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
-        if (this.props.tags[i].tag !== value.label) {
+        if (this.props.tags[i].tag !== data) {
           index++
         }
       }
       if (index === this.props.tags.length) {
-        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+        this.props.createTag(data, this.handleCreateTag, this.msg)
       } else {
+        if (value.className) {
+          this.updateOption()
+        }
+         //
         this.setState({
           saveEnable: true,
           addTag: value
@@ -448,6 +465,7 @@ class Subscriber extends React.Component {
         addTag: value
       })
     }
+  console.log('this.state.saveEnable', this.state.saveEnable)
   }
   handleSequence (obj) {
     this.setState({sequenceValue: obj.value, saveEnableSeq: true})
@@ -697,6 +715,7 @@ class Subscriber extends React.Component {
     })
   }
   showAddTag () {
+    console.log('showAddTag')
     this.setState({
       addTag: null,
       popoverAddTagOpen: true
@@ -911,7 +930,18 @@ class Subscriber extends React.Component {
     this.setState({pageSelected: data.selected})
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
-
+  updateOption()  {
+    this.msg.error('Tag is already created with this name. Please choose another name')
+    var tagOptions = []
+  if(this.props.tags) {
+  for (var i = 0; i < this.props.tags.length; i++) {
+    tagOptions.push({'value': this.props.tags[i]._id, 'label': this.props.tags[i].tag})
+  }
+  this.setState({
+    options: tagOptions
+  })
+}
+}
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in subscribers', nextProps)
     if (nextProps.subscribers && nextProps.count) {
