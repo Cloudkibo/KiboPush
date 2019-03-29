@@ -165,7 +165,7 @@ class Page extends React.Component {
   searchPages (event) {
     // var filtered = []
     if (event.target.value !== '') {
-      this.setState({searchValue: event.target.value, filter: true, showingSearchResult: true})
+      this.setState({searchValue: event.target.value, filter: true, showingSearchResult: false})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value}})
 
       // for (let i = 0; i < this.props.pages.length; i++) {
@@ -175,7 +175,7 @@ class Page extends React.Component {
       // }
     } else {
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
-      this.setState({filter: false, search_value: '', showingSearchResult: false})
+      this.setState({filter: false, search_value: '', showingSearchResult: true})
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
@@ -188,6 +188,7 @@ class Page extends React.Component {
     })
   }
   render () {
+    console.log('showingSearchResult', this.state.showingSearchResult)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
@@ -212,12 +213,12 @@ class Page extends React.Component {
           </ModalContainer>
         }
         {
-          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
+          this.state.isShowingZeroModal && this.state.showingSearchResult && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              {(this.props.pages && this.props.pages.length === 0)
+              {(this.props.pages && this.props.pages.length === 0 )
               ? <AlertMessageModal type='page' />
             : <AlertMessageModal type='subscriber' />
             }
@@ -244,12 +245,12 @@ class Page extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          {
+          {/* {
             this.props.pages && this.props.pages.length === 0 && !this.state.showingSearchResult
             ? <AlertMessage type='page' />
           : this.props.subscribers && this.props.subscribers.length === 0 &&
             <AlertMessage type='subscriber' />
-          }
+          } */}
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
