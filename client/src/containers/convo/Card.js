@@ -270,16 +270,16 @@ class Card extends React.Component {
       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
         this.setState({elementUrl: cardProps.cardDetails.default_action.url})
       } else {
-        this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+        this.setState({webviewurl: cardProps.cardDetails.default_action.url, webviewsize: cardProps.cardDetails.default_action.webview_height_ratio})
       }
     }
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       this.setState({
         //  id: cardProps.id,
         componentType: 'card',
-        title: cardProps.cardDetails.title,
-        imgSrc: cardProps.cardDetails.image_url,
-        button: cardProps.cardDetails.buttons,
+        title: cardProps.cardDetails.title ? cardProps.cardDetails.title : '',
+        imgSrc: cardProps.cardDetails.image_url ? cardProps.cardDetails.image_url : '',
+        button: cardProps.cardDetails.buttons ? cardProps.cardDetails.buttons : [],
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
         image_url: cardProps.cardDetails.image_url,

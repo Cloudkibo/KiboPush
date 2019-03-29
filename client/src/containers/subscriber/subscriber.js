@@ -79,8 +79,8 @@ class Subscriber extends React.Component {
       customFieldOptions: [],
       selectedBulkField: null,
       saveBulkFieldDisable: true,
-      createCustomField: false
-
+      createCustomField: false,
+      selectedTagValue: ''
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -157,6 +157,7 @@ class Subscriber extends React.Component {
     this.createSetCustomFieldPayload = this.createSetCustomFieldPayload.bind(this)
     this.saveSetCustomField = this.saveSetCustomField.bind(this)
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
+    this.updateOption = this.updateOption.bind(this)
   }
 
   saveSetCustomField () {
@@ -394,16 +395,23 @@ class Subscriber extends React.Component {
     this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
   }
   handleAddIndividual (value) {
+    console.log('handleAddIndividual', value)
     var index = 0
     if (value) {
+      var data = String(value.label).toLowerCase()
+      value.label = data
+      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
-        if (this.props.tags[i].tag !== value.label) {
+        if (this.props.tags[i].tag !== data) {
           index++
         }
       }
       if (index === this.props.tags.length) {
-        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+        this.props.createTag(data, this.handleCreateTag, this.msg)
       } else {
+        if (value.className) {
+          this.updateOption()
+        }
         this.setState({
           saveEnableIndividual: true,
           addTagIndividual: value
@@ -418,32 +426,34 @@ class Subscriber extends React.Component {
   }
   removeTagIndividual (e, tag) {
     var subscribers = []
-    var tagId = ''
     var payload = {}
     subscribers.push(this.state.subscriber._id)
-    for (let i = 0; i < this.state.options.length; i++) {
-      if (this.state.options[i].label === tag) {
-        tagId = this.state.options[i].value
-        break
-      }
-    }
-    if (tagId !== '' && subscribers.length > 0) {
+    if (tag !== '' && subscribers.length > 0) {
       payload.subscribers = subscribers
-      payload.tagId = tagId
+      payload.tag = tag
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
+ 
   handleAdd (value) {
+    console.log('this.state.saveEnable', value)
     var index = 0
     if (value) {
+      var data = String(value.label).toLowerCase()
+      value.label = data
+      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
-        if (this.props.tags[i].tag !== value.label) {
+        if (this.props.tags[i].tag !== data) {
           index++
         }
       }
       if (index === this.props.tags.length) {
-        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+        this.props.createTag(data, this.handleCreateTag, this.msg)
       } else {
+        if (value.className) {
+          this.updateOption()
+        }
+         //
         this.setState({
           saveEnable: true,
           addTag: value
@@ -455,6 +465,7 @@ class Subscriber extends React.Component {
         addTag: value
       })
     }
+  console.log('this.state.saveEnable', this.state.saveEnable)
   }
   handleSequence (obj) {
     this.setState({sequenceValue: obj.value, saveEnableSeq: true})
@@ -485,7 +496,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.removeTag.value
+    payload.tagId = this.state.removeTag.label
     return payload
   }
   createAssignPayload () {
@@ -506,7 +517,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.addTag.value
+    payload.tag = this.state.addTag.label
     return payload
   }
   addTags () {
@@ -531,7 +542,7 @@ class Subscriber extends React.Component {
     }
     subscribers.push(subscriber._id)
     payload.subscribers = subscribers
-    payload.tagId = this.state.addTagIndividual.value
+    payload.tag = this.state.addTagIndividual.label
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -704,6 +715,7 @@ class Subscriber extends React.Component {
     })
   }
   showAddTag () {
+    console.log('showAddTag')
     this.setState({
       addTag: null,
       popoverAddTagOpen: true
@@ -918,7 +930,18 @@ class Subscriber extends React.Component {
     this.setState({pageSelected: data.selected})
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
-
+  updateOption()  {
+    this.msg.error('Tag is already created with this name. Please choose another name')
+    var tagOptions = []
+  if(this.props.tags) {
+  for (var i = 0; i < this.props.tags.length; i++) {
+    tagOptions.push({'value': this.props.tags[i]._id, 'label': this.props.tags[i].tag})
+  }
+  this.setState({
+    options: tagOptions
+  })
+}
+}
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in subscribers', nextProps)
     if (nextProps.subscribers && nextProps.count) {
@@ -1292,26 +1315,26 @@ class Subscriber extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: '100'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: '100'}}
+            this.state.showVideo &&
+            <ModalContainer style={{width: '680px', top: '100'}}
               onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='lFosatdcCCE'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              <ModalDialog style={{width: '680px', top: '100'}}
+                onClose={() => { this.setState({showVideo: false}) }}>
+                <div>
+                  <YouTube
+                    videoId='lFosatdcCCE'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 1
+                      }
+                    }}
+                    />
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -1321,106 +1344,106 @@ class Subscriber extends React.Component {
           </div>
           <div className='m-content'>
             {
-            this.props.pages && this.props.pages.length === 0 &&
-            <AlertMessage type='page' />
-          }
+              this.props.pages && this.props.pages.length === 0 &&
+              <AlertMessage type='page' />
+            }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-              Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
               </div>
             </div>
             <div className='row'>
               <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
                 <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Page Subscribers
-                      </h3>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                          Page Subscribers
+                        </h3>
+                      </div>
+                    </div>
+                    <div className='m-portlet__head-tools'>
+                      {
+                        this.props.pages && this.props.pages.length > 0
+                        ? <Link to='/invitesubscribers' disabled>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                            <span>
+                              <i className='la la-user-plus' />
+                              <span>
+                                Invite Subscribers
+                              </span>
+                            </span>
+                          </button>
+                        </Link>
+                        : <Link disabled>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                            <span>
+                              <i className='la la-user-plus' />
+                              <span>
+                                Invite Subscribers
+                              </span>
+                            </span>
+                          </button>
+                        </Link>
+                      }
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0
-                      ? <Link to='/invitesubscribers' disabled>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                          <span>
-                            <i className='la la-user-plus' />
-                            <span>
-                              Invite Subscribers
-                            </span>
-                          </span>
-                        </button>
-                      </Link>
-                      : <Link disabled>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                          <span>
-                            <i className='la la-user-plus' />
-                            <span>
-                              Invite Subscribers
-                            </span>
-                          </span>
-                        </button>
-                      </Link>
-                  }
-                  </div>
-                </div>
-
-                <div className='m-portlet__body'>
-                  <div style={{marginTop: '-50px'}}>
-                    <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-12 order-2 order-xl-1'>
-                          <div className='row filters' style={{marginTop: '25px', display: 'flex'}}>
-                            <div className='col-md-4'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Gender:</label>
-                                </div>
-                                {/* <div className='m-form__control'>
+                  <div className='m-portlet__body'>
+                    <div style={{marginTop: '-50px'}}>
+                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-12 order-2 order-xl-1'>
+                            <div className='row filters' style={{marginTop: '25px', display: 'flex'}}>
+                              <div className='col-md-4'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='' style={{marginTop: '10px'}}>
+                                    <label style={{width: '60px'}}>Gender:</label>
+                                  </div>
+                                  {/* <div className='m-form__control'>
                               <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
                               </div> */}
-                                <div className='m-form__control'>
-                                  <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
-                                    <option key='' value='' disabled>Filter by Gender...</option>
-                                    <option key='ALL' value='all'>All</option>
-                                    <option key='male' value='male'>Male</option>
-                                    <option key='female' value='female'>Female</option>
-                                    <option key='other' value='other'>Other</option>
-                                  </select>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
+                                      <option key='' value='' disabled>Filter by Gender...</option>
+                                      <option key='ALL' value='all'>All</option>
+                                      <option key='male' value='male'>Male</option>
+                                      <option key='female' value='female'>Female</option>
+                                      <option key='other' value='other'>Other</option>
+                                    </select>
+                                  </div>
                                 </div>
+                                <div className='d-md-none m--margin-bottom-10' />
                               </div>
-                              <div className='d-md-none m--margin-bottom-10' />
-                            </div>
-                            <div className='col-md-4'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Page:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
-                                    <option key='' value='' disabled>Filter by Page...</option>
-                                    <option key='ALL' value='all'>ALL</option>
-                                    {
+                              <div className='col-md-4'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='' style={{marginTop: '10px'}}>
+                                    <label style={{width: '60px'}}>Page:</label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
+                                      <option key='' value='' disabled>Filter by Page...</option>
+                                      <option key='ALL' value='all'>ALL</option>
+                                      {
                                       this.props.pages && this.props.pages.map((page, i) => (
                                         <option key={i} value={page._id}>{page.pageName}</option>
                                       ))
-                                    }
-                                  </select>
+                                      }
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className='col-md-4'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Locale:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
+                              <div className='col-md-4'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='' style={{marginTop: '10px'}}>
+                                    <label style={{width: '60px'}}>Locale:</label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
                                 <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
                                 <div className='dropdown-menu open' role='combobox'>
                                   <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
@@ -1433,648 +1456,648 @@ class Subscriber extends React.Component {
                                     ))
                                   }
                                 </select>{/* </div> */}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className='col-md-4' style={{marginTop: '20px'}}>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Tags:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
-                                    <option key='' value='' disabled>Filter by Tags...</option>
-                                    <option key='ALL' value='all'>ALL</option>
-                                    {
+                              <div className='col-md-4' style={{marginTop: '20px'}}>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='' style={{marginTop: '10px'}}>
+                                    <label style={{width: '60px'}}>Tags:</label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
+                                      <option key='' value='' disabled>Filter by Tags...</option>
+                                      <option key='ALL' value='all'>ALL</option>
+                                      {
                                       this.state.options.map((tag, i) => (
                                         <option key={i} value={tag.value}>{tag.label}</option>
                                       ))
-                                    }
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                            <div className='col-md-4' style={{marginTop: '20px'}}>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Status:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
-                                    <option key='' value='' disabled>Filter by Status...</option>
-                                    <option key='ALL' value='all'>ALL</option>
-                                    <option key='subscribed' value='subscribed'>Subscribed</option>
-                                    <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style={{marginTop: '15px'}} className='form-group m-form__group row align-items-center'>
-                            <div className='col-md-8'>
-                              <div className='m-input-icon m-input-icon--left'>
-                                <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                  <span><i className='la la-search' /></span>
-                                </span>
-                              </div>
-                            </div>
-                            <div className='col-md-4'>
-                              <div className='pull-right' style={{display: 'flex'}}>
-                                <div style={{display: 'block'}}>
-                                  <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
-                                    <DropdownToggle caret>
-                                      Bulk Actions
-                                    </DropdownToggle>
-                                    <DropdownMenu>
-                                      <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
-                                      <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
-                                      <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                      { this.props.user.isSuperUser &&
-                                        <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                       }
-                                      { this.props.user.isSuperUser &&
-                                        <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
-                                      }
-                                    </DropdownMenu>
-                                  </Dropdown>
-                                  {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
+                                    </select>
+                                  </div>
                                 </div>
-                                { this.props.tags && this.props.tags.length > 0 &&
-                                  <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
-                                }
-                                {
-                                  this.state.showEditModal &&
-                                  <ModalContainer style={{width: '800px'}}
-                                    onClose={this.closeEditModal}>
-                                    <ModalDialog style={{width: '800px'}}
+                              </div>
+                              <div className='col-md-4' style={{marginTop: '20px'}}>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='' style={{marginTop: '10px'}}>
+                                    <label style={{width: '60px'}}>Status:</label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
+                                      <option key='' value='' disabled>Filter by Status...</option>
+                                      <option key='ALL' value='all'>ALL</option>
+                                      <option key='subscribed' value='subscribed'>Subscribed</option>
+                                      <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div style={{marginTop: '15px'}} className='form-group m-form__group row align-items-center'>
+                              <div className='col-md-8'>
+                                <div className='m-input-icon m-input-icon--left'>
+                                  <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                    <span><i className='la la-search' /></span>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='col-md-4'>
+                                <div className='pull-right' style={{display: 'flex'}}>
+                                  <div style={{display: 'block'}}>
+                                    <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
+                                      <DropdownToggle caret>
+                                        Bulk Actions
+                                      </DropdownToggle>
+                                      <DropdownMenu>
+                                        <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
+                                        <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
+                                        <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
+                                        { this.props.user.isSuperUser &&
+                                          <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
+                                        }
+                                        { this.props.user.isSuperUser &&
+                                          <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
+                                        }
+                                      </DropdownMenu>
+                                    </Dropdown>
+                                    {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
+                                  </div>
+                                  { this.props.tags && this.props.tags.length > 0 &&
+                                    <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
+                                  }
+                                  {
+                                    this.state.showEditModal &&
+                                    <ModalContainer style={{width: '800px'}}
                                       onClose={this.closeEditModal}>
-                                      <EditTags currentTags={this.props.tags} />
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
-                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
-                                  <PopoverHeader>Add Tags</PopoverHeader>
-                                  <PopoverBody>
-                                    <div className='row' style={{minWidth: '250px'}}>
-                                      <div className='col-12'>
-                                        <label>Select Tags</label>
-                                        <Select.Creatable
-                                          options={this.state.options}
-                                          onChange={this.handleAdd}
-                                          value={this.state.addTag}
-                                          placeholder='Add User Tags'
-                                        />
+                                      <ModalDialog style={{width: '800px'}}
+                                        onClose={this.closeEditModal}>
+                                        <EditTags currentTags={this.props.tags} />
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
+                                    <PopoverHeader>Add Tags</PopoverHeader>
+                                    <PopoverBody>
+                                      <div className='row' style={{minWidth: '250px'}}>
+                                        <div className='col-12'>
+                                          <label>Select Tags</label>
+                                          <Select.Creatable
+                                            options={this.state.options}
+                                            onChange={this.handleAdd}
+                                            value={this.state.addTag}
+                                            placeholder='Add User Tags'
+                                          />
+                                        </div>
+                                        {this.state.saveEnable
+                                        ? <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            onClick={() => {
+                                              this.addTags()
+                                              this.toggleAdd()
+                                            }}>Save
+                                          </button>
+                                        </div>
+                                        : <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            disabled>
+                                             Save
+                                          </button>
+                                        </div>
+                                      }
                                       </div>
-                                      {this.state.saveEnable
-                                      ? <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          onClick={() => {
-                                            this.addTags()
-                                            this.toggleAdd()
-                                          }}>Save
-                                        </button>
+                                    </PopoverBody>
+                                  </Popover>
+                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
+                                    <PopoverHeader>Remove Tags</PopoverHeader>
+                                    <PopoverBody>
+                                      <div className='row' style={{minWidth: '250px'}}>
+                                        <div className='col-12'>
+                                          <label>Select Tags</label>
+                                          <Select
+                                            options={this.state.options}
+                                            onChange={this.handleRemove}
+                                            value={this.state.removeTag}
+                                            placeholder='Remove User Tags'
+                                          />
+                                        </div>
+                                        <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            onClick={() => {
+                                              this.removeTags()
+                                              this.toggleRemove()
+                                            }}>Save
+                                          </button>
+                                        </div>
                                       </div>
-                                      : <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          disabled>
-                                           Save
-                                        </button>
+                                    </PopoverBody>
+                                  </Popover>
+                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
+                                    <PopoverHeader>Set Custom Field</PopoverHeader>
+                                    <PopoverBody>
+                                      <div className='row' style={{minWidth: '250px'}}>
+                                        <div className='col-12'>
+                                          <label>Field</label>
+                                          <Select
+                                            options={this.state.customFieldOptions}
+                                            onChange={this.handleSelectBulkCustomField}
+                                            value={this.state.selectedBulkField}
+                                            placeholder='Enter Field Name'
+                                          />
+                                        </div>
+                                        <div className='col-12'>
+                                          <label>Value</label>
+                                          {setBulkFieldInput}
+                                        </div>
+                                        <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            disabled={this.state.saveBulkFieldDisable}
+                                            onClick={() => {
+                                              this.saveSetCustomField()
+                                            }}>Save
+                                          </button>
+                                        </div>
                                       </div>
-                                    }
-                                    </div>
-                                  </PopoverBody>
-                                </Popover>
-                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
-                                  <PopoverHeader>Remove Tags</PopoverHeader>
-                                  <PopoverBody>
-                                    <div className='row' style={{minWidth: '250px'}}>
-                                      <div className='col-12'>
-                                        <label>Select Tags</label>
-                                        <Select
-                                          options={this.state.options}
-                                          onChange={this.handleRemove}
-                                          value={this.state.removeTag}
-                                          placeholder='Remove User Tags'
-                                        />
+                                    </PopoverBody>
+                                  </Popover>
+                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.openSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
+                                    <PopoverHeader>Subscribe to Sequence</PopoverHeader>
+                                    <PopoverBody>
+                                      <div className='row' style={{minWidth: '250px'}}>
+                                        <div className='col-12'>
+                                          <label>Select Sequence</label>
+                                          <Select
+                                            options={this.state.sequenceOptions}
+                                            onChange={this.handleSequence}
+                                            value={this.state.sequenceValue}
+                                            placeholder='Select Sequence...'
+                                          />
+                                        </div>
+                                        {this.state.saveEnableSeq
+                                        ? <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            onClick={() => {
+                                              this.subscribeToSequence()
+                                              this.toggleSubscribe()
+                                            }}>Save
+                                          </button>
+                                        </div>
+                                        : <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            disabled>
+                                             Save
+                                          </button>
+                                        </div>
+                                      }
                                       </div>
-                                      <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          onClick={() => {
-                                            this.removeTags()
-                                            this.toggleRemove()
-                                          }}>Save
-                                        </button>
+                                    </PopoverBody>
+                                  </Popover>
+                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.openUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
+                                    <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
+                                    <PopoverBody>
+                                      <div className='row' style={{minWidth: '250px'}}>
+                                        <div className='col-12'>
+                                          <label>Select Sequence</label>
+                                          <Select
+                                            options={this.state.sequenceOptions}
+                                            onChange={this.handleSequence}
+                                            value={this.state.sequenceValue}
+                                            placeholder='Remove User Tags'
+                                          />
+                                        </div>
+                                        <div className='col-12'>
+                                          <button style={{float: 'right', margin: '15px'}}
+                                            className='btn btn-primary btn-sm'
+                                            onClick={() => {
+                                              this.unsubscribeToSequence()
+                                              this.toggleUnSubscribe()
+                                            }}>Save
+                                          </button>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </PopoverBody>
-                                </Popover>
-                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
-                                  <PopoverHeader>Set Custom Field</PopoverHeader>
-                                  <PopoverBody>
-                                    <div className='row' style={{minWidth: '250px'}}>
-                                      <div className='col-12'>
-                                        <label>Field</label>
-                                        <Select
-                                          options={this.state.customFieldOptions}
-                                          onChange={this.handleSelectBulkCustomField}
-                                          value={this.state.selectedBulkField}
-                                          placeholder='Enter Field Name'
-                                        />
-                                      </div>
-                                      <div className='col-12'>
-                                        <label>Value</label>
-                                        {setBulkFieldInput}
-                                      </div>
-                                      <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          disabled={this.state.saveBulkFieldDisable}
-                                          onClick={() => {
-                                            this.saveSetCustomField()
-                                          }}>Save
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </PopoverBody>
-                                </Popover>
-                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.openSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
-                                  <PopoverHeader>Subscribe to Sequence</PopoverHeader>
-                                  <PopoverBody>
-                                    <div className='row' style={{minWidth: '250px'}}>
-                                      <div className='col-12'>
-                                        <label>Select Sequence</label>
-                                        <Select
-                                          options={this.state.sequenceOptions}
-                                          onChange={this.handleSequence}
-                                          value={this.state.sequenceValue}
-                                          placeholder='Select Sequence...'
-                                        />
-                                      </div>
-                                      {this.state.saveEnableSeq
-                                      ? <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          onClick={() => {
-                                            this.subscribeToSequence()
-                                            this.toggleSubscribe()
-                                          }}>Save
-                                        </button>
-                                      </div>
-                                      : <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          disabled>
-                                           Save
-                                        </button>
-                                      </div>
-                                    }
-                                    </div>
-                                  </PopoverBody>
-                                </Popover>
-                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.openUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
-                                  <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
-                                  <PopoverBody>
-                                    <div className='row' style={{minWidth: '250px'}}>
-                                      <div className='col-12'>
-                                        <label>Select Sequence</label>
-                                        <Select
-                                          options={this.state.sequenceOptions}
-                                          onChange={this.handleSequence}
-                                          value={this.state.sequenceValue}
-                                          placeholder='Remove User Tags'
-                                        />
-                                      </div>
-                                      <div className='col-12'>
-                                        <button style={{float: 'right', margin: '15px'}}
-                                          className='btn btn-primary btn-sm'
-                                          onClick={() => {
-                                            this.unsubscribeToSequence()
-                                            this.toggleUnSubscribe()
-                                          }}>Save
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </PopoverBody>
-                                </Popover>
+                                    </PopoverBody>
+                                  </Popover>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    {this.state.subscribersData && this.state.subscribersData.length > 0
-                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                      <table className='m-datatable__table'
-                        id='m-datatable--27866229129' style={{
-                          display: 'block',
-                          height: 'auto',
-                          overflowX: 'auto'
-                        }}>
-                        <thead className='m-datatable__head'>
-                          <tr className='m-datatable__row'
-                            style={{height: '53px'}}>
-                            <th data-field='Select All'
-                              className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '30px', overflow: 'inherit'}}>
-                                <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></span></th>
-                            <th data-field='Profile Picture'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
-                            </th>
-                            <th data-field='Name'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Name</span>
-                            </th>
-                            <th data-field='Page'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
-                            </th>
-                            <th data-field='Status'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Status</span>
-                            </th>
-                            <th data-field='Gender'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
-                            </th>
-                            <th data-field='Subscribed'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px', overflow: 'inherit'}}>Subscribed</span>
-                            </th>
-                            <th data-field='Tag'
-                              className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
-                            </th>
-                          </tr>
-                        </thead>
+                      {this.state.subscribersData && this.state.subscribersData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table'
+                          id='m-datatable--27866229129' style={{
+                            display: 'block',
+                            height: 'auto',
+                            overflowX: 'auto'
+                          }}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='Select All'
+                                className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '30px', overflow: 'inherit'}}>
+                                  <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></span></th>
+                              <th data-field='Profile Picture'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
+                              </th>
+                              <th data-field='Name'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px', overflow: 'inherit'}}>Name</span>
+                              </th>
+                              <th data-field='Page'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
+                              </th>
+                              <th data-field='Status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px', overflow: 'inherit'}}>Status</span>
+                              </th>
+                              <th data-field='Gender'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
+                              </th>
+                              <th data-field='Subscribed'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px', overflow: 'inherit'}}>Subscribed</span>
+                              </th>
+                              <th data-field='Tag'
+                                className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
+                              </th>
+                            </tr>
+                          </thead>
 
-                        <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                          {
-                        this.state.subscribersData.map((subscriber, i) => (
-                          <tr data-row={i}
-                            className='m-datatable__row m-datatable__row--even subscriberRow'
-                            style={{height: '55px', cursor: 'pointer'}} key={i}>
-                            <td data-field='Select All'
-                              className='m-datatable__cell'>
-                              <span style={{width: '30px', overflow: 'inherit'}}>
-                                <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
-                              </span></td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Profile Picture'
-                              className='m-datatable__cell'>
-                              <span
-                                style={{width: '100px', overflow: 'inherit'}}>
-                                <img alt='pic'
-                                  src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                  onError={(e) => this.profilePicError(e, subscriber)}
-                                  className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
-                              />
-                              </span>
-                            </td>
+                          <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                            {
+                          this.state.subscribersData.map((subscriber, i) => (
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even subscriberRow'
+                              style={{height: '55px', cursor: 'pointer'}} key={i}>
+                              <td data-field='Select All'
+                                className='m-datatable__cell'>
+                                <span style={{width: '30px', overflow: 'inherit'}}>
+                                  <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
+                                </span></td>
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Profile Picture'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '100px', overflow: 'inherit'}}>
+                                  <img alt='pic'
+                                    src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                    onError={(e) => this.profilePicError(e, subscriber)}
+                                    className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                />
+                                </span>
+                              </td>
 
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
-                              className='m-datatable__cell'>
-                              <span
-                                style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
-                            </td>
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                              </td>
 
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
-                              className='m-datatable__cell'>
-                              <span
-                                style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                {subscriber.pageId.pageName}
-                              </span>
-                            </td>
-                            <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
-                              className='m-datatable__cell'>
-                              <span
-                                style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
-                              </span>
-                            </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
-                              <span style={{width: '50px'}}>
-                                { subscriber.gender }
-                              </span>
-                            </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{moment(subscriber.datetime).fromNow()}</span>
-                            </td>
-                            <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
-                              <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
-                                {
-                                  subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                  {subscriber.pageId.pageName}
+                                </span>
+                              </td>
+                              <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                  {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                </span>
+                              </td>
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
+                                <span style={{width: '50px'}}>
+                                  { subscriber.gender }
+                                </span>
+                              </td>
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
+                                <span style={{width: '100px'}}>{moment(subscriber.datetime).fromNow()}</span>
+                              </td>
+                              <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
+                                <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
+                                  {
+                                    subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
+                                  }
+                                </span>
+                                {subscriber.tags && subscriber.tags.length > 0 &&
+                                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
+                                      {
+                                          subscriber.tags.map((tag, i) => (
+                                            <span key={i} style={{display: 'block'}}>{tag}</span>
+                                          ))
+                                      }
+                                    </UncontrolledTooltip>
                                 }
-                              </span>
-                              {subscriber.tags && subscriber.tags.length > 0 &&
-                                <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
-                                    {
-                                        subscriber.tags.map((tag, i) => (
-                                          <span key={i} style={{display: 'block'}}>{tag}</span>
-                                        ))
-                                    }
-                                  </UncontrolledTooltip>
-                              }
-                            </td>
-                          </tr>
-                        ))
-                      }
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                        forcePage={this.state.pageSelected} />
+                              </td>
+                            </tr>
+                          ))
+                        }
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
+                          marginPagesDisplayed={1}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'}
+                          forcePage={this.state.pageSelected} />
 
-                    </div>
-                    : <div className='table-responsive'>
-                      <p> No data to display </p>
-                    </div>
-                  }
-                    <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                      <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                        <span>
-                          <i className='fa fa-download' />
+                      </div>
+                      : <div className='table-responsive'>
+                        <p> No data to display </p>
+                      </div>
+                    }
+                      <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
                           <span>
-                            Export Records in CSV File
-                          </span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                  <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
-                    <div className='modal-content'>
-                      <div style={{display: 'block'}} className='modal-header'>
-                        <h5 className='modal-title' id='exampleModalLabel'>
-                          {this.state.subscriber.firstName ? (this.state.subscriber.firstName + ' ' + this.state.subscriber.lastName) : ''}
-                        </h5>
-                        <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                          <span aria-hidden='true'>
-                            &times;
+                            <i className='fa fa-download' />
+                            <span>
+                              Export Records in CSV File
+                            </span>
                           </span>
                         </button>
                       </div>
-                      <div className='modal-body'>
-                        <div style={{maxHeight: '350px', overflowX: 'hidden', overflowY: 'scroll'}} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
-                          <div className='row'>
-                            <div className='col-md-3'>
-                              <img style={{width: '120px'}} alt='pic' src={(this.state.subscriber.profilePic) ? this.state.subscriber.profilePic : ''} />
-                            </div>
-                            <div style={{paddingLeft: '30px'}} className='col-md-9'>
-                              {
-                                this.state.subscriber.isSubscribed
-                                ? <div style={{display: 'block', marginTop: '5px'}}>
-                                  <i style={{fontWeight: 'bold'}} className='la la-check-circle' />
-                                    subscribed
-                                  <a onClick={this.unSubscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Unsubscribe)'}</a>
-                                </div>
-                                : <div style={{display: 'block', marginTop: '5px'}}>
-                                  <i style={{fontWeight: 'bold'}} className='la la-times-circle' />
-                                  unsubscribed
-                                  { this.state.subscriber.unSubscribedBy !== 'subscriber' &&
-                                    <a onClick={this.subscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Subscribe)'}</a>
-                                  }
-                                </div>
-                              }
-                              {
-                                this.state.subscriber.gender && this.state.subscriber.gender === 'male'
-                                ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-male' /> male</span>
-                                : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-female' /> female</span>
-                              }
-                              {
-                                this.state.subscriber.locale
-                                ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /> {this.state.subscriber.locale}</span>
-                                : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /></span>
-                              }
-                              {
-                                this.state.subscriber.email &&
-                                <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /> {this.state.subscriber.email}</span>
-                              }
-                              {
-                                this.state.subscriber.phoneNumber &&
-                                <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /> {this.state.subscriber.phoneNumber}</span>
-                              }
-                            </div>
-                          </div>
-                          <br />
-                          <div className='row'>
-                            <div className='col-md-4'>
-                              {
-                                this.state.subscriber.isSubscribed
-                                ? <div>
-                                  <span style={{fontWeight: 600}}>Subscribed At:</span>
-                                  <br />
-                                  <span>{this.getDate(this.state.subscriber.datetime)}</span>
-                                </div>
-                                : <div>
-                                  <span style={{fontWeight: 600}}>Unsubscribed At:</span>
-                                  <br />
-                                  <span>{this.getDate(this.state.subscriber.datetime)}</span>
-                                </div>
-                              }
-                            </div>
-                            <div className='col-md-4'>
-                              {
-                                this.state.subscriber.pageId &&
-                                <div>
-                                  <span style={{fontWeight: 600}}>Facebook Page:</span>
-                                  <br />
-                                  <span>{this.state.subscriber.pageId.pageName}</span>
-                                </div>
-                              }
-                            </div>
-                            <div className='col-md-4'>
-                              <div>
-                                <span style={{fontWeight: 600}}>Source:</span>
-                                <br />
-                                <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                    </div>
+                  </div>
+                  <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                    <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
+                      <div className='modal-content'>
+                        <div style={{display: 'block'}} className='modal-header'>
+                          <h5 className='modal-title' id='exampleModalLabel'>
+                            {this.state.subscriber.firstName ? (this.state.subscriber.firstName + ' ' + this.state.subscriber.lastName) : ''}
+                          </h5>
+                          <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                            <span aria-hidden='true'>
+                              &times;
+                            </span>
+                          </button>
+                        </div>
+                        <div className='modal-body'>
+                          <div style={{maxHeight: '350px', overflowX: 'hidden', overflowY: 'scroll'}} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                            <div className='row'>
+                              <div className='col-md-3'>
+                                <img style={{width: '120px'}} alt='pic' src={(this.state.subscriber.profilePic) ? this.state.subscriber.profilePic : ''} />
                               </div>
-                            </div>
-                          </div>
-                          <br />
-                          <div className='row'>
-                            <span style={{fontWeight: 600, marginLeft: '15px'}}>User Tags:</span>
-                            <a id='assignIndividualTag' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
-                          </div>
-                          {
-                            this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
-                            ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
-                              {
-                                this.state.subscriber.tags.map((tag, i) => (
-                                  <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{tag} <i style={{cursor: 'pointer'}} onClick={(e) => { this.removeTagIndividual(e, tag) }} className='la la-close' /></button>
-                                ))
-                              }
-                            </div>
-                            : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
-                              <span> No Tags Assigned</span>
-                            </div>
-                          }
-                          <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpenIndividual} target='assignIndividualTag' toggle={this.toggleAddIndividual}>
-                            <PopoverHeader>Add Tags</PopoverHeader>
-                            <PopoverBody>
-                              <div className='row' style={{minWidth: '250px'}}>
-                                <div className='col-12'>
-                                  <label>Select Tags</label>
-                                  <Select.Creatable
-                                    options={this.state.options}
-                                    onChange={this.handleAddIndividual}
-                                    value={this.state.addTagIndividual}
-                                    placeholder='Add User Tags'
-                                  />
-                                </div>
-                                {this.state.saveEnableIndividual
-                                ? <div className='col-12'>
-                                  <button style={{float: 'right', margin: '15px'}}
-                                    className='btn btn-primary btn-sm'
-                                    onClick={() => {
-                                      this.addTagsIndividual(this.state.subscriber)
-                                      this.toggleAddIndividual()
-                                    }}>Save
-                                  </button>
-                                </div>
-                                : <div className='col-12'>
-                                  <button style={{float: 'right', margin: '15px'}}
-                                    className='btn btn-primary btn-sm'
-                                    disabled>
-                                     Save
-                                  </button>
-                                </div>
-                              }
-                              </div>
-                            </PopoverBody>
-                          </Popover>
-                          <div className='row' style={{display: 'inline-block'}}>
-                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields: </span>
-                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
-                              ? <span>
-                                <a data-toggle='collapse' data-target='#customFields' style={{cursor: 'pointer', color: 'blue'}}
-                                  onClick={this.showToggle}>
-                                  {this.state.show
-                                  ? <span>Hide <i style={{fontSize: '12px'}} className='la la-angle-up ' /></span>
-                                  : <span>Show <i style={{fontSize: '12px'}} className='la la-angle-down ' /></span>
-                                  }
-                                </a>
-                                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px'}}><i className='la la-gear' /> Manage Fields</a>
-                              </span>
-                              : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px'}}><i className='la la-gear' /> Manage Fields</a>
-                            }
-                          </div>
-                          <div className='row'>
-                            {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
-                            ? <div id='customFields' style={{padding: '15px'}} className='collapse'>
-                              {
-                                this.state.subscriber.customFields.map((field, i) => (
-                                  <div className='row'>
-                                    <div className='col-sm-12'>
-                                      <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
-                                        onMouseEnter={() => { this.hoverOn(field._id) }}
-                                        onMouseLeave={this.hoverOff}
-                                        style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
-                                        <span style={{marginLeft: '10px'}}>
-                                          <span style={{fontWeight: '100'}}>{field.name} : </span>
-                                          <span style={{color: '#3c3c7b'}}>{field.value !== '' ? field.value : 'Not Set'}</span>
-                                        </span>
-                                      </div>
-                                    </div>
+                              <div style={{paddingLeft: '30px'}} className='col-md-9'>
+                                {
+                                  this.state.subscriber.isSubscribed
+                                  ? <div style={{display: 'block', marginTop: '5px'}}>
+                                    <i style={{fontWeight: 'bold'}} className='la la-check-circle' />
+                                      subscribed
+                                    <a onClick={this.unSubscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Unsubscribe)'}</a>
                                   </div>
-                                ))
-                                  }
-                              <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
-                                <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
-                                <PopoverBody>
-                                  <div className='row' style={{ minWidth: '250px' }}>
-                                    <div className='col-12'>
-                                      <label>Set Value</label>
-                                      {setFieldInput}
-                                    </div>
-                                    <button style={{ float: 'right', margin: '15px' }}
+                                  : <div style={{display: 'block', marginTop: '5px'}}>
+                                    <i style={{fontWeight: 'bold'}} className='la la-times-circle' />
+                                    unsubscribed
+                                    { this.state.subscriber.unSubscribedBy !== 'subscriber' &&
+                                      <a onClick={this.subscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Subscribe)'}</a>
+                                    }
+                                  </div>
+                                }
+                                {
+                                  this.state.subscriber.gender && this.state.subscriber.gender === 'male'
+                                  ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-male' /> male</span>
+                                  : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-female' /> female</span>
+                                }
+                                {
+                                  this.state.subscriber.locale
+                                  ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /> {this.state.subscriber.locale}</span>
+                                  : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /></span>
+                                }
+                                {
+                                  this.state.subscriber.email &&
+                                  <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /> {this.state.subscriber.email}</span>
+                                }
+                                {
+                                  this.state.subscriber.phoneNumber &&
+                                  <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /> {this.state.subscriber.phoneNumber}</span>
+                                }
+                              </div>
+                            </div>
+                            <br />
+                            <div className='row'>
+                              <div className='col-md-4'>
+                                {
+                                  this.state.subscriber.isSubscribed
+                                  ? <div>
+                                    <span style={{fontWeight: 600}}>Subscribed At:</span>
+                                    <br />
+                                    <span>{this.getDate(this.state.subscriber.datetime)}</span>
+                                  </div>
+                                  : <div>
+                                    <span style={{fontWeight: 600}}>Unsubscribed At:</span>
+                                    <br />
+                                    <span>{this.getDate(this.state.subscriber.datetime)}</span>
+                                  </div>
+                                }
+                              </div>
+                              <div className='col-md-4'>
+                                {
+                                  this.state.subscriber.pageId &&
+                                  <div>
+                                    <span style={{fontWeight: 600}}>Facebook Page:</span>
+                                    <br />
+                                    <span>{this.state.subscriber.pageId.pageName}</span>
+                                  </div>
+                                }
+                              </div>
+                              <div className='col-md-4'>
+                                <div>
+                                  <span style={{fontWeight: 600}}>Source:</span>
+                                  <br />
+                                  <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <br />
+                            <div className='row'>
+                              <span style={{fontWeight: 600, marginLeft: '15px'}}>User Tags:</span>
+                              <a id='assignIndividualTag' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
+                            </div>
+                            {
+                              this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
+                              ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                {
+                                  this.state.subscriber.tags.map((tag, i) => (
+                                    <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{tag} <i style={{cursor: 'pointer'}} onClick={(e) => { this.removeTagIndividual(e, tag) }} className='la la-close' /></button>
+                                  ))
+                                }
+                              </div>
+                              : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                <span> No Tags Assigned</span>
+                              </div>
+                            }
+                            <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpenIndividual} target='assignIndividualTag' toggle={this.toggleAddIndividual}>
+                              <PopoverHeader>Add Tags</PopoverHeader>
+                              <PopoverBody>
+                                <div className='row' style={{minWidth: '250px'}}>
+                                  <div className='col-12'>
+                                    <label>Select Tags</label>
+                                    <Select.Creatable
+                                      options={this.state.options}
+                                      onChange={this.handleAddIndividual}
+                                      value={this.state.addTagIndividual}
+                                      placeholder='Add User Tags'
+                                    />
+                                  </div>
+                                  {this.state.saveEnableIndividual
+                                  ? <div className='col-12'>
+                                    <button style={{float: 'right', margin: '15px'}}
                                       className='btn btn-primary btn-sm'
                                       onClick={() => {
-                                        this.saveCustomField()
-                                        // this.toggleSetFieldPopover()
-                                      }}
-                                      disabled={this.state.saveFieldValueButton}>
-                                        Save
-                                      </button>
+                                        this.addTagsIndividual(this.state.subscriber)
+                                        this.toggleAddIndividual()
+                                      }}>Save
+                                    </button>
                                   </div>
-                                </PopoverBody>
-                              </Popover>
-                            </div>
-                            : <div style={{padding: '15px', maxHeight: '120px'}}>
-                              <span>No Custom Field Found</span>
-                            </div> }
-                          </div>
-                          <div className='row'>
-                            <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
-                            <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
-                          </div>
-                          {
-                            this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
-                            ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
-                              {
-                                this.props.subscriberSequences.map((seq, i) => (
-                                  <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{seq.sequenceId.name} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(seq.sequenceId._id) }} className='la la-close' /></button>
-                                ))
+                                  : <div className='col-12'>
+                                    <button style={{float: 'right', margin: '15px'}}
+                                      className='btn btn-primary btn-sm'
+                                      disabled>
+                                       Save
+                                    </button>
+                                  </div>
+                                }
+                                </div>
+                              </PopoverBody>
+                            </Popover>
+                            <div className='row' style={{display: 'inline-block'}}>
+                              <span style={{fontWeight: 600, marginLeft: '15px'}}>Custom Fields: </span>
+                              {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                                ? <span>
+                                  <a data-toggle='collapse' data-target='#customFields' style={{cursor: 'pointer', color: 'blue'}}
+                                    onClick={this.showToggle}>
+                                    {this.state.show
+                                    ? <span>Hide <i style={{fontSize: '12px'}} className='la la-angle-up ' /></span>
+                                    : <span>Show <i style={{fontSize: '12px'}} className='la la-angle-down ' /></span>
+                                    }
+                                  </a>
+                                  <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px'}}><i className='la la-gear' /> Manage Fields</a>
+                                </span>
+                                : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px'}}><i className='la la-gear' /> Manage Fields</a>
                               }
                             </div>
-                            : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
-                              <span> No Sequences Subcribed</span>
-                            </div>
-                          }
-                          <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddSeqInd} target='subSeqInd' toggle={this.toggleSeqInd}>
-                            <PopoverHeader>Subscribe Sequence</PopoverHeader>
-                            <PopoverBody>
-                              <div className='row' style={{minWidth: '250px'}}>
-                                <div className='col-12'>
-                                  <label>Select Sequences</label>
-                                  <Select
-                                    options={this.state.sequenceOptions}
-                                    onChange={this.handleSequenceInd}
-                                    value={this.state.seqValueInd}
-                                    placeholder='Select Sequence'
-                                  />
-                                </div>
-                                {this.state.saveEnableSeqInd
-                                ? <div className='col-12'>
-                                  <button style={{float: 'right', margin: '15px'}}
-                                    className='btn btn-primary btn-sm'
-                                    onClick={() => {
-                                      this.addSeqInd(this.state.subscriber)
-                                      this.toggleSeqInd()
-                                    }}>Save
-                                  </button>
-                                </div>
-                                : <div className='col-12'>
-                                  <button style={{float: 'right', margin: '15px'}}
-                                    className='btn btn-primary btn-sm'
-                                    disabled>
-                                     Save
-                                  </button>
-                                </div>
-                              }
+                            <div className='row'>
+                              {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                              ? <div id='customFields' style={{padding: '15px'}} className='collapse'>
+                                {
+                                  this.state.subscriber.customFields.map((field, i) => (
+                                    <div className='row'>
+                                      <div className='col-sm-12'>
+                                        <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
+                                          onMouseEnter={() => { this.hoverOn(field._id) }}
+                                          onMouseLeave={this.hoverOff}
+                                          style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                                          <span style={{marginLeft: '10px'}}>
+                                            <span style={{fontWeight: '100'}}>{field.name} : </span>
+                                            <span style={{color: '#3c3c7b'}}>{field.value !== '' ? field.value : 'Not Set'}</span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))
+                                    }
+                                <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                                  <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
+                                  <PopoverBody>
+                                    <div className='row' style={{ minWidth: '250px' }}>
+                                      <div className='col-12'>
+                                        <label>Set Value</label>
+                                        {setFieldInput}
+                                      </div>
+                                      <button style={{ float: 'right', margin: '15px' }}
+                                        className='btn btn-primary btn-sm'
+                                        onClick={() => {
+                                          this.saveCustomField()
+                                          // this.toggleSetFieldPopover()
+                                        }}
+                                        disabled={this.state.saveFieldValueButton}>
+                                          Save
+                                        </button>
+                                    </div>
+                                  </PopoverBody>
+                                </Popover>
                               </div>
-                            </PopoverBody>
-                          </Popover>
+                              : <div style={{padding: '15px', maxHeight: '120px'}}>
+                                <span>No Custom Field Found</span>
+                              </div> }
+                            </div>
+                            <div className='row'>
+                              <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
+                              <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
+                            </div>
+                            {
+                              this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
+                              ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                {
+                                  this.props.subscriberSequences.map((seq, i) => (
+                                    <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{seq.sequenceId.name} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(seq.sequenceId._id) }} className='la la-close' /></button>
+                                  ))
+                                }
+                              </div>
+                              : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                <span> No Sequences Subcribed</span>
+                              </div>
+                            }
+                            <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddSeqInd} target='subSeqInd' toggle={this.toggleSeqInd}>
+                              <PopoverHeader>Subscribe Sequence</PopoverHeader>
+                              <PopoverBody>
+                                <div className='row' style={{minWidth: '250px'}}>
+                                  <div className='col-12'>
+                                    <label>Select Sequences</label>
+                                    <Select
+                                      options={this.state.sequenceOptions}
+                                      onChange={this.handleSequenceInd}
+                                      value={this.state.seqValueInd}
+                                      placeholder='Select Sequence'
+                                    />
+                                  </div>
+                                  {this.state.saveEnableSeqInd
+                                  ? <div className='col-12'>
+                                    <button style={{float: 'right', margin: '15px'}}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.addSeqInd(this.state.subscriber)
+                                        this.toggleSeqInd()
+                                      }}>Save
+                                    </button>
+                                  </div>
+                                  : <div className='col-12'>
+                                    <button style={{float: 'right', margin: '15px'}}
+                                      className='btn btn-primary btn-sm'
+                                      disabled>
+                                       Save
+                                    </button>
+                                  </div>
+                                }
+                                </div>
+                              </PopoverBody>
+                            </Popover>
+                          </div>
                         </div>
+                        <div className='modal-footer' />
                       </div>
-                      <div className='modal-footer' />
                     </div>
                   </div>
                 </div>
-              </div>
               </div>
             </div>
           </div>
