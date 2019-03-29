@@ -38,10 +38,6 @@ export function pagesInfo (state = [], action) {
         message: action.data,
         page_connected: ''
       })
-    case ActionTypes.UPDATE_REACH_ESTIMATION:
-      return Object.assign({}, state, {
-        currentReachEstimation: action.data
-      })
     default:
       return state
   }
