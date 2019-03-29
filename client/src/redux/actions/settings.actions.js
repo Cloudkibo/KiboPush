@@ -1,4 +1,4 @@
-import {getAutomatedOptions} from './basicinfo.actions'
+import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
@@ -469,6 +469,7 @@ export function updatePlatformSettings (data, msg, clearFields) {
         console.log('response from updatePlatformSettings', res)
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
           msg.success('Saved Successfully')
         } else {
           msg.error(res.description)

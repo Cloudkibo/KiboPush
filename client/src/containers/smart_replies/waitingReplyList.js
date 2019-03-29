@@ -42,15 +42,15 @@ class WaitingReplyList extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Waiting Reply List`;
+    document.title = `${title} | Waiting Reply List`
   }
 
   componentWillReceiveProps (nextProps) {
@@ -83,25 +83,29 @@ class WaitingReplyList extends React.Component {
       state: {subscriberToRespond: subscriber}
     })
   }
+
   displayData (n, subscribers) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > subscribers.length) {
+    if ((offset + 10) > subscribers.length) {
       limit = subscribers.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = subscribers[i]
       index++
     }
+    data.sort(function (a, b) {
+      return new Date(b.datetime) - new Date(a.datetime)
+    })
     this.setState({waitingList: data})
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.state.waitingList)
+    this.displayData(data.selected, this.props.waitingReplyList)
   }
   stackGenderFilter (filteredData) {
     if (this.state.filterByGender !== '') {
@@ -411,7 +415,7 @@ class WaitingReplyList extends React.Component {
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 4)}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={1}
                           pageRangeDisplayed={3}
                           onPageChange={this.handlePageClick}

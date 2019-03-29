@@ -51,6 +51,9 @@ class FacebookIntegration extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+  componentWillReceiveProps (nextprops) {
+    console.log('nextprops in Integrations', nextprops)
+  }
 
   submit () {
     this.setState({isShowingModal: false})
@@ -214,6 +217,7 @@ class FacebookIntegration extends React.Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('state in Integrations', state)
   return {
     automated_options: (state.basicInfo.automated_options),
     user: (state.basicInfo.user)
