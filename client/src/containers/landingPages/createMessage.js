@@ -88,7 +88,8 @@
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             convoTitle={this.state.convoTitle}
-            buttonActions={this.state.buttonActions} />
+            buttonActions={this.state.buttonActions} 
+            pages={this.props.pages}/>
         </div>
       )
     }

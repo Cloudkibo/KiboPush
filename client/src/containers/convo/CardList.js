@@ -299,7 +299,7 @@ class Card extends React.Component {
         if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
           this.setState({elementUrl: cardProps.cardDetails.default_action.url})
         } else {
-          this.setState({webviewurl: cardProps.cardDetails.default_action.url})
+          this.setState({webviewurl: cardProps.cardDetails.default_action.url, webviewsize: cardProps.cardDetails.default_action.webview_height_ratio})
         }
       }
       this.setState({

@@ -25,11 +25,14 @@ class CreateMessengerAd extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.switchSetupState = this.switchSetupState.bind(this)
     console.log(props.location.state)
+    console.log(this.props.messengerAd)
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
+        if (!this.props.messengerAd) {
         props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview, () => {
           this.updatePreview()
         })
+        }
       }
     }
   }
@@ -74,6 +77,7 @@ class CreateMessengerAd extends React.Component {
     }
 
     document.title = `${title} | Create Messenger Ad`
+    this.updatePreview()
   }
   onSave () {
     let payload = {}
@@ -91,6 +95,7 @@ class CreateMessengerAd extends React.Component {
   }
 
   render () {
+    console.log('this.state.previewOptInMessage', this.state.previewOptInMessage)
     var alertOptions = {
       offset: 14,
       position: 'top right',
