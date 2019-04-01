@@ -39,28 +39,50 @@ class CreateMessage extends React.Component {
   handleChange (broadcast, event) {
     this.setState(broadcast)
     console.log('messengerAd broadcast', broadcast)
+    console.log('messengerAd event', event)
     if (event) {
-      var jsonMessages = this.state.jsonMessages
-      if (event.button) {
-        for (var j = 0; j < event.button.length; j++) {
-          if (event.button[j].type === 'postback' && !event.button[j].payload) {
-            event.button[j].payload = this.state.jsonMessages.length + 1
-            jsonMessages = this.setNewJsonMessage(event.button[j], jsonMessages)
+      let jsonMessages = this.state.jsonMessages
+      console.log('jsonMessages0', jsonMessages)
+      if (event.buttons) {
+        for (let j = 0; j < event.buttons.length; j++) {
+          if (event.buttons[j].type === 'postback' && !event.buttons[j].payload) {
+            event.buttons[j].payload = this.state.jsonMessages.length + 1
+            jsonMessages = this.setNewJsonMessage(event.buttons[j], jsonMessages)
+          }
+        }
+      }
+      if (event.listItems) {
+        for (let i = 0; i < event.listItems.length; i++) {
+          for (let j = 0; j < event.listItems[i].buttons.length; j++) {
+            if (event.listItems[i].buttons[j].type === 'postback' && event.listItems[i].buttons[j] && !event.listItems[i].buttons[j].payload) {
+              console.log(`creating new json message ${i},${j}`, event.listItems[i].buttons[j].payload)
+              event.listItems[i].buttons[j].payload = this.state.jsonMessages.length + 1
+              jsonMessages = this.setNewJsonMessage(event.listItems[i].buttons[j], jsonMessages)
+            }
           }
         }
       }
       if (event.deletePayload) {
-        jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+        console.log('deleting jsonMessage', event.deletePayload)
+        if (typeof event.deletePayload[Symbol.iterator] === 'function') {
+          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages)
+        } else {
+          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+        }
       }
       console.log('selectedIndex', this.state.selectedIndex)
+      console.log('jsonMessages1', jsonMessages)
       for (var k = 0; k < jsonMessages.length; k++) {
         if (jsonMessages[k].jsonAdMessageId === this.state.selectedIndex) {
           console.log(`editing ${k} jsonMesssage`)
           jsonMessages[k].messageContent = broadcast.broadcast
         }
       }
+      console.log('jsonMessages2', jsonMessages)
       this.setState({
         jsonMessages: jsonMessages
+      }, () => {
+        console.log('jsonMessages state updated', this.state.jsonMessages)
       })
     }
   }
@@ -73,7 +95,7 @@ class CreateMessage extends React.Component {
           $('#tab-' + this.state.jsonMessages[i].jsonAdMessageId ).addClass('active')
         /* eslint-enable */
         let jsonMessages = this.state.jsonMessages
-        jsonMessages[this.state.selectedIndex].title = data.title
+        jsonMessages[i].title = data.title
         this.setState({
           jsonMessages: jsonMessages,
           convoTitle: data.title,
@@ -101,6 +123,7 @@ class CreateMessage extends React.Component {
   }
 
   setNewJsonMessage (data, jsonMessages) {
+    console.log('setNewJsonMessage', data)
     var newMessage = {}
     newMessage.jsonAdMessageId = this.state.jsonMessages.length + 1
     newMessage.jsonAdMessageParentId = this.state.selectedIndex
@@ -167,18 +190,17 @@ class CreateMessage extends React.Component {
     document.title = `${title} | Create Message`
   }
   goBack () {
-    if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0){
+    if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0) {
       this.props.history.push({
         pathname: `/createAdMessage`,
         state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
       })
-    }
-    else {
+    } else {
       this.props.history.push({
         pathname: `/createAdMessage`,
         state: {module: 'create'}
       })
-    }   
+    }
   }
   saveMessage () {
     console.log('Save Call')

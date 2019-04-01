@@ -300,10 +300,10 @@ class Convo extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, pageNumber: 0})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
     } else {
-      this.setState({filter: false})
+      this.setState({filter: false, pageNumber: 0})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
     }
   }
@@ -535,10 +535,10 @@ class Convo extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Sent</span>
                           </th>
-                          {/* <th data-field='seen'
+                          <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Seen</span>
-                          </th> */}
+                          </th>
                           <th data-field='clicks'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Clicks</span>
@@ -555,7 +555,7 @@ class Convo extends React.Component {
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
                             <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
-                            {/* <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td> */}
+                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
                             <td data-field='clicks' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.clicks ? broadcast.clicks : 0}</span></td>
                           </tr>
                         ))

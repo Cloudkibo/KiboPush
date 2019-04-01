@@ -53,7 +53,7 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0]
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -236,7 +236,6 @@ class CreateConvo extends React.Component {
           }
         }
       }
-      let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
       var data = {
         platform: 'facebook',
         payload: this.state.broadcast,
@@ -249,8 +248,7 @@ class CreateConvo extends React.Component {
         title: this.state.convoTitle,
         segmentationList: this.state.listSelected,
         isList: isListValue,
-        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        subscribersCount: currentPageSubscribers.length
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
       }
         //  this.setState({tabActive: 'broadcast'})
       console.log('Sending Broadcast', data)
@@ -512,12 +510,12 @@ class CreateConvo extends React.Component {
                             setReset={reset => { this.reset = reset }}
                             convoTitle={this.state.convoTitle}
                             titleEditable
-                            pageId={this.state.pageId.pageId}
+                            pageId={this.state.pageId}
                             pages={this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='broadcast' />
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
                         </div>
 
                       </div>
