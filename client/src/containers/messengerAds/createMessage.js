@@ -41,13 +41,24 @@ class CreateMessage extends React.Component {
     console.log('messengerAd broadcast', broadcast)
     console.log('messengerAd event', event)
     if (event) {
-      var jsonMessages = this.state.jsonMessages
+      let jsonMessages = this.state.jsonMessages
       console.log('jsonMessages0', jsonMessages)
       if (event.buttons) {
-        for (var j = 0; j < event.buttons.length; j++) {
+        for (let j = 0; j < event.buttons.length; j++) {
           if (event.buttons[j].type === 'postback' && !event.buttons[j].payload) {
             event.buttons[j].payload = this.state.jsonMessages.length + 1
             jsonMessages = this.setNewJsonMessage(event.buttons[j], jsonMessages)
+          }
+        }
+      }
+      if (event.listItems) {
+        for (let i = 0; i < event.listItems.length; i++) {
+          for (let j = 0; j < event.listItems[i].buttons.length; j++) {
+            if (event.listItems[i].buttons[j].type === 'postback' && event.listItems[i].buttons[j] && !event.listItems[i].buttons[j].payload) {
+              console.log(`creating new json message ${i},${j}`, event.listItems[i].buttons[j].payload)
+              event.listItems[i].buttons[j].payload = this.state.jsonMessages.length + 1
+              jsonMessages = this.setNewJsonMessage(event.listItems[i].buttons[j], jsonMessages)
+            }
           }
         }
       }

@@ -281,11 +281,11 @@ class GenericMessage extends React.Component {
     console.log('in create convo handleList', obj)
     var temp = this.state.broadcast
     var isPresent = false
-    if (obj.listItems) {
-      obj.listItems.forEach((d) => {
-        delete d.id
-      })
-    }
+    // if (obj.listItems) {
+    //   obj.listItems.forEach((d) => {
+    //     delete d.id
+    //   })
+    // }
     temp.map((data, i) => {
       if (data.id === obj.id) {
         temp[i].listItems = obj.listItems

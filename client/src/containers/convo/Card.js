@@ -362,6 +362,7 @@ class Card extends React.Component {
   }
 
   addButton (obj) {
+    console.log('obj', obj)
     var temp = this.state.buttons
     temp.push(obj)
     this.setState({buttons: temp}, () => {
