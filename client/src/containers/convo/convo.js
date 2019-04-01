@@ -300,10 +300,10 @@ class Convo extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, pageNumber: 0})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
     } else {
-      this.setState({filter: false})
+      this.setState({filter: false, pageNumber: 0})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
     }
   }
