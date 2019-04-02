@@ -40,15 +40,18 @@ class CreateLandingPage extends React.Component {
         currentTab: 'initialState'
       })
     }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-
-    document.title = `${title} | Create Landing Page`;
+    if (this.props.location.state && this.props.location.state.module === 'edit') {
+      document.title = `${title} | Edit Landing Page`
+    } else {
+      document.title = `${title} | Create Landing Page`
+    }
   }
   onEdit () {
     this.props.editLandingPage(this.props.location.state.landingPage._id, {
@@ -63,10 +66,10 @@ class CreateLandingPage extends React.Component {
       pageId: this.props.location.state._id,
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
-      console.log('hello ji!')
-      browserHistory.push({
-        pathname: `/landingPages`,
-      })
+    console.log('hello ji!')
+    browserHistory.push({
+      pathname: `/landingPages`
+    })
   }
   setStatus (value) {
     this.setState({isActive: value})
@@ -97,7 +100,7 @@ class CreateLandingPage extends React.Component {
                       {
                           this.props.location.state.module === 'edit' ? <Tabs module={this.props.location.state.module} landing_page_id={this.props.location.state.landingPage._id} /> : <Tabs />
                       }
-                      
+
                     </div>
                     <Preview />
                   </div>

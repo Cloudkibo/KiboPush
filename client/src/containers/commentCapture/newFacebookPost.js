@@ -71,7 +71,6 @@ class FacebookPosts extends React.Component {
   }
 
   validationCommentCapture () {
-
     if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
@@ -81,19 +80,22 @@ class FacebookPosts extends React.Component {
         disabled: true
       })
     }
-
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | New Facebook Post`;
+    if (this.props.currentPost) {
+      document.title = `${title} | Edit Facebook Post`
+    } else {
+      document.title = `${title} | New Facebook Post`
+    }
     if (this.props.pages) {
       var selectedPage = this.props.pages[0]
 
@@ -143,7 +145,6 @@ class FacebookPosts extends React.Component {
         selectedPage: selectedPage
       })
     }
-
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -196,7 +197,6 @@ class FacebookPosts extends React.Component {
       })
     }
     if (res.status === 'success') {
-
       var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
       var attachment = []
       attachment.push(attachComponent)

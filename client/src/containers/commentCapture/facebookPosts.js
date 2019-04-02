@@ -45,15 +45,15 @@ class FacebookPosts extends React.Component {
   }
   componentDidMount () {
     $('#sidebarDiv').removeClass('hideSideBar')
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Comment Capture`;
+    document.title = `${title} | Comment Capture`
   }
   getPostText (payload) {
     var text = ''
@@ -289,7 +289,7 @@ class FacebookPosts extends React.Component {
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                                <Link to='/createPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                <Link to='/editPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>

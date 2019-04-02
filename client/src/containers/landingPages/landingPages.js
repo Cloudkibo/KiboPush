@@ -27,7 +27,7 @@ class LandingPage extends React.Component {
       pageSelected: {},
       pages: [],
       isSetupShow: false,
-      landing_Page_Url: '' 
+      landing_Page_Url: ''
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -48,15 +48,15 @@ class LandingPage extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Landing Pages`;
+    document.title = `${title} | Landing Pages`
   }
 
   changePage (e) {
@@ -84,7 +84,7 @@ class LandingPage extends React.Component {
   }
   onEdit (landingPage) {
     browserHistory.push({
-      pathname: `/createLandingPage`,
+      pathname: `/editLandingPage`,
       state: {module: 'edit', landingPage: landingPage}
     })
   }
@@ -186,39 +186,39 @@ class LandingPage extends React.Component {
             onClose={this.closeDialogSetup}>
             <ModalDialog style={{width: '600px'}}
               onClose={this.closeDialogSetup}>
-      <div>
-        <div className='form-group m-form__group m--margin-top-10'>
+              <div>
+                <div className='form-group m-form__group m--margin-top-10'>
             Landing Page URL
             <input className='form-control m-input m-input--air' value={this.state.landing_Page_Url} />
-        </div>
-        <CopyToClipboard text={this.state.landing_Page_Url}
-          onCopy={() => {
-            this.setState({copied: true})
-            toastr.options = {
-              'closeButton': true,
-              'debug': false,
-              'newestOnTop': false,
-              'progressBar': false,
-              'positionClass': 'toast-bottom-right',
-              'preventDuplicates': false,
-              'showDuration': '300',
-              'hideDuration': '1000',
-              'timeOut': '5000',
-              'extendedTimeOut': '1000',
-              'showEasing': 'swing',
-              'hideEasing': 'linear',
-              'showMethod': 'fadeIn',
-              'hideMethod': 'fadeOut'
-            }
+                </div>
+                <CopyToClipboard text={this.state.landing_Page_Url}
+                  onCopy={() => {
+                    this.setState({copied: true})
+                    toastr.options = {
+                      'closeButton': true,
+                      'debug': false,
+                      'newestOnTop': false,
+                      'progressBar': false,
+                      'positionClass': 'toast-bottom-right',
+                      'preventDuplicates': false,
+                      'showDuration': '300',
+                      'hideDuration': '1000',
+                      'timeOut': '5000',
+                      'extendedTimeOut': '1000',
+                      'showEasing': 'swing',
+                      'hideEasing': 'linear',
+                      'showMethod': 'fadeIn',
+                      'hideMethod': 'fadeOut'
+                    }
 
-            toastr.success('Link Copied Successfully', 'Copied!')
-          }
+                    toastr.success('Link Copied Successfully', 'Copied!')
+                  }
         }>
-          <button type='button' className='btn btn-success'>
+                  <button type='button' className='btn btn-success'>
             Copy Link
           </button>
-        </CopyToClipboard>
-        </div>
+                </CopyToClipboard>
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -319,7 +319,7 @@ class LandingPage extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{landingPage.pageId.pageName}</span></td>
-                           <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
+                            <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '290px'}}>

@@ -29,9 +29,9 @@ class CreateMessengerAd extends React.Component {
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
         if (!this.props.messengerAd) {
-        props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview, () => {
-          this.updatePreview()
-        })
+          props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview, () => {
+            this.updatePreview()
+          })
         }
       }
     }
@@ -75,8 +75,11 @@ class CreateMessengerAd extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
-    document.title = `${title} | Create Messenger Ad`
+    if (this.props.location.state && this.props.location.state.module === 'edit') {
+      document.title = `${title} | Edit Messenger Ad`
+    } else {
+      document.title = `${title} | Create Messenger Ad`
+    }
     this.updatePreview()
   }
   onSave () {
@@ -114,7 +117,11 @@ class CreateMessengerAd extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Create Messenger Ad
+                        {
+                        this.props.location.state.module === 'edit'
+                        ? 'Edit Messenger Ad'
+                        : 'Create Messenger Ad'
+                      }
                       </h3>
                     </div>
                   </div>

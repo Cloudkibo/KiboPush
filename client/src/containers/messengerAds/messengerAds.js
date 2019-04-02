@@ -53,7 +53,7 @@ class MessengerAds extends React.Component {
   }
   onEdit (adId) {
     browserHistory.push({
-      pathname: `/createAdMessage`,
+      pathname: `/editAdMessage`,
       state: {module: 'edit', jsonAdId: adId._id}
     })
   }

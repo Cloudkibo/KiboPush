@@ -41,31 +41,33 @@ class MessengerRefURLMessage extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
-    document.title = `${title} | Create Message`
+    if (this.props.location.state && this.props.location.state.module === 'edit') {
+      document.title = `${title} | Edit Message`
+    } else {
+      document.title = `${title} | Create Message`
+    }
   }
 
   goBack () {
     if (this.props.location.state.module === 'edit') {
-      var new_messengerRefURL = this.props.location.state.messengerRefSelectedURL
-      new_messengerRefURL['reply'] = this.props.messengerRefURL.reply
+      var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
+      newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
+      browserHistory.push({
+        pathname: `/editMessengerRefURL`,
+        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL}
+      })
+    } else {
       browserHistory.push({
         pathname: `/createMessengerRefURL`,
-        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: new_messengerRefURL}
+        state: {pageId: this.props.pageId, _id: this.state.pageId}
       })
     }
-   else {
-    browserHistory.push({
-      pathname: `/createMessengerRefURL`,
-      state: {pageId: this.props.pageId, _id: this.state.pageId}
-    })
-   }
   }
 
   saveMessage () {
     console.log('this.state.broadcast', this.state.broadcast)
 
-    //console.log('In go saveMessage method messengerRefURL', this.props.messengerRefSelectedURL)
+    // console.log('In go saveMessage method messengerRefURL', this.props.messengerRefSelectedURL)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
@@ -76,10 +78,9 @@ class MessengerRefURLMessage extends React.Component {
         reply: this.state.broadcast,
         sequenceId: this.props.messengerRefURL.sequenceId
       }
-    this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
-    }
-    else {
-    this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
+      this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
+    } else {
+      this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
     }
     this.msg.success('Message has been saved.')
   }
@@ -93,7 +94,7 @@ class MessengerRefURLMessage extends React.Component {
       transition: 'scale'
     }
    // console.log('this.props.location.state.messengerRefSelectedURL', this.props.location.state.messengerRefSelectedURL)
-    //console.log('this.props.messengerRefURL', this.props.messengerRefURL)
+    // console.log('this.props.messengerRefURL', this.props.messengerRefURL)
    // console.log('this.props.pages', this.props.pages)
   //  console.log('this.state.pageId', this.state.pageId)
     console.log('this.state.broadcast', this.state.broadcast)
