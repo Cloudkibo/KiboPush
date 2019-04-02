@@ -650,24 +650,22 @@ class Settings extends React.Component {
                       </a>
                     </li>
                   }
-                    { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
                       <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-link' />
                         <span className='m-nav__link-text'>Webhooks</span>
                       </a>
-                        {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                           <i className='m-nav__link-icon la la-link' />
-                           <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
-                             <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                               <span style={{color: '#34bfa3'}}>PRO</span>
-                             </span>
+                      {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                         <i className='m-nav__link-icon la la-link' />
+                         <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
+                           <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                             <span style={{color: '#34bfa3'}}>PRO</span>
                            </span>
-                         </a>
-                       */}
+                         </span>
+                       </a>
+                     */}
                     </li>
-                    }
                     { this.props.user && this.props.user.role === 'buyer' &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>

@@ -135,7 +135,10 @@ export function loadPagesList (id, data) {
 export function loadBroadcastsList (id, data) {
   return (dispatch) => {
     callApi(`backdoor/allUserBroadcasts/${id}`, 'post', data)
-      .then(res => dispatch(updateBroadcastsList(res.payload)))
+      .then(res => {
+        console.log('response from loadBroadcastsList', res)
+        dispatch(updateBroadcastsList(res.payload))
+      })
   }
 }
 
@@ -260,7 +263,10 @@ export function deleteLiveChat (id, msg) {
 export function fetchPlatformStats (id) {
   return (dispatch) => {
     callApi(`operational/platformwise`)
-      .then(res => dispatch(handleAction(ActionTypes.UPDATE_PLATFORM_STATS, res.payload)))
+      .then(res => {
+        console.log('response from fetchPlatformStats', res)
+        dispatch(handleAction(ActionTypes.UPDATE_PLATFORM_STATS, res.payload))
+      })
   }
 }
 
@@ -340,7 +346,10 @@ export function fetchOnePageStatsDateWise (startDate, pageId) {
 export function fetchTopPages (limit) {
   return (dispatch) => {
     callApi(`operational/pagewise/topPages`, 'post', {limit: limit})
-      .then(res => dispatch(handleAction(ActionTypes.UPDATE_TOP_PAGES_KIBODASH, res.payload)))
+      .then(res => {
+        console.log('response from fetchTopPages', res)
+        dispatch(handleAction(ActionTypes.UPDATE_TOP_PAGES_KIBODASH, res.payload))
+      })
   }
 }
 
@@ -348,7 +357,10 @@ export function fetchTopPages (limit) {
 export function fetchAutopostingPlatformWise () {
   return (dispatch) => {
     callApi(`operational/autoposting/platformwise`)
-      .then(res => dispatch(handleAction(ActionTypes.UPDATE_AUTPOSTING_PLATFORM, res.payload)))
+      .then(res => {
+        console.log('response from fetchAutopostingPlatformWise', res)
+        dispatch(handleAction(ActionTypes.UPDATE_AUTPOSTING_PLATFORM, res.payload))
+      })
   }
 }
 
@@ -383,7 +395,10 @@ export function fetchPlatformStatsWeekly () {
   date.setDate(date.getDate() - 10)
   return (dispatch) => {
     callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
-      .then(res => dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload)))
+      .then(res => {
+        console.log('response from fetchPlatformStatsWeekly', res)
+        dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload))
+      })
   }
 }
 
@@ -392,7 +407,10 @@ export function fetchPlatformStatsMonthly () {
   date.setDate(date.getDate() - 30)
   return (dispatch) => {
     callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
-      .then(res => dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload)))
+      .then(res => {
+        console.log('response from fetchPlatformStatsMonthly', res)
+        dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload))
+      })
   }
 }
 

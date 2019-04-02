@@ -80,10 +80,10 @@ class OperationalDashboard extends React.Component {
 
     props.allLocales()
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
-    props.loadBroadcastsGraphData(0)
-    props.loadPollsGraphData(0)
-    props.loadSurveysGraphData(0)
-    props.loadSessionsGraphData(0)
+    // props.loadBroadcastsGraphData(0)
+    // props.loadPollsGraphData(0)
+    // props.loadSurveysGraphData(0)
+    // props.loadSessionsGraphData(0)
     props.fetchPlatformStats()
     props.fetchAutopostingPlatformWise()
     props.fetchPlatformStatsMonthly()
@@ -113,15 +113,15 @@ class OperationalDashboard extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Operational Dashboard`;
+    document.title = `${title} | Operational Dashboard`
     this.scrollToTop()
   }
   handleClick (e) {
@@ -398,13 +398,13 @@ class OperationalDashboard extends React.Component {
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
-          { this.state.objectsLength > 0 &&
+          { this.props.platformStats &&
             <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} />
           }
           <div className='row'>
             <AutopostingDetails autopostingStats={this.props.autopostingStats} />
           </div>
-          <div className='row'>
+          {/* <div className='row'>
             <Reports
               iconClassName={'fa fa-line-chart'}
               title={'Reports'}
@@ -415,6 +415,7 @@ class OperationalDashboard extends React.Component {
               month={this.props.platformStatsMonthly}
               />
           </div>
+          */}
           <div className='row'>
             <Top10pages pagesData={this.props.toppages} />
             <div className='col-xl-12'>
@@ -580,8 +581,8 @@ class OperationalDashboard extends React.Component {
             </div>
           </div>
           <BroadcastsByDays />
-          <SurveysByDays />
-          <PollsByDays />
+          {/*<SurveysByDays />*/}
+          {/*<PollsByDays />*/}
         </div>
       </div>
     )
