@@ -45,7 +45,7 @@ class Card extends React.Component {
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
-      button: props.buttons ? props.buttons : [],
+      buttons: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
@@ -81,7 +81,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     if (this.state.checkbox) {
@@ -101,7 +101,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     if (this.state.checkbox) {
@@ -133,7 +133,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     if (e.target.value) {
@@ -173,7 +173,7 @@ class Card extends React.Component {
           size: this.state.size,
           title: this.state.title,
           description: this.state.subtitle,
-          buttons: this.state.button,
+          buttons: this.state.buttons,
           default_action: defaultAction
         })
         this.setState({
@@ -211,7 +211,7 @@ class Card extends React.Component {
         size: this.state.size,
         title: this.state.title,
         description: this.state.subtitle,
-        buttons: this.state.button,
+        buttons: this.state.buttons,
         default_action: defaultAction
       })
       if (this.state.checkbox) {
@@ -247,7 +247,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: ''
     })
     this.setState({
@@ -298,17 +298,16 @@ class Card extends React.Component {
       if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
         if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
           this.setState({elementUrl: cardProps.cardDetails.default_action.url})
-        }
-        else {
+        } else {
           this.setState({webviewurl: cardProps.cardDetails.default_action.url, webviewsize: cardProps.cardDetails.default_action.webview_height_ratio})
         }
-     }
+      }
       this.setState({
         //  id: cardProps.id,
         componentType: 'card',
         title: cardProps.cardDetails.title,
         imgSrc: cardProps.cardDetails.image_url,
-        button: cardProps.cardDetails.buttons,
+        buttons: cardProps.cardDetails.buttons,
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
         image_url: cardProps.cardDetails.image_url,
@@ -338,7 +337,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
   }
@@ -390,7 +389,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: event.target.value,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     this.setState({
@@ -408,7 +407,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: event.target.value,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
     this.setState({
@@ -418,9 +417,9 @@ class Card extends React.Component {
 
   addButton (obj) {
     console.log('obj', obj)
-    var temp = this.state.button
+    var temp = this.state.buttons
     temp.push(obj)
-    this.setState({button: temp})
+    this.setState({buttons: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -430,21 +429,35 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
+    // this.setState({buttons: temp}, () => {
+    //   this.props.handleCard({id: this.props.id,
+    //     componentType: 'card',
+    //     fileurl: this.state.fileurl,
+    //     image_url: this.state.image_url,
+    //     fileName: this.state.fileName,
+    //     type: this.state.type,
+    //     size: this.state.size,
+    //     title: this.state.title,
+    //     description: this.state.subtitle,
+    //     buttons: this.state.buttons,
+    //     default_action: this.state.defaultAction
+    //   })
+    // })
   }
 
   editButton (obj) {
-    var temp = this.state.button.map((elm, index) => {
+    var temp = this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    this.setState({button: temp}, () => {
+    this.setState({buttons: temp}, () => {
       console.log('In edit temp the value of temp is', temp)
-      console.log('In edit button the value of button is', this.state.button)
+      console.log('In edit button the value of button is', this.state.buttons)
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -454,15 +467,15 @@ class Card extends React.Component {
         size: this.state.size,
         title: this.state.title,
         description: this.state.subtitle,
-        buttons: this.state.button,
+        buttons: this.state.buttons,
         default_action: this.state.defaultAction
       })
     })
   }
   removeButton (obj) {
-    var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
+    var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
     console.log('temp in removeButton', temp)
-    this.setState({button: temp})
+    this.setState({buttons: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -497,7 +510,7 @@ class Card extends React.Component {
       size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button,
+      buttons: this.state.buttons,
       default_action: this.state.defaultAction
     })
   }
@@ -646,10 +659,10 @@ class Card extends React.Component {
         <br />
         <div className='row'>
           <div className='col-md-6'>
-            {(!this.state.button || !this.state.button.length > 0) &&
-              <Button buttonLimit={1} pageId={this.props.pageId} buttonActions={this.props.buttonActions} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
+            {(!this.state.buttons || !this.state.buttons.length > 0) &&
+              <Button replyWithMessage={this.props.replyWithMessage} buttonLimit={1} pageId={this.props.pageId} buttonActions={this.props.buttonActions} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
             }
-            {(this.state.button) ? this.state.button.map((obj, index) => {
+            {(this.state.buttons) ? this.state.buttons.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
                 <EditButton
                   index={index}
@@ -659,6 +672,7 @@ class Card extends React.Component {
                   data={{id: index, button: obj}}
                   onEdit={this.editButton}
                   onRemove={this.removeButton}
+                  replyWithMessage={this.props.replyWithMessage}
                 />
               </div>)
             }) : ''}
