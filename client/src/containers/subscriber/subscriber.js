@@ -426,11 +426,18 @@ class Subscriber extends React.Component {
   }
   removeTagIndividual (e, tag) {
     var subscribers = []
+    var tagId = ''
     var payload = {}
     subscribers.push(this.state.subscriber._id)
-    if (tag !== '' && subscribers.length > 0) {
+    for (let i = 0; i < this.state.options.length; i++) {
+      if (this.state.options[i].label === tag) {
+        tagId = this.state.options[i].value
+        break
+      }
+    }
+    if (tagId !== '' && subscribers.length > 0) {
       payload.subscribers = subscribers
-      payload.tag = tag
+      payload.tagId = tagId
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
@@ -441,7 +448,6 @@ class Subscriber extends React.Component {
     if (value) {
       var data = String(value.label).toLowerCase()
       value.label = data
-      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
         if (this.props.tags[i].tag !== data) {
           index++
@@ -496,10 +502,12 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.removeTag.label
+    payload.tagId = this.state.removeTag.value
     return payload
   }
   createAssignPayload () {
+    console.log('this.state.addTag', this.state.addTag)
+    console.log('this.state.subscribersDataAll', this.state.subscribersDataAll)
     var payload = {}
     var selectedIds = []
     var subscribers = this.state.subscribersDataAll
@@ -517,7 +525,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.addTag.label
+    payload.tagId = this.state.addTag.value
     return payload
   }
   addTags () {
@@ -542,7 +550,7 @@ class Subscriber extends React.Component {
     }
     subscribers.push(subscriber._id)
     payload.subscribers = subscribers
-    payload.tag = this.state.addTagIndividual.label
+    payload.tagId = this.state.addTagIndividual.value
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
