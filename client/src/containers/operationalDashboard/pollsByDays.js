@@ -31,15 +31,14 @@ class PollsInfo extends React.Component {
     this.toggle = this.toggle.bind(this)
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-
-    document.title = `${title} | Polls By Days`;
+    document.title = `${title} | Polls By Days`
   }
   toggle () {
     this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
@@ -64,11 +63,11 @@ class PollsInfo extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedDays)}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedDays)}})
     } else {
-      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedDays)}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
@@ -85,9 +84,9 @@ class PollsInfo extends React.Component {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: parseInt(this.state.selectedDays)}})
     } else {
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: parseInt(this.state.selectedDays)}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.polls.length; i++) {
@@ -116,7 +115,7 @@ class PollsInfo extends React.Component {
     this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: parseInt(event.target.value)}})
     } else {
       this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: ''}})
     }
@@ -238,11 +237,8 @@ class PollsInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{poll.statement}</span></td>
-                                { poll.company[0] && poll.company[0].stripe && poll.company[0].stripe.plan && (poll.company[0].stripe.plan === 'plan_A' || poll.company[0].stripe.plan === 'plan_B')
-                              ? <td data-field='user' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{poll.user[0].name}</span></td>
-                                : <td data-field='user' className='m-datatable__cell'>
-                                  <span style={{width: '120px'}}>{poll.company[0].companyName}</span></td>}
+                                <td data-field='user' className='m-datatable__cell'>
+                                  <span style={{width: '120px'}}>{poll.user.name}</span></td>
                                 <td data-field='page' className='m-datatable__cell'>
                                   <span style={{width: '120px'}}>{poll.page.join(',')}</span></td>
                                 <td data-field='created'

@@ -28,21 +28,21 @@ class ViewPollDetail extends React.Component {
   componentDidMount () {
     if (this.props.location.state) {
       this.props.loadPollDetails(this.props.location.state._id)
-      this.displayData(0, this.props.location.state.data.subscriber)
-      this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
+      // this.displayData(0, this.props.location.state.data.subscriber)
+      // this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
     } else {
       this.props.loadPollDetails(this.props.currentPoll._id)
     }
 
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Poll Details`;
+    document.title = `${title} | Poll Details`
   }
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})
