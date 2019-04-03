@@ -38,10 +38,12 @@
       } else if (hostname.includes('kibochat.cloudkibo.com')) {
         title = 'KiboChat'
       }
-
-      document.title = `${title} | Create Message`
+      if(this.props.location.state.module === 'edit'){
+        document.title = `${title} | Edit Message`  
+      }else{
+        document.title = `${title} | Create Message`
+        }
     }
-
     saveMessage () {
       if (!validateFields(this.state.broadcast, this.msg)) {
         return
@@ -51,10 +53,21 @@
     }
 
     goBack () {
+      if(this.props.location.state && this.props.location.state.module === 'edit'){
+        this.props.landingPage.isActive = true
+        this.props.landingPage.pageId = this.props.landingPages[0].pageId
+        this.props.landingPage._id = this.props.landingPages[0]._id
+        this.props.landingPage.currentTab = 'optInActions'
+        browserHistory.push({
+          pathname: `/createLandingPage`,
+          state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
+      })
+      }else{
       browserHistory.push({
         pathname: `/createLandingPage`,
-        state: {pageId: this.props.landingPage.pageId, _id: this.state.pageId}
+        state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
       })
+    } 
     }
 
     render () {
@@ -99,6 +112,7 @@
     console.log('state in Landing Page- CreateMessage', state)
     return {
       landingPage: state.landingPagesInfo.landingPage,
+      landingPages: state.landingPagesInfo.landingPages,
       pages: state.pagesInfo.pages
     }
   }
