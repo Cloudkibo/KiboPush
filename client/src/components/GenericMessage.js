@@ -332,7 +332,7 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
-        handler: () => { this.handleText({id: componentId, text: '', button: []}) }
+        handler: () => { this.handleText({id: componentId, text: '', buttons: []}) }
       },
       'image': {
         component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
