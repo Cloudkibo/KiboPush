@@ -37,7 +37,7 @@ class CreateLandingPage extends React.Component {
         initialState: this.props.location.state.landingPage.initialState,
         submittedState: this.props.location.state.landingPage.submittedState,
         optInMessage: this.props.location.state.landingPage.optInMessage,
-        currentTab: 'initialState'
+        currentTab: this.props.location.state.landingPage.currentTab
       })
     }
     const hostname =  window.location.hostname;
