@@ -400,7 +400,6 @@ class Subscriber extends React.Component {
     if (value) {
       var data = String(value.label).toLowerCase()
       value.label = data
-      value.value = data
       for (var i = 0; i < this.props.tags.length; i++) {
         if (this.props.tags[i].tag !== data) {
           index++
