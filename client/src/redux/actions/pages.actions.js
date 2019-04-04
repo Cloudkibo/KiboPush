@@ -69,13 +69,14 @@ export function loadMyPagesListNew (data) {
   }
 }
 
-export function enablePage (page) {
+export function enablePage (page, showErrorDialog) {
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
-        console.log('res.payload', res.payload)
-        console.log('res.payload.msg', res.payload.msg)
-        if (res.status === 'failed') {
+        console.log('response from connect page', res)
+        if (res.type === 'invalid_permissions') {
+          showErrorDialog()
+        } else if (res.status === 'failed') {
           dispatch(pageNotPublished(res.description))
         } else if (res.payload && res.payload.msg) {
           console.log('else if condition')

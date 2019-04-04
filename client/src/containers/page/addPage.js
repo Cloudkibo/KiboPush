@@ -25,10 +25,13 @@ class AddPage extends React.Component {
       alertmsg: '',
       timeout: 2000,
       showWarning: false,
+      showErrorDialog: false,
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.onDismissAlert = this.onDismissAlert.bind(this)
+    this.showErrorDialog = this.showErrorDialog.bind(this)
+    this.closeErrorDialog = this.closeErrorDialog.bind(this)
   }
 
   gotoView () {
@@ -37,6 +40,14 @@ class AddPage extends React.Component {
 
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
+  }
+
+  showErrorDialog () {
+    this.setState({showErrorDialog: true})
+  }
+
+  closeErrorDialog () {
+    this.setState({showErrorDialog: false})
   }
 
   componentDidMount () {
@@ -80,6 +91,23 @@ class AddPage extends React.Component {
     console.log('addPage props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.showErrorDialog &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeErrorDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeErrorDialog}>
+              <h3><i style={{fontSize: '1.75rem'}} className='fa fa-exclamation-triangle' aria-hidden='true' /> Error:</h3>
+              <p>Looks like you have not granted permissions for this page. Permissions must be granted to connect this page.</p>
+              <a style={{float: 'right'}} href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                <span>
+                  <i className='fa fa-facebook' />
+                  <span>Grant Permissions</span>
+                </span>
+              </a>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -178,7 +206,7 @@ class AddPage extends React.Component {
                         }
                   {(!page.connected) &&
 
-                  <a onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                  <a onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
                     <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                   </a>
 
