@@ -44,14 +44,18 @@ class CreateURL extends React.Component {
       this.props.updateData(this.props.messengerRefURL, 'ref_parameter', this.getRandomString())
       this.props.updateData(this.props.messengerRefURL, 'pageId', this.props.location.state.pageId)
     }
-      const hostname =  window.location.hostname;
-      let title = '';
-      if(hostname.includes('kiboengage.cloudkibo.com')) {
-        title = 'KiboEngage';
-      } else if (hostname.includes('kibochat.cloudkibo.com')) {
-        title = 'KiboChat';
-      }
-      document.title = `${title} | Create  Messenger Ref URL`;
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+    if (this.props.location.state.module && this.props.location.state.module === 'edit') {
+      document.title = `${title} | Edit  Messenger Ref URL`
+    } else {
+      document.title = `${title} | Create  Messenger Ref URL`
+    }
   }
 
   getRandomString () {
@@ -110,7 +114,10 @@ class CreateURL extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Create Messenger Ref URL
+                        {this.props.location.state.module && this.props.location.state.module === 'edit'
+                        ? 'Edit Messenger Ref URL'
+                        : 'Create Messenger Ref URL'
+                        }
                       </h3>
                     </div>
                   </div>

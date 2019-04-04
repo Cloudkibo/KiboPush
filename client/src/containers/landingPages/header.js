@@ -12,7 +12,11 @@ class Header extends React.Component {
         <div className='m-portlet__head-caption'>
           <div className='m-portlet__head-title'>
             <h3 className='m-portlet__head-text'>
-              Create Landing Page
+              {
+              this.props.isEdit
+              ? 'Edit Landing Page'
+              : 'Create Landing Page'
+            }
             </h3>
           </div>
         </div>

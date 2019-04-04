@@ -238,6 +238,7 @@ const routes = (
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/categories' component={Categories} onEnter={requireAuth} />
+    <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
@@ -278,8 +279,10 @@ const routes = (
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
+    <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
+    <Route path='/editPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
     <Route path='/plans' component={Plans} onEnter={requireAuth} />
@@ -294,9 +297,12 @@ const routes = (
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
+    <Route path='/editAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
     <Route path='/messengerRefURL' component={MessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
+    <Route path='/editMessengerRefURL' component={CreateMessengerRefURL} onEnter={requireAuth} />
     <Route path='/createMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
+    <Route path='/editMessengerRefURLMessage' component={CreateMessengerRefURLMessage} onEnter={requireAuth} />
     <Route path='/businessGateway' component={BusinessGatewayHome} onEnter={requireAuth} />
     <Route path='/createPushMessage' component={PushMessage} onEnter={requireAuth} />
     <Route path='/facebookIntegration' component={FacebookIntegration} onEnter={requireAuth} />
