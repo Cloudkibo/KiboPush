@@ -250,6 +250,15 @@ class CreateConvo extends React.Component {
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
       }
+      for (let i = 0; i < data.payload.length; i++) {
+        if (data.payload[i].componentType === 'list') {
+          for (let j = 0; j < data.payload[i].listItems.length; j++) {
+            if (data.payload[i].listItems[j].id) {
+              delete data.payload[i].listItems[j].id
+            }
+          }
+        }
+      }
         //  this.setState({tabActive: 'broadcast'})
       console.log('Sending Broadcast', data)
       this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
@@ -315,6 +324,15 @@ class CreateConvo extends React.Component {
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
 
+      }
+      for (let i = 0; i < data.payload.length; i++) {
+        if (data.payload[i].componentType === 'list') {
+          for (let j = 0; j < data.payload[i].listItems.length; j++) {
+            if (data.payload[i].listItems[j].id) {
+              delete data.payload[i].listItems[j].id
+            }
+          }
+        }
       }
       this.props.sendBroadcast(data, this.msg)
     }

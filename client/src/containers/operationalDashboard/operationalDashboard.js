@@ -404,7 +404,7 @@ class OperationalDashboard extends React.Component {
           <div className='row'>
             <AutopostingDetails autopostingStats={this.props.autopostingStats} />
           </div>
-          {/* <div className='row'>
+          <div className='row'>
             <Reports
               iconClassName={'fa fa-line-chart'}
               title={'Reports'}
@@ -415,7 +415,6 @@ class OperationalDashboard extends React.Component {
               month={this.props.platformStatsMonthly}
               />
           </div>
-          */}
           <div className='row'>
             <Top10pages pagesData={this.props.toppages} />
             <div className='col-xl-12'>
@@ -581,8 +580,8 @@ class OperationalDashboard extends React.Component {
             </div>
           </div>
           <BroadcastsByDays />
-          {/*<SurveysByDays />*/}
-          {/*<PollsByDays />*/}
+          <SurveysByDays />
+          <PollsByDays />
         </div>
       </div>
     )

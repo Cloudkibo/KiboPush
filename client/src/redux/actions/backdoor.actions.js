@@ -146,7 +146,10 @@ export function loadPollsList (id, data) {
   console.log('data for loadPollsList', data)
   return (dispatch) => {
     callApi(`backdoor/allUserPolls/${id}`, 'post', data)
-      .then(res => dispatch(updatePollList(res.payload)))
+      .then(res => {
+        console.log('response from loadPollsList', res)
+        dispatch(updatePollList(res.payload))
+      })
   }
 }
 
@@ -162,10 +165,11 @@ export function loadPageSubscribersList (id, data) {
 }
 
 export function loadSurveysList (id, data) {
+  console.log('data for loadSurveysList', data)
   return (dispatch) => {
     callApi(`backdoor/allUserSurveys/${id}`, 'post', data)
       .then(res => {
-        console.log('response from surveys', res)
+        console.log('response from loadSurveysList', res)
         dispatch(updateSurveysList(res.payload))
       })
   }
@@ -174,13 +178,19 @@ export function loadSurveysList (id, data) {
 export function loadSurveyDetails (id) {
   return (dispatch) => {
     callApi(`backdoor/surveyDetails/${id}`)
-      .then(res => dispatch(updateSurveyDetails(res)))
+      .then(res => {
+        console.log('response from loadSurveyDetails', res)
+        dispatch(updateSurveyDetails(res))
+      })
   }
 }
 export function loadPollDetails (id) {
   return (dispatch) => {
     callApi(`backdoor/polls/${id}`)
-      .then(res => dispatch(updatePollDetails(res)))
+      .then(res => {
+        console.log('response from loadPollDetails', res)
+        dispatch(updatePollDetails(res))
+      })
   }
 }
 

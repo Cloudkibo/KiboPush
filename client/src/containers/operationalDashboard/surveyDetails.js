@@ -76,21 +76,21 @@ class SurveyDetails extends React.Component {
   componentDidMount () {
     if (this.props.location.state) {
       this.props.loadSurveyDetails(this.props.location.state._id)
-      this.displayData(0, this.props.location.state.data.subscriber)
-      this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
+      // this.displayData(0, this.props.location.state.data.subscriber)
+      // this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
     } else if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       this.props.loadSurveyDetails(id)
     }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Survey Detail`;
+    document.title = `${title} | Survey Detail`
   }
 
   render () {

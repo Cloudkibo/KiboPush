@@ -61,11 +61,11 @@ class SurveysInfo extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+      this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedFilterValue)}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadSurveysList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'next', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+      this.props.loadSurveysList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'next', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedFilterValue)}})
     } else {
-      this.props.loadSurveysList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'previous', last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+      this.props.loadSurveysList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'previous', last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: parseInt(this.state.selectedFilterValue)}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
@@ -80,7 +80,7 @@ class SurveysInfo extends React.Component {
   }
   searchSurveys (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
-    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedFilterValue}})
+    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: parseInt(this.state.selectedFilterValue)}})
     // var filtered = []
     // for (let i = 0; i < this.props.surveys.length; i++) {
     //   if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
@@ -94,7 +94,7 @@ class SurveysInfo extends React.Component {
   onFilter (e) {
     console.log('val in survey', e.target.value)
     this.setState({ selectedFilterValue: e.target.value, pageNumber: 0 })
-    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
+    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: parseInt(e.target.value)}})
 
     // if (!val) {
     //   this.setState({selectedFilterValue: null})
