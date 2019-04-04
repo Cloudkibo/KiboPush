@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { updatePlatformSettings } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -12,16 +12,26 @@ class Webhook extends React.Component {
     super(props, context)
     this.state = {
       isShowingModal: false,
+      isShowingModalWapp: false,
       SID: '',
       token: '',
+      SIDWapp: '',
+      tokenWapp: '',
       number: '',
       code: ''
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
+    this.closeDialogWapp = this.closeDialogWapp.bind(this)
+    this.showDialogWapp = this.showDialogWapp.bind(this)
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
+    this.updateTokenWapp = this.updateTokenWapp.bind(this)
+    this.updateSIDWapp = this.updateSIDWapp.bind(this)
+    this.updateCode = this.updateCode.bind(this)
+    this.updateNumber = this.updateNumber.bind(this)
     this.submit = this.submit.bind(this)
+    this.submitWapp = this.submitWapp.bind(this)
     this.clearFields = this.clearFields.bind(this)
 
     props.getAutomatedOptions()
@@ -31,6 +41,13 @@ class Webhook extends React.Component {
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
       this.setState({SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken})
     }
+    if (nextProps.automated_options && nextProps.automated_options.twilioWhatsApp) {
+      this.setState({SIDWapp: nextProps.automated_options.twilioWhatsApp.accountSID,
+        tokenWapp: nextProps.automated_options.twilioWhatsApp.authToken,
+        number: nextProps.automated_options.twilioWhatsApp.sandboxNumber,
+        code: nextProps.automated_options.twilioWhatsApp.sandboxCode
+      })
+    }
   }
 
   showDialog () {
@@ -39,6 +56,30 @@ class Webhook extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  showDialogWapp () {
+    this.setState({isShowingModalWapp: true})
+  }
+
+  closeDialogWapp () {
+    this.setState({isShowingModalWapp: false})
+  }
+
+  updateNumber (e) {
+    this.setState({number: e.target.value})
+  }
+
+  updateCode (e) {
+    this.setState({code: e.target.value})
+  }
+
+  updateSIDWapp (e) {
+    this.setState({SIDWapp: e.target.value})
+  }
+
+  updateTokenWapp (e) {
+    this.setState({tokenWapp: e.target.value})
   }
 
   updateSID (e) {
@@ -57,12 +98,45 @@ class Webhook extends React.Component {
     }}, this.msg, this.clearFields)
   }
 
+  submitWapp () {
+    const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+    if (this.state.SIDWapp === '') {
+      this.msg.error('Account SID cannot be empty')
+    } else if (this.state.tokenWapp === '') {
+      this.msg.error('Auth Token cannot be empty')
+    } else if (!this.state.number.match(regex)) {
+      this.msg.error('Invalid Sandbox Number')
+    } else if (this.state.code === '') {
+      this.msg.error('Sandbox code cannot be empty')
+    } else {
+      this.setState({isShowingModalWapp: false})
+      this.props.updatePlatformWhatsApp({
+        accountSID: this.state.SIDWapp,
+        authToken: this.state.tokenWapp,
+        sandboxNumber: this.state.number,
+        sandboxCode: this.state.code
+      }, this.msg, this.clearFieldsWapp)
+    }
+  }
+
   clearFields () {
     console.log('in clearFields')
     if (this.props.automated_options && this.props.automated_options.twilio) {
       this.setState({SID: this.props.automated_options.twilio.accountSID, token: this.props.automated_options.twilio.authToken})
     } else {
       this.setState({SID: '', token: ''})
+    }
+  }
+
+  clearFieldsWapp () {
+    if (this.props.automated_options && this.props.propsProps.automated_options.twilioWhatsApp) {
+      this.setState({SIDWapp: this.props.automated_options.twilioWhatsApp.accountSID,
+        tokenWapp: this.props.automated_options.twilioWhatsApp.authToken,
+        number: this.props.automated_options.twilioWhatsApp.sandboxNumber,
+        code: this.props.automated_options.twilioWhatsApp.sandboxCode
+      })
+    } else {
+      this.setState({SIDWapp: '', tokenWapp: '', code: '', number: ''})
     }
   }
 
@@ -142,11 +216,11 @@ class Webhook extends React.Component {
 
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Twilio Account SID</label>
-                                  <input className='form-control' value={this.state.SID} onChange={(e) => this.updateSID(e)} />
+                                  <input className='form-control' value={this.state.SIDWapp} onChange={(e) => this.updateSIDWapp(e)} />
                                 </div>
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Twilio Auth Token:</label>
-                                  <input className='form-control' value={this.state.token} onChange={(e) => this.updateToken(e)} />
+                                  <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
                                 </div>
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>WhatsApp Sandbox Number:</label>
@@ -156,7 +230,7 @@ class Webhook extends React.Component {
                                   <label className='control-label'>Sandbox Code:</label>
                                   <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
                                 </div>
-                                <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox'>here</a></span>
+                                <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank'>here</a></span>
                               </div>
                               <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                                 <div className='m-form__actions' style={{'float': 'right'}}>
@@ -203,8 +277,8 @@ class Webhook extends React.Component {
                                         <br />
                                       </div>
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialog}>
-                                          {this.props.automated_options && this.props.automated_options.twilio && this.props.automated_options.twilio.sandboxNumber ? 'Edit' : 'Connect'}
+                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialogWapp}>
+                                          {this.props.automated_options && this.props.automated_options.twilioWhatsApp ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
                                     </div>
@@ -235,7 +309,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updatePlatformSettings: updatePlatformSettings,
-    getAutomatedOptions: getAutomatedOptions
+    getAutomatedOptions: getAutomatedOptions,
+    updatePlatformWhatsApp: updatePlatformWhatsApp
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Webhook)
