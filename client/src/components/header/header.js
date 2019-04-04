@@ -302,7 +302,7 @@ class Header extends React.Component {
                     <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                       <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
                       <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                        {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : 'SMS'}
+                        {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : this.props.user.platform === 'sms' ? 'SMS' : 'WhatsApp'}
                       </a>
                       {
                         this.state.showDropDown &&
@@ -325,6 +325,14 @@ class Header extends React.Component {
                                       <i className='m-nav__link-icon flaticon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>
                                         SMS
+                                      </span>
+                                    </a>
+                                  </li>
+                                  <li key={'whatsApp'} className='m-nav__item'>
+                                    <a onClick={() => this.props.updatePlatform({platform: 'whatsApp'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                      <i className='m-nav__link-icon socicon socicon-whatsapp' />
+                                      <span className='m-nav__link-text'>
+                                        WhatsApp
                                       </span>
                                     </a>
                                   </li>
