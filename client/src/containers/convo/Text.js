@@ -127,10 +127,10 @@ class Text extends React.Component {
         this.state.buttons.splice(index, 1)
       }
     })
-    if (obj.button && obj.buttons.type === 'postback') {
-      var deletePayload = obj.buttons.payload
+    if (obj.button && obj.button.type === 'postback') {
+      var deletePayload = obj.button.payload
     }
-    var temp = this.state.button
+    var temp = this.state.buttons
     this.setState({buttons: temp, numOfButtons: --this.state.numOfButtons})
     this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp, deletePayload: deletePayload})
   }
