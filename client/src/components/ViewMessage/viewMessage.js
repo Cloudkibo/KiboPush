@@ -13,20 +13,11 @@ class ViewMessage extends React.Component {
       payload: (this.props.payload && this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) ? this.props.payload.jsonAdMessages[0].messageContent : this.props.payload
     }
   }
-/*componentWillMount() {
+/* componentWillMount() {
   console.log('In will mount Method')
   console.log('this.props.payload.jsonAdMessages', this.props.payload.jsonAdMessages)
   console.log('this.props.payload.jsonAdMessages.length', this.props.payload.jsonAdMessages.length)
-}*/
-  componentDidMount () {
-    console.log('this.state.payload.jsonAdMessages', this.props.payload)
-    if (this.props.payload && this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) {
-      var payload = this.props.payload.jsonAdMessages[0].messageContent
-      this.setState({payload: payload})
-      console.log('payload', payload)
-     }
-
-  }
+} */
 
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -137,7 +128,7 @@ class ViewMessage extends React.Component {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
                                           <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                            
+
                                             <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
                                         ))
@@ -163,7 +154,7 @@ class ViewMessage extends React.Component {
                                               card.buttons && card.buttons.length > 0 &&
                                               card.buttons.map((button, i) => (
                                                 <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
+                                                  <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
                                             }
@@ -235,7 +226,7 @@ class ViewMessage extends React.Component {
                                               item.buttons && item.buttons.length > 0 &&
                                               item.buttons.map((button, i) => (
                                                 <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
+                                                  <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
                                             }
@@ -245,7 +236,7 @@ class ViewMessage extends React.Component {
                                         {b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
                                           <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
-                                             <span>{button.type === 'element_share' ? 'share' : button.title}</span>
+                                            <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
                                         ))
                                         }
