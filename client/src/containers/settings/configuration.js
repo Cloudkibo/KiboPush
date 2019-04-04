@@ -13,7 +13,9 @@ class Webhook extends React.Component {
     this.state = {
       isShowingModal: false,
       SID: '',
-      token: ''
+      token: '',
+      number: '',
+      code: ''
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -127,6 +129,46 @@ class Webhook extends React.Component {
                           </ModalDialog>
                         </ModalContainer>
                       }
+                      {
+                        this.state.isShowingModalWapp &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialogWapp}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialogWapp}>
+                            <h3>Connect with Twilio WhatsApp</h3>
+                            <div className='m-form'>
+                              <span>Please enter your Twilio credentials here:</span>
+                              <div className='form-group m-form__group'>
+
+                                <div id='question' className='form-group m-form__group'>
+                                  <label className='control-label'>Twilio Account SID</label>
+                                  <input className='form-control' value={this.state.SID} onChange={(e) => this.updateSID(e)} />
+                                </div>
+                                <div id='question' className='form-group m-form__group'>
+                                  <label className='control-label'>Twilio Auth Token:</label>
+                                  <input className='form-control' value={this.state.token} onChange={(e) => this.updateToken(e)} />
+                                </div>
+                                <div id='question' className='form-group m-form__group'>
+                                  <label className='control-label'>WhatsApp Sandbox Number:</label>
+                                  <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                                </div>
+                                <div id='question' className='form-group m-form__group'>
+                                  <label className='control-label'>Sandbox Code:</label>
+                                  <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
+                                </div>
+                                <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox'>here</a></span>
+                              </div>
+                              <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                                <div className='m-form__actions' style={{'float': 'right'}}>
+                                  <button className='btn btn-primary'
+                                    onClick={this.submitWapp}> Submit
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -147,6 +189,22 @@ class Webhook extends React.Component {
                                       <div className='m-widget4__ext'>
                                         <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialog}>
                                           {this.props.automated_options && this.props.automated_options.twilio ? 'Edit' : 'Connect'}
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <div className='m-widget4__item'>
+                                      <div className='m-widget4__info'>
+                                        <span className='m-widget4__title'>
+                                          <i className='flaticon-chat-1' />&nbsp;&nbsp;&nbsp;
+                                          <span>
+                                            WhatsApp
+                                          </span>
+                                        </span>
+                                        <br />
+                                      </div>
+                                      <div className='m-widget4__ext'>
+                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialog}>
+                                          {this.props.automated_options && this.props.automated_options.twilio && this.props.automated_options.twilio.sandboxNumber ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
                                     </div>
