@@ -480,3 +480,22 @@ export function updatePlatformSettings (data, msg, clearFields) {
       })
   }
 }
+export function updatePlatformWhatsApp (data, msg, clearFields) {
+  console.log('data for updatePlatformWhatsApp', data)
+  return (dispatch) => {
+    callApi('company/updatePlatformWhatsApp', 'post', data)
+      .then(res => {
+        console.log('response from updatePlatformWhatsApp', res)
+        if (res.status === 'success') {
+          dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
+          msg.success('Saved Successfully')
+        } else {
+          msg.error(res.description)
+          if (clearFields) {
+            dispatch(clearFields())
+          }
+        }
+      })
+  }
+}

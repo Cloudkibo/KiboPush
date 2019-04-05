@@ -3,30 +3,30 @@ import ViewMessage from '../../components/ViewMessage/viewMessage'
 import { browserHistory } from 'react-router'
 
 class ViewWelcomeMessage extends React.Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     this.goBack = this.goBack.bind(this)
   }
 
-  componentDidMount() {
-    const hostname = window.location.hostname;
-    let title = '';
+  componentDidMount () {
+    const hostname = window.location.hostname
+    let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | View Message`;
+    document.title = `${title} | View Message`
   }
 
-  goBack() {
+  goBack () {
     browserHistory.push({
       pathname: `/welcomeMessage`,
       state: { module: 'welcome' }
     })
   }
-  render() {
+  render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
