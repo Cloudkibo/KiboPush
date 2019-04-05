@@ -36,7 +36,17 @@ class EditTemplate extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
-    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: this.state.broadcast}, this.msg)
+    var data = this.state.broadcast
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].componentType === 'list') {
+        for (let j = 0; j < data[i].listItems.length; j++) {
+          if (data[i].listItems[j].id) {
+            delete data[i].listItems[j].id
+          }
+        }
+      }
+    }
+    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: data}, this.msg)
   }
 
   goBack () {
