@@ -85,7 +85,7 @@ class Dashboard extends React.Component {
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
-    if (response.status === 'failed') {
+    if (response.status === 'failed' && response.payload.error && response.payload.error.code === 190) {
       browserHistory.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
