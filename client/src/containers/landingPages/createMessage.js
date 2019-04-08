@@ -38,11 +38,11 @@
       } else if (hostname.includes('kibochat.cloudkibo.com')) {
         title = 'KiboChat'
       }
-      if(this.props.location.state.module === 'edit'){
-        document.title = `${title} | Edit Message`  
-      }else{
+      if (this.props.location.state.module === 'edit') {
+        document.title = `${title} | Edit Message`
+      } else {
         document.title = `${title} | Create Message`
-        }
+      }
     }
     saveMessage () {
       if (!validateFields(this.state.broadcast, this.msg)) {
@@ -53,21 +53,21 @@
     }
 
     goBack () {
-      if(this.props.location.state && this.props.location.state.module === 'edit'){
+      if (this.props.location.state && this.props.location.state.module === 'edit') {
         this.props.landingPage.isActive = true
         this.props.landingPage.pageId = this.props.landingPages[0].pageId
         this.props.landingPage._id = this.props.landingPages[0]._id
         this.props.landingPage.currentTab = 'optInActions'
         browserHistory.push({
-          pathname: `/createLandingPage`,
+          pathname: `/editLandingPage`,
           state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
-      })
-      }else{
-      browserHistory.push({
-        pathname: `/createLandingPage`,
-        state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
-      })
-    } 
+        })
+      } else {
+        browserHistory.push({
+          pathname: `/createLandingPage`,
+          state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
+        })
+      }
     }
 
     render () {
@@ -101,8 +101,8 @@
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             convoTitle={this.state.convoTitle}
-            buttonActions={this.state.buttonActions} 
-            pages={this.props.pages}/>
+            buttonActions={this.state.buttonActions}
+            pages={this.props.pages} />
         </div>
       )
     }
