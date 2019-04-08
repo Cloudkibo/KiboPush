@@ -85,12 +85,12 @@ class Dashboard extends React.Component {
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
-    // if (response.status === 'failed') {
-    //   browserHistory.push({
-    //     pathname: '/connectFb',
-    //     state: { session_inavalidated: true }
-    //   })
-    // }
+    if (response.status === 'failed') {
+      browserHistory.push({
+        pathname: '/connectFb',
+        state: { session_inavalidated: true }
+      })
+    }
   }
   closeProDialog () {
     this.setState({isShowingModalPro: false})
