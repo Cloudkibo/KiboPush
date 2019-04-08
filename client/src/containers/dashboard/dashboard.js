@@ -116,7 +116,7 @@ class Dashboard extends React.Component {
     return formattedData
   }
   prepareExportData () {
-    //console.log('prepareExportData')
+    // console.log('prepareExportData')
     var data = []
     var dashboardObj = {}
     if (this.props.dashboard) {
@@ -438,14 +438,14 @@ class Dashboard extends React.Component {
     //   console.log('updating sentVsSeen currentPage')
     //   this.props.sentVsSeen(this.props.currentPage.pageId)
     // }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-    document.title = `${title} | Dashboard`;
+    document.title = `${title} | Dashboard`
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',
