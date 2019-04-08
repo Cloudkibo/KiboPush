@@ -150,7 +150,7 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/editTemplateBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/createBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
                                         </Link>
                                        </div>
