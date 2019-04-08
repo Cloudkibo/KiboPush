@@ -134,6 +134,7 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContacts/uploadContacts'
+import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
 import SmsSubscribers from './containers/uploadContacts/contacts'
@@ -312,6 +313,7 @@ const routes = (
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
+    <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

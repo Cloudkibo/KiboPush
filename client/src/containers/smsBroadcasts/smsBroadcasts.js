@@ -170,6 +170,14 @@ class SmsBroadcast extends React.Component {
           </div>
         </div>
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           <div className='row'>
             <div
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
