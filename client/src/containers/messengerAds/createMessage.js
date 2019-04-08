@@ -192,7 +192,7 @@ class CreateMessage extends React.Component {
   goBack () {
     if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0) {
       this.props.history.push({
-        pathname: `/createAdMessage`,
+        pathname: `/editAdMessage`,
         state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
       })
     } else {
