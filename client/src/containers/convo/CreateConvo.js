@@ -31,7 +31,7 @@ class CreateConvo extends React.Component {
     super(props, context)
     this.state = {
       buttonActions: ['open website', 'open webview', 'add share'],
-      broadcast: [],
+      broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
       pageValue: [],
@@ -42,7 +42,7 @@ class CreateConvo extends React.Component {
       isShowingModalGuideLines: false,
       isshowGuideLinesImageDialog: false,
       isShowingModalResetAlert: false,
-      convoTitle: 'Broadcast Title',
+      convoTitle: this.props.location.state && this.props.location.state.title ? this.props.location.state.title : 'Broadcast Title',
       showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
@@ -526,6 +526,7 @@ class CreateConvo extends React.Component {
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
                           <GenericMessage
+                            broadcast={this.state.broadcast}
                             handleChange={this.handleChange}
                             setReset={reset => { this.reset = reset }}
                             convoTitle={this.state.convoTitle}

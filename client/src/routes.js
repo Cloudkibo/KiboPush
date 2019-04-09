@@ -240,7 +240,6 @@ const routes = (
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/categories' component={Categories} onEnter={requireAuth} />
     <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
-    <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
