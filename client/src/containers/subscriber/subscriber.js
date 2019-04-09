@@ -440,7 +440,7 @@ class Subscriber extends React.Component {
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
-
+ 
   handleAdd (value) {
     console.log('this.state.saveEnable', value)
     var index = 0

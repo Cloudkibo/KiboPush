@@ -13,7 +13,7 @@ class EditTags extends React.Component {
       tags: this.props.currentTags,
       renameValue: '',
       showDeleteConfirmation: false,
-      deleteTagId: ''
+      deleteTag: ''
     }
     this.editTag = this.editTag.bind(this)
     this.deleteTag = this.deleteTag.bind(this)
@@ -31,15 +31,15 @@ class EditTags extends React.Component {
       })
     }
   }
-  openDeleteConfirmation (id) {
+  openDeleteConfirmation (tag) {
     this.setState({
-      deleteTagId: id,
+      deleteTag: tag,
       showDeleteConfirmation: true
     })
   }
   closeDeleteConfirmation () {
     this.setState({
-      deleteTagId: '',
+      deleteTag: '',
       showDeleteConfirmation: false
     })
   }
@@ -55,16 +55,16 @@ class EditTags extends React.Component {
       editTag: id
     })
   }
-  deleteTag (id) {
-    this.props.deleteTag(id, this.msg)
+  deleteTag (tag) {
+    this.props.deleteTag(tag, this.msg)
   }
   changeTag (e, tagId) {
     this.setState({
       renameValue: e.target.value
     })
   }
-  saveTag (tagId) {
-    var payload = {'tagId': tagId, 'tagName': this.state.renameValue}
+  saveTag (tag) {
+    var payload = {'tag': tag, 'newTag': this.state.renameValue}
     this.props.renameTag(payload, this.msg, this.handleEdit)
   }
   handleEdit () {
@@ -136,7 +136,7 @@ class EditTags extends React.Component {
                           </button>
                            <button className='btn btn-primary btn-sm'
                              style={{float: 'left', margin: 2}}
-                             onClick={() => this.openDeleteConfirmation(tag._id)}>
+                             onClick={() => this.openDeleteConfirmation(tag.tag)}>
                              Delete
                            </button>
                          </span>
@@ -144,7 +144,7 @@ class EditTags extends React.Component {
                           style={{width: '200px'}}>
                           { this.state.renameValue !== '' && <button className='btn btn-primary btn-sm'
                             style={{float: 'left', margin: 2}}
-                            onClick={() => this.saveTag(tag._id)}>
+                            onClick={() => this.saveTag(tag.tag)}>
                             Save
                            </button>
                           }
@@ -183,7 +183,7 @@ class EditTags extends React.Component {
               <button style={{float: 'right', marginLeft: '10px'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  this.deleteTag(this.state.deleteTagId)
+                  this.deleteTag(this.state.deleteTag)
                   this.closeDeleteConfirmation()
                 }}>Yes
               </button>

@@ -45,7 +45,8 @@ class AddSurvey extends React.Component {
       isShowingModal: false,
       lists: [],
       resetTarget: false,
-      isShowingModalGuideLines: false
+      isShowingModalGuideLines: false,
+      pageId: this.props.pages[0]
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -55,7 +56,63 @@ class AddSurvey extends React.Component {
     this.checkValidation = this.checkValidation.bind(this)
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+    this.onNext = this.onNext.bind(this)
+    this.onPrevious = this.onPrevious.bind(this)
+    this.initTab = this.initTab.bind(this)
+    this.onSurveyClick = this.onSurveyClick.bind(this)
+    this.onTargetClick = this.onTargetClick.bind(this)
+    this.checkSurveyErrors = this.checkSurveyErrors.bind(this)
   }
+
+  onNext (e) {
+    /* eslint-disable */
+      $('#tab_1').removeClass('active')
+      $('#tab_2').addClass('active')
+      $('#titleBroadcast').removeClass('active')
+      $('#titleTarget').addClass('active')
+      /* eslint-enable */
+    this.setState({tabActive: 'target'})
+  }
+
+  onPrevious () {
+      /* eslint-disable */
+      $('#tab_1').addClass('active')
+      $('#tab_2').removeClass('active')
+      $('#titleBroadcast').addClass('active')
+      $('#titleTarget').removeClass('active')
+      /* eslint-enable */
+    this.setState({tabActive: 'survey'})
+  }
+
+  initTab () {
+      /* eslint-disable */
+      $('#tab_1').addClass('active')
+      $('#tab_2').removeClass('active')
+      $('#titleBroadcast').addClass('active')
+      $('#titleTarget').removeClass('active')
+      /* eslint-enable */
+    this.setState({tabActive: 'survey'})
+  }
+
+  onSurveyClick () {
+      /* eslint-disable */
+      $('#tab_1').addClass('active')
+      $('#tab_2').removeClass('active')
+      $('#titleBroadcast').addClass('active')
+      $('#titleTarget').removeClass('active')
+      /* eslint-enable */
+    this.setState({tabActive: 'survey'})
+  }
+  onTargetClick (e) {
+    /* eslint-disable */
+      $('#tab_1').removeClass('active')
+      $('#tab_2').addClass('active')
+      $('#titleBroadcast').removeClass('active')
+      $('#titleTarget').addClass('active')
+      /* eslint-enable */
+    this.setState({tabActive: 'target', resetTarget: false})
+  }
+
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
   }
@@ -63,11 +120,12 @@ class AddSurvey extends React.Component {
   closeGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: false})
   }
-  checkValidation () {
-    let flag = 0
-    let questionLengthFlag = 0
+
+  checkSurveyErrors () {
+    let flag = false
+    let questionLengthFlag = false
     if (this.state.surveyQuestions.length === 0) {
-      questionLengthFlag = 1
+      questionLengthFlag = true
     }
 
     for (let j = 0; j < this.state.surveyQuestions.length; j++) {
@@ -75,23 +133,31 @@ class AddSurvey extends React.Component {
         for (let k = 0; k <
         this.state.surveyQuestions[j].options.length; k++) {
           if (this.state.surveyQuestions[j].options[k] === '') {
-            flag = 1
+            flag = true
           }
         }
       }
       // Checking if any Question statement is empty.
       if (this.state.surveyQuestions[j].statement === '') {
-        flag = 1
+        flag = true
       }
     }
 
     if (this.state.description === '') {
-      flag = 1
+      flag = true
     }
 
     if (this.state.title === '') {
-      flag = 1
+      flag = true
     }
+
+    return {flag, questionLengthFlag}
+  }
+
+  checkValidation () {
+    let errors = this.checkSurveyErrors()
+    let flag = errors.flag
+    let questionLengthFlag = errors.questionLengthFlag
 
     if (flag === 1 || questionLengthFlag === 1) {
       if (flag === 1) {
@@ -126,6 +192,7 @@ class AddSurvey extends React.Component {
     this.setState({
       listSelected: targeting.listSelected,
       pageValue: targeting.pageValue,
+      pageId: this.props.pages.find(page => page.pageId === targeting.pageValue[0]),
       genderValue: targeting.genderValue,
       localeValue: targeting.localeValue,
       tagValue: targeting.tagValue,
@@ -133,15 +200,16 @@ class AddSurvey extends React.Component {
     })
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Add Survey`;
+    document.title = `${title} | Add Survey`
+    this.initTab()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -535,6 +603,7 @@ class AddSurvey extends React.Component {
               }
             }
           }
+          let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey
@@ -550,7 +619,8 @@ class AddSurvey extends React.Component {
             segmentationSurvey: this.state.surveyValue,
             segmentationTags: tagIDs,
             isList: isListValue,
-            segmentationList: this.state.listSelected
+            segmentationList: this.state.listSelected,
+            subscribersCount: currentPageSubscribers.length
           }
           console.log('Sending Survey', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
@@ -572,6 +642,7 @@ class AddSurvey extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    let surveyErrors = this.checkSurveyErrors()
     // const { disabled, stayOpen } = this.state
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -626,13 +697,7 @@ class AddSurvey extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 id='survey' className='m-subheader__title'>Create Survey Form</h3>
-            </div>
-          </div>
-        </div>
+
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -642,133 +707,179 @@ class AddSurvey extends React.Component {
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
             </div>
           </div>
-          <div className='row'>
-            <div
-              className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-              <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
-                <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <p>Do you want to send this survey right away or save it for later use? </p>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary'
-                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                                  onClick={() => {
-                                    this.closeDialog()
-                                    this.goToSend()
-                                  }}>
-                                  Send
+
+          <div className='m-portlet__body'>
+            <div className='row'>
+              <div className='col-12'>
+                <div className='m-portlet' style={{height: '100%'}}>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                        Ask Facebook Subscribers a Question
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='m-portlet__body' >
+                    {
+                    this.state.tabActive === 'target' &&
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='pull-right'>
+                            <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                            Previous
+                            </button>
+
+                            <button
+                              disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                              className='btn btn-primary'
+                              onClick={() => {
+                                this.checkValidation()
+                              }}>
+                              Create Survey
+                            </button>
+
+                          </div>
+                        </div>
+                      </div>
+                  }
+
+                    {
+                    this.state.tabActive === 'survey' &&
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='pull-right'>
+                            <button className='btn btn-primary'
+                              style={{marginRight: '10px'}}
+                              disabled={surveyErrors.flag || surveyErrors.questionLengthFlag ? true : null}
+                              onClick={this.onNext}>
+                            Next
+                            </button>
+                            <Link
+                              to='/surveys'
+                              className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                            Cancel
+                          </Link>
+                          </div>
+                        </div>
+                      </div>
+                  }
+
+                    <div className='row'>
+                      <div className='col-12'>
+                        <ul className='nav nav-tabs'>
+                          <li>
+                            <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onSurveyClick}>Survey </a>
+                          </li>
+                          <li>
+                            {
+                            (surveyErrors.flag || surveyErrors.questionLengthFlag)
+                            ? <a>Targeting</a>
+                            : <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                          }
+                          </li>
+                        </ul>
+                        <div className='tab-content'>
+                          <div className='tab-pane fade active in' id='tab_1'>
+                            <div className='col-12'>
+                              <div className='row align-items-center'>
+                                <div className='col-xl-8 order-2 order-xl-1' />
+                                <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                                  {
+                                      this.state.isShowingModal &&
+                                      <ModalContainer style={{width: '500px'}}
+                                        onClose={this.closeDialog}>
+                                        <ModalDialog style={{width: '500px'}}
+                                          onClose={this.closeDialog}>
+                                          <p>Do you want to send this survey right away or save it for later use? </p>
+                                          <div style={{width: '100%', textAlign: 'center'}}>
+                                            <div style={{display: 'inline-block', padding: '5px'}}>
+                                              <button className='btn btn-primary'
+                                                disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                                onClick={() => {
+                                                  this.closeDialog()
+                                                  this.goToSend()
+                                                }}>
+                                                Send
+                                              </button>
+                                            </div>
+                                            <div style={{display: 'inline-block', padding: '5px'}}>
+                                              <button className='btn btn-primary'
+                                                disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                                onClick={() => {
+                                                  this.createSurvey()
+                                                  this.props.history.push({
+                                                    pathname: '/surveys'
+                                                  })
+                                                }}>
+                                                Save
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </ModalDialog>
+                                      </ModalContainer>
+                                    }
+                                </div>
+                              </div>
+                              <div className='col-xl-12'>
+                                <div className='form-group' id='titl'>
+                                  <label className='control-label'><h5>Survey Title</h5></label>
+                                  <input className='form-control' placeholder='Enter form title here'
+                                    value={this.state.title} onChange={(e) => this.updateTitle(e)} />
+                                </div>
+                              </div>
+                              <br />
+                              <div className='col-xl-12'>
+                                <div className='form-group' id='desc'>
+                                  <label className='control-label'><h5>Survey Introduction</h5></label>
+                                  <textarea className='form-control'
+                                    placeholder='Enter your survey introduction here'
+                                    rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
+                                </div>
+                              </div>
+                              <br />
+                              <div className='col-xl-12'>
+                                <h5> Add Questions </h5>
+                                {this.createUI()}
+                              </div>
+
+                              {/*
+                              <div className='col-xl-12'>
+                              <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
+                              <div className='col-sm-6 col-md-4'>
+                              <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
+                              <option value='text'>Text</option>
+                              <option value='multichoice'>Multi Choice Question</option>
+                              </select>
+                              <br />
+                              </div>
+                              </div>
+                              */}
+
+                              <div id='questions' className='col-sm-6 col-md-4'>
+                                <button className='btn btn-primary btn-sm'
+                                  onClick={this.addClick.bind(this)}> Add Questions
                                 </button>
                               </div>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary'
-                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                                  onClick={() => {
-                                    this.createSurvey()
-                                    this.props.history.push({
-                                      pathname: '/surveys'
-                                    })
-                                  }}>
-                                  Save
-                                </button>
-                              </div>
+                              <br />
+                              {this.state.alertMessage !== '' &&
+                              <center>
+                                <Alert type={this.state.alertType}>
+                                  {this.state.alertMessage}
+                                </Alert>
+                              </center>
+                              }
                             </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                          </div>
+                          <div className='tab-pane' id='tab_2'>
+                            <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='survey' />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className='col-xl-12'>
-                    <div className='form-group' id='titl'>
-                      <label className='control-label'><h5>Survey Title</h5></label>
-                      <input className='form-control' placeholder='Enter form title here'
-                        value={this.state.title} onChange={(e) => this.updateTitle(e)} />
-                    </div>
-                  </div>
-                  <br />
-                  <div className='col-xl-12'>
-                    <div className='form-group' id='desc'>
-                      <label className='control-label'><h5>Survey Introduction</h5></label>
-                      <textarea className='form-control'
-                        placeholder='Enter your survey introduction here'
-                        rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
-                    </div>
-                  </div>
-                  <br />
-                  <div className='col-xl-12'>
-                    <h5> Add Questions </h5>
-                    {this.createUI()}
-                  </div>
-
-                  {/*
-                 <div className='col-xl-12'>
-                 <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
-                 <div className='col-sm-6 col-md-4'>
-                 <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
-                 <option value='text'>Text</option>
-                 <option value='multichoice'>Multi Choice Question</option>
-                 </select>
-                 <br />
-                 </div>
-                 </div>
-                 */}
-
-                  <div id='questions' className='col-sm-6 col-md-4'>
-                    <button className='btn btn-primary btn-sm'
-                      onClick={this.addClick.bind(this)}> Add Questions
-                  </button>
-                  </div>
-                  <br />
-                  {this.state.alertMessage !== '' &&
-                  <center>
-                    <Alert type={this.state.alertType}>
-                      {this.state.alertMessage}
-                    </Alert>
-                  </center>
-
-                }
-                </div>
-                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                  <div className='col-12'>
-                    <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
-                  </div>
-                  <div className='col-12'>
-                    <div className='m-form__actions' style={{'float': 'right'}}>
-                      <button className='btn btn-primary'
-                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                        onClick={this.checkValidation}> Create Survey
-                      </button>
-                      <Link
-                        to='/surveys'
-                        className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                        Cancel
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <div className='m-portlet' style={{height: '100%'}}>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                      Targeting
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='survey' />
                 </div>
               </div>
             </div>

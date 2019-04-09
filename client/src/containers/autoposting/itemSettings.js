@@ -237,18 +237,18 @@ class ItemSettings extends React.Component {
         alertType: ''
       })
     }
-    if (this.props.tags) {
+    if (nextProps.tags) {
       console.log('this.props.location.state.item.segmentationTags', this.props.location.state.item.segmentationTags)
       let optionsTag = []
-      for (let i = 0; i < this.props.tags.length; i++) {
+      for (let i = 0; i < nextProps.tags.length; i++) {
         if (this.props.location.state.item.segmentationTags !== '') {
-          if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i]._id) !== -1) {
-            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true})
+          if (this.props.location.state.item.segmentationTags.indexOf(nextProps.tags[i]._id) !== -1) {
+            optionsTag.push({text: nextProps.tags[i].tag, id: nextProps.tags[i].tag, selected: true})
           } else {
-            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag})
+            optionsTag.push({text: nextProps.tags[i].tag, id: nextProps.tags[i].tag})
           }
         } else {
-          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+          optionsTag[i] = {text: nextProps.tags[i].tag, id: nextProps.tags[i].tag}
         }
       }
       this.setState({Tag: {options: optionsTag}})

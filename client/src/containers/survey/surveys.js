@@ -61,15 +61,15 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Survey`;
+    document.title = `${title} | Survey`
   }
   componentWillMount () {
     this.props.loadSubscribersList()
@@ -445,7 +445,7 @@ class Survey extends React.Component {
                           <th>Description</th>
                           <th>Created At</th>
                           <th>Sent</th>
-                          <th>Seen</th>
+                          {/* <th>Seen</th> */}
                           <th>Responded</th>
                           <th>Actions</th>
 
@@ -459,7 +459,7 @@ class Survey extends React.Component {
                             <td>{survey.description}</td>
                             <td>{handleDate(survey.datetime)}</td>
                             <td>{survey.sent}</td>
-                            <td>{survey.seen}</td>
+                            {/* <td>{survey.seen}</td> */}
                             <td>{survey.responses}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
