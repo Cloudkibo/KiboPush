@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadPageSubscribersList, allLocales, downloadSubscribersData } from '../../redux/actions/backdoor.actions'
+import { loadPageSubscribersList, allLocales, downloadSubscribersData, updatePicture } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
@@ -37,6 +37,7 @@ class PageSubscribers extends React.Component {
     this.backToUserDetails = this.backToUserDetails.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
   }
 
   componentDidMount () {
@@ -217,191 +218,215 @@ class PageSubscribers extends React.Component {
     }
   }
 
+  profilePicError (e, subscriber) {
+    console.log('profile picture error', subscriber)
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
+
+    let fetchData = {
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      current_page: this.state.pageNumber,
+      filter: this.state.filter,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender,
+        locale_value: this.state.filterByLocale
+      }
+    }
+    this.props.updatePicture(this.props.currentPage._id, {subscriber}, fetchData)
+  }
+
   render () {
     return (
-      <div>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>{this.state.pageName}</h3>
-              </div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>{this.state.pageName}</h3>
             </div>
           </div>
-          <div className='m-content'>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Subscribers
-                        </h3>
-                        <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 680 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
-                      </div>
+        </div>
+        <div className='m-content'>
+          <div className='row'>
+            <div
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Subscribers
+                      </h3>
+                      <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 680 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
                     </div>
                   </div>
-                  <div className='m-portlet__body'>
-                    <div className='row align-items-center'>
-                      <div className='col-lg-12 col-md-12'>
-                        <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                          <div className='row align-items-center'>
-                            <div className='col-xl-12 order-2 order-xl-1'>
-                              <div
-                                className='form-group m-form__group row align-items-center'>
-                                <div className='col-md-4'>
-                                  <div
-                                    className='m-form__group m-form__group--inline'>
-                                    <div className='m-input-icon m-input-icon--left'>
-                                      <input type='text' placeholder='Search Subscribers...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
-                                      <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                        <span>
-                                          <i className='la la-search' />
-                                        </span>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='row align-items-center'>
+                    <div className='col-lg-12 col-md-12'>
+                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-12 order-2 order-xl-1'>
+                            <div
+                              className='form-group m-form__group row align-items-center'>
+                              <div className='col-md-4'>
+                                <div
+                                  className='m-form__group m-form__group--inline'>
+                                  <div className='m-input-icon m-input-icon--left'>
+                                    <input type='text' placeholder='Search Subscribers...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
+                                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                      <span>
+                                        <i className='la la-search' />
                                       </span>
-                                    </div>
+                                    </span>
                                   </div>
-                                  <div
-                                    className='d-md-none m--margin-bottom-10' />
                                 </div>
-                                <div className='col-md-4'>
-                                  <div
-                                    className='m-form__group m-form__group--inline'>
-                                    <div className='m-form__label'>
-                                      <label>
-                                        Gender:
-                                      </label>
-                                    </div>
-                                    <div className='m-form__control'>
-                                      <Select
-                                        name='form-field-name'
-                                        options={this.state.genders}
-                                        onChange={this.onFilterByGender}
-                                        placeholder='Filter by gender...'
-                                        value={this.state.genderValue}
-                                      />
-                                    </div>
+                                <div
+                                  className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-md-4'>
+                                <div
+                                  className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__label'>
+                                    <label>
+                                      Gender:
+                                    </label>
                                   </div>
-                                  <div
-                                    className='d-md-none m--margin-bottom-10' />
-                                </div>
-                                <div className='col-md-4'>
-                                  <div
-                                    className='m-form__group m-form__group--inline'>
-                                    <div className='m-form__label'>
-                                      <label>
-                                        Locale:
-                                      </label>
-                                    </div>
-                                    <div className='m-form__control'>
-                                      <Select
-                                        name='form-field-name'
-                                        options={this.state.localeOptions}
-                                        onChange={this.onFilterByLocale}
-                                        placeholder='Filter by locale...'
-                                        value={this.state.localeValue}
-                                      />
-                                    </div>
+                                  <div className='m-form__control'>
+                                    <Select
+                                      name='form-field-name'
+                                      options={this.state.genders}
+                                      onChange={this.onFilterByGender}
+                                      placeholder='Filter by gender...'
+                                      value={this.state.genderValue}
+                                    />
                                   </div>
-                                  <div
-                                    className='d-md-none m--margin-bottom-10' />
                                 </div>
+                                <div
+                                  className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-md-4'>
+                                <div
+                                  className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__label'>
+                                    <label>
+                                      Locale:
+                                    </label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    <Select
+                                      name='form-field-name'
+                                      options={this.state.localeOptions}
+                                      onChange={this.onFilterByLocale}
+                                      placeholder='Filter by locale...'
+                                      value={this.state.localeValue}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  className='d-md-none m--margin-bottom-10' />
                               </div>
                             </div>
                           </div>
                         </div>
-                        {
-                          this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
-                            ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                              <table className='m-datatable__table'
-                                id='m-datatable--27866229129' style={{
-                                  display: 'block',
-                                  height: 'auto',
-                                  overflowX: 'auto'
-                                }}>
-                                <thead className='m-datatable__head'>
-                                  <tr className='m-datatable__row'
-                                    style={{height: '53px'}}>
-                                    <th data-field='pages'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '150px'}}>Profile Pic</span>
-                                    </th>
-                                    <th data-field='likes'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '150px'}}>Subscriber Name</span>
-                                    </th>
-                                    <th data-field='subscribers'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '150px'}}>Gender</span>
-                                    </th>
-                                    <th data-field='connected'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '150px'}}>Locale</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                  {
-                                    this.state.pageSubscribersData.map((subscriber, i) => (
-                                      <tr data-row={i}
-                                        className='m-datatable__row m-datatable__row--even'
-                                        style={{height: '55px'}} key={i}>
-                                        <td data-field='pages'
-                                          className='m-datatable__cell'>
-                                          <span
-                                            style={{width: '150px'}}>
-                                            <img alt='pic'
-                                              src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                              className='img-circle' width='60' height='60' />
-                                          </span>
-                                        </td>
-                                        <td data-field='likes'
-                                          className='m-datatable__cell'>
-                                          <span
-                                            style={{width: '150px'}}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
-                                        </td>
-                                        <td data-field='subscribers'
-                                          className='m-datatable__cell'>
-                                          <span
-                                            style={{width: '150px'}}>{subscriber.gender}</span>
-                                        </td>
-                                        <td data-field='connected'
-                                          className='m-datatable__cell'>
-                                          <span
-                                            style={{width: '150px'}}>{subscriber.locale}</span>
-                                        </td>
-                                      </tr>
-                                ))
-                              }
-                                </tbody>
-                              </table>
-                              <ReactPaginate previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={<a>...</a>}
-                                breakClassName={'break-me'}
-                                pageCount={Math.ceil(this.state.totalLength / 10)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={3}
-                                onPageChange={this.handlePageClick}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'}
-                                forcePage={this.state.pageNumber} />
-                            </div>
-                            : <p> No data to display </p>
-                        }
                       </div>
+                      {
+                        this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
+                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                            <table className='m-datatable__table'
+                              id='m-datatable--27866229129' style={{
+                                display: 'block',
+                                height: 'auto',
+                                overflowX: 'auto'
+                              }}>
+                              <thead className='m-datatable__head'>
+                                <tr className='m-datatable__row'
+                                  style={{height: '53px'}}>
+                                  <th data-field='pages'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Profile Pic</span>
+                                  </th>
+                                  <th data-field='likes'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Subscriber Name</span>
+                                  </th>
+                                  <th data-field='subscribers'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Gender</span>
+                                  </th>
+                                  <th data-field='connected'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Locale</span>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                                {
+                                  this.state.pageSubscribersData.map((subscriber, i) => (
+                                    <tr data-row={i}
+                                      className='m-datatable__row m-datatable__row--even'
+                                      style={{height: '55px'}} key={i}>
+                                      <td data-field='pages'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={{width: '150px'}}>
+                                          <img alt='pic'
+                                            src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                            onError={(e) => this.profilePicError(e, subscriber)}
+                                            className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                        />
+                                        </span>
+                                      </td>
+                                      <td data-field='likes'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={{width: '150px'}}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
+                                      </td>
+                                      <td data-field='subscribers'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={{width: '150px'}}>{subscriber.gender}</span>
+                                      </td>
+                                      <td data-field='connected'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={{width: '150px'}}>{subscriber.locale}</span>
+                                      </td>
+                                    </tr>
+                              ))
+                            }
+                              </tbody>
+                            </table>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'}
+                              forcePage={this.state.pageNumber} />
+                          </div>
+                          : <p> No data to display </p>
+                      }
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div style={{'overflow': 'auto'}}>
-              <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
-              </button>
-            </div>
+          </div>
+          <div style={{'overflow': 'auto'}}>
+            <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
+            </button>
           </div>
         </div>
       </div>
@@ -423,7 +448,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPageSubscribersList: loadPageSubscribersList,
-    allLocales: allLocales
+    allLocales: allLocales,
+    updatePicture: updatePicture
   },
     dispatch)
 }

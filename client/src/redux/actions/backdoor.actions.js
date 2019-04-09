@@ -435,6 +435,20 @@ export function downloadSubscribersData (pageId) {
         }
       })
 }
+export function updatePicture (id, subscriberData, fetchData) {
+  console.log('updatePicture data', subscriberData)
+  return (dispatch) => {
+    callApi('subscribers/updatePicture', 'post', subscriberData).then(res => {
+      if (res.status === 'success') {
+        console.log('succesfully updated profile picture for ', subscriberData)
+        callApi(`backdoor/getAllSubscribers/${id}`, 'post', fetchData).then(res => {
+          console.log('response from subscribers', res)
+          dispatch(updatePageSubscribersList(res.payload))
+        })
+      }
+    })
+  }
+}
 
 export function saveSurveyInformation (survey) {
   return {
