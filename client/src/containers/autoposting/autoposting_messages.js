@@ -90,7 +90,7 @@ class AutopostingMessages extends React.Component {
     console.log('in componentWillReceiveProps', nextProps)
     if (nextProps.autoposting_messages) {
       this.displayData(0, nextProps.autoposting_messages)
-      this.setState({ totalLength: nextProps.autoposting_messages.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
 
