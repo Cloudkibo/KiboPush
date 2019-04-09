@@ -2,8 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import { Link } from 'react-router'
-import Halogen from 'halogen'
-
 // actions
 import {
   fetchSessions,
@@ -91,8 +89,16 @@ class LiveChat extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding livechat? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           {
-            this.props.sessions && this.props.sessions.length > 0
+            (this.props.sessions && this.props.sessions.length > 0) || (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object)
             ? <div className='row'>
               <SESSIONSAREA
                 sessions={this.props.sessions}
