@@ -29,8 +29,7 @@ class SmsBroadcast extends React.Component {
 
   gotoCreate (broadcast) {
     browserHistory.push({
-      pathname: `/createsmsBroadcast`,
-      state: {number: this.state.numberValue}
+      pathname: `/createWhatsAppBroadcast`
     })
   }
 
@@ -148,7 +147,7 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.gotoCreate} disabled={this.props.contacts && this.props.contacts.length === 0}>
                         <span>
                           <i className='la la-plus' />
                           <span>Create New</span>
