@@ -31,7 +31,7 @@ class CreateSubList extends React.Component {
       allSubscribers: [],
       lists: [],
       dropdownConditionOpen: false,
-      joiningCondition: 'AND',
+      joiningCondition: this.props.currentList ? this.props.currentList.joiningCondition : 'AND',
       genders: ['male', 'female', 'other']
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
@@ -84,15 +84,15 @@ class CreateSubList extends React.Component {
     if (this.props.currentList) {
       this.initializeList()
     }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Create Sublist`;
+    document.title = `${title} | Create Sublist`
   }
 
   componentWillReceiveProps (nextProps) {
@@ -180,12 +180,12 @@ class CreateSubList extends React.Component {
   }
 
   createSubList (content) {
-    let listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, 'parentListId': this.state.listSelected._id, 'parentListName': this.state.listSelected.name}
+    let listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, 'parentListId': this.state.listSelected._id, 'parentListName': this.state.listSelected.name, 'joiningCondition': this.state.joiningCondition}
     this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
   }
 
   editSubList (content) {
-    let listPayload = {'content': content, 'conditions': this.state.conditions, 'newListName': this.state.newListName, 'listName': this.props.currentList.listName}
+    let listPayload = {'content': content, 'conditions': this.state.conditions, 'newListName': this.state.newListName, 'listName': this.props.currentList.listName, 'joiningCondition': this.state.joiningCondition}
     this.props.editList(listPayload, this.msg, this.handleEditList)
   }
   onUpdate () {
@@ -489,7 +489,7 @@ class CreateSubList extends React.Component {
                             value='segmentAll'
                             name='segmentationType'
                             onChange={this.handleRadioChange}
-                            checked={this.state.selectedRadio === 'segmentAll'}/>
+                            checked={this.state.selectedRadio === 'segmentAll'} />
                           <label>Segment all subscribers</label>
                         </div>
                         { this.state.lists.length === 0
