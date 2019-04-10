@@ -24,7 +24,11 @@ class Connect extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
-    if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
+    if (nextProps.user && nextProps.user.role !== 'buyer') {
+      browserHistory.push({
+        pathname: '/dashboard'
+      })
+    } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       browserHistory.push({
         pathname: '/dashboard'
       })
@@ -35,15 +39,15 @@ class Connect extends React.Component {
      $('#sidebarDiv').addClass('hideSideBar')
      $('#headerDiv').addClass('hideHeader')
      /* eslint-enable */
-     const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Facebook Connect`;
+    document.title = `${title} | Facebook Connect`
   }
   skip () {
     this.props.skip()
