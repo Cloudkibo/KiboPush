@@ -187,6 +187,7 @@ class Card extends React.Component {
         }
       } else {
         this.msg.error('The given domain is not whitelisted. Please add it to whitelisted domains.')
+        this.setState({webviewurl: '', webviewsize: 'FULL'})
       }
     } else {
       this.msg.error('Unable to verify whitelisted domains.')
@@ -221,9 +222,11 @@ class Card extends React.Component {
         this.props.topElementStyle('compact')
       }
     }
-    this.setState({
-      openPopover: false
-    })
+    if (this.state.openWebView === false) {
+      this.setState({
+        openPopover: false
+      })
+    }
   }
   handleClick (e) {
     if (this.state.elementUrl !== '' && isWebURL(this.state.elementUrl)) {
