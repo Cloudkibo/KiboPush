@@ -390,7 +390,7 @@ class Sidebar extends Component {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to={this.props.user.platform === 'sms' ? 'smsBroadcasts' : '/broadcasts'} className='m-menu__link'>
+            <Link to={this.props.user.platform === 'sms' ? 'smsBroadcasts' : this.props.user.platform === 'messenger' ? '/broadcasts' : '/whatsAppBroadcasts'} className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
