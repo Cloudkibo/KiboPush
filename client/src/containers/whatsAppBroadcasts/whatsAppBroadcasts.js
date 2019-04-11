@@ -10,7 +10,7 @@ import ReactPaginate from 'react-paginate'
 import { browserHistory, Link } from 'react-router'
 import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 
-class SmsBroadcast extends React.Component {
+class WhatsAppBroadcast extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -253,4 +253,4 @@ function mapDispatchToProps (dispatch) {
     loadWhatsAppContactsList
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppBroadcast)

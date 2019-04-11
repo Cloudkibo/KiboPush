@@ -10,7 +10,7 @@ import TargetCustomers from '../businessGateway/targetCustomers'
 import AlertContainer from 'react-alert'
 import { updateCurrentCustomersInfo, setDefaultCustomersInfo } from '../../redux/actions/businessGateway.actions'
 
-class SmsBroadcast extends React.Component {
+class CreateWhatsAppBroadcast extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -228,4 +228,4 @@ function mapDispatchToProps (dispatch) {
     setDefaultCustomersInfo
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateWhatsAppBroadcast)
