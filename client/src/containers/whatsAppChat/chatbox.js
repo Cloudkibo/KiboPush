@@ -53,6 +53,7 @@ class ChatBox extends React.Component {
     this.setDataPayload = this.setDataPayload.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.handleSendAttachment = this.handleSendAttachment.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
   }
 
   setMessageData (session, payload) {
@@ -116,8 +117,7 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: '',
-      showGifPicker: false
+      removeFileDescription: ''
     })
   }
 
