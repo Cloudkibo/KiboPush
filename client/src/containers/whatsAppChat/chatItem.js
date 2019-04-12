@@ -32,6 +32,18 @@ class ChatItem extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+  }
+
+  getRepliedByMsg (msg) {
+    if (
+      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+      msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
+    ) {
+      return `${msg.replied_by.name} replied`
+    } else {
+      return 'You replied'
+    }
   }
 
   onTestURLAudio (url) {
@@ -75,7 +87,7 @@ class ChatItem extends React.Component {
     } else {
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {this.props.activeSession.number} wrote
+          {type === 'twilio' ? `${this.props.activeSession.number} wrote` : this.getRepliedByMsg(msg)}
         </div>
         <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
           {msg.payload.text}
