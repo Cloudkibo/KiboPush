@@ -201,21 +201,42 @@ class Dashboard extends React.Component {
       //     pathname: '/resendVerificationEmail'
       //   })
       // } else
-      if (nextprops.user.role === 'buyer' && nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio) {
+      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
         browserHistory.push({
           pathname: '/integrations'
         })
-      } else if (nextprops.user.role === 'buyer' && nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'sms'}
-        })
-      } else if (nextprops.user.role === 'buyer' && nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'messenger'}
-        })
-      } else if (nextprops.user.role === 'buyer' && nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
+      }
+      //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'messenger'}
+      //   })
+      // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'sms'}
+      //   })
+      // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'whatsApp'}
+      //   })
+      // }
+      // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      //   browserHistory.push({
+      //     pathname: '/connectFb',
+      //     state: { account_type: 'individual' }
+      //   })
+      // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
+      //   if (nextprops.pages && nextprops.pages.length === 0) {
+      //     console.log('going to push')
+      //     browserHistory.push({
+      //       pathname: '/connectFb',
+      //       state: { account_type: 'team' }
+      //     })
+      //   }
+      // }
+      else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
         console.log('nextprops pages', nextprops)
         browserHistory.push({
           pathname: '/addfbpages'
