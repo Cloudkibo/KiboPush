@@ -52,16 +52,16 @@ class Teams extends React.Component {
   }
 
   componentDidMount () {
-    this.scrollToTop();
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    this.scrollToTop()
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Teams`;
+    document.title = `${title} | Teams`
   }
 
   displayData (n, teams) {
@@ -351,12 +351,12 @@ class Teams extends React.Component {
                                             Edit
                                           </button>
                                         }
-                                        {
+                                        {/* {
                                           this.props.user.role !== 'agent' &&
                                           <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
                                             Delete
                                           </button>
-                                        }
+                                        } */}
                                       </span>
                                     </td>
                                   </tr>

@@ -47,6 +47,9 @@ class UnansweredQueries extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.unansweredQueriesList) {
       // console.log('unanswered questions list ' + JSON.stringify(nextProps.unansweredQueriesList))
+      nextProps.unansweredQueriesList.sort(function (a, b) {
+        return new Date(b.datetime) - new Date(a.datetime)
+      })
       this.displayData(0, nextProps.unansweredQueriesList)
       this.setState({ totalLength: nextProps.unansweredQueriesList.length })
     } else {

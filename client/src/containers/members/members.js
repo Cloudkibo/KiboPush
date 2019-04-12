@@ -177,16 +177,16 @@ class Members extends React.Component {
           </ModalContainer>
         }
         <div className='m-content'>
-         <div
+          <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
             role='alert'>
             <div className='m-alert__icon'>
-              <i className='flaticon-exclamation m--font-brand' />
-            </div>
+             <i className='flaticon-exclamation m--font-brand' />
+           </div>
             <div className='m-alert__text'>
               Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-            </div>
+           </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
@@ -302,7 +302,7 @@ class Members extends React.Component {
                                       }
                                       </span>
                                     }
-                                    {
+                                    {/* {
                                       member.role !== 'buyer' && member.role === 'admin' && this.props.user.permissions.deleteAdminPermission &&
                                       <button className='btn btn-primary'
                                         style={{
@@ -321,7 +321,7 @@ class Members extends React.Component {
                                         }}
                                         onClick={() => this.showDialogDelete(member)}>Delete
                                       </button>
-                                    }
+                                    } */}
                                   </span>
                                 </td>
                               </tr>
