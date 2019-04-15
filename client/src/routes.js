@@ -134,12 +134,16 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContacts/uploadContacts'
+import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
 import SmsSubscribers from './containers/uploadContacts/contacts'
 import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
 import SmsChat from './containers/smsChat/smsChat'
+import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
+import CreateWhatsAppBroadcast from './containers/whatsAppBroadcasts/create'
+import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -239,7 +243,6 @@ const routes = (
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/categories' component={Categories} onEnter={requireAuth} />
     <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
-    <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
@@ -312,6 +315,10 @@ const routes = (
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
+    <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
+    <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
+    <Route path='/createWhatsAppBroadcast' component={CreateWhatsAppBroadcast} onEnter={requireAuth} />
+    <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 

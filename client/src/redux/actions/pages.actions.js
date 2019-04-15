@@ -19,6 +19,13 @@ export function updatePagesListNew (data) {
   }
 }
 
+export function updateSubscriberReachEstimation (data) {
+  return {
+    type: ActionTypes.UPDATE_REACH_ESTIMATION,
+    data
+  }
+}
+
 export function updateOtherPages (data) {
   return {
     type: ActionTypes.FETCH_PAGES_LIST,
@@ -119,6 +126,25 @@ export function removePageInAddPage (page) {
       dispatch(addPages())
       dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
     })
+  }
+}
+
+export function getSubscriberReachEstimation (page, subscribers) {
+  return (dispatch) => {
+    console.log('in getSubscriberReachEstimation')
+    if (!page.subscriberLimitForBatchAPI || subscribers.length < page.subscriberLimitForBatchAPI) {
+      console.log('page subscribers less than subscriberLimitForBatchAPI')
+      dispatch(updateSubscriberReachEstimation(subscribers.length))
+    } else {
+      dispatch(updateSubscriberReachEstimation(null))
+      callApi(`broadcasts/retrieveReachEstimation/${page._id}`)
+      .then(res => {
+        console.log('retrieveReachEstimation res.payload', res.payload)
+        if (res.status === 'success') {
+          dispatch(updateSubscriberReachEstimation(res.payload.reach_estimation))
+        }
+      })
+    }
   }
 }
 

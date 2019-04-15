@@ -4,53 +4,33 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList } from '../../redux/actions/whatsAppBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { browserHistory, Link } from 'react-router'
-import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
+import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 
-class SmsBroadcast extends React.Component {
+class WhatsAppBroadcast extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       broadcastsData: [],
       totalLength: 0,
-      pageNumber: 0,
-      isShowingModal: false,
-      numberValue: ''
+      pageNumber: 0
     }
 
-    props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
-    props.loadTwilioNumbers()
 
     this.displayData = this.displayData.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
-    this.onNumberChange = this.onNumberChange.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-  }
-
-  onNumberChange (e) {
-    this.setState({numberValue: e.target.value})
   }
 
   gotoCreate (broadcast) {
     browserHistory.push({
-      pathname: `/createsmsBroadcast`,
-      state: {number: this.state.numberValue}
+      pathname: `/createWhatsAppBroadcast`
     })
-  }
-
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
   }
 
   displayData (n, broadcasts) {
@@ -138,32 +118,6 @@ class SmsBroadcast extends React.Component {
               </div>
             </div>
           }
-          {
-            this.state.isShowingModal &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <h3>Create Broadcast</h3>
-                <p>Select your Twilio Number to send broadcast from:</p>
-                <div style={{width: '100%', textAlign: 'center'}}>
-                  <div className='form-group m-form__group'>
-                    <select className='custom-select' style={{width: '100%'}} value={this.state.numberValue} onChange={this.onNumberChange} >
-                      {this.props.twilioNumbers && this.props.twilioNumbers.length > 0 && this.props.twilioNumbers.map((number) => (
-                        <option value={number}>{number}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <br />
-                  <div style={{display: 'inline-block', padding: '5px'}}>
-                    <button style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
-                      Create New Broadcast
-                    </button>
-                  </div>
-                </div>
-              </ModalDialog>
-            </ModalContainer>
-          }
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Broadcasts</h3>
@@ -193,7 +147,7 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.gotoCreate} disabled={this.props.contacts && this.props.contacts.length === 0}>
                         <span>
                           <i className='la la-plus' />
                           <span>Create New</span>
@@ -229,6 +183,10 @@ class SmsBroadcast extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Delivered</span>
                           </th>
+                          <th data-field='seen'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Seen</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -239,8 +197,9 @@ class SmsBroadcast extends React.Component {
                             <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.platform}</span></td>
                             <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
-                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
+                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.automated_options.twilioWhatsApp.sandboxNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
                           </tr>
                         ))
                       }
@@ -281,18 +240,17 @@ class SmsBroadcast extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: (state.smsBroadcastsInfo.broadcasts),
-    count: (state.smsBroadcastsInfo.count),
-    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
-    contacts: (state.contactsInfo.contacts)
+    broadcasts: (state.whatsAppBroadcastsInfo.broadcasts),
+    count: (state.whatsAppBroadcastsInfo.count),
+    contacts: (state.contactsInfo.contacts),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
-    loadTwilioNumbers,
-    loadContactsList
+    loadWhatsAppContactsList
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppBroadcast)

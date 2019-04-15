@@ -193,15 +193,15 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Polls`;
+    document.title = `${title} | Polls`
   }
 
   gotoView (poll) {
@@ -432,7 +432,7 @@ class Poll extends React.Component {
                               onClick={() => {
                                 let loadData = {}
                                 loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                
+
                                 this.props.deletePoll(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
@@ -478,10 +478,10 @@ class Poll extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '50px'}}>Sent</span>
                           </th>
-                          <th data-field='seen'
+                          {/* <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '50px'}}>Seen</span>
-                          </th>
+                          </th> */}
                           <th data-field='responses'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Responses</span>
@@ -502,7 +502,7 @@ class Poll extends React.Component {
                             <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{poll.statement}</span></td>
                             <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.sent}</span></td>
-                            <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td>
+                            {/* <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td> */}
                             <td data-field='responses' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.responses}</span></td>
                             <td data-field='actions' className='m-datatable__cell'>
                               <span style={{width: '200px'}}>

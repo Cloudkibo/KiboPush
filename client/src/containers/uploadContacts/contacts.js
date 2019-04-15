@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
+import { loadContactsList, loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 class Contact extends React.Component {
@@ -15,8 +15,11 @@ class Contact extends React.Component {
       totalLength: 0,
       pageNumber: 0
     }
-
-    props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    if (props.user.platform === 'sms') {
+      props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    } else {
+      props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    }
 
     this.displayData = this.displayData.bind(this)
   }
@@ -40,23 +43,47 @@ class Contact extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+      if (this.props.user.platform === 'sms') {
+        this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+      } else {
+        this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+      }
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadContactsList({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.contacts.length > 0 ? this.props.contacts[this.props.contacts.length - 1]._id : 'none',
-        number_of_records: 10,
-        first_page: 'next'
-      })
+      if (this.props.user.platform === 'sms') {
+        this.props.loadContactsList({
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.contacts.length > 0 ? this.props.contacts[this.props.contacts.length - 1]._id : 'none',
+          number_of_records: 10,
+          first_page: 'next'
+        })
+      } else {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.contacts.length > 0 ? this.props.contacts[this.props.contacts.length - 1]._id : 'none',
+          number_of_records: 10,
+          first_page: 'next'
+        })
+      }
     } else {
-      this.props.loadContactsList({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.contacts.length > 0 ? this.props.contacts[0]._id : 'none',
-        number_of_records: 10,
-        first_page: 'previous'
-      })
+      if (this.props.user.platform === 'sms') {
+        this.props.loadContactsList({
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.contacts.length > 0 ? this.props.contacts[0]._id : 'none',
+          number_of_records: 10,
+          first_page: 'previous'
+        })
+      } else {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.pageNumber,
+          requested_page: data.selected,
+          last_id: this.props.contacts.length > 0 ? this.props.contacts[0]._id : 'none',
+          number_of_records: 10,
+          first_page: 'previous'
+        })
+      }
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.contacts)
@@ -93,6 +120,14 @@ class Contact extends React.Component {
           </div>
         </div>
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding subscribers? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           <div className='row'>
             <div
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
@@ -177,13 +212,15 @@ class Contact extends React.Component {
 function mapStateToProps (state) {
   return {
     contacts: (state.contactsInfo.contacts),
-    count: (state.contactsInfo.count)
+    count: (state.contactsInfo.count),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadContactsList
+    loadContactsList,
+    loadWhatsAppContactsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Contact)

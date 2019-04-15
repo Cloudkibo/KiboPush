@@ -7,7 +7,7 @@ import {
   fetchSessions,
   fetchChat,
   markRead
-} from '../../redux/actions/smsChat.actions'
+} from '../../redux/actions/whatsAppChat.actions'
 
 // Components
 import SESSIONSAREA from './sessionsArea.js'
@@ -67,7 +67,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of smsChat', nextProps)
+    console.log('in componentWillReceiveProps of whatsAppChat', nextProps)
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
     }
@@ -149,10 +149,10 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log('props in live chat', state)
   return {
-    sessions: (state.smsChatInfo.sessions),
-    count: (state.smsChatInfo.count),
-    chat: (state.smsChatInfo.chat),
-    chatCount: (state.smsChatInfo.chatCount),
+    sessions: (state.whatsAppChatInfo.sessions),
+    count: (state.whatsAppChatInfo.count),
+    chat: (state.whatsAppChatInfo.chat),
+    chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user)
   }
 }

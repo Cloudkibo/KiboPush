@@ -42,7 +42,9 @@ class CreatePoll extends React.Component {
       localeValue: [],
       tagValue: [],
       pollValue: [],
-      isShowingModalGuideLines: false
+      isShowingModalGuideLines: false,
+      pageId: this.props.pages[0],
+      tabActive: 'poll'
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -54,9 +56,63 @@ class CreatePoll extends React.Component {
     this.showError = this.showError.bind(this)
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+    this.initTab = this.initTab.bind(this)
+    this.onPollClick = this.onPollClick.bind(this)
+    this.onTargetClick = this.onTargetClick.bind(this)
+    this.onNext = this.onNext.bind(this)
+    this.onPrevious = this.onPrevious.bind(this)
   }
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
+  }
+
+  onNext (e) {
+  /* eslint-disable */
+    $('#tab_1').removeClass('active')
+    $('#tab_2').addClass('active')
+    $('#titleBroadcast').removeClass('active')
+    $('#titleTarget').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target'})
+  }
+
+  onPrevious () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'poll'})
+  }
+
+  initTab () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'poll'})
+  }
+
+  onPollClick () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'poll'})
+  }
+  onTargetClick (e) {
+  /* eslint-disable */
+    $('#tab_1').removeClass('active')
+    $('#tab_2').addClass('active')
+    $('#titleBroadcast').removeClass('active')
+    $('#titleTarget').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target', resetTarget: false})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -73,15 +129,16 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModalGuideLines: false})
   }
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
 
-    document.title = `${title} | Create Poll`;
+    document.title = `${title} | Create Poll`
+    this.initTab()
   }
 
   showDialog () {
@@ -92,9 +149,12 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   handleTargetValue (targeting) {
+    console.log('targeting createPoll', targeting)
+    console.log('pageId', this.props.pages.find(page => page.pageId === targeting.pageValue[0]))
     this.setState({
       listSelected: targeting.listSelected,
       pageValue: targeting.pageValue,
+      pageId: this.props.pages.find(page => page.pageId === targeting.pageValue[0]),
       genderValue: targeting.genderValue,
       localeValue: targeting.localeValue,
       tagValue: targeting.tagValue,
@@ -230,6 +290,7 @@ class CreatePoll extends React.Component {
             }
           }
         }
+        let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
         var data = {
           platform: 'Facebook',
           datetime: Date.now(),
@@ -244,7 +305,8 @@ class CreatePoll extends React.Component {
           isList: isListValue,
           segmentationPoll: this.state.pollValue,
           segmentationList: this.state.listSelected,
-          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
+          subscribersCount: currentPageSubscribers
         }
         console.log('Sending Poll', data)
         this.props.sendPollDirectly(data, this.msg)
@@ -314,13 +376,7 @@ class CreatePoll extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Create Poll</h3>
-            </div>
-          </div>
-        </div>
+
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -331,132 +387,163 @@ class CreatePoll extends React.Component {
             </div>
           </div>
           <div className='row'>
-            <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+            <div className='col-12'>
               <div className='m-portlet' style={{height: '100%'}}>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                      Ask Facebook Subscribers a Question
-                      </h3>
+                        Ask Facebook Subscribers a Question
+                        </h3>
                     </div>
                   </div>
                 </div>
-                <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <p>Do you want to send this poll right away or save it for later use? </p>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.closeDialog()
-                                  this.goToSend()
-                                }}>
-                                  Send
-                                </button>
-                              </div>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.createPoll()
-                                  this.closeDialog()
-                                }}>
-                                  Save
-                                </button>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                    </div>
-                  </div>
-                  <div className='m-form'>
-                    <div id='question' className='form-group m-form__group'>
-                      <label className='control-label'>Ask something...</label>
-                      <textarea className='form-control'
-                        value={this.state.statement}
-                        placeholder='Enter Question'
-                        onChange={(e) => this.updateStatment(e)} />
-                    </div>
-                    <div style={{top: '10px'}}>
-                      <label className='control-label'> Add 3 responses</label>
-                      <fieldset className='input-group-vertical'>
-                        <div id='responses' className='form-group m-form__group'>
-                          <label className='sr-only'>Response1</label>
-                          <input type='text' className='form-control'
-                            value={this.state.option1}
-                            onChange={(e) => this.updateOptions(e, 1)}
-                            placeholder='Response 1' maxLength='20' />
+
+                <div className='m-portlet__body' >
+                  {
+                    this.state.tabActive === 'target' &&
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='pull-right'>
+                            <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                            Previous
+                            </button>
+
+                            <button
+                              disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                              className='btn btn-primary'
+                              onClick={() => {
+                                this.checkValidation()
+                              }}>
+                              Create Poll
+                            </button>
+
+                          </div>
                         </div>
-                        <div className='form-group m-form__group'>
-                          <label className='sr-only'>Response2</label>
-                          <input type='text' className='form-control'
-                            value={this.state.option2}
-                            onChange={(e) => this.updateOptions(e, 2)}
-                            placeholder='Response 2' maxLength='20' />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <label className='sr-only'>Response3</label>
-                          <input type='text' className='form-control'
-                            value={this.state.option3}
-                            onChange={(e) => this.updateOptions(e, 3)}
-                            placeholder='Response 3' maxLength='20' />
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                  { this.state.alert &&
-                    <center>
-                      <Alert type='danger' style={{marginTop: '30px'}}>
-                        You have either left one or more responses empty or you
-                        have not asked anything. Please ask something and fill all
-                        three responses in order to create the poll.
-                      </Alert>
-                    </center>
+                      </div>
                   }
-                </div>
-                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                  <div className='col-12'>
-                    <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this poll after 30 mins of ending the conversation.</p>
-                  </div>
-                  <div className='col-12'>
-                    <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
-                      <button
-                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                        className='btn btn-primary'
-                        onClick={() => {
-                          this.checkValidation()
-                        }}> Create Poll
-                      </button>
-                      <Link
-                        to='/poll'
-                        className='btn btn-secondary' style={{'marginLeft': '10px'}}>
-                        Cancel
-                      </Link>
+
+                  {
+                    this.state.tabActive === 'poll' &&
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='pull-right'>
+                            <button className='btn btn-primary'
+                              style={{marginRight: '10px'}}
+                              disabled={(this.state.option1 === '' || this.state.option2 === '' || this.state.option3 === '' || this.state.statement === '')}
+                              onClick={this.onNext}>
+                            Next
+                            </button>
+                            <Link
+                              to='/poll'
+                              className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                            Cancel
+                          </Link>
+                          </div>
+                        </div>
+                      </div>
+                  }
+
+                  <div className='row'>
+                    <div className='col-12'>
+                      <ul className='nav nav-tabs'>
+                        <li>
+                          <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onPollClick}>Poll </a>
+                        </li>
+                        <li>
+                          {
+                            (this.state.option1 === '' || this.state.option2 === '' || this.state.option3 === '' || this.state.statement === '')
+                            ? <a>Targeting</a>
+                            : <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                          }
+                        </li>
+                      </ul>
+                      <div className='tab-content'>
+                        <div className='tab-pane fade active in' id='tab_1'>
+                          <div className='row align-items-center'>
+                            <div className='col-xl-8 order-2 order-xl-1' />
+                            <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                              {
+                                  this.state.isShowingModal &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeDialog}>
+                                        <p>Do you want to send this poll right away or save it for later use? </p>
+                                        <div style={{width: '100%', textAlign: 'center'}}>
+                                          <div style={{display: 'inline-block', padding: '5px'}}>
+                                            <button className='btn btn-primary' onClick={() => {
+                                              this.closeDialog()
+                                              this.goToSend()
+                                            }}>
+                                              Send
+                                            </button>
+                                          </div>
+                                          <div style={{display: 'inline-block', padding: '5px'}}>
+                                            <button className='btn btn-primary' onClick={() => {
+                                              this.createPoll()
+                                              this.closeDialog()
+                                            }}>
+                                              Save
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                            </div>
+                          </div>
+                          <div className='m-form'>
+                            <div id='question' className='form-group m-form__group'>
+                              <label className='control-label'>Ask something...</label>
+                              <textarea className='form-control'
+                                value={this.state.statement}
+                                placeholder='Enter Question'
+                                onChange={(e) => this.updateStatment(e)} />
+                            </div>
+                            <div style={{top: '10px'}}>
+                              <label className='control-label'> Add 3 responses</label>
+                              <fieldset className='input-group-vertical'>
+                                <div id='responses' className='form-group m-form__group'>
+                                  <label className='sr-only'>Response1</label>
+                                  <input type='text' className='form-control'
+                                    value={this.state.option1}
+                                    onChange={(e) => this.updateOptions(e, 1)}
+                                    placeholder='Response 1' maxLength='20' />
+                                </div>
+                                <div className='form-group m-form__group'>
+                                  <label className='sr-only'>Response2</label>
+                                  <input type='text' className='form-control'
+                                    value={this.state.option2}
+                                    onChange={(e) => this.updateOptions(e, 2)}
+                                    placeholder='Response 2' maxLength='20' />
+                                </div>
+                                <div className='form-group m-form__group'>
+                                  <label className='sr-only'>Response3</label>
+                                  <input type='text' className='form-control'
+                                    value={this.state.option3}
+                                    onChange={(e) => this.updateOptions(e, 3)}
+                                    placeholder='Response 3' maxLength='20' />
+                                </div>
+                              </fieldset>
+                            </div>
+                          </div>
+                          { this.state.alert &&
+                            <center>
+                              <Alert type='danger' style={{marginTop: '30px'}}>
+                                  You have either left one or more responses empty or you
+                                  have not asked anything. Please ask something and fill all
+                                  three responses in order to create the poll.
+                                </Alert>
+                            </center>
+                            }
+                        </div>
+                        <div className='tab-pane' id='tab_2'>
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='poll' />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <div className='m-portlet' style={{height: '100%'}}>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                      Targeting
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='poll' />
                 </div>
               </div>
             </div>

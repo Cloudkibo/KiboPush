@@ -85,7 +85,9 @@ class Dashboard extends React.Component {
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
-    if (response.status === 'failed') {
+    if (this.props.user && this.props.user.role === 'buyer' &&
+        response.status === 'failed' && response.payload.error &&
+        response.payload.error.code === 190) {
       browserHistory.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
@@ -116,7 +118,7 @@ class Dashboard extends React.Component {
     return formattedData
   }
   prepareExportData () {
-    //console.log('prepareExportData')
+    // console.log('prepareExportData')
     var data = []
     var dashboardObj = {}
     if (this.props.dashboard) {
@@ -199,21 +201,27 @@ class Dashboard extends React.Component {
       //     pathname: '/resendVerificationEmail'
       //   })
       // } else
-      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio) {
+      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
         browserHistory.push({
           pathname: '/integrations'
         })
-      } else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'sms'}
-        })
-      } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'messenger'}
-        })
       }
+      //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'messenger'}
+      //   })
+      // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'sms'}
+      //   })
+      // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'whatsApp'}
+      //   })
+      // }
       // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
       //   browserHistory.push({
       //     pathname: '/connectFb',
@@ -438,14 +446,14 @@ class Dashboard extends React.Component {
     //   console.log('updating sentVsSeen currentPage')
     //   this.props.sentVsSeen(this.props.currentPage.pageId)
     // }
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
+      title = 'KiboChat'
     }
-    document.title = `${title} | Dashboard`;
+    document.title = `${title} | Dashboard`
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',

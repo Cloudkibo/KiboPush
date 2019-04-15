@@ -55,6 +55,9 @@ class WaitingReplyList extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.waitingReplyList) {
+      nextProps.waitingReplyList.sort(function (a, b) {
+        return new Date(b.datetime) - new Date(a.datetime)
+      })
       console.log('waiting reply list ' + JSON.stringify(nextProps.waitingReplyList))
       this.displayData(0, nextProps.waitingReplyList)
       this.setState({ totalLength: nextProps.waitingReplyList.length })
