@@ -11,7 +11,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateMessage extends React.Component {
   constructor (props) {
