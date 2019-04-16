@@ -120,6 +120,7 @@ export function sendSurveyDirectly (survey, msg) {
         if (res.status === 'success') {
           msg.success('Survey sent successfully')
         } else {
+          msg.error(res.description)
           dispatch(showWarning(res.description))
         }
       })
