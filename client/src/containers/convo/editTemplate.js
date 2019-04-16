@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { validateFields } from '../convo/utility'
 import {
   loadMyPagesList
@@ -67,10 +67,10 @@ class EditTemplate extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if(nextProps.pages !== this.props.pages) {
-    var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
-    console.log('PageSelected', pages[0])
-    this.setState({selectedPage: pages[0].welcomeMessage}) 
+    if (nextProps.pages !== this.props.pages) {
+      var pages = nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
+      console.log('PageSelected', pages[0])
+      this.setState({selectedPage: pages[0].welcomeMessage})
     }
   }
 
@@ -82,7 +82,7 @@ class EditTemplate extends React.Component {
    // var broadcast = this.state.broadcast
     console.log('pages ine edit template', this.props.pages)
     console.log('this.state.selectedPage', this.state.selectedPage)
-    console.log('this.props.location.state.pages[0])',this.props.location.state.pages[0])
+    console.log('this.props.location.state.pages[0])', this.props.location.state.pages[0])
     var alertOptions = {
       offset: 14,
       position: 'top right',

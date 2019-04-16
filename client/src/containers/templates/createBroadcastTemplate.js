@@ -10,7 +10,7 @@ import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateBroadcastTemplate extends React.Component {
   constructor (props, context) {

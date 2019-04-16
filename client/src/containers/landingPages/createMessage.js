@@ -6,7 +6,7 @@
   import React from 'react'
   import { connect } from 'react-redux'
   import { bindActionCreators } from 'redux'
-  import GenericMessage from '../../components/GenericMessage'
+  import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
   import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
   import AlertContainer from 'react-alert'
   import { browserHistory } from 'react-router'

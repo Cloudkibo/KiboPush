@@ -17,13 +17,14 @@ import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 import Targeting from './Targeting'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
+import StickyDiv from 'react-stickydiv'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -53,7 +54,8 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0]
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
+      titleEditable: true
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -482,15 +484,22 @@ class CreateConvo extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
+
                       {
                         this.state.tabActive === 'broadcast' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.reset}>
+                        <div style={{marginBottom: '30px'}}>
+                          {/* {!this.state.titleEditable
+                                  ? <h3 style={{display: 'inline'}}> {this.state.convoTitle} </h3>
+                                  : <h3 style={{display: 'inline'}}>{this.state.convoTitle} <i onClick={this.renameTitle} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                          } */}
+                          <div className='pull-right'>
+                            <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.reset}>
                             Reset
                           </button>
-                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
+                            <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                             Next
                           </button>
+                          </div>
                         </div>
                       }
                       {
@@ -529,8 +538,9 @@ class CreateConvo extends React.Component {
                             broadcast={this.state.broadcast}
                             handleChange={this.handleChange}
                             setReset={reset => { this.reset = reset }}
+                            setRenameTitle={renameTitle => { this.renameTitle = renameTitle }}
                             convoTitle={this.state.convoTitle}
-                            titleEditable
+                            titleEditable={this.state.titleEditable}
                             pageId={this.state.pageId.pageId}
                             pages={this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
