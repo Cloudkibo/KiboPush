@@ -176,7 +176,7 @@ class ChatItem extends React.Component {
   }
 
   render () {
-    console.log('render in chat', this.props.chat)
+    console.log('render in chatitem', this.props.chat)
     return (
       <div style={{height: '420px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
         <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
@@ -249,7 +249,6 @@ class ChatItem extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount)
   }
 }
