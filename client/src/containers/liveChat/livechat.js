@@ -35,6 +35,7 @@ import { loadTeamsList } from '../../redux/actions/teams.actions'
 import INFO from '../../components/LiveChat/info.js'
 import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from '../../components/LiveChat/profileArea.js'
+import CHATAREA from '../../components/LiveChat/chatArea.js'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -228,13 +229,8 @@ class LiveChat extends React.Component {
                 }
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                  <div className='col-xl-5'>
-                    <div className='m-portlet m-portlet--full-height'>
-                      <div style={{textAlign: 'center'}} className='m-portlet__body'>
-                        <p>Chat Area</p>
-                      </div>
-                    </div>
-                  </div>
+                  <CHATAREA
+                  />
                 }
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
