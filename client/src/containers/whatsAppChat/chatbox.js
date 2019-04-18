@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { sendChatMessage, sendAttachment, updateChat } from '../../redux/actions/whatsAppChat.actions'
+import { sendChatMessage, sendAttachment } from '../../redux/actions/whatsAppChat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
@@ -220,17 +220,15 @@ class ChatBox extends React.Component {
       if (this.state.uploadedId !== '' && this.state.attachment) {
         payload = this.setDataPayload('attachment')
         data = this.setMessageData(session, payload)
-        this.props.sendAttachment(data, this.handleSendAttachment)
-        data.format = 'kibopush'
-        this.props.chat.push(data)
+        this.props.onEnter(data, 'attachment', this.handleSendAttachment)
       } else if (this.state.textAreaValue !== '') {
         payload = this.setDataPayload('text')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
+        this.props.onEnter(data, 'text')
         this.setState({textAreaValue: ''})
-        data.format = 'kibopush'
+        // data.format = 'kibopush'
         // this.props.chat.push(data)
-        this.props.updateChat(this.props.chat, data)
+        // this.props.updateChat(this.props.chat, data)
       }
       this.newMessage = true
     }
@@ -244,6 +242,7 @@ class ChatBox extends React.Component {
   }
 
   render () {
+    console.log('render in chatbox', this.props.chat)
     return (
       <div>
         <div className='m-messenger__form' style={{width: '93%', margin: 0}}>
@@ -324,7 +323,6 @@ class ChatBox extends React.Component {
 function mapStateToProps (state) {
   console.log('state in ChatBox', state)
   return {
-    chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount)
   }
 }
@@ -334,8 +332,7 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage,
     uploadAttachment,
     deletefile,
-    sendAttachment,
-    updateChat
+    sendAttachment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

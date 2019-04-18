@@ -65,7 +65,7 @@ export function sendChatMessage (data) {
     callApi('whatsAppChat', 'post', data)
       .then(res => {
         console.log('response from sendChatMessage', res)
-        // dispatch(fetchChat(data.contactId))
+        dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
       })
   }
 }
