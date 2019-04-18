@@ -18,6 +18,7 @@ import StickyDiv from 'react-stickydiv'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
+import TextModal from './TextModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -48,6 +49,8 @@ class GenericMessage extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.addComponent = this.addComponent.bind(this)
     this.getComponent = this.getComponent.bind(this)
+    this.showAddComponentModal = this.showAddComponentModal.bind(this)
+    this.closeAddComponentModal = this.closeAddComponentModal.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -103,6 +106,15 @@ class GenericMessage extends React.Component {
   closeResetAlertDialog () {
     this.setState({isShowingModalResetAlert: false})
   }
+
+  showAddComponentModal () {
+    this.setState({isShowingAddComponentModal: true})
+  }
+
+  closeAddComponentModal () {
+    this.setState({isShowingAddComponentModal: false})
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -316,14 +328,17 @@ class GenericMessage extends React.Component {
     this.props.handleChange({broadcast: []})
   }
 
-  addComponent (componentType) {
+  addComponent (componentDetails) {
+    console.log('componentDetails', componentDetails)
     console.log('genericMessage props in addComponent', this.props)
+    // this.showAddComponentModal()
     let temp = this.state.list
-    let component = this.getComponent({componentType})
+    let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
-    this.msg.info(`New ${componentType} component added`)
+    this.msg.info(`New ${componentDetails.componentType} component added`)
     this.setState({list: [...temp, {content: component.component}]})
     component.handler()
+    this.closeAddComponentModal()
   }
 
   getComponent (broadcast) {
@@ -332,7 +347,7 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
-        handler: () => { this.handleText({id: componentId, text: '', buttons: []}) }
+        handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: []}) }
       },
       'image': {
         component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
@@ -400,7 +415,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     </StickyDiv>
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.addComponent} />
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} />
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     {
@@ -414,6 +429,28 @@ class GenericMessage extends React.Component {
                         <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
                       </ModalDialog>
                     </ModalContainer>
+                    }
+                    {/* {
+                      <Modal
+                        isOpen={this.state.isShowingAddComponentModal}
+                        onRequestClose={this.closeAddComponentModal}
+                        contentLabel='Example Modal'
+                     >
+                        <h2>Hello</h2>
+                        <button onClick={this.closeAddComponentModal}>close</button>
+                        <div>I am a modal</div>
+                        <form>
+                          <input />
+                          <button>tab navigation</button>
+                          <button>stays</button>
+                          <button>inside</button>
+                          <button>the modal</button>
+                        </form>
+                      </Modal>
+                    } */}
+                    {
+                    this.state.isShowingAddComponentModal &&
+                      <TextModal closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />
                     }
                     {
                     this.state.isShowingModalResetAlert &&
