@@ -100,7 +100,7 @@ export function deleteTag (tag, msg) {
     callApi('tags/delete/', 'post', {tag})
       .then(res => {
         if (res.status === 'success') {
-          msg.success(`${res.description}`)
+          msg.success(`${res.payload}`)
           dispatch(loadTags())
         } else {
           if (res.status === 'failed' && res.description) {
@@ -117,6 +117,7 @@ export function renameTag (payload, msg, handleEdit) {
   return (dispatch) => {
     callApi('tags/rename/', 'post', payload)
       .then(res => {
+        console.log('renameTag response', res)
         if (res.status === 'success' && res.payload) {
           msg.success('Tag has been changed')
           dispatch(loadTags())
