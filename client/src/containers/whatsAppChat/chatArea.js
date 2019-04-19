@@ -7,7 +7,9 @@ import React from 'react'
 import {
   fetchChat,
   sendChatMessage,
-  markRead
+  markRead,
+  updateChat,
+  sendAttachment
 } from '../../redux/actions/whatsAppChat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -27,7 +29,30 @@ class ChatArea extends React.Component {
 
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
+    this.updateChat = this.updateChat.bind(this)
+    this.onEnter = this.onEnter.bind(this)
     // this.updateScrollTop = this.updateScrollTop.bind(this)
+  }
+
+  onEnter (data, type, handleSendAttachment) {
+    console.log('in onEnter')
+    if (type === 'attachment') {
+      this.props.sendAttachment(data, handleSendAttachment)
+      data.format = 'kibopush'
+      this.props.chat.push(data)
+    } else {
+      console.log('in else')
+      this.props.sendChatMessage(data)
+      data.format = 'kibopush'
+      // this.props.updateChat(this.props.chat, data)
+      this.props.chat.push(data)
+      this.forceUpdate()
+    }
+  }
+
+  updateChat (chat, newChat) {
+    console.log('in updateChat')
+    this.props.updateChat(this.props.chat, newChat)
   }
 
   shouldLoad () {
@@ -90,6 +115,7 @@ class ChatArea extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('in componentWillReceiveProps of ChatArea', nextProps)
     // // this.getDisabledValue()
     // if (nextProps.urlMeta) {
     //   if (!nextProps.urlMeta.type) {
@@ -101,6 +127,7 @@ class ChatArea extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+    console.log('in componentDidUpdate of ChatArea', nextProps)
     // this.props.updateUnreadCount(this.props.activeSession)
     // this.updateScrollTop()
     // if (this.newMessage) {
@@ -113,7 +140,7 @@ class ChatArea extends React.Component {
   }
 
   render () {
-    console.log('render in chat', this.props.chat)
+    console.log('render in CHATAREA', this.props.chat)
     return (
       <div className='col-xl-5'>
         <div style={{float: 'left', clear: 'both'}}
@@ -125,10 +152,14 @@ class ChatArea extends React.Component {
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
-                    updateUnreadCount={this.props.updateUnreadCount} />
+                    updateUnreadCount={this.props.updateUnreadCount}
+                    chat={this.props.chat} />
                   <div className='m-messenger__seperator' />
                   <ChatBox activeSession={this.props.activeSession}
-                    user={this.props.user} />
+                    user={this.props.user}
+                    updateChat={this.updateChat}
+                    chat={this.props.chat}
+                    onEnter={this.onEnter} />
                 </div>
               </div>
             </div>
@@ -140,6 +171,7 @@ class ChatArea extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('in mapStateToProps of ChatArea', state)
   return {
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount)
@@ -150,7 +182,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchChat,
     sendChatMessage,
-    markRead
+    markRead,
+    updateChat,
+    sendAttachment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatArea)
