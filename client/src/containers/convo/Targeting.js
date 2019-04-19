@@ -109,6 +109,7 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    console.log('options', options)
     this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
@@ -129,6 +130,7 @@ class Targeting extends React.Component {
       $('.surveyFilter').addClass('hideSegmentation')
     }
     /* eslint-enable */
+    console.log('pageValue', this.state.pageValue)
   }
 
   showSubscriptionMsg (pageSelected) {
@@ -253,6 +255,7 @@ class Targeting extends React.Component {
      })
   }
   initializeListSelect (lists) {
+    console.log('this.state.pageValue', this.state.pageValue)
     var self = this
     /* eslint-disable */
     $('#selectLists').select2({
@@ -266,6 +269,7 @@ class Targeting extends React.Component {
     /* eslint-disable */
     $('#selectLists').on('change', function (e) {
     /* eslint-enable */
+      console.log('send data to function handle target value', self.state)
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -451,14 +455,15 @@ class Targeting extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
+      console.log('this.state.pageValue in handle radio function', this.state.pageValue)
       this.setState({genderValue: [], localeValue: [], tagValue: [], isList: true, pollValue: [], surveyValue: []})
       /* eslint-disable */
-      $('#selectPage').val('').trigger('change')
-      $('#selectGender').val('').trigger('change')
-      $('#selectLocale').val('').trigger('change')
-      $('#selectTags').val('').trigger('change')
-      $('#selectPoll').val('').trigger('change')
-      $('#selectSurvey').val('').trigger('change')
+      // $('#selectPage').val('').trigger('change')
+      // $('#selectGender').val('').trigger('change')
+      // $('#selectLocale').val('').trigger('change')
+      // $('#selectTags').val('').trigger('change')
+      // $('#selectPoll').val('').trigger('change')
+      // $('#selectSurvey').val('').trigger('change')
       $('.selectSegmentation').addClass('hideSegmentation')
       $('.selectList').removeClass('hideSegmentation')
       /* eslint-enable */
@@ -466,12 +471,14 @@ class Targeting extends React.Component {
       /* eslint-disable */
       $('.selectSegmentation').removeClass('hideSegmentation')
       $('.selectList').addClass('hideSegmentation')
-      $('#selectLists').val('').trigger('change')
+      // $('#selectLists').val('').trigger('change')
       /* eslint-enable */
       this.setState({listSelected: [], isList: false})
     }
   }
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps', nextProps)
+    console.log('this.state.pageValue in component will receive', this.state.pageValue)
     if (nextProps.resetTarget) {
       this.resetTargeting()
     }
@@ -496,7 +503,7 @@ class Targeting extends React.Component {
       this.initializeTagSelect(this.props.tags)
     }
     console.log('current pageId', this.props.page.pageId)
-    console.log('next pageId', nextProps.page.pageId)
+    console.log('next pageId', nextProps.page)
     if (this.props.page.pageId !== nextProps.page.pageId) {
       this.initializeSubscribers(nextProps)
     }
