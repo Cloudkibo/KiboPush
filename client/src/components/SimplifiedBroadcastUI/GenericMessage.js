@@ -347,7 +347,7 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
-        handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: []}) }
+        handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'image': {
         component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
@@ -450,7 +450,7 @@ class GenericMessage extends React.Component {
                     } */}
                     {
                     this.state.isShowingAddComponentModal &&
-                      <TextModal closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />
+                      <TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />
                     }
                     {
                     this.state.isShowingModalResetAlert &&
