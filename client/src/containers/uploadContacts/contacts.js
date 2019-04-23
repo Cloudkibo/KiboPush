@@ -110,6 +110,15 @@ class Contact extends React.Component {
   }
 
   render () {
+    var subscribedStyle = {
+      width: '100px',
+      overflow: 'inherit'
+    }
+    var unsubscribedStyle = {
+      width: '100px',
+      overflow: 'inherit',
+      color: '#818a91'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -161,6 +170,10 @@ class Contact extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Phone Number</span>
                           </th>
+                          <th data-field='status'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Status</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -169,8 +182,9 @@ class Contact extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='pic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img className='m--img-rounded m--marginless m--img-centered' width='60' height='60' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg' /></span></td>
-                            <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{contact.name}</span></td>
-                            <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{contact.number}</span></td>
+                            <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
+                            <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
+                            <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
                           </tr>
                         ))
                       }
