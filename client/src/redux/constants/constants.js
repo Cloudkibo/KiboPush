@@ -338,6 +338,7 @@ export const LOAD_TWILIO_NUMBERS = 'LOAD_TWILIO_NUMBERS'
 // constants for smsChat
 export const FETCH_SESSIONS = 'FETCH_SESSIONS'
 export const FETCH_CHAT = 'FETCH_CHAT'
+export const FETCH_CHAT_OVERWRITE = 'FETCH_CHAT_OVERWRITE'
 export const UPDATE_SESSION = 'UPDATE_SESSION'
 
 // constants for whatsAppBroadcasts

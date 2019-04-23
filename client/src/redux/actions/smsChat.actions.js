@@ -1,11 +1,19 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
 
-export function showChat (data) {
-  return {
-    type: ActionTypes.FETCH_CHAT,
-    chat: data.chat,
-    count: data.count
+export function showChat (data, originalData) {
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.FETCH_CHAT_OVERWRITE,
+      chat: data.chat,
+      count: data.count
+    }
+  } else {
+    return {
+      type: ActionTypes.FETCH_CHAT,
+      chat: data.chat,
+      count: data.count
+    }
   }
 }
 
@@ -34,7 +42,7 @@ export function fetchChat (id, data) {
     callApi(`smsChat/getChat/${id}`, 'post', data)
       .then(res => {
         console.log('response from fetchChat', res)
-        dispatch(showChat(res.payload))
+        dispatch(showChat(res.payload, data))
       })
   }
 }
