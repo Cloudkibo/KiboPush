@@ -96,12 +96,12 @@ class CreateSequence extends React.Component {
     console.log('Trigger event is ', this.triggerEvent)
     let trigMsg = ''
     this.props.messages.map((msg, k) => {
-      if (msg._id === message.trigger[0].value) {
+      if (msg._id === message.trigger.value) {
         trigMsg = msg.title
       }
     })
    // this.setState({triggerMessage: 'When subscriber ' + message.trigger[0].event + ' this ' + trigMsg})
-    return 'When subscriber ' + message.trigger[0].event + ' this ' + trigMsg
+    return 'When subscriber ' + message.trigger.event + ' this ' + trigMsg
   }
 
   saveSegmentation () {
@@ -230,10 +230,10 @@ class CreateSequence extends React.Component {
   }
   saveTriggerMessage () {
     this.props.updateTrigger({
-      trigger: [{
+      trigger: {
         event: this.state.eventNameSelected,
         value: this.state.selectedMessageClickId,
-        buttonId: this.state.selectedButton }],
+        buttonId: this.state.selectedButton },
       type: 'message',
       messageId: this.state.selectedMessageId
     })
@@ -268,12 +268,12 @@ class CreateSequence extends React.Component {
     if (message.trigger.event === 'none') {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
     } else {
-      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event, eventNameSelected: message.trigger[0].event, selectedTriggerMsgId: message.trigger[0].value, selectedMessageClickId: message.trigger[0].value, selectedTriggerBtnTitle: message.trigger[0].buttonTitle, selectedButton: message.trigger[0].buttonTitle})
+      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event, eventNameSelected: message.trigger.event, selectedTriggerMsgId: message.trigger.value, selectedMessageClickId: message.trigger.value, selectedTriggerBtnTitle: message.trigger.buttonTitle, selectedButton: message.trigger.buttonTitle})
     }
-    if (message.trigger.event !== 'none' && message.trigger[0].event === 'clicks') {
+    if (message.trigger.event !== 'none' && message.trigger.event === 'clicks') {
       console.log('Display action set true')
       this.setState({displayAction: true})
-    } else if (message.trigger.event !== 'none' && message.trigger[0].event !== 'clicks') {
+    } else if (message.trigger.event !== 'none' && message.trigger.event !== 'clicks') {
       console.log('Display action set false')
       this.setState({displayAction: false})
     }
@@ -757,7 +757,7 @@ class CreateSequence extends React.Component {
                         <option disabled selected value>Select Event </option>
                          <option value='sees'>sees</option>
                           <option value='clicks'>clicks</option>
-                          <option value='receive'>receive</option>
+                          <option value='receives'>receives</option>
                       </select>
                         <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
                         <option disabled selected value>Select Message </option>
