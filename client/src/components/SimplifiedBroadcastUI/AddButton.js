@@ -1,7 +1,3 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import Button from './Button'
 
@@ -10,8 +6,7 @@ class TextModal extends React.Component {
     super(props)
     this.state = {
       buttons: [{visible: false, title: 'Button 1'}, {visible: false, title: 'Button 2'}, {visible: false, title: 'Button 3'}],
-      buttonActions: this.props.buttonActions,
-      buttonLimit: this.props.buttonLimit
+      numOfCurrentButtons: 0
     }
     this.finalButtons = []
     this.buttonComponents = [null, null, null]
@@ -42,7 +37,7 @@ class TextModal extends React.Component {
     for (let i = 0; i < this.state.buttons.length; i++) {
       if (!this.state.buttons[i].visible) {
         buttons[i].visible = true
-        this.setState({buttons}, () => {
+        this.setState({buttons, numOfCurrentButtons: ++this.state.numOfCurrentButtons}, () => {
           this.checkInvalidButtons()
         })
         this.props.updateButtonStatus({buttons})
@@ -56,7 +51,7 @@ class TextModal extends React.Component {
     buttons[index].visible = false
     buttons[index].title = `Button ${index + 1}`
     this.buttonComponents[index] = null
-    this.setState({buttons}, () => {
+    this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
       this.checkInvalidButtons()
     })
     this.props.updateButtonStatus({buttons})
@@ -74,7 +69,8 @@ class TextModal extends React.Component {
 
   handleDone () {
     console.log('text modal handleDone', this.state)
-    if (this.buttonComponents.length === 0) {
+    let visibleButtons = this.buttonComponents.filter(button => button !== null)
+    if (visibleButtons.length === 0) {
       this.props.addComponent([])
     }
     for (let i = 0; i < this.buttonComponents.length; i++) {
@@ -87,7 +83,7 @@ class TextModal extends React.Component {
 
   buttonLimitReached () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
-    if (visibleButtons >= 3) {
+    if (visibleButtons >= this.props.buttonLimit) {
       return true
     }
   }
@@ -110,18 +106,18 @@ class TextModal extends React.Component {
   render () {
     return (
       <div>
-        <h4>Buttons (Optional):</h4>
+        <h4 style={{marginBottom: '20px'}}>Buttons (Optional):</h4>
         {
             this.state.buttons.map((button, index) => {
               if (button.visible) {
                 return (
-                  <Button updateButtonStatus={this.updateButtonStatus} closeButton={() => this.closeButton(index)} ref={(ref) => { this.buttonComponents[index] = ref }} title={button.title} handleTitleChange={this.handleButtonTitleChange} button_id={index} pageId={this.props.pageId} buttonActions={this.state.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.onAddButton} />
+                  <Button updateButtonStatus={this.updateButtonStatus} closeButton={() => this.closeButton(index)} ref={(ref) => { this.buttonComponents[index] = ref }} title={button.title} handleTitleChange={this.handleButtonTitleChange} button_id={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.onAddButton} />
                 )
               }
             })
         }
         {
-            !this.buttonLimitReached() && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginTop: '30px', marginBottom: '30px'}} onClick={this.addButton}>
+            (this.state.numOfCurrentButtons < this.props.buttonLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.addButton}>
               <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
                 <h6> + Add Button </h6>
               </div>

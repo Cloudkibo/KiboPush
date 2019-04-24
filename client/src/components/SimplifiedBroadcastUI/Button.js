@@ -1,8 +1,3 @@
-/* eslint-disable no-undef */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -289,7 +284,7 @@ class Button extends React.Component {
   }
   render () {
     return (
-      <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginTop: '30px', padding: '20px'}} >
+      <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <div onClick={this.props.closeButton} style={{marginLeft: '355px', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
