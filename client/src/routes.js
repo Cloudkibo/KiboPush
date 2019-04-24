@@ -144,6 +144,7 @@ import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
 import CreateWhatsAppBroadcast from './containers/whatsAppBroadcasts/create'
 import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
+import sponsoredMessaging from './containers/sponsoredMessaging'
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -320,6 +321,7 @@ const routes = (
     <Route path='/createWhatsAppBroadcast' component={CreateWhatsAppBroadcast} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
+    <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
   </Route>
 
 )
