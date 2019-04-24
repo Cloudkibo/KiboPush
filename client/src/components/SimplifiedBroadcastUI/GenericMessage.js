@@ -1,7 +1,3 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import Image from '../../containers/convo/Image'
 import List from '../../containers/convo/List'
@@ -19,6 +15,7 @@ import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
 import TextModal from './TextModal'
+import CardModal from './CardModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -30,7 +27,8 @@ class GenericMessage extends React.Component {
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
       pageId: this.props.pageId,
-      hiddenComponents: hiddenComponents
+      hiddenComponents: hiddenComponents,
+      componentType: ''
     }
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -51,6 +49,7 @@ class GenericMessage extends React.Component {
     this.getComponent = this.getComponent.bind(this)
     this.showAddComponentModal = this.showAddComponentModal.bind(this)
     this.closeAddComponentModal = this.closeAddComponentModal.bind(this)
+    this.openModal = this.openModal.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -107,8 +106,8 @@ class GenericMessage extends React.Component {
     this.setState({isShowingModalResetAlert: false})
   }
 
-  showAddComponentModal () {
-    this.setState({isShowingAddComponentModal: true})
+  showAddComponentModal (componentType) {
+    this.setState({isShowingAddComponentModal: true, componentType})
   }
 
   closeAddComponentModal () {
@@ -341,6 +340,14 @@ class GenericMessage extends React.Component {
     this.closeAddComponentModal()
   }
 
+  openModal () {
+    let modals = {
+      'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+    }
+    return modals[this.state.componentType]
+  }
+
   getComponent (broadcast) {
     console.log('getting component', broadcast)
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
@@ -355,7 +362,7 @@ class GenericMessage extends React.Component {
       },
       'card': {
         component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} default_action={this.props.default_action} />),
-        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }
+        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.tile : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'gallery': {
         component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
@@ -449,8 +456,7 @@ class GenericMessage extends React.Component {
                       </Modal>
                     } */}
                     {
-                    this.state.isShowingAddComponentModal &&
-                      <TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />
+                    this.state.isShowingAddComponentModal && this.openModal()
                     }
                     {
                     this.state.isShowingModalResetAlert &&
