@@ -19,8 +19,6 @@ class SubscriberSummary extends React.Component {
       data: [],
       isShowingModal: false
     }
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
     this.showDaysDropDown = this.showDaysDropDown.bind(this)
     this.hideDaysDropDown = this.hideDaysDropDown.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -28,8 +26,6 @@ class SubscriberSummary extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.onInputChange = this.onInputChange.bind(this)
     this.showReport = this.showReport.bind(this)
-    this.prepareChartData = this.prepareChartData.bind(this)
-    this.includeZeroCounts = this.includeZeroCounts.bind(this)
   }
 
   showDialog () {
@@ -63,75 +59,6 @@ class SubscriberSummary extends React.Component {
       this.setState({days: days})
       this.props.loadSubscriberSummary({days: days})
     }
-  }
-  componentWillReceiveProps (nextprops) {
-    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
-      var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
-      console.log('includeZeroCounts', data)
-      let dataChart = this.prepareChartData(data)
-      this.setState({data: dataChart})
-    } else {
-      this.setState({data: []})
-    }
-  }
-  exists (array, value) {
-    for (var i = 0; i < array.length; i++) {
-      if (array.date === value) {
-        return i
-      }
-    }
-    return false
-  }
-  includeZeroCounts (data) {
-    var dataArray = []
-    // var index = 0
-    // var varDate = moment()
-    // for (var j = 0; j < data.length; j++) {
-    //   var recordId = data[j]._id
-    //   var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-    //   var loopDate = moment(varDate).format('YYYY-MM-DD')
-    //   if (moment(date).isSame(loopDate, 'day')) {
-    //     var d = {}
-    //     d.date = loopDate
-    //     d.count = data[j].count
-    //     dataArray.push(d)
-    //     varDate = moment(varDate).subtract(1, 'days')
-    //     index = 0
-    //     break
-    //   }
-    //   index++
-    // }
-    // if (index === data.length) {
-    //   var obj = {}
-    //   obj.date = varDate.format('YYYY-MM-DD')
-    //   obj.count = 0
-    //   dataArray.push(obj)
-    //   varDate = moment(varDate).subtract(1, 'days')
-    //   index = 0
-    // }
-    for (var j = 0; j < data.length; j++) {
-      var recordId = data[j]._id
-      var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      let val = this.exists(dataArray, date)
-      if (val === false) {
-        dataArray.push({date: date, count: data[j].count})
-      } else {
-        dataArray[val].count = dataArray[val].count + data[j].count
-      }
-    }
-    return dataArray.reverse()
-  }
-  prepareChartData (data) {
-    var dataChart = []
-    if (data && data.length > 0) {
-      for (var i = 0; i < data.length; i++) {
-        var record = {}
-        record.date = data[i].date
-        record.count = data[i].count
-        dataChart.push(record)
-      }
-    }
-    return dataChart
   }
   onInputChange (e) {
     console.log('days:', e.target.value)
