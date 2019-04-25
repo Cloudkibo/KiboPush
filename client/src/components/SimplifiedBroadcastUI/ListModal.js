@@ -16,12 +16,17 @@ class ListModal extends React.Component {
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 3,
       disabled: false,
-      imgSrc: null
+      buttonDisabled: false,
+      actionDisabled: false,
+      imgSrc: null,
+      webviewurl: '',
+      elementUrl: '',
+      webviewsize: 'FULL'
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
-    this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.updateStatus = this.updateStatus.bind(this)
     this.updateImage = this.updateImage.bind(this)
   }
 
@@ -49,7 +54,7 @@ class ListModal extends React.Component {
     })
   }
 
-  updateButtonStatus (status) {
+  updateStatus (status) {
     this.setState(status)
   }
 
@@ -66,6 +71,9 @@ class ListModal extends React.Component {
       size: this.state.file ? this.state.file.size : '',
       title: this.state.title,
       description: this.state.subtitle,
+      webviewurl: this.state.webviewurl,
+      elementUrl: this.state.elementUrl,
+      webviewsize: this.state.webviewsize,
       buttons})
   }
 
@@ -85,8 +93,8 @@ class ListModal extends React.Component {
               <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
               <h4>Image:</h4>
               <Image updateImage={this.updateImage} />
-              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateButtonStatus} addComponent={(buttons) => this.addComponent(buttons)} />
-              <AddAction />
+              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+              <AddAction updateActionStatus={this.updateStatus} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -125,7 +133,7 @@ class ListModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>

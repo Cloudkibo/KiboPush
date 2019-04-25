@@ -363,8 +363,8 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} default_action={this.props.default_action} />),
-        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.tile : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
+        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.title : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'gallery': {
         component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),

@@ -6,6 +6,7 @@ class AddAction extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      actionDisabled: true,
       openPopover: false,
       openWebView: false,
       openWebsite: false,
@@ -13,17 +14,28 @@ class AddAction extends React.Component {
       webviewurl: '',
       elementUrl: '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      defaultAction: '',
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview']
     }
+
+    this.handleClick = this.handleClick.bind(this)
+    this.showWebView = this.showWebView.bind(this)
+    this.showWebsite = this.showWebsite.bind(this)
+    this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
+    this.changeUrl = this.changeUrl.bind(this)
+    this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+    this.closeWebsite = this.closeWebsite.bind(this)
+    this.closeWebview = this.closeWebview.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
   handleClick (e) {
     if (this.state.elementUrl !== '' && isWebURL(this.state.elementUrl)) {
-      this.setState({disabled: false, openWebsite: true})
+      this.setState({actionDisabled: false, openWebsite: true})
+      this.props.updateActionStatus({actionDisabled: false})
     }
     if (this.state.webviewurl !== '' && isWebURL(this.state.webviewurl)) {
-      this.setState({disabled: false, openWebView: true})
+      this.setState({actionDisabled: false, openWebView: true})
+      this.props.updateActionStatus({actionDisabled: false})
     }
     this.setState({openPopover: true})
   }
@@ -31,98 +43,94 @@ class AddAction extends React.Component {
   changeUrl (event) {
     console.log('event', event.target.value)
     if (isWebURL(this.state.elementUrl)) {
-      this.setState({disabled: false})
+      this.setState({actionDisabled: false})
+      this.props.updateActionStatus({actionDisabled: false})
     } else {
-      this.setState({disabled: true})
+      this.setState({actionDisabled: true})
+      this.props.updateActionStatus({actionDisabled: true})
     }
     this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
+    this.props.updateActionStatus({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
 
   changeWebviewUrl (e) {
     if (isWebURL(this.state.webviewurl)) {
-      this.setState({disabled: false})
+      this.setState({actionDisabled: false})
+      this.props.updateActionStatus({actionDisabled: false})
     } else {
-      this.setState({disabled: true})
+      this.setState({actionDisabled: true})
+      this.props.updateActionStatus({actionDisabled: true})
     }
     this.setState({webviewurl: e.target.value, elementUrl: ''})
+    this.props.updateActionStatus({webviewurl: e.target.value, elementUrl: ''})
   }
 
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
       this.setState({webviewsize: event.target.value})
+      this.props.updateActionStatus({webviewsize: event.target.value})
     }
   }
 
   closeWebview () {
-    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabled: true})
+    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', actionDisabled: true})
+    this.props.updateActionStatus({webviewurl: '', webviewsize: 'FULL', actionDisabled: true})
   }
 
   closeWebsite () {
-    this.setState({openWebsite: false, elementUrl: '', disabled: true})
+    this.setState({openWebsite: false, elementUrl: '', actionDisabled: true})
+    this.props.updateActionStatus({elementUrl: '', actionDisabled: true})
   }
 
-//   handleDone () {
-//     if (this.state.webviewurl !== '') {
-//       this.props.checkWhitelistedDomains({pageId: this.props.pageId, domain: this.state.webviewurl}, this.handleWebView)
-//     } else if (this.state.elementUrl !== '') {
-//       let defaultAction
-//       defaultAction = {
-//         type: 'web_url', url: this.state.elementUrl
-//       }
-//       this.setState({
-//         defaultAction: defaultAction
-//       })
-//       this.props.handleCard({id: this.props.id,
-//         componentType: 'card',
-//         fileurl: this.state.fileurl,
-//         image_url: this.state.image_url,
-//         fileName: this.state.fileName,
-//         type: this.state.type,
-//         size: this.state.size,
-//         title: this.state.title,
-//         description: this.state.subtitle,
-//         buttons: this.state.buttons,
-//         default_action: defaultAction
-//       })
-//       this.setState({
-//         openPopover: false
-//       })
-//     }
-//   }
+  showWebView () {
+    this.setState({openWebView: true})
+  }
+
+  showWebsite () {
+    this.setState({openWebsite: true})
+  }
+
+  handleClose () {
+    this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false})
+    this.props.updateActionStatus({elementUrl: '', webviewurl: '', webviewsize: 'FULL', actionDisabled: false})
+  }
 
   render () {
     return (
       <div>
-        <h4 style={{marginBottom: '20px'}}>Buttons (Optional):</h4>
+        <h4 style={{marginBottom: '20px'}}>Action (Optional):</h4>
         {
-          this.state.openPopover && <div>
+          this.state.openPopover &&
+          <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '200px', marginBottom: '30px', padding: '20px'}} >
+            <div onClick={this.handleClose} style={{marginLeft: '355px', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
+            <div>
             This can be used to open a web page on the card click
             {
                 !this.state.openWebsite && !this.state.openWebView &&
                 <div>
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
                   </div>
                   { (this.state.buttonActions.indexOf('open webview') > -1) &&
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showWebView}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
                   </div>
                 }
                 </div>
             }
-            {
+              {
                 this.state.openWebsite &&
                 <div className='card'>
-                  <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                  <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer', marginTop: '10px'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                   <div style={{padding: '10px'}} className='card-block'>
                     <input type='text' value={this.state.elementUrl} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
                   </div>
                 </div>
             }
-            {
+              {
                 this.state.openWebView &&
                 <div className='card'>
-                  <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                  <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer', marginTop: '10px'}} className='la la-close' onClick={this.closeWebview} /></h7>
                   <div style={{padding: '10px'}} className='card-block'>
                     <div>
                       <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
@@ -140,8 +148,7 @@ class AddAction extends React.Component {
                   </div>
                 </div>
             }
-            <br />
-            <br />
+            </div>
           </div>
         }
         {
