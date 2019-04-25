@@ -268,7 +268,7 @@ class CreateSequence extends React.Component {
     if (message.trigger.event === 'none') {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
     } else {
-      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event, eventNameSelected: message.trigger.event, selectedTriggerMsgId: message.trigger.value, selectedMessageClickId: message.trigger.value, selectedTriggerBtnTitle: message.trigger.buttonTitle, selectedButton: message.trigger.buttonTitle})
+      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event, eventNameSelected: message.trigger.event, selectedTriggerMsgId: message.trigger.value, selectedMessageClickId: message.trigger.value, selectedTriggerBtnTitle: message.trigger.buttonTitle, selectedButton: message.trigger.buttonId})
     }
     if (message.trigger.event !== 'none' && message.trigger.event === 'clicks') {
       console.log('Display action set true')
@@ -804,7 +804,7 @@ class CreateSequence extends React.Component {
                         <option  selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
                          <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
 
-                          <option selected={this.state.triggerEvent === 'receive' ? true : null} value='receive'>receive</option>
+                          <option selected={this.state.triggerEvent === 'receives' ? true : null} value='receives'>receives</option>
                       </select>
 
                       <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
