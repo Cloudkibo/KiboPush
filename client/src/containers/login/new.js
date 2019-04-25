@@ -173,7 +173,7 @@ class Login extends React.Component {
                   <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
                 </div>
                 <br />
-                {(this.state.account_type === 'team') && 
+                {(this.state.account_type === 'team') &&
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Forgot Workspace Name ?</span>&nbsp;&nbsp;
                   <Link to='/forgotWorkspaceName' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>

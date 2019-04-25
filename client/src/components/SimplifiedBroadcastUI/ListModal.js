@@ -5,7 +5,7 @@ import AddButton from './AddButton'
 import Image from './Image'
 import AddAction from './AddAction'
 
-class CardModal extends React.Component {
+class ListModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -138,4 +138,4 @@ class CardModal extends React.Component {
   }
 }
 
-export default CardModal
+export default ListModal

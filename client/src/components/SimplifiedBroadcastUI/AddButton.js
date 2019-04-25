@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from './Button'
 
-class TextModal extends React.Component {
+class AddButton extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -128,4 +128,4 @@ class TextModal extends React.Component {
   }
 }
 
-export default TextModal
+export default AddButton
