@@ -21,7 +21,6 @@ class SessionItem extends React.Component {
   }
 
   render () {
-    console.log('session item', this.props.session)
     return (
       <div key={this.props.session._id}>
         <div style={this.props.session._id === (this.props.activeSession !== {} && this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.props.changeActiveSession(this.props.session)} className='m-widget4__item'>
