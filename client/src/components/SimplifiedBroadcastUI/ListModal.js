@@ -1,9 +1,7 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import AddButton from './AddButton'
-import Image from './Image'
-import AddAction from './AddAction'
+import AddCard from './AddCard'
 
 class ListModal extends React.Component {
   constructor (props) {
@@ -21,13 +19,15 @@ class ListModal extends React.Component {
       imgSrc: null,
       webviewurl: '',
       elementUrl: '',
-      webviewsize: 'FULL'
+      webviewsize: 'FULL',
+      cards: [{id: 1}, {id: 2}, {id: 3}, {id: 4}]
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateStatus = this.updateStatus.bind(this)
     this.updateImage = this.updateImage.bind(this)
+    this.updateCardStatus = this.updateCardStatus.bind(this)
   }
 
   updateImage (image, file) {
@@ -58,6 +58,24 @@ class ListModal extends React.Component {
     this.setState(status)
   }
 
+  updateCardStatus (status, id) {
+    if (status.disabled) {
+      this.setState({disabled: status.disabled})
+      delete status.disabled
+    }
+    if (status.buttonDisabled) {
+      this.setState({buttonDisabled: status.buttonDisabled})
+      delete status.buttonDisabled
+    }
+    if (status.actionDisabled) {
+      this.setState({actionDisabled: status.actionDisabled})
+      delete status.actionDisabled
+    }
+    let cards = this.state.cards
+    cards[id - 1] = Object.assign(cards[id - 1], status)
+    this.setState({cards})
+  }
+
   handleDone () {
     this.AddButton.handleDone()
   }
@@ -83,18 +101,17 @@ class ListModal extends React.Component {
         onClose={this.props.closeModal}>
         <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
-          <h3>Add Card Component</h3>
+          <h3>Add List Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
-              <h4>Title:</h4>
-              <input value={this.state.title} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleTitleChange} className='form-control' />
-              <h4>Subtitle:</h4>
-              <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
-              <h4>Image:</h4>
-              <Image updateImage={this.updateImage} />
-              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
-              <AddAction updateActionStatus={this.updateStatus} />
+              {
+                this.state.cards.map(card => {
+                  if (card) {
+                    return (<AddCard id={card.id} updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
+                  }
+                })
+            }
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />

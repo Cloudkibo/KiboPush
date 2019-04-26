@@ -285,7 +285,7 @@ class Button extends React.Component {
   render () {
     return (
       <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
-        <div onClick={this.props.closeButton} style={{marginLeft: '355px', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
+        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
           <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />

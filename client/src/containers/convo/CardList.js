@@ -55,13 +55,13 @@ class Card extends React.Component {
       image_url: '',
       loading: false,
       openPopover: false,
-      elementUrl: '',
       disabled: true,
       checkbox: false,
       openWebView: false,
       openWebsite: false,
-      webviewsize: 'FULL',
-      webviewurl: '',
+      webviewsize: this.props.webviewsize ? this.props.webviewsize : 'FULL',
+      webviewurl: this.props.webviewurl ? this.props.webviewurl : '',
+      elementUrl: this.props.elementUrl ? this.props.elementUrl : '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       defaultAction: ''
     }
@@ -643,7 +643,7 @@ class Card extends React.Component {
           </div>
 
           {!this.state.checkbox &&
-          
+
             <div style={{ display: 'inline-grid', backgroundColor: '#F2F3F8' }} className='cardimageblock col-md-4'>
               {
                 (this.state.loading)
@@ -656,13 +656,13 @@ class Card extends React.Component {
                     accept='image/*'
                     title=' '
                     onChange={this._onChange} style={{ position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px' }} />
-              }     
-            {
+              }
+              {
             (this.state.imgSrc === '' && !this.state.loading)
             ? <img style={{maxHeight: '40px', margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           : (!this.state.loading) && <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
-          </div>
+            </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
             <div className='col-md-2' style={{display: 'contents'}} >

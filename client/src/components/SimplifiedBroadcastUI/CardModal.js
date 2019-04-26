@@ -93,7 +93,7 @@ class CardModal extends React.Component {
               <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
               <h4>Image:</h4>
               <Image updateImage={this.updateImage} />
-              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+              <AddButton pageId={this.props.pageId} buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
               <AddAction updateActionStatus={this.updateStatus} />
             </div>
             <div className='col-1'>
