@@ -29,7 +29,7 @@ class List extends React.Component {
       showPlus: false,
       pageNumber: 2,
       buttons: [],
-      topElementStyle: 'compact',
+      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact',
       styling: {minHeight: 30, maxWidth: 400}
     }
   }

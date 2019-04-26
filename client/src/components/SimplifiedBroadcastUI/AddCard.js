@@ -91,7 +91,7 @@ class AddCard extends React.Component {
 
   render () {
     return (
-      <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.2)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
+      <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
         {(this.props.id !== 1 && this.props.id !== 2) && <div onClick={this.props.closeCard} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
         <div>
           <h4 style={{textAlign: 'left'}}>Element #{this.props.id}</h4>
