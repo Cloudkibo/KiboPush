@@ -40,7 +40,7 @@ class ProgressBox extends React.Component {
   calculateProgressRates (url) {
     if (this.props.platform === 'whatsApp' && url.includes('kiboengage.cloudkibo.com')) {
       var progressRates = {}
-      progressRates.broadcastSeenConvertRate = this.props.sentSeenData.broadcastSent !== 0 ? ((this.props.sentSeenData.broadcastSeen / this.props.sentSeenData.broadcastSent) * 100).toFixed(1) + '%' : '0%'
+      progressRates.broadcastSeenConvertRate = this.props.sentSeenData.broadcastsSent !== 0 ? ((this.props.sentSeenData.broadcastsSeen / this.props.sentSeenData.broadcastsSent) * 100).toFixed(1) + '%' : '0%'
       return progressRates
     }
   }
