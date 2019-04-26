@@ -8,6 +8,13 @@ export function showAllSponsoredMessages (data) {
     }
   }
 
+export function showUpdatedData (data) {
+    return {
+        type: ActionTypes.UPDATE_SPONSORED_MESSAGE,
+        data
+    }
+}
+
 export function fetchSponsoredMessages (){
     console.log('in fetch sponsored messages')
     return (dispatch) => {
@@ -17,5 +24,16 @@ export function fetchSponsoredMessages (){
                 dispatch(showAllSponsoredMessages(res.payload))
             }
         })
+    }
+}
+
+export function updateSponsoredMessage(){
+    return (dispatch) => {
+        let sponsoredMessage = {
+            ad_id: '',
+            pageId: '',
+            
+        }
+        dispatch(showUpdatedData(sponsoredMessage))
     }
 }
