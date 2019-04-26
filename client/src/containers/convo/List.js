@@ -44,9 +44,34 @@ class List extends React.Component {
       }
       for (var k = 0; k < cardLength; k++) {
         if (this.props.cards[k] && this.props.cards[k].id === k + 1) {
-          tmp.push({element: <Card pages={this.props.pages} pageId={this.props.pageId} replyWithMessage={this.props.replyWithMessage} id={k + 1} buttonActions={this.props.buttonActions} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
+          tmp.push({element: <Card pages={this.props.pages}
+            pageId={this.props.pageId}
+            replyWithMessage={this.props.replyWithMessage}
+            id={k + 1}
+            buttonActions={this.props.buttonActions}
+            button_id={this.props.id}
+            buttons={this.props.cards[k].buttons}
+            cardDetails={this.props.cards[k]}
+            handleCard={this.handleCard}
+            topElementStyle={this.topElementStyle}
+            removeElement={this.removeElement}
+            webviewsize={this.props.cards[k].webviewsize}
+            webviewurl={this.props.cards[k].webviewurl}
+            elementUrl={this.props.cards[k].elementUrl}
+            topStyle={this.props.list.topElementStyle} />,
+            key: k})
         } else {
-          tmp.push({element: <Card id={k + 1} pageId={this.props.pageId} replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} buttonActions={this.props.buttonActions} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='compact' topElementStyle={this.topElementStyle} />, key: k})
+          tmp.push({element: <Card id={k + 1}
+            pageId={this.props.pageId}
+            replyWithMessage={this.props.replyWithMessage}
+            pages={this.props.pages}
+            buttonActions={this.props.buttonActions}
+            button_id={this.props.id}
+            handleCard={this.handleCard}
+            removeElement={this.removeElement}
+            topStyle='compact'
+            topElementStyle={this.topElementStyle} />,
+            key: k})
         }
       }
       // for (var k = 0; k < this.props.cards.length; k++) {

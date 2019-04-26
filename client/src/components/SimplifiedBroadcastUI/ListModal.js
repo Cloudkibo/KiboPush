@@ -29,7 +29,6 @@ class ListModal extends React.Component {
       elementLimit: 4,
       topElementStyle: 'compact'
     }
-    this.componentAdded = false
     this.listComponents = [null, null, null, null]
     this.finalCards = []
     this.finalButtons = []
@@ -41,9 +40,11 @@ class ListModal extends React.Component {
     this.updateCardStatus = this.updateCardStatus.bind(this)
     this.addElement = this.addElement.bind(this)
     this.addCard = this.addCard.bind(this)
+    this.addButton = this.addButton.bind(this)
   }
 
   addElement () {
+    console.log('addElement')
     let cards = this.state.cards
       // if 3rd card is not visible, show it
     if (!cards[2].visible) {
@@ -127,7 +128,8 @@ class ListModal extends React.Component {
     console.log('addCard card in ListModal', card)
     this.finalCards.push(card)
     let visibleButtons = this.AddButton.buttonComponents.filter(button => button !== null)
-    if (!this.componentAdded && this.finalCards.length === this.state.numOfElements && visibleButtons.length === this.finalButtons.length) {
+    let finalButtons = [].concat(...this.finalButtons)
+    if (this.finalCards.length === this.state.numOfElements && visibleButtons.length === finalButtons.length) {
       this.finalCards.sort((a, b) => a.id - b.id)
       console.log('finalCards', this.finalCards)
       this.addComponent()
@@ -137,14 +139,14 @@ class ListModal extends React.Component {
   addButton (button) {
     console.log('addButton button in ListModal', button)
     this.finalButtons.push(button)
+    let finalButtons = [].concat(...this.finalButtons)
     let visibleButtons = this.AddButton.buttonComponents.filter(button => button !== null)
-    if (!this.componentAdded && visibleButtons.length === this.finalButtons.length && this.finalCards.length === this.state.numOfElements) {
+    if (visibleButtons.length === finalButtons.length && this.finalCards.length === this.state.numOfElements) {
       this.addComponent()
     }
   }
 
   addComponent () {
-    this.componentAdded = true
     this.props.addComponent({
       componentType: 'list',
       buttons: [].concat(...this.finalButtons),
@@ -173,7 +175,7 @@ class ListModal extends React.Component {
                     })
                 }
                 {
-                    (this.state.numOfElements < this.state.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.addButton}>
+                    (this.state.numOfElements < this.state.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
                       <div onClick={this.addElement} style={{paddingTop: '5px'}} className='align-center'>
                         <h6> + Add Element </h6>
                       </div>
