@@ -12,6 +12,7 @@ import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
 import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp } from '../../redux/actions/whatsAppDashboard.actions'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
+import { joinRoom } from '../../utility/socketio'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -31,6 +32,9 @@ class Dashboard extends React.Component {
     this.props.loadSubscriberSummaryWhatsApp({days: 'all'})
   }
   componentWillReceiveProps (nextprops) {
+    if (nextprops.user) {
+      joinRoom(nextprops.user.companyId)
+    }
     if (nextprops.cardBoxesData && nextprops.subscriberSummary && nextprops.sentSeenData) {
       this.setState({loading: false})
     }

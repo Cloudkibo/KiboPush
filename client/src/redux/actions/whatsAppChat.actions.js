@@ -1,11 +1,26 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
 
-export function showChat (data) {
+export function showChat (data, originalData) {
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.FETCH_WHATSAPP_CHAT_OVERWRITE,
+      chat: data.chat,
+      count: data.count
+    }
+  } else {
+    return {
+      type: ActionTypes.FETCH_WHATSAPP_CHAT,
+      chat: data.chat,
+      count: data.count
+    }
+  }
+}
+
+export function socketUpdateWhatsApp (data) {
   return {
-    type: ActionTypes.FETCH_WHATSAPP_CHAT,
-    chat: data.chat,
-    count: data.count
+    type: ActionTypes.SOCKET_UPDATE_WHATSAPP,
+    data
   }
 }
 
@@ -46,7 +61,7 @@ export function fetchChat (id, data) {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
       .then(res => {
         console.log('response from fetchChat', res)
-        dispatch(showChat(res.payload))
+        dispatch(showChat(res.payload, data))
       })
   }
 }

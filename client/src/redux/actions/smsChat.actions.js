@@ -17,6 +17,13 @@ export function showChat (data, originalData) {
   }
 }
 
+export function socketUpdateSms (data) {
+  return {
+    type: ActionTypes.SOCKET_UPDATE_SMS,
+    data
+  }
+}
+
 export function showSessions (data) {
   return {
     type: ActionTypes.FETCH_SESSIONS,

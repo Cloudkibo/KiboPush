@@ -21,7 +21,7 @@ class ProfileArea extends React.Component {
               </div>
               <div className='m-card-profile__details'>
                 <span className='m-card-profile__name'>
-                  {this.props.activeSession.number}
+                  {this.props.activeSession.name}
                 </span>
               </div>
             </div>
