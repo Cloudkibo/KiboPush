@@ -36,7 +36,7 @@ class sponsoredMessaging extends React.Component {
     // this.closeDialogDelete = this.closeDialogDelete.bind(this)
     // this.showDialogDelete = this.showDialogDelete.bind(this)
     // this.closeCreateDialog = this.closeCreateDialog.bind(this)
-    // this.showCreateDialog = this.showCreateDialog.bind(this)
+      // this.showCreateDialog = this.showCreateDialog.bind(this)
     // this.onEdit = this.onEdit.bind(this)
     // this.gotoCreate = this.gotoCreate.bind(this)
     // this.changePage = this.changePage.bind(this)
@@ -165,7 +165,7 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <Link to='/createsponsoredMessage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
