@@ -167,8 +167,8 @@ class ListModal extends React.Component {
             <div className='col-6'>
 
               <h4>Top Element Style:</h4>
-              <div style={{marginBottom: '10px', marginTop: '10px'}}>
-                <div className='custom-control custom-radio custom-control-inline'>
+              <div style={{marginTop: '10px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', padding: '10px', marginBottom: '30px'}}>
+                <div style={{marginLeft: '10%', marginRight: '20%'}} className='custom-control custom-radio custom-control-inline'>
                   <input type='radio' class='custom-control-input' id='compact' name='compact' />
                   <label className='custom-control-label' for='compact' style={{marginLeft: '10px'}}>compact</label>
                 </div>

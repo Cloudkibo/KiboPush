@@ -63,6 +63,7 @@ class CardModal extends React.Component {
   }
 
   addComponent (buttons) {
+    console.log('addComponent CardModal')
     this.props.addComponent({componentType: 'card',
       fileurl: this.state.file ? this.state.file.fileurl : '',
       image_url: this.state.file ? this.state.file.image_url : '',
