@@ -59,7 +59,7 @@ class ChatItem extends React.Component {
     if (msg.payload.componentType !== 'text') {
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {type === 'twilio' ? `${this.props.activeSession.number} shared` : this.getRepliedByMsg(msg) }
+          {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
         </div>
         {msg.payload.componentType === 'image'
           ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
@@ -87,7 +87,7 @@ class ChatItem extends React.Component {
     } else {
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {type === 'twilio' ? `${this.props.activeSession.number} wrote` : this.getRepliedByMsg(msg)}
+          {type === 'twilio' ? `${this.props.activeSession.name} wrote` : this.getRepliedByMsg(msg)}
         </div>
         <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
           {msg.payload.text}

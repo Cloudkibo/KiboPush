@@ -78,7 +78,7 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__info'>
             <span className='m-widget4__title'>
-              {this.props.session.number}
+              {this.props.session.name}
             </span>
             <br />
             {this.showLastMessage()}

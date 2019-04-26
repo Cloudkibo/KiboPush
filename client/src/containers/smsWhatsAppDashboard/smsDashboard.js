@@ -10,7 +10,7 @@ import CardBoxesContainer from '../../components/smsWhatsAppDashboard/cardboxes'
 import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberSummary'
 import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
 import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from '../../redux/actions/smsDashboard.actions'
-
+import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Halogen from 'halogen'
@@ -33,6 +33,9 @@ class Dashboard extends React.Component {
     this.props.loadSubscriberSummarySms({days: 'all'})
   }
   componentWillReceiveProps (nextprops) {
+    if (nextprops.user) {
+      joinRoom(nextprops.user.companyId)
+    }
     if (nextprops.cardBoxesData && nextprops.subscriberSummary && nextprops.sentSeenData) {
       this.setState({loading: false})
     }

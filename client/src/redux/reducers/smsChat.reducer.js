@@ -1,6 +1,11 @@
 import * as ActionTypes from '../constants/constants'
 
-export function smsChatInfo (state = [], action) {
+const initialState = {
+  chat: [],
+  chatCount: 0
+}
+
+export function smsChatInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.FETCH_SESSIONS:
       return Object.assign({}, state, {
@@ -30,13 +35,12 @@ export function smsChatInfo (state = [], action) {
         chat: orderedChat,
         chatCount: action.count
       })
-    case ActionTypes.SOCKET_UPDATE:
+    case ActionTypes.SOCKET_UPDATE_SMS:
+      let newchat = state.chat
+      newchat.push(action.data)
       return Object.assign({}, state, {
-        socketSession: action.data.session_id,
-        unreadSession: action.data.session_id,
-        socketData: action.data,
-        socketMessage: action.data.message,
-        changedStatus: ''
+        chat: newchat,
+        chatCount: state.chatCount + 1
       })
     default:
       return state

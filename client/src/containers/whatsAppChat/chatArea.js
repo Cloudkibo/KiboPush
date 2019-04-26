@@ -149,6 +149,7 @@ class ChatArea extends React.Component {
           <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' role='tabpanel'>
+                {this.props.chat && this.props.chat.length > 0 &&
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
@@ -161,6 +162,7 @@ class ChatArea extends React.Component {
                     chat={this.props.chat}
                     onEnter={this.onEnter} />
                 </div>
+              }
               </div>
             </div>
           </div>
