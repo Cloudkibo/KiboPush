@@ -384,7 +384,7 @@ class GenericMessage extends React.Component {
       },
       'list': {
         component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),
-        handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: broadcast.listItems ? broadcast.listItems : [], topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact'}) }
+        handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: broadcast.listItems ? broadcast.listItems : [], topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'media': {
         component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),

@@ -29,6 +29,7 @@ class ListModal extends React.Component {
       elementLimit: 4,
       topElementStyle: 'compact'
     }
+    this.componentAdded = false
     this.listComponents = [null, null, null, null]
     this.finalCards = []
     this.finalButtons = []
@@ -125,7 +126,8 @@ class ListModal extends React.Component {
   addCard (card) {
     console.log('addCard card in ListModal', card)
     this.finalCards.push(card)
-    if (this.finalCards.length === this.state.numOfElements) {
+    let visibleButtons = this.AddButton.buttonComponents.filter(button => button !== null)
+    if (!this.componentAdded && this.finalCards.length === this.state.numOfElements && visibleButtons.length === this.finalButtons.length) {
       this.finalCards.sort((a, b) => a.id - b.id)
       console.log('finalCards', this.finalCards)
       this.addComponent()
@@ -133,17 +135,19 @@ class ListModal extends React.Component {
   }
 
   addButton (button) {
+    console.log('addButton button in ListModal', button)
     this.finalButtons.push(button)
     let visibleButtons = this.AddButton.buttonComponents.filter(button => button !== null)
-    if (visibleButtons.length === this.finalButtons.length && this.finalCards.length === this.state.numOfElements) {
+    if (!this.componentAdded && visibleButtons.length === this.finalButtons.length && this.finalCards.length === this.state.numOfElements) {
       this.addComponent()
     }
   }
 
   addComponent () {
+    this.componentAdded = true
     this.props.addComponent({
       componentType: 'list',
-      buttons: this.finalButtons,
+      buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
       listItems: this.finalCards
     })
