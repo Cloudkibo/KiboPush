@@ -107,7 +107,7 @@ class AddPage extends React.Component {
           </ModalContainer>
         }
         <div className='m-subheader '>
-          {
+          {/*
             this.state.showWarning &&
             <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
@@ -117,11 +117,27 @@ class AddPage extends React.Component {
                 <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
         </div>
         <div className='m-content'>
           <div className='row'>
-            <div className='col-xl-12'>
+            {this.state.showWarning
+            ? <div className='m-portlet m-portlet--full-height col-12'>
+              <div className='m-portlet__body'>
+                <center>
+                  <span>You are not admin of any Facebook page. Please create your page on Facebook in order to use the app and then click on the button below:</span>
+                  <div className='m-stack__item m-stack__item--center' style={{textAlign: 'center', paddingTop: 25}}>
+                    <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                      <span>
+                        <i className='la la-power-off' />
+                        <span>Re-connect with Facebook</span>
+                      </span>
+                    </a>
+                  </div>
+                </center>
+              </div>
+            </div>
+            : <div className='col-xl-12'>
               {
                 this.state.showAlert === true &&
                 <div className='alert alert-danger alert-dismissible fade show' role='alert'>
@@ -188,6 +204,7 @@ class AddPage extends React.Component {
                 </div>
               </div>
             </div>
+            }
           </div>
         </div>
       </div>
