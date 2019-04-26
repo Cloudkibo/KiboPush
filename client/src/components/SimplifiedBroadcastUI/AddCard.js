@@ -13,7 +13,7 @@ class AddCard extends React.Component {
       subtitle: `Element #${this.props.id} Subtitle`,
       buttons: [],
       buttonActions: ['open website', 'open webview', 'add share'],
-      buttonLimit: 3,
+      buttonLimit: 1,
       disabled: false,
       buttonDisabled: false,
       actionDisabled: false,
@@ -64,6 +64,7 @@ class AddCard extends React.Component {
   }
 
   updateStatus (status) {
+    console.log('AddCard updateStatus', status)
     this.setState(status)
     this.props.updateStatus(status)
   }
@@ -73,6 +74,7 @@ class AddCard extends React.Component {
   }
 
   addCard (buttons) {
+    console.log('addCard buttons in AddCard', buttons)
     this.props.addCard({id: this.props.id,
       fileurl: this.state.file ? this.state.file.fileurl : '',
       image_url: this.state.file ? this.state.file.image_url : '',
@@ -89,7 +91,8 @@ class AddCard extends React.Component {
 
   render () {
     return (
-      <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px'}}>
+      <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.2)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
+        {(this.props.id !== 1 && this.props.id !== 2) && <div onClick={this.props.closeCard} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
         <div>
           <h4 style={{textAlign: 'left'}}>Element #{this.props.id}</h4>
         </div>
@@ -100,7 +103,7 @@ class AddCard extends React.Component {
         <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
         <h4>Image:</h4>
         <Image updateImage={this.updateImage} />
-        <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+        <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addCard(buttons)} />
         <AddAction updateActionStatus={this.updateStatus} />
       </div>
     )
