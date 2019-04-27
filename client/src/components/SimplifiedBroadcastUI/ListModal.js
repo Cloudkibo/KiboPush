@@ -41,6 +41,11 @@ class ListModal extends React.Component {
     this.addElement = this.addElement.bind(this)
     this.addCard = this.addCard.bind(this)
     this.addButton = this.addButton.bind(this)
+    this.changeTopElementStyle = this.changeTopElementStyle.bind(this)
+  }
+
+  changeTopElementStyle (e) {
+    this.setState({topElementStyle: e.target.value})
   }
 
   addElement () {
@@ -169,13 +174,13 @@ class ListModal extends React.Component {
               <h4>Top Element Style:</h4>
               <div style={{marginTop: '10px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', padding: '10px', marginBottom: '30px'}}>
                 <div style={{marginLeft: '10%', marginRight: '20%'}} className='custom-control custom-radio custom-control-inline'>
-                  <input type='radio' class='custom-control-input' id='compact' name='compact' />
-                  <label className='custom-control-label' for='compact' style={{marginLeft: '10px'}}>compact</label>
+                  <input onChange={this.changeTopElementStyle} value={'compact'} checked={this.state.topElementStyle === 'compact'} type='radio' />
+                  <label className='custom-control-label' style={{marginLeft: '10px'}}>compact</label>
                 </div>
 
                 <div className='custom-control custom-radio custom-control-inline'>
-                  <input type='radio' class='custom-control-input' id='large' name='large' />
-                  <label className='custom-control-label' for='large' style={{marginLeft: '10px'}}>LARGE</label>
+                  <input value={'LARGE'} onChange={this.changeTopElementStyle} checked={this.state.topElementStyle === 'LARGE'} type='radio' />
+                  <label className='custom-control-label' style={{marginLeft: '10px'}}>LARGE</label>
                 </div>
               </div>
 
