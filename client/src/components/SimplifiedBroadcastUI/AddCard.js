@@ -9,8 +9,8 @@ class AddCard extends React.Component {
     super(props)
     this.state = {
       file: null,
-      title: `Element #${this.props.id} Title`,
-      subtitle: `Element #${this.props.id} Subtitle`,
+      title: `Element#${this.props.id} Title`,
+      subtitle: `Element#${this.props.id} Subtitle`,
       buttons: [],
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 1,

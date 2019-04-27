@@ -8,9 +8,6 @@ class ListModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      file: null,
-      title: 'Card Title',
-      subtitle: 'Card Subtitle',
       buttons: [],
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 1,
@@ -208,16 +205,43 @@ class ListModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px', paddingBottom: '100px'}} >
                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
-                      this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxHeight: '100px'}} />
-                  }
-                  <hr style={{marginTop: '100px', marginBottom: '5px'}} />
-                  <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
-                  <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{this.state.subtitle}</p>
-
+                    this.state.cards.map((card, index) => {
+                      if (card.visible) {
+                        console.log('rendering card', card)
+                        return (<div className='row' style={{padding: '10px'}}>
+                          <div className='col-6'>
+                            <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
+                            <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                          </div>
+                          <div className='col-6'>
+                            <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                              {
+                                  card.component.imgSrc &&
+                                  <img src={card.imgSrc} style={{maxHeight: '100px'}} />
+                                }
+                            </div>
+                          </div>
+                          {
+                            card.component.buttons && card.component.buttons.map(button => {
+                              if (button.visible) {
+                                return (
+                                  <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
+                                    <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
+                                  </div>
+                                )
+                              }
+                            })
+                            }
+                          {
+                              index !== this.state.numOfElements - 1 && <hr width='96.5%' />
+                            }
+                        </div>)
+                      }
+                    })
+                }
                   {
                       this.state.buttons.map(button => {
                         if (button.visible) {
@@ -230,7 +254,6 @@ class ListModal extends React.Component {
                         }
                       })
                   }
-
                 </div>
               </div>
             </div>
