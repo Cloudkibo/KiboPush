@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from './Button'
 
-class TextModal extends React.Component {
+class AddButton extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -91,16 +91,16 @@ class TextModal extends React.Component {
   checkInvalidButtons () {
     for (let i = 0; i < this.buttonComponents.length; i++) {
       if (this.state.buttons[i].visible && !this.buttonComponents[i]) {
-        this.props.updateButtonStatus({disabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true})
         return
       }
-      if (this.buttonComponents[i] && this.buttonComponents[i].getWrappedInstance().state.disabled) {
+      if (this.buttonComponents[i] && this.buttonComponents[i].getWrappedInstance().state.buttonDisabled) {
         console.log('this.buttonComponents[i].getWrappedInstance()', this.buttonComponents[i].getWrappedInstance())
-        this.props.updateButtonStatus({disabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true})
         return
       }
     }
-    this.props.updateButtonStatus({disabled: false})
+    this.props.updateButtonStatus({buttonDisabled: false})
   }
 
   render () {
@@ -111,7 +111,16 @@ class TextModal extends React.Component {
             this.state.buttons.map((button, index) => {
               if (button.visible) {
                 return (
-                  <Button updateButtonStatus={this.updateButtonStatus} closeButton={() => this.closeButton(index)} ref={(ref) => { this.buttonComponents[index] = ref }} title={button.title} handleTitleChange={this.handleButtonTitleChange} button_id={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} onAdd={this.onAddButton} />
+                  <Button updateButtonStatus={this.updateButtonStatus}
+                    closeButton={() => this.closeButton(index)}
+                    ref={(ref) => { this.buttonComponents[index] = ref }}
+                    title={button.title}
+                    handleTitleChange={this.handleButtonTitleChange}
+                    button_id={index}
+                    pageId={this.props.pageId}
+                    buttonActions={this.props.buttonActions}
+                    replyWithMessage={this.props.replyWithMessage}
+                    onAdd={this.onAddButton} />
                 )
               }
             })
@@ -128,4 +137,4 @@ class TextModal extends React.Component {
   }
 }
 
-export default TextModal
+export default AddButton

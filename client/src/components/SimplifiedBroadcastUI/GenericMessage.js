@@ -16,6 +16,7 @@ import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
 import TextModal from './TextModal'
 import CardModal from './CardModal'
+import ListModal from './ListModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -181,6 +182,9 @@ class GenericMessage extends React.Component {
         temp[i].title = obj.title
         temp[i].buttons = obj.buttons
         temp[i].description = obj.description
+        temp[i].webviewsize = obj.webviewsize
+        temp[i].webviewurl = obj.webviewurl
+        temp[i].elementUrl = obj.elementUrl
         if (obj.default_action && obj.default_action !== '') {
           temp[i].default_action = obj.default_action
         } else if (temp[i].default_action) {
@@ -343,7 +347,8 @@ class GenericMessage extends React.Component {
   openModal () {
     let modals = {
       'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -361,8 +366,8 @@ class GenericMessage extends React.Component {
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} default_action={this.props.default_action} />),
-        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.tile : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
+        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
+        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.title : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : [], webviewurl: broadcast.webviewurl, elementUrl: broadcast.elementUrl, webviewsize: broadcast.webviewsize}) }
       },
       'gallery': {
         component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
@@ -382,7 +387,7 @@ class GenericMessage extends React.Component {
       },
       'list': {
         component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),
-        handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }
+        handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: broadcast.listItems ? broadcast.listItems : [], topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'media': {
         component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),

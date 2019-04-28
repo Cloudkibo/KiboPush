@@ -3,6 +3,7 @@ import React from 'react'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
 import Image from './Image'
+import AddAction from './AddAction'
 
 class CardModal extends React.Component {
   constructor (props) {
@@ -15,12 +16,18 @@ class CardModal extends React.Component {
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 3,
       disabled: false,
-      imgSrc: null
+      buttonDisabled: false,
+      actionDisabled: false,
+      imgSrc: null,
+      webviewurl: '',
+      elementUrl: '',
+      webviewsize: 'FULL'
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
-    this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.updateStatus = this.updateStatus.bind(this)
+    this.updateImage = this.updateImage.bind(this)
   }
 
   updateImage (image, file) {
@@ -47,7 +54,7 @@ class CardModal extends React.Component {
     })
   }
 
-  updateButtonStatus (status) {
+  updateStatus (status) {
     this.setState(status)
   }
 
@@ -56,6 +63,7 @@ class CardModal extends React.Component {
   }
 
   addComponent (buttons) {
+    console.log('addComponent CardModal')
     this.props.addComponent({componentType: 'card',
       fileurl: this.state.file ? this.state.file.fileurl : '',
       image_url: this.state.file ? this.state.file.image_url : '',
@@ -64,6 +72,9 @@ class CardModal extends React.Component {
       size: this.state.file ? this.state.file.size : '',
       title: this.state.title,
       description: this.state.subtitle,
+      webviewurl: this.state.webviewurl,
+      elementUrl: this.state.elementUrl,
+      webviewsize: this.state.webviewsize,
       buttons})
   }
 
@@ -82,8 +93,9 @@ class CardModal extends React.Component {
               <h4>Subtitle:</h4>
               <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
               <h4>Image:</h4>
-              <Image />
-              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateButtonStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+              <Image updateImage={this.updateImage} />
+              <AddButton pageId={this.props.pageId} buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+              <AddAction updateActionStatus={this.updateStatus} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -122,7 +134,7 @@ class CardModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>

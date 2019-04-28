@@ -15,7 +15,8 @@ class TextModal extends React.Component {
       buttons: [],
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 3,
-      disabled: false
+      disabled: false,
+      buttonDisabled: false
     }
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -58,7 +59,12 @@ class TextModal extends React.Component {
             <div className='col-6'>
               <h4>Text:</h4>
               <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
-              <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateButtonStatus} addComponent={(buttons) => this.addComponent(buttons)} />
+              <AddButton buttonLimit={this.state.buttonLimit}
+                pageId={this.props.pageId}
+                buttonActions={this.state.buttonActions}
+                ref={(ref) => { this.AddButton = ref }}
+                updateButtonStatus={this.updateButtonStatus}
+                addComponent={(buttons) => this.addComponent(buttons)} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -89,7 +95,7 @@ class TextModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>

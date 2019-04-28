@@ -14,7 +14,7 @@ class Button extends React.Component {
       title: this.props.title ? this.props.title : '',
       url: '',
       webviewurl: '',
-      disabled: true,
+      buttonDisabled: true,
       openWebsite: false,
       openWebView: false,
       openSubscribe: false,
@@ -77,9 +77,9 @@ class Button extends React.Component {
     this.props.onAdd(data)
   }
   shareButton () {
-    this.setState({shareButton: true, disabled: false, title: 'Share'})
+    this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: false})
+      this.props.updateButtonStatus({buttonDisabled: false})
     }
   }
   showWebsite () {
@@ -96,51 +96,51 @@ class Button extends React.Component {
     this.setState({openUnsubscribe: true})
   }
   closeWebview () {
-    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabled: true})
+    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
   closeWebsite () {
-    this.setState({openWebsite: false, url: '', disabled: true})
+    this.setState({openWebsite: false, url: '', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
   closeShareButton () {
-    this.setState({shareButton: false, disabled: true, title: ''})
+    this.setState({shareButton: false, buttonDisabled: true, title: ''})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
   closeSubscribe () {
-    this.setState({openSubscribe: false, sequenceValue: '', disabled: true})
+    this.setState({openSubscribe: false, sequenceValue: '', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
 
   closeUnsubscribe () {
-    this.setState({openUnsubscribe: false, sequenceValue: '', disabled: true})
+    this.setState({openUnsubscribe: false, sequenceValue: '', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
 
   onSequenceChange (e) {
     if (this.state.title !== '') {
-      this.setState({disabled: false})
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false})
       }
     }
     this.setState({sequenceValue: e.target.value})
   }
 
   handleClick (e) {
-    this.setState({disabled: true})
+    this.setState({buttonDisabled: true})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({disabled: true})
+      this.props.updateButtonStatus({buttonDisabled: true})
     }
     this.setState({openPopover: !this.state.openPopover})
   }
@@ -231,19 +231,19 @@ class Button extends React.Component {
 
   changeTitle (event) {
     if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) && event.target.value !== '') {
-      this.setState({disabled: false})
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.shareButton && event.target.value !== '') {
-      this.setState({disabled: false})
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else {
-      this.setState({disabled: true})
+      this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true})
       }
     }
     this.setState({title: event.target.value})
@@ -255,29 +255,29 @@ class Button extends React.Component {
   changeUrl (event) {
     console.log('event', event.target.value)
     if (isWebURL(this.state.url) && this.state.title !== '') {
-      console.log('disabled: false')
-      this.setState({disabled: false})
+      console.log('buttonDisabled: false')
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else {
-      this.setState({disabled: true})
+      this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true})
       }
     }
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
     if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
-      this.setState({disabled: false})
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else {
-      this.setState({disabled: true})
+      this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({disabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true})
       }
     }
     this.setState({webviewurl: e.target.value})
@@ -285,7 +285,7 @@ class Button extends React.Component {
   render () {
     return (
       <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
-        <div onClick={this.props.closeButton} style={{marginLeft: '355px', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
+        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
           <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
