@@ -229,7 +229,7 @@ class ListModal extends React.Component {
                                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
                                   {
                                     card.component.imgSrc &&
-                                    <img src={card.imgSrc} style={{maxHeight: '100px'}} />
+                                    <img src={card.imgSrc} style={{maxWidth: '100%', maxHeight: '100%'}} />
                                     }
                                 </div>
                               </div>
