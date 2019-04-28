@@ -210,35 +210,46 @@ class ListModal extends React.Component {
                   {
                     this.state.cards.map((card, index) => {
                       if (card.visible) {
-                        console.log('rendering card', card)
-                        return (<div className='row' style={{padding: '10px'}}>
-                          <div className='col-6'>
-                            <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
-                            <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
-                          </div>
-                          <div className='col-6'>
-                            <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                        let largeStyle = null
+                        if (index === 0 && this.state.topElementStyle === 'LARGE') {
+                          largeStyle = {
+                            backgroundImage: card.imgSrc,
+                            backgroundSize: '100%',
+                            backgroundRepeat: 'no-repeat'
+                          }
+                        }
+                        return (
+                          <div style={largeStyle}>
+                            <div className='row' style={{padding: '10px'}}>
+                              <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
+                                <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
+                                <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                              </div>
+                              {!largeStyle && <div className='col-6'>
+                                <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                                  {
+                                    card.component.imgSrc &&
+                                    <img src={card.imgSrc} style={{maxHeight: '100px'}} />
+                                    }
+                                </div>
+                              </div>
+                              }
                               {
-                                  card.component.imgSrc &&
-                                  <img src={card.imgSrc} style={{maxHeight: '100px'}} />
+                                card.component.buttons && card.component.buttons.map(button => {
+                                  if (button.visible) {
+                                    return (
+                                      <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
+                                        <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
+                                      </div>
+                                    )
+                                  }
+                                })
+                                }
+                              {
+                                index !== this.state.numOfElements - 1 && <hr width='96.5%' />
                                 }
                             </div>
-                          </div>
-                          {
-                            card.component.buttons && card.component.buttons.map(button => {
-                              if (button.visible) {
-                                return (
-                                  <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
-                                    <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
-                                  </div>
-                                )
-                              }
-                            })
-                            }
-                          {
-                              index !== this.state.numOfElements - 1 && <hr width='96.5%' />
-                            }
-                        </div>)
+                          </div>)
                       }
                     })
                 }
