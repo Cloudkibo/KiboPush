@@ -18,6 +18,7 @@ import TextModal from './TextModal'
 import CardModal from './CardModal'
 import ListModal from './ListModal'
 import ImageModal from './ImageModal'
+import FileModal from './FileModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -350,7 +351,8 @@ class GenericMessage extends React.Component {
       'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -385,7 +387,7 @@ class GenericMessage extends React.Component {
       },
       'file': {
         component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
+        handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'list': {
         component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),

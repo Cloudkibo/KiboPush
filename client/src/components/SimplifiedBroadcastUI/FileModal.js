@@ -5,17 +5,16 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Image from './Image'
+import File from './File'
 
 class ImageModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       disabled: false,
-      imgSrc: null,
       file: null
     }
-    this.updateImage = this.updateImage.bind(this)
+    this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
   }
 
@@ -23,15 +22,19 @@ class ImageModal extends React.Component {
     this.addComponent()
   }
 
+//   'file': {
+//     component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+//     handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: ''}) }
+//   },
+
   addComponent () {
     console.log('addComponent ImageModal')
-    this.props.addComponent({componentType: 'image',
-      fileurl: this.state.file ? this.state.file.fileurl : '',
-      image_url: this.state.file ? this.state.file.image_url : ''})
+    this.props.addComponent({componentType: 'file',
+      fileurl: this.state.file ? this.state.file.fileurl : ''})
   }
 
-  updateImage (image, file) {
-    this.setState({imgSrc: image, file})
+  updateFile (file) {
+    this.setState({file})
   }
 
   render () {
@@ -44,21 +47,18 @@ class ImageModal extends React.Component {
           <hr />
           <div className='row'>
             <div className='col-6'>
-              <h4>Image:</h4>
-              <Image updateImage={this.updateImage} />
+              <h4>File:</h4>
+              <File updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '400px', marginLeft: '-50px'}} >
-                <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: this.state.imgSrc ? '' : '200px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
-                  {
-                      this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxHeight: '100px'}} />
-                  }
-                </div>
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
+                <section className='discussion'>
+                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}> 📁 <u>{this.state.file ? this.state.file.fileName : 'File'}</u></div>
+                </section>
               </div>
             </div>
 
