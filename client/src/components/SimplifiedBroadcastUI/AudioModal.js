@@ -6,7 +6,6 @@ import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Audio from './Audio'
-import ReactPlayer from 'react-player'
 
 class AudioModal extends React.Component {
   constructor (props) {

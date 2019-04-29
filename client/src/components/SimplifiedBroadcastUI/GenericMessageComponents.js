@@ -29,14 +29,14 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
-        <div className='col-3' hidden={this.props.hiddenComponents.indexOf('gallery') > -1 ? true : null}>
+        {/* <div className='col-3' hidden={this.props.hiddenComponents.indexOf('gallery') > -1 ? true : null}>
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('gallery') }}>
             <div className='align-center'>
               <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
               <h6>Gallery</h6>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className='col-3' hidden={this.props.hiddenComponents.indexOf('audio') > -1 ? true : null}>
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('audio') }}>
             <div className='align-center'>
