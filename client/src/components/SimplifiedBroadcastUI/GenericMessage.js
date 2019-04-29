@@ -20,6 +20,7 @@ import ListModal from './ListModal'
 import ImageModal from './ImageModal'
 import FileModal from './FileModal'
 import AudioModal from './AudioModal'
+import MediaModal from './MediaModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -354,7 +355,8 @@ class GenericMessage extends React.Component {
       'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'media': (<MediaModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -397,7 +399,7 @@ class GenericMessage extends React.Component {
       },
       'media': {
         component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: '', buttons: []}) }
+        handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       }
     }
     return components[broadcast.componentType]
