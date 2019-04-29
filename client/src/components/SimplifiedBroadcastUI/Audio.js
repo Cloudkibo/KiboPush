@@ -9,14 +9,15 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
+import AlertContainer from 'react-alert'
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
-import AlertContainer from 'react-alert'
+import ReactPlayer from 'react-player'
 
-class File extends React.Component {
+class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
@@ -32,14 +33,14 @@ class File extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
-    this.handleFile = this.handleFile.bind(this)
+    this.onTestURLAudio = this.onTestURLAudio.bind(this)
   }
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
       var fileInfo = {
         id: this.props.id,
-        componentType: 'file',
+        componentType: 'audio',
         name: this.props.file.fileName,
         type: this.props.file.type,
         size: this.props.file.size,
@@ -52,12 +53,12 @@ class File extends React.Component {
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
-          componentType: 'file',
+          componentType: 'audio',
           id: this.props.file.fileurl.id,
           name: this.props.file.fileurl.name
         }, {
           id: this.props.id,
-          componentType: 'file',
+          componentType: 'audio',
           fileName: this.props.file.fileName,
           type: this.props.file.type,
           size: this.props.file.size
@@ -66,6 +67,13 @@ class File extends React.Component {
     }
   }
 
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
+  }
   showDialog (page) {
     this.setState({showDialog: true})
   }
@@ -81,11 +89,7 @@ class File extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       var file = files[files.length - 1]
-    //   this.props.updateFile(file)
-      this.setState({file: file})
-      if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.msg.error('Cannot add js or exe files. Please select another file')
-      } else if (file.size > 10000000) {
+      if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
@@ -94,16 +98,16 @@ class File extends React.Component {
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
         fileData.append('pages', JSON.stringify(this.props.pages))
-        fileData.append('componentType', 'file')
+        fileData.append('componentType', 'audio')
         var fileInfo = {
           id: this.props.id,
-          componentType: 'file',
+          componentType: 'audio',
           fileName: file.name,
           type: file.type,
           size: file.size
         }
         this.setState({loading: true, showPreview: false})
-        this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
+        this.props.uploadFile(fileData, fileInfo, this.handleFile, this.setLoading)
       }
     }
   }
@@ -119,6 +123,7 @@ class File extends React.Component {
   }
 
   render () {
+    console.log('pages in audio: ', this.props.pages)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -127,9 +132,15 @@ class File extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+      <div className='broadcast-component'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-
+        {!this.state.loading &&
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i className='fa fa-times fa-stack-2x' />
+          </span>
+        </div>
+        }
         <div className='ui-block hoverborder' style={{padding: 25}}>
           {
             this.state.loading
@@ -138,27 +149,38 @@ class File extends React.Component {
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
-              accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
+              accepts={['audio/*']}
               maxFileSize={10000000}
               minFileSize={0}
               clickable
-          >
-              <div className='align-center' style={{padding: '5px'}}>
-                <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
-                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
+            >
+              <div className='align-center'>
+                <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
           }
+          { this.state.showPreview &&
+            <div style={{marginTop: '40px'}}>
+              <ReactPlayer
+                url={this.state.file.url}
+                controls
+                width='100%'
+                height='50px'
+                onPlay={this.onTestURLAudio(this.state.file.url)}
+              />
+            </div>
+          }
           {
           this.state.showDialog &&
-          <ModalContainer style={{width: '300px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '300px'}}
+            <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
-              <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
-              <p>{this.state.errorMsg}</p>
-            </ModalDialog>
-          </ModalContainer>
+              <ModalDialog style={{width: '300px'}}
+                onClose={this.closeDialog}>
+                <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
+                <p>{this.state.errorMsg}</p>
+              </ModalDialog>
+            </ModalContainer>
         }
         </div>
       </div>
@@ -183,8 +205,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile,
-    uploadTemplate: uploadTemplate
+    uploadTemplate: uploadTemplate,
+    uploadFile: uploadFile
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(File)
+export default connect(mapStateToProps, mapDispatchToProps)(Audio)

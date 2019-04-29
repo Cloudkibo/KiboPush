@@ -7,7 +7,7 @@ import React from 'react'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import File from './File'
 
-class ImageModal extends React.Component {
+class FileModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -28,7 +28,7 @@ class ImageModal extends React.Component {
 //   },
 
   addComponent () {
-    console.log('addComponent ImageModal')
+    console.log('addComponent FileModal')
     this.props.addComponent({componentType: 'file',
       fileurl: this.state.file ? this.state.file.fileurl : ''})
   }
@@ -57,7 +57,9 @@ class ImageModal extends React.Component {
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
                 <section className='discussion'>
-                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}> 📁 <u>{this.state.file ? this.state.file.fileName : 'File'}</u></div>
+                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>
+                  📁 <a href={this.state.file ? this.state.file.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+                  </div>
                 </section>
               </div>
             </div>
@@ -67,7 +69,7 @@ class ImageModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={!this.state.fileUrl} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>
@@ -80,4 +82,4 @@ class ImageModal extends React.Component {
   }
 }
 
-export default ImageModal
+export default FileModal

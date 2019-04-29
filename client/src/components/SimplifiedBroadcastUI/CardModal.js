@@ -28,10 +28,15 @@ class CardModal extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.updateStatus = this.updateStatus.bind(this)
     this.updateImage = this.updateImage.bind(this)
+    this.updateFile = this.updateFile.bind(this)
   }
 
-  updateImage (image, file) {
-    this.setState({imgSrc: image, file})
+  updateImage (image) {
+    this.setState({imgSrc: image})
+  }
+
+  updateFile (file) {
+    this.setState({file})
   }
 
   handleTitleChange (e) {
@@ -93,7 +98,7 @@ class CardModal extends React.Component {
               <h4>Subtitle:</h4>
               <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
               <h4>Image:</h4>
-              <Image updateImage={this.updateImage} />
+              <Image updateFile={this.updateFile} updateImage={this.updateImage} />
               <AddButton pageId={this.props.pageId} buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addComponent(buttons)} />
               <AddAction updateActionStatus={this.updateStatus} />
             </div>
