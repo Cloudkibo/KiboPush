@@ -86,7 +86,7 @@ class Dashboard extends React.Component {
     console.log('checkUserAccessToken response', response)
     if (this.props.user && this.props.user.role === 'buyer' &&
         response.status === 'failed' && response.payload.error &&
-        response.payload.error.code === 190) {
+        response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
       browserHistory.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
@@ -200,21 +200,27 @@ class Dashboard extends React.Component {
       //     pathname: '/resendVerificationEmail'
       //   })
       // } else
-      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio) {
+      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
         browserHistory.push({
           pathname: '/integrations'
         })
-      } else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'sms'}
-        })
-      } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-        browserHistory.push({
-          pathname: '/integrations',
-          state: {showCancel: 'messenger'}
-        })
       }
+      //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'messenger'}
+      //   })
+      // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'sms'}
+      //   })
+      // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
+      //   browserHistory.push({
+      //     pathname: '/integrations',
+      //     state: {showCancel: 'whatsApp'}
+      //   })
+      // }
       // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
       //   browserHistory.push({
       //     pathname: '/connectFb',

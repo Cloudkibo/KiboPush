@@ -41,7 +41,9 @@ import {businessGatewayInfo} from './businessGateway.reducer'
 import {contactsInfo} from './contacts.reducer'
 import {smsBroadcastsInfo} from './smsBroadcasts.reducer'
 import {smsChatInfo} from './smsChat.reducer'
+import {whatsAppChatInfo} from './whatsAppChat.reducer'
 import {whatsAppBroadcastsInfo} from './whatsAppBroadcasts.reducer'
+import {smsWhatsAppDashboardInfo} from './smsWhatsAppDashboard.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -85,7 +87,9 @@ const appReducer = combineReducers({
   contactsInfo,
   smsBroadcastsInfo,
   smsChatInfo,
-  whatsAppBroadcastsInfo
+  whatsAppBroadcastsInfo,
+  whatsAppChatInfo,
+  smsWhatsAppDashboardInfo
 })
 
 export default appReducer

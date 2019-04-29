@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 class Page extends React.Component {
   constructor (props) {
     super(props)

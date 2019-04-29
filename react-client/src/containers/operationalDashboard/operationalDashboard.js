@@ -104,6 +104,7 @@ class OperationalDashboard extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
     this.loadMore = this.loadMore.bind(this)
+    this.debounce = this.debounce.bind(this)
   }
 
   loadMore () {
@@ -123,6 +124,14 @@ class OperationalDashboard extends React.Component {
 
     document.title = `${title} | Operational Dashboard`
     this.scrollToTop()
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    let myInput = document.getElementById('users_search')
+    myInput.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.debounce, doneTypingInterval)
+    })
   }
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
@@ -345,15 +354,20 @@ class OperationalDashboard extends React.Component {
       state: user
     })
   }
+   debounce () {
+     console.log('debounce function called')
+     var value = document.getElementById('users_search').value
+     console.log('value', value)
+     this.setState({searchValue: value})
+     if (value !== '') {
+       this.setState({filter: true})
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+     } else {
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+     }
+   }  
 
   searchUser (event) {
-    this.setState({searchValue: event.target.value.toLowerCase()})
-    if (event.target.value !== '') {
-      this.setState({filter: true})
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
-    } else {
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
-    }
   }
 
   getFile () {
@@ -429,7 +443,7 @@ class OperationalDashboard extends React.Component {
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item' style={{marginTop: '15px'}}>
                         <div className='m-input-icon m-input-icon--left'>
-                          <input type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
+                          <input name='users_search' id='users_search' type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
                           <span className='m-input-icon__icon m-input-icon__icon--left'>
                             <span><i className='la la-search' /></span>
                           </span>

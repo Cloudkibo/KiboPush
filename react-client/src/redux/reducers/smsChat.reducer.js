@@ -1,20 +1,46 @@
 import * as ActionTypes from '../constants/constants'
 
-export function smsChatInfo (state = [], action) {
+const initialState = {
+  chat: [],
+  chatCount: 0
+}
+
+export function smsChatInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.FETCH_SESSIONS:
       return Object.assign({}, state, {
         sessions: action.sessions,
         count: action.count
       })
-    case ActionTypes.FETCH_CHAT:
+    // case ActionTypes.FETCH_CHAT:
+    //   return Object.assign({}, state, {
+    //     chat: action.chat,
+    //     chatCount: action.count
+    //   })
+    case ActionTypes.UPDATE_SESSION:
+      return Object.assign({}, state, {
+        sessions: action.sessions
+      })
+    case ActionTypes.FETCH_CHAT_OVERWRITE:
       return Object.assign({}, state, {
         chat: action.chat,
         chatCount: action.count
       })
-    case ActionTypes.UPDATE_SESSION:
+    case ActionTypes.FETCH_CHAT:
+      let chat = [...state.chat, ...action.chat]
+      let orderedChat = chat.sort(function (a, b) {
+        return new Date(a.datetime) - new Date(b.datetime)
+      })
       return Object.assign({}, state, {
-        sessions: action.sessions
+        chat: orderedChat,
+        chatCount: action.count
+      })
+    case ActionTypes.SOCKET_UPDATE_SMS:
+      let newchat = state.chat
+      newchat.push(action.data)
+      return Object.assign({}, state, {
+        chat: newchat,
+        chatCount: state.chatCount + 1
       })
     default:
       return state

@@ -44,6 +44,7 @@ class App extends Component {
     return false
   }
   render () {
+    console.log("Public URL ", process.env.PUBLIC_URL)
     return (
       <div>
         { auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1

@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "cross-env": "^5.0.1",
     "react-scripts": "2.1.8"
   },
   "dependencies": {
     "emoji-mart": "^2.11.0",
+    "env-cmd": "^8.0.2",
     "halogen": "^0.2.0",
     "jquery": "^3.4.0",
     "js-file-download": "^0.4.5",
@@ -61,6 +63,8 @@
     "redux-form": "^7.1.0",
     "redux-thunk": "^2.2.0",
     "socket.io-client": "^1.7.4",
+    "static-server": "^2.2.1",
+    "superagent": "^5.0.4",
     "sweetalert2": "^7.33.1",
     "tai-password-strength": "^1.1.1",
     "underscore": "^1.9.1"
@@ -68,6 +72,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:staging": "env-cmd .env.staging npm run build",
+    "deploy:prod": "npm run build && sh build_prod",
+    "deploy:staging": "npm run build:staging && sh build_staging",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

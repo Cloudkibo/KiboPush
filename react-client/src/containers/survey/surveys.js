@@ -213,6 +213,8 @@ class Survey extends React.Component {
     })
   }
   sendSurvey (survey) {
+    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === survey.segmentationPageIds[0])
+    survey.subscribersCount = currentPageSubscribers.length
     let segmentationValues = []
     for (let i = 0; i < survey.segmentationTags; i++) {
       for (let j = 0; j < this.props.tags.length; j++) {

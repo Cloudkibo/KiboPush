@@ -430,17 +430,17 @@ class Subscriber extends React.Component {
     subscribers.push(this.state.subscriber._id)
     for (let i = 0; i < this.state.options.length; i++) {
       if (this.state.options[i].label === tag) {
-        tagId = this.state.options[i].value
+        tagId = this.state.options[i].label
         break
       }
     }
     if (tagId !== '' && subscribers.length > 0) {
       payload.subscribers = subscribers
-      payload.tagId = tagId
+      payload.tag = tagId
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
- 
+
   handleAdd (value) {
     console.log('this.state.saveEnable', value)
     var index = 0
@@ -501,7 +501,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.removeTag.value
+    payload.tag = this.state.removeTag.label
     return payload
   }
   createAssignPayload () {
@@ -524,7 +524,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.addTag.value
+    payload.tag = this.state.addTag.label
     return payload
   }
   addTags () {
@@ -549,7 +549,7 @@ class Subscriber extends React.Component {
     }
     subscribers.push(subscriber._id)
     payload.subscribers = subscribers
-    payload.tagId = this.state.addTagIndividual.value
+    payload.tag = this.state.addTagIndividual.label
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {

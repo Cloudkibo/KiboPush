@@ -12,7 +12,6 @@ class SubmitSurvey extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'Submit Survey';
     }
-    document.title = `${title} | Submit Survey`;
   }
 
   render () {

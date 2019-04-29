@@ -19,6 +19,7 @@ class SessionsAreaBody extends React.Component {
   }
 
   render () {
+    console.log('close sessions in sessions area body', this.props.closeSessions)
     return (
       <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
         <div className='tab-content'>
@@ -53,7 +54,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions && this.props.closeSessions.length > 0
                   ? (this.props.closeSessions.map((session) => (
                     <SESSIONITEM
-                      session
+                      session={session}
                       activeSession={this.props.activeSession}
                       changeActiveSession={this.props.changeActiveSession}
                       user={this.props.user}

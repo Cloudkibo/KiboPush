@@ -3,6 +3,8 @@ import { Route, IndexRoute } from 'react-router'
 import React from 'react'
 import asyncComponent from "./components/AsyncComponent";
 
+import App from "./sub.app.js"
+import Home from "./containers/home"
 import Login from './containers/login/new'
 import MessageUs from './containers/messageUs/messageUs'
 import Signup from './containers/signup/signup'
@@ -128,8 +130,6 @@ import CreatesmsBroadcast from './containers/smsBroadcasts/create'
 import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
 
-const App = asyncComponent(() => import("./sub.app.js"))
-const Home = asyncComponent(() => import("./containers/home"))
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
 const StackedBar = asyncComponent(() => import("./containers/dashboard/stackedBar"))

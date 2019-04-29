@@ -9,17 +9,16 @@ import {
   fetchOpenSessions,
   fetchCloseSessions,
   unSubscribe,
-  // fetchSingleSession,
+  fetchSingleSession,
   fetchUserChats,
   sendNotifications,
   fetchTeamAgents,
   assignToTeam,
   assignToAgent,
-  // resetSocket,
-  // resetUnreadSession,
-  // showChatSessions,
-  // updateUserChat,
-  // clearSearchResult,
+  resetSocket,
+  resetUnreadSession,
+  updateUserChat,
+  clearSearchResult,
   markRead
 } from '../../redux/actions/livechat.actions'
 import {
@@ -35,6 +34,8 @@ import { loadTeamsList } from '../../redux/actions/teams.actions'
 import INFO from '../../components/LiveChat/info.js'
 import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from '../../components/LiveChat/profileArea.js'
+import CHATAREA from './chatbox.js'
+import SEARCHAREA from './search'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -43,7 +44,8 @@ class LiveChat extends React.Component {
       loading: true,
       activeSession: {},
       scroll: true,
-      tagOptions: []
+      tagOptions: [],
+      showSearch: false
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -51,6 +53,18 @@ class LiveChat extends React.Component {
     this.handleSaveTags = this.handleSaveTags.bind(this)
     this.unassignTags = this.unassignTags.bind(this)
     this.assignTags = this.assignTags.bind(this)
+    this.showSearch = this.showSearch.bind(this)
+    this.hideSearch = this.hideSearch.bind(this)
+    this.disableScroll = this.disableScroll.bind(this)
+    this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
+  }
+
+  changeActiveSessionFromChatbox () {
+    this.setState({activeSession: {}})
+  }
+
+  disableScroll () {
+    this.setState({scroll: false})
   }
 
   changeActiveSession (session) {
@@ -123,6 +137,15 @@ class LiveChat extends React.Component {
     this.props.assignTags(payload, this.handleSaveTags, msg)
   }
 
+  showSearch () {
+    this.setState({showSearch: true})
+  }
+
+  hideSearch () {
+    this.setState({showSearch: false})
+    this.props.clearSearchResult()
+  }
+
   componentWillMount () {
     this.fetchSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     this.props.loadTags()
@@ -188,6 +211,24 @@ class LiveChat extends React.Component {
         tagOptions: tagOptions
       })
     }
+    if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
+      var temp = nextProps.openSessions
+      for (var z = 0; z < temp.length; z++) {
+        if (temp[z]._id === nextProps.unreadSession) {
+          temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+        }
+      }
+      this.props.resetUnreadSession()
+    }
+    if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.openSessions && nextProps.closeSessions) {
+      if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].subscriber_id === nextProps.socketSession) {
+        this.props.updateUserChat(nextProps.socketMessage, this.props.userChat)
+        this.props.resetSocket()
+      } else if (nextProps.socketSession !== '') {
+        this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})
+        this.props.resetSocket()
+      }
+    }
   }
 
   render () {
@@ -228,16 +269,16 @@ class LiveChat extends React.Component {
                 }
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                  <div className='col-xl-5'>
-                    <div className='m-portlet m-portlet--full-height'>
-                      <div style={{textAlign: 'center'}} className='m-portlet__body'>
-                        <p>Chat Area</p>
-                      </div>
-                    </div>
-                  </div>
+                  <CHATAREA
+                    scroll={this.state.scroll}
+                    disableScroll={this.disableScroll}
+                    showSearch={this.showSearch}
+                    currentSession={this.state.activeSession}
+                    changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox}
+                  />
                 }
                 {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                   <PROFILEAREA
                     teams={this.props.teams ? this.props.teams : []}
                     agents={this.props.teamUniqueAgents ? this.props.teamUniqueAgents : []}
@@ -254,6 +295,13 @@ class LiveChat extends React.Component {
                     tags={this.props.tags}
                     createTag={this.props.createTag}
                     assignTags={this.assignTags}
+                  />
+                }
+                {
+                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  <SEARCHAREA
+                    currentSession={this.state.activeSession}
+                    hideSearch={this.hideSearch}
                   />
                 }
               </div>
@@ -298,7 +346,12 @@ function mapDispatchToProps (dispatch) {
     assignTags,
     unSubscribe,
     loadTags,
-    loadTeamsList
+    loadTeamsList,
+    clearSearchResult,
+    fetchSingleSession,
+    resetSocket,
+    resetUnreadSession,
+    updateUserChat
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

@@ -210,6 +210,16 @@ export function showSearchChat (data) {
   }
 }
 
+// export function fetchSessions () {
+//   return (dispatch) => {
+//     callApi('sessions')
+//       .then(res => {
+//         console.log('fetchSessions response', res)
+//         dispatch(showChatSessions(res.payload))
+//       })
+//   }
+// }
+
 export function fetchOpenSessions (data) {
   console.log('fetchOpenSessions data', data)
   return (dispatch) => {

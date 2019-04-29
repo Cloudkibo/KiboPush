@@ -23,7 +23,7 @@ export function loadBroadcastsList (data) {
 export function sendBroadcast (data, clearFields) {
   console.log('data for sendBroadcast', data)
   return (dispatch) => {
-    callApi('smsBroadcasts/sendBroadcast', 'post', data)
+    callApi('whatsAppBroadcasts/sendBroadcast', 'post', data)
       .then(res => {
         console.log('response from sendBroadcast', res)
         if (res.status === 'success') {

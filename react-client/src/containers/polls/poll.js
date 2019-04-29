@@ -226,6 +226,8 @@ class Poll extends React.Component {
   }
 
   sendPoll (poll) {
+    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === poll.segmentationPageIds[0])
+    poll.subscribersCount = currentPageSubscribers.length
     let segmentationValues = []
     if (poll.segmentationTags && poll.segmentationTags.length > 0) {
       for (let i = 0; i < poll.segmentationTags.length; i++) {
