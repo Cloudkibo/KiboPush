@@ -1,0 +1,18 @@
+for file in build/static/js/*
+do
+    #whatever you need with "$file"
+    echo "Uploading $file"
+    curl -F 'bundle=@'$file https://cdn.cloudkibo.com/uploadSplitBundle
+    echo ""
+done
+
+curl --data '' https://cdn.cloudkibo.com/completedBundleUpload
+echo ""
+
+echo "Uploading Html to KiboEngage"
+curl -F 'bundle=@build/index.html' https://kiboengage.cloudkibo.com/uploadHtml
+echo ""
+
+echo "Uploading Html to KiboChat"
+curl -F 'bundle=@build/index.html' https://kibochat.cloudkibo.com/uploadHtml
+echo ""
