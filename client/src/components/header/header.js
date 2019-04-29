@@ -45,6 +45,29 @@ class Header extends React.Component {
     this.showDisconnectFacebook = this.showDisconnectFacebook.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
+    this.updatePlatformValue = this.updatePlatformValue.bind(this)
+  }
+
+  updatePlatformValue (e, value) {
+    console.log('in updatePlatformValue', value)
+    if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'sms'
+      })
+    } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'whatsApp'
+      })
+    } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'messenger'
+      })
+    } else {
+      this.props.updatePlatform({platform: value})
+    }
   }
 
   profilePicError (e) {
@@ -313,7 +336,7 @@ class Header extends React.Component {
                               <div className='m-dropdown__content'>
                                 <ul className='m-nav'>
                                   <li key={'messenger'} className='m-nav__item'>
-                                    <a onClick={() => this.props.updatePlatform({platform: 'messenger'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon fa fa-facebook-square' />
                                       <span className='m-nav__link-text'>
                                         Messenger
@@ -321,7 +344,7 @@ class Header extends React.Component {
                                     </a>
                                   </li>
                                   <li key={'sms'} className='m-nav__item'>
-                                    <a onClick={() => this.props.updatePlatform({platform: 'sms'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon flaticon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>
                                         SMS
@@ -329,7 +352,7 @@ class Header extends React.Component {
                                     </a>
                                   </li>
                                   <li key={'whatsApp'} className='m-nav__item'>
-                                    <a onClick={() => this.props.updatePlatform({platform: 'whatsApp'})} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon socicon socicon-whatsapp' />
                                       <span className='m-nav__link-text'>
                                         WhatsApp
@@ -799,7 +822,8 @@ function mapStateToProps (state) {
     socketSession: (state.liveChat.socketSession),
     subscribers: (state.subscribersInfo.subscribers),
     notifications: (state.notificationsInfo.notifications),
-    updatedUser: (state.basicInfo.updatedUser)
+    updatedUser: (state.basicInfo.updatedUser),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 

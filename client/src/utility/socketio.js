@@ -4,6 +4,8 @@
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 import { socketUpdate, socketUpdateSeen, fetchSingleSession } from './../redux/actions/livechat.actions'
+import { socketUpdateSms } from './../redux/actions/smsChat.actions'
+import { socketUpdateWhatsApp } from './../redux/actions/whatsAppChat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -37,7 +39,9 @@ var callbacks = {
   sequence_create: false,
   sequence_update: false,
   sequence_delete: false,
-  message_seen: false
+  message_seen: false,
+  new_chat_sms: false,
+  new_chat_whatsapp: false
 }
 
 export function registerAction (callback) {
@@ -71,7 +75,12 @@ socket.on('message', (data) => {
   if (data.action === 'new_chat') {
     console.log('new message received from customer')
     store.dispatch(socketUpdate(data.payload))
-    store.dispatch(loadDashboardData())
+  } if (data.action === 'new_chat_sms') {
+    console.log('new message received from customer sms')
+    store.dispatch(socketUpdateSms(data.payload))
+  } if (data.action === 'new_chat_whatsapp') {
+    console.log('new message received from customer whatsApp')
+    store.dispatch(socketUpdateWhatsApp(data.payload))
   } else if (data.action === 'message_seen') {
     store.dispatch(socketUpdateSeen(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {

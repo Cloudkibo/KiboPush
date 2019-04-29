@@ -306,7 +306,7 @@ class CreatePoll extends React.Component {
           segmentationPoll: this.state.pollValue,
           segmentationList: this.state.listSelected,
           fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-          subscribersCount: currentPageSubscribers
+          subscribersCount: currentPageSubscribers.length
         }
         console.log('Sending Poll', data)
         this.props.sendPollDirectly(data, this.msg)

@@ -147,6 +147,7 @@ export function addPoll (token, data) {
   return (dispatch) => {
     callApi('polls/create', 'post', data)
       .then(res => {
+        console.log('create poll response', res)
         if (res.status === 'success') {
           dispatch(createPoll(res.payload))
         } else {

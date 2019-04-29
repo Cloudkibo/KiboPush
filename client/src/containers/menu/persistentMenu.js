@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { saveCurrentMenuItem, removeMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import { transformData, removeMenuPayload } from './utility'
+import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
@@ -71,6 +72,8 @@ class Menu extends React.Component {
     this.closeWebview = this.closeWebview.bind(this)
     this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+    this.handleWebView = this.handleWebView.bind(this)
+    this.saveMenuData = this.saveMenuData.bind(this)
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -637,16 +640,7 @@ class Menu extends React.Component {
       })
     }
   }
-  saveWebUrl (event) {
-    let url = ''
-    if (this.state.openWebsite && this.state.webUrl !== '') {
-      url = this.state.webUrl
-    } else if (this.state.openWebView && this.state.webviewurl !== '') {
-      url = this.state.webviewurl
-      if (!isWebViewUrl(this.state.webviewurl)) {
-        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
-      }
-    }
+  saveMenuData (url) {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
     if (index && index.length > 1) {
@@ -699,7 +693,35 @@ class Menu extends React.Component {
       }
     }
     this.setState({menuItems: temp})
-    this.handleToggle()
+
+  }
+  handleWebView (resp, url) {
+    if (resp.status === 'success') {
+      if (resp.payload) {
+        this.setState({openPopover: false})
+        this.saveMenuData(url)
+      } else {
+        this.msg.error('The given domain is not whitelisted. Please add it to whitelisted domains.')
+      }
+    } else {
+      this.msg.error('Unable to verify whitelisted domains.')
+    }
+  }
+  saveWebUrl (event) {
+    let url = ''
+    if (this.state.openWebsite && this.state.webUrl !== '') {
+      url = this.state.webUrl
+      this.saveMenuData(url)
+      this.handleToggle()
+    } else if (this.state.openWebView && this.state.webviewurl !== '') {
+      url = this.state.webviewurl
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
+      else {
+        this.props.checkWhitelistedDomains({pageId: this.state.selectPage.pageId, domain: this.state.webviewurl}, this.handleWebView, url)
+      }
+    }
   }
   saveMenu () {
     if (this.state.menuItems && this.state.menuItems.length > 0) {
@@ -1076,7 +1098,8 @@ function mapDispatchToProps (dispatch) {
     saveCurrentMenuItem: saveCurrentMenuItem,
     saveMenu: saveMenu,
     getIndexBypage: getIndexBypage,
-    removeMenu: removeMenu
+    removeMenu: removeMenu,
+    checkWhitelistedDomains: checkWhitelistedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
