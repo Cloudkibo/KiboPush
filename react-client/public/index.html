@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="description" content="Latest updates and statistic charts" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="preconnect" href="https://cdn.cloudkibo.com" />
+    <script src="https://cdn.cloudkibo.com/public/scripts/kiboAuthScript.js"></script>
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
+    <script>
+      ! function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+          n.callMethod ?
+            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window, document, 'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '574448036263793');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none;" src="https://www.facebook.com/tr?id=574448036263793&amp;ev=PageView&amp;noscript=1" /></noscript>
+    <!-- End Facebook Pixel Code-->
+    <script>
+      fbq('track', 'CompleteRegistration');
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+    <script>
+      WebFont.load({
+        google: {
+          'families': ['Poppins:300,400,500,600,700', 'Roboto:300,400,500,600,700']
+        },
+        active: function() {
+          sessionStorage.fonts = true
+        },
+      })
+    </script>
+    <script type="text/javascript">
+      // TODO add if env === production
+      if ("%NODE_ENV%" === "production") {
+        window.__lo_site_id = 114153;
+        (function() {
+          var wa = document.createElement('script');
+          wa.type = 'text/javascript';
+          wa.async = true;
+          wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(wa, s);
+        })();
+      }
+    </script>
+    <link rel="shortcut icon" href="https://cdn.cloudkibo.com/public/assets/demo/default/media/img/logo/favicon.ico" />
+    <!-- Slick Carousel-->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+    <!-- begin::Base Styles-->
+    <!-- begin::Page Vendors-->
+    <link href="https://cdn.cloudkibo.com/public/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.cloudkibo.com/public/assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
+    <!-- end::Page Vendors-->
+    <link href="https://cdn.cloudkibo.com/public/assets/vendors/custom/css/custom-style.css" rel="stylesheet" type="text/css" />
+    <!-- end::Base Styles-->
+    <link href="https://cdn.cloudkibo.com/public/Bootstrap/dist/css/latestBootstrap.css" rel="stylesheet" type="text/css" />
+    <!-- Emoji Mart CSS-->
+    <link href="https://cdn.cloudkibo.com/public/assets/Emoji/picker.css" rel="stylesheet" type="text/css" />
+    <!-- Dashboard custom CSS-->
+    <link href="https://cdn.cloudkibo.com/public/assets/dashboard/dashboard.css" rel="stylesheet" type="text/css" />
+    <!-- React Select CSS-->
+    <link rel="stylesheet" href="https://unpkg.com/react-select@1.2.0/dist/react-select.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics-->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'UA-104907011-1');
+    </script>
+    <style>
+      .row:before,
+      .row:after {
+        display: none;
+      }
+    </style>
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>KiboPush</title>
+  </head>
+  <body class="m-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="m-grid m-grid--hor m-grid--root m-page"></div>
+    <script src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous"></script>
+    <script>
+      // TODO if env === production
+      if ("%NODE_ENV%" === "production") {
+        function readCookie(name) {
+          var nameEQ = name + "=";
+          var ca = document.cookie.split(';');
+          for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+          }
+          return null;
+        }
+        var env = readCookie("environment");
+        if (env !== "development") {
+          Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
+            autoBreadcrumbs: {
+              console: false
+            }
+          }).install()
+        }
+      }
+    </script>
+    <!-- begin::Quick Nav-->
+    <!-- begin::Base Scripts-->
+    <script src="https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+    <script src="https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
+    <!-- end::Base Scripts-->
+    <!-- begin::Page Vendors-->
+    <script src="https://cdn.cloudkibo.com/public/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js" type="text/javascript"></script>
+    <!-- end::Page Vendors-->
+    <!-- begin::Page Snippets-->
+    <script src="https://cdn.cloudkibo.com/public/assets/app/js/dashboard.js" type="text/javascript"></script>
+    <!-- end::Page Snippets-->
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
