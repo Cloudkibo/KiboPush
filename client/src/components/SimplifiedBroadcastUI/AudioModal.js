@@ -5,19 +5,18 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Image from './Image'
+import Audio from './Audio'
+import ReactPlayer from 'react-player'
 
-class ImageModal extends React.Component {
+class AudioModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       disabled: false,
-      imgSrc: null,
       file: null
     }
-    this.updateImage = this.updateImage.bind(this)
-    this.handleDone = this.handleDone.bind(this)
     this.updateFile = this.updateFile.bind(this)
+    this.handleDone = this.handleDone.bind(this)
   }
 
   handleDone () {
@@ -25,18 +24,21 @@ class ImageModal extends React.Component {
   }
 
   addComponent () {
-    console.log('addComponent ImageModal')
-    this.props.addComponent({componentType: 'image',
-      fileurl: this.state.file ? this.state.file.fileurl : '',
-      image_url: this.state.file ? this.state.file.image_url : ''})
-  }
-
-  updateImage (imgSrc) {
-    this.setState({imgSrc})
+    console.log('addComponent AudioModal')
+    this.props.addComponent({componentType: 'audio',
+      fileurl: this.state.file ? this.state.file.fileurl : ''})
   }
 
   updateFile (file) {
     this.setState({file})
+  }
+
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
   }
 
   render () {
@@ -45,24 +47,23 @@ class ImageModal extends React.Component {
         onClose={this.props.closeModal}>
         <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
-          <h3>Add Image Component</h3>
+          <h3>Add Audio Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
-              <h4>Image:</h4>
-              <Image updateFile={this.updateFile} updateImage={this.updateImage} />
+              <h4>Audio:</h4>
+              <Audio updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '400px', marginLeft: '-50px'}} >
-                <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: this.state.imgSrc ? '' : '200px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
-                  {
-                      this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxHeight: '100px'}} />
-                  }
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
+                <div style={{marginTop: '25%'}}>
+                  <audio controls name='media'>
+                    <source src={this.state.file ? this.state.file.fuleurl.url : ''} type='audio/mpeg' />
+                  </audio>
                 </div>
               </div>
             </div>
@@ -85,4 +86,4 @@ class ImageModal extends React.Component {
   }
 }
 
-export default ImageModal
+export default AudioModal

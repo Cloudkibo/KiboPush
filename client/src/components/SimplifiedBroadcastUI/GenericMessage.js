@@ -19,6 +19,7 @@ import CardModal from './CardModal'
 import ListModal from './ListModal'
 import ImageModal from './ImageModal'
 import FileModal from './FileModal'
+import AudioModal from './AudioModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -352,7 +353,8 @@ class GenericMessage extends React.Component {
       'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -367,7 +369,7 @@ class GenericMessage extends React.Component {
       },
       'image': {
         component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
-        handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: '', fileurl: ''}) }
+        handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: broadcast.image_url ? broadcast.image_url : '', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'card': {
         component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
@@ -379,11 +381,11 @@ class GenericMessage extends React.Component {
       },
       'audio': {
         component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: ''}) }
+        handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'video': {
         component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: ''}) }
+        handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'file': {
         component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),

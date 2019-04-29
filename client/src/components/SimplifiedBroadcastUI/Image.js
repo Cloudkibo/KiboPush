@@ -22,13 +22,14 @@ class Image extends React.Component {
     this._onChange = this._onChange.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.state = {
-      fileName: '',
+      file: null,
       imgSrc: '',
       showPreview: false,
       loading: false,
       imgWidth: null,
       imgHeight: null
     }
+    this.handleImage = this.handleImage.bind(this)
   }
 
   componentDidMount () {
@@ -74,7 +75,7 @@ class Image extends React.Component {
         this.setState({
           imgSrc: [reader.result], fileName: file.name
         }, () => {
-          this.props.updateImage(this.state.imgSrc, file)
+          this.props.updateImage(this.state.imgSrc)
         })
       }
 
@@ -90,8 +91,14 @@ class Image extends React.Component {
         image_url: '',
         type: file.type, // jpg, png, gif
         size: file.size
-      }, this.props.handleImage, this.setLoading)
+      }, this.handleImage, this.setLoading)
     }
+  }
+
+  handleImage (fileInfo) {
+    this.props.updateFile(fileInfo)
+    this.setState({file: fileInfo.fileurl})
+    this.props.handleImage(fileInfo)
   }
 
   render () {
@@ -126,7 +133,7 @@ class Image extends React.Component {
               </div>
               : <div className='align-center' style={{padding: '5px'}}>
                 <img src={this.state.imgSrc} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.fileName}</h4>
+                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file.fileName}</h4>
               </div>
           }
           </div>

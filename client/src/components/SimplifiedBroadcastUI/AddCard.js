@@ -27,12 +27,12 @@ class AddCard extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.updateStatus = this.updateStatus.bind(this)
     this.updateImage = this.updateImage.bind(this)
-
+    this.updateFile = this.updateFile.bind(this)
     this.props.updateStatus({title: this.state.title, subtitle: this.state.subtitle})
   }
 
-  updateImage (image, file) {
-    this.setState({imgSrc: image, file}, () => {
+  updateFile (file) {
+    this.setState({file}, () => {
       this.props.updateStatus({
         fileurl: this.state.file ? this.state.file.fileurl : '',
         image_url: this.state.file ? this.state.file.image_url : '',
@@ -41,6 +41,10 @@ class AddCard extends React.Component {
         size: this.state.file ? this.state.file.size : ''
       })
     })
+  }
+
+  updateImage (image) {
+    this.setState({imgSrc: image})
   }
 
   handleTitleChange (e) {
@@ -102,7 +106,7 @@ class AddCard extends React.Component {
         <h4>Subtitle:</h4>
         <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
         <h4>Image:</h4>
-        <Image updateImage={this.updateImage} />
+        <Image updateFile={this.updateFile} updateImage={this.updateImage} />
         <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addCard(buttons)} />
         <AddAction updateActionStatus={this.updateStatus} />
       </div>
