@@ -214,7 +214,7 @@ class Sidebar extends Component {
 
   showLiveChatItem () {
     if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
           (this.props.automated_options.automated_options === 'MIX_CHAT' ||
            this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
