@@ -1,7 +1,4 @@
 /* eslint-disable no-undef */
-/**
- * Created by sojharo on 20/07/2017.
- */
 
 import React from 'react'
 import { connect } from 'react-redux'

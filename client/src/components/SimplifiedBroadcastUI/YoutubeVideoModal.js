@@ -1,30 +1,33 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
-
+/* eslint-disable no-undef */
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Media from './Media'
 import AddButton from './AddButton'
 
-class MediaModal extends React.Component {
+class YoutubeVideoModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       buttons: [],
       numOfCurrentButtons: 0,
-      disabled: false,
+      disabled: true,
       buttonDisabled: false,
       buttonLimit: 3,
       buttonActions: ['open website', 'open webview'],
-      imgSrc: null,
-      file: null
+      file: null,
+      link: ''
     }
     this.updateFile = this.updateFile.bind(this)
-    this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.validateYoutubeUrl = this.validateYoutubeUrl.bind(this)
+    this.handleLinkChange = this.handleLinkChange.bind(this)
+  }
+
+  handleLinkChange (e) {
+    this.setState({link: e.target.value}, () => {
+      this.validateYoutubeUrl()
+    })
   }
 
   handleDone () {
@@ -43,12 +46,23 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  updateImage (imgSrc) {
-    this.setState({imgSrc})
-  }
-
   updateFile (file) {
     this.setState({file})
+  }
+
+  validateYoutubeUrl () {
+    let url = this.state.link
+    if (url !== undefined || url !== '') {
+      var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
+      var match = url.match(regExp)
+      if (match && match[2].length === 11) {
+        this.setState({disabled: false}, () => {
+          this.video.mediaelementplayer()
+        })
+      } else {
+        this.setState({disabled: true})
+      }
+    }
   }
 
   render () {
@@ -58,12 +72,12 @@ class MediaModal extends React.Component {
         onClose={this.props.closeModal}>
         <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
-          <h3>Add Media Component</h3>
+          <h3>Add Video from YouTube </h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
-              <h4>Media:</h4>
-              <Media updateImage={this.updateImage} updateFile={this.updateFile} />
+              <h4>YouTube Link:</h4>
+              <input value={this.state.link} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleLinkChange} className='form-control' />
               <AddButton buttonLimit={this.state.buttonLimit}
                 pageId={this.props.pageId}
                 buttonActions={this.state.buttonActions}
@@ -79,13 +93,9 @@ class MediaModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', maxWidth: '250px', minHeight: '130px', margin: 'auto', marginTop: '100px'}} >
                   {
-                      this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
-                  }
-                  {
-                    (this.state.file && !this.state.imgSrc) &&
-                    <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
-                      <source src={this.state.file.fileurl.url} type='audio/mpeg' />
+                    (!this.state.disabled) &&
+                    <video ref={(ref) => { this.video = ref }} controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
+                      <source src={this.state.link} type='audio/mpeg' />
                     </video>
                   }
                   {
@@ -93,10 +103,7 @@ class MediaModal extends React.Component {
                         let style = null
                         if (index === 0 || visibleButtons.length === 1) {
                           style = {marginTop: '55%'}
-                          if (this.state.imgSrc) {
-                            style = null
-                          }
-                          if (this.state.file && !this.state.imgSrc) {
+                          if (this.state.link && !this.state.disabled) {
                             style = {marginTop: '-9%'}
                           }
                         }
@@ -117,7 +124,7 @@ class MediaModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.state.disabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>
@@ -130,4 +137,4 @@ class MediaModal extends React.Component {
   }
 }
 
-export default MediaModal
+export default YoutubeVideoModal
