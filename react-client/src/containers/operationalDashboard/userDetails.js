@@ -55,10 +55,10 @@ class UserDetails extends React.Component {
     document.title = `${title} | User Details`
   }
 
-  search (event, name) {
-    if (event.target.value !== '') {
-      this.setState({searchValue: event.target.value.toLowerCase()})
-      this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: event.target.value.toLowerCase()})
+  search (value, name) {
+    if (value !== '') {
+      this.setState({searchValue: value.toLowerCase()})
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: value.toLowerCase()})
     } else {
       this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: ''})
     }

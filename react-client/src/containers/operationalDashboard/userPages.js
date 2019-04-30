@@ -12,6 +12,22 @@ class PagesInfo extends React.Component {
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
+    this.debounce = this.debounce.bind(this)
+  }
+
+  componentDidMount () {
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    let myInput = document.getElementById('searchPages')
+    myInput.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.debounce, doneTypingInterval)
+    })
+  }
+  debounce () {
+    var value = document.getElementById('searchPages').value
+    this.props.search(value, 'pages')
   }
   render () {
     return (
@@ -32,8 +48,7 @@ class PagesInfo extends React.Component {
               <div className='row align-items-center'>
                 <div className='col-lg-12 col-md-12'>
                   <div className='m-input-icon m-input-icon--left'>
-                    <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />
-                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                  <input type='text' id='searchPages' name='searchPages' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />                    <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>
