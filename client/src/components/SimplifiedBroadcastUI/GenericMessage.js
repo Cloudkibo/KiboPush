@@ -1,13 +1,12 @@
 import React from 'react'
-import Image from '../../containers/convo/Image'
-import List from '../../containers/convo/List'
-import Video from '../../containers/convo/Video'
-import Audio from '../../containers/convo/Audio'
-import File from '../../containers/convo/File'
-import Text from '../../containers/convo/Text'
-import Card from '../../containers/convo/Card'
-import Gallery from '../../containers/convo/Gallery'
-import Media from '../../containers/convo/Media'
+import Image from './MessageComponents/Image'
+import List from './MessageComponents/List'
+import Video from './MessageComponents/Video'
+import Audio from './MessageComponents/Audio'
+import File from './MessageComponents/File'
+import Text from './MessageComponents/Text'
+import Card from './MessageComponents/Card'
+import Media from './MessageComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
@@ -351,7 +350,7 @@ class GenericMessage extends React.Component {
 
   openModal () {
     let modals = {
-      'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
@@ -378,10 +377,6 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.title : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : [], webviewurl: broadcast.webviewurl, elementUrl: broadcast.elementUrl, webviewsize: broadcast.webviewsize}) }
-      },
-      'gallery': {
-        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
       },
       'audio': {
         component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),

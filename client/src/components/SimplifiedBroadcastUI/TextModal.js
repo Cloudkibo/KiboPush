@@ -73,14 +73,14 @@ class TextModal extends React.Component {
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
                 <section className='discussion'>
-                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>{this.state.text}</div>
+                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px', wordBreak: 'break-all'}}>{this.state.text}</div>
                 </section>
                 {
                   this.state.buttons.map((button, index) => {
                     if (button.visible) {
                       return (
                         <section className='discussion'>
-                          <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px'}}>{button.title}</div>
+                          <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
                         </section>
                       )
                     }
