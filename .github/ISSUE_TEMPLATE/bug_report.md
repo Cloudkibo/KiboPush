@@ -20,11 +20,13 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Front End or Backend End issue**
+**Front End or Backend End issue?**
 
-**Issue found during the automated/manual end to end test**
-Y/N
-If Y when was this last working
+**How was the issue found the automated test or manual test?**
+ 
+
+**When was this issues last working?**
+
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
