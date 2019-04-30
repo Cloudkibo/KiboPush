@@ -29,6 +29,7 @@ class SurveysInfo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.filterByDays = this.filterByDays.bind(this)
     this.onSurveyClick = this.onSurveyClick.bind(this)
+    this.debounce = this.debounce.bind(this)
   }
 
   componentDidMount () {
@@ -40,6 +41,19 @@ class SurveysInfo extends React.Component {
       title = 'KiboChat'
     }
     document.title = `${title} | User Surveys`
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    let myInput = document.getElementById('searchSurvey')
+    myInput.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.debounce, doneTypingInterval)
+    })
+  }
+
+  debounce () {
+    var value = document.getElementById('searchSurvey').value
+    this.searchSurveys(value)
   }
 
   displayData (n, surveys) {
@@ -78,9 +92,9 @@ class SurveysInfo extends React.Component {
       this.setState({SurveyData: [], totalLength: 0})
     }
   }
-  searchSurveys (event) {
-    this.setState({searchValue: event.target.value.toLowerCase()})
-    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: parseInt(this.state.selectedFilterValue)}})
+  searchSurveys (value) {
+    this.setState({searchValue: value.toLowerCase()})
+    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: value.toLowerCase(), days: parseInt(this.state.selectedFilterValue)}})
     // var filtered = []
     // for (let i = 0; i < this.props.surveys.length; i++) {
     //   if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
@@ -149,8 +163,7 @@ class SurveysInfo extends React.Component {
                 <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                   <div className='form-group m-form__group row align-items-center'>
                     <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                      <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchSurveys} />
-                      <span className='m-input-icon__icon m-input-icon__icon--left'>
+                    <input type='text' id='searchSurvey' name='searchSurvey' placeholder='Search by Title...' className='form-control m-input m-input--solid' />                      <span className='m-input-icon__icon m-input-icon__icon--left'>
                         <span><i className='la la-search' /></span>
                       </span>
                     </div>

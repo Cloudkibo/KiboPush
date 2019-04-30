@@ -20,6 +20,7 @@ class PollsInfo extends React.Component {
       selectedDays: 10,
       filter: true,
       searchValue: '',
+      pageNumber: 0,
       showPolls: false
     }
     this.displayData = this.displayData.bind(this)
