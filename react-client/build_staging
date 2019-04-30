@@ -16,3 +16,7 @@ echo ""
 echo "Uploading Html to KiboChat"
 curl -F 'bundle=@build/index.html' https://skibochat.cloudkibo.com/uploadHtml
 echo ""
+
+echo "Uploading Html to KiboLite"
+curl -F 'bundle=@build/index.html' https://skibolite.cloudkibo.com/uploadHtml
+echo ""

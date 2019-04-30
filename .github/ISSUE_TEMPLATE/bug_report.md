@@ -31,11 +31,14 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-** Paper Trail logs **
+**Paper Trail logs**
+Put Papertrail logs here
 
-** Browser logs **
+**Browser logs**
+Put browser console logs here
 
-** Sentry Links and Screenshots **
+**Sentry Links and Screenshots**
+Put sentry links and screenshots here
 
 
 **Desktop (please complete the following information):**
