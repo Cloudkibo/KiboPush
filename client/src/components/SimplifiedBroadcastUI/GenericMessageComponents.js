@@ -45,14 +45,6 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
-        <div className='col-3' hidden={this.props.hiddenComponents.indexOf('video') > -1 ? true : null}>
-          <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('video') }}>
-            <div className='align-center'>
-              <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
-              <h6>Video</h6>
-            </div>
-          </div>
-        </div>
         <div className='col-3' hidden={this.props.hiddenComponents.indexOf('file') > -1 ? true : null}>
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('file') }}>
             <div className='align-center'>
@@ -74,6 +66,14 @@ class GenericMessageComponents extends React.Component {
             <div className='align-center'>
               <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
               <h6>Media</h6>
+            </div>
+          </div>
+        </div>
+        <div className='col-3' hidden={this.props.hiddenComponents.indexOf('video') > -1 ? true : null}>
+          <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('video') }}>
+            <div className='align-center'>
+              <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
+              <h6>YouTube</h6>
             </div>
           </div>
         </div>

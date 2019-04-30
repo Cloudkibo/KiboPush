@@ -91,7 +91,7 @@ class YoutubeVideoModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
-                <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', maxWidth: '250px', minHeight: '130px', margin: 'auto', marginTop: '100px'}} >
+                <div className='ui-block' style={{border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
                   {
                     (!this.state.disabled) &&
                     <video ref={(ref) => { this.video = ref }} controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
