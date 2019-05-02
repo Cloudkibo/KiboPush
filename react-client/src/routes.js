@@ -129,6 +129,7 @@ import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
 import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
+import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -314,6 +315,7 @@ const routes = (
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
+    <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
