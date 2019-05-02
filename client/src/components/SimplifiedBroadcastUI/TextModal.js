@@ -1,6 +1,3 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
 
 import React from 'react'
 
@@ -11,8 +8,8 @@ class TextModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      text: 'Test Message',
-      buttons: [],
+      text: props.text ? props.text : 'Test Message',
+      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 3,
       disabled: false,
@@ -20,6 +17,7 @@ class TextModal extends React.Component {
     }
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.editButton = this.editButton.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
   }
 
@@ -41,8 +39,23 @@ class TextModal extends React.Component {
     this.AddButton.handleDone()
   }
 
+  editButton (obj) {
+    console.log('editButton', obj)
+    var temp = this.state.buttons.map((elm, index) => {
+      if (index === obj.id) {
+        elm = obj.button
+      }
+      return elm
+    })
+    temp = temp.filter(elm => elm.type)
+    this.props.addComponent({componentType: 'text', id: this.props.id, text: this.state.text, buttons: temp})
+    this.setState({buttons: temp})
+  }
+
   addComponent (buttons) {
-    this.props.addComponent({componentType: 'text',
+    this.props.addComponent({
+      id: this.props.id ? this.props.id : null,
+      componentType: 'text',
       text: this.state.text,
       buttons})
   }
@@ -59,7 +72,12 @@ class TextModal extends React.Component {
             <div className='col-6'>
               <h4>Text:</h4>
               <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
-              <AddButton buttonLimit={this.state.buttonLimit}
+              <AddButton
+                editButton={this.editButton}
+                edit={this.props.edit}
+                buttons={this.state.buttons}
+                finalButtons={this.props.buttons}
+                buttonLimit={this.state.buttonLimit}
                 pageId={this.props.pageId}
                 buttonActions={this.state.buttonActions}
                 ref={(ref) => { this.AddButton = ref }}
@@ -96,7 +114,7 @@ class TextModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { addButton } from '../../redux/actions/broadcast.actions'
+import { addButton, editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
 
 class Button extends React.Component {
@@ -11,25 +11,28 @@ class Button extends React.Component {
     super(props, context)
     this.state = {
       openPopover: false,
-      title: this.props.title ? this.props.title : '',
-      url: '',
-      webviewurl: '',
-      buttonDisabled: true,
-      openWebsite: false,
-      openWebView: false,
-      openSubscribe: false,
-      openUnsubscribe: false,
-      sequenceValue: '',
-      shareButton: false,
-      webviewsize: 'FULL',
+      title: this.props.button ? (this.props.button.type === 'element_share') ? 'Share' : this.props.button.title : this.props.title,
+      url: this.props.button ? (!this.props.button.messenger_extensions ? this.props.button.url : '') : '',
+      disabled: false,
+      sequenceValue: this.props.button ? this.props.button.sequenceValue : '',
+      openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
+      openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
+      openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
+      shareButton: this.props.button ? this.props.button.type === 'element_share' : false,
+      openWebView: this.props.button ? this.props.button.messenger_extensions : false,
+      webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
+      webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false,
-      showSequenceMessage: false
+      showSequenceMessage: false,
+      buttonDisabled: true
     }
+
     props.fetchAllSequence()
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.handleDoneEdit = this.handleDoneEdit.bind(this)
     this.changeTitle = this.changeTitle.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
@@ -79,7 +82,8 @@ class Button extends React.Component {
   shareButton () {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({buttonDisabled: false})
+      let sharedIndex = this.props.index
+      this.props.updateButtonStatus({buttonDisabled: false}, sharedIndex)
     }
   }
   showWebsite () {
@@ -176,6 +180,62 @@ class Button extends React.Component {
       shareButton: false
     })
   }
+
+  handleDoneEdit () {
+    console.log('this.state', this.state)
+    if (this.state.url !== '') {
+      let data = {
+        id: this.props.index,
+        type: 'web_url',
+        oldUrl: this.props.button.newUrl,
+        newUrl: this.state.url, // User defined link,
+        title: this.state.title // User defined label
+      }
+      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+    } else if (this.state.shareButton) {
+      let data = {
+        id: this.props.index,
+        type: 'element_share',
+        title: this.state.title
+      }
+      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+    } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
+      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+      }
+    } else if (this.state.webviewurl && this.state.webviewurl !== '') {
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+      }
+      let data = {
+        id: this.props.index,
+        type: 'web_url',
+        url: this.state.webviewurl, // User defined link,
+        title: this.state.title, // User defined label
+        messenger_extensions: true,
+        webview_height_ratio: this.state.webviewsize,
+        pageId: this.props.pageId
+      }
+      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+    }
+  }
+
   handleDone () {
     console.log('button handleDone')
     if (this.state.url !== '') {
@@ -436,6 +496,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
+    editButton: editButton,
     addButton: addButton
   }, dispatch)
 }

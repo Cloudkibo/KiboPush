@@ -1,20 +1,13 @@
 /* eslint-disable no-undef */
 
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import Button from './Button'
-import EditButton from './EditButton'
-import { Popover, PopoverBody } from 'reactstrap'
+import TextModal from '../TextModal'
 
 class Text extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.handleChange = this.handleChange.bind(this)
-    this.addButton = this.addButton.bind(this)
-    this.editButton = this.editButton.bind(this)
-    this.removeButton = this.removeButton.bind(this)
     this.state = {
+      editing: false,
       buttons: props.buttons ? props.buttons : [],
       text: props.message ? props.message : '',
       showEmojiPicker: false,
@@ -26,12 +19,12 @@ class Text extends React.Component {
       },
       buttonActions: this.props.buttonActions.slice(0, 2)
     }
-    this.showEmojiPicker = this.showEmojiPicker.bind(this)
-    this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
-    this.getName = this.getName.bind(this)
-    this.toggleUserOptions = this.toggleUserOptions.bind(this)
-    this.showUserOptions = this.showUserOptions.bind(this)
+
+    this.editButton = this.editButton.bind(this)
+    this.closeEditButton = this.closeEditButton.bind(this)
+    this.openTextModal = this.openTextModal.bind(this)
   }
+
   componentDidMount () {
     if (this.props.message && this.props.message !== '') {
       this.setState({text: this.props.message})
@@ -44,78 +37,18 @@ class Text extends React.Component {
       }
     }
   }
-  toggleUserOptions () {
-    this.setState({showUserOptions: !this.state.showUserOptions})
+
+  closeEditButton () {
+    this.setState({editing: false})
   }
 
-  showUserOptions () {
-    this.setState({showUserOptions: true})
+  editButton () {
+    this.setState({editing: true})
   }
 
-  showEmojiPicker () {
-    this.setState({showEmojiPicker: true})
-  }
-
-  closeEmojiPicker () {
-    this.setState({showEmojiPicker: false})
-  }
-
-  setEmoji (emoji) {
-    this.setState({
-      text: this.state.text + emoji.native
-
-    })
-  }
-
-  getName (e, name) {
-    var message = this.state.text + `{{${name}}}`
-    var textCount = 160 - message.length
-    if (textCount > 0) {
-      this.props.handleText({id: this.props.id, text: message, buttons: this.state.buttons})
-      this.setState({
-        count: textCount,
-        text: message,
-        showUserOptions: false
-      })
-    } else {
-      this.setState({showUserOptions: false})
-    }
-  }
-
-  handleChange (event) {
-    this.props.handleText({id: this.props.id, text: event.target.value, buttons: this.state.buttons})
-    this.setState({text: event.target.value})
-  }
-
-  addButton (obj) {
-    var temp = this.state.buttons
-    temp.push(obj)
-
-    this.setState({buttons: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, buttons: this.state.buttons})
-  }
-  editButton (obj) {
-    var temp = this.state.buttons.map((elm, index) => {
-      if (index === obj.id) {
-        elm = obj.button
-      }
-      return elm
-    })
-    this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp})
-    this.setState({buttons: temp})
-  }
-  removeButton (obj) {
-    this.state.buttons.map((elm, index) => {
-      if (index === obj.id) {
-        this.state.buttons.splice(index, 1)
-      }
-    })
-    if (obj.button && obj.button.type === 'postback') {
-      var deletePayload = obj.button.payload
-    }
-    var temp = this.state.buttons
-    this.setState({buttons: temp, numOfButtons: --this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp, deletePayload: deletePayload})
+  openTextModal () {
+    console.log('opening TextModal for edit', this.state)
+    return (<TextModal edit handleText={this.props.handleText} id={this.props.id} buttons={this.state.buttons} text={this.state.text} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   render () {
@@ -135,32 +68,22 @@ class Text extends React.Component {
             </span>
           </div>
       }
-        <section className='discussion'>
-          <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>{this.state.text}</div>
-        </section>
         {
-            this.state.buttons.map((button, index) => {
-              if (button.visible) {
+          this.state.editing && this.openTextModal()
+      }
+        <span className='discussion'>
+          <div onClick={this.editButton} style={{cursor: 'pointer'}} className='bubble recipient'>{this.state.text}</div>
+          {
+              this.state.buttons.map((button, index) => {
                 return (
-                  <section className='discussion'>
-                    <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
-                  </section>
+                  <div className='bubble recipient' style={{marginTop: '5px', fontSize: '0.95rem', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.type === 'element_share' ? 'Share' : button.title}</div>
                 )
-              }
-            })
-        }
-
+              })
+          }
+        </span>
       </div>
     )
   }
 }
 
-function mapStateToProps (state) {
-  return {
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Text)
+export default (Text)

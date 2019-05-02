@@ -55,6 +55,7 @@ class GenericMessage extends React.Component {
     this.showAddComponentModal = this.showAddComponentModal.bind(this)
     this.closeAddComponentModal = this.closeAddComponentModal.bind(this)
     this.openModal = this.openModal.bind(this)
+    this.updateList = this.updateList.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -339,18 +340,27 @@ class GenericMessage extends React.Component {
     console.log('componentDetails', componentDetails)
     console.log('genericMessage props in addComponent', this.props)
     // this.showAddComponentModal()
-    let temp = this.state.list
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     this.msg.info(`New ${componentDetails.componentType} component added`)
-    this.setState({list: [...temp, {content: component.component}]})
+    this.updateList(component)
     component.handler()
     this.closeAddComponentModal()
   }
 
+  updateList (component) {
+    let temp = this.state.list
+    let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
+    if (componentIndex < 0) {
+      this.setState({list: [...temp, {content: component.component}]})
+    } else {
+      temp[componentIndex] = {content: component.component}
+    }
+  }
+
   openModal () {
     let modals = {
-      'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
+      'text': (<TextModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
@@ -365,9 +375,10 @@ class GenericMessage extends React.Component {
   getComponent (broadcast) {
     console.log('getting component', broadcast)
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
+    console.log('componentId', componentId)
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
+        component: (<Text id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
         handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'image': {
@@ -491,7 +502,7 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingLeft: 75, paddingRight: 75, paddingTop: 100}}>
+                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingRight: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>

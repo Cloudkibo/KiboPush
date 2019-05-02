@@ -4,11 +4,19 @@ import Button from './Button'
 class AddButton extends React.Component {
   constructor (props) {
     super(props)
+    let buttons = []
+    for (let i = 0; i < this.props.buttonLimit; i++) {
+      if (props.buttons && props.buttons[i]) {
+        buttons.push(props.buttons[i])
+      } else {
+        buttons.push({visible: false, title: `Button ${i + 1}`})
+      }
+    }
     this.state = {
-      buttons: [{visible: false, title: 'Button 1'}, {visible: false, title: 'Button 2'}, {visible: false, title: 'Button 3'}],
+      buttons,
       numOfCurrentButtons: 0
     }
-    this.finalButtons = []
+    this.finalButtons = this.props.finalButtons ? this.props.finalButtons : []
     this.buttonComponents = [null, null, null]
     this.addButton = this.addButton.bind(this)
     this.handleButtonTitleChange = this.handleButtonTitleChange.bind(this)
@@ -20,8 +28,11 @@ class AddButton extends React.Component {
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
   }
 
-  updateButtonStatus (status) {
+  updateButtonStatus (status, sharedIndex) {
     status.buttons = this.state.buttons
+    if (sharedIndex >= 0) {
+      status.buttons[sharedIndex] = {title: 'Share', visible: true}
+    }
     this.props.updateButtonStatus(status)
   }
 
@@ -76,7 +87,12 @@ class AddButton extends React.Component {
     for (let i = 0; i < this.buttonComponents.length; i++) {
       if (this.buttonComponents[i]) {
         console.log(`buttons[${i}]`, this.buttonComponents[i])
-        this.buttonComponents[i].getWrappedInstance().handleDone()
+        if (this.finalButtons && this.finalButtons[i]) {
+          console.log('handleDoneEdit', this.finalButtons)
+          this.buttonComponents[i].getWrappedInstance().handleDoneEdit()
+        } else {
+          this.buttonComponents[i].getWrappedInstance().handleDone()
+        }
       }
     }
   }
@@ -111,7 +127,12 @@ class AddButton extends React.Component {
             this.state.buttons.map((button, index) => {
               if (button.visible) {
                 return (
-                  <Button updateButtonStatus={this.updateButtonStatus}
+                  <Button
+                    handleText={this.props.handleText}
+                    onEdit={this.props.editButton}
+                    updateButtonStatus={this.updateButtonStatus}
+                    button={this.finalButtons[index]}
+                    index={index}
                     closeButton={() => this.closeButton(index)}
                     ref={(ref) => { this.buttonComponents[index] = ref }}
                     title={button.title}
