@@ -203,13 +203,16 @@ export function loadPollsListNew (data) {
 export function loadSurveyDetails (id) {
   return (dispatch) => {
     callApi(`templates/surveyDetails/${id}`)
-      .then(res => dispatch(updateSurveyDetails(res)))
+      .then(res => {
+    console.log('res in updated survey',res)   
+    dispatch(updateSurveyDetails(res))})
   }
 }
 export function loadPollDetails (id) {
   return (dispatch) => {
     callApi(`templates/pollDetails/${id}`)
-      .then(res => dispatch(updatePollDetails(res)))
+      .then(res => {
+        dispatch(updatePollDetails(res))})
   }
 }
 export function deletePoll (id, msg, data) {

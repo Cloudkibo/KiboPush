@@ -5,7 +5,9 @@
 import React from 'react'
 import { Alert } from 'react-bs-notifier'
 import { connect } from 'react-redux'
+import { loadPollDetails } from '../../redux/actions/templates.actions'
 import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
+import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -28,10 +30,10 @@ class CreatePoll extends React.Component {
       stayOpen: false,
       disabled: false,
       alert: false,
-      statement: '',
-      option1: '',
-      option2: '',
-      option3: '',
+      statement: this.props.currentPoll ? this.props.currentPoll.statement: '',
+      option1: this.props.currentPoll ? this.props.currentPoll.options[0]: '',
+      option2: this.props.currentPoll ? this.props.currentPoll.options[1]: '',
+      option3: this.props.currentPoll ? this.props.currentPoll.options[2]: '',
       listSelected: '',
       isList: false,
       isShowingModal: false,
@@ -139,6 +141,7 @@ class CreatePoll extends React.Component {
 
     document.title = `${title} | Create Poll`
     this.initTab()
+    this.props.saveCurrentPoll(undefined)
   }
 
   showDialog () {
@@ -564,6 +567,8 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
+    pollDetails: (state.templatesInfo.pollDetails),
+    currentPoll: (state.backdoorInfo.currentPoll),
     allResponses: (state.pollsInfo.allResponses)
   }
 }
@@ -576,7 +581,9 @@ function mapDispatchToProps (dispatch) {
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
     sendPollDirectly: sendPollDirectly,
-    loadTags: loadTags
+    loadTags: loadTags,
+    loadPollDetails: loadPollDetails,
+    saveCurrentPoll:saveCurrentPoll
   },
     dispatch)
 }
