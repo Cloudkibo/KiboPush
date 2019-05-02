@@ -191,14 +191,14 @@ class Button extends React.Component {
         newUrl: this.state.url, // User defined link,
         title: this.state.title // User defined label
       }
-      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.shareButton) {
       let data = {
         id: this.props.index,
         type: 'element_share',
         title: this.state.title
       }
-      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
@@ -208,7 +208,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+        this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           id: this.props.index,
@@ -217,7 +217,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+        this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
       }
     } else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
@@ -232,7 +232,7 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.editButton(data, this.props.onEdit, this.handleClose, this.msg)
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     }
   }
 

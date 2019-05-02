@@ -20,7 +20,7 @@ class Text extends React.Component {
       buttonActions: this.props.buttonActions.slice(0, 2)
     }
 
-    this.editButton = this.editButton.bind(this)
+    this.edit = this.edit.bind(this)
     this.closeEditButton = this.closeEditButton.bind(this)
     this.openTextModal = this.openTextModal.bind(this)
   }
@@ -42,7 +42,7 @@ class Text extends React.Component {
     this.setState({editing: false})
   }
 
-  editButton () {
+  edit () {
     this.setState({editing: true})
   }
 
@@ -72,7 +72,7 @@ class Text extends React.Component {
           this.state.editing && this.openTextModal()
       }
         <span className='discussion'>
-          <div onClick={this.editButton} style={{cursor: 'pointer'}} className='bubble recipient'>{this.state.text}</div>
+          <div onClick={this.edit} style={{cursor: 'pointer'}} className='bubble recipient'>{this.state.text}</div>
           {
               this.state.buttons.map((button, index) => {
                 return (

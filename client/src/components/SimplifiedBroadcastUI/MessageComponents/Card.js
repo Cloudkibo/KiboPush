@@ -3,16 +3,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Button from './Button'
-import EditButton from './EditButton'
-import Halogen from 'halogen'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
-import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../../utility/utils'
-import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import CardModal from '../CardModal'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -42,7 +38,10 @@ class Card extends React.Component {
     this.onImgLoad = this.onImgLoad.bind(this)
     this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
+    this.edit = this.edit.bind(this)
+    this.closeEdit = this.closeEdit.bind(this)
     this.state = {
+      editing: false,
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
       buttons: props.buttons ? props.buttons : [],
@@ -448,6 +447,30 @@ class Card extends React.Component {
     })
   }
 
+  openCardModal () {
+    console.log('opening CardModal for edit', this.state)
+    return (<CardModal edit
+      id={this.props.id}
+      buttons={this.state.buttons}
+      title={this.state.title}
+      subtitile={this.state.subtitle}
+      imgSrc={this.state.imgSrc}
+      replyWithMessage={this.props.replyWithMessage}
+      pageId={this.props.pageId}
+      closeModal={this.closeEdit}
+      addComponent={this.props.addComponent}
+      hideUserOptions={this.props.hideUserOptions} />)
+  }
+
+  closeEdit () {
+    console.log('closeEdit Card')
+    this.setState({editing: false})
+  }
+
+  edit () {
+    this.setState({editing: true})
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -478,113 +501,36 @@ class Card extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
-          <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
-          <PopoverBody>
-            <div>
-              This can be used to open a web page on the card click
-              {
-                !this.state.openWebsite && !this.state.openWebView &&
-                <div>
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
-                  </div>
-                  { (this.props.buttonActions.indexOf('open webview') > -1) &&
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
-                  </div>
-                  }
-                </div>
-              }
-              {
-                this.state.openWebsite &&
-                <div className='card'>
-                  <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
-                  <div style={{padding: '10px'}} className='card-block'>
-                    <input type='text' value={this.state.elementUrl} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
-                  </div>
-                </div>
-              }
-              {
-                this.state.openWebView &&
-                <div className='card'>
-                  <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
-                  <div style={{padding: '10px'}} className='card-block'>
-                    <div>
-                      <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
-                    </div>
-                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
-                    <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
-                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
-                    <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
-                      {
-                        this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
-                          <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                </div>
-              }
-              <hr style={{color: '#ccc'}} />
-              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              {(this.state.defaultAction === '')
-              ? <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
-              : <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove} className='btn pull-left'> Remove </button>
-              }
-              <br />
-              <br />
-            </div>
-          </PopoverBody>
-        </Popover>
-        { this.props.singleCard && !this.state.loading &&
+        {
+          this.state.editing && this.openCardModal()
+        }
+        {
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
           </div>
         }
-        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
+        <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', margin: 'auto', cursor: 'pointer'}} >
           {
-          this.state.loading
-          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
-            this.refs.file.click()
-          }}>
-            <input
-              ref='file'
-              type='file'
-              name='user[image]'
-              multiple='true'
-              accept='image/*'
-              title=' '
-              onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
-            {
-            (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
-           }
-          </div>
+            this.state.imgSrc &&
+            <img src={this.state.imgSrc} style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
           }
-          <div>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
-            {(this.state.elementUrl === '' && this.state.webviewurl === '')
-              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
-                <i className='la la-plus' /> Add Action
-                </a>
-              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
-                Edit Action
-                </a>
-            }
-          </div>
+          <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
+          <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
+          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{this.state.subtitle}</p>
+          {
+            this.state.buttons.map(button => {
+              return (
+                <div>
+                  <hr />
+                  <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
+                </div>
+              )
+            })
+          }
+
         </div>
-        {(this.state.buttons) ? this.state.buttons.map((obj, index) => {
-          return <EditButton index={index} pageId={this.props.pageId} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} isGalleryCard={this.props.isGalleryCard} />
-        }) : ''}
-        { this.state.buttons.length < 3 &&
-          <Button buttonLimit={3} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} isGalleryCard={this.props.isGalleryCard} />
-        }
       </div>
     )
   }
