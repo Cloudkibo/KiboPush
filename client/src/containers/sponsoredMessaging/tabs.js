@@ -5,6 +5,7 @@
 
 import React from 'react'
 import AdCampaign from './adCampaign'
+import Adset from './adSet'
 // import SubmittedState from './submittedState'
 // import OptInActions from './optInActions'
 // import Setup from './setup'
@@ -114,16 +115,16 @@ class Tab extends React.Component {
       <div>
         <ul className='nav nav-tabs'>
           <li>
-            <a id='Campaign' className='broadcastTabs active' onClick={() => { this.onTabClick('Campaign') }}>Ad Campaign</a>
+            <a id='Campaign' className='broadcastTabs active'>Ad Campaign</a>
           </li>
           <li>
-            <a id='Adset' className='broadcastTabs' onClick={() => { this.onTabClick('Adset') }}>Ad set</a>
+            <a id='Adset' className='broadcastTabs'>Ad set</a>
           </li>
           <li>
-            <a id='AdCreative' className='broadcastTabs' onClick={() => { this.onTabClick('AdCreative') }}>Ad Creative</a>
+            <a id='AdCreative' className='broadcastTabs'>Ad Creative</a>
           </li>
           <li>
-            <a id='Ad' className='broadcastTabs' onClick={() => { this.onTabClick('Ad') }}>Ad</a>
+            <a id='Ad' className='broadcastTabs'>Ad</a>
           </li>
         </ul>
         <div className='tab-content'>
@@ -131,7 +132,7 @@ class Tab extends React.Component {
             <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_2'>
-            <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <Adset page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_3'>
             <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>

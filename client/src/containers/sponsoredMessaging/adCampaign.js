@@ -15,8 +15,6 @@ class adCampaign extends React.Component {
     this.state = {
       Campaign_name: ''
     }
-    this.handleRadioButton = this.handleRadioButton.bind(this)
-    this.handleRadioTab = this.handleRadioTab.bind(this)
     this.handleInput = this.handleInput.bind(this)
   }
 
