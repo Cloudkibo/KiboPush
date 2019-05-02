@@ -25,7 +25,7 @@ class CardBoxesContainer extends React.Component {
             <span>Number of subscribers</span>
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
-            <Link to={this.props.platform === 'sms' ? '/smsSubscribers' : 'whatsAppSubscribers'} >
+            <Link to='/smsSubscribers' >
               <CardBox
                 style='danger'
                 value={this.props.cardBoxesData.subscribers ? this.props.cardBoxesData.subscribers : 0}
