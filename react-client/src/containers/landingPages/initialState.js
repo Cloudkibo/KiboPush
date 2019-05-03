@@ -18,7 +18,8 @@ class InitialState extends React.Component {
     this.state = {
       showHeadingPicker: false,
       showDescriptionPicker: false,
-      showBackgroundPicker: false
+      showBackgroundPicker: false,
+      showImagePlacement: false
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -34,6 +35,7 @@ class InitialState extends React.Component {
 
   handleImage (obj) {
     console.log('handleImage', obj)
+    this.setState({showImagePlacement:true})
     if (this.props.landingPage.currentTab === 'initialState') {
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', obj.image_url)
     } else {
@@ -211,7 +213,7 @@ class InitialState extends React.Component {
             </div>
           </div>
         </div>
-        {(this.props.landingPage.currentTab === 'submittedState' || this.props.initialState.pageTemplate === 'text') &&
+        {(this.props.landingPage.currentTab === 'submittedState' || this.props.initialState.pageTemplate === 'text') && this.state.showImagePlacement &&
         <div>
           <label>Image Placement:</label><br />
           <div className='row'>
