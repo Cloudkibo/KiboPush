@@ -1,13 +1,12 @@
 import React from 'react'
-import Image from '../../containers/convo/Image'
-import List from '../../containers/convo/List'
-import Video from '../../containers/convo/Video'
-import Audio from '../../containers/convo/Audio'
-import File from '../../containers/convo/File'
-import Text from '../../containers/convo/Text'
-import Card from '../../containers/convo/Card'
-import Gallery from '../../containers/convo/Gallery'
-import Media from '../../containers/convo/Media'
+import Image from './MessageComponents/Image'
+import List from './MessageComponents/List'
+import Video from './MessageComponents/Video'
+import Audio from './MessageComponents/Audio'
+import File from './MessageComponents/File'
+import Text from './MessageComponents/Text'
+import Card from './MessageComponents/Card'
+import Media from './MessageComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
@@ -56,6 +55,7 @@ class GenericMessage extends React.Component {
     this.showAddComponentModal = this.showAddComponentModal.bind(this)
     this.closeAddComponentModal = this.closeAddComponentModal.bind(this)
     this.openModal = this.openModal.bind(this)
+    this.updateList = this.updateList.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -340,25 +340,37 @@ class GenericMessage extends React.Component {
     console.log('componentDetails', componentDetails)
     console.log('genericMessage props in addComponent', this.props)
     // this.showAddComponentModal()
-    let temp = this.state.list
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     this.msg.info(`New ${componentDetails.componentType} component added`)
-    this.setState({list: [...temp, {content: component.component}]})
+    this.updateList(component)
     component.handler()
     this.closeAddComponentModal()
   }
 
+  updateList (component) {
+    let temp = this.state.list
+    let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
+    if (componentIndex < 0) {
+      console.log('adding new component')
+      this.setState({list: [...temp, {content: component.component}]})
+    } else {
+      console.log('editing exisiting component')
+      temp[componentIndex] = {content: component.component}
+      this.setState({list: temp})
+    }
+  }
+
   openModal () {
     let modals = {
-      'text': (<TextModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'card': (<CardModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'list': (<ListModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'text': (<TextModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
+      'card': (<CardModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'list': (<ListModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
       'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'media': (<MediaModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'media': (<MediaModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'video': (<YoutubeVideoModal buttons={[]} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -366,41 +378,38 @@ class GenericMessage extends React.Component {
   getComponent (broadcast) {
     console.log('getting component', broadcast)
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
+    console.log('componentId', componentId)
     let components = {
       'text': {
-        component: (<Text id={componentId} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
+        component: (<Text id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
         handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'image': {
-        component: (<Image id={componentId} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
+        component: (<Image id={componentId} addComponent={this.addComponent} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
         handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: broadcast.image_url ? broadcast.image_url : '', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'card': {
-        component: (<Card id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
+        component: (<Card id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
         handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.title : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : [], webviewurl: broadcast.webviewurl, elementUrl: broadcast.elementUrl, webviewsize: broadcast.webviewsize}) }
       },
-      'gallery': {
-        component: (<Gallery id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} cards={broadcast.cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleGallery({id: componentId, componentType: 'gallery', cards: []}) }
-      },
       'audio': {
-        component: (<Audio id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Audio id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'video': {
-        component: (<Video id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Video id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'file': {
-        component: (<File id={componentId} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<File id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
       },
       'list': {
-        component: (<List id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),
+        component: (<List id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),
         handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: broadcast.listItems ? broadcast.listItems : [], topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       },
       'media': {
-        component: (<Media id={componentId} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
+        component: (<Media id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
         handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
       }
     }
@@ -496,7 +505,7 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingLeft: 75, paddingRight: 75, paddingTop: 100}}>
+                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>

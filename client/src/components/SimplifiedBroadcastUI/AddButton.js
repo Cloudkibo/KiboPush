@@ -4,11 +4,19 @@ import Button from './Button'
 class AddButton extends React.Component {
   constructor (props) {
     super(props)
+    let buttons = []
+    for (let i = 0; i < this.props.buttonLimit; i++) {
+      if (props.buttons && props.buttons[i]) {
+        buttons.push(props.buttons[i])
+      } else {
+        buttons.push({visible: false, title: `Button ${i + 1}`})
+      }
+    }
     this.state = {
-      buttons: [{visible: false, title: 'Button 1'}, {visible: false, title: 'Button 2'}, {visible: false, title: 'Button 3'}],
+      buttons,
       numOfCurrentButtons: 0
     }
-    this.finalButtons = []
+    this.finalButtons = this.props.finalButtons ? this.props.finalButtons : []
     this.buttonComponents = [null, null, null]
     this.addButton = this.addButton.bind(this)
     this.handleButtonTitleChange = this.handleButtonTitleChange.bind(this)
@@ -18,10 +26,14 @@ class AddButton extends React.Component {
     this.buttonLimitReached = this.buttonLimitReached.bind(this)
     this.checkInvalidButtons = this.checkInvalidButtons.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.onAddButtonCalled = 0
   }
 
-  updateButtonStatus (status) {
+  updateButtonStatus (status, sharedIndex) {
     status.buttons = this.state.buttons
+    if (sharedIndex >= 0) {
+      status.buttons[sharedIndex] = {title: 'Share', visible: true}
+    }
     this.props.updateButtonStatus(status)
   }
 
@@ -57,18 +69,23 @@ class AddButton extends React.Component {
     this.props.updateButtonStatus({buttons})
   }
 
-  onAddButton (button) {
-    console.log('onAddButton TextModal', button)
-    this.finalButtons.push(button)
+  onAddButton (button, index) {
+    console.log('onAddButton AddButton', button)
+    this.onAddButtonCalled++
+    if (index >= 0) {
+      this.finalButtons[index] = button.button
+    } else {
+      this.finalButtons.push(button)
+    }
     let buttonComponents = this.buttonComponents.filter(button => button !== null)
-    if (this.finalButtons.length === buttonComponents.length) {
+    if (this.onAddButtonCalled === this.finalButtons.length && this.finalButtons.length === buttonComponents.length) {
       console.log('done adding', this.finalButtons)
       this.props.addComponent(this.finalButtons)
     }
   }
 
   handleDone () {
-    console.log('text modal handleDone', this.state)
+    console.log('AddButton handleDone', this.finalButtons)
     let visibleButtons = this.buttonComponents.filter(button => button !== null)
     if (visibleButtons.length === 0) {
       this.props.addComponent([])
@@ -76,7 +93,12 @@ class AddButton extends React.Component {
     for (let i = 0; i < this.buttonComponents.length; i++) {
       if (this.buttonComponents[i]) {
         console.log(`buttons[${i}]`, this.buttonComponents[i])
-        this.buttonComponents[i].getWrappedInstance().handleDone()
+        if (this.finalButtons && this.finalButtons[i]) {
+          console.log('handleDoneEdit', this.finalButtons)
+          this.buttonComponents[i].getWrappedInstance().handleDoneEdit()
+        } else {
+          this.buttonComponents[i].getWrappedInstance().handleDone()
+        }
       }
     }
   }
@@ -111,7 +133,11 @@ class AddButton extends React.Component {
             this.state.buttons.map((button, index) => {
               if (button.visible) {
                 return (
-                  <Button updateButtonStatus={this.updateButtonStatus}
+                  <Button
+                    handleText={this.props.handleText}
+                    updateButtonStatus={this.updateButtonStatus}
+                    button={this.finalButtons[index]}
+                    index={index}
                     closeButton={() => this.closeButton(index)}
                     ref={(ref) => { this.buttonComponents[index] = ref }}
                     title={button.title}

@@ -1,6 +1,3 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
 
 import React from 'react'
 
@@ -11,8 +8,8 @@ class TextModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      text: 'Test Message',
-      buttons: [],
+      text: props.text ? props.text : 'Test Message',
+      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 3,
       disabled: false,
@@ -42,7 +39,9 @@ class TextModal extends React.Component {
   }
 
   addComponent (buttons) {
-    this.props.addComponent({componentType: 'text',
+    this.props.addComponent({
+      id: this.props.id ? this.props.id : null,
+      componentType: 'text',
       text: this.state.text,
       buttons})
   }
@@ -59,7 +58,10 @@ class TextModal extends React.Component {
             <div className='col-6'>
               <h4>Text:</h4>
               <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
-              <AddButton buttonLimit={this.state.buttonLimit}
+              <AddButton
+                buttons={this.state.buttons}
+                finalButtons={this.props.buttons}
+                buttonLimit={this.state.buttonLimit}
                 pageId={this.props.pageId}
                 buttonActions={this.state.buttonActions}
                 ref={(ref) => { this.AddButton = ref }}
@@ -73,14 +75,14 @@ class TextModal extends React.Component {
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
                 <section className='discussion'>
-                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>{this.state.text}</div>
+                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px', wordBreak: 'break-all'}}>{this.state.text}</div>
                 </section>
                 {
                   this.state.buttons.map((button, index) => {
                     if (button.visible) {
                       return (
                         <section className='discussion'>
-                          <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px'}}>{button.title}</div>
+                          <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
                         </section>
                       )
                     }
@@ -96,7 +98,7 @@ class TextModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>
