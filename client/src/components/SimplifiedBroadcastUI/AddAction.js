@@ -6,15 +6,15 @@ class AddAction extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      actionDisabled: true,
-      openPopover: false,
-      openWebView: false,
-      openWebsite: false,
-      webviewsize: 'FULL',
-      webviewurl: '',
-      elementUrl: '',
+      actionDisabled: !(props.webviewurl || props.elementUrl),
+      openPopover: props.webviewurl || props.elementUrl,
+      openWebView: !!props.webviewurl,
+      openWebsite: !!props.elementUrl,
+      webviewsize: props.webviewsize ? props.webviewsize : 'FULL',
+      webviewurl: props.webviewurl ? props.webviewurl : '',
+      elementUrl: props.elementUrl ? props.elementUrl : '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview']
+      buttonActions: props.buttonActions ? props.buttonActions : ['open website', 'open webview']
     }
 
     this.handleClick = this.handleClick.bind(this)

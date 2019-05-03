@@ -24,8 +24,10 @@ class AudioModal extends React.Component {
 
   addComponent () {
     console.log('addComponent AudioModal')
-    this.props.addComponent({componentType: 'audio',
-      fileurl: this.state.file ? this.state.file.fileurl : ''})
+    this.props.addComponent({
+      id: this.props.id,
+      componentType: 'audio',
+      file: this.state.file ? this.state.file : null})
   }
 
   updateFile (file) {

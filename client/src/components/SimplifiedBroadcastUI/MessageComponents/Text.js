@@ -61,26 +61,27 @@ class Text extends React.Component {
     return (
 
       <div className='broadcast-component' style={textStyles}>
-        {this.props.removeState &&
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{ float: 'right', height: 20 + 'px' }}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i className='fa fa-times fa-stack-2x' />
-            </span>
-          </div>
-      }
         {
           this.state.editing && this.openTextModal()
       }
-        <span className='discussion'>
-          <div onClick={this.edit} style={{cursor: 'pointer'}} className='bubble recipient'>{this.state.text}</div>
+        <div className='discussion' style={{display: 'inline-block'}}>
+          {
+            this.props.removeState &&
+            <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-15px'}}>
+              <span style={{cursor: 'pointer'}} className='fa-stack'>
+                <i className='fa fa-times fa-stack-2x' />
+              </span>
+            </div>
+          }
+          <div onClick={this.edit} style={{maxWidth: '100%', cursor: 'pointer', minWidth: '130px', fontSize: '18px'}} className='bubble recipient'>{this.state.text}</div>
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div className='bubble recipient' style={{marginTop: '5px', fontSize: '0.95rem', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.type === 'element_share' ? 'Share' : button.title}</div>
+                  <div className='bubble recipient' style={{textAlign: 'center', marginTop: '5px', fontSize: '16px', minWidth: '120px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.type === 'element_share' ? 'Share' : button.title}</div>
                 )
               })
           }
-        </span>
+        </div>
       </div>
     )
   }

@@ -22,8 +22,8 @@ class Image extends React.Component {
     this._onChange = this._onChange.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.state = {
-      file: null,
-      imgSrc: '',
+      file: this.props.file ? this.props.file : null,
+      imgSrc: this.props.imgSrc ? this.props.imgSrc : '',
       showPreview: false,
       loading: false,
       imgWidth: null,
