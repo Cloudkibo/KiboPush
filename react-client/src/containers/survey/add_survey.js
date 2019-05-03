@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
@@ -24,14 +25,18 @@ class AddSurvey extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
+    if (this.props.currentSurvey) {
+      const id = this.props.currentSurvey._id
+      props.loadSurveyDetails(id)
+    }
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
       alertMessage: '',
       alertType: '',
       timeout: 2000,
-      title: '',
-      description: 'Please respond to these questions',
+      title: this.props.currentSurvey ? this.props.currentSurvey.title :'',
+      description: this.props.currentSurvey ? this.props.currentSurvey.description :'Please respond to these questions',
       stayOpen: false,
       disabled: false,
       pageValue: [],
@@ -219,6 +224,10 @@ class AddSurvey extends React.Component {
 
       })
     }
+    if (this.props.currentSurvey && nextProps.questions) {
+      this.setState({surveyQuestions: nextProps.questions})
+    }
+ 
   }
   updateDescription (e) {
     this.setState({description: e.target.value, alertType: '', alertMessage: ''})
@@ -421,7 +430,7 @@ class AddSurvey extends React.Component {
 
   createOptionsList (qindex) {
     let choiceItems = []
-    var choiceCount = this.state.surveyQuestions[qindex].choiceCount
+    var choiceCount = this.state.surveyQuestions[qindex].options.length
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -896,7 +905,10 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    survey: (state.templatesInfo.survey),
+    questions: (state.templatesInfo.questions),
+    currentSurvey: (state.backdoorInfo.currentSurvey)
   }
 }
 
@@ -907,7 +919,9 @@ function mapDispatchToProps (dispatch) {
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
     sendSurveyDirectly: sendSurveyDirectly,
-    loadTags: loadTags
+    loadTags: loadTags,
+    loadSurveyDetails: loadSurveyDetails,
+
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
