@@ -15,10 +15,15 @@ const initialState = {
         ad_set_payload: {
             name: '',
             bid_amount: '',
-            daily_budget: '',
-            adset_id: ''
+            budget: {
+
+            },
+            adset_id: '',
+            min_age:'',
+            max_age:'',
+            gender:''
         },
-        payload: ''
+        payload: {}
     }
 }
 
@@ -28,6 +33,10 @@ export function sponsoredMessagingInfo (state = initialState, action) {
         return Object.assign({}, state, {
           sponsoredMessages: action.data
         })
+      case ActionTypes.UPDATE_SPONSORED_MESSAGE:
+      return Object.assign({}, state, {
+        sponsoredMessages: action.data
+      })
       default:
         return state
     }

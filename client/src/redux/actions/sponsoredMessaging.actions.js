@@ -27,13 +27,12 @@ export function fetchSponsoredMessages (){
     }
 }
 
-export function updateSponsoredMessage(){
+export function updateSponsoredMessage(sponsoredMessage,key,value){
     return (dispatch) => {
-        let sponsoredMessage = {
-            ad_id: '',
-            pageId: '',
-            
-        }
-        dispatch(showUpdatedData(sponsoredMessage))
+        let temp = sponsoredMessage
+        temp[key] = value
+        dispatch(showUpdatedData(temp))
     }
 }
+
+

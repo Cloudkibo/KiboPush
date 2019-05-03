@@ -5,7 +5,7 @@
 
 import React from 'react'
 import Footer from './footer'
-import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+import { updateSponsoredMessage } from '../../redux/actions/sponsoredMessaging.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -13,49 +13,69 @@ class adSet extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      Adset_name: '',
-      min_age: 18,
-      max_age: 65,
+      ad_set_payload: {
+        adset_name:'',
+        gender:'',
+        min_age: 18,
+        max_age: 65,
+      },    
       budget: {
         type: 'daily_budget',
         amount:''
       }
     }
     this.handleInput = this.handleInput.bind(this)
-    this.renderRadioButtonOptions = this.renderRadioButtonOptions.bind(this)
-    this.handleRadio = this.handleRadio.bind(this)
+    this.renderOptions = this.renderOptions.bind(this)
+    this.handleAge = this.handleAge.bind(this)
     this.handleBudget = this.handleBudget.bind(this)
   }
 
   handleInput (e) {
-    this.setState({Adset_name: e.target.value})
-    //this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'url', e.target.value)
+    let temp = this.state.ad_set_payload
+    temp.adset_name = e.target.value
+    this.setState({ad_set_payload: temp})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
+    console.log('adset state', this.props.sponsoredMessage)
+
   }
 
-  handleRadio (e) {
+  handleAge (e) {
     console.log(e)
     console.log('hehehe')
+    let temp = this.state.ad_set_payload
 
     if(e.target.id === 'min_age'){
-      this.setState({min_age: e.target.value})
-      if(e.target.value > this.state.max_age){
-        this.setState({max_age:e.target.value})
+      temp.min_age = e.target.value 
+      this.setState({ad_set_payload: temp})
+      if(e.target.value > this.state.ad_set_payload.max_age){
+        temp.max_age = e.target.value
+        this.setState({ad_set_payload: temp})
       }
     }else if(e.target.id === 'max_age'){
-      this.setState({max_age: e.target.value})
-      if(e.target.value < this.state.min_age){
-        this.setState({min_age:e.target.value})
+      temp.max_age = e.target.value
+      this.setState({ad_set_payload: temp})
+      if(e.target.value < this.state.ad_set_payload.min_age){
+        temp.min_age = e.target.value
+        this.setState({ad_set_payload:temp})
       }
     }
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
   }
 
   handleBudget (e) {
     let temp = this.state.budget
-    temp.type = e.target.value
+
+    if (e.target.id === 'budget_type'){
+      temp.type = e.target.value
+    }else if (e. target.id === 'budget_amount'){
+      temp.amount = e.target.value
+    }
+
     this.setState({budget: temp})
+
   }
 
-  renderRadioButtonOptions (length){
+  renderOptions (length){
     let optarray = []
     for(let i=18; i <=length; i++){
       optarray.push(
@@ -93,14 +113,14 @@ class adSet extends React.Component {
         <br/>
         <div className='row'>
         <div className='col-sm-2'>
-        <select className="form-control" id="min_age" value={this.state.min_age} onChange={this.handleRadio}>
-          {this.renderRadioButtonOptions(65)}
+        <select className="form-control" id="min_age" value={this.state.min_age} onChange={this.handleAge}>
+          {this.renderOptions(65)}
         </select>
         </div>
         _
         <div className='col-sm-2'>
-        <select className="form-control" id="max_age" value={this.state.max_age} onChange={this.handleRadio}>
-          {this.renderRadioButtonOptions(65)}
+        <select className="form-control" id="max_age" value={this.state.max_age} onChange={this.handleAge}>
+          {this.renderOptions(65)}
         </select>
         </div>
         </div>
@@ -118,8 +138,8 @@ class adSet extends React.Component {
           </select>
           </div>
           <div className='col-sm-4'>
-              <input className='form-control' value={this.state.Adset_name} onChange={this.handleInput} />
-              <label className='text-muted small' hidden = { this.state.Adset_name === '' ? true : false }>Rs. {this.state.Adset_name} PKR</label>
+              <input className='form-control' id ='budget_amount' value={this.state.budget.amount} onChange={this.handleBudget} />
+              <label className='text-muted small' hidden = { this.state.budget.amount === '' ? true : false }>Rs. {this.state.budget.amount} PKR</label>
           </div>
         </div>
       </div>
@@ -136,13 +156,13 @@ class adSet extends React.Component {
 function mapStateToProps (state) {
   console.log('state in initialState.js', state)
   return {
-    landingPage: state.landingPagesInfo.landingPage
+    sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateLandingPageData: updateLandingPageData
+    updateSponsoredMessage: updateSponsoredMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(adSet)

@@ -5,7 +5,7 @@
 
 import React from 'react'
 import Footer from './footer'
-import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+import { updateSponsoredMessage } from '../../redux/actions/sponsoredMessaging.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -20,7 +20,7 @@ class adCampaign extends React.Component {
 
   handleInput (e) {
     this.setState({Campaign_name: e.target.value})
-    this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'url', e.target.value)
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'campaign_name', e.target.value)
   }
 
   render () {
@@ -43,13 +43,13 @@ class adCampaign extends React.Component {
 function mapStateToProps (state) {
   console.log('state in initialState.js', state)
   return {
-    landingPage: state.landingPagesInfo.landingPage
+    sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateLandingPageData: updateLandingPageData
+    updateSponsoredMessage: updateSponsoredMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(adCampaign)
