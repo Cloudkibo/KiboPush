@@ -11,6 +11,7 @@ import {
   sendsurvey,
   deleteSurvey
 } from '../../redux/actions/surveys.actions'
+import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { Link, browserHistory } from 'react-router'
 import { handleDate } from '../../utility/utils'
@@ -70,6 +71,7 @@ class Survey extends React.Component {
     }
 
     document.title = `${title} | Survey`
+    this.props.saveSurveyInformation(undefined)
   }
   componentWillMount () {
     this.props.loadSubscribersList()
@@ -570,6 +572,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags, loadMyPagesListNew: loadMyPagesListNew}, dispatch)
+    { saveSurveyInformation: saveSurveyInformation,loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags, loadMyPagesListNew: loadMyPagesListNew}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

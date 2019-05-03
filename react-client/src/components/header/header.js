@@ -27,6 +27,7 @@ class Header extends React.Component {
     props.fetchNotifications()
     this.state = {
       ignore: true,
+      url: window.location.hostname.includes('kibolite'),
       planInfo: '',
       seenNotifications: [],
       unseenNotifications: [],
@@ -321,7 +322,7 @@ class Header extends React.Component {
               <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark'>
                 <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
                   {
-                    this.props.user &&
+                    this.props.user && !this.state.url &&
                     <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                       <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
                       <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>

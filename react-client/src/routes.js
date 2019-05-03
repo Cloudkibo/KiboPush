@@ -129,6 +129,7 @@ import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
 import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
+import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -236,8 +237,8 @@ const routes = (
     <Route path='/editSurvey' component={EditSurvey} onEnter={requireAuth} />
     <Route path='/showTemplatePolls' component={ShowTemplatePolls} onEnter={requireAuth} />
     <Route path='/showTemplateSurveys' component={ShowTemplateSurveys} onEnter={requireAuth} />
-    <Route path='/editTemplatePoll' component={EditTemplatePoll} onEnter={requireAuth} />
-    <Route path='/editTemplateSurvey' component={EditTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/editTemplatePoll' component={CreatePoll} onEnter={requireAuth} />
+    <Route path='/editTemplateSurvey' component={AddSurvey} onEnter={requireAuth} />
     <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
@@ -314,6 +315,7 @@ const routes = (
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
+    <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
