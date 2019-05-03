@@ -1,11 +1,12 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings, updatePlatformWhatsApp, disconnect } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { browserHistory, Link } from 'react-router'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -18,7 +19,9 @@ class Webhook extends React.Component {
       SIDWapp: '',
       tokenWapp: '',
       number: '',
-      code: ''
+      code: '',
+      isShowingModalDisconnect: false,
+      type: ''
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -33,9 +36,21 @@ class Webhook extends React.Component {
     this.submit = this.submit.bind(this)
     this.submitWapp = this.submitWapp.bind(this)
     this.clearFields = this.clearFields.bind(this)
+    this.disconnect = this.disconnect.bind(this)
+    this.showDialogDisconnect = this.showDialogDisconnect.bind(this)
+    this.closeDialogDisconnect = this.closeDialogDisconnect.bind(this)
 
     props.getAutomatedOptions()
   }
+
+  showDialogDisconnect (type) {
+    this.setState({isShowingModalDisconnect: true, type: type})
+  }
+
+  closeDialogDisconnect (type) {
+    this.setState({isShowingModalDisconnect: false, type: ''})
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps', nextProps)
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
@@ -48,6 +63,27 @@ class Webhook extends React.Component {
         code: nextProps.automated_options.twilioWhatsApp.sandboxCode
       })
     }
+    if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'sms'
+      })
+    } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.twilioWhatsApp) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'whatsApp'
+      })
+    } else if (nextProps.user && nextProps.user.platform === 'messenger' && !nextProps.user.facebookInfo) {
+      browserHistory.push({
+        pathname: '/integrations',
+        state: 'messenger'
+      })
+    }
+  }
+
+  disconnect () {
+    this.setState({isShowingModalDisconnect: false})
+    this.props.disconnect({type: this.state.type})
   }
 
   showDialog () {
@@ -173,6 +209,26 @@ class Webhook extends React.Component {
                     <div>Connect your business identity:</div>
                     <div className='m-portlet__body'>
                       {
+                        this.state.isShowingModalDisconnect &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialogDisconnect}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialogDisconnect}>
+                            <h3>Disconnect from Twilio</h3>
+                            <div className='m-form'>
+                              <span>{`Are you sure you want to disconnect from Twilio? You won't be able to send ${this.state.type} broadcasts.`}</span>
+                              <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                                <div className='m-form__actions' style={{'float': 'right'}}>
+                                  <button className='btn btn-danger'
+                                    onClick={this.disconnect}> Disconnect
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                      {
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -265,6 +321,13 @@ class Webhook extends React.Component {
                                           {this.props.automated_options && this.props.automated_options.twilio ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
+                                      {this.props.automated_options && this.props.automated_options.twilio &&
+                                      <div className='m-widget4__ext'>
+                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} onClick={() => { this.showDialogDisconnect('sms')} }>
+                                          Disconnect
+                                        </button>
+                                      </div>
+                                    }
                                     </div>
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
@@ -281,6 +344,13 @@ class Webhook extends React.Component {
                                           {this.props.automated_options && this.props.automated_options.twilioWhatsApp ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
+                                      {this.props.automated_options && this.props.automated_options.twilioWhatsApp &&
+                                      <div className='m-widget4__ext'>
+                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} onClick={() => {this.showDialogDisconnect('whatsApp')}}>
+                                          Disconnect
+                                        </button>
+                                      </div>
+                                    }
                                     </div>
                                   </div>
                                   </div>
@@ -310,7 +380,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updatePlatformSettings: updatePlatformSettings,
     getAutomatedOptions: getAutomatedOptions,
-    updatePlatformWhatsApp: updatePlatformWhatsApp
+    updatePlatformWhatsApp: updatePlatformWhatsApp,
+    disconnect: disconnect
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Webhook)

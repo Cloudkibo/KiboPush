@@ -480,6 +480,19 @@ export function updatePlatformSettings (data, msg, clearFields) {
       })
   }
 }
+export function disconnect (data) {
+  console.log('data for disconnect', data)
+  return (dispatch) => {
+    callApi('company/disconnect', 'post', data)
+      .then(res => {
+        console.log('response from disconnect', res)
+        if (res.status === 'success') {
+          dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
+        }
+      })
+  }
+}
 export function updatePlatformWhatsApp (data, msg, clearFields) {
   console.log('data for updatePlatformWhatsApp', data)
   return (dispatch) => {
