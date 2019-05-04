@@ -17,33 +17,28 @@ class adSet extends React.Component {
         adset_name:'',
         gender:'',
         min_age: 18,
-        max_age: 65,
+        max_age: 65
       },    
       budget: {
         type: 'daily_budget',
         amount:''
       }
     }
-    this.handleInput = this.handleInput.bind(this)
+    this.handleName = this.handleName.bind(this)
     this.renderOptions = this.renderOptions.bind(this)
     this.handleAge = this.handleAge.bind(this)
     this.handleBudget = this.handleBudget.bind(this)
   }
 
-  handleInput (e) {
+  handleName (e) {
     let temp = this.state.ad_set_payload
     temp.adset_name = e.target.value
     this.setState({ad_set_payload: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
-    console.log('adset state', this.props.sponsoredMessage)
-
   }
 
   handleAge (e) {
-    console.log(e)
-    console.log('hehehe')
     let temp = this.state.ad_set_payload
-
     if(e.target.id === 'min_age'){
       temp.min_age = e.target.value 
       this.setState({ad_set_payload: temp})
@@ -90,7 +85,7 @@ class adSet extends React.Component {
       <div>
           <div>
             <label>Adset Name:</label>
-            <input className='form-control m-input m-input--air' value={this.state.Adset_name} onChange={this.handleInput} />
+            <input className='form-control m-input m-input--air' value={this.state.Adset_name} onChange={this.handleName} />
           </div>
         <br />
         <div>
@@ -113,13 +108,13 @@ class adSet extends React.Component {
         <br/>
         <div className='row'>
         <div className='col-sm-2'>
-        <select className="form-control" id="min_age" value={this.state.min_age} onChange={this.handleAge}>
+        <select className="form-control" id="min_age" value={this.state.ad_set_payload.min_age} onChange={this.handleAge}>
           {this.renderOptions(65)}
         </select>
         </div>
         _
         <div className='col-sm-2'>
-        <select className="form-control" id="max_age" value={this.state.max_age} onChange={this.handleAge}>
+        <select className="form-control" id="max_age" value={this.state.ad_set_payload.max_age} onChange={this.handleAge}>
           {this.renderOptions(65)}
         </select>
         </div>
