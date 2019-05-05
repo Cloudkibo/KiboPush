@@ -499,7 +499,7 @@ class GenericMessage extends React.Component {
           addComponent={this.addComponent}
           pages={this.props.pages}
           key={componentId}
-          file={broadcast.fileurl ? broadcast : null}
+          file={broadcast.file ? broadcast.file : null}
           handleFile={this.handleFile}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
@@ -507,7 +507,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : ''
+            fileurl: broadcast.file ? broadcast.file : ''
           })
         }
       },
@@ -542,7 +542,7 @@ class GenericMessage extends React.Component {
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
-          media={broadcast}
+          media={broadcast.file}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
@@ -649,7 +649,7 @@ class GenericMessage extends React.Component {
                     }
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                      <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
                   </div>
                 </div>

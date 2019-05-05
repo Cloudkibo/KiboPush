@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Card from './CardList'
-import AlertContainer from 'react-alert'
 import ListModal from '../ListModal'
 
 class List extends React.Component {
@@ -117,28 +116,19 @@ class List extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     let buttonPayloads = this.state.buttons.map((button) => button.payload)
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+      <div className='broadcast-component' style={{marginBottom: '50px'}}>
         {
           this.state.editing && this.openListModal()
         }
-        <div className='broadcast-component' style={{marginBottom: '70px'}}>
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: buttonPayloads}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, right: this.props.sequence ? 0 + 'px' : '100px', marginTop: '-20px'}}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i className='fa fa-times fa-stack-2x' />
-            </span>
-          </div>
-          <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', cursor: 'pointer'}} >
-            {
+        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: buttonPayloads}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, right: this.props.sequence ? 0 + 'px' : '100px', marginTop: '-20px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i className='fa fa-times fa-stack-2x' />
+          </span>
+        </div>
+        <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', cursor: 'pointer'}} >
+          {
             this.props.cards.map((card, index) => {
               let largeStyle = null
               if (index === 0 && this.state.topElementStyle === 'LARGE') {
@@ -180,7 +170,7 @@ class List extends React.Component {
                 </div>)
             })
           }
-            {
+          {
             this.state.buttons.map(button => {
               return (
                 <div>
@@ -190,7 +180,6 @@ class List extends React.Component {
               )
             })
           }
-          </div>
         </div>
       </div>
     )

@@ -5,7 +5,7 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import File from './File'
+import AddFile from './AddFile'
 
 class FileModal extends React.Component {
   constructor (props) {
@@ -32,7 +32,7 @@ class FileModal extends React.Component {
     this.props.addComponent({
       id: this.props.id,
       componentType: 'file',
-      fileurl: this.state.file ? this.state.file.fileurl : ''})
+      file: this.state.file ? this.state.file : ''})
   }
 
   updateFile (file) {
@@ -50,7 +50,7 @@ class FileModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>File:</h4>
-              <File updateFile={this.updateFile} />
+              <AddFile updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -58,11 +58,11 @@ class FileModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
-                <section className='discussion'>
+                <div className='discussion'>
                   <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>
                   📁 <a href={this.state.file ? this.state.file.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
                   </div>
-                </section>
+                </div>
               </div>
             </div>
 

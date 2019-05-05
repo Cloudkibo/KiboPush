@@ -1,7 +1,7 @@
 import React from 'react'
 
 import AddButton from './AddButton'
-import Image from './Image'
+import Image from './AddImage'
 import AddAction from './AddAction'
 
 class AddCard extends React.Component {

@@ -12,7 +12,6 @@ import {
 } from '../../../redux/actions/broadcast.actions'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
-import AlertContainer from 'react-alert'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -52,17 +51,8 @@ class Image extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-
+      <div className='broadcast-component' style={{marginBottom: '50px'}}>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 20 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -76,7 +66,6 @@ class Image extends React.Component {
             }
           </div>
         </div>
-
       </div>
     )
   }

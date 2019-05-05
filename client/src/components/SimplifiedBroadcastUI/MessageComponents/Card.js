@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../../redux/actions/broadcast.actions'
-import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import CardModal from '../CardModal'
 
 class Card extends React.Component {
@@ -134,56 +132,28 @@ class Card extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.isshowGuideLinesImageDialog &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeGuideLinesImageDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeGuideLinesImageDialog}>
-              <h4>⚠️ This image may be cropped or scaled</h4>
-              <br />
-              <h6><i className='flaticon-exclamation m--font-brand' /> This image isn't using the recommended aspect ratio of <strong>1.91:1</strong>.</h6>
-              <br />
-              <ul>
-                <li>Aspect ratio is the ratio of width to height of the image.</li>
-                <li>Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped.</li>
-                <li> Alternatively, you can use a combination of the image component and text component if you don't
-                want any cropping/scaling on the image.</li>
-              </ul>
-            </ModalDialog>
-          </ModalContainer>
-        }
+      <div className='broadcast-component' style={{marginBottom: '50px'}}>
         {
           this.state.editing && this.openCardModal()
         }
-        <div className='broadcast-component' style={{marginBottom: '70px'}}>
-          {
-            <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
-              <span style={{cursor: 'pointer'}} className='fa-stack'>
-                <i className='fa fa-times fa-stack-2x' />
-              </span>
-            </div>
+        {
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
+            <span style={{cursor: 'pointer'}} className='fa-stack'>
+              <i className='fa fa-times fa-stack-2x' />
+            </span>
+          </div>
         }
 
-          <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', margin: 'auto', cursor: 'pointer'}} >
-            {
+        <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', cursor: 'pointer'}} >
+          {
             this.state.imgSrc &&
             <img src={this.state.imgSrc} style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
           }
-            <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
-            <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
-            <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{this.state.subtitle}</p>
-            {
+          <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
+          <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
+          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{this.state.subtitle}</p>
+          {
             this.state.buttons.map(button => {
               return (
                 <div>
@@ -193,8 +163,6 @@ class Card extends React.Component {
               )
             })
           }
-
-          </div>
         </div>
       </div>
     )

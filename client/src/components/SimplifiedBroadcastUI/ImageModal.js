@@ -5,7 +5,7 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Image from './Image'
+import Image from './AddImage'
 
 class ImageModal extends React.Component {
   constructor (props) {
@@ -68,7 +68,6 @@ class ImageModal extends React.Component {
                 </div>
               </div>
             </div>
-
             <div className='row'>
               <div className='pull-right'>
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>

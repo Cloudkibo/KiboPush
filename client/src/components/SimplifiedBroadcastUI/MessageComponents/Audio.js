@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import AlertContainer from 'react-alert'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 
@@ -47,27 +46,16 @@ class Audio extends React.Component {
   }
 
   render () {
-    console.log('pages in audio: ', this.props.pages)
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
-      <div className='broadcast-component'>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='broadcast-component' style={{marginBottom: '70px'}}>
-          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i className='fa fa-times fa-stack-2x' />
-            </span>
-          </div>
-          <audio style={{width: '250px', height: '50px'}} controls name='media'>
-            <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
-          </audio>
+      <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i className='fa fa-times fa-stack-2x' />
+          </span>
         </div>
+        <audio style={{width: '250px', height: '50px'}} controls name='media'>
+          <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
+        </audio>
       </div>
     )
   }
