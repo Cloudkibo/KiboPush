@@ -63,7 +63,7 @@ class MediaModal extends React.Component {
           <h3>Add Media Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Media:</h4>
               <Media updateImage={this.updateImage} updateFile={this.updateFile} />
               {

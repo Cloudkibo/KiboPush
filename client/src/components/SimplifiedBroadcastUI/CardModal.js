@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
-import Image from './Image'
+import Image from './AddImage'
 import AddAction from './AddAction'
 
 class CardModal extends React.Component {
@@ -94,7 +94,7 @@ class CardModal extends React.Component {
           <h3>Add Card Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Title:</h4>
               <input value={this.state.title} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleTitleChange} className='form-control' />
               <h4>Subtitle:</h4>
