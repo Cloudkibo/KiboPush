@@ -12,21 +12,32 @@ import {
 } from '../../../redux/actions/broadcast.actions'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import ImageModal from '../ImageModal'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
-    this._onChange = this._onChange.bind(this)
-    this.setLoading = this.setLoading.bind(this)
     this.state = {
       imgSrc: this.props.image ? this.props.image.url : '',
-      showPreview: false,
-      loading: false,
-      imgWidth: null,
-      imgHeight: null
+      editing: false
     }
-    this.onImgLoad = this.onImgLoad.bind(this)
+    this.edit = this.edit.bind(this)
+    this.closeEditButton = this.closeEditButton.bind(this)
+    this.openImageModal = this.openImageModal.bind(this)
+  }
+
+  closeEditButton () {
+    this.setState({editing: false})
+  }
+
+  edit () {
+    this.setState({editing: true})
+  }
+
+  openImageModal () {
+    console.log('opening ImageModal for edit', this.state)
+    return (<ImageModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
@@ -53,16 +64,20 @@ class Image extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
+        {
+          this.state.editing && this.openImageModal()
+        }
+        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 20 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div className='broadcast-component' style={{marginBottom: '70px'}}>
-          <div className='ui-block' style={{border: this.state.imgSrc ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
+        <div className='broadcast-component' >
+          <div className='ui-block' style={{border: this.state.imgSrc ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '90%', margin: 'auto', marginTop: '100px'}} >
             {
               this.state.imgSrc &&
-              <img src={this.state.imgSrc} style={{maxHeight: '100px'}} />
+              <img src={this.state.imgSrc} style={{maxHeight: '175px'}} />
             }
           </div>
         </div>

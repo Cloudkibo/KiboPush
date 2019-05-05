@@ -127,7 +127,8 @@ class List extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div onClick={this.edit} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', cursor: 'pointer'}} >
+        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', marginLeft: '15px'}} >
           {
             this.props.cards.map((card, index) => {
               let largeStyle = null

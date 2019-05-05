@@ -4,29 +4,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
+import MediaModal from '../MediaModal'
 
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.updateMediaDetails = this.updateMediaDetails.bind(this)
     this.state = {
-      errorMsg: '',
-      showErrorDialogue: false,
-      imgSrc: props.img ? props.img : '',
-      button: props.buttons ? props.buttons : [],
-      fileurl: '',
-      fileName: '',
-      type: '',
-      size: '',
-      image_url: '',
-      loading: false,
-      showPreview: false,
-      file: '',
-      previewUrl: '',
-      mediaType: '',
-      styling: {minHeight: 30, maxWidth: 400},
-      buttonActions: this.props.buttonActions.slice(0, 2)
+      imgSrc: '',
+      buttons: props.buttons ? props.buttons : [],
+      file: props.file ? props.file : null
     }
+    this.edit = this.edit.bind(this)
+    this.closeEditButton = this.closeEditButton.bind(this)
+    this.openMediaModal = this.openMediaModal.bind(this)
+  }
+
+  closeEditButton () {
+    this.setState({editing: false})
+  }
+
+  edit () {
+    this.setState({editing: true})
+  }
+
+  openMediaModal () {
+    console.log('opening MeidaModal for edit', this.state)
+    return (<MediaModal edit file={this.state.file} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
@@ -72,7 +76,7 @@ class Media extends React.Component {
         this.setState({
           componentType: 'media',
           imgSrc: mediaProps.media.fileurl.url,
-          button: mediaProps.media.buttons,
+          buttons: mediaProps.media.buttons,
           mediaType: mediaProps.media.mediaType
         })
       } else if (video) {
@@ -80,7 +84,7 @@ class Media extends React.Component {
           componentType: 'media',
           imgSrc: '',
           file: this.props.media,
-          button: mediaProps.media.buttons,
+          buttons: mediaProps.media.buttons,
           mediaType: mediaProps.media.mediaType
         })
       }
@@ -90,7 +94,10 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-
+        {
+          this.state.editing && this.openMediaModal()
+        }
+        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -112,7 +119,7 @@ class Media extends React.Component {
             </div>
           }
           {
-              visibleButtons.map((button, index) => {
+              this.state.buttons.map((button, index) => {
                 return (
                   <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
                     <h5 style={{color: '#0782FF'}}>{button.title}</h5>

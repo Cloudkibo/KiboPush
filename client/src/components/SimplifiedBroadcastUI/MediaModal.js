@@ -12,14 +12,14 @@ class MediaModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      buttons: [],
+      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       numOfCurrentButtons: 0,
       disabled: false,
       buttonDisabled: false,
       buttonLimit: 3,
       buttonActions: ['open website', 'open webview'],
-      imgSrc: null,
-      file: null
+      imgSrc: props.imgSrc ? props.imgSrc : '',
+      file: props.file ? props.file : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.updateImage = this.updateImage.bind(this)
@@ -67,8 +67,11 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media updateImage={this.updateImage} updateFile={this.updateFile} />
               {
-                // this.state.file &&
-                <AddButton buttonLimit={this.state.buttonLimit}
+                this.state.file &&
+                <AddButton
+                  buttons={this.state.buttons}
+                  finalButtons={this.props.buttons}
+                  buttonLimit={this.state.buttonLimit}
                   pageId={this.props.pageId}
                   buttonActions={this.state.buttonActions}
                   ref={(ref) => { this.AddButton = ref }}
@@ -117,7 +120,7 @@ class MediaModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>

@@ -407,6 +407,7 @@ class GenericMessage extends React.Component {
           id={componentId}
           addComponent={this.addComponent}
           pages={this.props.pages}
+          file={broadcast.file}
           image={broadcast.fileurl}
           key={componentId}
           handleImage={this.handleImage}
@@ -416,7 +417,8 @@ class GenericMessage extends React.Component {
             id: componentId,
             componentType: 'image',
             image_url: broadcast.image_url ? broadcast.image_url : '',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : ''
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            file: broadcast.file
           })
         }
       },
@@ -507,7 +509,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
-            fileurl: broadcast.file ? broadcast.file : ''
+            file: broadcast.file ? broadcast.file : ''
           })
         }
       },

@@ -11,19 +11,32 @@ import {
 } from '../../../redux/actions/broadcast.actions'
 import { uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import FileModal from '../FileModal'
 
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: this.props.file ? this.props.file : null
+      file: this.props.file ? this.props.file : null,
+      editing: false
     }
-    this.onFilesChange = this.onFilesChange.bind(this)
-    this.onFilesError = this.onFilesError.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.setLoading = this.setLoading.bind(this)
+    this.edit = this.edit.bind(this)
+    this.closeEditButton = this.closeEditButton.bind(this)
+    this.openFileModal = this.openFileModal.bind(this)
+  }
+
+  closeEditButton () {
+    this.setState({editing: false})
+  }
+
+  edit () {
+    this.setState({editing: true})
+  }
+
+  openFileModal () {
+    console.log('opening FileModal for edit', this.state)
+    return (<FileModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
@@ -60,12 +73,16 @@ class File extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+        {
+          this.state.editing && this.openFileModal()
+        }
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-15px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div className='discussion'>
+        <i onClick={this.edit} style={{cursor: 'pointer', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        <div className='discussion' style={{display: 'inline-block'}}>
           <div className='bubble recipient' style={{maxWidth: '100%', cursor: 'pointer', fontSize: '18px'}}>
             📁 <a href={this.state.file ? this.state.file.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
           </div>
