@@ -20,12 +20,12 @@ class Webhook extends React.Component {
       selectAllChecked: null,
       selectAllCheckedEdit: null,
       subscriptions: [{name: 'New Poll', selected: false}, {'name': 'Poll Response', selected: false}, {'name': 'New Survey', selected: false}, {'name': 'Survey Response', selected: false}, {'name': 'New Subscriber', selected: false},
-      {'name': 'Live Chat Actions', selected: false}],
+      {'name': 'Live Chat Actions', selected: false}, {'name': 'Checkbox Opt-in', selected: false}],
       url: '',
       token: '',
       urlEdit: '',
       subscriptionsEdit: [{name: 'New Poll', selected: false}, {'name': 'Poll Response', selected: false}, {'name': 'New Survey', selected: false}, {'name': 'Survey Response', selected: false}, {'name': 'New Subscriber', selected: false},
-      {'name': 'Live Chat Actions', selected: false}],
+      {'name': 'Live Chat Actions', selected: false}, {'name': 'Checkbox Opt-in', selected: false}],
       errorUrl: '',
       errorToken: false,
       pageEdit: '',
@@ -90,6 +90,8 @@ class Webhook extends React.Component {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_SUBSCRIBER
       } else if (subscriptionsEdit[i].name === 'Live Chat Actions') {
         subscriptionsEdit[i].selected = webhook.optIn.LIVE_CHAT_ACTIONS
+      } else if (subscriptionsEdit[i].name === 'Checkbox Opt-in') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPTIN
       }
     }
     for (var j = 0; j < this.props.pages.length; j++) {
@@ -221,6 +223,8 @@ class Webhook extends React.Component {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'Live Chat Actions') {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Checkbox Opt-in') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptions[i].selected
         }
       }
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
@@ -279,6 +283,8 @@ class Webhook extends React.Component {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'Live Chat Actions') {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Opt-in') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptionsEdit[i].selected
         }
       }
       this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
