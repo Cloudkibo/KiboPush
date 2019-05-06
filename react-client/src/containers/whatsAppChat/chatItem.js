@@ -89,7 +89,7 @@ class ChatItem extends React.Component {
         <div className='m-messenger__message-username'>
           {type === 'twilio' ? `${this.props.activeSession.name} wrote` : this.getRepliedByMsg(msg)}
         </div>
-        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+        <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
           {msg.payload.text}
         </div>
       </div>)
