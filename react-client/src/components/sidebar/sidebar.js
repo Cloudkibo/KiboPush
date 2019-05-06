@@ -935,7 +935,7 @@ class Sidebar extends Component {
   }
 
   showBusinessGateway () {
-    if (this.props.user && this.state.businessGateway && this.props.user.platform === 'messenger') {
+    if (this.props.user && this.state.businessGateway) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/businessGateway' className='m-menu__link'>

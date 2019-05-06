@@ -14,6 +14,7 @@ import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Halogen from 'halogen'
+import { browserHistory, Link } from 'react-router'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -35,6 +36,12 @@ class Dashboard extends React.Component {
   componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
+      if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'sms'
+        })
+      }
     }
     if (nextprops.cardBoxesData && nextprops.subscriberSummary && nextprops.sentSeenData) {
       this.setState({loading: false})
@@ -164,7 +171,8 @@ function mapStateToProps (state) {
     cardBoxesData: (state.smsWhatsAppDashboardInfo.cardBoxesData),
     user: (state.basicInfo.user),
     subscriberSummary: (state.smsWhatsAppDashboardInfo.subscriberSummary),
-    sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData)
+    sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
