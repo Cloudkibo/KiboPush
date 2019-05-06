@@ -5,15 +5,15 @@
 import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Image from './Image'
+import Image from './AddImage'
 
 class ImageModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       disabled: false,
-      imgSrc: null,
-      file: null
+      imgSrc: this.props.imgSrc ? this.props.imgSrc : null,
+      file: this.props.file ? this.props.file : null
     }
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -26,7 +26,10 @@ class ImageModal extends React.Component {
 
   addComponent () {
     console.log('addComponent ImageModal')
-    this.props.addComponent({componentType: 'image',
+    this.props.addComponent({
+      id: this.props.id,
+      componentType: 'image',
+      file: this.state.file,
       fileurl: this.state.file ? this.state.file.fileurl : '',
       image_url: this.state.file ? this.state.file.image_url : ''})
   }
@@ -66,14 +69,13 @@ class ImageModal extends React.Component {
                 </div>
               </div>
             </div>
-
             <div className='row'>
               <div className='pull-right'>
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                <button onClick={() => this.handleDone()} className='btn btn-primary'>
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>

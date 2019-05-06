@@ -52,35 +52,27 @@ class Text extends React.Component {
   }
 
   render () {
-    let textStyles
-    if (this.props.removeState) {
-      textStyles = {marginBottom: 70 + 'px'}
-    } else {
-      textStyles = {marginBottom: 70 + 'px', width: '60%'}
-    }
     return (
-
-      <div className='broadcast-component' style={textStyles}>
-        {this.props.removeState &&
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{ float: 'right', height: 20 + 'px' }}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i className='fa fa-times fa-stack-2x' />
-            </span>
-          </div>
-      }
+      <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
         {
           this.state.editing && this.openTextModal()
-      }
-        <span className='discussion'>
-          <div onClick={this.edit} style={{cursor: 'pointer'}} className='bubble recipient'>{this.state.text}</div>
+        }
+        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-15px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i className='fa fa-times fa-stack-2x' />
+          </span>
+        </div>
+        <i onClick={this.edit} style={{cursor: 'pointer', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        <div className='discussion' style={{display: 'inline-block'}} >
+          <div style={{maxWidth: '100%', fontSize: '18px'}} className='bubble recipient'>{this.state.text}</div>
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div className='bubble recipient' style={{marginTop: '5px', fontSize: '0.95rem', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.type === 'element_share' ? 'Share' : button.title}</div>
+                  <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.type === 'element_share' ? 'Share' : button.title}</div>
                 )
               })
           }
-        </span>
+        </div>
       </div>
     )
   }

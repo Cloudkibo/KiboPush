@@ -2,16 +2,16 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../../redux/actions/subscribers.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
   clearAlertMessage,
   loadBroadcastsList,
   sendbroadcast,
   uploadRequest
-} from '../../../redux/actions/broadcast.actions'
+} from '../../redux/actions/broadcast.actions'
 import Halogen from 'halogen'
-import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 
@@ -22,13 +22,14 @@ class Image extends React.Component {
     this._onChange = this._onChange.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.state = {
-      imgSrc: '',
+      file: this.props.file ? this.props.file : null,
+      imgSrc: this.props.imgSrc ? this.props.imgSrc : '',
       showPreview: false,
       loading: false,
       imgWidth: null,
       imgHeight: null
     }
-    this.onImgLoad = this.onImgLoad.bind(this)
+    this.handleImage = this.handleImage.bind(this)
   }
 
   componentDidMount () {
@@ -72,7 +73,9 @@ class Image extends React.Component {
       reader.onloadend = (e) => {
         console.log('FileReader', reader)
         this.setState({
-          imgSrc: [reader.result]
+          imgSrc: [reader.result], fileName: file.name
+        }, () => {
+          this.props.updateImage(this.state.imgSrc)
         })
       }
 
@@ -88,16 +91,14 @@ class Image extends React.Component {
         image_url: '',
         type: file.type, // jpg, png, gif
         size: file.size
-      }, this.props.handleImage, this.setLoading)
+      }, this.handleImage, this.setLoading)
     }
-
-  // TODO: concat files
   }
 
-  onImgLoad (e) {
-    e.persist()
-    console.log('image dimensions after load', {width: e.target.width, height: e.target.height})
-    this.setState({imgWidth: e.target.width, imgHeight: e.target.height})
+  handleImage (fileInfo) {
+    this.props.updateFile(fileInfo)
+    this.setState({file: fileInfo.fileurl})
+    this.props.handleImage(fileInfo)
   }
 
   render () {
@@ -111,14 +112,7 @@ class Image extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {!this.state.loading &&
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 20 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
-          <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
-          </span>
-        </div>
-        }
-        <div className='ui-block hoverborder' style={(this.state.imgWidth ? {minHeight: (this.state.imgHeight + 25) + 'px', minWidth: (this.state.imgWidth + 25) + 'px'} : {minHeight: 100, maxWidth: 400, padding: 25})}>
+        <div className='ui-block hoverborder'>
           {
           this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
@@ -130,14 +124,17 @@ class Image extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer', padding: '10px'}} />
             {
               (this.state.imgSrc === '')
-              ? <div className='align-center'>
+              ? <div className='align-center' style={{padding: '5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
+                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Image </h4>
               </div>
-              : <img onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+              : <div className='align-center' style={{padding: '5px'}}>
+                <img src={this.state.imgSrc} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file.fileName}</h4>
+              </div>
           }
           </div>
           }

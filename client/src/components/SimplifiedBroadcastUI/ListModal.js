@@ -7,23 +7,30 @@ import AddButton from './AddButton'
 class ListModal extends React.Component {
   constructor (props) {
     super(props)
+    this.elementLimit = 4
+    let cards = []
+    for (let i = 0; i < this.elementLimit; i++) {
+      if (props.cards && props.cards[i]) {
+        cards.push({component: props.cards[i], visible: true})
+      } else {
+        cards.push({visible: !!(i === 0 || i === 1),
+          component: {
+            id: i + 1,
+            title: `Element #${i + 1} Title`,
+            subtitle: `Element #${i + 1} Subtitle`,
+            buttons: []
+          }})
+      }
+    }
     this.state = {
-      buttons: [],
+      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 1,
       disabled: false,
       buttonDisabled: false,
       actionDisabled: false,
-      imgSrc: null,
-      webviewurl: '',
-      elementUrl: '',
-      webviewsize: 'FULL',
-      cards: [{component: {id: 1}, visible: true},
-        {component: {id: 2}, visible: true},
-        {component: {id: 3}, visible: false},
-        {component: {id: 4}, visible: false}],
+      cards,
       numOfElements: 2,
-      elementLimit: 4,
       topElementStyle: 'compact'
     }
     this.listComponents = [null, null, null, null]
@@ -150,6 +157,7 @@ class ListModal extends React.Component {
 
   addComponent () {
     this.props.addComponent({
+      id: this.props.id,
       componentType: 'list',
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
@@ -166,7 +174,7 @@ class ListModal extends React.Component {
           <h3>Add List Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
 
               <h4>Top Element Style:</h4>
               <div style={{marginTop: '10px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', padding: '10px', marginBottom: '30px'}}>
@@ -186,19 +194,33 @@ class ListModal extends React.Component {
                 {
                     this.state.cards.map((card, index) => {
                       if (card.visible) {
-                        return (<AddCard addCard={this.addCard} ref={(ref) => { this.listComponents[index] = ref }} closeCard={() => { this.closeCard(card.component.id) }} id={card.component.id} updateStatus={(status) => { this.updateCardStatus(status, card.component.id) }} />)
+                        return (<AddCard
+                          card={this.state.cards[index]}
+                          addCard={this.addCard}
+                          ref={(ref) => { this.listComponents[index] = ref }}
+                          closeCard={() => { this.closeCard(card.component.id) }}
+                          id={card.component.id}
+                          updateStatus={(status) => { this.updateCardStatus(status, card.component.id) }} />)
                       }
                     })
                 }
                 {
-                    (this.state.numOfElements < this.state.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
+                    (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
                       <div onClick={this.addElement} style={{paddingTop: '5px'}} className='align-center'>
                         <h6> + Add Element </h6>
                       </div>
                     </div>
                 }
               </div>
-              <AddButton pageId={this.props.pageId} buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addButton(buttons)} />
+              <AddButton
+                buttons={this.state.buttons}
+                finalButtons={this.props.buttons}
+                pageId={this.props.pageId}
+                buttonLimit={this.state.buttonLimit}
+                buttonActions={this.state.buttonActions}
+                ref={(ref) => { this.AddButton = ref }}
+                updateButtonStatus={this.updateStatus}
+                addComponent={(buttons) => this.addButton(buttons)} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -222,8 +244,8 @@ class ListModal extends React.Component {
                           <div style={largeStyle}>
                             <div className='row' style={{padding: '10px'}}>
                               <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
-                                <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
-                                <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                                <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
+                                <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
                               </div>
                               {!largeStyle && <div className='col-6'>
                                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
@@ -275,7 +297,7 @@ class ListModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>

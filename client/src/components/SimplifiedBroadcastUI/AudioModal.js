@@ -12,7 +12,7 @@ class AudioModal extends React.Component {
     super(props)
     this.state = {
       disabled: false,
-      file: null
+      file: this.props.file ? this.props.file : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -24,8 +24,10 @@ class AudioModal extends React.Component {
 
   addComponent () {
     console.log('addComponent AudioModal')
-    this.props.addComponent({componentType: 'audio',
-      fileurl: this.state.file ? this.state.file.fileurl : ''})
+    this.props.addComponent({
+      id: this.props.id,
+      componentType: 'audio',
+      file: this.state.file ? this.state.file : null})
   }
 
   updateFile (file) {
@@ -73,7 +75,7 @@ class AudioModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                  {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
             </div>

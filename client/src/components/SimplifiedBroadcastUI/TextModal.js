@@ -55,7 +55,7 @@ class TextModal extends React.Component {
           <h3>Add Text Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Text:</h4>
               <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
               <AddButton

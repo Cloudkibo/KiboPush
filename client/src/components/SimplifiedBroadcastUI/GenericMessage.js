@@ -381,36 +381,180 @@ class GenericMessage extends React.Component {
     console.log('componentId', componentId)
     let components = {
       'text': {
-        component: (<Text id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} key={componentId} buttons={broadcast.buttons} message={broadcast.text} handleText={this.handleText} onRemove={this.removeComponent} removeState buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} hideUserOptions={this.props.hideUserOptions} />),
-        handler: () => { this.handleText({id: componentId, text: broadcast.text, buttons: broadcast.buttons ? broadcast.buttons : []}) }
+        component: (<Text
+          id={componentId}
+          addComponent={this.addComponent}
+          pageId={this.state.pageId}
+          key={componentId}
+          buttons={broadcast.buttons}
+          message={broadcast.text}
+          handleText={this.handleText}
+          onRemove={this.removeComponent}
+          removeState
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage}
+          hideUserOptions={this.props.hideUserOptions} />),
+        handler: () => {
+          this.handleText({
+            id: componentId,
+            text: broadcast.text,
+            buttons: broadcast.buttons ? broadcast.buttons : []
+          })
+        }
       },
       'image': {
-        component: (<Image id={componentId} addComponent={this.addComponent} pages={this.props.pages} image={broadcast.fileurl} key={componentId} handleImage={this.handleImage} onRemove={this.removeComponent} />),
-        handler: () => { this.handleImage({id: componentId, componentType: 'image', image_url: broadcast.image_url ? broadcast.image_url : '', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
+        component: (<Image
+          id={componentId}
+          addComponent={this.addComponent}
+          pages={this.props.pages}
+          file={broadcast.file}
+          image={broadcast.fileurl}
+          key={componentId}
+          handleImage={this.handleImage}
+          onRemove={this.removeComponent} />),
+        handler: () => {
+          this.handleImage({
+            id: componentId,
+            componentType: 'image',
+            image_url: broadcast.image_url ? broadcast.image_url : '',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            file: broadcast.file
+          })
+        }
       },
       'card': {
-        component: (<Card id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} handleCard={this.handleCard} buttons={broadcast.buttons} img={broadcast.image_url} title={broadcast.title} onRemove={this.removeComponent} singleCard buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} cardDetails={broadcast} webviewurl={broadcast.webviewurl} elementUrl={broadcast.elementUrl} webviewsize={broadcast.webviewsize} default_action={this.props.default_action} />),
-        handler: () => { this.handleCard({id: componentId, componentType: 'card', title: broadcast.title ? broadcast.title : '', description: broadcast.description ? broadcast.description : '', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : [], webviewurl: broadcast.webviewurl, elementUrl: broadcast.elementUrl, webviewsize: broadcast.webviewsize}) }
+        component: (<Card
+          id={componentId}
+          addComponent={this.addComponent}
+          file={broadcast.file}
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          handleCard={this.handleCard}
+          buttons={broadcast.buttons}
+          img={broadcast.image_url}
+          title={broadcast.title}
+          onRemove={this.removeComponent}
+          singleCard
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage}
+          cardDetails={broadcast}
+          webviewurl={broadcast.webviewurl}
+          elementUrl={broadcast.elementUrl}
+          webviewsize={broadcast.webviewsize}
+          default_action={this.props.default_action} />),
+        handler: () => {
+          this.handleCard({
+            id: componentId,
+            componentType: 'card',
+            title: broadcast.title ? broadcast.title : '',
+            description: broadcast.description ? broadcast.description : '',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            webviewurl: broadcast.webviewurl,
+            elementUrl: broadcast.elementUrl,
+            webviewsize: broadcast.webviewsize
+          })
+        }
       },
       'audio': {
-        component: (<Audio id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'audio', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
+        component: (<Audio
+          id={componentId}
+          addComponent={this.addComponent}
+          pages={this.props.pages}
+          key={componentId}
+          file={broadcast.file ? broadcast.file : null}
+          handleFile={this.handleFile}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleFile({
+            id: componentId,
+            componentType: 'audio',
+            file: broadcast.file ? broadcast.file : ''
+          })
+        }
       },
       'video': {
-        component: (<Video id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'video', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
+        component: (<Video
+          id={componentId}
+          addComponent={this.addComponent}
+          pages={this.props.pages}
+          key={componentId}
+          file={broadcast.fileurl ? broadcast : null}
+          handleFile={this.handleFile}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleFile({
+            id: componentId,
+            componentType: 'video',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : ''
+          })
+        }
       },
       'file': {
-        component: (<File id={componentId} addComponent={this.addComponent} pages={this.props.pages} key={componentId} file={broadcast.fileurl ? broadcast : null} handleFile={this.handleFile} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleFile({id: componentId, componentType: 'file', fileurl: broadcast.fileurl ? broadcast.fileurl : ''}) }
+        component: (<File
+          id={componentId}
+          addComponent={this.addComponent}
+          pages={this.props.pages}
+          key={componentId}
+          file={broadcast.file ? broadcast.file : null}
+          handleFile={this.handleFile}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleFile({id: componentId,
+            componentType: 'file',
+            file: broadcast.file ? broadcast.file : ''
+          })
+        }
       },
       'list': {
-        component: (<List id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} list={broadcast} cards={broadcast.listItems} handleList={this.handleList} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} default_action={this.props.default_action} />),
-        handler: () => { this.handleList({id: componentId, componentType: 'list', listItems: broadcast.listItems ? broadcast.listItems : [], topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact', buttons: broadcast.buttons ? broadcast.buttons : []}) }
+        component: (<List
+          id={componentId}
+          addComponent={this.addComponent}
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          list={broadcast}
+          cards={broadcast.listItems}
+          handleList={this.handleList}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage}
+          default_action={this.props.default_action} />),
+        handler: () => {
+          this.handleList({
+            id: componentId,
+            componentType: 'list',
+            listItems: broadcast.listItems ? broadcast.listItems : [],
+            topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact',
+            buttons: broadcast.buttons ? broadcast.buttons : []
+          })
+        }
       },
       'media': {
-        component: (<Media id={componentId} addComponent={this.addComponent} pageId={this.state.pageId} pages={this.props.pages} key={componentId} media={broadcast} handleMedia={this.handleMedia} onRemove={this.removeComponent} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { this.handleMedia({id: componentId, componentType: 'media', fileurl: broadcast.fileurl ? broadcast.fileurl : '', buttons: broadcast.buttons ? broadcast.buttons : []}) }
+        component: (<Media
+          id={componentId}
+          addComponent={this.addComponent}
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          media={broadcast.file}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleMedia({id: componentId,
+            componentType: 'media',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            buttons: broadcast.buttons ? broadcast.buttons : []})
+        }
       }
     }
     return components[broadcast.componentType]
@@ -507,7 +651,7 @@ class GenericMessage extends React.Component {
                     }
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                      <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
                   </div>
                 </div>

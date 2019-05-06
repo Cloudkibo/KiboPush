@@ -1,26 +1,32 @@
 import React from 'react'
 
 import AddButton from './AddButton'
-import Image from './Image'
+import Image from './AddImage'
 import AddAction from './AddAction'
 
 class AddCard extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      file: null,
-      title: `Element#${this.props.id} Title`,
-      subtitle: `Element#${this.props.id} Subtitle`,
-      buttons: [],
+      file: props.card.component.fileurl ? {
+        fileurl: props.card.component.fileurl,
+        image_url: props.card.component.image_url,
+        fileName: props.card.component.fileName,
+        type: props.card.component.type,
+        size: props.card.component.size
+      } : null,
+      title: props.card.component.title,
+      subtitle: props.card.component.description ? props.card.component.description : props.card.component.subtitle,
+      buttons: props.card.component.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: ['open website', 'open webview', 'add share'],
       buttonLimit: 1,
       disabled: false,
       buttonDisabled: false,
       actionDisabled: false,
-      imgSrc: null,
-      webviewurl: '',
-      elementUrl: '',
-      webviewsize: 'FULL'
+      imgSrc: props.card.component.image_url,
+      webviewurl: props.card.component.webviewurl,
+      elementUrl: props.card.component.elementUrl,
+      webviewsize: props.card.component.webviewsize ? props.card.component.webviewsize : 'FULL'
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
@@ -106,9 +112,25 @@ class AddCard extends React.Component {
         <h4>Subtitle:</h4>
         <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
         <h4>Image:</h4>
-        <Image updateFile={this.updateFile} updateImage={this.updateImage} />
-        <AddButton buttonLimit={this.state.buttonLimit} buttonActions={this.state.buttonActions} ref={(ref) => { this.AddButton = ref }} updateButtonStatus={this.updateStatus} addComponent={(buttons) => this.addCard(buttons)} />
-        <AddAction updateActionStatus={this.updateStatus} />
+        <Image
+          imgSrc={this.state.imgSrc}
+          file={this.state.file}
+          updateFile={this.updateFile}
+          updateImage={this.updateImage} />
+        <AddButton
+          buttons={this.state.buttons}
+          finalButtons={this.props.buttons}
+          pageId={this.props.pageId}
+          buttonLimit={this.state.buttonLimit}
+          buttonActions={this.state.buttonActions}
+          ref={(ref) => { this.AddButton = ref }}
+          updateButtonStatus={this.updateStatus}
+          addComponent={(buttons) => this.addCard(buttons)} />
+        <AddAction
+          webviewurl={this.state.webviewurl}
+          webviewsize={this.state.webviewsize}
+          elementUrl={this.state.elementUrl}
+          updateActionStatus={this.updateStatus} />
       </div>
     )
   }

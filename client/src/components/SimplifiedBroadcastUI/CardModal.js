@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
-import Image from './Image'
+import Image from './AddImage'
 import AddAction from './AddAction'
 
 class CardModal extends React.Component {
@@ -19,9 +19,9 @@ class CardModal extends React.Component {
       buttonDisabled: false,
       actionDisabled: false,
       imgSrc: props.imgSrc ? props.imgSrc : null,
-      webviewurl: '',
-      elementUrl: '',
-      webviewsize: 'FULL'
+      webviewsize: props.webviewsize ? props.webviewsize : 'FULL',
+      webviewurl: props.webviewurl ? props.webviewurl : '',
+      elementUrl: props.elementUrl ? props.elementUrl : ''
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
@@ -94,13 +94,17 @@ class CardModal extends React.Component {
           <h3>Add Card Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Title:</h4>
               <input value={this.state.title} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleTitleChange} className='form-control' />
               <h4>Subtitle:</h4>
               <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
               <h4>Image:</h4>
-              <Image updateFile={this.updateFile} updateImage={this.updateImage} />
+              <Image
+                imgSrc={this.state.imgSrc}
+                file={this.state.file}
+                updateFile={this.updateFile}
+                updateImage={this.updateImage} />
               <AddButton
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
@@ -110,7 +114,11 @@ class CardModal extends React.Component {
                 ref={(ref) => { this.AddButton = ref }}
                 updateButtonStatus={this.updateStatus}
                 addComponent={(buttons) => this.addComponent(buttons)} />
-              <AddAction updateActionStatus={this.updateStatus} />
+              <AddAction
+                webviewurl={this.state.webviewurl}
+                webviewsize={this.state.webviewsize}
+                elementUrl={this.state.elementUrl}
+                updateActionStatus={this.updateStatus} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
