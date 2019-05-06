@@ -69,14 +69,14 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
-        <div className='col-3' hidden={this.props.hiddenComponents.indexOf('video') > -1 ? true : null}>
+        {/* <div className='col-3' hidden={this.props.hiddenComponents.indexOf('video') > -1 ? true : null}>
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('video') }}>
             <div className='align-center'>
               <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
               <h6>YouTube</h6>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     )
   }

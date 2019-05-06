@@ -62,7 +62,7 @@ class Text extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <i onClick={this.edit} style={{cursor: 'pointer', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='discussion' style={{display: 'inline-block'}} >
           <div style={{maxWidth: '100%', fontSize: '18px'}} className='bubble recipient'>{this.state.text}</div>
           {
