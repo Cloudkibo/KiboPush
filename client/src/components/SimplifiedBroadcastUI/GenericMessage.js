@@ -1,12 +1,12 @@
 import React from 'react'
-import Image from './MessageComponents/Image'
-import List from './MessageComponents/List'
-import Video from './MessageComponents/Video'
-import Audio from './MessageComponents/Audio'
-import File from './MessageComponents/File'
-import Text from './MessageComponents/Text'
-import Card from './MessageComponents/Card'
-import Media from './MessageComponents/Media'
+import Image from './PreviewComponents/Image'
+import List from './PreviewComponents/List'
+import Video from './PreviewComponents/Video'
+import Audio from './PreviewComponents/Audio'
+import File from './PreviewComponents/File'
+import Text from './PreviewComponents/Text'
+import Card from './PreviewComponents/Card'
+import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
@@ -552,7 +552,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleMedia({id: componentId,
             componentType: 'media',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            file: broadcast.file ? broadcast.file : '',
             buttons: broadcast.buttons ? broadcast.buttons : []})
         }
       }

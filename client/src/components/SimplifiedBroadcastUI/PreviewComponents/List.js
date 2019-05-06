@@ -3,7 +3,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Card from './CardList'
 import ListModal from '../ListModal'
 
 class List extends React.Component {
@@ -12,7 +11,7 @@ class List extends React.Component {
     this.edit = this.edit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
     this.state = {
-      cards: [{element: <Card pageId={this.props.pageId} replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} buttonActions={this.props.buttonActions} id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='compact' />, key: 1}, {element: <Card id={2} pageId={this.props.pageId} pages={this.props.pages} replyWithMessage={this.props.replyWithMessage} buttonActions={this.props.buttonActions} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='compact' topElementStyle={this.topElementStyle} />, key: 2}],
+      cards: this.props.cards ? this.props.cards : [],
       showPlus: false,
       pageNumber: 2,
       buttons: props.buttons ? props.buttons : [],
@@ -40,62 +39,40 @@ class List extends React.Component {
       }
       for (var k = 0; k < cardLength; k++) {
         if (this.props.cards[k] && this.props.cards[k].id === k + 1) {
-          tmp.push({element: <Card pages={this.props.pages}
-            pageId={this.props.pageId}
-            replyWithMessage={this.props.replyWithMessage}
-            id={k + 1}
-            buttonActions={this.props.buttonActions}
-            button_id={this.props.id}
-            buttons={this.props.cards[k].buttons}
-            cardDetails={this.props.cards[k]}
-            handleCard={this.handleCard}
-            topElementStyle={this.topElementStyle}
-            removeElement={this.removeElement}
-            webviewsize={this.props.cards[k].webviewsize}
-            webviewurl={this.props.cards[k].webviewurl}
-            elementUrl={this.props.cards[k].elementUrl}
-            topStyle={this.props.list.topElementStyle} />,
-            key: k})
+          let card = this.props.cards[k]
+          tmp.push({id: card.id,
+            fileurl: card.file ? card.file.fileurl : '',
+            image_url: card.file ? card.file.image_url : '',
+            fileName: card.file ? card.file.fileName : '',
+            type: card.file ? card.file.type : '',
+            size: card.file ? card.file.size : '',
+            title: card.title,
+            description: card.subtitle,
+            webviewurl: card.webviewurl,
+            elementUrl: card.elementUrl,
+            webviewsize: card.webviewsize,
+            buttons: card.buttons})
         } else {
-          tmp.push({element: <Card id={k + 1}
-            pageId={this.props.pageId}
-            replyWithMessage={this.props.replyWithMessage}
-            pages={this.props.pages}
-            buttonActions={this.props.buttonActions}
-            button_id={this.props.id}
-            handleCard={this.handleCard}
-            removeElement={this.removeElement}
-            topStyle='compact'
-            topElementStyle={this.topElementStyle} />,
-            key: k})
+          tmp.push({id: (k + 1),
+            fileurl: '',
+            image_url: '',
+            fileName: '',
+            type: '',
+            size: '',
+            title: `Element #{k+1} Title`,
+            description: `Element #{k+1} Subtitle`,
+            webviewurl: '',
+            elementUrl: '',
+            webviewsize: 'FULL',
+            buttons: []})
         }
       }
-      // for (var k = 0; k < this.props.cards.length; k++) {
-      //   this.props.cards[k].id = k
-      //   tmp.push({element: <Card pages={this.props.pages} pageId={this.props.pageId} id={k} buttonActions={this.props.buttonActions} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
-      // }
       console.log('list is', this.props)
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
     console.log('this.props componentDidMount List', this.props)
     if (this.props.list.topElementStyle && this.props.list.buttons) {
       this.setState({topElementStyle: this.props.list.topElementStyle, buttons: this.props.list.buttons})
-    }
-    if (this.props.listDetails && this.props.listDetails !== '') {
-      console.log('this.props.listDetails', this.props.listDetails)
-      var cards = this.props.listDetails.listItems
-      var card = {}
-      var temp = []
-      var cardMessage = []
-      for (var i = 0; i < cards.length; i++) {
-        //  cards[i].id = i
-        card = {element: <Card pageId={this.props.pageId} pages={this.props.pages} id={i + 1} buttonActions={this.props.buttonActions} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.props.listDetails.topElementStyle} />, key: i}
-        cardMessage.push(cards[i])
-        temp.push(card)
-      }
-      this.setState({cards: temp, topElementStyle: this.props.listDetails.topElementStyle})
-      this.setState({showPlus: true})
-      this.setState({broadcast: cardMessage})
     }
   }
 

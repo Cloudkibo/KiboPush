@@ -28,7 +28,7 @@ class Audio extends React.Component {
   }
 
   openAudioModal () {
-    console.log('opening TextModal for edit', this.state)
+    console.log('opening AudioModal for edit', this.state)
     return (<AudioModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
