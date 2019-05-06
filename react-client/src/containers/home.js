@@ -22,19 +22,10 @@ class Home extends Component {
   }
 
   render () {
-    if (this.props.user && this.props.user.platform === 'sms') {
-      return (
-        <SmsDashboard location={this.props.location} />
-      )
-    } else if (this.props.user && this.props.user.platform === 'whatsApp') {
-      return (
-        <WhatsAppDashboard location={this.props.location} />
-      )
-    } else {
       return (
         <Dashboard location={this.props.location} />
       )
-    }
+    
   }
 }
 
