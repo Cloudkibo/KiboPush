@@ -41,19 +41,7 @@ class File extends React.Component {
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
-      var fileInfo = {
-        id: this.props.id,
-        componentType: 'audio',
-        name: this.props.file.fileName,
-        type: this.props.file.type,
-        size: this.props.file.size,
-        url: ''
-      }
-      if (this.props.file.fileurl) {
-        fileInfo.url = this.props.file.fileurl.url
-      }
-      this.setState({file: fileInfo, showPreview: true})
-      if (this.props.pages) {
+      if (this.props.pages && this.props.file) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
           componentType: 'file',
@@ -84,7 +72,7 @@ class File extends React.Component {
         <i onClick={this.edit} style={{cursor: 'pointer', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='discussion' style={{display: 'inline-block'}}>
           <div className='bubble recipient' style={{maxWidth: '100%', cursor: 'pointer', fontSize: '18px'}}>
-            📁 <a href={this.state.file ? this.state.file.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+            📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
           </div>
         </div>
       </div>
