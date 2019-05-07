@@ -148,7 +148,7 @@ class Sidebar extends Component {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/dashboard' className='m-menu__link m-menu__toggle'>
+            <Link to='/dashboard'  state={{isKiboLite: this.state.businessGateway}} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
               <span className='m-menu__link-text'>Dashboard</span>
             </Link>
