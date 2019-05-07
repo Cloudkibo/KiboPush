@@ -55,6 +55,7 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         if (setLoading) {
           setLoading()
         }
+        console.log('handling upload')
         handleUpload(data)
       } else {
         console.log(res.description)
