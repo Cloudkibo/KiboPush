@@ -74,10 +74,10 @@ class Image extends React.Component {
           </span>
         </div>
         <div className='broadcast-component' >
-          <div className='ui-block' style={{border: this.state.imgSrc ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '90%', margin: 'auto', marginTop: '100px'}} >
+          <div className='ui-block' >
             {
               this.state.imgSrc &&
-              <img src={this.state.imgSrc} style={{maxHeight: '175px'}} />
+              <img src={this.state.imgSrc} style={{maxWidth: '90%'}} />
             }
           </div>
         </div>
