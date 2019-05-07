@@ -34,6 +34,7 @@ class Audio extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.handleFile = this.handleFile.bind(this)
   }
 
   componentDidMount () {
@@ -62,7 +63,7 @@ class Audio extends React.Component {
           fileName: this.props.file.fileName,
           type: this.props.file.type,
           size: this.props.file.size
-        }, this.props.handleFile, this.setLoading)
+        }, this.handleFile, this.setLoading)
       }
     }
   }
