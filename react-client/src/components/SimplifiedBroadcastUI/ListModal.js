@@ -236,7 +236,7 @@ class ListModal extends React.Component {
                         let largeStyle = null
                         if (index === 0 && this.state.topElementStyle === 'LARGE') {
                           largeStyle = {
-                            backgroundImage: card.component.image_url,
+                            backgroundImage: `url(${card.component.image_url})`,
                             backgroundSize: '100%',
                             backgroundRepeat: 'no-repeat'
                           }
