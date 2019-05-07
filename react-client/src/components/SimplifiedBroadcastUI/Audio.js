@@ -51,7 +51,7 @@ class Audio extends React.Component {
         fileInfo.url = this.props.file.fileurl.url
       }
       this.setState({file: fileInfo, showPreview: true})
-      if (this.props.pages) {
+      if (this.props.pages && this.props.file) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
           componentType: 'audio',
@@ -160,17 +160,6 @@ class Audio extends React.Component {
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
-          }
-          { this.state.showPreview &&
-            <div style={{marginTop: '40px'}}>
-              <ReactPlayer
-                url={this.state.file.url}
-                controls
-                width='100%'
-                height='50px'
-                onPlay={this.onTestURLAudio(this.state.file.url)}
-              />
-            </div>
           }
           {
           this.state.showDialog &&
