@@ -96,8 +96,9 @@ class Image extends React.Component {
   }
 
   handleImage (fileInfo) {
+    console.log('finished uploading file', fileInfo)
     this.props.updateFile(fileInfo)
-    this.setState({file: fileInfo.fileurl})
+    this.setState({file: fileInfo})
     this.props.handleImage(fileInfo)
   }
 
