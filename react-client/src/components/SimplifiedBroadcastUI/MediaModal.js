@@ -36,6 +36,7 @@ class MediaModal extends React.Component {
     this.props.addComponent({
       id: this.props.id,
       componentType: 'media',
+      file: this.state.file,
       fileurl: this.state.file ? this.state.file.fileurl : '',
       buttons})
   }
@@ -50,7 +51,10 @@ class MediaModal extends React.Component {
   }
 
   updateFile (file) {
-    this.setState({file})
+    this.setState({file}, () => {
+      this.refs.video.pause();
+      this.refs.video.load();
+    })
   }
 
   render () {
@@ -95,7 +99,7 @@ class MediaModal extends React.Component {
                   {
                     (this.state.file && !this.state.imgSrc) &&
                     <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
-                      <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
+                      <video ref="video" controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
                         <source src={this.state.file.fileurl.url} type='audio/mpeg' />
                       </video>
                     </div>
