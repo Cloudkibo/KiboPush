@@ -13,7 +13,7 @@ import {BROWSER_NAME, BROWSER_VERSION} from './utility/browser.utility'
 const history = browserHistory
 
 const store = configureStore(window.__INITIAL_STATE__)
-const rootElement = document.getElementById('root')
+const rootElement = document.getElementById('content')
 
 store.dispatch(setBrowserName(BROWSER_NAME))
 store.dispatch(setBrowserVersion(BROWSER_VERSION))

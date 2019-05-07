@@ -9,6 +9,13 @@ import { getuserdetails } from '../redux/actions/basicinfo.actions'
 import { browserHistory } from 'react-router'
 
 class Home extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state={
+      kiboLiteUrl: window.location.hostname.includes('kibolite')
+    }
+
+  }
   componentWillMount () {
     this.props.getuserdetails()
   }
@@ -20,14 +27,35 @@ class Home extends Component {
       })
     }
   }
+  componentDidMount() {
+    console.log('this.props.location.state.isKiboLite in did mount', this.props.location.state)
 
+  }
+
+ 
   render () {
+    console.log('this.props.location.state.isKiboLite', this.props.location.state)
+    if(this.props.user && this.state.kiboLiteUrl) {
       return (
         <Dashboard location={this.props.location} />
       )
-    
+    }
+    else if (this.props.user && this.props.user.platform === 'sms') {
+      return (
+        <SmsDashboard location={this.props.location} />
+      )
+    } else if (this.props.user && this.props.user.platform === 'whatsApp') {
+      return (
+        <WhatsAppDashboard location={this.props.location} />
+      )
+    } else {
+      return (
+        <Dashboard location={this.props.location} />
+      )
+    }
   }
 }
+
 
 function mapStateToProps (state) {
   return {
