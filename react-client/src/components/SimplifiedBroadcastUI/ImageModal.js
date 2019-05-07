@@ -61,10 +61,10 @@ class ImageModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '400px', marginLeft: '-50px'}} >
-                <div className='ui-block' style={{border: this.state.imgSrc ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
+                <div className='ui-block' style={{maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxHeight: '100px'}} />
+                      <img src={this.state.imgSrc} style={{maxHeight: '150px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px'}} />
                   }
                 </div>
               </div>

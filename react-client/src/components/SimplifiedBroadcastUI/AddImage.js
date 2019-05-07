@@ -55,6 +55,7 @@ class Image extends React.Component {
   }
 
   setLoading () {
+    console.log('finished loading AddImage')
     this.setState({loading: false})
   }
 
