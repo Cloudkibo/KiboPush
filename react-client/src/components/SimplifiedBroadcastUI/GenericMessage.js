@@ -450,6 +450,7 @@ class GenericMessage extends React.Component {
             title: broadcast.title ? broadcast.title : '',
             description: broadcast.description ? broadcast.description : '',
             fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            image_url: broadcast.image_url ? broadcast.image_url : '',
             buttons: broadcast.buttons ? broadcast.buttons : [],
             webviewurl: broadcast.webviewurl,
             elementUrl: broadcast.elementUrl,

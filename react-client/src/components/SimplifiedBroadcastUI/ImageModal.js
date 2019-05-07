@@ -64,7 +64,7 @@ class ImageModal extends React.Component {
                 <div className='ui-block' style={{margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '150px'}} />
+                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '150px', borderRadius: '10px'}} />
                   }
                 </div>
               </div>
