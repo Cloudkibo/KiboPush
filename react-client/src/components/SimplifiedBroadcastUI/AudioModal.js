@@ -38,14 +38,6 @@ class AudioModal extends React.Component {
     })
   }
 
-  onTestURLAudio (url) {
-    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
-    var truef = AUDIO_EXTENSIONS.test(url)
-
-    if (truef === false) {
-    }
-  }
-
   render () {
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
@@ -67,7 +59,7 @@ class AudioModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
                 <div style={{marginTop: '25%'}}>
                     <audio controls name='media' ref="audio">
-                      <source src={this.state.file ? (this.state.file.fileurl ? this.state.file.fileurl.url : this.state.file.url) : ''} type='audio/mpeg' />
+                      <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
                     </audio>
                 </div>
               </div>
