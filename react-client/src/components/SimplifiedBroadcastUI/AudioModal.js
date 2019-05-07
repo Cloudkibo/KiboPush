@@ -63,7 +63,7 @@ class AudioModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
                 <div style={{marginTop: '25%'}}>
                   <audio controls name='media'>
-                    <source src={this.state.file ? this.state.file.fuleurl.url : ''} type='audio/mpeg' />
+                    <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
                   </audio>
                 </div>
               </div>
