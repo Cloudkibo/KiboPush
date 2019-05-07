@@ -34,18 +34,6 @@ class Audio extends React.Component {
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
-      var fileInfo = {
-        id: this.props.id,
-        componentType: 'audio',
-        name: this.props.file.fileName,
-        type: this.props.file.type,
-        size: this.props.file.size,
-        url: ''
-      }
-      if (this.props.file.fileurl) {
-        fileInfo.url = this.props.file.fileurl.url
-      }
-      this.setState({file: fileInfo})
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
