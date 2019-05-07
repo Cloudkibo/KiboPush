@@ -103,7 +103,7 @@ class Media extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div className='ui-block' style={{maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
+        <div className='ui-block' style={{maxWidth: '250px'}} >
           {
               this.state.imgSrc &&
               <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
