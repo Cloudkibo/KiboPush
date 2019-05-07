@@ -78,7 +78,7 @@ class Image extends React.Component {
           <div className='ui-block' >
             {
               this.state.imgSrc &&
-              <img src={this.state.imgSrc} style={{maxWidth: '90%'}} />
+              <img src={this.state.imgSrc} style={{maxWidth: '90%', borderRadius: '10px'}} />
             }
           </div>
         </div>

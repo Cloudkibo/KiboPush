@@ -72,6 +72,7 @@ class CardModal extends React.Component {
     this.props.addComponent({
       id: this.props.id,
       componentType: 'card',
+      file: this.state.file ? this.state.file : null,
       fileurl: this.state.file ? this.state.file.fileurl : '',
       image_url: this.state.file ? this.state.file.image_url : '',
       fileName: this.state.file ? this.state.file.fileName : '',
