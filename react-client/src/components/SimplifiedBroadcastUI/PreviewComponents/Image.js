@@ -19,6 +19,7 @@ class Image extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      file: this.props.file ? this.props.file : '',
       imgSrc: this.props.image ? this.props.image.url : '',
       editing: false
     }
@@ -37,7 +38,7 @@ class Image extends React.Component {
 
   openImageModal () {
     console.log('opening ImageModal for edit', this.state)
-    return (<ImageModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    return (<ImageModal edit file={this.state.file} imgSrc={this.state.imgSrc} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
