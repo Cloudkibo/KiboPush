@@ -522,7 +522,7 @@ class GenericMessage extends React.Component {
           pages={this.props.pages}
           key={componentId}
           list={broadcast}
-          cards={broadcast.listItems}
+          cards={broadcast.cards}
           handleList={this.handleList}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
@@ -531,8 +531,8 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleList({
             id: componentId,
+            cards: broadcast.cards ? broadcast.cards : [],
             componentType: 'list',
-            listItems: broadcast.listItems ? broadcast.listItems : [],
             topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact',
             buttons: broadcast.buttons ? broadcast.buttons : []
           })
@@ -545,7 +545,7 @@ class GenericMessage extends React.Component {
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
-          media={broadcast.file}
+          file={broadcast.file}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}

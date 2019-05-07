@@ -161,11 +161,12 @@ class ListModal extends React.Component {
       componentType: 'list',
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
-      listItems: this.finalCards
+      cards: this.finalCards
     })
   }
 
   render () {
+    console.log('ListModal state', this.state)
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
