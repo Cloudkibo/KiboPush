@@ -81,7 +81,7 @@ class AddAction extends React.Component {
       this.setState({actionDisabled: true})
       this.props.updateActionStatus({actionDisabled: true})
     }
-    let default_action = this.getDefaultAction(event.target.value)
+    let default_action = this.getDefaultAction(e.target.value)
     this.setState({webviewurl: e.target.value, elementUrl: '', default_action})
     this.props.updateActionStatus({webviewurl: e.target.value, elementUrl: '', default_action})
   }
