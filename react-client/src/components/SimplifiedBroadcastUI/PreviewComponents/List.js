@@ -142,10 +142,10 @@ class List extends React.Component {
                           )
                         })
                         }
-                    {
-                        index !== this.props.cards.length - 1 && <hr width='96.5%' />
-                        }
                   </div>
+                  {
+                        index !== this.props.cards.length - 1 && <hr />
+                  }
                 </div>)
             })
           }
