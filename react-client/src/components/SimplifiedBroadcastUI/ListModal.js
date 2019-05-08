@@ -276,10 +276,10 @@ class ListModal extends React.Component {
                                   }
                                 })
                                 }
-                              {
-                                index !== this.state.numOfElements - 1 && <hr width='96.5%' />
-                                }
                             </div>
+                            {
+                                index !== this.state.numOfElements - 1 && <hr />
+                            }
                           </div>)
                       }
                     })
