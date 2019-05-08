@@ -112,7 +112,7 @@ class AddButton extends React.Component {
 
   checkInvalidButtons () {
     for (let i = 0; i < this.buttonComponents.length; i++) {
-      if (this.state.buttons[i].visible && !this.buttonComponents[i]) {
+      if (this.state.buttons[i] && this.state.buttons[i].visible && !this.buttonComponents[i]) {
         this.props.updateButtonStatus({buttonDisabled: true})
         return
       }

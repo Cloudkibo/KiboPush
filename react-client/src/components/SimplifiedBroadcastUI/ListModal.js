@@ -33,6 +33,7 @@ class ListModal extends React.Component {
       numOfElements: 2,
       topElementStyle: 'compact'
     }
+    this.elementLimit = 4
     this.listComponents = [null, null, null, null]
     this.finalCards = []
     this.finalButtons = []
@@ -54,14 +55,16 @@ class ListModal extends React.Component {
 
   addElement () {
     console.log('addElement')
-    let cards = this.state.cards
-      // if 3rd card is not visible, show it
-    if (!cards[2].visible) {
-      cards[2].visible = true
-    } else if (!cards[3].visible) {
-      cards[3].visible = true
-    }
-    this.setState({cards, numOfElements: ++this.state.numOfElements})
+      if (this.state.numOfElements < this.elementLimit) {
+        let cards = this.state.cards
+        // if 3rd card is not visible, show it
+        if (!cards[2].visible) {
+          cards[2].visible = true
+        } else if (!cards[3].visible) {
+          cards[3].visible = true
+        }
+        this.setState({cards, numOfElements: ++this.state.numOfElements})
+      }
   }
 
   updateImage (image, file) {
@@ -118,7 +121,12 @@ class ListModal extends React.Component {
       return
     }
     let cards = this.state.cards
-    cards[id - 1].component = {id: id}
+    cards[id - 1].component = {
+      id: id,
+      title: `Element #${id} Title`,
+      subtitle: `Element #${id} Subtitle`,
+      buttons: []
+    }
     cards[id - 1].visible = false
     this.listComponents[id - 1] = null
     this.setState({cards, numOfElements: --this.state.numOfElements})
