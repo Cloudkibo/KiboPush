@@ -31,7 +31,7 @@ class ListModal extends React.Component {
       actionDisabled: false,
       cards,
       numOfElements: 2,
-      topElementStyle: 'compact'
+      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact'
     }
     this.elementLimit = 4
     this.listComponents = [null, null, null, null]
