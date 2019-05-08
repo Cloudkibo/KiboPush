@@ -45,7 +45,7 @@ class FileModal extends React.Component {
         onClose={this.props.closeModal}>
         <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
-          <h3>Add Image Component</h3>
+          <h3>Add File Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
