@@ -21,7 +21,8 @@ class CardModal extends React.Component {
       imgSrc: props.imgSrc ? props.imgSrc : null,
       webviewsize: props.webviewsize ? props.webviewsize : 'FULL',
       webviewurl: props.webviewurl ? props.webviewurl : '',
-      elementUrl: props.elementUrl ? props.elementUrl : ''
+      elementUrl: props.elementUrl ? props.elementUrl : '',
+      default_action: props.default_action ? props.default_action : ''
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
@@ -83,6 +84,7 @@ class CardModal extends React.Component {
       webviewurl: this.state.webviewurl,
       elementUrl: this.state.elementUrl,
       webviewsize: this.state.webviewsize,
+      default_action: this.state.default_action,
       buttons})
   }
 

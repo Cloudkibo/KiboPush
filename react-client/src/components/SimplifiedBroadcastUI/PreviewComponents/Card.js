@@ -35,7 +35,7 @@ class Card extends React.Component {
       webviewurl: this.props.webviewurl ? this.props.webviewurl : '',
       elementUrl: this.props.elementUrl ? this.props.elementUrl : '',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      defaultAction: '',
+      default_action: this.props.default_action ? this.props.default_action : null,
       isshowGuideLinesImageDialog: false
     }
   }
@@ -77,9 +77,12 @@ class Card extends React.Component {
     console.log('defaultAction in card', cardProps.cardDetails.default_action)
     if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
-        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url, 
+          default_action: cardProps.cardDetails.default_action})
       } else {
-        this.setState({webviewurl: cardProps.cardDetails.default_action.url, webviewsize: cardProps.cardDetails.default_action.webview_height_ratio})
+        this.setState({webviewurl: cardProps.cardDetails.default_action.url, 
+            webviewsize: cardProps.cardDetails.default_action.webview_height_ratio, 
+            default_action: cardProps.cardDetails.default_action})
       }
     }
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
@@ -106,6 +109,7 @@ class Card extends React.Component {
   openCardModal () {
     console.log('opening CardModal for edit', this.state)
     return (<CardModal edit
+      default_action={this.props.default_action}
       file={this.props.file}
       webviewsize={this.state.webviewsize}
       webviewurl={this.state.webviewurl}
