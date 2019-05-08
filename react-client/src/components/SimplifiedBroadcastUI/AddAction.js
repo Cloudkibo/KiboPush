@@ -6,6 +6,7 @@ class AddAction extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      default_action: null,
       actionDisabled: !(props.webviewurl || props.elementUrl),
       openPopover: props.webviewurl || props.elementUrl,
       openWebView: !!props.webviewurl,
@@ -16,7 +17,6 @@ class AddAction extends React.Component {
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       buttonActions: props.buttonActions ? props.buttonActions : ['open website', 'open webview']
     }
-
     this.handleClick = this.handleClick.bind(this)
     this.showWebView = this.showWebView.bind(this)
     this.showWebsite = this.showWebsite.bind(this)
@@ -26,6 +26,25 @@ class AddAction extends React.Component {
     this.closeWebsite = this.closeWebsite.bind(this)
     this.closeWebview = this.closeWebview.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.getDefaultAction = this.getDefaultAction.bind(this)
+  }
+
+  getDefaultAction (url, webviewsize) {
+    let default_action = this.state.default_action
+    if (this.state.openWebView) {
+      default_action = {
+        type: 'web_url',
+        url: url ? url : this.state.webviewurl,
+        messenger_extensions: true,
+        webview_height_ratio: webviewsize ? webviewsize : this.state.webviewsize
+      }
+    } else if (this.state.openWebsite) {
+      default_action = {
+        type: 'web_url', 
+        url: url ? url : this.state.elementUrl
+      }
+    }
+    return default_action
   }
 
   handleClick (e) {
@@ -42,44 +61,47 @@ class AddAction extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(this.state.elementUrl)) {
+    if (isWebURL(event.target.value)) {
       this.setState({actionDisabled: false})
       this.props.updateActionStatus({actionDisabled: false})
     } else {
       this.setState({actionDisabled: true})
       this.props.updateActionStatus({actionDisabled: true})
     }
-    this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
-    this.props.updateActionStatus({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
+    let default_action = this.getDefaultAction(event.target.value)
+    this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL', default_action})
+    this.props.updateActionStatus({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL', default_action})
   }
 
   changeWebviewUrl (e) {
-    if (isWebURL(this.state.webviewurl)) {
+    if (isWebURL(e.target.value)) {
       this.setState({actionDisabled: false})
       this.props.updateActionStatus({actionDisabled: false})
     } else {
       this.setState({actionDisabled: true})
       this.props.updateActionStatus({actionDisabled: true})
     }
-    this.setState({webviewurl: e.target.value, elementUrl: ''})
-    this.props.updateActionStatus({webviewurl: e.target.value, elementUrl: ''})
+    let default_action = this.getDefaultAction(e.target.value)
+    this.setState({webviewurl: e.target.value, elementUrl: '', default_action})
+    this.props.updateActionStatus({webviewurl: e.target.value, elementUrl: '', default_action})
   }
 
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
-      this.setState({webviewsize: event.target.value})
-      this.props.updateActionStatus({webviewsize: event.target.value})
+      let default_action = this.getDefaultAction(null, event.target.value)
+      this.setState({webviewsize: event.target.value, default_action})
+      this.props.updateActionStatus({webviewsize: event.target.value, default_action})
     }
   }
 
   closeWebview () {
     this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', actionDisabled: true})
-    this.props.updateActionStatus({webviewurl: '', webviewsize: 'FULL', actionDisabled: true})
+    this.props.updateActionStatus({webviewurl: '', webviewsize: 'FULL', actionDisabled: true, default_action: null})
   }
 
   closeWebsite () {
     this.setState({openWebsite: false, elementUrl: '', actionDisabled: true})
-    this.props.updateActionStatus({elementUrl: '', actionDisabled: true})
+    this.props.updateActionStatus({elementUrl: '', actionDisabled: true, default_action: null})
   }
 
   showWebView () {

@@ -111,7 +111,7 @@ class List extends React.Component {
               let largeStyle = null
               if (index === 0 && this.state.topElementStyle === 'LARGE') {
                 largeStyle = {
-                  backgroundImage: card.imgSrc,
+                  backgroundImage: `url(${card.image_url})`,
                   backgroundSize: '100%',
                   backgroundRepeat: 'no-repeat'
                 }
@@ -126,8 +126,8 @@ class List extends React.Component {
                     {!largeStyle && <div className='col-6'>
                       <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
                         {
-                            card.imgSrc &&
-                            <img src={card.imgSrc} style={{maxWidth: '100%', maxHeight: '100%'}} />
+                            card.image_url &&
+                            <img src={card.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
                             }
                       </div>
                       </div>

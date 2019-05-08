@@ -11,7 +11,7 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { browserHistory, Link } from 'react-router'
 
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateMessage extends React.Component {
   constructor (props, context) {

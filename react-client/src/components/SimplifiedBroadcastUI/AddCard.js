@@ -26,7 +26,8 @@ class AddCard extends React.Component {
       imgSrc: props.card.component.image_url,
       webviewurl: props.card.component.webviewurl,
       elementUrl: props.card.component.elementUrl,
-      webviewsize: props.card.component.webviewsize ? props.card.component.webviewsize : 'FULL'
+      webviewsize: props.card.component.webviewsize ? props.card.component.webviewsize : 'FULL',
+      default_action: props.card.component.default_action ? props.card.component.default_action : null
     }
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)

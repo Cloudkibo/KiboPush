@@ -454,7 +454,8 @@ class GenericMessage extends React.Component {
             buttons: broadcast.buttons ? broadcast.buttons : [],
             webviewurl: broadcast.webviewurl,
             elementUrl: broadcast.elementUrl,
-            webviewsize: broadcast.webviewsize
+            webviewsize: broadcast.webviewsize,
+            default_action: broadcast.default_action
           })
         }
       },
