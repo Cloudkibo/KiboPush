@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { validateFields } from '../convo/utility'
 import {
   loadMyPagesList

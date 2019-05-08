@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import AlertContainer from 'react-alert'
 import { browserHistory } from 'react-router'
 import { validateFields } from '../../containers/convo/utility'
