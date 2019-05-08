@@ -128,7 +128,7 @@ class AddButton extends React.Component {
   render () {
     return (
       <div>
-        <h4 style={{marginBottom: '20px'}}>Buttons (Optional):</h4>
+        <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
         {
             this.state.buttons.map((button, index) => {
               if (button.visible) {
