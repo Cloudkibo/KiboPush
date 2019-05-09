@@ -76,16 +76,16 @@ class Media extends React.Component {
         this.setState({
           componentType: 'media',
           imgSrc: mediaProps.media.fileurl.url,
-          buttons: mediaProps.media.buttons,
-          mediaType: mediaProps.media.mediaType
+          buttons: mediaProps.buttons,
+          mediaType: mediaProps.mediaType
         })
       } else if (video) {
         this.setState({
           componentType: 'media',
           imgSrc: '',
           file: this.props.media,
-          buttons: mediaProps.media.buttons,
-          mediaType: mediaProps.media.mediaType
+          buttons: mediaProps.buttons,
+          mediaType: mediaProps.mediaType
         })
       }
     }
