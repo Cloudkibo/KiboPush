@@ -18,6 +18,7 @@ class Media extends React.Component {
     this.edit = this.edit.bind(this)
     this.closeEditButton = this.closeEditButton.bind(this)
     this.openMediaModal = this.openMediaModal.bind(this)
+    this.updateFileUrl = this.updateFileUrl.bind(this)
   }
 
   closeEditButton () {
@@ -67,6 +68,19 @@ class Media extends React.Component {
       }
       this.updateMediaDetails(this.props, image, video)
     }
+  }
+
+  updateFileUrl (data) {
+    console.log('updating file Media (PreviewComponents)', data)
+    this.props.handleMedia({id: this.props.id,
+      componentType: 'media',
+      mediaType: this.props.media.mediaType,
+      fileurl: data.fileurl,
+      image_url: this.props.media.image_url,
+      fileName: this.props.media.fileName,
+      type: this.props.media.type,
+      size: this.props.media.size,
+      buttons: this.state.buttons})
   }
 
   updateMediaDetails (mediaProps, image, video) {
