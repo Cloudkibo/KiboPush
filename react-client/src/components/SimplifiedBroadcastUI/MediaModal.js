@@ -37,6 +37,7 @@ class MediaModal extends React.Component {
       id: this.props.id,
       componentType: 'media',
       file: this.state.file,
+      mediaType: this.state.imgSrc ? 'image' : 'video',
       fileurl: this.state.file ? this.state.file.fileurl : '',
       buttons})
   }
