@@ -86,18 +86,27 @@ class AddCard extends React.Component {
 
   addCard (buttons) {
     console.log('addCard buttons in AddCard', buttons)
-    this.props.addCard({id: this.props.id,
-      fileurl: this.state.file ? this.state.file.fileurl : '',
-      image_url: this.state.file ? this.state.file.image_url : '',
-      fileName: this.state.file ? this.state.file.fileName : '',
-      type: this.state.file ? this.state.file.type : '',
-      size: this.state.file ? this.state.file.size : '',
+    let card = {
+      id: this.props.id,
       title: this.state.title,
       subtitle: this.state.subtitle,
-      webviewurl: this.state.webviewurl,
-      elementUrl: this.state.elementUrl,
       webviewsize: this.state.webviewsize,
-      buttons})
+      buttons
+    }
+    if (this.state.file) {
+      card.fileurl = this.state.file.fileurl
+      card.image_url = this.state.image_url
+      card.fileName = this.state.file.fileName
+      card.type = this.state.file.type
+      card.size = this.state.file.size
+    }
+    if (this.state.webviewurl) {
+      card.webviewurl = this.state.webviewurl
+    }
+    if (this.state.elementUrl) {
+      card.elementUrl = this.state.elementUrl
+    }
+    this.props.addCard(card)
   }
 
   render () {
