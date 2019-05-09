@@ -57,8 +57,10 @@ class MediaModal extends React.Component {
 
   updateFile (file) {
     this.setState({file}, () => {
-      this.refs.video.pause();
-      this.refs.video.load();
+      if (this.refs.video) {
+        this.refs.video.pause();
+        this.refs.video.load();
+      }
     })
   }
 
@@ -113,13 +115,11 @@ class MediaModal extends React.Component {
                       visibleButtons.map((button, index) => {
                         return (
                           <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
-
                             <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                           </div>
                         )
                       })
                   }
-
                 </div>
               </div>
             </div>
