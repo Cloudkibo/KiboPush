@@ -548,6 +548,7 @@ class GenericMessage extends React.Component {
           key={componentId}
           buttons={broadcast.buttons}
           file={broadcast.file}
+          mediaType={broadcast.mediaType}
           fileurl={broadcast.file.fileurl}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
@@ -557,6 +558,7 @@ class GenericMessage extends React.Component {
           this.handleMedia({id: componentId,
             componentType: 'media',
             fileurl: broadcast.file ? broadcast.file.fileurl : '',
+            mediaType: broadcast.mediaType,
             file: broadcast.file ? broadcast.file : '',
             buttons: broadcast.buttons ? broadcast.buttons : []})
         }
