@@ -89,7 +89,7 @@ class CardModal extends React.Component {
   }
 
   render () {
-    let visibleButtons = this.buttonComponents.filter(button => button.visible)
+    let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
