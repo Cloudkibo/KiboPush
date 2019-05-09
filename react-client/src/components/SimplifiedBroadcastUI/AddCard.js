@@ -97,12 +97,8 @@ class AddCard extends React.Component {
     } else {
       card.image_url = ''
     }
-    if (this.state.webviewurl) {
-      card.webviewurl = this.state.webviewurl
-      card.webviewsize = this.state.webviewsize
-    }
-    if (this.state.elementUrl) {
-      card.elementUrl = this.state.elementUrl
+    if (this.state.webviewurl || this.state.elementUrl) {
+      card.default_action = this.state.default_action
     }
     this.props.addCard(card)
   }
