@@ -126,7 +126,7 @@
             msg.error('Element in list must have a title.')
             isValid = false
             break
-          } else if (!broadcast[i].cards[j].subtitle) {
+          } else if (!broadcast[i].cards[j].description) {
             msg.error('Element in list must have a subtitle.')
             isValid = false
             break
