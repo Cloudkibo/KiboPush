@@ -89,6 +89,7 @@ class CardModal extends React.Component {
   }
 
   render () {
+    let visibleButtons = this.buttonComponents.filter(button => button.visible)
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
@@ -160,7 +161,7 @@ class CardModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled || !this.state.file || this.state.buttons.length <= 0} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled || !this.state.file || visibleButtons.length <= 0} onClick={() => this.handleDone()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>
