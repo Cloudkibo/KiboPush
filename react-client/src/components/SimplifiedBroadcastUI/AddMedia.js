@@ -139,7 +139,7 @@ class Media extends React.Component {
         this.setState({
           imgSrc: [reader.result]
         }, () => {
-          this.props.updateImage(imgSrc)
+          this.props.updateImage(this.state.imgSrc)
         })
       }.bind(this)
       this.setState({loading: true})
