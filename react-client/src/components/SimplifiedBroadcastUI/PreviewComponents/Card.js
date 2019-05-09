@@ -152,7 +152,7 @@ class Card extends React.Component {
         <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', marginLeft: '15px'}} >
           {
             this.state.imgSrc &&
-            <img src={this.state.imgSrc} style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
+            <img src={this.state.imgSrc} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
           }
           <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
           <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
