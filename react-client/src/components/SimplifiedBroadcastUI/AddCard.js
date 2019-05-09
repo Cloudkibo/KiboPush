@@ -94,7 +94,7 @@ class AddCard extends React.Component {
     }
     if (this.state.file) {
       card.fileurl = this.state.file.fileurl
-      card.image_url = this.state.image_url
+      card.image_url = this.state.file.image_url
       card.fileName = this.state.file.fileName
       card.type = this.state.file.type
       card.size = this.state.file.size
