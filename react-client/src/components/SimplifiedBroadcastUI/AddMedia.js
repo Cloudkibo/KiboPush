@@ -249,6 +249,7 @@ class Media extends React.Component {
   }
 
   updateFileUrl (data) {
+    console.log('updating file AddMedia', data)
     this.props.updateFile(data)
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
