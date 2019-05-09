@@ -556,11 +556,11 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleMedia({id: componentId,
             componentType: 'media',
-            fileurl: broadcast.file ? broadcast.file.fileurl : '',
-            fileName: broadcast.file ? broadcast.file.fileName : '',
-            image_url: broadcast.file ? broadcast.file.image_url : '',
-            size: broadcast.file ? broadcast.file.size : '',
-            type: broadcast.file ? broadcast.file.type : '',
+            fileurl: broadcast.fileurl,
+            fileName: broadcast.fileName,
+            image_url: broadcast.image_url,
+            size: broadcast.size,
+            type: broadcast.type,
             mediaType: broadcast.mediaType,
             file: broadcast.file ? broadcast.file : '',
             buttons: broadcast.buttons ? broadcast.buttons : []})
