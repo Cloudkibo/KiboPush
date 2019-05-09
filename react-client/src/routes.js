@@ -124,6 +124,7 @@ import UploadContacts from './containers/uploadContacts/uploadContacts'
 import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
+import Checkbox from './containers/GrowthTools/checkbox'
 import SmsSubscribers from './containers/uploadContacts/contacts'
 import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
@@ -298,6 +299,7 @@ const routes = (
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
     <Route path='/chatWidget' component={ChatWidget} onEnter={requireAuth} />
+    <Route path='/checkbox' component={Checkbox} onEnter={requireAuth} />
     <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />

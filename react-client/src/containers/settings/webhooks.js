@@ -51,6 +51,7 @@ class Webhook extends React.Component {
     this.saveEdited = this.saveEdited.bind(this)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0].pageId})
     }
@@ -377,7 +378,7 @@ class Webhook extends React.Component {
                                 <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
                                 <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                   {
-                                    this.props.pages.map((page, i) => (
+                                    this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                                       <option key={i} value={page.pageId}>{page.pageName}</option>
                                     ))
                                   }
