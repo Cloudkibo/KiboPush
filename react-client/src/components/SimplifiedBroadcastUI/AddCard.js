@@ -90,7 +90,6 @@ class AddCard extends React.Component {
       id: this.props.id,
       title: this.state.title,
       subtitle: this.state.subtitle,
-      webviewsize: this.state.webviewsize,
       buttons
     }
     if (this.state.file) {
@@ -102,6 +101,7 @@ class AddCard extends React.Component {
     }
     if (this.state.webviewurl) {
       card.webviewurl = this.state.webviewurl
+      card.webviewsize = this.state.webviewsize
     }
     if (this.state.elementUrl) {
       card.elementUrl = this.state.elementUrl
