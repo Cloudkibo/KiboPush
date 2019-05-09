@@ -76,16 +76,16 @@ class Media extends React.Component {
         this.setState({
           componentType: 'media',
           imgSrc: mediaProps.media.fileurl.url,
-          buttons: mediaProps.buttons,
-          mediaType: mediaProps.mediaType
+          buttons: mediaProps.media.buttons,
+          mediaType: mediaProps.media.mediaType
         })
       } else if (video) {
         this.setState({
           componentType: 'media',
           imgSrc: '',
           file: this.props.media,
-          buttons: mediaProps.buttons,
-          mediaType: mediaProps.mediaType
+          buttons: mediaProps.media.buttons,
+          mediaType: mediaProps.media.mediaType
         })
       }
     }
@@ -114,7 +114,7 @@ class Media extends React.Component {
             (this.state.media && !this.state.imgSrc) &&
             <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
-                <source src={this.state.media.fileurl.url} type='audio/mpeg' />
+                <source src={this.state.file.fileurl.url} type='audio/mpeg' />
               </video>
             </div>
           }
