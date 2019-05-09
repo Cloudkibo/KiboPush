@@ -50,7 +50,7 @@ class Media extends React.Component {
             type: this.props.media.type,
             image_url: '',
             size: this.props.media.size
-          }, this.updateImageUrl, this.setLoading)
+          }, this.updateFileUrl, this.setLoading)
         }
       }
       if (video) {
