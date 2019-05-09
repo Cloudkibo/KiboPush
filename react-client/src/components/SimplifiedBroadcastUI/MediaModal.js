@@ -32,7 +32,7 @@ class MediaModal extends React.Component {
   }
 
   addComponent (buttons) {
-    console.log('addComponent MediaModal')
+    console.log('addComponent MediaModal', this.state)
     this.props.addComponent({
       id: this.props.id,
       componentType: 'media',

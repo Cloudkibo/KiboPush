@@ -256,15 +256,15 @@ class Media extends React.Component {
       type: data.type,
       size: data.size })
 
-    this.props.handleMedia({id: this.props.id,
-      componentType: 'media',
-      mediaType: this.state.mediaType,
-      fileurl: data.fileurl,
-      image_url: '',
-      fileName: data.fileName,
-      type: data.type,
-      size: data.size,
-      buttons: this.state.button})
+    // this.props.handleMedia({id: this.props.id,
+    //   componentType: 'media',
+    //   mediaType: this.state.mediaType,
+    //   fileurl: data.fileurl,
+    //   image_url: '',
+    //   fileName: data.fileName,
+    //   type: data.type,
+    //   size: data.size,
+    //   buttons: this.state.button})
   }
 
   render () {
