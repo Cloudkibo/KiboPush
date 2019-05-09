@@ -13,7 +13,7 @@ class Media extends React.Component {
     this.state = {
       imgSrc: '',
       buttons: props.buttons ? props.buttons : [],
-      file: props.file ? props.file : null
+      media: props.media ? props.media : null
     }
     this.edit = this.edit.bind(this)
     this.closeEditButton = this.closeEditButton.bind(this)
@@ -30,7 +30,7 @@ class Media extends React.Component {
 
   openMediaModal () {
     console.log('opening MediaModal for edit', this.state)
-    return (<MediaModal edit file={this.state.file} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    return (<MediaModal edit file={this.state.media} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
@@ -111,10 +111,10 @@ class Media extends React.Component {
               </div>
           }
           {
-            (this.state.file && !this.state.imgSrc) &&
+            (this.state.media && !this.state.imgSrc) &&
             <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
-                <source src={this.state.file.fileurl.url} type='audio/mpeg' />
+                <source src={this.state.media.fileurl.url} type='audio/mpeg' />
               </video>
             </div>
           }

@@ -547,7 +547,7 @@ class GenericMessage extends React.Component {
           pages={this.props.pages}
           key={componentId}
           buttons={broadcast.buttons}
-          file={broadcast.file}
+          media={broadcast.file}
           mediaType={broadcast.mediaType}
           fileurl={broadcast.file.fileurl}
           handleMedia={this.handleMedia}
