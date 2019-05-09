@@ -562,6 +562,7 @@ class GenericMessage extends React.Component {
             size: broadcast.file ? broadcast.file.size : '',
             type: broadcast.file ? broadcast.file.type : '',
             mediaType: broadcast.mediaType,
+            file: broadcast.file ? broadcast.file : '',
             buttons: broadcast.buttons ? broadcast.buttons : []})
         }
       }
