@@ -547,7 +547,7 @@ class GenericMessage extends React.Component {
           pages={this.props.pages}
           key={componentId}
           buttons={broadcast.buttons}
-          media={broadcast.file}
+          media={broadcast}
           mediaType={broadcast.mediaType}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
@@ -562,7 +562,6 @@ class GenericMessage extends React.Component {
             size: broadcast.size,
             type: broadcast.type,
             mediaType: broadcast.mediaType,
-            file: broadcast.file ? broadcast.file : '',
             buttons: broadcast.buttons ? broadcast.buttons : []})
         }
       }
