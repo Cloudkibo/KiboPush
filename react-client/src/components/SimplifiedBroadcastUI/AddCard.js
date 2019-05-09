@@ -93,7 +93,7 @@ class AddCard extends React.Component {
       type: this.state.file ? this.state.file.type : '',
       size: this.state.file ? this.state.file.size : '',
       title: this.state.title,
-      description: this.state.subtitle,
+      subtitle: this.state.subtitle,
       webviewurl: this.state.webviewurl,
       elementUrl: this.state.elementUrl,
       webviewsize: this.state.webviewsize,
