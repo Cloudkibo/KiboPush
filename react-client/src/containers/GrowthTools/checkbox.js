@@ -48,23 +48,6 @@ class CheckBox extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in Checkbox', nextprops)
     if (nextprops.pages && nextprops.pages.length > 0) {
-    //   if (nextprops.pages[0].pageUserName) {
-    //     this.setState({
-    //       'pageid': nextprops.pages[0].pageId,
-    //       'fblink': 'https://m.me/' + nextprops.pages[0].pageUserName
-    //     })
-    //   } else {
-    //     this.setState({
-    //       'pageid': nextprops.pages[0].pageId,
-    //       'fblink': 'https://m.me/' + nextprops.pages[0].pageId
-    //     })
-    //   }
-    // } else if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // user has no connected pages
-    //   this.setState({
-    //     'showbutton': false
-    //   })
-    // }
     this.selectPage()
     }
     if (nextprops.pages && nextprops.fbAppId) {
