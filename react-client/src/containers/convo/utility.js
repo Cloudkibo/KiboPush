@@ -111,22 +111,22 @@
         }
       }
       if (broadcast[i].componentType === 'list') {
-        if (broadcast[i].listItems && broadcast[i].listItems.length < 2) {
+        if (broadcast[i].cards && broadcast[i].cards.length < 2) {
           msg.error('A list must have at least 2 complete elements')
           isValid = false
           break
         }
-        if (broadcast[i].topElementStyle === 'LARGE' && broadcast[i].listItems[0].image_url === '') {
+        if (broadcast[i].topElementStyle === 'LARGE' && broadcast[i].cards[0].image_url === '') {
           msg.error('Please select an image for top item with large style in list')
           isValid = false
           break
         }
-        for (let j = 0; j < broadcast[i].listItems.length; j++) {
-          if (!broadcast[i].listItems[j].title) {
+        for (let j = 0; j < broadcast[i].cards.length; j++) {
+          if (!broadcast[i].cards[j].title) {
             msg.error('Element in list must have a title.')
             isValid = false
             break
-          } else if (!broadcast[i].listItems[j].subtitle) {
+          } else if (!broadcast[i].cards[j].subtitle) {
             msg.error('Element in list must have a subtitle.')
             isValid = false
             break

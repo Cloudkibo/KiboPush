@@ -652,7 +652,7 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
+                    <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
