@@ -11,7 +11,7 @@ class List extends React.Component {
     this.edit = this.edit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
     this.state = {
-      cards: this.props.cards ? this.props.cards : [],
+      listItems: this.props.listItems ? this.props.listItems : [],
       showPlus: false,
       pageNumber: 2,
       buttons: props.buttons ? props.buttons : [],
@@ -30,16 +30,16 @@ class List extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.cards && this.props.cards.length > 0) {
-      console.log('this.props.cards', this.props)
+    if (this.props.listItems && this.props.listItems.length > 0) {
+      console.log('this.props.listItems', this.props)
       var tmp = []
-      let cardLength = this.props.cards.length
+      let cardLength = this.props.listItems.length
       if (cardLength < 2) {
         cardLength = 2
       }
       for (var k = 0; k < cardLength; k++) {
-        if (this.props.cards[k] && this.props.cards[k].id === k + 1) {
-          let card = this.props.cards[k]
+        if (this.props.listItems[k] && this.props.listItems[k].id === k + 1) {
+          let card = this.props.listItems[k]
           tmp.push({id: card.id,
             fileurl: card.file ? card.file.fileurl : '',
             image_url: card.file ? card.file.image_url : '',
@@ -68,7 +68,7 @@ class List extends React.Component {
         }
       }
       console.log('list is', this.props)
-      this.setState({cards: tmp, broadcast: this.props.cards})
+      this.setState({listItems: tmp, broadcast: this.props.listItems})
     }
     console.log('this.props componentDidMount List', this.props)
     if (this.props.list.topElementStyle && this.props.list.buttons) {
@@ -81,7 +81,7 @@ class List extends React.Component {
     return (<ListModal edit
       topElementStyle={this.state.topElementStyle}
       id={this.props.id}
-      cards={this.props.cards}
+      cards={this.props.listItems}
       buttons={this.state.buttons}
       title={this.state.title}
       subtitile={this.state.subtitle}
@@ -108,7 +108,7 @@ class List extends React.Component {
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', marginLeft: '15px'}} >
           {
-            this.props.cards.map((card, index) => {
+            this.props.listItems.map((card, index) => {
               let largeStyle = null
               if (index === 0 && this.state.topElementStyle === 'LARGE') {
                 largeStyle = {
@@ -144,7 +144,7 @@ class List extends React.Component {
                         }
                   </div>
                   {
-                        index !== this.props.cards.length - 1 && <hr />
+                        index !== this.props.listItems.length - 1 && <hr />
                   }
                 </div>)
             })

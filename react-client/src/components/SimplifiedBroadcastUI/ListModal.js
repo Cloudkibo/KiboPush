@@ -169,7 +169,7 @@ class ListModal extends React.Component {
       componentType: 'list',
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
-      cards: this.finalCards
+      listItems: this.finalCards
     })
   }
 
