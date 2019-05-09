@@ -549,7 +549,6 @@ class GenericMessage extends React.Component {
           buttons={broadcast.buttons}
           media={broadcast.file}
           mediaType={broadcast.mediaType}
-          fileurl={broadcast.file.fileurl}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
