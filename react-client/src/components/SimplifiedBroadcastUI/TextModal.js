@@ -74,22 +74,19 @@ class TextModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
-                <section className='discussion'>
-                  <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px', wordBreak: 'break-all'}}>{this.state.text}</div>
-                </section>
-                {
-                  this.state.buttons.map((button, index) => {
-                    if (button.visible) {
-                      return (
-                        <section className='discussion'>
-                          <div className='bubble recipient' style={{margin: 'auto', marginTop: '5px', fontSize: '18px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
-                        </section>
-                      )
+                <div className='discussion' style={{display: 'inline-block', marginTop: '100px'}} >
+                  <div style={{maxWidth: '100%', fontSize: '18px'}} className='bubble recipient'>{this.state.text}</div>
+                    {
+                        this.state.buttons.map((button, index) => {
+                          if (button.visible) {
+                            return (
+                              <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
+                            )
+                          }
+                        })
                     }
-                  })
-                }
-
-              </div>
+                  </div>
+                </div>
             </div>
 
             <div className='row'>
