@@ -131,6 +131,8 @@ import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
 import createWhatsAppBroadcast from './containers/whatsAppBroadcasts/create'
 import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
+import sponsoredMessaging from './containers/sponsoredMessaging'
+import createsponsoredMessaging from './containers/sponsoredMessaging/createSponsoredMessage'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -322,6 +324,8 @@ const routes = (
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
     <Route path='/createWhatsAppBroadcast' component={createWhatsAppBroadcast} onEnter={requireAuth} />
     <Route path='/demoSSA' component={DemoSSA} />
+    <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
+    <Route path='/createsponsoredMessage' component={createsponsoredMessaging} />
   </Route>
 
 )

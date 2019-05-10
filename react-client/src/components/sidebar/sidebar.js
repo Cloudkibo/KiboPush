@@ -177,6 +177,26 @@ class Sidebar extends Component {
     }
   }
 
+  showSponsoredMessaging () {
+    if (this.props.user) {
+      // include user persmissions
+
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/sponsoredMessaging' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Sponsored Broadcast
+              </span>
+            </Link>
+          </li>
+        )
+      
+    }
+  }
+
   showBroadcastingItems () {
     if (!this.state.isKiboChat && !this.state.isKiboLite) {
       return (
@@ -201,6 +221,7 @@ class Sidebar extends Component {
               {this.props.user && this.props.user.platform === 'messenger' && this.showPollsItem()}
               {this.props.user && this.props.user.platform === 'messenger' && this.showSegmentSubscribers()}
               {this.props.user && this.props.user.platform === 'messenger' && this.showTemplates()}
+              {this.props.user && this.props.user.platform === 'messenger' && this.showSponsoredMessaging()}
             </ul>
           </div>
         </li>
