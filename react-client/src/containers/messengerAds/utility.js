@@ -27,6 +27,7 @@ export function removeButtonOldurl (data) {
       }
       if (data[i].componentType === 'list') {
         for (let j = 0; j < data[i].listItems.length; j++) {
+          delete data[i].listItems[j].id
           for (let k = 0; k < data[i].listItems[j].buttons.length; k++) {
             if (data[i].listItems[j].buttons[k].type === 'web_url' && data[i].listItems[j].buttons[k].newUrl) {
               let url = data[i].listItems[j].buttons[k].newUrl
