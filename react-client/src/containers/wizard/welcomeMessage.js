@@ -24,7 +24,7 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import {getCurrentProduct} from '../../utility/utils'
 import { validateFields } from '../convo/utility'
 
