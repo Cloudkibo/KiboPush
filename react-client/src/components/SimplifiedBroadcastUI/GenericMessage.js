@@ -442,7 +442,7 @@ class GenericMessage extends React.Component {
           webviewurl={broadcast.webviewurl}
           elementUrl={broadcast.elementUrl}
           webviewsize={broadcast.webviewsize}
-          default_action={this.props.default_action} />),
+          default_action={broadcast.default_action} />),
         handler: () => {
           this.handleCard({
             id: componentId,
@@ -528,14 +528,15 @@ class GenericMessage extends React.Component {
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage}
-          default_action={this.props.default_action} />),
+          default_action={broadcast.default_action} />),
         handler: () => {
           this.handleList({
             id: componentId,
             listItems: broadcast.listItems ? broadcast.listItems : [],
             componentType: 'list',
             topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact',
-            buttons: broadcast.buttons ? broadcast.buttons : []
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            default_action={broadcast.default_action}
           })
         }
       },
