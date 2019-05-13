@@ -174,7 +174,7 @@ class AddAction extends React.Component {
           </div>
         }
         {
-          <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.handleClick}>
+          !this.state.openPopover && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.handleClick}>
             <div ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
               <h6> + Add Action </h6>
             </div>
