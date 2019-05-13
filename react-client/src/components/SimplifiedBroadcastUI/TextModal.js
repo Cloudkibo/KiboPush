@@ -10,7 +10,7 @@ class TextModal extends React.Component {
     this.state = {
       text: props.text ? props.text : 'Test Message',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonLimit: 3,
       disabled: false,
       buttonDisabled: false
