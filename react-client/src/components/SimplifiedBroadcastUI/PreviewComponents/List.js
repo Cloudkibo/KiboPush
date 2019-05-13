@@ -80,6 +80,7 @@ class List extends React.Component {
   openListModal () {
     console.log('opening CardModal for edit', this.state)
     return (<ListModal edit
+      buttonActions={this.props.buttonActions}
       topElementStyle={this.state.topElementStyle}
       id={this.props.id}
       cards={this.props.listItems}

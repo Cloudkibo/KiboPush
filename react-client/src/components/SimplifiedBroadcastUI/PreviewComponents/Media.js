@@ -31,7 +31,7 @@ class Media extends React.Component {
 
   openMediaModal () {
     console.log('opening MediaModal for edit', this.state)
-    return (<MediaModal edit file={this.state.media} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    return (<MediaModal edit buttonActions={this.props.buttonActions} file={this.state.media} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
