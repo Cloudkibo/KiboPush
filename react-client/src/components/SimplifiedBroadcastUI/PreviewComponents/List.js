@@ -51,6 +51,7 @@ class List extends React.Component {
             webviewurl: card.webviewurl,
             elementUrl: card.elementUrl,
             webviewsize: card.webviewsize,
+            default_action: card.default_action,
             buttons: card.buttons})
         } else {
           tmp.push({id: (k + 1),

@@ -131,6 +131,7 @@ class AddCard extends React.Component {
           updateButtonStatus={this.updateStatus}
           addComponent={(buttons) => this.addCard(buttons)} />
         <AddAction
+          default_action={this.state.default_action}
           webviewurl={this.state.webviewurl}
           webviewsize={this.state.webviewsize}
           elementUrl={this.state.elementUrl}
