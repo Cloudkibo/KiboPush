@@ -9,7 +9,7 @@ class CardModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      file: null,
+      file: this.props.file ? this.props.file : null,
       title: props.title ? props.title : 'Card Title',
       subtitle: props.subtitle ? props.subtitle : 'Card Subtitle',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
