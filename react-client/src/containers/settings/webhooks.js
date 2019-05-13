@@ -51,6 +51,7 @@ class Webhook extends React.Component {
     this.saveEdited = this.saveEdited.bind(this)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0].pageId})
     }
@@ -91,7 +92,7 @@ class Webhook extends React.Component {
       } else if (subscriptionsEdit[i].name === 'Live Chat Actions') {
         subscriptionsEdit[i].selected = webhook.optIn.LIVE_CHAT_ACTIONS
       } else if (subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-        subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPTIN
+        subscriptionsEdit[i].selected = webhook.optIn.NEW_OPTIN
       }
     }
     for (var j = 0; j < this.props.pages.length; j++) {
@@ -224,7 +225,7 @@ class Webhook extends React.Component {
         } else if (this.state.subscriptions[i].name === 'Live Chat Actions') {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'Checkbox Opt-in') {
-          optIn['CHECKBOX_OPTIN'] = this.state.subscriptions[i].selected
+          optIn['NEW_OPTIN'] = this.state.subscriptions[i].selected
         }
       }
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
@@ -284,7 +285,7 @@ class Webhook extends React.Component {
         } else if (this.state.subscriptionsEdit[i].name === 'Live Chat Actions') {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-          optIn['CHECKBOX_OPTIN'] = this.state.subscriptionsEdit[i].selected
+          optIn['NEW_OPTIN'] = this.state.subscriptionsEdit[i].selected
         }
       }
       this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
@@ -377,7 +378,7 @@ class Webhook extends React.Component {
                                 <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
                                 <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                   {
-                                    this.props.pages.map((page, i) => (
+                                    this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                                       <option key={i} value={page.pageId}>{page.pageName}</option>
                                     ))
                                   }
