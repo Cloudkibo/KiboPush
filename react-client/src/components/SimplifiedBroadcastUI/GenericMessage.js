@@ -543,7 +543,7 @@ class GenericMessage extends React.Component {
             componentType: 'list',
             topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact',
             buttons: broadcast.buttons ? broadcast.buttons : [],
-            default_action={broadcast.default_action}
+            default_action: broadcast.default_action
           })
         }
       },
