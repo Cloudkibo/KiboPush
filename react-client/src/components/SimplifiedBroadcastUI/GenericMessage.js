@@ -425,12 +425,16 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          fileurl={broadcast.fileurl}
+          image_url={broadcast.image_url}
           addComponent={this.addComponent}
-          file={broadcast.file}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
           handleCard={this.handleCard}
+          fileName= {broadcast.fileName}
+          type= {broadcast.type}
+          size= {broadcast.size}
           buttons={broadcast.buttons}
           img={broadcast.image_url}
           title={broadcast.title}
@@ -451,6 +455,9 @@ class GenericMessage extends React.Component {
             description: broadcast.description ? broadcast.description : '',
             fileurl: broadcast.fileurl ? broadcast.fileurl : '',
             image_url: broadcast.image_url ? broadcast.image_url : '',
+            fileName: broadcast.fileName ? broadcast.fileName : '',
+            type: broadcast.type ? broadcast.type : '',
+            size: broadcast.size ? broadcast.size : '',
             buttons: broadcast.buttons ? broadcast.buttons : [],
             webviewurl: broadcast.webviewurl,
             elementUrl: broadcast.elementUrl,
