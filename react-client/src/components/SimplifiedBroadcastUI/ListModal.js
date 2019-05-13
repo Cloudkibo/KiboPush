@@ -24,7 +24,7 @@ class ListModal extends React.Component {
     }
     this.state = {
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview', 'add share'],
       buttonLimit: 1,
       disabled: false,
       buttonDisabled: false,

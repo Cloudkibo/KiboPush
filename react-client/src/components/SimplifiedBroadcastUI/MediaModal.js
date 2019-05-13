@@ -17,7 +17,7 @@ class MediaModal extends React.Component {
       disabled: false,
       buttonDisabled: false,
       buttonLimit: 3,
-      buttonActions: ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
       file: props.file ? props.file : null
     }
