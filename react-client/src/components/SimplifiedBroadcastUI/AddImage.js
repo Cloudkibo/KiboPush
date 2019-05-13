@@ -131,11 +131,11 @@ class Image extends React.Component {
               (this.state.imgSrc === '')
               ? <div className='align-center' style={{padding: '5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Image </h4>
+                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Image </h6>
               </div>
               : <div className='align-center' style={{padding: '5px'}}>
                 <img src={this.state.imgSrc} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file ? this.state.file.fileName : 'Image'}</h4>
+                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file ? this.state.file.fileName : 'Image'}</h6>
               </div>
           }
           </div>
