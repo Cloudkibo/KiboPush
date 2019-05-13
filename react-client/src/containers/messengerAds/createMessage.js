@@ -11,7 +11,8 @@ import {
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
+import { removeButtonOldurl } from './utility'
 
 class CreateMessage extends React.Component {
   constructor (props) {
@@ -203,8 +204,10 @@ class CreateMessage extends React.Component {
     }
   }
   saveMessage () {
-    console.log('Save Call')
+    let jsonMessages = this.state.jsonMessages
+    console.log('Save Call', this.state.jsonMessages)
     for (var i = 0; i < this.state.jsonMessages.length; i++) {
+      jsonMessages[i].messageContent = removeButtonOldurl(this.state.jsonMessages[i].messageContent)
       if (this.state.jsonMessages[i].messageContent.length < 1) {
         return this.msg.error(`Postback message '${this.state.jsonMessages[i].title}' is empty`)
       }
@@ -228,7 +231,8 @@ class CreateMessage extends React.Component {
         }
       }
     }
-    this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', this.state.jsonMessages)
+    this.setState({jsonMessages: jsonMessages})
+    this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', jsonMessages)
     this.msg.success('Message saved successfully')
   }
 

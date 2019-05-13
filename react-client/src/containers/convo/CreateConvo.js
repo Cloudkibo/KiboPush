@@ -17,7 +17,7 @@ import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 import Targeting from './Targeting'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -81,6 +81,7 @@ class CreateConvo extends React.Component {
   }
 
   onNext (e) {
+    console.log('in onNext', this.state.broadcast)
     if (validateFields(this.state.broadcast, this.msg)) {
       /* eslint-disable */
         $('#tab_1').removeClass('active')
@@ -209,6 +210,7 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
+    console.log('in sendConvo', this.state.broadcast)
     //  this.setState({tabActive: 'broadcast'})
     if (this.state.broadcast.length === 0) {
       return
@@ -237,6 +239,7 @@ class CreateConvo extends React.Component {
         }
       }
       let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
+      console.log('payload before', this.state.broadcast)
       var data = {
         platform: 'facebook',
         payload: this.state.broadcast,

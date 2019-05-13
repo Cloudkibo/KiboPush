@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import GenericMessage from '../../components/GenericMessage'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { updateCurrentCustomersInfo } from '../../redux/actions/businessGateway.actions'
 import Footer from './footer'
 import AlertContainer from 'react-alert'
