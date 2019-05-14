@@ -135,7 +135,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               <SubscriberSummary
-                loadSubscriberSummaryWhatsApp={this.props.loadSubscriberSummaryWhatsApp}
+                loadSubscriberSummary={this.props.loadSubscriberSummaryWhatsApp}
                 platform='whatsApp'
                 subscriberSummary={this.props.subscriberSummary}
                 subscriberGraph={this.state.subscriberGraph}
