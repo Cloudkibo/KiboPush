@@ -1477,7 +1477,7 @@ class Subscriber extends React.Component {
                                       <option key='ALL' value='all'>ALL</option>
                                       {
                                       this.state.options.map((tag, i) => (
-                                        <option key={i} value={tag.value}>{tag.label}</option>
+                                        <option key={i} value={tag.label}>{tag.label}</option>
                                       ))
                                       }
                                     </select>
