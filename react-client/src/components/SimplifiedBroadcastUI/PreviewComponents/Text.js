@@ -17,7 +17,7 @@ class Text extends React.Component {
       styling: {
         minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'
       },
-      buttonActions: this.props.buttonActions
+      buttonActions: this.props.buttonActions.slice(0, 2)
     }
 
     this.edit = this.edit.bind(this)

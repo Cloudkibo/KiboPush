@@ -126,6 +126,7 @@ class AddButton extends React.Component {
   }
 
   render () {
+    let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
       <div>
         <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
@@ -152,10 +153,19 @@ class AddButton extends React.Component {
             })
         }
         {
-            (this.state.numOfCurrentButtons < this.props.buttonLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.addButton}>
-              <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-                <h6> + Add Button </h6>
+            (this.state.numOfCurrentButtons < this.props.buttonLimit) && 
+            <div>
+              <div className='ui-block hoverborder' 
+                style={{minHeight: '30px', 
+                  width: '100%', 
+                  marginLeft: '0px', 
+                  borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}} 
+                  onClick={this.addButton}>
+                <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
+                  <h6> + Add Button </h6>
+                </div>
               </div>
+              <div style={{color: 'red', marginBottom: '30px'}}>{this.props.required && visibleButtons.length === 0 ? '*At least one required' : ''}</div>
             </div>
         }
       </div>

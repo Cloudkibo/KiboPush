@@ -282,7 +282,7 @@ class Media extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div style={{marginBottom: '-0.5px', paddingTop: '0px'}} className='ui-block hoverbordersolid'>
+        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
           ? <div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
@@ -327,6 +327,7 @@ class Media extends React.Component {
           </div>
           }
         </div>
+        <div style={{color: 'red'}}>{this.props.required && !this.state.fileurl ? '*Required' : ''}</div>
       </div>
     )
   }
