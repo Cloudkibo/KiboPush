@@ -116,6 +116,7 @@ class Card extends React.Component {
       size: this.state.size
     }
     return (<CardModal edit
+      buttonActions={this.props.buttonActions}
       default_action={this.props.default_action}
       file={file}
       webviewsize={this.state.webviewsize}

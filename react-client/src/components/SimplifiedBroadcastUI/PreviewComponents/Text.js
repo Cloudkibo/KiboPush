@@ -17,7 +17,7 @@ class Text extends React.Component {
       styling: {
         minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'
       },
-      buttonActions: this.props.buttonActions.slice(0, 2)
+      buttonActions: this.props.buttonActions
     }
 
     this.edit = this.edit.bind(this)
@@ -48,7 +48,7 @@ class Text extends React.Component {
 
   openTextModal () {
     console.log('opening TextModal for edit', this.state)
-    return (<TextModal edit handleText={this.props.handleText} id={this.props.id} buttons={this.state.buttons} text={this.state.text} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    return (<TextModal edit buttonActions={this.props.buttonActions} handleText={this.props.handleText} id={this.props.id} buttons={this.state.buttons} text={this.state.text} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
   }
 
   render () {
