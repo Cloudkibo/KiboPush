@@ -1520,10 +1520,10 @@ class Subscriber extends React.Component {
                                         <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                         <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                        { this.props.user &&
+                                        { this.props.user.isSuperUser &&
                                           <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                         }
-                                        { this.props.user &&
+                                        { this.props.user.isSuperUser &&
                                           <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                         }
                                       </DropdownMenu>
