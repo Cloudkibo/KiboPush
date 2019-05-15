@@ -1520,10 +1520,10 @@ class Subscriber extends React.Component {
                                         <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                         <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user &&
                                           <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                         }
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user &&
                                           <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                         }
                                       </DropdownMenu>
@@ -1539,7 +1539,7 @@ class Subscriber extends React.Component {
                                       onClose={this.closeEditModal}>
                                       <ModalDialog style={{width: '800px'}}
                                         onClose={this.closeEditModal}>
-                                        <EditTags currentTags={this.props.tags} />
+                                        <EditTags currentTags={this.props.tags} msg={this.msg} />
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
