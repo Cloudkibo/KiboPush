@@ -57,7 +57,8 @@ class TextModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Text:</h4>
-              <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
+              <textarea value={this.state.text} style={{maxWidth: '100%', minHeight: '100px', borderColor: this.state.text === '' ? 'red' : ''}} onChange={this.handleTextChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
               <AddButton
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
@@ -88,6 +89,7 @@ class TextModal extends React.Component {
                   </div>
                 </div>
             </div>
+
 
             <div className='row'>
               <div className='pull-right'>

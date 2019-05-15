@@ -112,15 +112,21 @@ class ListModal extends React.Component {
     }
     let cards = this.state.cards
     cards[id - 1].component = Object.assign(cards[id - 1].component, status)
+    for (let i = 0; i < cards.length; i++) {
+      delete cards[i].invalid
+    }
     this.setState({cards})
   }
 
   closeCard (id) {
-    if (this.state.numOfElements.length <= 2) {
+    console.log('closing card')
+    let cards = this.state.cards
+    if (this.state.numOfElements <= 2) {
       console.log('List needs at least two elements')
+      cards[id-1].invalid = true
+      this.setState({cards})
       return
     }
-    let cards = this.state.cards
     cards[id - 1].component = {
       id: id,
       title: `Element #${id} Title`,
@@ -175,6 +181,7 @@ class ListModal extends React.Component {
 
   render () {
     console.log('ListModal state', this.state)
+    let visibleCards = this.state.cards.filter(card => card.visible)
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
@@ -239,49 +246,47 @@ class ListModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px', paddingBottom: '100px'}} >
                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
-                    this.state.cards.map((card, index) => {
-                      if (card.visible) {
-                        let largeStyle = null
-                        if (index === 0 && this.state.topElementStyle === 'LARGE') {
-                          largeStyle = {
-                            backgroundImage: `url(${card.component.image_url})`,
-                            backgroundSize: '100%',
-                            backgroundRepeat: 'no-repeat'
-                          }
+                    visibleCards.map((card, index) => {
+                      let largeStyle = null
+                      if (index === 0 && this.state.topElementStyle === 'LARGE') {
+                        largeStyle = {
+                          backgroundImage: `url(${card.component.image_url})`,
+                          backgroundSize: '100%',
+                          backgroundRepeat: 'no-repeat'
                         }
-                        return (
-                          <div style={largeStyle}>
-                            <div className='row' style={{padding: '10px'}}>
-                              <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
-                                <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
-                                <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
-                              </div>
-                              {!largeStyle && <div className='col-6'>
-                                <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
-                                  {
-                                    card.component.image_url &&
-                                    <img src={card.component.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
-                                    }
-                                </div>
-                              </div>
-                              }
-                              {
-                                card.component.buttons && card.component.buttons.map(button => {
-                                  if (button.visible) {
-                                    return (
-                                      <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
-                                        <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
-                                      </div>
-                                    )
-                                  }
-                                })
-                                }
-                            </div>
-                            {
-                                index !== this.state.numOfElements - 1 && <hr />
-                            }
-                          </div>)
                       }
+                      return (
+                        <div style={largeStyle}>
+                          <div className='row' style={{padding: '10px'}}>
+                            <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
+                              <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
+                              <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                            </div>
+                            {!largeStyle && <div className='col-6'>
+                              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                                {
+                                  card.component.image_url &&
+                                  <img src={card.component.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
+                                  }
+                              </div>
+                            </div>
+                            }
+                            {
+                              card.component.buttons && card.component.buttons.map(button => {
+                                if (button.visible) {
+                                  return (
+                                    <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
+                                      <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
+                                    </div>
+                                  )
+                                }
+                              })
+                              }
+                          </div>
+                          {
+                              index !== this.state.numOfElements - 1 && <hr />
+                          }
+                        </div>)
                     })
                 }
                   {

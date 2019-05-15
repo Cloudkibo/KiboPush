@@ -100,16 +100,20 @@ class CardModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Title:</h4>
-              <input value={this.state.title} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleTitleChange} className='form-control' />
+              <input value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.title === '' ? '*Required' : ''}</div>
               <h4>Subtitle:</h4>
-              <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
+              <input value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
               <h4>Image:</h4>
               <Image
+                required
                 imgSrc={this.state.imgSrc}
                 file={this.state.file}
                 updateFile={this.updateFile}
                 updateImage={this.updateImage} />
               <AddButton
+                required
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
                 pageId={this.props.pageId}

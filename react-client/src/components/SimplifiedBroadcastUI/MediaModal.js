@@ -76,7 +76,7 @@ class MediaModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Media:</h4>
-              <Media updateImage={this.updateImage} updateFile={this.updateFile} />
+              <Media required file={this.state.file} updateImage={this.updateImage} updateFile={this.updateFile} />
               {
                 this.state.file &&
                 <AddButton

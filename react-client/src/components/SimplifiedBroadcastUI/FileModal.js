@@ -50,7 +50,7 @@ class FileModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>File:</h4>
-              <AddFile updateFile={this.updateFile} />
+              <AddFile required file={this.state.file} updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
