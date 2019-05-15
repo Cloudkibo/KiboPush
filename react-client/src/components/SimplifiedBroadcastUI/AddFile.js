@@ -130,7 +130,7 @@ class File extends React.Component {
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && this.state.file ? 'red' : ''}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
           {
             this.state.loading
             ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
