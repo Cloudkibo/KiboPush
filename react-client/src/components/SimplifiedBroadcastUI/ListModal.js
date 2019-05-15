@@ -211,6 +211,7 @@ class ListModal extends React.Component {
                     this.state.cards.map((card, index) => {
                       if (card.visible) {
                         return (<AddCard
+                          replyWithMessage={this.props.replyWithMessage}
                           card={this.state.cards[index]}
                           addCard={this.addCard}
                           ref={(ref) => { this.listComponents[index] = ref }}
@@ -229,6 +230,7 @@ class ListModal extends React.Component {
                 }
               </div>
               <AddButton
+                replyWithMessage={this.props.replyWithMessage}
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
                 pageId={this.props.pageId}

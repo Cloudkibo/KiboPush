@@ -126,6 +126,7 @@ class AddCard extends React.Component {
             updateFile={this.updateFile}
             updateImage={this.updateImage} />
           <AddButton
+            replyWithMessage={this.props.replyWithMessage}
             buttons={this.state.buttons}
             finalButtons={this.props.buttons}
             pageId={this.props.pageId}

@@ -60,6 +60,7 @@ class TextModal extends React.Component {
               <textarea value={this.state.text} style={{maxWidth: '100%', minHeight: '100px', borderColor: this.state.text === '' ? 'red' : ''}} onChange={this.handleTextChange} className='form-control' />
               <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
               <AddButton
+                replyWithMessage={this.props.replyWithMessage}
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
                 buttonLimit={this.state.buttonLimit}

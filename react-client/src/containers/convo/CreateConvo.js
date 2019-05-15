@@ -464,7 +464,7 @@ class CreateConvo extends React.Component {
               <br />
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
 
-              &ensp; and image guidelines: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesImageDialog} >click here</Link>
+              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank'>image guidelines</a>
             </div>
           </div>
           <div className='row'>

@@ -114,6 +114,7 @@ class CardModal extends React.Component {
                 updateImage={this.updateImage} />
               <AddButton
                 required
+                replyWithMessage={this.props.replyWithMessage}
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
                 pageId={this.props.pageId}
