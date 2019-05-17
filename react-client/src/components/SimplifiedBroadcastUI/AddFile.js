@@ -81,6 +81,7 @@ class File extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       var file = files[files.length - 1]
+      console.log('file', file)
     //   this.props.updateFile(file)
       this.setState({file: file})
       if (file.type === 'text/javascript' || file.type === 'text/exe') {

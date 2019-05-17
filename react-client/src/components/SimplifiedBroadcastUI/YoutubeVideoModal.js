@@ -1,8 +1,11 @@
 /* eslint-disable no-undef */
 import React from 'react'
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
+import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 
 class YoutubeVideoModal extends React.Component {
   constructor (props) {
@@ -10,10 +13,10 @@ class YoutubeVideoModal extends React.Component {
     this.state = {
       buttons: [],
       numOfCurrentButtons: 0,
-      disabled: true,
+      disabled: false,
       buttonDisabled: false,
       buttonLimit: 3,
-      buttonActions: ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       file: null,
       link: ''
     }
@@ -35,9 +38,16 @@ class YoutubeVideoModal extends React.Component {
   }
 
   addComponent (buttons) {
-    console.log('addComponent MediaModal')
-    this.props.addComponent({componentType: 'media',
-      fileurl: this.state.file ? this.state.file.fileurl : '',
+    console.log('addComponent YoutubeVideoModal', this.state)
+    this.props.addComponent({
+      id: this.props.id,
+      componentType: 'media',
+      fileurl: this.state.file.fileurl,
+      fileName: this.state.file.fileName,
+      image_url: '',
+      size: this.state.file.size,
+      type: this.state.file.type,
+      mediaType: 'video',
       buttons})
   }
 
@@ -56,9 +66,7 @@ class YoutubeVideoModal extends React.Component {
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({disabled: false}, () => {
-          this.video.mediaelementplayer()
-        })
+        this.setState({disabled: false})
       } else {
         this.setState({disabled: true})
       }
@@ -66,6 +74,7 @@ class YoutubeVideoModal extends React.Component {
   }
 
   render () {
+    console.log('video link', this.state.link)
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
       <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
@@ -78,12 +87,19 @@ class YoutubeVideoModal extends React.Component {
             <div className='col-6'>
               <h4>YouTube Link:</h4>
               <input value={this.state.link} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleLinkChange} className='form-control' />
-              <AddButton buttonLimit={this.state.buttonLimit}
-                pageId={this.props.pageId}
-                buttonActions={this.state.buttonActions}
-                ref={(ref) => { this.AddButton = ref }}
-                updateButtonStatus={this.updateButtonStatus}
-                addComponent={(buttons) => this.addComponent(buttons)} />
+              {
+                this.state.file &&
+                <AddButton
+                  replyWithMessage={this.props.replyWithMessage}
+                  buttons={this.state.buttons}
+                  finalButtons={this.props.buttons}
+                  buttonLimit={this.state.buttonLimit}
+                  pageId={this.props.pageId}
+                  buttonActions={this.state.buttonActions}
+                  ref={(ref) => { this.AddButton = ref }}
+                  updateButtonStatus={this.updateButtonStatus}
+                  addComponent={(buttons) => this.addComponent(buttons)} />
+              }
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -124,7 +140,7 @@ class YoutubeVideoModal extends React.Component {
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                     Add
                 </button>
               </div>
@@ -137,4 +153,17 @@ class YoutubeVideoModal extends React.Component {
   }
 }
 
-export default YoutubeVideoModal
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    uploadImage: uploadImage,
+    uploadFile: uploadFile,
+    uploadTemplate: uploadTemplate
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(YoutubeVideoModal)
