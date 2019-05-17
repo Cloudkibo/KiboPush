@@ -605,13 +605,13 @@ class AddSurvey extends React.Component {
           this.msg.error('No subscribers match the selected criteria')
         } else {
           let tagIDs = []
-          for (let i = 0; i < this.props.tags.length; i++) {
-            for (let j = 0; j < this.state.tagValue.length; j++) {
-              if (this.props.tags[i].tag === this.state.tagValue[j]) {
-                tagIDs.push(this.props.tags[i]._id)
-              }
-            }
-          }
+          // for (let i = 0; i < this.props.tags.length; i++) {
+          //   for (let j = 0; j < this.state.tagValue.length; j++) {
+          //     if (this.props.tags[i].tag === this.state.tagValue[j]) {
+          //       tagIDs.push(this.props.tags[i]._id)
+          //     }
+          //   }
+          // }
           let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
           var surveybody = {
             survey: {
@@ -626,7 +626,7 @@ class AddSurvey extends React.Component {
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
             segmentationSurvey: this.state.surveyValue,
-            segmentationTags: tagIDs,
+            segmentationTags: this.state.tagValue,
             isList: isListValue,
             segmentationList: this.state.listSelected,
             subscribersCount: currentPageSubscribers.length

@@ -9,10 +9,11 @@ class PagesInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onPageClick = this.onPageClick.bind(this)
+    this.debounce = this.debounce.bind(this)
+
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
-    this.debounce = this.debounce.bind(this)
   }
 
   componentDidMount () {
@@ -48,7 +49,7 @@ class PagesInfo extends React.Component {
               <div className='row align-items-center'>
                 <div className='col-lg-12 col-md-12'>
                   <div className='m-input-icon m-input-icon--left'>
-                  <input type='text' id='searchPages' name='searchPages' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                  <input type='text' id='searchPages' name='searchPages' placeholder='Search Pages...' className='form-control m-input m-input--solid'  />                    <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>

@@ -56,17 +56,18 @@ class AddCard extends React.Component {
 
   handleTitleChange (e) {
     this.setState({title: e.target.value}, () => {
-      if (this.state.title === '') {
+      if (this.state.title === '' || this.state.subtitle === '') {
         this.updateStatus({disabled: true, title: this.state.title})
       } else {
-        this.updateStatus({disabled: false, title: this.state.title})
+          this.updateStatus({disabled: false, title: this.state.title})
+      
       }
     })
   }
 
   handleSubtitleChange (e) {
     this.setState({subtitle: e.target.value}, () => {
-      if (this.state.subtitle === '') {
+      if (this.state.subtitle === '' || this.state.tile === '') {
         this.updateStatus({disabled: true, subtitle: this.state.subtitle})
       } else {
         this.updateStatus({disabled: false, subtitle: this.state.subtitle})
@@ -114,10 +115,10 @@ class AddCard extends React.Component {
           </div>
           <hr style={{marginBottom: '30px'}} />
           <h4>Title:</h4>
-          <input value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
+          <input placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
           <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
           <h4>Subtitle:</h4>
-          <input value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
+          <input placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
           <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
           <h4>Image:</h4>
           <Image

@@ -11,13 +11,15 @@ class ListModal extends React.Component {
     let cards = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
-        cards.push({component: props.cards[i], visible: true})
+        cards.push({component: props.cards[i], visible: true, disabled: false})
       } else {
-        cards.push({visible: !!(i === 0 || i === 1),
+        cards.push({
+          visible: !!(i === 0 || i === 1),
+          disabled: true,
           component: {
             id: i + 1,
-            title: `Element #${i + 1} Title`,
-            subtitle: `Element #${i + 1} Subtitle`,
+            title: '',
+            subtitle: '',
             buttons: []
           }})
       }
@@ -26,7 +28,7 @@ class ListModal extends React.Component {
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview', 'add share'],
       buttonLimit: 1,
-      disabled: false,
+      disabled: props.edit ? false : true,
       buttonDisabled: false,
       actionDisabled: false,
       cards,
@@ -98,8 +100,11 @@ class ListModal extends React.Component {
 
   updateCardStatus (status, id) {
     console.log('ListModal updateStatus', status)
+    let cards = this.state.cards
     if (typeof status.disabled === 'boolean') {
-      this.setState({disabled: status.disabled})
+      cards[id-1].disabled = status.disabled
+      let visibleDisabledCards = this.state.cards.filter(card => card.visible && card.disabled)
+      this.setState({disabled: visibleDisabledCards.length > 0})
       delete status.disabled
     }
     if (typeof status.buttonDisabled === 'boolean') {
@@ -110,7 +115,6 @@ class ListModal extends React.Component {
       this.setState({actionDisabled: status.actionDisabled})
       delete status.actionDisabled
     }
-    let cards = this.state.cards
     cards[id - 1].component = Object.assign(cards[id - 1].component, status)
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid

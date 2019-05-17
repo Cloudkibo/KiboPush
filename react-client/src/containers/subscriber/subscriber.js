@@ -1477,7 +1477,7 @@ class Subscriber extends React.Component {
                                       <option key='ALL' value='all'>ALL</option>
                                       {
                                       this.state.options.map((tag, i) => (
-                                        <option key={i} value={tag.value}>{tag.label}</option>
+                                        <option key={i} value={tag.label}>{tag.label}</option>
                                       ))
                                       }
                                     </select>
@@ -1539,7 +1539,7 @@ class Subscriber extends React.Component {
                                       onClose={this.closeEditModal}>
                                       <ModalDialog style={{width: '800px'}}
                                         onClose={this.closeEditModal}>
-                                        <EditTags currentTags={this.props.tags} />
+                                        <EditTags currentTags={this.props.tags} msg={this.msg} />
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
