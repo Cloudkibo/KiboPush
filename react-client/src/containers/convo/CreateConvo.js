@@ -230,14 +230,14 @@ class CreateConvo extends React.Component {
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
-      let tagIDs = []
-      for (let i = 0; i < this.props.tags.length; i++) {
-        for (let j = 0; j < this.state.tagValue.length; j++) {
-          if (this.props.tags[i].tag === this.state.tagValue[j]) {
-            tagIDs.push(this.props.tags[i]._id)
-          }
-        }
-      }
+      // let tagIDs = []
+      // for (let i = 0; i < this.props.tags.length; i++) {
+      //   for (let j = 0; j < this.state.tagValue.length; j++) {
+      //     if (this.props.tags[i].tag === this.state.tagValue[j]) {
+      //       tagIDs.push(this.props.tags[i]._id)
+      //     }
+      //   }
+      // }
       let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
       console.log('payload before', this.state.broadcast)
       var data = {
@@ -247,7 +247,7 @@ class CreateConvo extends React.Component {
         segmentationPageIds: this.props.location.state.pages,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
-        segmentationTags: tagIDs,
+        segmentationTags:  this.state.tagValue,
         segmentationTimeZone: '',
         title: this.state.convoTitle,
         segmentationList: this.state.listSelected,
@@ -467,7 +467,7 @@ class CreateConvo extends React.Component {
               <br />
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
 
-              &ensp; and image guidelines: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesImageDialog} >click here</Link>
+              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank'>image guidelines</a>
             </div>
           </div>
           <div className='row'>

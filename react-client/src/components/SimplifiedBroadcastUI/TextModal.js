@@ -8,11 +8,10 @@ class TextModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      text: props.text ? props.text : 'Test Message',
+      text: props.text ? props.text : '',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonLimit: 3,
-      disabled: false,
       buttonDisabled: false
     }
     this.handleTextChange = this.handleTextChange.bind(this)
@@ -21,13 +20,7 @@ class TextModal extends React.Component {
   }
 
   handleTextChange (e) {
-    this.setState({text: e.target.value}, () => {
-      if (this.state.text === '') {
-        this.setState({disabled: true})
-      } else {
-        this.setState({disabled: false})
-      }
-    })
+    this.setState({text: e.target.value})
   }
 
   updateButtonStatus (status) {
@@ -57,8 +50,10 @@ class TextModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Text:</h4>
-              <textarea value={this.state.text} style={{marginBottom: '30px', maxWidth: '100%', minHeight: '100px'}} onChange={this.handleTextChange} className='form-control' />
+              <textarea placeholder={'Please type here...'} value={this.state.text} style={{maxWidth: '100%', minHeight: '100px', borderColor: this.state.text === '' ? 'red' : ''}} onChange={this.handleTextChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
               <AddButton
+                replyWithMessage={this.props.replyWithMessage}
                 buttons={this.state.buttons}
                 finalButtons={this.props.buttons}
                 buttonLimit={this.state.buttonLimit}
@@ -89,12 +84,13 @@ class TextModal extends React.Component {
                 </div>
             </div>
 
+
             <div className='row'>
               <div className='pull-right'>
                 <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Add'}
                 </button>
               </div>

@@ -22,7 +22,7 @@ class Audio extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: '',
+      file: this.props.file ? this.props.file : '',
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
@@ -142,7 +142,7 @@ class Audio extends React.Component {
           </span>
         </div>
         }
-        <div className='ui-block hoverborder' style={{padding: 25}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
           {
             this.state.loading
             ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
@@ -173,6 +173,7 @@ class Audio extends React.Component {
             </ModalContainer>
         }
         </div>
+        <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>
     )
   }

@@ -310,6 +310,7 @@ export function searchChat (data) {
 export function sendChatMessage (data) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
+      console.log('response from sendChatMessage', res)
       // dispatch(fetchSessions())
     })
   }
