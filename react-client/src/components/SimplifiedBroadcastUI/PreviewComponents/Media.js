@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import MediaModal from '../MediaModal'
+import YoutubeVideoModal from '../YoutubeVideoModal';
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -18,7 +19,7 @@ class Media extends React.Component {
     this.edit = this.edit.bind(this)
     this.closeEditButton = this.closeEditButton.bind(this)
     this.openMediaModal = this.openMediaModal.bind(this)
-    this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.openYouTubeModal = this.openYouTubeModal.bind(this)
   }
 
   closeEditButton () {
@@ -31,51 +32,40 @@ class Media extends React.Component {
 
   openMediaModal () {
     console.log('opening MediaModal for edit', this.state)
-    return (<MediaModal edit buttonActions={this.props.buttonActions} file={this.state.media} imgSrc={this.state.imgSrc} buttons={this.state.buttons} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    return (<MediaModal 
+        edit 
+        buttonActions={this.props.buttonActions} 
+        file={this.state.media} 
+        imgSrc={this.state.imgSrc} 
+        buttons={this.state.buttons} 
+        id={this.props.id} 
+        pageId={this.props.pageId} 
+        closeModal={this.closeEditButton} 
+        addComponent={this.props.addComponent} 
+        hideUserOptions={this.props.hideUserOptions} />)
+  }
+
+  openYouTubeModal () {
+    console.log('opening YouTubeModal for edit', this.state)
+    return (<YoutubeVideoModal 
+        edit
+        youtubeLink={this.props.youtubeLink} 
+        videoLink={this.props.videoLink} 
+        buttonActions={this.props.buttonActions} 
+        file={this.state.media} 
+        buttons={this.state.buttons} 
+        id={this.props.id} 
+        pageId={this.props.pageId} 
+        closeModal={this.closeEditButton} 
+        addComponent={this.props.addComponent} 
+        hideUserOptions={this.props.hideUserOptions} />)
   }
 
   componentDidMount () {
-    if (this.props.media) {
-      var video = this.props.media.type.match('video.*')
-      var image = this.props.media.type.match('image.*')
-      if (image) {
-        if (this.props.pages) {
-          this.props.uploadTemplate({pages: this.props.pages,
-            url: this.props.media.fileurl.url,
-            componentType: 'image',
-            id: this.props.media.fileurl.id,
-            name: this.props.media.fileurl.name
-          }, { fileurl: '',
-            fileName: this.props.media.fileurl.name,
-            type: this.props.media.type,
-            image_url: '',
-            size: this.props.media.size
-          }, this.updateFileUrl, this.setLoading)
-        }
-      }
-      if (video) {
-        this.props.uploadTemplate({pages: this.props.pages,
-          url: this.props.media.fileurl.url,
-          componentType: 'video',
-          id: this.props.media.fileurl.id,
-          name: this.props.media.fileurl.name
-        }, { id: this.props.id,
-          componentType: 'video',
-          fileName: this.props.media.fileurl.name,
-          type: this.props.media.fileurl.type,
-          size: this.props.media.fileurl.size
-        }, this.updateFileUrl, this.setLoading)
-      }
-      this.updateMediaDetails(this.props, image, video)
-    }
-  }
-
-  updateFileUrl (data) {
-    console.log('updating file Media (PreviewComponents)', data)
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
       mediaType: this.props.media.mediaType,
-      fileurl: data.fileurl,
+      fileurl: this.props.media.fileurl,
       image_url: this.props.media.image_url,
       fileName: this.props.media.fileName,
       type: this.props.media.type,
@@ -109,7 +99,7 @@ class Media extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
         {
-          this.state.editing && this.openMediaModal()
+          (this.state.editing) && (this.props.youtubeLink ? this.openYouTubeModal() : this.openMediaModal())
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>

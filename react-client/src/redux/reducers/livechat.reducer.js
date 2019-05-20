@@ -116,8 +116,8 @@ export function liveChat (state = initialState, action) {
 
     case ActionTypes.SOCKET_UPDATE:
       return Object.assign({}, state, {
-        socketSession: action.data.session_id,
-        unreadSession: action.data.session_id,
+        socketSession: action.data.subscriber_id,
+        unreadSession: action.data.subscriber_id,
         socketData: action.data,
         socketMessage: action.data.message,
         changedStatus: ''
@@ -129,8 +129,11 @@ export function liveChat (state = initialState, action) {
       })
 
     case ActionTypes.UPDATE_USER_CHAT:
+      let newChat = state.userChat
+      newChat.push(action.chat)
       return Object.assign({}, state, {
-        userChat: action.chat
+        userChat: newChat,
+        socketData: state.socketData
       })
 
     case ActionTypes.RESET_SOCKET:
