@@ -5,29 +5,35 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
-import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
+import Halogen from 'halogen'
+import { downloadYouTubeVideo, uploadTemplate } from '../../redux/actions/convos.actions'
 
 class YoutubeVideoModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      buttons: [],
+      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
       numOfCurrentButtons: 0,
-      disabled: false,
+      disabled: props.edit ? false : true,
       buttonDisabled: false,
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
-      file: null,
-      link: ''
+      file: this.props.file ? this.props.file : '',
+      link: this.props.youtubeLink ? this.props.youtubeLink : '',
+      videoLink: this.props.videoLink ? this.props.videoLink : '',
+      loading: false,
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
     this.validateYoutubeUrl = this.validateYoutubeUrl.bind(this)
     this.handleLinkChange = this.handleLinkChange.bind(this)
+    this.uploadTemplate = this.uploadTemplate.bind(this)
+    this.setLoading = this.setLoading.bind(this)
   }
 
   handleLinkChange (e) {
+    console.log('changing link', e.target.value)
     this.setState({link: e.target.value}, () => {
       this.validateYoutubeUrl()
     })
@@ -41,6 +47,8 @@ class YoutubeVideoModal extends React.Component {
     console.log('addComponent YoutubeVideoModal', this.state)
     this.props.addComponent({
       id: this.props.id,
+      youtubeLink: this.state.link,
+      videoLink: this.state.videoLink,
       componentType: 'media',
       fileurl: this.state.file.fileurl,
       fileName: this.state.file.fileName,
@@ -57,8 +65,53 @@ class YoutubeVideoModal extends React.Component {
   }
 
   updateFile (file) {
-    this.setState({file})
+    console.log('updating YouTube file', file)
+    this.uploadTemplate(file)
+    // this.setState({file, videoLink: file.fileurl.url}, () => {
+    //   this.refs.video.pause();
+    //   this.refs.video.load();
+    //   this.refs.video.play();
+    // })
   }
+
+  setLoading () {
+    this.setState({loading: true})
+  }
+
+  uploadTemplate (data) {
+    console.log('updating file AddMedia', data)
+    //this.props.updateFile(data)
+    var video = data.type.match('video.*')
+    if (video) {
+      console.log('video uploading template')
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: data.fileurl.url,
+        componentType: 'video',
+        id: data.fileurl.id,
+        name: data.fileurl.name
+      }, { id: this.props.id,
+        componentType: 'video',
+        fileName: data.fileurl.name,
+        type: data.fileurl.type,
+        size: data.fileurl.size
+      }, (newData) => this.updateFileUrl(data, newData))
+    } 
+  }
+
+  updateFileUrl (data, newData) {
+    data.fileurl = newData.fileurl
+    console.log('updating fileurl of YoutubeVideoModal', data)
+    this.setState({ 
+      loading: false,
+      file: data,
+      videoLink: data.fileurl.url
+     }, () => {
+      this.refs.video.pause();
+      this.refs.video.load();
+      this.refs.video.play();
+    })
+  }
+
 
   validateYoutubeUrl () {
     let url = this.state.link
@@ -66,7 +119,9 @@ class YoutubeVideoModal extends React.Component {
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({disabled: false})
+        this.setState({disabled: false, loading: true}, () => {
+          this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
+        })
       } else {
         this.setState({disabled: true})
       }
@@ -86,7 +141,9 @@ class YoutubeVideoModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>YouTube Link:</h4>
-              <input value={this.state.link} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleLinkChange} className='form-control' />
+              <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : ''}} onChange={this.handleLinkChange} className='form-control' />
+              <div style={{color: 'red'}}>{this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link' : ''}</div>
+              <div style={{marginBottom: '30px', color: 'green'}}>{this.state.loading ? '*Please wait for the YouTube video to download' : ''}</div>
               {
                 this.state.file &&
                 <AddButton
@@ -108,10 +165,14 @@ class YoutubeVideoModal extends React.Component {
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
+                {this.state.loading && <div className='align-center' style={{padding: '50px'}}>
+                  <center><Halogen.RingLoader color='#FF5E3A' /></center>
+                  </div>
+                }
                   {
-                    (!this.state.disabled) &&
-                    <video ref={(ref) => { this.video = ref }} controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
-                      <source src={this.state.link} type='audio/mpeg' />
+                    (!this.state.disabled && !this.state.loading) &&
+                    <video ref="video" controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
+                      <source src={this.state.videoLink} type='audio/mpeg' />
                     </video>
                   }
                   {
@@ -141,7 +202,7 @@ class YoutubeVideoModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                    Add
+                    {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>
@@ -161,9 +222,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    uploadImage: uploadImage,
-    uploadFile: uploadFile,
-    uploadTemplate: uploadTemplate
+    uploadTemplate,
+    downloadYouTubeVideo
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(YoutubeVideoModal)

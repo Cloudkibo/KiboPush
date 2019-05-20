@@ -363,14 +363,14 @@ class GenericMessage extends React.Component {
 
   openModal () {
     let modals = {
-      'text': (<TextModal buttons={[]} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
-      'card': (<CardModal buttons={[]} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'list': (<ListModal buttons={[]} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'media': (<MediaModal buttons={[]} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal buttons={[]} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'text': (<TextModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
+      'card': (<CardModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'list': (<ListModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'media': (<MediaModal buttons={[]} buttonActions={this.props.buttonActions} pages={this.props.pages} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
+      'video': (<YoutubeVideoModal buttons={[]} buttonActions={this.props.buttonActions} pages={this.props.pages} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -555,6 +555,8 @@ class GenericMessage extends React.Component {
           pages={this.props.pages}
           key={componentId}
           buttons={broadcast.buttons}
+          youtubeLink={broadcast.youtubeLink && broadcast.youtubeLink}
+          videoLink={broadcast.videoLink && broadcast.videoLink}
           media={broadcast}
           mediaType={broadcast.mediaType}
           handleMedia={this.handleMedia}
@@ -563,6 +565,8 @@ class GenericMessage extends React.Component {
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleMedia({id: componentId,
+            youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
+            videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,

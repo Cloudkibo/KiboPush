@@ -78,7 +78,8 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media 
                 required 
-                file={this.state.file} 
+                pages={this.props.pages}
+                file={this.state.file}
                 updateImage={this.updateImage} 
                 updateFile={this.updateFile} 
                 fileurl={this.state.file ? this.state.file.fileurl : ''}
