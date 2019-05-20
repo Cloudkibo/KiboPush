@@ -44,9 +44,9 @@ class ImageModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Image Component</h3>
           <hr />
