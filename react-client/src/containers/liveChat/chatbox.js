@@ -632,10 +632,11 @@ class ChatBox extends React.Component {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    this.updateScrollTop()
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
+      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
+    this.updateScrollTop()
   }
 
   createGallery (cards) {
@@ -767,6 +768,7 @@ class ChatBox extends React.Component {
     this.downloadAudio(blob)
   }
   render () {
+    console.log('chatbox render')
     var settings = {
       arrows: true,
       dots: false,
@@ -1925,7 +1927,8 @@ function mapStateToProps (state) {
     urlValue: (state.liveChat.urlValue),
     loadingUrl: (state.liveChat.loadingUrl),
     urlMeta: (state.liveChat.urlMeta),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    socketData: (state.liveChat.socketData)
   }
 }
 
