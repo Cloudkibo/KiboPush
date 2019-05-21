@@ -1,21 +1,18 @@
-/* eslint-disable no-undef */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import Footer from './footer'
 import { updateSponsoredMessage } from '../../redux/actions/sponsoredMessaging.actions'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-class adCampaign extends React.Component {
+class adCreative extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       Campaign_name: ''
     }
     this.handleInput = this.handleInput.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   handleInput (e) {
@@ -23,19 +20,21 @@ class adCampaign extends React.Component {
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'campaign_name', e.target.value)
   }
 
+  handleChange (state) {
+    this.setState(state)
+  }
+
   render () {
     return (
       <div>
-        <div className="col-md-6 col-lg-6 col-sm-6">
-        <label>Set Campaign</label>
-        <br/>
-        <br/>
-          <div>
-            <label>Campaign Name:</label>
-            <input className='form-control m-input m-input--air' value={this.state.Campaign_name} onChange={this.handleInput} />
-          </div>
-        <br />
-        </div>
+          <GenericMessage
+                            broadcast={this.state.broadcast}
+                            handleChange={this.handleChange}
+                            pageId={'this.state.pageId.pageId'}
+                            convoTitle='Ad'
+                            // buttonActions={this.state.buttonActions} 
+                            />
+
         <Footer page={this.props.page} Campaign_name={this.state.Campaign_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
       </div>
     )
@@ -54,4 +53,4 @@ function mapDispatchToProps (dispatch) {
     updateSponsoredMessage: updateSponsoredMessage
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(adCampaign)
+export default connect(mapStateToProps, mapDispatchToProps)(adCreative)

@@ -6,6 +6,7 @@
 import React from 'react'
 import AdCampaign from './adCampaign'
 import Adset from './adSet'
+import AdCreative from './adCreative'
 // import SubmittedState from './submittedState'
 // import OptInActions from './optInActions'
 // import Setup from './setup'
@@ -42,11 +43,7 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#AdCreative').addClass('active')
       this.setState({activeTab: 'AdCreative'})
-    } else if (tab === 'AdCreative') {
-      $('#tab_4').addClass('active')
-      $('#Ad').addClass('active')
-      this.setState({activeTab: 'Ad'})
-    }
+    } 
     console.log('activeTab', this.state.activeTab)
 
   }
@@ -68,10 +65,6 @@ class Tab extends React.Component {
       $('#tab_2').addClass('active')
       $('#Adset').addClass('active')
       this.setState({activeTab: 'Adset'})
-    } else if (tab === 'Ad') {
-      $('#tab_3').addClass('active')
-      $('#AdCreative').addClass('active')
-      this.setState({activeTab: 'AdCreative'})
     }
     console.log('activeTab', this.state.activeTab)
 
@@ -98,11 +91,7 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#AdCreative').addClass('active')
       this.setState({activeTab: 'AdCreative'})
-    } else if (tab === 'Ad') {
-      $('#tab_4').addClass('active')
-      $('#Ad').addClass('active')
-      this.setState({activeTab: 'Ad'})
-    }
+    } 
     console.log('activeTab', this.state.activeTab)
 
   }
@@ -121,10 +110,7 @@ class Tab extends React.Component {
             <a id='Adset' className='broadcastTabs'>Ad set</a>
           </li>
           <li>
-            <a id='AdCreative' className='broadcastTabs'>Ad Creative</a>
-          </li>
-          <li>
-            <a id='Ad' className='broadcastTabs'>Ad</a>
+            <a id='AdCreative' className='broadcastTabs'>Create Ad</a>
           </li>
         </ul>
         <div className='tab-content'>
@@ -135,10 +121,7 @@ class Tab extends React.Component {
             <Adset page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_3'>
-            <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
-          </div>
-          <div className='tab-pane' id='tab_4'>
-            <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCreative page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
         </div>
       </div>

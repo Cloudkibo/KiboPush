@@ -83,6 +83,7 @@ class adSet extends React.Component {
   render () {
     return (
       <div>
+        <div className="col-md-6 col-lg-6 col-sm-6">
           <div>
             <label>Adset Name:</label>
             <input className='form-control m-input m-input--air' value={this.state.Adset_name} onChange={this.handleName} />
@@ -140,7 +141,7 @@ class adSet extends React.Component {
       </div>
     <br/>
   </div>
-
+  </div>
 
         <Footer page={this.props.page} Adset_name={this.state.Adset_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
       </div>

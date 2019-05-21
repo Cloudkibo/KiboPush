@@ -96,7 +96,7 @@ class CreateSponsoredMessage extends React.Component {
                   setStatus={this.setStatus} />
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <div className='col-md-6 col-lg-6 col-sm-6'>
+                    <div className='col-md-12 col-lg-12 col-sm-12'>
                     <Tabs/>
                     </div>
                   </div>
