@@ -16,10 +16,10 @@ class Media extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.setLoading = this.setLoading.bind(this)
-    this.updateMediaDetails = this.updateMediaDetails.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.updateFile = this.updateFile.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
@@ -27,14 +27,14 @@ class Media extends React.Component {
       showErrorDialogue: false,
       imgSrc: props.img ? props.img : '',
       button: props.buttons ? props.buttons : [],
-      fileurl: '',
-      fileName: '',
-      type: '',
-      size: '',
-      image_url: '',
+      fileurl: props.fileurl ? props.fileurl : '',
+      fileName: props.fileName ? props.fileName : '',
+      type: props.type ? props.type : '',
+      size: props.size ? props.size : '',
+      image_url: props.image_url ? props.image_url : '',
       loading: false,
       showPreview: false,
-      file: '',
+      file: props.file ? props.file : '',
       previewUrl: '',
       mediaType: '',
       styling: {minHeight: 30, maxWidth: 400}
@@ -54,58 +54,11 @@ class Media extends React.Component {
     if (truef === false) {
     }
   }
-  componentDidMount () {
-    if (this.props.media) {
-      var video = this.props.media.type.match('video.*')
-      var image = this.props.media.type.match('image.*')
-      if (image) {
-        if (this.props.pages) {
-          this.props.uploadTemplate({pages: this.props.pages,
-            url: this.props.media.fileurl.url,
-            componentType: 'image',
-            id: this.props.media.fileurl.id,
-            name: this.props.media.fileurl.name
-          }, { fileurl: '',
-            fileName: this.props.media.fileurl.name,
-            type: this.props.media.type,
-            image_url: '',
-            size: this.props.media.size
-          }, this.updateImageUrl, this.setLoading)
-        }
-      }
-      if (video) {
-        this.props.uploadTemplate({pages: this.props.pages,
-          url: this.props.media.fileurl.url,
-          componentType: 'video',
-          id: this.props.media.fileurl.id,
-          name: this.props.media.fileurl.name
-        }, { id: this.props.id,
-          componentType: 'video',
-          fileName: this.props.media.fileurl.name,
-          type: this.props.media.fileurl.type,
-          size: this.props.media.fileurl.size
-        }, this.updateFileUrl, this.setLoading)
-      }
-      this.updateMediaDetails(this.props)
-    }
-  }
   onFilesError (error, file) {
     console.log('error.message', error.message)
     this.setState({errorMsg: error.message, showErrorDialogue: true})
   }
-  updateMediaDetails (mediaProps) {
-    console.log('mediaProps', mediaProps)
-    if (mediaProps.media && mediaProps.media !== '') {
-      this.setState({
-        //  id: cardProps.id,
-        showPreview: true,
-        componentType: 'media',
-        imgSrc: mediaProps.media.fileurl.url,
-        button: mediaProps.media.buttons,
-        mediaType: mediaProps.media.mediaType
-      })
-    }
-  }
+
   _onChange () {
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
@@ -147,7 +100,7 @@ class Media extends React.Component {
         fileName: file.name,
         type: file.type,
         image_url: '',
-        size: file.size}, this.updateImageUrl, this.setLoading)
+        size: file.size}, this.updateImageUrl)
     }
     if (file && video) {
       this.setState({file: file, mediaType: 'video'})
@@ -166,7 +119,7 @@ class Media extends React.Component {
         size: file.size
       }
       this.setState({loading: true, showPreview: false})
-      this.props.uploadFile(fileData, fileInfo, this.updateFileUrl, this.setLoading)
+      this.props.uploadFile(fileData, fileInfo, this.updateFile)
     }
   }
 
@@ -230,42 +183,56 @@ class Media extends React.Component {
     this.setState({loading: false})
   }
   updateImageUrl (data) {
-    this.props.updateFile(data)
-    this.setState({ fileurl: data.fileurl,
-      fileName: data.fileName,
-      image_url: data.image_url,
-      type: data.type,
-      size: data.size })
 
-    this.props.handleMedia({id: this.props.id,
-      componentType: 'media',
-      mediaType: this.state.mediaType,
-      fileurl: data.fileurl,
-      image_url: data.image_url,
-      fileName: data.fileName,
-      type: data.type,
-      size: data.size,
-      buttons: this.state.button})
+    var image = data.type.match('image.*')
+    if (image) {
+      console.log('image uploading template')
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: data.fileurl.url,
+          componentType: 'image',
+          id: data.fileurl.id,
+          name: data.fileurl.name
+        }, { fileurl: '',
+          fileName: data.fileurl.name,
+          type: data.type,
+          image_url: '',
+          size: data.size
+        }, (newData) => this.updateFileUrl(data, newData), this.setLoading)
+      }
+    }
   }
 
-  updateFileUrl (data) {
+  updateFile (data) {
     console.log('updating file AddMedia', data)
-    this.props.updateFile(data)
-    this.setState({ fileurl: data.fileurl,
+    //this.props.updateFile(data)
+    var video = data.type.match('video.*')
+    if (video) {
+      console.log('video uploading template')
+      this.props.uploadTemplate({pages: this.props.pages,
+        url: data.fileurl.url,
+        componentType: 'video',
+        id: data.fileurl.id,
+        name: data.fileurl.name
+      }, { id: this.props.id,
+        componentType: 'video',
+        fileName: data.fileurl.name,
+        type: data.fileurl.type,
+        size: data.fileurl.size
+      }, (newData) => this.updateFileUrl(data, newData), this.setLoading)
+    } 
+  }
+
+  updateFileUrl (data, newData) {
+    data.fileurl = newData.fileurl
+    console.log('updating fileurl of Media', data)
+    this.setState({ 
+      fileurl: data.fileurl,
       fileName: data.fileName,
-      image_url: '',
+      image_url: data.image_url ? data.image_url : '',
       type: data.type,
       size: data.size })
-
-    // this.props.handleMedia({id: this.props.id,
-    //   componentType: 'media',
-    //   mediaType: this.state.mediaType,
-    //   fileurl: data.fileurl,
-    //   image_url: '',
-    //   fileName: data.fileName,
-    //   type: data.type,
-    //   size: data.size,
-    //   buttons: this.state.button})
+    this.props.updateFile(data)
   }
 
   render () {
@@ -282,7 +249,7 @@ class Media extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div style={{marginBottom: '-0.5px', paddingTop: '0px'}} className='ui-block hoverbordersolid'>
+        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
           ? <div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
@@ -327,6 +294,7 @@ class Media extends React.Component {
           </div>
           }
         </div>
+        <div style={{color: 'red'}}>{this.props.required && !this.state.fileurl ? '*Required' : ''}</div>
       </div>
     )
   }

@@ -431,10 +431,12 @@ class Targeting extends React.Component {
       /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
+        
         var selectedOptions = e.target.selectedOptions
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
+          console.log('e.target',selectedOptions[i].value)
           selected.push(selectedOption)
         }
         self.setState({ tagValue: selected })

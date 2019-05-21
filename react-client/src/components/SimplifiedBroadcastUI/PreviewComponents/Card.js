@@ -21,11 +21,11 @@ class Card extends React.Component {
       title: props.title ? props.title : '',
       buttons: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
-      fileurl: props.file ? props.file.fileurl : '',
-      fileName: props.file ? props.file.fileName : '',
-      type: props.file ? props.file.type : '',
-      size: props.file ? props.file.size : '',
-      image_url: props.file ? props.file.image_url : '',
+      fileurl: props.fileurl ? props.fileurl : '',
+      fileName: props.fileName ? props.fileName : '',
+      type: props.type ? props.type : '',
+      size: props.size ? props.size : '',
+      image_url: props.image_url ? props.image_url : '',
       loading: false,
       styling: {minHeight: 30, maxWidth: 400},
       openPopover: false,
@@ -108,9 +108,17 @@ class Card extends React.Component {
 
   openCardModal () {
     console.log('opening CardModal for edit', this.state)
+    let file = {
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size
+    }
     return (<CardModal edit
+      buttonActions={this.props.buttonActions}
       default_action={this.props.default_action}
-      file={this.props.file}
+      file={file}
       webviewsize={this.state.webviewsize}
       webviewurl={this.state.webviewurl}
       elementUrl={this.props.elementUrl}

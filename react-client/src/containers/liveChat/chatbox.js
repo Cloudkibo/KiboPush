@@ -230,7 +230,9 @@ class ChatBox extends React.Component {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
-      setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+      if (this.props.userChat && this.props.userChat.length > 0) {
+        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+      }
       this.props.disableScroll()
     }
   }
@@ -422,7 +424,7 @@ class ChatBox extends React.Component {
       recipient_id: session._id, // this is the subscriber id: _id of subscriberId
       sender_fb_id: session.pageId.pageId, // this is the (facebook) :page id of pageId
       recipient_fb_id: session.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-      session_id: session._id,
+      subscriber_id: session._id,
       company_id: session.companyId, // this is admin id till we have companies
       payload: payload, // this where message content will go
       url_meta: this.state.urlmeta,
@@ -626,14 +628,15 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    this.updateScrollTop()
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
+      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
+    this.updateScrollTop()
   }
 
   createGallery (cards) {
@@ -765,6 +768,7 @@ class ChatBox extends React.Component {
     this.downloadAudio(blob)
   }
   render () {
+    console.log('chatbox render')
     var settings = {
       arrows: true,
       dots: false,
@@ -1257,23 +1261,29 @@ class ChatBox extends React.Component {
                                             <div>
                                               <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                                 <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                                  <a href={msg.payload.fileurl} target='_blank'>
-                                                    <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.fileurl} />
-                                                  </a>
+                                                  {
+                                                    msg.payload.image_url &&
+                                                    <a href={msg.payload.image_url} target='_blank'>
+                                                      <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
+                                                    </a>
+                                                  }
                                                 </div>
                                                 <div style={{marginTop: '10px', padding: '5px'}}>
                                                   <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
-                                                  <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.description}</div>
+                                                  {
+                                                    msg.payload.subtitle &&
+                                                    <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.subtitle}</div>
+                                                  }
                                                 </div>
+                                                {
+                                                  msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                                  msg.payload.buttons.map(b => (
+                                                    <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                      {b.title}
+                                                    </a>
+                                                  ))
+                                                }
                                               </div>
-                                              {
-                                                msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                                msg.payload.buttons.map((b, i) => (
-                                                  <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                                    {b.title}
-                                                  </a>
-                                                ))
-                                              }
                                             </div>
                                           </div>
                                           {index === this.props.userChat.length - 1 && msg.seen &&
@@ -1292,31 +1302,108 @@ class ChatBox extends React.Component {
                                               {
                                                 msg.payload.cards.map((card, i) => (
                                                   <div key={i}>
-                                                    <div id={i} style={{maxWidth: '200px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                    <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                                       <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                                        <a href={card.image_url} target='_blank'>
-                                                          <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
-                                                        </a>
+                                                        {
+                                                          msg.payload.image_url &&
+                                                          <a href={msg.payload.image_url} target='_blank'>
+                                                            <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
+                                                          </a>
+                                                        }
                                                       </div>
                                                       <div style={{marginTop: '10px', padding: '5px'}}>
-                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
-                                                        <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
+                                                        {
+                                                          msg.payload.subtitle &&
+                                                          <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.subtitle}</div>
+                                                        }
                                                       </div>
+                                                      {
+                                                        msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                                        msg.payload.buttons.map(b => (
+                                                          <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                            {b.title}
+                                                          </a>
+                                                        ))
+                                                      }
                                                     </div>
-                                                    {
-                                                      card.buttons && card.buttons.length > 0 &&
-                                                      card.buttons.map((b, i) => (
-                                                        <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                                          {b.title}
-                                                        </a>
-                                                      ))
-                                                    }
                                                   </div>
                                                 ))
                                               }
                                             </Slider>
                                           </div>
                                           {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'list'
+                                        ? <div>
+                                          <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px'}} >
+                                              {
+                                                msg.payload.elements.map((list, index) => {
+                                                  let largeStyle = {
+                                                    border: '1px solid #ccc'
+                                                  }
+                                                  let isLarge = (msg.payload.top_element_style === 'large' && index === 0)
+                                                  if (isLarge) {
+                                                    largeStyle = {
+                                                      backgroundImage: list.image_url && `url(${list.image_url})`,
+                                                      backgroundSize: '100%',
+                                                      backgroundRepeat: 'no-repeat',
+                                                      border: '1px solid #ccc'
+                                                    }
+                                                  }
+                                                  return (
+                                                    <div style={largeStyle}>
+                                                      <div className='row' style={{padding: '10px'}}>
+                                                        <div className={isLarge ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
+                                                          <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{list.title}</h6>
+                                                          {
+                                                            list.subtitle &&
+                                                            <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{list.subtitle}</p>
+                                                          }
+                                                        </div>
+                                                        {
+                                                          !isLarge &&
+                                                          <div className='col-6'>
+                                                            {
+                                                              list.image_url &&
+                                                              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                                                                <img src={list.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
+                                                              </div>
+                                                            }
+                                                          </div>
+                                                        }
+                                                        {
+                                                          list.buttons && list.buttons.map(button => (
+                                                            <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '5px', minHeight: '50%', minWidth: '25%', marginLeft: '10%', marginTop: '-10px'}} >
+                                                              <h5 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h5>
+                                                            </div>
+                                                          ))
+                                                        }
+                                                      </div>
+                                                    </div>
+                                                  )
+                                                })
+                                              }
+                                              {
+                                                msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                                msg.payload.buttons.map(button =>(
+                                                  <div>
+                                                    <h7 style={{color: '#0782FF'}}>{button.title}</h7>
+                                                  </div>
+                                                ))
+                                              }
+                                            </div>
+                                          </div>
+                                          {
+                                            index === this.props.userChat.length - 1 && msg.seen &&
                                             <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
                                               <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
                                             </div>
@@ -1383,6 +1470,67 @@ class ChatBox extends React.Component {
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'poll'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div style={{width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
+                                            </div>
+                                            <div>
+                                              {
+                                                msg.payload.quick_replies && msg.payload.quick_replies.length > 0 &&
+                                                msg.payload.quick_replies.map((b, x) => (
+                                                  <button key={x} style={{margin: '3px'}} type='button' className='btn m-btn--pill btn-secondary m-btn m-btn--bolder btn-sm'>
+                                                    {b.title}
+                                                  </button>
+                                                ))
+                                              }
+                                            </div>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'survey'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div style={{width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.attachment.payload.text}
+                                            </div>
+                                            <div style={{margin: '0px -14px -20px -20px'}}>
+                                              {
+                                                msg.payload.attachment.payload.buttons && msg.payload.attachment.payload.buttons.length > 0 &&
+                                                msg.payload.attachment.payload.buttons.map((b, i) => (
+                                                  <button
+                                                    key={i}
+                                                    style={{
+                                                      margin: '3px 3px -4px 3px',
+                                                      borderRadius: msg.payload.attachment.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
+                                                      borderColor: '#716aca'
+                                                    }}
+                                                    type='button'
+                                                    className='btn btn-secondary btn-block'
+                                                  >
+                                                    {b.title}
+                                                  </button>
+                                                ))
+                                              }
+                                            </div>
                                           </div>
                                           {index === this.props.userChat.length - 1 && msg.seen &&
                                             <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
@@ -1510,7 +1658,18 @@ class ChatBox extends React.Component {
                                           {
                                             msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                             msg.payload.buttons.map((b, i) => (
-                                              <a key={i} href={b.url} target='_blank' style={{borderColor: '#716aca', width: '100%', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
+                                              <a
+                                                key={i}
+                                                href={b.url}
+                                                target='_blank'
+                                                style={{
+                                                  margin: '3px 3px -4px 3px',
+                                                  borderRadius: msg.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
+                                                  borderColor: '#716aca'
+                                                }}
+                                                type='button'
+                                                className='btn btn-secondary btn-block'
+                                              >
                                                 {b.title}
                                               </a>
                                             ))
@@ -1768,7 +1927,8 @@ function mapStateToProps (state) {
     urlValue: (state.liveChat.urlValue),
     loadingUrl: (state.liveChat.loadingUrl),
     urlMeta: (state.liveChat.urlMeta),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    socketData: (state.liveChat.socketData)
   }
 }
 

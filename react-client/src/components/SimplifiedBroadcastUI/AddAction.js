@@ -5,15 +5,29 @@ import { isWebURL } from '../../utility/utils'
 class AddAction extends React.Component {
   constructor (props) {
     super(props)
+    let openWebView = !!props.webviewurl || (props.default_action && props.default_action.messenger_extensions)
+    let openWebsite = !!props.elementUrl || (props.default_action && !props.default_action.messenger_extensions)
+    let webviewurl = props.webviewurl ? props.webviewurl : ''
+    let elementUrl = props.elementUrl ? props.elementUrl : ''
+    let webviewsize = props.webviewsize ? props.webviewsize : 'FULL'
+    if (props.default_action) {
+      if (openWebView) {
+        webviewurl = props.default_action.url
+        webviewsize = props.default_action.webview_height_ratio
+      }
+      if (openWebsite) {
+        elementUrl = props.default_action.url
+      }
+    }
     this.state = {
-      default_action: null,
-      actionDisabled: !(props.webviewurl || props.elementUrl),
-      openPopover: props.webviewurl || props.elementUrl,
-      openWebView: !!props.webviewurl,
-      openWebsite: !!props.elementUrl,
-      webviewsize: props.webviewsize ? props.webviewsize : 'FULL',
-      webviewurl: props.webviewurl ? props.webviewurl : '',
-      elementUrl: props.elementUrl ? props.elementUrl : '',
+      default_action: props.default_action ? props.default_action : null,
+      actionDisabled: !(webviewurl || elementUrl),
+      openPopover: webviewurl || elementUrl,
+      openWebView,
+      openWebsite,
+      webviewsize,
+      webviewurl,
+      elementUrl,
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       buttonActions: props.buttonActions ? props.buttonActions : ['open website', 'open webview']
     }
@@ -174,7 +188,7 @@ class AddAction extends React.Component {
           </div>
         }
         {
-          <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.handleClick}>
+          !this.state.openPopover && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.handleClick}>
             <div ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
               <h6> + Add Action </h6>
             </div>

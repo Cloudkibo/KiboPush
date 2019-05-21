@@ -68,8 +68,9 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (session) {
+    delete session.unreadCount
     this.setState({activeSession: session, scroll: true})
-    if (session !== {}) {
+    if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
@@ -168,30 +169,23 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps called')
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({loading: false})
-      if (nextProps.openSessions && nextProps.closeSessions) {
-        console.log('open sessions', nextProps.openSessions)
-        console.log('close sessions', nextProps.closeSessions)
-        console.log(nextProps.openCount + ' : ' + nextProps.closeCount)
-        if (this.state.loading) {
-          this.setState({loading: false})
+      if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
+        let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
+        let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
+        this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : ''})
+        if (newSessions.length > 0 && newSessions[0].status === 'new') {
+          this.setState({tabValue: 'open'})
+        } else if (oldSessions.length > 0 && oldSessions[0].status === 'resolved') {
+          this.setState({tabValue: 'closed'})
         }
-        if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
-          let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
-          let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
-          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : ''})
-          if (newSessions.length > 0 && newSessions[0].status === 'new') {
-            this.setState({tabValue: 'open'})
-          } else if (oldSessions.length > 0 && oldSessions[0].status === 'resolved') {
-            this.setState({tabValue: 'closed'})
-          }
-        } else if (this.state.activeSession === '') {
-          if (this.state.tabValue === 'open') {
-            this.setState({activeSession: nextProps.openSessions.length > 0 ? nextProps.openSessions[0] : ''})
-          } else {
-            this.setState({activeSession: nextProps.closeSessions.length > 0 ? nextProps.closeSessions[0] : ''})
-          }
+      } else if (this.state.activeSession === '') {
+        if (this.state.tabValue === 'open') {
+          this.setState({activeSession: nextProps.openSessions.length > 0 ? nextProps.openSessions[0] : ''})
+        } else {
+          this.setState({activeSession: nextProps.closeSessions.length > 0 ? nextProps.closeSessions[0] : ''})
         }
       }
       if (!nextProps.subscriberTags) {
@@ -199,6 +193,36 @@ class LiveChat extends React.Component {
           this.props.getSubscriberTags(nextProps.openSessions[0]._id)
         } else if (nextProps.closeSessions[0] && nextProps.closeSessions[0]._id) {
           this.props.getSubscriberTags(nextProps.closeSessions[0]._id)
+        }
+      }
+      if (this.props.location.state && this.props.location.state.subscriberToRespond) {
+        console.log('Subscriber To Respond', this.props.location.state.subscriberToRespond)
+        var sessions = nextProps.openSessions
+        var subscriber = this.props.location.state.subscriberToRespond
+        for (let j = 0; j < sessions.length; j++) {
+          if (sessions[j]._id === subscriber._id) {
+            this.setState({activeSession: sessions[j]})
+            break
+          }
+        }
+      }
+      if (nextProps.userChat && this.props.userChat && nextProps.userChat.length > this.props.userChat.length) {
+        var sess = this.props.openSessions
+        for (var j = 0; j < sess.length; j++) {
+          if (sess[j]._id === nextProps.userChat[0].subscriber_id) {
+            sess[j] = {
+              companyId: sess[j].companyId,
+              last_activity_time: sess[j].last_activity_time,
+              pageId: sess[j].pageId,
+              request_time: sess[j].request_time,
+              status: sess[j].status,
+              subscriber_id: sess[j]._id,
+              _id: sess[j]._id,
+              lastPayload: nextProps.userChat[0].lastPayload,
+              lastDateTime: nextProps.userChat[0].lastDateTime,
+              lastRepliedBy: nextProps.userChat[0].lastRepliedBy
+            }
+          }
         }
       }
     }
@@ -220,12 +244,15 @@ class LiveChat extends React.Component {
       }
       this.props.resetUnreadSession()
     }
-    if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.openSessions && nextProps.closeSessions) {
-      if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].subscriber_id === nextProps.socketSession) {
-        this.props.updateUserChat(nextProps.socketMessage, this.props.userChat)
+    if (nextProps.socketSession && nextProps.socketSession !== '') {
+      let sessionIds = nextProps.openSessions.map((s) => s._id)
+      if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
+        this.props.updateUserChat(nextProps.socketMessage)
         this.props.resetSocket()
-      } else if (nextProps.socketSession !== '') {
+      } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
         this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})
+        this.props.resetSocket()
+      } else {
         this.props.resetSocket()
       }
     }
@@ -323,10 +350,13 @@ function mapStateToProps (state) {
     closeSessions: (state.liveChat.closeSessions),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
+    socketSession: (state.liveChat.socketSession),
+    unreadSession: (state.liveChat.unreadSession),
     tags: (state.tagsInfo.tags),
     teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
     teams: (state.teamsInfo.teams),
-    subscriberTags: (state.tagsInfo.subscriberTags)
+    subscriberTags: (state.tagsInfo.subscriberTags),
+    socketMessage: (state.liveChat.socketMessage)
   }
 }
 

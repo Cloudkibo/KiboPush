@@ -51,6 +51,7 @@ class List extends React.Component {
             webviewurl: card.webviewurl,
             elementUrl: card.elementUrl,
             webviewsize: card.webviewsize,
+            default_action: card.default_action,
             buttons: card.buttons})
         } else {
           tmp.push({id: (k + 1),
@@ -79,6 +80,7 @@ class List extends React.Component {
   openListModal () {
     console.log('opening CardModal for edit', this.state)
     return (<ListModal edit
+      buttonActions={this.props.buttonActions}
       topElementStyle={this.state.topElementStyle}
       id={this.props.id}
       cards={this.props.listItems}

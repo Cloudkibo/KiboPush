@@ -46,7 +46,7 @@ export function isTwitterUrl (value) {
   return regexp.test(value)
 }
 export function testUserName (userName) {
-  if (userName.length < 5) {
+  if (userName.length < 1) {
     return false
   }
   /* must not end with .com or .net */

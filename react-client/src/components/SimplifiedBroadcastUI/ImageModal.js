@@ -44,16 +44,16 @@ class ImageModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Image Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
               <h4>Image:</h4>
-              <Image updateFile={this.updateFile} updateImage={this.updateImage} />
+              <Image required updateFile={this.updateFile} updateImage={this.updateImage} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
