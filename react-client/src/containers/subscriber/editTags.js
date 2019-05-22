@@ -65,7 +65,7 @@ class EditTags extends React.Component {
   }
   saveTag (tag) {
     var payload = {'tag': tag, 'newTag': this.state.renameValue}
-    this.props.renameTag(payload, this.msg, this.handleEdit)
+    this.props.renameTag(payload, this.props.msg, this.handleEdit)
   }
   handleEdit () {
     this.resetTag()

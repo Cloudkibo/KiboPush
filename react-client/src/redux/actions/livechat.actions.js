@@ -46,13 +46,11 @@ export function showChatSessions (sessions) {
   }
 }
 
-export function updateUserChat (message, chat) {
+export function updateUserChat (message) {
   console.log('updateUserChat called', message)
-  let userChat = chat
-  userChat.push(message)
   return {
     type: ActionTypes.UPDATE_USER_CHAT,
-    chat: userChat
+    chat: message
   }
 }
 
@@ -310,6 +308,7 @@ export function searchChat (data) {
 export function sendChatMessage (data) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
+      console.log('response from sendChatMessage', res)
       // dispatch(fetchSessions())
     })
   }
@@ -341,11 +340,6 @@ export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      if (data.status === 'new') {
-        dispatch(fetchSingleSession(data._id, {appendTo: 'open', deleteFrom: 'close'}))
-      } else {
-        dispatch(fetchSingleSession(data._id, {appendTo: 'close', deleteFrom: 'open'}))
-      }
       handleActiveSession()
     })
   }

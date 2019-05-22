@@ -56,17 +56,18 @@ class AddCard extends React.Component {
 
   handleTitleChange (e) {
     this.setState({title: e.target.value}, () => {
-      if (this.state.title === '') {
+      if (this.state.title === '' || this.state.subtitle === '') {
         this.updateStatus({disabled: true, title: this.state.title})
       } else {
-        this.updateStatus({disabled: false, title: this.state.title})
+          this.updateStatus({disabled: false, title: this.state.title})
+      
       }
     })
   }
 
   handleSubtitleChange (e) {
     this.setState({subtitle: e.target.value}, () => {
-      if (this.state.subtitle === '') {
+      if (this.state.subtitle === '' || this.state.tile === '') {
         this.updateStatus({disabled: true, subtitle: this.state.subtitle})
       } else {
         this.updateStatus({disabled: false, subtitle: this.state.subtitle})
@@ -105,36 +106,43 @@ class AddCard extends React.Component {
 
   render () {
     return (
-      <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
-        {(this.props.id !== 1 && this.props.id !== 2) && <div onClick={this.props.closeCard} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
-        <div>
-          <h4 style={{textAlign: 'left'}}>Element #{this.props.id}</h4>
+      <div> 
+        <div style={{color: 'red'}}>{this.props.card.invalid ? '*At least two list elements are required' : ''}</div>
+        <div className='ui-block' style={{transform: 'scale(0.9,0.9)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
+          {<div onClick={this.props.closeCard} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
+          <div>
+            <h4 style={{textAlign: 'left'}}>Element #{this.props.id}</h4>
+          </div>
+          <hr style={{marginBottom: '30px'}} />
+          <h4>Title:</h4>
+          <input placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
+          <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
+          <h4>Subtitle:</h4>
+          <input placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
+          <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
+          <h4>Image:</h4>
+          <Image
+            imgSrc={this.state.imgSrc}
+            file={this.state.file}
+            updateFile={this.updateFile}
+            updateImage={this.updateImage} />
+          <AddButton
+            replyWithMessage={this.props.replyWithMessage}
+            buttons={this.state.buttons}
+            finalButtons={this.props.buttons}
+            pageId={this.props.pageId}
+            buttonLimit={this.state.buttonLimit}
+            buttonActions={this.state.buttonActions}
+            ref={(ref) => { this.AddButton = ref }}
+            updateButtonStatus={this.updateStatus}
+            addComponent={(buttons) => this.addCard(buttons)} />
+          <AddAction
+            default_action={this.state.default_action}
+            webviewurl={this.state.webviewurl}
+            webviewsize={this.state.webviewsize}
+            elementUrl={this.state.elementUrl}
+            updateActionStatus={this.updateStatus} />
         </div>
-        <hr style={{marginBottom: '30px'}} />
-        <h4>Title:</h4>
-        <input value={this.state.title} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleTitleChange} className='form-control' />
-        <h4>Subtitle:</h4>
-        <input value={this.state.subtitle} style={{marginBottom: '30px', maxWidth: '100%'}} onChange={this.handleSubtitleChange} className='form-control' />
-        <h4>Image:</h4>
-        <Image
-          imgSrc={this.state.imgSrc}
-          file={this.state.file}
-          updateFile={this.updateFile}
-          updateImage={this.updateImage} />
-        <AddButton
-          buttons={this.state.buttons}
-          finalButtons={this.props.buttons}
-          pageId={this.props.pageId}
-          buttonLimit={this.state.buttonLimit}
-          buttonActions={this.state.buttonActions}
-          ref={(ref) => { this.AddButton = ref }}
-          updateButtonStatus={this.updateStatus}
-          addComponent={(buttons) => this.addCard(buttons)} />
-        <AddAction
-          webviewurl={this.state.webviewurl}
-          webviewsize={this.state.webviewsize}
-          elementUrl={this.state.elementUrl}
-          updateActionStatus={this.updateStatus} />
       </div>
     )
   }

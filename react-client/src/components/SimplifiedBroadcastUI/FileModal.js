@@ -41,16 +41,16 @@ class FileModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add File Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
               <h4>File:</h4>
-              <AddFile updateFile={this.updateFile} />
+              <AddFile required file={this.state.file} updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -60,7 +60,7 @@ class FileModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
                 <div className='discussion'>
                   <div className='bubble recipient' style={{marginRight: '120px', marginTop: '100px', fontSize: '20px'}}>
-                  📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+                  📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' download>{this.state.file ? !this.state.file.fileName : 'File'}</a>
                   </div>
                 </div>
               </div>

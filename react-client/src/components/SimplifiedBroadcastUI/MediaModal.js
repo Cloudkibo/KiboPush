@@ -17,7 +17,7 @@ class MediaModal extends React.Component {
       disabled: false,
       buttonDisabled: false,
       buttonLimit: 3,
-      buttonActions: ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
       file: props.file ? props.file : null
     }
@@ -67,19 +67,30 @@ class MediaModal extends React.Component {
   render () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Media Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
               <h4>Media:</h4>
-              <Media updateImage={this.updateImage} updateFile={this.updateFile} />
+              <Media 
+                required 
+                pages={this.props.pages}
+                file={this.state.file}
+                updateImage={this.updateImage} 
+                updateFile={this.updateFile} 
+                fileurl={this.state.file ? this.state.file.fileurl : ''}
+                fileName={this.state.file ? this.state.file.fileName : ''}
+                image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
+                size={this.state.file ? this.state.file.size : ''}
+                type={this.state.file ? this.state.file.type : ''} />
               {
                 this.state.file &&
                 <AddButton
+                  replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}
                   finalButtons={this.props.buttons}
                   buttonLimit={this.state.buttonLimit}

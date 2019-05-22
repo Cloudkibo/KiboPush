@@ -113,6 +113,11 @@ class Settings extends React.Component {
         openTab: 'billing', show: false, pro: true
       })
     }
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'whitelistDomains') {
+      this.setState({
+        openTab: 'whitelistDomains', show: false
+      })
+    }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
     this.props.getNGP({company_id: this.props.user.companyId})

@@ -29,6 +29,29 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
+export function downloadYouTubeVideo (url, id, handleFunction) {
+  return (dispatch) => {
+    let data = {
+      id,
+      url
+    }
+    console.log('downloadYouTubeVideo data', data)
+    // eslint-disable-next-line no-undef
+    fetch(`${getAccountsUrl()}/downloadYouTubeVideo`, {
+      method: 'post',
+      body: JSON.stringify(data),
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`,
+        'Content-Type': 'application/json'
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('YouTube video payload', res.payload)
+      handleFunction(res.payload)
+    })
+  }
+}
+
 export function uploadImage (file, pages, componentType, data, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()

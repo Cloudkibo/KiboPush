@@ -26,6 +26,7 @@ class adCampaign extends React.Component {
   render () {
     return (
       <div>
+        <div className="col-md-6 col-lg-6 col-sm-6">
         <label>Set Campaign</label>
         <br/>
         <br/>
@@ -34,6 +35,7 @@ class adCampaign extends React.Component {
             <input className='form-control m-input m-input--air' value={this.state.Campaign_name} onChange={this.handleInput} />
           </div>
         <br />
+        </div>
         <Footer page={this.props.page} Campaign_name={this.state.Campaign_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
       </div>
     )

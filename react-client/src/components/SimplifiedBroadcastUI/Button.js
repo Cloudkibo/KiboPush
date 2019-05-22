@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton, editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -25,7 +26,8 @@ class Button extends React.Component {
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false,
       showSequenceMessage: false,
-      buttonDisabled: true
+      buttonDisabled: true,
+      errorMsg:''
     }
 
     props.fetchAllSequence()
@@ -51,6 +53,7 @@ class Button extends React.Component {
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
     this.resetButton = this.resetButton.bind(this)
+    this.handleWebView= this.handleWebView.bind(this)
   }
 
   onChangeWebviewSize (event) {
@@ -329,18 +332,40 @@ class Button extends React.Component {
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
+    console.log('isWebURL(this.state.webviewurl)', isWebURL(this.state.webviewurl))
+    console.log('this.state.title', this.state.title)
     if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
-      this.setState({buttonDisabled: false})
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: false})
-      }
+      // this.setState({buttonDisabled: false})
+      // if (this.props.updateButtonStatus) {
+      //   this.props.updateButtonStatus({buttonDisabled: false})
+      // }
+      this.props.checkWhitelistedDomains({pageId: this.props.pageId, domain: e.target.value}, this.handleWebView)
+
     } else {
       this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: true})
       }
+
     }
     this.setState({webviewurl: e.target.value})
+  }
+
+  handleWebView (resp, url) {
+    console.log('resp.status', resp.status)
+    if (resp.status === 'success') {
+      if (resp.payload) {
+        this.setState({errorMsg:''})
+        this.setState({buttonDisabled: false})
+        if (this.props.updateButtonStatus) {
+          this.props.updateButtonStatus({buttonDisabled: false})
+        }
+      } else {
+        this.setState({errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.'})
+      }
+    } else {
+      this.setState({errorMsg: 'Unable to verify whitelisted domains.'})
+    }
   }
   render () {
     return (
@@ -429,6 +454,7 @@ class Button extends React.Component {
                       </div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                       <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                      <div style={{marginBottom: '30px', color: 'red'}}>{this.state.errorMsg}</div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
                       <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                         {
@@ -497,7 +523,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
     editButton: editButton,
-    addButton: addButton
+    addButton: addButton,
+   checkWhitelistedDomains: checkWhitelistedDomains
+
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Button)

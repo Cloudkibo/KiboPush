@@ -21,7 +21,7 @@ class File extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: '',
+      file: this.props.file ? this.props.file : '',
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
@@ -81,6 +81,7 @@ class File extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       var file = files[files.length - 1]
+      console.log('file', file)
     //   this.props.updateFile(file)
       this.setState({file: file})
       if (file.type === 'text/javascript' || file.type === 'text/exe') {
@@ -130,19 +131,18 @@ class File extends React.Component {
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
-        <div className='ui-block hoverborder' style={{padding: 25}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
           {
             this.state.loading
             ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
             : <Files
-              className='files-dropzone'
-              onChange={this.onFilesChange}
-              onError={this.onFilesError}
-              accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-              maxFileSize={10000000}
-              minFileSize={0}
-              clickable
-          >
+                className='files-dropzone'
+                onChange={this.onFilesChange}
+                onError={this.onFilesError}
+                accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
+                maxFileSize={10000000}
+                minFileSize={0}
+                clickable>
               <div className='align-center' style={{padding: '5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
@@ -161,6 +161,7 @@ class File extends React.Component {
           </ModalContainer>
         }
         </div>
+        <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>
     )
   }

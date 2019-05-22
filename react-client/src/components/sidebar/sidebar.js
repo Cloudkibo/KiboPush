@@ -49,7 +49,8 @@ class Sidebar extends Component {
       waitingResponse: false,
       isKiboChat: false,
       messengerAds: true,
-      businessGateway: false
+      businessGateway: false,
+      checkbox: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -188,7 +189,7 @@ class Sidebar extends Component {
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Sponsored Broadcast
+                Sponsored Broadcast (Beta)
               </span>
             </Link>
           </li>
@@ -314,6 +315,7 @@ class Sidebar extends Component {
               {this.showMessengerRefURL()}
               {this.showMessageUs()}
               {this.showChatWidget()}
+              {this.showCheckbox()}
             </ul>
           </div>
         </li>
@@ -695,6 +697,28 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Customer Chat Plugin
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showCheckbox() {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.checkbox) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/checkbox' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Checkbox Plugin
               </span>
             </Link>
           </li>

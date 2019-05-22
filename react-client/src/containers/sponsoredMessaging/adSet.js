@@ -13,9 +13,10 @@ class adSet extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      page: this.props.pages[0].pageId,
       ad_set_payload: {
         adset_name:'',
-        gender:'',
+        gender:'male',
         min_age: 18,
         max_age: 65
       },    
@@ -28,6 +29,10 @@ class adSet extends React.Component {
     this.renderOptions = this.renderOptions.bind(this)
     this.handleAge = this.handleAge.bind(this)
     this.handleBudget = this.handleBudget.bind(this)
+    this.handlePage = this.handlePage.bind(this)
+    this.handleGender = this.handleGender.bind(this)
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage,'pageId',this.state.page)
+
   }
 
   handleName (e) {
@@ -70,6 +75,20 @@ class adSet extends React.Component {
 
   }
 
+  handlePage(e){
+    let temp = e.target.value
+    this.setState({page: temp})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage,'pageId',temp)
+  }
+
+  handleGender (e) {
+    console.log('genders',e.target.value)
+    let temp = this.state.ad_set_payload
+    temp.gender = e.target.value
+    this.setState({ad_set_payload: temp})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage,'ad_set_payload',temp)
+  }
+
   renderOptions (length){
     let optarray = []
     for(let i=18; i <=length; i++){
@@ -83,23 +102,24 @@ class adSet extends React.Component {
   render () {
     return (
       <div>
+        <div className="col-md-6 col-lg-6 col-sm-6">
           <div>
             <label>Adset Name:</label>
             <input className='form-control m-input m-input--air' value={this.state.Adset_name} onChange={this.handleName} />
           </div>
         <br />
         <div>
-        <label>Audience</label>
-          <div>
+        <label>Targetting</label>
+          <div onChange={this.handleGender}>
             <label>Gender:</label>
             <div className="radio">
-            <label><input type="radio" name="gender" checked/>Male</label>
+            <label><input type="radio" name="gender" value='male' checked={ this.state.ad_set_payload.gender === 'male' }/>Male</label>
             </div>
             <div className="radio">
-              <label><input type="radio" name="gender"/>Female</label>
+              <label><input type="radio" name="gender" value='female'/>Female</label>
             </div>
             <div className="radio">
-              <label><input type="radio" name="gender"/>Other</label>
+              <label><input type="radio" name="gender" value='other'/>Other</label>
             </div>
           </div>
         <br />
@@ -138,9 +158,23 @@ class adSet extends React.Component {
           </div>
         </div>
       </div>
-    <br/>
+      <br/>
+      <div>
+        <label>Select page:</label>
+        <div className='row'>
+          <div className='col-sm-6'>
+          <select className="form-control" id="page" value={this.state.page} onChange={this.handlePage}>
+            {this.props.pages.map((item,index) => {
+              return <option value={item.pageId}>{item.pageName}</option>
+              })}
+          </select>
+          </div>
+        </div>
+      </div>
   </div>
-
+  </div>
+  <br/>
+  <br/>
 
         <Footer page={this.props.page} Adset_name={this.state.Adset_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
       </div>
@@ -151,7 +185,8 @@ class adSet extends React.Component {
 function mapStateToProps (state) {
   console.log('state in initialState.js', state)
   return {
-    sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage
+    sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage,
+    pages: state.pagesInfo.pages
   }
 }
 

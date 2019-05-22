@@ -40,16 +40,16 @@ class AudioModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '45vh', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Audio Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6'>
               <h4>Audio:</h4>
-              <Audio updateFile={this.updateFile} />
+              <Audio required file={this.state.file} updateFile={this.updateFile} />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
