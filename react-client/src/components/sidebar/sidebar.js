@@ -189,7 +189,7 @@ class Sidebar extends Component {
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Sponsored Broadcast
+                Sponsored Broadcast (Beta)
               </span>
             </Link>
           </li>

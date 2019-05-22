@@ -7,9 +7,6 @@ import React from 'react'
 import AdCampaign from './adCampaign'
 import Adset from './adSet'
 import AdCreative from './adCreative'
-// import SubmittedState from './submittedState'
-// import OptInActions from './optInActions'
-// import Setup from './setup'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
@@ -30,11 +27,9 @@ class Tab extends React.Component {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
-    $('#tab_4').removeClass('active')
     $('#Campaign').removeClass('active')
     $('#Adset').removeClass('active')
     $('#AdCreative').removeClass('active')
-    $('#Ad').removeClass('active')
     if (tab === 'Campaign') {
       $('#tab_2').addClass('active')
       $('#Adset').addClass('active')
