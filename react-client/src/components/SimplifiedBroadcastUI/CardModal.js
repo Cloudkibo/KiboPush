@@ -171,13 +171,22 @@ class CardModal extends React.Component {
     }
     cards[id - 1].component = {
       id: id,
-      title: `Element #${id} Title`,
-      subtitle: `Element #${id} Subtitle`,
+      title: '',
+      subtitle: '',
       buttons: []
     }
     cards[id - 1].visible = false
     this.cardComponents[id - 1] = null
-    this.setState({cards, numOfElements: --this.state.numOfElements})
+    let selectedIndex = this.state.selectedIndex
+    if (selectedIndex === (id-1)) {
+      for (let i = 0; i < cards.length; i++) {
+        if (cards[i].visible) {
+          selectedIndex = i
+          break
+        }
+      }
+    }
+    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex})
   }
 
   addCard (card) {
@@ -278,29 +287,33 @@ class CardModal extends React.Component {
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
                   <div className="carousel-inner">
                   {
-                    visibleCards.map((card, index) => (
-                      <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
-                          {
-                              card.component.image_url &&
-                              <img src={card.component.image_url} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
-                          }
-                          <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
-                          <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
-                          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                          {
-                              card.component.buttons.map((button, index) => {
-                                if (button.visible) {
-                                  return (
-                                    <div>
-                                      <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                      <h5 style={{color: '#0782FF'}}>{button.title}</h5>
-                                    </div>
-                                  )
-                                }
-                              })
-                          }
-                      </div>
-                    ))                   
+                    this.state.cards.map((card, index) => {
+                      if (card.visible) {
+                        return (
+                          <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
+                              {
+                                  card.component.image_url &&
+                                  <img src={card.component.image_url} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
+                              }
+                              <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
+                              <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
+                              <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                              {
+                                  card.component.buttons.map((button, index) => {
+                                    if (button.visible) {
+                                      return (
+                                        <div>
+                                          <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
+                                          <h5 style={{color: '#0782FF'}}>{button.title}</h5>
+                                        </div>
+                                      )
+                                    }
+                                  })
+                              }
+                          </div>
+                        )
+                      }
+                    })                   
                   }
                   </div>
                   {
