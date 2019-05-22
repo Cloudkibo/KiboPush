@@ -95,7 +95,7 @@
             isValid = false
             break
           }
-          if (broadcast[i].cards[j].description === undefined || broadcast[i].cards[j].description === '') {
+          if (broadcast[i].cards[j].subtitle === undefined || broadcast[i].cards[j].subtitle === '') {
             msg.error('Card in gallery must have a subtitle.')
             isValid = false
             break
