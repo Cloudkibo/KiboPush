@@ -117,7 +117,7 @@ class CardModal extends React.Component {
           type: card.component.type ? card.component.type : '',
           size: card.component.size ? card.component.size : '',
           title: card.component.title,
-          description: card.component.subtitle ? card.component.subtitle : card.component.description,
+          subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
           webviewurl: card.component.webviewurl,
           elementUrl: card.component.elementUrl,
           webviewsize: card.component.webviewsize,
