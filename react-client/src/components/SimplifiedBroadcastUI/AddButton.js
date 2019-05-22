@@ -29,6 +29,12 @@ class AddButton extends React.Component {
     this.onAddButtonCalled = 0
   }
 
+  componentDidMount () {
+    if (this.props.required && !this.props.edit) {
+      this.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
   updateButtonStatus (status, sharedIndex) {
     status.buttons = this.state.buttons
     if (sharedIndex >= 0) {
@@ -122,7 +128,11 @@ class AddButton extends React.Component {
         return
       }
     }
-    this.props.updateButtonStatus({buttonDisabled: false})
+    if (this.props.required && this.buttonComponents.length === 0) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    } else {
+      this.props.updateButtonStatus({buttonDisabled: false})
+    }
   }
 
   render () {

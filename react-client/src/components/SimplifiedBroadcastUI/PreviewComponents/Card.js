@@ -115,18 +115,26 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size
     }
+    let cards = [{
+      default_action: this.props.default_action,
+      file: file,
+      webviewsize: this.state.webviewsize,
+      webviewurl: this.state.webviewurl,
+      elementUrl: this.props.elementUrl,
+      buttons: this.state.buttons,
+      title: this.state.title,
+      subtitle: this.state.subtitle,
+      imgSrc: this.state.imgSrc,
+      image_url: this.state.image_url,
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+    }]
     return (<CardModal edit
-      buttonActions={this.props.buttonActions}
-      default_action={this.props.default_action}
-      file={file}
-      webviewsize={this.state.webviewsize}
-      webviewurl={this.state.webviewurl}
-      elementUrl={this.props.elementUrl}
       id={this.props.id}
-      buttons={this.state.buttons}
-      title={this.state.title}
-      subtitile={this.state.subtitle}
-      imgSrc={this.state.imgSrc}
+      cards={cards}
+      buttonActions={this.props.buttonActions}
       replyWithMessage={this.props.replyWithMessage}
       pageId={this.props.pageId}
       closeModal={this.closeEdit}

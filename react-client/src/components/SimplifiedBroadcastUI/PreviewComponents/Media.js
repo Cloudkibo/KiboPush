@@ -12,7 +12,7 @@ class Media extends React.Component {
     super(props, context)
     this.updateMediaDetails = this.updateMediaDetails.bind(this)
     this.state = {
-      imgSrc: '',
+      imgSrc: props.media.image_url ? props.media.image_url : '',
       buttons: props.buttons ? props.buttons : [],
       media: props.media ? props.media : null
     }

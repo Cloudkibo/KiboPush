@@ -1,11 +1,11 @@
 import React from 'react'
 import Image from './PreviewComponents/Image'
 import List from './PreviewComponents/List'
-import Video from './PreviewComponents/Video'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
 import Text from './PreviewComponents/Text'
 import Card from './PreviewComponents/Card'
+import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -466,6 +466,26 @@ class GenericMessage extends React.Component {
           })
         }
       },
+      'gallery': {
+        component: (<Gallery 
+          id={componentId} 
+          addComponent={this.addComponent}
+          pageId={this.state.pageId} 
+          pages={this.props.pages} 
+          key={componentId} 
+          cards={broadcast.cards} 
+          handleGallery={this.handleGallery} 
+          onRemove={this.removeComponent} 
+          buttonActions={this.props.buttonActions} 
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => { 
+          this.handleGallery({
+            id: componentId, 
+            componentType: 'gallery', 
+            cards: broadcast.cards
+          }) 
+        }
+      },
       'audio': {
         component: (<Audio
           id={componentId}
@@ -482,25 +502,6 @@ class GenericMessage extends React.Component {
             id: componentId,
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
-          })
-        }
-      },
-      'video': {
-        component: (<Video
-          id={componentId}
-          addComponent={this.addComponent}
-          pages={this.props.pages}
-          key={componentId}
-          file={broadcast.fileurl ? broadcast : null}
-          handleFile={this.handleFile}
-          onRemove={this.removeComponent}
-          buttonActions={this.props.buttonActions}
-          replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => {
-          this.handleFile({
-            id: componentId,
-            componentType: 'video',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : ''
           })
         }
       },
