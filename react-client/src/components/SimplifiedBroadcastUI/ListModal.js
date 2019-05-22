@@ -210,18 +210,21 @@ class ListModal extends React.Component {
               </div>
 
               <h4>Elements:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginBottom: '30px'}}>
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
                     this.state.cards.map((card, index) => {
                       if (card.visible) {
                         return (<AddCard
+                          index={index}
+                          buttonActions={this.state.buttonActions}
+                          errorMsg={'*At least two list elements are required'}
                           replyWithMessage={this.props.replyWithMessage}
                           card={this.state.cards[index]}
                           addCard={this.addCard}
                           ref={(ref) => { this.listComponents[index] = ref }}
-                          closeCard={() => { this.closeCard(card.component.id) }}
-                          id={card.component.id}
-                          updateStatus={(status) => { this.updateCardStatus(status, card.component.id) }} />)
+                          closeCard={() => { this.closeCard(index+1) }}
+                          id={index+1}
+                          updateStatus={(status) => { this.updateCardStatus(status, index+1) }} />)
                       }
                     })
                 }
