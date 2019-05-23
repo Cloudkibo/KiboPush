@@ -90,7 +90,6 @@ class CardModal extends React.Component {
     console.log('addComponent CardModal', this.state.cards)
     console.log('addComponent CardModal finalCards', this.finalCards)
     let visibleCards = this.state.cards.filter(card => card.visible)
-    let finalCards = this.finalCards
     console.log('addComponent visibleCards', visibleCards)
     if (visibleCards.length === 1) {
       let card = visibleCards[0].component
@@ -111,18 +110,7 @@ class CardModal extends React.Component {
         buttons: finalCards[0].buttons})
     } else if (visibleCards.length > 1) {
       let cards = visibleCards.map((card,index) => {
-        console.log('finalCards Gallery', finalCards)
-        console.log('finalCards length', finalCards.length)
-        let finalCard
-        for (let i = 0; i < finalCards.length; i++) {
-          console.log('card.id', card.id)
-          console.log('this.finalCards[i].id', finalCards[i].id)
-          if (card.id === finalCards[i].id) {
-            console.log('equal')
-            finalCard = finalCards[i]
-          }
-        }
-        //let finalCard = this.finalCards.find(x => card.id === x.id)
+        let finalCard = this.finalCards.find(x => card.id === x.id)
         console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
           id: card.id ? card.id : '',
