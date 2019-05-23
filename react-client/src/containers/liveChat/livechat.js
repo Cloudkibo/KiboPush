@@ -271,7 +271,7 @@ class LiveChat extends React.Component {
           : <div className='m-content'>
             <INFO />
             {
-              this.props.openCount > 0 || this.props.closeCount > 0
+              this.props.subscribers && this.props.subscribers.length > 0
               ? <div className='row'>
                 <SESSIONSAREA
                   openSessions={this.props.openSessions}
@@ -356,7 +356,8 @@ function mapStateToProps (state) {
     teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
     teams: (state.teamsInfo.teams),
     subscriberTags: (state.tagsInfo.subscriberTags),
-    socketMessage: (state.liveChat.socketMessage)
+    socketMessage: (state.liveChat.socketMessage),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
