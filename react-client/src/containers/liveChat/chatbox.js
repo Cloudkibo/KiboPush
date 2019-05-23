@@ -224,8 +224,6 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
-    console.log('previousScrollHeight', this.previousScrollHeight)
-    console.log('scrollHeight', this.refs.chatScroll.scrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
@@ -281,9 +279,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     this.closeDialogRecording()
-    console.log('recordedBlob is: ', recordedBlob)
     var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
-    console.log('files', file)
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -301,22 +297,6 @@ class ChatBox extends React.Component {
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
-    /* const promise = new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(recordedBlob.blob)
-      reader.onload = () => {
-        if (!reader.result) {
-          resolve(reader.result)
-        } else {
-          reject(Error('Failed to convert'))
-        }
-      }
-    })
-    promise.then(result => {
-      console.log('result', result)
-    }, err => {
-      console.log('error', err)
-    }) */
   }
 
   showStickers () {
