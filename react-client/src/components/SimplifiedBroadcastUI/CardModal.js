@@ -79,6 +79,7 @@ class CardModal extends React.Component {
   }
 
   handleDone () {
+    this.setState({disabled: true})
     for (let i = 0; i < this.cardComponents.length; i++) {
       if (this.cardComponents[i]) {
         this.cardComponents[i].handleDone()
