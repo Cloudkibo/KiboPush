@@ -12,13 +12,13 @@ class CardModal extends React.Component {
     let cards = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
-        cards.push({component: props.cards[i], visible: true, disabled: false})
+        cards.push({component: props.cards[i], visible: true, disabled: false, id: i + 1})
       } else {
         cards.push({
           visible: i === 0,
           disabled: true,
+          id: i + 1,
           component: {
-            id: i + 1,
             title: '',
             subtitle: '',
             buttons: []
@@ -33,9 +33,10 @@ class CardModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
       buttonDisabled: false,
       actionDisabled: false,
-      numOfElements: 1
+      numOfElements: cards.filter(card => card.visible).length
     }
     console.log('CardModal state in constructor', this.state)
+    console.log('CardModal props in constructor', this.props)
     this.finalCards = []
     this.handleDone = this.handleDone.bind(this)
     this.updateStatus = this.updateStatus.bind(this)
@@ -89,6 +90,7 @@ class CardModal extends React.Component {
     console.log('addComponent CardModal', this.state.cards)
     console.log('addComponent CardModal finalCards', this.finalCards)
     let visibleCards = this.state.cards.filter(card => card.visible)
+    console.log('addComponent visibleCards', visibleCards)
     if (visibleCards.length === 1) {
       let card = visibleCards[0].component
       this.props.addComponent({
@@ -105,12 +107,13 @@ class CardModal extends React.Component {
         elementUrl: card.elementUrl,
         webviewsize: card.webviewsize,
         default_action: card.default_action,
-        buttons: this.finalCards[0].buttons})
+        buttons: finalCards[0].buttons})
     } else if (visibleCards.length > 1) {
       let cards = visibleCards.map((card,index) => {
-        let finalCard = this.finalCards.find(finalCards => card.component.id === finalCards.id)
+        let finalCard = this.finalCards.find(x => card.id === x.id)
+        console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
-          id: card.component.id ? card.component.id : '',
+          id: card.id ? card.id : '',
           fileurl: card.component.fileurl ? card.component.fileurl : '',
           image_url: card.component.image_url ? card.component.image_url : '',
           fileName: card.component.fileName ? card.component.fileName : '',
@@ -206,7 +209,7 @@ class CardModal extends React.Component {
         onClose={this.props.closeModal}>
         <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
           onClose={this.props.closeModal}>
-          <h3>Add Card Component</h3>
+          <h3>Add {visibleCards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
@@ -261,9 +264,9 @@ class CardModal extends React.Component {
                           card={this.state.cards[index]}
                           addCard={this.addCard}
                           ref={(ref) => { this.cardComponents[index] = ref }}
-                          closeCard={() => { this.closeCard(index+1) }}
-                          id={index+1}
-                          updateStatus={(status) => { this.updateCardStatus(status, index+1) }} />)
+                          closeCard={() => { this.closeCard(card.id) }}
+                          id={card.id}
+                          updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
                       }
                     })
                 }
@@ -300,7 +303,7 @@ class CardModal extends React.Component {
                               <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
                               {
                                   card.component.buttons.map((button, index) => {
-                                    if (button.visible) {
+                                    if (button.visible || button.type) {
                                       return (
                                         <div>
                                           <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>

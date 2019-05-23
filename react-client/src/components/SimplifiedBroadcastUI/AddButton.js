@@ -27,6 +27,8 @@ class AddButton extends React.Component {
     this.checkInvalidButtons = this.checkInvalidButtons.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
     this.onAddButtonCalled = 0
+    console.log('AddButton constructor state', this.state)
+    console.log('AddButton constructor props', this.props)
   }
 
   componentDidMount () {
@@ -77,12 +79,13 @@ class AddButton extends React.Component {
 
   onAddButton (button, index) {
     console.log('onAddButton AddButton', button)
-    this.onAddButtonCalled++
     if (index >= 0) {
       this.finalButtons[index] = button.button
     } else {
       this.finalButtons.push(button)
     }
+    this.onAddButtonCalled++
+    console.log('onAddButtonCalled', this.onAddButtonCalled)
     let buttonComponents = this.buttonComponents.filter(button => button !== null)
     if (this.onAddButtonCalled === this.finalButtons.length && this.finalButtons.length === buttonComponents.length) {
       console.log('done adding', this.finalButtons)
