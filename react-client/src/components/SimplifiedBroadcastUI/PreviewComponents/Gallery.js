@@ -12,6 +12,7 @@ class Gallery extends React.Component {
     super(props, context)
     this.edit = this.edit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
+    this.getDeletePayload = this.getDeletePayload.bind(this)
     this.state = {
       editing: false,
       cards: this.props.cards ? this.props.cards : []
@@ -41,6 +42,19 @@ class Gallery extends React.Component {
     this.setState({editing: true})
   }
 
+  getDeletePayload() {
+    let deletePayload = []
+    for (let i = 0; i < this.state.cards.length; i++) {
+      for (let j = 0; j < this.state.cards[i].buttons.length; j++) {
+        let button = this.state.cards[i].buttons[j]
+        if (button.payload) {
+          deletePayload.push(button.payload)
+        }
+      }
+    }
+    return deletePayload
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -48,7 +62,7 @@ class Gallery extends React.Component {
           this.state.editing && this.openCardModal()
         }
         {
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
