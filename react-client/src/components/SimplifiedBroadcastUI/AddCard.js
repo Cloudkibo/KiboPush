@@ -37,6 +37,7 @@ class AddCard extends React.Component {
     this.updateFile = this.updateFile.bind(this)
     //this.props.updateStatus({title: this.state.title, subtitle: this.state.subtitle})
     console.log('AddCard constructor state', this.state)
+    console.log('AddCard constructor props', this.props)
   }
 
   updateFile (file) {
