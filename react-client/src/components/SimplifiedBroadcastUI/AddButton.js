@@ -131,7 +131,8 @@ class AddButton extends React.Component {
         return
       }
     }
-    if (this.props.required && this.buttonComponents.length === 0) {
+    let visibleButtons = this.state.buttons.filter(button => button.visible)
+    if (this.props.required && visibleButtons.length === 0) {
       this.props.updateButtonStatus({buttonDisabled: true})
     } else {
       this.props.updateButtonStatus({buttonDisabled: false})
