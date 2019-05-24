@@ -224,14 +224,12 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
-    console.log('previousScrollHeight', this.previousScrollHeight)
-    console.log('scrollHeight', this.refs.chatScroll.scrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
       if (this.props.userChat && this.props.userChat.length > 0) {
-        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
       }
       this.props.disableScroll()
     }
@@ -281,9 +279,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     this.closeDialogRecording()
-    console.log('recordedBlob is: ', recordedBlob)
     var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
-    console.log('files', file)
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -301,22 +297,6 @@ class ChatBox extends React.Component {
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
-    /* const promise = new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(recordedBlob.blob)
-      reader.onload = () => {
-        if (!reader.result) {
-          resolve(reader.result)
-        } else {
-          reject(Error('Failed to convert'))
-        }
-      }
-    })
-    promise.then(result => {
-      console.log('result', result)
-    }, err => {
-      console.log('error', err)
-    }) */
   }
 
   showStickers () {
@@ -1019,7 +999,7 @@ class ChatBox extends React.Component {
                             this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
                               ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
@@ -1180,7 +1160,7 @@ class ChatBox extends React.Component {
                                 </Element>
                               </div>
                               : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>

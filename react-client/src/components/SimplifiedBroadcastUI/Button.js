@@ -26,7 +26,7 @@ class Button extends React.Component {
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false,
       showSequenceMessage: false,
-      buttonDisabled: true,
+      buttonDisabled: this.props.edit ? false : true,
       errorMsg:''
     }
 

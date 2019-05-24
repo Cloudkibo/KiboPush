@@ -10,7 +10,7 @@ class TextModal extends React.Component {
     this.state = {
       text: props.text ? props.text : '',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions.slice(0, 2) : ['open website', 'open webview'],
       buttonLimit: 3,
       buttonDisabled: false
     }
@@ -91,7 +91,7 @@ class TextModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>

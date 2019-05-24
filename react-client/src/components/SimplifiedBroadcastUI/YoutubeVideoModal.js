@@ -65,6 +65,10 @@ class YoutubeVideoModal extends React.Component {
   }
 
   updateFile (file) {
+    if (file === 'ERR_LIMIT_REACHED') {
+      this.setState({fileSizeExceeded: true, disabled: true, loading: false})
+      return
+    }
     console.log('updating YouTube file', file)
     this.uploadTemplate(file)
     // this.setState({file, videoLink: file.fileurl.url}, () => {
@@ -119,11 +123,11 @@ class YoutubeVideoModal extends React.Component {
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({disabled: false, loading: true}, () => {
+        this.setState({disabled: false, loading: true, fileSizeExceeded: false}, () => {
           this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
         })
       } else {
-        this.setState({disabled: true})
+        this.setState({disabled: true, file: null, fileSizeExceeded: false})
       }
     }
   }
@@ -142,8 +146,9 @@ class YoutubeVideoModal extends React.Component {
             <div className='col-6'>
               <h4>YouTube Link:</h4>
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : ''}} onChange={this.handleLinkChange} className='form-control' />
-              <div style={{color: 'red'}}>{this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link' : ''}</div>
-              <div style={{marginBottom: '30px', color: 'green'}}>{this.state.loading ? '*Please wait for the YouTube video to download' : ''}</div>
+              <div style={{color: 'red'}}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook. Please try another video.' : ''}</div>
+              <div style={{color: 'red'}}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
+              <div style={{marginBottom: '30px', color: 'green'}}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
               {
                 this.state.file &&
                 <AddButton

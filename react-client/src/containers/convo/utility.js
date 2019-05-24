@@ -13,21 +13,21 @@
         }
       }
       if (broadcast[i].componentType === 'audio') {
-        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+        if ((broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') && (broadcast[i].file === undefined || broadcast[i].file === '')) {
           msg.error('Select an audio file')
           isValid = false
           break
         }
       }
       if (broadcast[i].componentType === 'video') {
-        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+        if ((broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') && (broadcast[i].file === undefined || broadcast[i].file === '')) {
           msg.error('Select a video file')
           isValid = false
           break
         }
       }
       if (broadcast[i].componentType === 'file') {
-        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+        if ((broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') && (broadcast[i].file === undefined || broadcast[i].file === '')) {
           msg.error('Select a valid file')
           isValid = false
           break
@@ -41,7 +41,7 @@
         }
       }
       if (broadcast[i].componentType === 'media') {
-        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+        if ((broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') && (broadcast[i].file === undefined || broadcast[i].file === '')) {
           msg.error('Select an image or video')
           isValid = false
           break
