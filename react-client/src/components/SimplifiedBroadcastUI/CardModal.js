@@ -70,7 +70,7 @@ class CardModal extends React.Component {
             break
           }
         }
-        this.setState({cards, numOfElements: ++this.state.numOfElements})
+        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true})
       }
   }
 
@@ -108,7 +108,7 @@ class CardModal extends React.Component {
         elementUrl: card.elementUrl,
         webviewsize: card.webviewsize,
         default_action: card.default_action,
-        buttons: finalCards[0].buttons})
+        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons})
     } else if (visibleCards.length > 1) {
       let cards = visibleCards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
@@ -174,7 +174,6 @@ class CardModal extends React.Component {
       return
     }
     cards[id - 1].component = {
-      id: id,
       title: '',
       subtitle: '',
       buttons: []
@@ -308,7 +307,7 @@ class CardModal extends React.Component {
                                       return (
                                         <div>
                                           <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                          <h5 style={{color: '#0782FF'}}>{button.title}</h5>
+                                          <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
                                         </div>
                                       )
                                     }
