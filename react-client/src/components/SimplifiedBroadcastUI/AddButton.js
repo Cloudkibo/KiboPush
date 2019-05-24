@@ -69,7 +69,7 @@ class AddButton extends React.Component {
   closeButton (index) {
     let buttons = this.state.buttons
     buttons[index].visible = false
-    buttons[index].title = `Button ${index + 1}`
+    buttons[index].title = ''
     this.buttonComponents[index] = null
     this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
       this.checkInvalidButtons()
@@ -131,7 +131,8 @@ class AddButton extends React.Component {
         return
       }
     }
-    if (this.props.required && this.buttonComponents.length === 0) {
+    let visibleButtons = this.state.buttons.filter(button => button.visible)
+    if (this.props.required && visibleButtons.length === 0) {
       this.props.updateButtonStatus({buttonDisabled: true})
     } else {
       this.props.updateButtonStatus({buttonDisabled: false})
