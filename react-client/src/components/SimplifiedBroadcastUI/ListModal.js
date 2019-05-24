@@ -320,7 +320,7 @@ class ListModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>

@@ -71,7 +71,7 @@ class AudioModal extends React.Component {
                     Cancel
                 </button>
                 <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>
