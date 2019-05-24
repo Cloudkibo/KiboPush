@@ -71,6 +71,7 @@ class AddButton extends React.Component {
     buttons[index].visible = false
     buttons[index].title = `Button ${index + 1}`
     this.buttonComponents[index] = null
+    this.finalButtons[index] = null
     this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
       this.checkInvalidButtons()
     })
