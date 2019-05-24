@@ -229,7 +229,7 @@ class ChatBox extends React.Component {
     } else {
       this.scrollToTop()
       if (this.props.userChat && this.props.userChat.length > 0) {
-        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
       }
       this.props.disableScroll()
     }
@@ -999,7 +999,7 @@ class ChatBox extends React.Component {
                             this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
                               ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
@@ -1160,7 +1160,7 @@ class ChatBox extends React.Component {
                                 </Element>
                               </div>
                               : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
