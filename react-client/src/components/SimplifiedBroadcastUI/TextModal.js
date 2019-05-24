@@ -10,7 +10,7 @@ class TextModal extends React.Component {
     this.state = {
       text: props.text ? props.text : '',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions.slice(0, 2) : ['open website', 'open webview'],
       buttonLimit: 3,
       buttonDisabled: false
     }
@@ -75,7 +75,7 @@ class TextModal extends React.Component {
                         this.state.buttons.map((button, index) => {
                           if (button.visible) {
                             return (
-                              <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF'}}>{button.title}</div>
+                              <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
                             )
                           }
                         })
