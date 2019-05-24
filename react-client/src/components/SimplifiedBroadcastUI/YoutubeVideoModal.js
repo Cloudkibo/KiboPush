@@ -127,7 +127,7 @@ class YoutubeVideoModal extends React.Component {
           this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
         })
       } else {
-        this.setState({disabled: true, fileSizeExceeded: false})
+        this.setState({disabled: true, file: null, fileSizeExceeded: false})
       }
     }
   }
