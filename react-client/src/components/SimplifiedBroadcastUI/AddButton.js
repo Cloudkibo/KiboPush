@@ -70,6 +70,7 @@ class AddButton extends React.Component {
     let buttons = this.state.buttons
     buttons[index].visible = false
     buttons[index].title = `Button ${index + 1}`
+    this.finalButtons[index] = null
     this.buttonComponents[index] = null
     this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
       this.checkInvalidButtons()
@@ -87,9 +88,10 @@ class AddButton extends React.Component {
     this.onAddButtonCalled++
     console.log('onAddButtonCalled', this.onAddButtonCalled)
     let buttonComponents = this.buttonComponents.filter(button => button !== null)
-    if (this.onAddButtonCalled === this.finalButtons.length && this.finalButtons.length === buttonComponents.length) {
-      console.log('done adding', this.finalButtons)
-      this.props.addComponent(this.finalButtons)
+    let visibleFinalButtons = this.finalButtons.filter(button => button !== null)
+    if (this.onAddButtonCalled === visibleFinalButtons.length && visibleFinalButtons.length === buttonComponents.length) {
+      console.log('done adding', visibleFinalButtons)
+      this.props.addComponent(visibleFinalButtons)
     }
   }
 
@@ -122,17 +124,19 @@ class AddButton extends React.Component {
   checkInvalidButtons () {
     for (let i = 0; i < this.buttonComponents.length; i++) {
       if (this.state.buttons[i] && this.state.buttons[i].visible && !this.buttonComponents[i]) {
+        console.log('first button disable case')
         this.props.updateButtonStatus({buttonDisabled: true})
         return
       }
       if (this.buttonComponents[i] && this.buttonComponents[i].getWrappedInstance().state.buttonDisabled) {
+        console.log('second button disable case')
         console.log('this.buttonComponents[i].getWrappedInstance()', this.buttonComponents[i].getWrappedInstance())
         this.props.updateButtonStatus({buttonDisabled: true})
         return
       }
     }
-    let visibleButtons = this.state.buttons.filter(button => button.visible)
-    if (this.props.required && visibleButtons.length === 0) {
+    if (this.props.required && this.state.numOfCurrentButtons === 0) {
+      console.log('third button disable case')
       this.props.updateButtonStatus({buttonDisabled: true})
     } else {
       this.props.updateButtonStatus({buttonDisabled: false})
@@ -149,6 +153,7 @@ class AddButton extends React.Component {
               if (button.visible) {
                 return (
                   <Button
+                    edit={this.props.edit}
                     handleText={this.props.handleText}
                     updateButtonStatus={this.updateButtonStatus}
                     button={this.finalButtons[index]}

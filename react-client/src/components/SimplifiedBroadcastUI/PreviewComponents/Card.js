@@ -121,7 +121,7 @@ class Card extends React.Component {
       webviewsize: this.state.webviewsize,
       webviewurl: this.state.webviewurl,
       elementUrl: this.props.elementUrl,
-      buttons: this.state.buttons,
+      buttons: [].concat(this.state.buttons),
       title: this.state.title,
       subtitle: this.state.subtitle,
       imgSrc: this.state.imgSrc,
