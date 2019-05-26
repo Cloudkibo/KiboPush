@@ -294,54 +294,57 @@ class ProfileArea extends React.Component {
                       </div>
                     }
                     {
-                      this.state.isAssigned && this.state.role === 'team'
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Unassign team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                      </div>
-                      : this.state.showAssignTeam
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                        <div className='m-accordion__item-body'>
-                          <div className='m-accordion__item-content'>
-                            <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
-                              <option value='' disabled>Select team</option>
-                              {
-                                this.props.teams.map((team, i) => (
-                                  <option key={i} value={team._id}>{team.name}</option>
-                                ))
-                              }
-                            </select>
-                            <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
+                      this.props.user && this.props.user.role !== 'agent' &&
+                      (
+                        this.state.isAssigned && this.state.role === 'team'
+                        ? <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-users' />
+                            </span>
+                            <span className='m-accordion__item-title'>Unassign team</span>
+                            <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
                           </div>
                         </div>
-                      </div>
-                      : <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head collapsed'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-plus' />
-                          </span>
+                        : this.state.showAssignTeam
+                        ? <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-users' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign to team</span>
+                            <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
+                          </div>
+                          <div className='m-accordion__item-body'>
+                            <div className='m-accordion__item-content'>
+                              <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
+                                <option value='' disabled>Select team</option>
+                                {
+                                  this.props.teams.map((team, i) => (
+                                    <option key={i} value={team._id}>{team.name}</option>
+                                  ))
+                                }
+                              </select>
+                              <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                        : <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head collapsed'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-users' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign to team</span>
+                            <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
+                              <i className='la la-plus' />
+                            </span>
+                          </div>
+                        </div>
+                      )
                     }
                     {
                       this.state.isAssigned && this.state.role === 'agent'
