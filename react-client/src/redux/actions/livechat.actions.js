@@ -288,6 +288,7 @@ export function deletefile (data, handleRemove) {
 export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
+      console.log('sendAttachment response', res)
       handleSendAttachment(res)
     })
   }

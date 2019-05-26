@@ -567,7 +567,6 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
-    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
