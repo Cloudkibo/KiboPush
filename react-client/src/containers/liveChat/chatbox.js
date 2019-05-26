@@ -335,6 +335,7 @@ class ChatBox extends React.Component {
     this.toggleStickerPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
   }
 
   sendGif (gif) {
@@ -361,7 +362,7 @@ class ChatBox extends React.Component {
     })
     var payload = {
       componentType: 'thumbsUp',
-      fileurl: 'https://kibocdn.cloudkibo.com/public/img/thumbsup.png'
+      fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
     }
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
