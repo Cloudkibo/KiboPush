@@ -2,6 +2,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+import { getAccountsUrl } from '../../utility/utils'
 export const API_URL = '/api'
 // import store from '../store/store'
 
@@ -262,7 +263,7 @@ export function fetchUserChats (sessionid, data, handleFunction) {
 export function uploadAttachment (fileData, handleUpload) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/broadcasts/upload`, {
+    fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
       body: fileData,
       // eslint-disable-next-line no-undef
