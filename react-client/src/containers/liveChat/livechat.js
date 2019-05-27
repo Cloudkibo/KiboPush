@@ -126,7 +126,7 @@ class LiveChat extends React.Component {
   }
 
   handleSaveTags () {
-    var subscriberId = this.props.activeSession._id
+    var subscriberId = this.state.activeSession._id
     this.props.getSubscriberTags(subscriberId)
   }
 
@@ -322,6 +322,7 @@ class LiveChat extends React.Component {
                     tags={this.props.tags}
                     createTag={this.props.createTag}
                     assignTags={this.assignTags}
+                    tagOptions={this.state.tagOptions}
                   />
                 }
                 {
