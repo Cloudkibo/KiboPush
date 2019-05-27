@@ -149,7 +149,7 @@ class ProfileArea extends React.Component {
     this.setState({
       removeTag: value
     })
-    payload.tagId = value
+    payload.tag = value
     this.props.unassignTags(payload, this.msg)
   }
 
@@ -205,7 +205,7 @@ class ProfileArea extends React.Component {
       return
     }
     payload.subscribers = selectedIds
-    payload.tagId = this.state.addTag.value
+    payload.tag = this.state.addTag.label
     this.props.assignTags(payload, this.msg)
   }
 
@@ -413,7 +413,7 @@ class ProfileArea extends React.Component {
                     <span key={i} style={{display: 'flex'}} className='tagLabel'>
                       <label className='tagName'>{tag.tag}</label>
                       <div className='deleteTag' style={{marginLeft: '10px'}}>
-                        <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeTags(tag._id)} />
+                        <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeTags(tag.tag)} />
                       </div>
                     </span>
                   ))
@@ -504,7 +504,8 @@ ProfileArea.propTypes = {
   'unassignTags': PropTypes.func.isRequired,
   'tags': PropTypes.array.isRequired,
   'createTag': PropTypes.func.isRequired,
-  'assignTags': PropTypes.func.isRequired
+  'assignTags': PropTypes.func.isRequired,
+  'tagOptions': PropTypes.array.isRequired
 }
 
 export default ProfileArea
