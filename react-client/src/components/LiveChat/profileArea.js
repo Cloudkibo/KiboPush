@@ -310,17 +310,7 @@ class ProfileArea extends React.Component {
                       this.props.user && this.props.user.role !== 'agent' &&
                       (
                         this.state.isAssigned && this.state.role === 'team'
-                        ? <div className='m-accordion__item'>
-                          <div className='m-accordion__item-head'>
-                            <span className='m-accordion__item-icon'>
-                              <i className='fa fa-users' />
-                            </span>
-                            <span className='m-accordion__item-title'>Unassign team</span>
-                            <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
-                              <i className='la la-minus' />
-                            </span>
-                          </div>
-                        </div>
+                        ? <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
                         : this.state.showAssignTeam
                         ? <div className='m-accordion__item'>
                           <div className='m-accordion__item-head'>
@@ -361,17 +351,7 @@ class ProfileArea extends React.Component {
                     }
                     {
                       this.state.isAssigned && this.state.role === 'agent'
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-user' />
-                          </span>
-                          <span className='m-accordion__item-title'>Unassign Agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.unassignAgent} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                      </div>
+                      ? <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
                       : this.state.showAssignAgent
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
