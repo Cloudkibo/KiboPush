@@ -16,6 +16,7 @@ class AudioModal extends React.Component {
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleDone () {
@@ -31,11 +32,19 @@ class AudioModal extends React.Component {
   }
 
   updateFile (file) {
-    this.setState({file}, () => {
+    this.setState({file, edited: true}, () => {
       this.refs.audio.pause();
       this.refs.audio.load();
       this.refs.audio.play();
     })
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
@@ -67,7 +76,7 @@ class AudioModal extends React.Component {
 
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>

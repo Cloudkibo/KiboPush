@@ -9,7 +9,7 @@ class AddButton extends React.Component {
       if (props.buttons && props.buttons[i]) {
         buttons.push(props.buttons[i])
       } else {
-        buttons.push({visible: false, title: `Button ${i + 1}`})
+        buttons.push({visible: false, title: ``})
       }
     }
     this.state = {
@@ -33,7 +33,7 @@ class AddButton extends React.Component {
 
   componentDidMount () {
     if (this.props.required && !this.props.edit) {
-      this.updateButtonStatus({buttonDisabled: true})
+      this.updateButtonStatus({buttonDisabled: true, edited: false})
     }
   }
 

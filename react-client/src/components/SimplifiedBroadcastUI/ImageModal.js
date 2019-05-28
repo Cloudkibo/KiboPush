@@ -18,6 +18,7 @@ class ImageModal extends React.Component {
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateFile = this.updateFile.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleDone () {
@@ -35,11 +36,19 @@ class ImageModal extends React.Component {
   }
 
   updateImage (imgSrc) {
-    this.setState({imgSrc})
+    this.setState({imgSrc, edited: true})
   }
 
   updateFile (file) {
     this.setState({file})
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
@@ -71,7 +80,7 @@ class ImageModal extends React.Component {
             </div>
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || !this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>

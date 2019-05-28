@@ -17,13 +17,15 @@ class TextModal extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleTextChange (e) {
-    this.setState({text: e.target.value})
+    this.setState({text: e.target.value, edited: true})
   }
 
   updateButtonStatus (status) {
+    status.edited = true
     this.setState(status)
   }
 
@@ -37,6 +39,14 @@ class TextModal extends React.Component {
       componentType: 'text',
       text: this.state.text,
       buttons})
+  }
+
+  closeModal () {
+    if (!this.state.edited || (this.state.text === '' && this.state.buttons.length === 0)) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
@@ -87,7 +97,7 @@ class TextModal extends React.Component {
 
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>

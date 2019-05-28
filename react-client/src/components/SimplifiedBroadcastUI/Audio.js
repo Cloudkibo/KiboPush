@@ -116,7 +116,6 @@ class Audio extends React.Component {
   handleFile (fileInfo) {
     this.props.updateFile(fileInfo)
     this.setState({file: fileInfo.fileurl, showPreview: true})
-    this.props.handleFile(fileInfo)
   }
 
   onFilesError (error, file) {

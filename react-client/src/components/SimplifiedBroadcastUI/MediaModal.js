@@ -19,12 +19,14 @@ class MediaModal extends React.Component {
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
-      file: props.file ? props.file : null
+      file: props.file ? props.file : null,
+      edited: false
     }
     this.updateFile = this.updateFile.bind(this)
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleDone () {
@@ -47,21 +49,30 @@ class MediaModal extends React.Component {
 
   updateButtonStatus (status) {
     console.log('updateButtonStatus MediaModal', status)
+    status.edited = true
     this.setState(status)
   }
 
   updateImage (imgSrc) {
-    this.setState({imgSrc})
+    this.setState({imgSrc, edited: true})
   }
 
   updateFile (file) {
     console.log('updating file MediaModal', file)
-    this.setState({file}, () => {
+    this.setState({file, edited: true}, () => {
       if (this.refs.video) {
         this.refs.video.pause();
         this.refs.video.load();
       }
     })
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
@@ -136,7 +147,7 @@ class MediaModal extends React.Component {
             </div>
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
