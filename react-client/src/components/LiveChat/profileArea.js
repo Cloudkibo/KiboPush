@@ -42,6 +42,7 @@ class ProfileArea extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
     this.addTags = this.addTags.bind(this)
+    this.assignToTeam = this.assignToTeam.bind(this)
   }
 
   showDialog (subscriber, page) {
@@ -59,6 +60,18 @@ class ProfileArea extends React.Component {
       teamName: this.state.teamObject.name,
       subscriberId: this.props.activeSession._id,
       isAssigned: false
+    }
+    this.props.fetchTeamAgents(this.state.teamObject._id)
+    this.props.assignToTeam(data)
+  }
+
+  assignToTeam () {
+    this.setState({ showAssignTeam: !this.state.showAssignTeam, role: 'team', assignAdmin: false, isAssigned: true })
+    let data = {
+      teamId: this.state.teamObject._id,
+      teamName: this.state.teamObject.name,
+      subscriberId: this.props.activeSession._id,
+      isAssigned: true
     }
     this.props.fetchTeamAgents(this.state.teamObject._id)
     this.props.assignToTeam(data)
@@ -90,7 +103,7 @@ class ProfileArea extends React.Component {
     this.props.assignToAgent(data)
     if (this.state.agentObject._id !== this.props.user._id) {
       let notificationsData = {
-        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been assigned to you.`,
+        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been unassigned from you.`,
         category: {type: 'chat_session', id: this.props.activeSession._id},
         agentIds: [this.state.agentObject._id],
         companyId: this.props.activeSession.companyId
@@ -119,7 +132,7 @@ class ProfileArea extends React.Component {
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
-      sessionId: this.props.activeSession._id,
+      subscriberId: this.props.activeSession._id,
       isAssigned: true
     }
     this.props.assignToAgent(data)
@@ -297,17 +310,7 @@ class ProfileArea extends React.Component {
                       this.props.user && this.props.user.role !== 'agent' &&
                       (
                         this.state.isAssigned && this.state.role === 'team'
-                        ? <div className='m-accordion__item'>
-                          <div className='m-accordion__item-head'>
-                            <span className='m-accordion__item-icon'>
-                              <i className='fa fa-users' />
-                            </span>
-                            <span className='m-accordion__item-title'>Unassign team</span>
-                            <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
-                              <i className='la la-minus' />
-                            </span>
-                          </div>
-                        </div>
+                        ? <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
                         : this.state.showAssignTeam
                         ? <div className='m-accordion__item'>
                           <div className='m-accordion__item-head'>
@@ -348,17 +351,7 @@ class ProfileArea extends React.Component {
                     }
                     {
                       this.state.isAssigned && this.state.role === 'agent'
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-user' />
-                          </span>
-                          <span className='m-accordion__item-title'>Unassign Agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.unassignAgent} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                      </div>
+                      ? <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
                       : this.state.showAssignAgent
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
@@ -505,7 +498,8 @@ ProfileArea.propTypes = {
   'tags': PropTypes.array.isRequired,
   'createTag': PropTypes.func.isRequired,
   'assignTags': PropTypes.func.isRequired,
-  'tagOptions': PropTypes.array.isRequired
+  'tagOptions': PropTypes.array.isRequired,
+  'members': PropTypes.array.isRequired
 }
 
 export default ProfileArea

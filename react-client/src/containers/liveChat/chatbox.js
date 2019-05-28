@@ -136,6 +136,7 @@ class ChatBox extends React.Component {
 
   removeUrlMeta () {
     this.setState({urlmeta: {}})
+    this.props.urlMeta = {}
   }
 
   showDialogRecording () {
