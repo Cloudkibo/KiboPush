@@ -373,7 +373,8 @@ class Button extends React.Component {
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
-          <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <div style={{color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
           <h6 style={{marginTop: '30px'}}>When this button is pressed:</h6>
           {
                   !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&

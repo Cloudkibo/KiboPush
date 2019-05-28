@@ -23,7 +23,9 @@ class Gallery extends React.Component {
   openCardModal () {
     console.log('opening CardModal for edit', this.state)
     let cards = this.state.cards
-    cards.buttons = [].concat(cards.buttons)
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].buttons = [].concat(cards[i].buttons)
+    }
     return (<CardModal edit
       cards={cards}
       buttonActions={this.props.buttonActions}
