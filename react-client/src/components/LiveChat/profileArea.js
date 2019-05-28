@@ -70,7 +70,7 @@ class ProfileArea extends React.Component {
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
-      sessionId: this.props.activeSession._id,
+      subscriberId: this.props.activeSession._id,
       isAssigned: true
     }
     this.props.fetchTeamAgents(this.state.teamObject._id)
@@ -132,7 +132,7 @@ class ProfileArea extends React.Component {
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
-      sessionId: this.props.activeSession._id,
+      subscriberId: this.props.activeSession._id,
       isAssigned: true
     }
     this.props.assignToAgent(data)
@@ -518,7 +518,8 @@ ProfileArea.propTypes = {
   'tags': PropTypes.array.isRequired,
   'createTag': PropTypes.func.isRequired,
   'assignTags': PropTypes.func.isRequired,
-  'tagOptions': PropTypes.array.isRequired
+  'tagOptions': PropTypes.array.isRequired,
+  'members': PropTypes.array.isRequired
 }
 
 export default ProfileArea
