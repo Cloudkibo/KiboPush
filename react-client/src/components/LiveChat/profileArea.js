@@ -66,7 +66,7 @@ class ProfileArea extends React.Component {
   }
 
   assignToTeam () {
-    this.setState({ showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
+    this.setState({ showAssignTeam: !this.state.showAssignTeam, role: 'team', assignAdmin: false, isAssigned: true })
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
