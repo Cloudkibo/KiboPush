@@ -39,11 +39,11 @@ class CardModal extends React.Component {
     console.log('CardModal props in constructor', this.props)
     this.finalCards = []
     this.handleDone = this.handleDone.bind(this)
-    this.updateStatus = this.updateStatus.bind(this)
     this.addElement = this.addElement.bind(this)
     this.updateCardStatus = this.updateCardStatus.bind(this)
     this.closeCard = this.closeCard.bind(this)
     this.addCard = this.addCard.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
 
@@ -70,12 +70,8 @@ class CardModal extends React.Component {
             break
           }
         }
-        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true})
+        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true})
       }
-  }
-
-  updateStatus (status) {
-    this.setState(status)
   }
 
   handleDone () {
@@ -161,7 +157,12 @@ class CardModal extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid
     }
-    this.setState({cards, selectedIndex: id-1})
+    if (status.hasOwnProperty('edited')) {
+      this.setState({cards, selectedIndex: id-1, edited: status.edited})
+      delete status.edited
+    } else {
+      this.setState({cards, selectedIndex: id-1, edited: true})
+    }
   }
 
   closeCard (id) {
@@ -189,7 +190,7 @@ class CardModal extends React.Component {
         }
       }
     }
-    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex})
+    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true})
   }
 
   addCard (card) {
@@ -202,51 +203,25 @@ class CardModal extends React.Component {
     }
   }
 
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
+  }
+
   render () {
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add {visibleCards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
-              {/* <h4>Title:</h4>
-              <input placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
-              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.title === '' ? '*Required' : ''}</div>
-              <h4>Subtitle:</h4>
-              <input placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
-              <div style={{marginBottom: '30px', color: 'red'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
-              <h4>Image:</h4>
-              <Image
-                required
-                imgSrc={this.state.imgSrc}
-                file={this.state.file}
-                updateFile={this.updateFile}
-                updateImage={this.updateImage} />
-              <AddButton
-                required
-                replyWithMessage={this.props.replyWithMessage}
-                buttons={this.state.buttons}
-                finalButtons={this.props.buttons}
-                pageId={this.props.pageId}
-                buttonLimit={this.state.buttonLimit}
-                buttonActions={this.state.buttonActions}
-                ref={(ref) => { this.AddButton = ref }}
-                updateButtonStatus={this.updateStatus}
-                addComponent={(buttons) => this.addComponent(buttons)} />
-              <AddAction
-                default_action={this.state.default_action}
-                webviewurl={this.state.webviewurl}
-                webviewsize={this.state.webviewsize}
-                elementUrl={this.state.elementUrl}
-                updateActionStatus={this.updateStatus} /> */}
-
-
-
-
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
             <h4>Cards:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
@@ -285,7 +260,7 @@ class CardModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
 
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
                   <div className="carousel-inner">
@@ -342,9 +317,9 @@ class CardModal extends React.Component {
               </div>
             </div>
 
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>

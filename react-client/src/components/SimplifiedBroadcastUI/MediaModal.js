@@ -19,12 +19,14 @@ class MediaModal extends React.Component {
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
-      file: props.file ? props.file : null
+      file: props.file ? props.file : null,
+      edited: false
     }
     this.updateFile = this.updateFile.bind(this)
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleDone () {
@@ -47,16 +49,17 @@ class MediaModal extends React.Component {
 
   updateButtonStatus (status) {
     console.log('updateButtonStatus MediaModal', status)
+    status.edited = true
     this.setState(status)
   }
 
   updateImage (imgSrc) {
-    this.setState({imgSrc})
+    this.setState({imgSrc, edited: true})
   }
 
   updateFile (file) {
     console.log('updating file MediaModal', file)
-    this.setState({file}, () => {
+    this.setState({file, edited: true}, () => {
       if (this.refs.video) {
         this.refs.video.pause();
         this.refs.video.load();
@@ -64,17 +67,25 @@ class MediaModal extends React.Component {
     })
   }
 
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
+  }
+
   render () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Media Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>Media:</h4>
               <Media 
                 required 
@@ -106,7 +117,7 @@ class MediaModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
@@ -134,9 +145,9 @@ class MediaModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
