@@ -33,7 +33,8 @@ class ListModal extends React.Component {
       actionDisabled: false,
       cards,
       numOfElements: 2,
-      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact'
+      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact',
+      edited: false
     }
     this.elementLimit = 4
     this.listComponents = [null, null, null, null]
@@ -49,10 +50,11 @@ class ListModal extends React.Component {
     this.addCard = this.addCard.bind(this)
     this.addButton = this.addButton.bind(this)
     this.changeTopElementStyle = this.changeTopElementStyle.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   changeTopElementStyle (e) {
-    this.setState({topElementStyle: e.target.value})
+    this.setState({topElementStyle: e.target.value, edited: true})
   }
 
   addElement () {
@@ -65,12 +67,12 @@ class ListModal extends React.Component {
         } else if (!cards[3].visible) {
           cards[3].visible = true
         }
-        this.setState({cards, numOfElements: ++this.state.numOfElements})
+        this.setState({cards, numOfElements: ++this.state.numOfElements, edited: true})
       }
   }
 
   updateImage (image, file) {
-    this.setState({imgSrc: image, file})
+    this.setState({imgSrc: image, file, edited: true})
   }
 
   handleTitleChange (e) {
@@ -78,7 +80,7 @@ class ListModal extends React.Component {
       if (this.state.title === '') {
         this.setState({disabled: true})
       } else {
-        this.setState({disabled: false})
+        this.setState({disabled: false, edited: true})
       }
     })
   }
@@ -88,13 +90,14 @@ class ListModal extends React.Component {
       if (this.state.subtitle === '') {
         this.setState({disabled: true})
       } else {
-        this.setState({disabled: false})
+        this.setState({disabled: false, edited: true})
       }
     })
   }
 
   updateStatus (status) {
     console.log('ListModal updateStatus', status)
+    status.edited = true
     this.setState(status)
   }
 
@@ -119,7 +122,7 @@ class ListModal extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid
     }
-    this.setState({cards})
+    this.setState({cards, edited: true})
   }
 
   closeCard (id) {
@@ -128,7 +131,7 @@ class ListModal extends React.Component {
     if (this.state.numOfElements <= 2) {
       console.log('List needs at least two elements')
       cards[id-1].invalid = true
-      this.setState({cards})
+      this.setState({cards, edited: true})
       return
     }
     cards[id - 1].component = {
@@ -139,7 +142,7 @@ class ListModal extends React.Component {
     }
     cards[id - 1].visible = false
     this.listComponents[id - 1] = null
-    this.setState({cards, numOfElements: --this.state.numOfElements})
+    this.setState({cards, numOfElements: --this.state.numOfElements, edited: true})
   }
 
   handleDone () {
@@ -181,6 +184,14 @@ class ListModal extends React.Component {
       topElementStyle: this.state.topElementStyle,
       listItems: this.finalCards
     })
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
@@ -316,7 +327,7 @@ class ListModal extends React.Component {
 
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>

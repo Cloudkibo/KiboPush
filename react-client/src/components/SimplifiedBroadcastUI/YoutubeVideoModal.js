@@ -30,6 +30,7 @@ class YoutubeVideoModal extends React.Component {
     this.handleLinkChange = this.handleLinkChange.bind(this)
     this.uploadTemplate = this.uploadTemplate.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleLinkChange (e) {
@@ -123,12 +124,20 @@ class YoutubeVideoModal extends React.Component {
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({disabled: false, loading: true, fileSizeExceeded: false}, () => {
+        this.setState({disabled: false, loading: true, fileSizeExceeded: false, edited: true}, () => {
           this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
         })
       } else {
-        this.setState({disabled: true, file: null, fileSizeExceeded: false})
+        this.setState({disabled: true, file: null, fileSizeExceeded: false, edited: false})
       }
+    }
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
     }
   }
 
@@ -203,7 +212,7 @@ class YoutubeVideoModal extends React.Component {
             </div>
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>

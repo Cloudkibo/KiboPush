@@ -33,7 +33,7 @@ class AddButton extends React.Component {
 
   componentDidMount () {
     if (this.props.required && !this.props.edit) {
-      this.updateButtonStatus({buttonDisabled: true})
+      this.updateButtonStatus({buttonDisabled: true, edited: false})
     }
   }
 
