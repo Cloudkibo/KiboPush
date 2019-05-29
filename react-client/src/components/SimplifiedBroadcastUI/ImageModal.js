@@ -53,9 +53,9 @@ class ImageModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Image Component</h3>
           <hr />
@@ -69,11 +69,11 @@ class ImageModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '400px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '60vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '150px', borderRadius: '10px'}} />
+                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '30vh', borderRadius: '10px'}} />
                   }
                 </div>
               </div>

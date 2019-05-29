@@ -198,14 +198,14 @@ class ListModal extends React.Component {
     console.log('ListModal state', this.state)
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add List Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
 
               <h4>Top Element Style:</h4>
               <div style={{marginTop: '10px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', padding: '10px', marginBottom: '30px'}}>
@@ -263,7 +263,7 @@ class ListModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px', paddingBottom: '100px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px', paddingBottom: '100px'}} >
                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
                     visibleCards.map((card, index) => {
@@ -325,7 +325,7 @@ class ListModal extends React.Component {
               </div>
             </div>
 
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
                 <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel

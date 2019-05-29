@@ -260,7 +260,7 @@ class CardModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
 
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
                   <div className="carousel-inner">
@@ -317,7 +317,7 @@ class CardModal extends React.Component {
               </div>
             </div>
 
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
                 <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel

@@ -78,14 +78,14 @@ class MediaModal extends React.Component {
   render () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add Media Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>Media:</h4>
               <Media 
                 required 
@@ -117,7 +117,7 @@ class MediaModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
@@ -145,7 +145,7 @@ class MediaModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
                 <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
