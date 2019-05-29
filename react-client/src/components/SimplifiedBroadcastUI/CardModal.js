@@ -214,14 +214,14 @@ class CardModal extends React.Component {
   render () {
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.props.closeModal}>
           <h3>Add {visibleCards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
             <h4>Cards:</h4>
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
@@ -260,7 +260,7 @@ class CardModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', marginLeft: '-50px'}} >
 
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
                   <div className="carousel-inner">

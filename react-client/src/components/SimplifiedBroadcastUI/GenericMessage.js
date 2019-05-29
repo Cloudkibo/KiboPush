@@ -123,10 +123,12 @@ class GenericMessage extends React.Component {
   }
 
   showAddComponentModal (componentType) {
+    document.body.style.overflow = 'hidden'
     this.setState({isShowingAddComponentModal: true, componentType})
   }
 
   closeAddComponentModal () {
+    document.body.style.overflow = 'auto'
     this.setState({isShowingAddComponentModal: false})
   }
 
