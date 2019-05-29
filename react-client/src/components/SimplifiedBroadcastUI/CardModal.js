@@ -271,11 +271,12 @@ class CardModal extends React.Component {
                           <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
                               {
                                   card.component.image_url &&
-                                  <img src={card.component.image_url} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
+                                  <img src={card.component.image_url} style={{maxHeight: '25vh', minWidth: '250px', padding: '25px', margin: '-25px'}} />
                               }
                               <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
                               <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
-                              <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                              <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                              <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
                               {
                                   card.component.buttons.map((button, index) => {
                                     if (button.visible || button.type) {
