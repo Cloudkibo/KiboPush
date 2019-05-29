@@ -316,8 +316,8 @@ class Button extends React.Component {
   }
 
   changeUrl (event) {
-    console.log('event', event.target.value)
-    if (isWebURL(this.state.url) && this.state.title !== '') {
+    console.log('chaning website url', event.target.value)
+    if (isWebURL(event.target.value) && this.state.title !== '') {
       console.log('buttonDisabled: false')
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
@@ -332,9 +332,8 @@ class Button extends React.Component {
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
-    console.log('isWebURL(this.state.webviewurl)', isWebURL(this.state.webviewurl))
-    console.log('this.state.title', this.state.title)
-    if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
+    console.log('changing webviewurl', e.target.value)
+    if (isWebURL(e.target.value) && this.state.title !== '') {
       // this.setState({buttonDisabled: false})
       // if (this.props.updateButtonStatus) {
       //   this.props.updateButtonStatus({buttonDisabled: false})
