@@ -152,7 +152,7 @@ class YoutubeVideoModal extends React.Component {
           <h3>Add Video from YouTube </h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>YouTube Link:</h4>
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : ''}} onChange={this.handleLinkChange} className='form-control' />
               <div style={{color: 'red'}}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook. Please try another video.' : ''}</div>
