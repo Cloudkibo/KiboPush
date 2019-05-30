@@ -199,9 +199,9 @@ class ListModal extends React.Component {
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-        onClose={this.props.closeModal}>
+        onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+          onClose={this.closeModal}>
           <h3>Add List Component</h3>
           <hr />
           <div className='row'>
@@ -280,7 +280,8 @@ class ListModal extends React.Component {
                           <div className='row' style={{padding: '10px'}}>
                             <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
                               <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
-                              <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                              <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                              <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '12px'}}>{card.component.default_action && card.component.default_action.url}</p>
                             </div>
                             {!largeStyle && <div className='col-6'>
                               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >

@@ -128,7 +128,7 @@ class AddAction extends React.Component {
 
   handleClose () {
     this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false})
-    this.props.updateActionStatus({elementUrl: '', webviewurl: '', webviewsize: 'FULL', actionDisabled: false})
+    this.props.updateActionStatus({default_action: null, elementUrl: '', webviewurl: '', webviewsize: 'FULL', actionDisabled: false})
   }
 
   render () {

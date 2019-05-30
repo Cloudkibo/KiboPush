@@ -121,7 +121,8 @@ class List extends React.Component {
                   <div className='row' style={{padding: '10px'}}>
                     <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
                       <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.title}</h6>
-                      <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.subtitle}</p>
+                      <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '12px'}}>{card.subtitle}</p>
+                      <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '12px'}}>{card.default_action && card.default_action.url}</p>
                     </div>
                     {!largeStyle && <div className='col-6'>
                       <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
