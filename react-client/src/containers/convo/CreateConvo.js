@@ -488,7 +488,7 @@ class CreateConvo extends React.Component {
                       {
                         this.state.tabActive === 'broadcast' &&
                         <div className='pull-right'>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.reset}>
+                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
                             Reset
                           </button>
                           <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>

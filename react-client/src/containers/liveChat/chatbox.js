@@ -131,6 +131,12 @@ class ChatBox extends React.Component {
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
+    this.removeUrlMeta = this.removeUrlMeta.bind(this)
+  }
+
+  removeUrlMeta () {
+    this.setState({urlmeta: {}})
+    this.props.urlMeta = {}
   }
 
   showDialogRecording () {
@@ -330,6 +336,7 @@ class ChatBox extends React.Component {
     this.toggleStickerPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
   }
 
   sendGif (gif) {
@@ -347,6 +354,7 @@ class ChatBox extends React.Component {
     this.toggleGifPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
   }
 
   sendThumbsUp () {
@@ -355,13 +363,14 @@ class ChatBox extends React.Component {
     })
     var payload = {
       componentType: 'thumbsUp',
-      fileurl: 'https://app.kibopush.com/img/thumbsup.png'
+      fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
     }
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
     this.props.sendChatMessage(data)
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
     this.setState({textAreaValue: ''})
   }
 
@@ -567,7 +576,6 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
-    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
@@ -1832,8 +1840,9 @@ class ChatBox extends React.Component {
                   {
                      JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                      <div style={{clear: 'both', display: 'block'}}>
-                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
-                         <table style={{maxWidth: '318px'}}>
+                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block', padding: '5px'}}>
+                         <i style={{float: 'right', color: 'red', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
+                         <table style={{maxWidth: '318px', margin: '10px'}}>
                            {
                              this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                              ? <tbody>

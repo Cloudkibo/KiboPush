@@ -23,7 +23,9 @@ class Gallery extends React.Component {
   openCardModal () {
     console.log('opening CardModal for edit', this.state)
     let cards = this.state.cards
-    cards.buttons = [].concat(cards.buttons)
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].buttons = [].concat(cards[i].buttons)
+    }
     return (<CardModal edit
       cards={cards}
       buttonActions={this.props.buttonActions}
@@ -82,7 +84,8 @@ class Gallery extends React.Component {
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
-                    <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{card.subtitle}</p>
+                    <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.subtitle}</p>
+                    <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.default_action && card.default_action.url}</p>
                     {
                         card.buttons.map((button, index) => {
                             return (

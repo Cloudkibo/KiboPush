@@ -316,8 +316,8 @@ class Button extends React.Component {
   }
 
   changeUrl (event) {
-    console.log('event', event.target.value)
-    if (isWebURL(this.state.url) && this.state.title !== '') {
+    console.log('chaning website url', event.target.value)
+    if (isWebURL(event.target.value) && this.state.title !== '') {
       console.log('buttonDisabled: false')
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
@@ -332,9 +332,8 @@ class Button extends React.Component {
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
-    console.log('isWebURL(this.state.webviewurl)', isWebURL(this.state.webviewurl))
-    console.log('this.state.title', this.state.title)
-    if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
+    console.log('changing webviewurl', e.target.value)
+    if (isWebURL(e.target.value) && this.state.title !== '') {
       // this.setState({buttonDisabled: false})
       // if (this.props.updateButtonStatus) {
       //   this.props.updateButtonStatus({buttonDisabled: false})
@@ -373,7 +372,8 @@ class Button extends React.Component {
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
-          <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <div style={{color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
           <h6 style={{marginTop: '30px'}}>When this button is pressed:</h6>
           {
                   !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&

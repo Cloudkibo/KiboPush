@@ -29,6 +29,7 @@ import {
   loadTags
 } from '../../redux/actions/tags.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
 
 // Components
 import INFO from '../../components/LiveChat/info.js'
@@ -126,7 +127,7 @@ class LiveChat extends React.Component {
   }
 
   handleSaveTags () {
-    var subscriberId = this.props.activeSession._id
+    var subscriberId = this.state.activeSession._id
     this.props.getSubscriberTags(subscriberId)
   }
 
@@ -150,7 +151,10 @@ class LiveChat extends React.Component {
   componentWillMount () {
     this.fetchSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     this.props.loadTags()
-    this.props.loadTeamsList()
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList()
+      this.props.loadMembersList()
+    }
   }
 
   componentDidMount () {
@@ -308,7 +312,7 @@ class LiveChat extends React.Component {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                   <PROFILEAREA
                     teams={this.props.teams ? this.props.teams : []}
-                    agents={this.props.teamUniqueAgents ? this.props.teamUniqueAgents : []}
+                    agents={this.props.teamUniqueAgents && this.props.teamUniqueAgents.length > 0 ? this.props.teamUniqueAgents : this.props.members ? this.props.members : []}
                     subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
                     activeSession={this.state.activeSession}
                     changeActiveSession={this.changeActiveSession}
@@ -322,6 +326,8 @@ class LiveChat extends React.Component {
                     tags={this.props.tags}
                     createTag={this.props.createTag}
                     assignTags={this.assignTags}
+                    tagOptions={this.state.tagOptions}
+                    members={this.props.members}
                   />
                 }
                 {
@@ -357,7 +363,8 @@ function mapStateToProps (state) {
     teams: (state.teamsInfo.teams),
     subscriberTags: (state.tagsInfo.subscriberTags),
     socketMessage: (state.liveChat.socketMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    members: (state.membersInfo.members)
   }
 }
 
@@ -382,7 +389,8 @@ function mapDispatchToProps (dispatch) {
     fetchSingleSession,
     resetSocket,
     resetUnreadSession,
-    updateUserChat
+    updateUserChat,
+    loadMembersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
