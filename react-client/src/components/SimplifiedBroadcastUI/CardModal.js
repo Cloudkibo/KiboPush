@@ -263,6 +263,15 @@ class CardModal extends React.Component {
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
 
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
+                  <ol className="carousel-indicators">
+                    {
+                      this.state.cards.map((card, index) => {
+                        if (card.visible) {  
+                          return (<li backgroundColor="black" data-target="#carouselExampleControls" data-slide-to={index} className="active"></li>)
+                        }
+                      })
+                    }
+                  </ol>
                   <div className="carousel-inner">
                   {
                     this.state.cards.map((card, index) => {
