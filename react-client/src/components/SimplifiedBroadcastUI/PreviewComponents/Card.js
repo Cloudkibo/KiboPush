@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../../redux/actions/broadcast.actions'
-import CardModal from '../CardModal'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -14,9 +13,7 @@ class Card extends React.Component {
     this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.edit = this.edit.bind(this)
-    this.closeEdit = this.closeEdit.bind(this)
     this.state = {
-      editing: false,
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
       buttons: props.buttons ? props.buttons : [],
@@ -106,8 +103,7 @@ class Card extends React.Component {
     }
   }
 
-  openCardModal () {
-    console.log('opening CardModal for edit', this.state)
+  edit () {
     let file = {
       fileurl: this.state.fileurl,
       image_url: this.state.image_url,
@@ -131,32 +127,17 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
     }]
-    return (<CardModal edit
-      id={this.props.id}
-      cards={cards}
-      buttonActions={this.props.buttonActions}
-      replyWithMessage={this.props.replyWithMessage}
-      pageId={this.props.pageId}
-      closeModal={this.closeEdit}
-      addComponent={this.props.addComponent}
-      hideUserOptions={this.props.hideUserOptions} />)
-  }
-
-  closeEdit () {
-    console.log('closeEdit Card')
-    this.setState({editing: false})
-  }
-
-  edit () {
-    this.setState({editing: true})
+    this.props.editComponent('card', {
+      edit: true,
+      id: this.props.id,
+      cards: cards,
+      buttonActions: this.props.buttonActions
+    })
   }
 
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openCardModal()
-        }
         {
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
