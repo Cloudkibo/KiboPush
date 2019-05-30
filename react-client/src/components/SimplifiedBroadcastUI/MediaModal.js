@@ -26,6 +26,7 @@ class MediaModal extends React.Component {
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.updateStatus = this.updateStatus.bind(this)
     this.closeModal = this.closeModal.bind(this)
   }
 
@@ -53,13 +54,18 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
+  updateStatus (status) {
+    status.edited = true
+    this.setState(status)
+  }
+
   updateImage (imgSrc) {
     this.setState({imgSrc, edited: true})
   }
 
   updateFile (file) {
     console.log('updating file MediaModal', file)
-    this.setState({file, edited: true}, () => {
+    this.setState({file, edited: true, disabled: false}, () => {
       if (this.refs.video) {
         this.refs.video.pause();
         this.refs.video.load();
@@ -89,6 +95,8 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media 
                 required 
+                updateStatus={this.updateStatus}
+                mediaType={this.state.imgSrc ? 'image' : 'video'}
                 pages={this.props.pages}
                 file={this.state.file}
                 updateImage={this.updateImage} 

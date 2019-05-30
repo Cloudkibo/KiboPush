@@ -5,45 +5,29 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../../redux/actions/broadcast.actions'
-import CardModal from '../CardModal'
 
 class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.edit = this.edit.bind(this)
-    this.closeEdit = this.closeEdit.bind(this)
     this.getDeletePayload = this.getDeletePayload.bind(this)
     this.state = {
-      editing: false,
       cards: this.props.cards ? this.props.cards : []
     }
     console.log('Gallery constructor state', this.state)
   }
 
-  openCardModal () {
-    console.log('opening CardModal for edit', this.state)
+  edit () {
     let cards = this.state.cards
     for (let i = 0; i < cards.length; i++) {
       cards[i].buttons = [].concat(cards[i].buttons)
     }
-    return (<CardModal edit
-      cards={cards}
-      buttonActions={this.props.buttonActions}
-      id={this.props.id}
-      replyWithMessage={this.props.replyWithMessage}
-      pageId={this.props.pageId}
-      closeModal={this.closeEdit}
-      addComponent={this.props.addComponent}
-      hideUserOptions={this.props.hideUserOptions} />)
-  }
-
-  closeEdit () {
-    console.log('closeEdit Card')
-    this.setState({editing: false})
-  }
-
-  edit () {
-    this.setState({editing: true})
+    this.props.editComponent('gallery', {
+      edit: true,
+      cards: cards,
+      buttonActions: this.props.buttonActions,
+      id: this.props.id
+    })
   }
 
   getDeletePayload() {
@@ -62,9 +46,6 @@ class Gallery extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openCardModal()
-        }
         {
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>

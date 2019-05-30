@@ -12,7 +12,6 @@ import {
 } from '../../../redux/actions/broadcast.actions'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
-import ImageModal from '../ImageModal'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -20,25 +19,19 @@ class Image extends React.Component {
     super(props, context)
     this.state = {
       file: this.props.file ? this.props.file : '',
-      imgSrc: this.props.image ? this.props.image.url : '',
-      editing: false
+      imgSrc: this.props.image ? this.props.image.url : ''
     }
     this.edit = this.edit.bind(this)
-    this.closeEditButton = this.closeEditButton.bind(this)
-    this.openImageModal = this.openImageModal.bind(this)
-  }
-
-  closeEditButton () {
-    this.setState({editing: false})
   }
 
   edit () {
     this.setState({editing: true})
-  }
-
-  openImageModal () {
-    console.log('opening ImageModal for edit', this.state)
-    return (<ImageModal edit file={this.state.file} imgSrc={this.state.imgSrc} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    this.props.editComponent('image', {
+      edit: true,
+      file: this.state.file,
+      imgSrc: this.state.imgSrc,
+      id: this.props.id
+    })
   }
 
   componentDidMount () {
@@ -65,9 +58,6 @@ class Image extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openImageModal()
-        }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={(this.state.imgWidth ? {marginLeft: this.state.imgWidth + 'px', height: 20 + 'px'} : {float: 'right', height: 20 + 'px', margin: -15 + 'px'})}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>

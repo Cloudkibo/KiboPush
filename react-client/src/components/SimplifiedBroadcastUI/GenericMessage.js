@@ -122,14 +122,14 @@ class GenericMessage extends React.Component {
     this.setState({isShowingModalCloseAlert: true})
   }
 
-  showAddComponentModal (componentType) {
+  showAddComponentModal (componentType, editData) {
     document.body.style.overflow = 'hidden'
-    this.setState({isShowingAddComponentModal: true, componentType})
+    this.setState({isShowingAddComponentModal: true, componentType, editData})
   }
 
   closeAddComponentModal () {
     document.body.style.overflow = 'auto'
-    this.setState({isShowingAddComponentModal: false})
+    this.setState({isShowingAddComponentModal: false, editData: null})
   }
 
   showDialog () {
@@ -376,7 +376,9 @@ class GenericMessage extends React.Component {
   openModal () {
     let modals = {
       'text': (<TextModal 
-        buttons={[]} pages={this.props.pages} 
+        buttons={[]}
+        {...this.state.editData}
+        pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
         replyWithMessage={this.props.replyWithMessage} 
         pageId={this.props.pageId} 
@@ -386,6 +388,7 @@ class GenericMessage extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal 
         buttons={[]} 
+        {...this.state.editData}
         pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
         replyWithMessage={this.props.replyWithMessage} 
@@ -395,6 +398,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'list': (<ListModal 
         buttons={[]} 
+        {...this.state.editData}
         pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
         replyWithMessage={this.props.replyWithMessage} 
@@ -403,13 +407,15 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
       'image': (<ImageModal 
+        {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} 
         pageId={this.props.pageId} 
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
-      'file': (<FileModal 
+      'file': (<FileModal
+        {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} 
         pageId={this.props.pageId} 
@@ -417,13 +423,15 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
       'audio': (<AudioModal 
+        {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog} 
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
-      'media': (<MediaModal 
+      'media': (<MediaModal
         buttons={[]} 
+        {...this.state.editData}
         buttonActions={this.props.buttonActions} 
         pages={this.props.pages} 
         replyWithMessage={this.props.replyWithMessage} 
@@ -433,6 +441,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal 
         buttons={[]} 
+        {...this.state.editData}
         buttonActions={this.props.buttonActions} 
         pages={this.props.pages} 
         replyWithMessage={this.props.replyWithMessage} 
@@ -452,7 +461,7 @@ class GenericMessage extends React.Component {
       'text': {
         component: (<Text
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           key={componentId}
           buttons={broadcast.buttons}
@@ -474,7 +483,7 @@ class GenericMessage extends React.Component {
       'image': {
         component: (<Image
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           file={broadcast.file}
           image={broadcast.fileurl}
@@ -496,7 +505,7 @@ class GenericMessage extends React.Component {
           id={componentId}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
@@ -538,7 +547,7 @@ class GenericMessage extends React.Component {
       'gallery': {
         component: (<Gallery 
           id={componentId} 
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId} 
           pages={this.props.pages} 
           key={componentId} 
@@ -558,7 +567,7 @@ class GenericMessage extends React.Component {
       'audio': {
         component: (<Audio
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
           file={broadcast.file ? broadcast.file : null}
@@ -577,7 +586,7 @@ class GenericMessage extends React.Component {
       'file': {
         component: (<File
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
           file={broadcast.file ? broadcast.file : null}
@@ -595,7 +604,7 @@ class GenericMessage extends React.Component {
       'list': {
         component: (<List
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
@@ -620,7 +629,7 @@ class GenericMessage extends React.Component {
       'media': {
         component: (<Media
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
