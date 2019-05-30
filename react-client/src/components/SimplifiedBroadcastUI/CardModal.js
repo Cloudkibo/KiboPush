@@ -215,9 +215,9 @@ class CardModal extends React.Component {
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-        onClose={this.props.closeModal}>
+        onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+          onClose={this.closeModal}>
           <h3>Add {visibleCards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
