@@ -23,7 +23,7 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import GiphyPicker from 'react-gif-picker'
+import { Selector } from 'react-giphy-selector'
 import {
   isEmoji,
   getmetaurl,
@@ -82,7 +82,8 @@ class ChatBox extends React.Component {
       disabledValue: false,
       record: false,
       buttonState: 'start',
-      recording: false
+      recording: false,
+      scrolling: true
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -253,7 +254,7 @@ class ChatBox extends React.Component {
   }
 
   showEmojiPicker () {
-    this.setState({showEmojiPicker: true})
+    this.setState({showEmojiPicker: true, scrolling: false})
   }
 
   toggleEmojiPicker () {
@@ -306,7 +307,7 @@ class ChatBox extends React.Component {
   }
 
   showStickers () {
-    this.setState({showStickers: true})
+    this.setState({showStickers: true, scrolling: false})
   }
 
   toggleStickerPicker () {
@@ -314,7 +315,7 @@ class ChatBox extends React.Component {
   }
 
   showGif () {
-    this.setState({showGifPicker: true})
+    this.setState({showGifPicker: true, scrolling: false})
   }
 
   toggleGifPicker () {
@@ -328,7 +329,8 @@ class ChatBox extends React.Component {
     }
     this.setState({
       componentType: 'sticker',
-      stickerUrl: sticker.image.hdpi
+      stickerUrl: sticker.image.hdpi,
+      scrolling: true
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
@@ -342,11 +344,12 @@ class ChatBox extends React.Component {
   sendGif (gif) {
     var payload = {
       componentType: 'gif',
-      fileurl: gif.downsized.url
+      fileurl: gif.images.downsized.gif_url
     }
     this.setState({
       componentType: 'gif',
-      stickerUrl: gif.downsized.url
+      stickerUrl: gif.images.downsized.gif_url,
+      scrolling: true
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
@@ -359,7 +362,8 @@ class ChatBox extends React.Component {
 
   sendThumbsUp () {
     this.setState({
-      componentType: 'thumbsUp'
+      componentType: 'thumbsUp',
+      scrolling: true
     })
     var payload = {
       componentType: 'thumbsUp',
@@ -499,6 +503,7 @@ class ChatBox extends React.Component {
           this.props.userChat.push(data)
         }
         this.newMessage = true
+        this.setState({scrolling: true})
       }
     }
   }
@@ -622,9 +627,14 @@ class ChatBox extends React.Component {
     }
     if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      if (!this.state.scrolling) {
+        this.updateScrollTop()
+      }
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
-    this.updateScrollTop()
+    if (this.state.scrolling) {
+      this.updateScrollTop()
+    }
   }
 
   createGallery (cards) {
@@ -900,7 +910,9 @@ class ChatBox extends React.Component {
         <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
             <div>
-              <GiphyPicker onSelected={(gif) => { this.sendGif(gif) }} />
+              <Selector
+                apiKey='Rpb3AYX4FAfuQB2ROb6srJUj5kbkLfT8'
+                onGifSelected={(gif) => { this.sendGif(gif) }} />
             </div>
           </PopoverBody>
         </Popover>
