@@ -35,6 +35,25 @@ class CardModal extends React.Component {
       actionDisabled: false,
       numOfElements: cards.filter(card => card.visible).length
     }
+
+    this.carouselIndicatorStyle = {
+      textIndent: '0',
+      margin: '0 2px',
+      width: '20px',
+      height: '20px',
+      border: 'none',
+      borderRadius: '100%',
+      lineHeight: '20px',
+      color: '#fff',
+      backgroundColor: '#999',
+      transition: 'all 0.25s ease'
+    }
+    this.carouselIndicatorActiveStyle = {
+      width: '25px',
+      height: '25px',
+      lineHeight: '25px',
+      backgroundColor: '#337ab7'
+    }
     console.log('CardModal state in constructor', this.state)
     console.log('CardModal props in constructor', this.props)
     this.finalCards = []
@@ -44,8 +63,12 @@ class CardModal extends React.Component {
     this.closeCard = this.closeCard.bind(this)
     this.addCard = this.addCard.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.toggleHover = this.toggleHover.bind(this)
   }
 
+  toggleHover (index, hover) {
+    this.setState({hover: hover ? index : -1})
+  }
 
   componentDidMount () {
     //Improve Later
@@ -263,15 +286,27 @@ class CardModal extends React.Component {
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
 
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
-                  <ol className="carousel-indicators carousel-indicators-numbers">
-                    {
-                      this.state.cards.map((card, index) => {
-                        if (card.visible) {  
-                          return (<li data-target="#carouselExampleControls" data-slide-to={index} className="active">{index+1}</li>)
+                  
+                  {
+                    visibleCards.length > 1 &&                   
+                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-75px'}}>
+                        {
+                          this.state.cards.map((card, index) => {
+                            if (card.visible) {  
+                              return (<li 
+                                style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle} 
+                                onMouseEnter={() => this.toggleHover(index, true)} 
+                                onMouseLeave={() => this.toggleHover(index, false)}
+                                data-target="#carouselExampleControls" 
+                                data-slide-to={index} 
+                                className={(index === this.state.selectedIndex ? "active" : "")}>
+                                {index+1}
+                              </li>)
+                            }
+                          })
                         }
-                      })
-                    }
-                  </ol>
+                      </ol>
+                  }
                   <div className="carousel-inner">
                   {
                     this.state.cards.map((card, index) => {
@@ -318,11 +353,6 @@ class CardModal extends React.Component {
                       </div>
                   }
                 </div>
-
-                <h6 style={{marginTop: '50px'}}>
-                  Card #{this.state.selectedIndex+1}
-                </h6>
-
                 </div>
               </div>
             </div>
