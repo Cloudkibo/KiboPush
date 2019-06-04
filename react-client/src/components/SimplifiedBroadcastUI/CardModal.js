@@ -12,17 +12,18 @@ class CardModal extends React.Component {
     let cards = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
-        cards.push({component: props.cards[i], visible: true, disabled: false, id: i + 1})
+        cards.push({component: props.cards[i], disabled: false, id: i + 1})
       } else {
-        cards.push({
-          visible: i === 0,
-          disabled: true,
-          id: i + 1,
-          component: {
-            title: '',
-            subtitle: '',
-            buttons: []
-          }})
+        if (i === 0) {
+          cards.push({
+            disabled: true,
+            id: i + 1,
+            component: {
+              title: '',
+              subtitle: '',
+              buttons: []
+            }})
+        }
       }
     }
     this.cardComponents = new Array(10)
@@ -33,7 +34,7 @@ class CardModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
       buttonDisabled: false,
       actionDisabled: false,
-      numOfElements: cards.filter(card => card.visible).length
+      numOfElements: cards.length
     }
 
     this.carouselIndicatorStyle = {
@@ -87,18 +88,21 @@ class CardModal extends React.Component {
     console.log('addElement')
       if (this.state.numOfElements < this.elementLimit) {
         let cards = this.state.cards
-        for (let i = 0; i < cards.length; i++) {
-          if (!cards[i].visible) {
-            cards[i].visible = true
-            break
-          }
-        }
+        cards.push({
+          disabled: true,
+          id: this.state.cards.length+1,
+          component: {
+            title: '',
+            subtitle: '',
+            buttons: []
+          }})
         this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true})
       }
   }
 
   handleDone () {
     this.setState({disabled: true})
+    console.log('handleDone', this.cardComponents)
     for (let i = 0; i < this.cardComponents.length; i++) {
       if (this.cardComponents[i]) {
         this.cardComponents[i].handleDone()
@@ -109,10 +113,9 @@ class CardModal extends React.Component {
   addComponent () {
     console.log('addComponent CardModal', this.state.cards)
     console.log('addComponent CardModal finalCards', this.finalCards)
-    let visibleCards = this.state.cards.filter(card => card.visible)
-    console.log('addComponent visibleCards', visibleCards)
-    if (visibleCards.length === 1) {
-      let card = visibleCards[0].component
+    console.log('addComponent this.state.cards', this.state.cards)
+    if (this.state.cards.length === 1) {
+      let card = this.state.cards[0].component
       this.props.addComponent({
         id: this.props.id,
         componentType: 'card',
@@ -128,8 +131,8 @@ class CardModal extends React.Component {
         webviewsize: card.webviewsize,
         default_action: card.default_action,
         buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons})
-    } else if (visibleCards.length > 1) {
-      let cards = visibleCards.map((card,index) => {
+    } else if (this.state.cards.length > 1) {
+      let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
         console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
@@ -162,20 +165,25 @@ class CardModal extends React.Component {
     let cards = this.state.cards
     if (typeof status.disabled === 'boolean') {
       cards[id-1].disabled = status.disabled
-      let visibleDisabledCards = this.state.cards.filter(card => card.visible && card.disabled)
+      let visibleDisabledCards = this.state.cards.filter(card => card.disabled)
       this.setState({disabled: visibleDisabledCards.length > 0})
       delete status.disabled
     }
     if (typeof status.buttonDisabled === 'boolean') {
       this.setState({buttonDisabled: status.buttonDisabled})
+      cards[id-1].buttonDisabled = status.buttonDisabled
       delete status.buttonDisabled
     }
     if (typeof status.actionDisabled === 'boolean') {
       this.setState({actionDisabled: status.actionDisabled})
+      cards[id-1].actionDisabled = status.actionDisabled
       delete status.actionDisabled
     }
     if (cards[id-1]) {
       cards[id - 1].component = Object.assign(cards[id - 1].component, status)
+      if (status.buttonData) {
+        cards[id-1].component.buttons[status.buttonData.index] = status.buttonData
+      }
     }
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid
@@ -197,23 +205,26 @@ class CardModal extends React.Component {
       this.setState({cards})
       return
     }
-    cards[id - 1].component = {
-      title: '',
-      subtitle: '',
-      buttons: []
-    }
-    cards[id - 1].visible = false
-    this.cardComponents[id - 1] = null
-    let selectedIndex = this.state.selectedIndex
-    if (selectedIndex === (id-1)) {
-      for (let i = 0; i < cards.length; i++) {
-        if (cards[i].visible) {
-          selectedIndex = i
-          break
-        }
+    cards.splice(id-1, 1)
+    this.cardComponents.splice(id-1, 1)
+    let disabled = false
+    let buttonDisabled = false
+    let actionDisabled = false
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].id = i+1
+      if (cards[i].disabled) {
+        disabled = true
+      }
+      if (cards[i].buttonDisabled) {
+        buttonDisabled = true
+      }
+      if (cards[i].actionDisabled) {
+        actionDisabled = true
       }
     }
-    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true})
+    console.log('remaining cards after closing card', cards)
+    let selectedIndex = cards.length-1
+    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled})
   }
 
   addCard (card) {
@@ -235,13 +246,12 @@ class CardModal extends React.Component {
   }
 
   render () {
-    let visibleCards = this.state.cards.filter(card => card.visible)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.closeModal}>
-          <h3>Add {visibleCards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
+          <h3>Add {this.state.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
@@ -249,23 +259,22 @@ class CardModal extends React.Component {
               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
                     this.state.cards.map((card, index) => {
-                      if (card.visible) {
+                        console.log(`AddCard ${index+1}`, card)
                         return (<AddCard
                           edit={this.props.edit}
                           buttonActions={this.state.buttonActions}
                           buttonLimit={this.buttonLimit}
-                          index={index}
-                          onlyCard={visibleCards.length}
+                          index={card.id-1}
+                          onlyCard={this.state.cards.length}
                           cardComponent
                           errorMsg={'*At least one card is required'}
                           replyWithMessage={this.props.replyWithMessage}
-                          card={this.state.cards[index]}
+                          card={card}
                           addCard={this.addCard}
-                          ref={(ref) => { this.cardComponents[index] = ref }}
+                          ref={(ref) => { this.cardComponents[card.id-1] = ref }}
                           closeCard={() => { this.closeCard(card.id) }}
                           id={card.id}
                           updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
-                      }
                     })
                 }
                 {
@@ -288,11 +297,10 @@ class CardModal extends React.Component {
                 <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
                   
                   {
-                    visibleCards.length > 1 &&                   
+                    this.state.cards.length > 1 &&                   
                       <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-75px'}}>
                         {
                           this.state.cards.map((card, index) => {
-                            if (card.visible) {  
                               return (<li 
                                 style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle} 
                                 onMouseEnter={() => this.toggleHover(index, true)} 
@@ -302,7 +310,6 @@ class CardModal extends React.Component {
                                 className={(index === this.state.selectedIndex ? "active" : "")}>
                                 {index+1}
                               </li>)
-                            }
                           })
                         }
                       </ol>
@@ -310,37 +317,35 @@ class CardModal extends React.Component {
                   <div className="carousel-inner">
                   {
                     this.state.cards.map((card, index) => {
-                      if (card.visible) {
-                        return (
-                          <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
-                              {
-                                  card.component.image_url &&
-                                  <img src={card.component.image_url} style={{maxHeight: '25vh', minWidth: '250px', padding: '25px', margin: '-25px'}} />
-                              }
-                              <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
-                              <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
-                              <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                              <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
-                              {
-                                  card.component.buttons.map((button, index) => {
-                                    if (button.visible || button.type) {
-                                      return (
-                                        <div>
-                                          <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                          <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
-                                        </div>
-                                      )
-                                    }
-                                  })
-                              }
-                          </div>
-                        )
-                      }
+                      return (
+                        <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
+                            {
+                                card.component.image_url &&
+                                <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', margin: '-25px'}} />
+                            }
+                            <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
+                            <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
+                            <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                            <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
+                            {
+                                card.component.buttons.map((button, index) => {
+                                  if (button.visible || button.type) {
+                                    return (
+                                      <div>
+                                        <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
+                                        <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
+                                      </div>
+                                    )
+                                  }
+                                })
+                            }
+                        </div>
+                      )
                     })                   
                   }
                   </div>
                   {
-                    visibleCards.length > 1 && 
+                    this.state.cards.length > 1 && 
                       <div>
                         <a className="carousel-control-prev" style={{left:'-40px', top: '50%', bottom: '50%'}} href="#carouselExampleControls" role="button" data-slide="prev">
                           <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
