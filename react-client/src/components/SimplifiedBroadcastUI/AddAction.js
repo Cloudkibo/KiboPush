@@ -43,6 +43,38 @@ class AddAction extends React.Component {
     this.getDefaultAction = this.getDefaultAction.bind(this)
   }
 
+  componentWillReceiveProps (nextProps) {
+    let openWebView = !!nextProps.webviewurl || (nextProps.default_action && nextProps.default_action.messenger_extensions)
+    let openWebsite = !!nextProps.elementUrl || (nextProps.default_action && !nextProps.default_action.messenger_extensions)
+    let webviewurl = nextProps.webviewurl ? nextProps.webviewurl : ''
+    let elementUrl = nextProps.elementUrl ? nextProps.elementUrl : ''
+    let webviewsize = nextProps.webviewsize ? nextProps.webviewsize : 'FULL'
+    if (nextProps.default_action) {
+      if (openWebView) {
+        webviewurl = nextProps.default_action.url
+        webviewsize = nextProps.default_action.webview_height_ratio
+      }
+      if (openWebsite) {
+        elementUrl = nextProps.default_action.url
+      }
+    }
+    let newState = {
+      default_action: nextProps.default_action ? nextProps.default_action : null,
+      actionDisabled: !(webviewurl || elementUrl),
+      openPopover: webviewurl || elementUrl,
+      openWebView,
+      openWebsite,
+      webviewsize,
+      webviewurl,
+      elementUrl,
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
+      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview']
+    }
+    console.log('AddAction newState', newState)
+    this.setState(newState)
+  }
+  
+
   getDefaultAction (url, webviewsize) {
     let default_action = this.state.default_action
     if (this.state.openWebView) {

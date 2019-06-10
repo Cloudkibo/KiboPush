@@ -14,7 +14,6 @@ class Button extends React.Component {
       openPopover: false,
       title: this.props.button ? (this.props.button.type === 'element_share') ? 'Share' : this.props.button.title : this.props.title,
       url: this.props.button ? (!this.props.button.messenger_extensions ? this.props.button.url : '') : '',
-      disabled: false,
       sequenceValue: this.props.button ? this.props.button.sequenceValue : '',
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
@@ -56,9 +55,31 @@ class Button extends React.Component {
     this.handleWebView= this.handleWebView.bind(this)
   }
 
+  componentWillReceiveProps (nextProps) {
+    let newState = {
+      title: nextProps.tempButton ? (nextProps.tempButton.shareButton) ? 'Share' : nextProps.tempButton.title : nextProps.title,
+      url: nextProps.tempButton ? nextProps.tempButton.url : '',
+      openWebsite: nextProps.tempButton && nextProps.tempButton.url ? true: false,
+      shareButton: nextProps.tempButton && nextProps.tempButton.shareButton,
+      openWebView: nextProps.tempButton && nextProps.tempButton.webviewurl ? true : false,
+      webviewurl: nextProps.tempButton ? nextProps.tempButton.webviewurl : '',
+      webviewsize: nextProps.tempButton ? nextProps.tempButton.webviewsize : 'FULL',
+      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+    }
+    newState.openPopover = newState.openWebsite || newState.openWebView || newState.shareButton
+    console.log('Button newState', newState)
+    if (newState.openPopover) {
+      this.setState(newState)
+    }
+  }
+
+
+
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
+      let buttonData = {title: this.state.title, visible: true, webviewurl: this.state.webviewurl, index: this.props.index, webviewsize: event.target.value}
       this.setState({webviewsize: event.target.value})
+      this.props.updateButtonStatus({buttonData})
     }
   }
   replyWithMessage () {
@@ -86,7 +107,8 @@ class Button extends React.Component {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
       let sharedIndex = this.props.index
-      this.props.updateButtonStatus({buttonDisabled: false}, sharedIndex)
+      let buttonData = {title: this.state.title, visible: true, shareButton: true, index: this.props.index}
+      this.props.updateButtonStatus({buttonDisabled: false, buttonData}, sharedIndex)
     }
   }
   showWebsite () {
@@ -317,22 +339,24 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('chaning website url', event.target.value)
+    let buttonData = {title: this.state.title, visible: true, url: event.target.value, index: this.props.index}
     if (isWebURL(event.target.value) && this.state.title !== '') {
       console.log('buttonDisabled: false')
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
       }
     } else {
       this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true, buttonData})
       }
     }
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
     console.log('changing webviewurl', e.target.value)
+    let buttonData = {title: this.state.title, visible: true, webviewurl: e.target.value, index: this.props.index}
     if (isWebURL(e.target.value) && this.state.title !== '') {
       // this.setState({buttonDisabled: false})
       // if (this.props.updateButtonStatus) {
@@ -343,7 +367,7 @@ class Button extends React.Component {
     } else {
       this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true, buttonData})
       }
 
     }

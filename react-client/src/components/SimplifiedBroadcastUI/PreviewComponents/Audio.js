@@ -11,25 +11,17 @@ class Audio extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: props.file ? props.file : null,
-      editing: false
+      file: props.file ? props.file : null
     }
     this.edit = this.edit.bind(this)
-    this.closeEditButton = this.closeEditButton.bind(this)
-    this.openAudioModal = this.openAudioModal.bind(this)
-  }
-
-  closeEditButton () {
-    this.setState({editing: false})
   }
 
   edit () {
-    this.setState({editing: true})
-  }
-
-  openAudioModal () {
-    console.log('opening AudioModal for edit', this.state)
-    return (<AudioModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    this.props.editComponent('audio', {
+      edit: true,
+      file: this.state.file, 
+      id: this.props.id
+    })
   }
 
   componentDidMount () {
@@ -54,9 +46,6 @@ class Audio extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        {
-          this.state.editing && this.openAudioModal()
-        }
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

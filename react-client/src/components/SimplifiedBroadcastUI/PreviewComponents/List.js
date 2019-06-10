@@ -3,30 +3,31 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ListModal from '../ListModal'
 
 class List extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.edit = this.edit.bind(this)
-    this.closeEdit = this.closeEdit.bind(this)
     this.state = {
       listItems: this.props.listItems ? this.props.listItems : [],
       showPlus: false,
       pageNumber: 2,
       buttons: props.buttons ? props.buttons : [],
       topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact',
-      styling: {minHeight: 30, maxWidth: 400},
-      editing: false
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
 
   edit () {
     this.setState({editing: true})
-  }
-
-  closeEdit () {
-    this.setState({editing: false})
+    this.props.editComponent('list', {
+      edit: true,
+      buttonActions: this.props.buttonActions,
+      topElementStyle: this.state.topElementStyle,
+      id: this.props.id,
+      cards: this.props.listItems,
+      buttons: this.state.buttons
+    })
   }
 
   componentDidMount () {
@@ -77,28 +78,10 @@ class List extends React.Component {
     }
   }
 
-  openListModal () {
-    console.log('opening CardModal for edit', this.state)
-    return (<ListModal edit
-      buttonActions={this.props.buttonActions}
-      topElementStyle={this.state.topElementStyle}
-      id={this.props.id}
-      cards={this.props.listItems}
-      buttons={this.state.buttons}
-      replyWithMessage={this.props.replyWithMessage}
-      pageId={this.props.pageId}
-      closeModal={this.closeEdit}
-      addComponent={this.props.addComponent}
-      hideUserOptions={this.props.hideUserOptions} />)
-  }
-
   render () {
     let buttonPayloads = this.state.buttons.map((button) => button.payload)
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openListModal()
-        }
         <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: buttonPayloads}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, right: this.props.sequence ? 0 + 'px' : '100px', marginTop: '-20px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

@@ -14,7 +14,7 @@ class AddButton extends React.Component {
     }
     this.state = {
       buttons,
-      numOfCurrentButtons: 0
+      numOfCurrentButtons: buttons.filter(button => button.visble).length
     }
     this.finalButtons = this.props.finalButtons ? this.props.finalButtons : []
     this.buttonComponents = [null, null, null]
@@ -27,8 +27,30 @@ class AddButton extends React.Component {
     this.checkInvalidButtons = this.checkInvalidButtons.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
     this.onAddButtonCalled = 0
+
+    this.recievedProps = false
     console.log('AddButton constructor state', this.state)
     console.log('AddButton constructor props', this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+      if (nextProps.finalButtons.length > 0 && !nextProps.finalButtons[0].type) {
+        let buttons = []
+        for (let i = 0; i < nextProps.buttonLimit; i++) {
+          if (nextProps.buttons && nextProps.buttons[i]) {
+            buttons.push(nextProps.buttons[i])
+          } else {
+            buttons.push({visible: false, title: ``})
+          }
+        }
+        let newState = {
+          buttons,
+          numOfCurrentButtons: buttons.filter(button => button.visble).length
+        }
+        this.tempButtons = nextProps.finalButtons
+        console.log('AddButton newState', newState)
+        this.setState(newState)
+      }
   }
 
   componentDidMount () {
@@ -69,7 +91,7 @@ class AddButton extends React.Component {
   closeButton (index) {
     let buttons = this.state.buttons
     buttons[index].visible = false
-    buttons[index].title = `Button ${index + 1}`
+    buttons[index].title = ``
     this.finalButtons[index] = null
     this.buttonComponents[index] = null
     this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
@@ -104,7 +126,7 @@ class AddButton extends React.Component {
     for (let i = 0; i < this.buttonComponents.length; i++) {
       if (this.buttonComponents[i]) {
         console.log(`buttons[${i}]`, this.buttonComponents[i])
-        if (this.finalButtons && this.finalButtons[i]) {
+        if (this.finalButtons && this.finalButtons[i] && this.finalButtons[i].type) {
           console.log('handleDoneEdit', this.finalButtons)
           this.buttonComponents[i].getWrappedInstance().handleDoneEdit()
         } else {
@@ -157,6 +179,7 @@ class AddButton extends React.Component {
                     handleText={this.props.handleText}
                     updateButtonStatus={this.updateButtonStatus}
                     button={this.finalButtons[index]}
+                    tempButton = {this.tempButtons ? this.tempButtons[index] : null}
                     index={index}
                     closeButton={() => this.closeButton(index)}
                     ref={(ref) => { this.buttonComponents[index] = ref }}
