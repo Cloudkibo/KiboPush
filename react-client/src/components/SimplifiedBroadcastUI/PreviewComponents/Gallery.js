@@ -61,7 +61,7 @@ class Gallery extends React.Component {
                 <div className={'carousel-item ' + (index === 0 ? 'active' : '')}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
+                        <img src={card.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>

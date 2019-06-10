@@ -17,7 +17,7 @@ class AddCard extends React.Component {
       } : null,
       title: props.card.component.title,
       subtitle: props.card.component.description ? props.card.component.description : props.card.component.subtitle,
-      buttons: props.card.component.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
+      buttons: props.card.component.buttons.map(button => button.type ? (button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}) : {visible: button.visible, title: button.title}),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview', 'add share'],
       buttonLimit: this.props.buttonLimit ? this.props.buttonLimit : 1,
       disabled: false,
@@ -38,6 +38,33 @@ class AddCard extends React.Component {
     //this.props.updateStatus({title: this.state.title, subtitle: this.state.subtitle})
     console.log('AddCard constructor state', this.state)
     console.log('AddCard constructor props', this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    let newState = {
+      file: nextProps.card.component.fileurl ? {
+      fileurl: nextProps.card.component.fileurl,
+      image_url: nextProps.card.component.image_url,
+      fileName: nextProps.card.component.fileName,
+      type: nextProps.card.component.type,
+      size: nextProps.card.component.size
+      } : null,
+      title: nextProps.card.component.title,
+      subtitle: nextProps.card.component.description ? nextProps.card.component.description : nextProps.card.component.subtitle,
+      buttons: nextProps.card.component.buttons.map(button => button.type ? (button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}) : {visible: button.visible, title: button.title}),
+      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview', 'add share'],
+      buttonLimit: nextProps.buttonLimit ? nextProps.buttonLimit : 1,
+      disabled: false,
+      buttonDisabled: false,
+      actionDisabled: false,
+      imgSrc: nextProps.card.component.image_url,
+      webviewurl: nextProps.card.component.webviewurl,
+      elementUrl: nextProps.card.component.elementUrl,
+      webviewsize: nextProps.card.component.webviewsize ? nextProps.card.component.webviewsize : 'FULL',
+      default_action: nextProps.card.component.default_action ? nextProps.card.component.default_action : null
+    }
+    console.log('AddCard newState', newState)
+    this.setState(newState)
   }
 
   updateFile (file) {
