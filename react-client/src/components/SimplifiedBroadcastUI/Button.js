@@ -208,7 +208,7 @@ class Button extends React.Component {
 
   handleDoneEdit () {
     console.log('this.state', this.state)
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         id: this.props.index,
         type: 'web_url',
@@ -263,7 +263,7 @@ class Button extends React.Component {
 
   handleDone () {
     console.log('button handleDone')
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
@@ -274,7 +274,7 @@ class Button extends React.Component {
         }
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.sequenceValue !== '') {
+    } else if (this.state.sequenceValue) {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -298,7 +298,7 @@ class Button extends React.Component {
         title: this.state.title
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.webviewurl !== '') {
+    } else if (this.state.webviewurl) {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
       }
