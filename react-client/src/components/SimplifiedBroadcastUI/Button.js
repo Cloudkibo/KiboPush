@@ -101,7 +101,7 @@ class Button extends React.Component {
       openCreateMessage: false,
       shareButton: false
     })
-    this.props.onAdd(data)
+    this.props.onAdd(data, this.props.index)
   }
   shareButton () {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
@@ -273,7 +273,7 @@ class Button extends React.Component {
           id: ''// messageId
         }
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
@@ -282,7 +282,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -290,14 +290,14 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       }
     } else if (this.state.shareButton) {
       let data = {
         type: 'element_share',
         title: this.state.title
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
@@ -310,7 +310,7 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 
