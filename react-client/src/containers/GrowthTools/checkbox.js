@@ -258,8 +258,7 @@ class CheckBox extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Checkbox? Here is the <a href='http://kibopush.com/messageus/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Checkbox? Here is the <a href='https://kibopush.com/checkbox-plugin/' target='_blank'>documentation</a>.
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
