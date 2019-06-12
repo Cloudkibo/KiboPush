@@ -105,7 +105,7 @@ class Media extends React.Component {
               this.state.buttons.map((button, index) => {
                 return (
                   <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
-                    <h5 style={{color: '#0782FF'}}>{button.title}</h5>
+                    <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
                   </div>
                 )
               })
