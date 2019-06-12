@@ -28,6 +28,7 @@ import {
   assignTags,
   loadTags
 } from '../../redux/actions/tags.actions'
+import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 
@@ -46,7 +47,8 @@ class LiveChat extends React.Component {
       activeSession: {},
       scroll: true,
       tagOptions: [],
-      showSearch: false
+      showSearch: false,
+      customFieldOptions: []
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -151,6 +153,7 @@ class LiveChat extends React.Component {
   componentWillMount () {
     this.fetchSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     this.props.loadTags()
+    this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadTeamsList()
       this.props.loadMembersList()
@@ -237,6 +240,15 @@ class LiveChat extends React.Component {
       }
       this.setState({
         tagOptions: tagOptions
+      })
+    }
+    if (nextProps.customFields) {
+      var fieldOptions = []
+      for (let a = 0; a < nextProps.customFields.length; a++) {
+        fieldOptions.push({'_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': ''})
+      }
+      this.setState({
+        customFieldOptions: fieldOptions
       })
     }
     if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
@@ -328,6 +340,8 @@ class LiveChat extends React.Component {
                     assignTags={this.assignTags}
                     tagOptions={this.state.tagOptions}
                     members={this.props.members}
+                    customFields={this.props.customFields}
+                    customFieldOptions={this.state.customFieldOptions}
                   />
                 }
                 {
@@ -364,7 +378,8 @@ function mapStateToProps (state) {
     subscriberTags: (state.tagsInfo.subscriberTags),
     socketMessage: (state.liveChat.socketMessage),
     subscribers: (state.subscribersInfo.subscribers),
-    members: (state.membersInfo.members)
+    members: (state.membersInfo.members),
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
@@ -390,7 +405,8 @@ function mapDispatchToProps (dispatch) {
     resetSocket,
     resetUnreadSession,
     updateUserChat,
-    loadMembersList
+    loadMembersList,
+    loadCustomFields
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
