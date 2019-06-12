@@ -63,6 +63,10 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         subscriberSummary: action.data
       })
+    case ActionTypes.UPDATE_AUTOPOSTING_SUMMARY:
+      return Object.assign({}, state, {
+        autopostingSummary: action.data
+      })
     default:
       return state
   }
