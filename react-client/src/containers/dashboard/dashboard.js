@@ -89,10 +89,10 @@ class Dashboard extends React.Component {
     if (this.props.user && this.props.user.role === 'buyer' &&
         response.status === 'failed' && response.payload.error &&
         response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
-      // browserHistory.push({
-      //   pathname: '/connectFb',
-      //   state: { session_inavalidated: true }
-      // })
+      browserHistory.push({
+        pathname: '/connectFb',
+        state: { session_inavalidated: true }
+      })
     }
   }
   closeProDialog () {
