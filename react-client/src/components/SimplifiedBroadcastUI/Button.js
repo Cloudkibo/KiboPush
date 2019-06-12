@@ -107,7 +107,7 @@ class Button extends React.Component {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
       let sharedIndex = this.props.index
-      let buttonData = {title: this.state.title, visible: true, shareButton: true, index: this.props.index}
+      let buttonData = {title: 'Share', visible: true, shareButton: true, index: this.props.index}
       this.props.updateButtonStatus({buttonDisabled: false, buttonData}, sharedIndex)
     }
   }
