@@ -11,7 +11,8 @@ import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import SubscriberSummary from './subscriberSummary'
-import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
+import AutopostingSummary from './autopostingSummary'
+import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen, loadAutopostingSummary } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -81,6 +82,7 @@ class Dashboard extends React.Component {
     this.props.loadTopPages()
     this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
     this.props.loadSentSeen({pageId: 'all', days: '30'})
+    this.props.loadAutopostingSummary({days: 'all'})
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
@@ -631,6 +633,11 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
+            {/*url.includes('kiboengage.cloudkibo.com') &&*/ this.props.autopostingSummary &&
+              <div className='row'>
+                <AutopostingSummary />
+              </div>
+            }
             {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
@@ -693,7 +700,8 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    autopostingSummary: (state.dashboardInfo.autopostingSummary),
   }
 }
 
@@ -712,6 +720,7 @@ function mapDispatchToProps (dispatch) {
       loadTopPages: loadTopPages,
       loadSubscriberSummary: loadSubscriberSummary,
       loadSentSeen: loadSentSeen,
+      loadAutopostingSummary: loadAutopostingSummary,
       validateUserAccessToken
     },
     dispatch)
