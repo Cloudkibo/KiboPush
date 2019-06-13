@@ -11,6 +11,7 @@ import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import SubscriberSummary from './subscriberSummary'
+import AutopostingSummary from './autopostingSummary'
 import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
@@ -195,11 +196,11 @@ class Dashboard extends React.Component {
     console.log('in componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
-      // if (nextprops.user.emailVerified === false) {
-      //   browserHistory.push({
-      //     pathname: '/resendVerificationEmail'
-      //   })
-      // } else
+      if (nextprops.user.emailVerified === false) {
+        browserHistory.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else
       if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
         browserHistory.push({
           pathname: '/integrations'
@@ -631,6 +632,11 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
+            {/*url.includes('kiboengage.cloudkibo.com') &&*/
+              <div className='row'>
+                <AutopostingSummary />
+              </div>
+            }
             {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
@@ -693,7 +699,7 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
   }
 }
 

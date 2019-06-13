@@ -145,12 +145,12 @@ class AddCard extends React.Component {
     return (
       <div> 
         <div style={{color: 'red'}}>{this.props.card.invalid ? this.props.errorMsg : ''}</div>
-        <div className='ui-block' style={{transform: 'scale(0.95, 0.95)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginTop: '-20px'}}>
-          {<div onClick={this.props.closeCard} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
-          <div>
+        <div className='ui-block' style={{transform: 'scale(0.95, 0.95)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '15px'}}>
+          {<div onClick={this.props.closeCard} style={{marginLeft: '98%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
+          {/* <div>
             <h4 style={{textAlign: 'left'}}>{this.props.cardComponent ? 'Card ' : 'Element '} #{this.props.index+1}</h4>
           </div>
-          <hr style={{marginBottom: '30px'}} />
+          <hr style={{marginBottom: '30px'}} /> */}
           <h4>Title:</h4>
           <input placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
           <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>

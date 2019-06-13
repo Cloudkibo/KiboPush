@@ -14,9 +14,11 @@ class AddButton extends React.Component {
     }
     this.state = {
       buttons,
-      numOfCurrentButtons: buttons.filter(button => button.visble).length
+      numOfCurrentButtons: buttons.filter(button => button.visible).length
     }
-    this.finalButtons = this.props.finalButtons ? this.props.finalButtons : []
+    console.log('constructor buttons', buttons)
+    console.log('constructor numOfCurrentButtons', this.state.numOfCurrentButtons)
+    this.finalButtons = this.props.finalButtons ? this.props.finalButtons : new Array(buttons.length)
     this.buttonComponents = [null, null, null]
     this.addButton = this.addButton.bind(this)
     this.handleButtonTitleChange = this.handleButtonTitleChange.bind(this)
@@ -34,7 +36,7 @@ class AddButton extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-      if (nextProps.finalButtons.length > 0 && !nextProps.finalButtons[0].type) {
+      if (nextProps.finalButtons.length > 0 && nextProps.finalButtons[0] && !nextProps.finalButtons[0].type) {
         let buttons = []
         for (let i = 0; i < nextProps.buttonLimit; i++) {
           if (nextProps.buttons && nextProps.buttons[i]) {
@@ -45,8 +47,10 @@ class AddButton extends React.Component {
         }
         let newState = {
           buttons,
-          numOfCurrentButtons: buttons.filter(button => button.visble).length
+          numOfCurrentButtons: buttons.filter(button => button.visible).length
         }
+
+    console.log('componentWillRecieveProps numOfCurrentButtons', this.state.numOfCurrentButtons)
         this.tempButtons = nextProps.finalButtons
         console.log('AddButton newState', newState)
         this.setState(newState)
@@ -102,15 +106,20 @@ class AddButton extends React.Component {
 
   onAddButton (button, index) {
     console.log('onAddButton AddButton', button)
-    if (index >= 0) {
+
+    //If editing existing button
+    if (button.button) {
       this.finalButtons[index] = button.button
+    //Else adding new button
     } else {
-      this.finalButtons.push(button)
+      this.finalButtons[index] = button
     }
     this.onAddButtonCalled++
     console.log('onAddButtonCalled', this.onAddButtonCalled)
+    console.log('this.finalButtons', this.finalButtons)
     let buttonComponents = this.buttonComponents.filter(button => button !== null)
-    let visibleFinalButtons = this.finalButtons.filter(button => button !== null)
+    let visibleFinalButtons = this.finalButtons.filter(button => button !== null && button !== undefined)
+    console.log('visibleFinalButtons', visibleFinalButtons)
     if (this.onAddButtonCalled === visibleFinalButtons.length && visibleFinalButtons.length === buttonComponents.length) {
       console.log('done adding', visibleFinalButtons)
       this.props.addComponent(visibleFinalButtons)

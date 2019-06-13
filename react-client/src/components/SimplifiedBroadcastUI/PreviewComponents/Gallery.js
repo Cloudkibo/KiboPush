@@ -18,11 +18,12 @@ class Gallery extends React.Component {
   }
 
   edit () {
+    console.log('gallery edit')
     let cards = this.state.cards
     for (let i = 0; i < cards.length; i++) {
       cards[i].buttons = [].concat(cards[i].buttons)
     }
-    this.props.editComponent('gallery', {
+    this.props.editComponent('card', {
       edit: true,
       cards: cards,
       buttonActions: this.props.buttonActions,

@@ -30,6 +30,7 @@ class CardModal extends React.Component {
     this.state = {
       cards,
       selectedIndex: 0,
+      currentCollapsed: false,
       disabled: props.edit ? false : true,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
       buttonDisabled: false,
@@ -65,6 +66,8 @@ class CardModal extends React.Component {
     this.addCard = this.addCard.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.toggleHover = this.toggleHover.bind(this)
+    this.updateSelectedIndex = this.updateSelectedIndex.bind(this)
+    this.scrollToTop = this.scrollToTop.bind(this)
   }
 
   toggleHover (index, hover) {
@@ -96,7 +99,9 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true})
+        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+          this.scrollToTop(`panel-heading${this.state.cards.length}`)
+        })
       }
   }
 
@@ -244,6 +249,29 @@ class CardModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
+  
+  // componentDidUpdate () {
+  //   let currentCardClasses = document.getElementById(`collapse${this.state.selectedIndex+1}`).classList
+  //   console.log('componentDidUpdate currentCardClasses', currentCardClasses)
+  //   console.log('currentCardClasses contains collapsed', currentCardClasses.contains('collapsed'))
+  //   if (currentCardClasses.contains('collapsed')) {
+  //     this.setState({currentCollapsed: true})
+  //   } else {
+  //     if (this.state.currentCollapsed) {
+  //       this.setState({currentCollapsed: false})
+  //     }
+  //   }
+  // }
+
+  scrollToTop(elementId) {
+    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
+  }
+
+  updateSelectedIndex (index) {
+    this.setState({selectedIndex: index}, () => {
+      this.scrollToTop(`panel-heading${index+1}`)
+    })
+  }
 
   render () {
     return (
@@ -256,8 +284,44 @@ class CardModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
             <h4>Cards:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
+              <div className='ui-block' style={{position: 'relative', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
+                    this.state.cards.map((card, index) => {
+                        console.log(`AddCard ${index+1}`, card)
+                        return (
+                          <div className="panel-group" id="accordion">
+                            <div className="panel panel-default">
+                              <div id={`panel-heading${index+1}`} className="panel-heading">
+                                <h4 className="panel-title" style={{fontSize: '22px'}}>
+                                  <a onClick={() => this.updateSelectedIndex(index)} data-toggle="collapse" data-parent="#accordion" href={`#collapse${index+1}`}>Card #{index+1}</a>
+                                </h4>
+                              </div>
+                              <div id={`collapse${index+1}`} className={"panel-collapse " + (this.state.selectedIndex === index ? "show" : "collapse")}>
+                                <div className="panel-body">
+                                  <AddCard
+                                    edit={this.props.edit}
+                                    buttonActions={this.state.buttonActions}
+                                    buttonLimit={this.buttonLimit}
+                                    index={card.id-1}
+                                    onlyCard={this.state.cards.length}
+                                    cardComponent
+                                    errorMsg={'*At least one card is required'}
+                                    replyWithMessage={this.props.replyWithMessage}
+                                    card={card}
+                                    addCard={this.addCard}
+                                    ref={(ref) => { this.cardComponents[card.id-1] = ref }}
+                                    closeCard={() => { this.closeCard(card.id) }}
+                                    id={card.id}
+                                    updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>  
+                        )
+                    })
+                }
+
+                {/* {
                     this.state.cards.map((card, index) => {
                         console.log(`AddCard ${index+1}`, card)
                         return (<AddCard
@@ -276,7 +340,7 @@ class CardModal extends React.Component {
                           id={card.id}
                           updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
                     })
-                }
+                } */}
                 {
                     (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
                       <div onClick={this.addElement} style={{paddingTop: '5px'}} className='align-center'>
@@ -307,6 +371,7 @@ class CardModal extends React.Component {
                                 onMouseLeave={() => this.toggleHover(index, false)}
                                 data-target="#carouselExampleControls" 
                                 data-slide-to={index} 
+                                onClick={() => this.updateSelectedIndex(index)}
                                 className={(index === this.state.selectedIndex ? "active" : "")}>
                                 {index+1}
                               </li>)
@@ -333,7 +398,7 @@ class CardModal extends React.Component {
                                     return (
                                       <div>
                                         <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                        <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
+                                        <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' || button.shareButton ? 'Share' : button.title}</h5>
                                       </div>
                                     )
                                   }
