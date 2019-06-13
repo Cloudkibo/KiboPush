@@ -158,6 +158,7 @@ class Subscriber extends React.Component {
     this.saveSetCustomField = this.saveSetCustomField.bind(this)
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
     this.updateOption = this.updateOption.bind(this)
+    this.loadsubscriberData= this.loadsubscriberData.bind(this)
   }
 
   saveSetCustomField () {
@@ -392,8 +393,23 @@ class Subscriber extends React.Component {
   }
   closeEditModal () {
     this.setState({showEditModal: false})
-    this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+    //this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
   }
+  loadsubscriberData (data) {
+    //this.setState({showEditModal: false})
+    if(data.tag_value === false) {
+      this.setState({filterByTag:''})
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '' , status_value: this.state.status_value}})
+
+    }
+    else if(data.tag_value === true) {
+      this.setState({filterByTag:''})
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag , status_value: this.state.status_value}})
+
+    }
+      }
+
+
   handleAddIndividual (value) {
     console.log('handleAddIndividual', value)
     var index = 0
@@ -1539,7 +1555,7 @@ class Subscriber extends React.Component {
                                       onClose={this.closeEditModal}>
                                       <ModalDialog style={{width: '800px'}}
                                         onClose={this.closeEditModal}>
-                                        <EditTags currentTags={this.props.tags} msg={this.msg} />
+                                        <EditTags currentTags={this.props.tags} msg={this.msg}  loadsubscriberData={this.loadsubscriberData}/>
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
