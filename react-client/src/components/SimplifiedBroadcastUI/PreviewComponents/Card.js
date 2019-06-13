@@ -29,8 +29,8 @@ class Card extends React.Component {
       openWebView: false,
       openWebsite: false,
       webviewsize: this.props.webviewsize ? this.props.webviewsize : 'FULL',
-      webviewurl: this.props.webviewurl ? this.props.webviewurl : '',
-      elementUrl: this.props.elementUrl ? this.props.elementUrl : '',
+      webviewurl: this.props.webviewurl ? this.props.webviewurl : null,
+      elementUrl: this.props.elementUrl ? this.props.elementUrl : null,
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       default_action: this.props.default_action ? this.props.default_action : null,
       isshowGuideLinesImageDialog: false
