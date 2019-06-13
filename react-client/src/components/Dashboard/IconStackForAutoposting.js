@@ -26,11 +26,11 @@ class IconStackForAutoposting extends React.Component {
             </span>
             <br />
             <span className='m-widget21__sub'>
-              No. of {this.props.otherText} Received:&nbsp;&nbsp; <b style={{fontWeight: 500}}> {this.props.received} </b>
+              {this.props.otherText} Sent:&nbsp;&nbsp; <b style={{fontWeight: 500}}> {this.props.received} </b>
             </span>
             <br />
             <span className='m-widget21__sub'>
-              No. of {this.props.otherText} Sent:&nbsp;&nbsp; <b style={{fontWeight: 500}}> {this.props.sent} </b>
+              Subscribers Reach:&nbsp;&nbsp; <b style={{fontWeight: 500}}> {this.props.sent} </b>
             </span>
           </div>
         </div>
