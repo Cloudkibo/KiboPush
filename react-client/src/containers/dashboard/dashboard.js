@@ -197,11 +197,11 @@ class Dashboard extends React.Component {
     console.log('in componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
-      // if (nextprops.user.emailVerified === false) {
-      //   browserHistory.push({
-      //     pathname: '/resendVerificationEmail'
-      //   })
-      // } else
+      if (nextprops.user.emailVerified === false) {
+        browserHistory.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else
       if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
         browserHistory.push({
           pathname: '/integrations'
