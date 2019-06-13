@@ -950,6 +950,7 @@ class Subscriber extends React.Component {
 }
 }
   componentWillReceiveProps (nextProps) {
+    console.log('next Props in subscribers', nextProps)
     console.log('nextProps in subscribers', nextProps)
     if (nextProps.subscribers && nextProps.count) {
       this.displayData(0, nextProps.subscribers)

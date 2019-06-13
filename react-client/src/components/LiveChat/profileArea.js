@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MAPCUSTOMER from './mapCustomer'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
@@ -28,8 +27,11 @@ class ProfileArea extends React.Component {
       removeTag: '',
       tagOptions: this.props.tagOptions,
       saveEnable: false,
-      customFieldOptions: this.props.customFieldOptions,
+      setFieldIndex: false,
       show: false,
+      selectedField: {},
+      saveFieldValueButton: true,
+      oldSelectedFieldValue: '',
       hoverId: '',
     }
     this.showDialog = this.showDialog.bind(this)
@@ -50,13 +52,50 @@ class ProfileArea extends React.Component {
     this.assignToTeam = this.assignToTeam.bind(this)
     this.hoverOn = this.hoverOn.bind(this)
     this.hoverOff = this.hoverOff.bind(this)
+    this.saveCustomField = this.saveCustomField.bind(this)
+    this.handleSetCustomField = this.handleSetCustomField.bind(this)
+    this.showToggle = this.showToggle.bind(this)
   }
 
-  hoverOn (id) {
-    this.setState({hoverId: id})
+  showToggle () {
+    this.setState({show: !this.state.show})
   }
-  hoverOff () {
-    this.setState({hoverId: ''})
+
+  saveCustomField () {
+    let subscriberIds = this.props.activeSession._id
+    let temp = {
+      customFieldId: this.state.selectedField._id,
+      subscriberIds: [subscriberIds],
+      value: this.state.selectedField.value
+    }
+    this.props.setCustomFieldValue(temp)
+    this.setState({setFieldIndex: !this.state.setFieldIndex})
+  }
+
+  handleSetCustomField (event) {
+    var temp = {
+      _id: this.state.selectedField._id,
+      name: this.state.selectedField.label,
+      type: this.state.selectedField.type,
+      value: event.target.value
+    }
+    if (this.state.oldSelectedFieldValue === event.target.value) {
+      this.setState({selectedField: temp, saveFieldValueButton: true})
+    } else {
+      this.setState({selectedField: temp, saveFieldValueButton: false})
+    }
+  }
+
+  toggleSetFieldPopover (field) {
+    console.log('field',field)
+    this.setState({setFieldIndex: !this.state.setFieldIndex, selectedField: field, oldSelectedFieldValue: field.value})
+  }
+
+  hoverOn(id) {
+    this.setState({ hoverId: id })
+  }
+  hoverOff() {
+    this.setState({ hoverId: '' })
   }
 
   showDialog(subscriber, page) {
@@ -177,7 +216,7 @@ class ProfileArea extends React.Component {
       removeTag: value
     })
     payload.tag = value
-    this.props.unassignTags(payload, this.msg)
+    this.props.unassignTags(payload, this.props.msg)
   }
 
   toggleAdd() {
@@ -195,7 +234,7 @@ class ProfileArea extends React.Component {
         }
       }
       if (index === this.props.tags.length) {
-        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+        this.props.createTag(value.label, this.handleCreateTag, this.props.msg)
       } else {
         this.setState({
           saveEnable: true,
@@ -228,12 +267,12 @@ class ProfileArea extends React.Component {
     if (index === this.props.subscriberTags.length) {
       selectedIds.push(this.props.activeSession._id)
     } else {
-      this.msg.error('Tag is already assigned')
+      this.props.msg.error('Tag is already assigned')
       return
     }
     payload.subscribers = selectedIds
     payload.tag = this.state.addTag.label
-    this.props.assignTags(payload, this.msg)
+    this.props.assignTags(payload, this.props.msg)
   }
 
   componentWillMount() {
@@ -255,6 +294,39 @@ class ProfileArea extends React.Component {
   }
 
   render() {
+    let setFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    if (this.state.selectedField.type === 'text') {
+      setFieldInput = <input
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'number') {
+      setFieldInput = <input
+        type='text'
+        className='form-control m-input'
+        placeholder='value'
+        onChange={this.handleSetCustomField}
+        value={this.state.selectedField.value}
+    />
+    } else if (this.state.selectedField.type === 'date') {
+      setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='date' />
+    } else if (this.state.selectedField.type === 'datetime') {
+      setFieldInput = setFieldInput = <input className='form-control m-input'
+        value={this.state.selectedField.value}
+        onChange={this.handleSetCustomField}
+        type='datetime-local' />
+    } else if (this.state.selectedField.type === 'true/false') {
+      setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
+        <option key='' value='' selected disabled>...Select...</option>
+        <option key='true' value='true'>True</option>
+        <option key='false' value='false'>False</option>
+      </select>
+    }
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
@@ -271,18 +343,11 @@ class ProfileArea extends React.Component {
       marginBottom: '7px',
       background: 'white'
     }
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
+    console.log('props in profile Area:', this.props)
     return (
       <div className='col-xl-3'>
         <CustomFields />
         <CreateCustomField />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height'>
           <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
             <div className='m-card-profile'>
@@ -321,7 +386,7 @@ class ProfileArea extends React.Component {
                   this.props.user.isSuperUser &&
                   <MAPCUSTOMER
                     currentSession={this.props.activeSession}
-                    msg={this.msg}
+                    msg={this.props.msg}
                   />
                 }
                 {
@@ -482,7 +547,7 @@ class ProfileArea extends React.Component {
               </Popover>
               <div className='row' style={{ display: 'inline-block' }}>
                 <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields </span>
-                {this.props.customFields && this.props.customFields.length > 0
+                {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <span>
                     <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
                       onClick={this.showToggle}>
@@ -497,25 +562,44 @@ class ProfileArea extends React.Component {
                 }
               </div>
               <div className='row'>
-                {this.props.customFields && this.props.customFields.length > 0
+                {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                     {
-                      this.props.customFields.map((field, i) => (
+                      this.props.customFieldOptions.map((field, i) => (
                         <div className='row'>
                           <div className='col-sm-12'>
-                            <div id='target'
+                            <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
                               onMouseEnter={() => { this.hoverOn(field._id) }}
                               onMouseLeave={this.hoverOff}
                               style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
                               <span style={{ marginLeft: '10px' }}>
-                                <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                <span style={{ color: '#3c3c7b' }}>{field.value === "" ? 'Not Set' : field.value }</span>
+                                <span style={{ fontWeight: '100' }}>{field.label} : </span>
+                                <span style={{ color: '#3c3c7b' }}>{field.value === "" ? 'Not Set' : field.value}</span>
                               </span>
                             </div>
                           </div>
                         </div>
                       ))
                     }
+                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                      <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
+                      <PopoverBody>
+                        <div className='row' style={{ minWidth: '250px' }}>
+                          <div className='col-12'>
+                            <label>Set Value</label>
+                            {setFieldInput}
+                          </div>
+                          <button style={{ float: 'right', margin: '15px' }}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.saveCustomField()
+                            }}
+                            disabled={this.state.saveFieldValueButton}>
+                            Save
+                                        </button>
+                        </div>
+                      </PopoverBody>
+                    </Popover>
                   </div>
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
@@ -573,7 +657,8 @@ ProfileArea.propTypes = {
   'createTag': PropTypes.func.isRequired,
   'assignTags': PropTypes.func.isRequired,
   'tagOptions': PropTypes.array.isRequired,
-  'members': PropTypes.array.isRequired
+  'members': PropTypes.array.isRequired,
+  'setCustomFieldValue': PropTypes.func.isRequired
 }
 
 export default ProfileArea

@@ -8,6 +8,13 @@ export const getCustomFieldlist = (data) => {
   }
 }
 
+export const getCustomFieldSubscriber = (data) => {
+  return {
+    type: ActionTypes.GET_CUSTOM_FIELD_SUBSCRIBER,
+    data
+  }
+}
+
 export function loadCustomFields () {
   console.log('Actions for getting custom fields')
   return (dispatch) => {
@@ -74,16 +81,19 @@ export function setCustomFieldValue (body, handleResponse) {
   return () => {
     callApi('custom_field_subscribers/set_custom_field_value', 'post', body)
     .then(res => {
-      handleResponse(res)
+      handleResponse(res, body)
     })
   }
 }
 
-export function getCustomFieldValue (subscriberid, handleResponse) {
-  return () => {
-    callApi('api/custom_field_subscribers/get_custom_field_subscriber/'+subscriberid, 'get')
+export function getCustomFieldValue (subscriberid) {
+  return (dispatch) => {
+    callApi('custom_field_subscribers/get_custom_field_subscriber/'+subscriberid, 'get')
     .then(res => {
-      handleResponse(res)
+      console.log('res.payload', res.payload)
+      if (res.status === 'success' && res.payload) {
+        dispatch(getCustomFieldSubscriber(res.payload))
+      }
     })
   }
 }
