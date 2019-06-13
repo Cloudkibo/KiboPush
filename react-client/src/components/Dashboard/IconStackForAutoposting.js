@@ -13,7 +13,7 @@ class IconStackForAutoposting extends React.Component {
           <span className='m-widget21__icon'>
             <a className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}
             style={{marginTop: '10px', width: '60px', height: '60px'}}>
-              <i className={`${this.props.icon} m--font-light`} />
+              <i className={`${this.props.icon} m--font-light`} style={{fontSize: 'x-large'}} />
             </a>
           </span>
           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
