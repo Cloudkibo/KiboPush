@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
 import {loadAutopostingSummary} from '../../redux/actions/dashboard.actions'
+import {loadAutopostingSummaryForBackdoor} from '../../redux/actions/backdoor.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import IconStack from '../../components/Dashboard/IconStackForAutoposting'
 import moment from 'moment'
@@ -25,8 +26,12 @@ class AutopostingSummary extends React.Component {
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
     this.changeDays = this.changeDays.bind(this)
-    this.props.loadAutopostingSummary({days: 30})
 
+    if (this.props.backdoor) {
+      this.props.loadAutopostingSummaryForBackdoor({days: 30})
+    } else {
+      this.props.loadAutopostingSummary({days: 30})
+    }
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
@@ -145,13 +150,22 @@ class AutopostingSummary extends React.Component {
   }
   changeDays (e) {
     this.setState({days: e.target.value})
-    this.props.loadAutopostingSummary({days: e.target.value})
+    if (this.props.backdoor) {
+      this.props.loadAutopostingSummaryForBackdoor({days: e.target.value})
+    } else {
+      this.props.loadAutopostingSummary({days: e.target.value})
+    }
   }
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
+            <div className='m-portlet__head-caption'>
+              <div className='m-portlet__head-title'>
+                <h3 className='m-portlet__head-text'>Autoposting</h3>
+              </div>
+            </div>
             <div className='m-portlet__head-tools'>
               <ul className='m-portlet__nav'>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
@@ -254,7 +268,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadAutopostingSummary: loadAutopostingSummary
+    loadAutopostingSummary: loadAutopostingSummary,
+    loadAutopostingSummaryForBackdoor: loadAutopostingSummaryForBackdoor
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AutopostingSummary)
