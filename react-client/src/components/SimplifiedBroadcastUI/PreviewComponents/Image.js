@@ -27,7 +27,6 @@ class Image extends React.Component {
   edit () {
     this.setState({editing: true})
     this.props.editComponent('image', {
-      edit: true,
       file: this.state.file,
       imgSrc: this.state.imgSrc,
       id: this.props.id

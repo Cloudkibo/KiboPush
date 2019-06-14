@@ -101,13 +101,13 @@ class Button extends React.Component {
       openCreateMessage: false,
       shareButton: false
     })
-    this.props.onAdd(data)
+    this.props.onAdd(data, this.props.index)
   }
   shareButton () {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
       let sharedIndex = this.props.index
-      let buttonData = {title: this.state.title, visible: true, shareButton: true, index: this.props.index}
+      let buttonData = {title: 'Share', visible: true, shareButton: true, index: this.props.index}
       this.props.updateButtonStatus({buttonDisabled: false, buttonData}, sharedIndex)
     }
   }
@@ -208,7 +208,7 @@ class Button extends React.Component {
 
   handleDoneEdit () {
     console.log('this.state', this.state)
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         id: this.props.index,
         type: 'web_url',
@@ -263,7 +263,7 @@ class Button extends React.Component {
 
   handleDone () {
     console.log('button handleDone')
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
@@ -273,8 +273,8 @@ class Button extends React.Component {
           id: ''// messageId
         }
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
-    } else if (this.state.sequenceValue !== '') {
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.sequenceValue) {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -282,7 +282,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -290,15 +290,15 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       }
     } else if (this.state.shareButton) {
       let data = {
         type: 'element_share',
         title: this.state.title
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
-    } else if (this.state.webviewurl !== '') {
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.webviewurl) {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
       }
@@ -310,7 +310,7 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 

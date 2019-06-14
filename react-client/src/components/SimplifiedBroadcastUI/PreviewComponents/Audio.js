@@ -18,7 +18,6 @@ class Audio extends React.Component {
 
   edit () {
     this.props.editComponent('audio', {
-      edit: true,
       file: this.state.file, 
       id: this.props.id
     })

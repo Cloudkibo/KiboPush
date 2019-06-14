@@ -38,7 +38,7 @@ class TextModal extends React.Component {
       id: this.props.id ? this.props.id : null,
       componentType: 'text',
       text: this.state.text,
-      buttons})
+      buttons}, this.props.edit)
   }
 
   closeModal () {

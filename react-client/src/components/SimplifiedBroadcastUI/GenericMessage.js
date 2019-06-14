@@ -123,6 +123,8 @@ class GenericMessage extends React.Component {
   }
 
   showAddComponentModal (componentType, editData) {
+    console.log('showAddComponentModal componentType', componentType)
+    console.log('showAddComponentModal editData', editData)
     document.body.style.overflow = 'hidden'
     this.setState({isShowingAddComponentModal: true, componentType, editData})
   }
@@ -348,13 +350,17 @@ class GenericMessage extends React.Component {
     this.props.handleChange({broadcast: []})
   }
 
-  addComponent (componentDetails) {
+  addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
     console.log('genericMessage props in addComponent', this.props)
     // this.showAddComponentModal()
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
-    this.msg.info(`New ${componentDetails.componentType} component added`)
+    if (edit) {
+      this.msg.info(`${componentDetails.componentType} component edited`)
+    } else {
+      this.msg.info(`New ${componentDetails.componentType} component added`)
+    }
     this.updateList(component)
     component.handler()
     this.closeAddComponentModal()
@@ -377,6 +383,7 @@ class GenericMessage extends React.Component {
     let modals = {
       'text': (<TextModal 
         buttons={[]}
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
@@ -388,6 +395,7 @@ class GenericMessage extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal 
         buttons={[]} 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
@@ -398,6 +406,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'list': (<ListModal 
         buttons={[]} 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages} 
         buttonActions={this.props.buttonActions} 
@@ -407,6 +416,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
       'image': (<ImageModal 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} 
@@ -415,6 +425,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
       'file': (<FileModal
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} 
@@ -423,6 +434,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal} 
         addComponent={this.addComponent} />),
       'audio': (<AudioModal 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage} 
         pages={this.props.pages} pageId={this.props.pageId}
@@ -431,6 +443,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]} 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions} 
         pages={this.props.pages} 
@@ -441,6 +454,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal 
         buttons={[]} 
+        edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions} 
         pages={this.props.pages} 
