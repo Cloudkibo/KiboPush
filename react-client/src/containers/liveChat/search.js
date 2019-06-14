@@ -38,7 +38,7 @@ class Profile extends React.Component {
     }
 
     if (counter === 1) {
-      scroller.scrollTo(messageId, {delay: 300, containerId: 'chat-container'})
+      scroller.scrollTo(messageId, {delay: 3000, containerId: 'chat-container'})
     } else {
       this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id, messageId: messageId}, this.scrollToMessage)
     }
@@ -46,7 +46,7 @@ class Profile extends React.Component {
 
   searchChat () {
     const data = {
-      session_id: this.props.currentSession._id,
+      subscriber_id: this.props.currentSession._id,
       text: this.state.searchValue
     }
     console.log('data to search', data)

@@ -4,61 +4,40 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
-import MediaModal from '../MediaModal'
-import YoutubeVideoModal from '../YoutubeVideoModal';
 
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.updateMediaDetails = this.updateMediaDetails.bind(this)
     this.state = {
-      imgSrc: '',
+      imgSrc: props.media.image_url ? props.media.image_url : '',
       buttons: props.buttons ? props.buttons : [],
       media: props.media ? props.media : null
     }
     this.edit = this.edit.bind(this)
-    this.closeEditButton = this.closeEditButton.bind(this)
-    this.openMediaModal = this.openMediaModal.bind(this)
-    this.openYouTubeModal = this.openYouTubeModal.bind(this)
-  }
-
-  closeEditButton () {
-    this.setState({editing: false})
   }
 
   edit () {
-    this.setState({editing: true})
-  }
-
-  openMediaModal () {
-    console.log('opening MediaModal for edit', this.state)
-    return (<MediaModal 
-        edit 
-        buttonActions={this.props.buttonActions} 
-        file={this.state.media} 
-        imgSrc={this.state.imgSrc} 
-        buttons={this.state.buttons} 
-        id={this.props.id} 
-        pageId={this.props.pageId} 
-        closeModal={this.closeEditButton} 
-        addComponent={this.props.addComponent} 
-        hideUserOptions={this.props.hideUserOptions} />)
-  }
-
-  openYouTubeModal () {
-    console.log('opening YouTubeModal for edit', this.state)
-    return (<YoutubeVideoModal 
-        edit
-        youtubeLink={this.props.youtubeLink} 
-        videoLink={this.props.videoLink} 
-        buttonActions={this.props.buttonActions} 
-        file={this.state.media} 
-        buttons={this.state.buttons} 
-        id={this.props.id} 
-        pageId={this.props.pageId} 
-        closeModal={this.closeEditButton} 
-        addComponent={this.props.addComponent} 
-        hideUserOptions={this.props.hideUserOptions} />)
+    if (this.props.youtubeLink) {
+      this.props.editComponent('video', {
+        edit: true, 
+        youtubeLink:this.props.youtubeLink, 
+        videoLink:this.props.videoLink,
+        buttonActions:this.props.buttonActions,
+        file:this.state.media,
+        buttons:this.state.buttons,
+        id:this.props.id
+      })
+    } else {
+      this.props.editComponent('media', {
+        edit: true,
+        buttonActions: this.props.buttonActions, 
+        file:this.state.media,
+        imgSrc:this.state.imgSrc,
+        buttons:this.state.buttons,
+        id:this.props.id
+      })
+    }
   }
 
   componentDidMount () {
@@ -126,7 +105,7 @@ class Media extends React.Component {
               this.state.buttons.map((button, index) => {
                 return (
                   <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
-                    <h5 style={{color: '#0782FF'}}>{button.title}</h5>
+                    <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
                   </div>
                 )
               })

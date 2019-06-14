@@ -13,6 +13,12 @@ export function updateSubscriberSummary (data) {
     data
   }
 }
+export function updateAutopostingSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_AUTOPOSTING_SUMMARY,
+    data
+  }
+}
 export function updateAllLocales (data) {
   console.log('Data Fetched From Subscribers', data)
   return {
@@ -109,6 +115,16 @@ export function loadSubscriberSummary (data) {
       .then(res => {
         console.log('response from loadSubscriberSummary', res)
         dispatch(updateSubscriberSummary(res.payload))
+      })
+  }
+}
+export function loadAutopostingSummary (data) {
+  console.log('data for loadAutopostingSummary', data)
+  return (dispatch) => {
+    callApi(`dashboard/fetchAutopostingDetails`, 'post', data)
+      .then(res => {
+        console.log('response from loadAutopostingSummary', res)
+        dispatch(updateAutopostingSummary(res.payload))
       })
   }
 }

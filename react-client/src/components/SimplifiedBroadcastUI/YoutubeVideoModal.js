@@ -30,6 +30,7 @@ class YoutubeVideoModal extends React.Component {
     this.handleLinkChange = this.handleLinkChange.bind(this)
     this.uploadTemplate = this.uploadTemplate.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleLinkChange (e) {
@@ -65,6 +66,10 @@ class YoutubeVideoModal extends React.Component {
   }
 
   updateFile (file) {
+    if (file === 'ERR_LIMIT_REACHED') {
+      this.setState({fileSizeExceeded: true, disabled: true, loading: false})
+      return
+    }
     console.log('updating YouTube file', file)
     this.uploadTemplate(file)
     // this.setState({file, videoLink: file.fileurl.url}, () => {
@@ -119,12 +124,20 @@ class YoutubeVideoModal extends React.Component {
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({disabled: false, loading: true}, () => {
+        this.setState({disabled: false, loading: true, fileSizeExceeded: false, edited: true}, () => {
           this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
         })
       } else {
-        this.setState({disabled: true})
+        this.setState({disabled: true, file: null, fileSizeExceeded: false, edited: false})
       }
+    }
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
     }
   }
 
@@ -132,18 +145,19 @@ class YoutubeVideoModal extends React.Component {
     console.log('video link', this.state.link)
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-        onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+        onClose={this.closeModal}>
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+          onClose={this.closeModal}>
           <h3>Add Video from YouTube </h3>
           <hr />
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>YouTube Link:</h4>
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : ''}} onChange={this.handleLinkChange} className='form-control' />
-              <div style={{color: 'red'}}>{this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link' : ''}</div>
-              <div style={{marginBottom: '30px', color: 'green'}}>{this.state.loading ? '*Please wait for the YouTube video to download' : ''}</div>
+              <div style={{color: 'red'}}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook. Please try another video.' : ''}</div>
+              <div style={{color: 'red'}}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
+              <div style={{marginBottom: '30px', color: 'green'}}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
               {
                 this.state.file &&
                 <AddButton
@@ -163,7 +177,7 @@ class YoutubeVideoModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
                 {this.state.loading && <div className='align-center' style={{padding: '50px'}}>
                   <center><Halogen.RingLoader color='#FF5E3A' /></center>
@@ -196,9 +210,9 @@ class YoutubeVideoModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>

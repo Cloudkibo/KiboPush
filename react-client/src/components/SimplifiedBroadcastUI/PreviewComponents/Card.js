@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../../redux/actions/broadcast.actions'
-import CardModal from '../CardModal'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -14,9 +13,7 @@ class Card extends React.Component {
     this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.edit = this.edit.bind(this)
-    this.closeEdit = this.closeEdit.bind(this)
     this.state = {
-      editing: false,
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
       buttons: props.buttons ? props.buttons : [],
@@ -32,8 +29,8 @@ class Card extends React.Component {
       openWebView: false,
       openWebsite: false,
       webviewsize: this.props.webviewsize ? this.props.webviewsize : 'FULL',
-      webviewurl: this.props.webviewurl ? this.props.webviewurl : '',
-      elementUrl: this.props.elementUrl ? this.props.elementUrl : '',
+      webviewurl: this.props.webviewurl ? this.props.webviewurl : null,
+      elementUrl: this.props.elementUrl ? this.props.elementUrl : null,
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       default_action: this.props.default_action ? this.props.default_action : null,
       isshowGuideLinesImageDialog: false
@@ -75,7 +72,7 @@ class Card extends React.Component {
   updateCardDetails (cardProps) {
     console.log('cardProps.cardDetails', cardProps.cardDetails)
     console.log('defaultAction in card', cardProps.cardDetails.default_action)
-    if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
+    if (cardProps.cardDetails.default_action) {
       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
         this.setState({elementUrl: cardProps.cardDetails.default_action.url, 
           default_action: cardProps.cardDetails.default_action})
@@ -106,8 +103,7 @@ class Card extends React.Component {
     }
   }
 
-  openCardModal () {
-    console.log('opening CardModal for edit', this.state)
+  edit () {
     let file = {
       fileurl: this.state.fileurl,
       image_url: this.state.image_url,
@@ -115,40 +111,32 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size
     }
-    return (<CardModal edit
-      buttonActions={this.props.buttonActions}
-      default_action={this.props.default_action}
-      file={file}
-      webviewsize={this.state.webviewsize}
-      webviewurl={this.state.webviewurl}
-      elementUrl={this.props.elementUrl}
-      id={this.props.id}
-      buttons={this.state.buttons}
-      title={this.state.title}
-      subtitile={this.state.subtitle}
-      imgSrc={this.state.imgSrc}
-      replyWithMessage={this.props.replyWithMessage}
-      pageId={this.props.pageId}
-      closeModal={this.closeEdit}
-      addComponent={this.props.addComponent}
-      hideUserOptions={this.props.hideUserOptions} />)
-  }
-
-  closeEdit () {
-    console.log('closeEdit Card')
-    this.setState({editing: false})
-  }
-
-  edit () {
-    this.setState({editing: true})
+    let cards = [{
+      default_action: this.props.default_action,
+      file: file,
+      webviewsize: this.state.webviewsize,
+      webviewurl: this.state.webviewurl,
+      elementUrl: this.props.elementUrl,
+      buttons: [].concat(this.state.buttons),
+      title: this.state.title,
+      subtitle: this.state.subtitle,
+      imgSrc: this.state.imgSrc,
+      image_url: this.state.image_url,
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+    }]
+    this.props.editComponent('card', {
+      id: this.props.id,
+      cards: cards,
+      buttonActions: this.props.buttonActions
+    })
   }
 
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openCardModal()
-        }
         {
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
@@ -160,11 +148,12 @@ class Card extends React.Component {
         <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '175px', maxWidth: '225px', marginLeft: '15px'}} >
           {
             this.state.imgSrc &&
-            <img src={this.state.imgSrc} style={{maxHeight: '130px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
+            <img src={this.state.imgSrc} style={{maxHeight: '140px', maxWidth: '225px', padding: '10px', margin: '-10px'}} />
           }
           <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
           <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
-          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '13px'}}>{this.state.subtitle}</p>
+          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
+          <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
           {
             this.state.buttons.map(button => {
               return (

@@ -18,6 +18,7 @@ class ImageModal extends React.Component {
     this.updateImage = this.updateImage.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateFile = this.updateFile.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleDone () {
@@ -31,23 +32,31 @@ class ImageModal extends React.Component {
       componentType: 'image',
       file: this.state.file,
       fileurl: this.state.file ? this.state.file.fileurl : '',
-      image_url: this.state.file ? this.state.file.image_url : ''})
+      image_url: this.state.file ? this.state.file.image_url : ''}, this.props.edit)
   }
 
   updateImage (imgSrc) {
-    this.setState({imgSrc})
+    this.setState({imgSrc, edited: true})
   }
 
   updateFile (file) {
     this.setState({file})
   }
 
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
+  }
+
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-        onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+        onClose={this.closeModal}>
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+          onClose={this.closeModal}>
           <h3>Add Image Component</h3>
           <hr />
           <div className='row'>
@@ -60,22 +69,22 @@ class ImageModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '400px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '60vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{margin: 'auto', marginTop: '100px'}} >
                   {
                       this.state.imgSrc &&
-                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '150px', borderRadius: '10px'}} />
+                      <img src={this.state.imgSrc} style={{maxWidth: '80%', maxHeight: '30vh', borderRadius: '10px'}} />
                   }
                 </div>
               </div>
             </div>
             <div className='row'>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || !this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>

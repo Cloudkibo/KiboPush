@@ -9,6 +9,7 @@ import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import Reports from './reports'
+import AutopostingSummary from '../dashboard/autopostingSummary'
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -85,7 +86,7 @@ class OperationalDashboard extends React.Component {
     // props.loadSurveysGraphData(0)
     // props.loadSessionsGraphData(0)
     props.fetchPlatformStats()
-    props.fetchAutopostingPlatformWise()
+    // props.fetchAutopostingPlatformWise()
     props.fetchPlatformStatsMonthly()
     props.fetchPlatformStatsWeekly()
     props.fetchTopPages(10)
@@ -365,7 +366,7 @@ class OperationalDashboard extends React.Component {
      } else {
        this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
      }
-   }  
+   }
 
   searchUser (event) {
   }
@@ -416,7 +417,7 @@ class OperationalDashboard extends React.Component {
             <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} />
           }
           <div className='row'>
-            <AutopostingDetails autopostingStats={this.props.autopostingStats} />
+            <AutopostingSummary backdoor={true} />
           </div>
           <div className='row'>
             <Reports
@@ -451,7 +452,7 @@ class OperationalDashboard extends React.Component {
                       </li>
                       <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                         <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
-                          <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='flaticon flaticon-more' /> </Link>
+                          <Link onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </Link>
                           <Popover
                             style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                             placement='bottom'

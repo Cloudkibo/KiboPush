@@ -10,20 +10,22 @@ class TextModal extends React.Component {
     this.state = {
       text: props.text ? props.text : '',
       buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
+      buttonActions: this.props.buttonActions ? this.props.buttonActions.slice(0, 2) : ['open website', 'open webview'],
       buttonLimit: 3,
       buttonDisabled: false
     }
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   handleTextChange (e) {
-    this.setState({text: e.target.value})
+    this.setState({text: e.target.value, edited: true})
   }
 
   updateButtonStatus (status) {
+    status.edited = true
     this.setState(status)
   }
 
@@ -36,19 +38,27 @@ class TextModal extends React.Component {
       id: this.props.id ? this.props.id : null,
       componentType: 'text',
       text: this.state.text,
-      buttons})
+      buttons}, this.props.edit)
+  }
+
+  closeModal () {
+    if (!this.state.edited || (this.state.text === '' && this.state.buttons.length === 0)) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-        onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+      <ModalContainer style={{width: '900px', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+        onClose={this.closeModal}>
+        <ModalDialog style={{width: '900px', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+          onClose={this.closeModal}>
           <h3>Add Text Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>Text:</h4>
               <textarea placeholder={'Please type here...'} value={this.state.text} style={{maxWidth: '100%', minHeight: '100px', borderColor: this.state.text === '' ? 'red' : ''}} onChange={this.handleTextChange} className='form-control' />
               <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
@@ -68,14 +78,14 @@ class TextModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '490px', marginLeft: '-50px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px'}} >
                 <div className='discussion' style={{display: 'inline-block', marginTop: '100px'}} >
                   <div style={{maxWidth: '100%', fontSize: '18px'}} className='bubble recipient'>{this.state.text}</div>
                     {
                         this.state.buttons.map((button, index) => {
                           if (button.visible) {
                             return (
-                              <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all'}}>{button.title}</div>
+                              <div className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF'}}>{button.title}</div>
                             )
                           }
                         })
@@ -85,13 +95,13 @@ class TextModal extends React.Component {
             </div>
 
 
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>

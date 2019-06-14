@@ -1,11 +1,11 @@
 import React from 'react'
 import Image from './PreviewComponents/Image'
 import List from './PreviewComponents/List'
-import Video from './PreviewComponents/Video'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
 import Text from './PreviewComponents/Text'
 import Card from './PreviewComponents/Card'
+import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -56,6 +56,8 @@ class GenericMessage extends React.Component {
     this.closeAddComponentModal = this.closeAddComponentModal.bind(this)
     this.openModal = this.openModal.bind(this)
     this.updateList = this.updateList.bind(this)
+    this.showCloseModalAlertDialog = this.showCloseModalAlertDialog.bind(this)
+    this.closeModalAlertDialog = this.closeModalAlertDialog.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -112,12 +114,24 @@ class GenericMessage extends React.Component {
     this.setState({isShowingModalResetAlert: false})
   }
 
-  showAddComponentModal (componentType) {
-    this.setState({isShowingAddComponentModal: true, componentType})
+  closeModalAlertDialog () {
+    this.setState({isShowingModalCloseAlert: false})
+  }
+
+  showCloseModalAlertDialog () {
+    this.setState({isShowingModalCloseAlert: true})
+  }
+
+  showAddComponentModal (componentType, editData) {
+    console.log('showAddComponentModal componentType', componentType)
+    console.log('showAddComponentModal editData', editData)
+    document.body.style.overflow = 'hidden'
+    this.setState({isShowingAddComponentModal: true, componentType, editData})
   }
 
   closeAddComponentModal () {
-    this.setState({isShowingAddComponentModal: false})
+    document.body.style.overflow = 'auto'
+    this.setState({isShowingAddComponentModal: false, editData: null})
   }
 
   showDialog () {
@@ -336,13 +350,17 @@ class GenericMessage extends React.Component {
     this.props.handleChange({broadcast: []})
   }
 
-  addComponent (componentDetails) {
+  addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
     console.log('genericMessage props in addComponent', this.props)
     // this.showAddComponentModal()
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
-    this.msg.info(`New ${componentDetails.componentType} component added`)
+    if (edit) {
+      this.msg.info(`${componentDetails.componentType} component edited`)
+    } else {
+      this.msg.info(`New ${componentDetails.componentType} component added`)
+    }
     this.updateList(component)
     component.handler()
     this.closeAddComponentModal()
@@ -363,14 +381,88 @@ class GenericMessage extends React.Component {
 
   openModal () {
     let modals = {
-      'text': (<TextModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} hideUserOptions={this.props.hideUserOptions} />),
-      'card': (<CardModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'list': (<ListModal buttons={[]} pages={this.props.pages} buttonActions={this.props.buttonActions} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'image': (<ImageModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'file': (<FileModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'audio': (<AudioModal replyWithMessage={this.props.replyWithMessage} pages={this.props.pages} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'media': (<MediaModal buttons={[]} buttonActions={this.props.buttonActions} pages={this.props.pages} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal buttons={[]} buttonActions={this.props.buttonActions} pages={this.props.pages} replyWithMessage={this.props.replyWithMessage} pageId={this.props.pageId} closeModal={this.closeAddComponentModal} addComponent={this.addComponent} />)
+      'text': (<TextModal 
+        buttons={[]}
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        pages={this.props.pages} 
+        buttonActions={this.props.buttonActions} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} 
+        hideUserOptions={this.props.hideUserOptions} />),
+      'card': (<CardModal 
+        buttons={[]} 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        pages={this.props.pages} 
+        buttonActions={this.props.buttonActions} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'list': (<ListModal 
+        buttons={[]} 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        pages={this.props.pages} 
+        buttonActions={this.props.buttonActions} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'image': (<ImageModal 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        replyWithMessage={this.props.replyWithMessage} 
+        pages={this.props.pages} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'file': (<FileModal
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        replyWithMessage={this.props.replyWithMessage} 
+        pages={this.props.pages} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'audio': (<AudioModal 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        replyWithMessage={this.props.replyWithMessage} 
+        pages={this.props.pages} pageId={this.props.pageId}
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog} 
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'media': (<MediaModal
+        buttons={[]} 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        buttonActions={this.props.buttonActions} 
+        pages={this.props.pages} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'video': (<YoutubeVideoModal 
+        buttons={[]} 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        buttonActions={this.props.buttonActions} 
+        pages={this.props.pages} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
   }
@@ -383,7 +475,7 @@ class GenericMessage extends React.Component {
       'text': {
         component: (<Text
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           key={componentId}
           buttons={broadcast.buttons}
@@ -405,7 +497,7 @@ class GenericMessage extends React.Component {
       'image': {
         component: (<Image
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           file={broadcast.file}
           image={broadcast.fileurl}
@@ -427,7 +519,7 @@ class GenericMessage extends React.Component {
           id={componentId}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
@@ -466,10 +558,30 @@ class GenericMessage extends React.Component {
           })
         }
       },
+      'gallery': {
+        component: (<Gallery 
+          id={componentId} 
+          editComponent={this.showAddComponentModal}
+          pageId={this.state.pageId} 
+          pages={this.props.pages} 
+          key={componentId} 
+          cards={broadcast.cards} 
+          handleGallery={this.handleGallery} 
+          onRemove={this.removeComponent} 
+          buttonActions={this.props.buttonActions} 
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => { 
+          this.handleGallery({
+            id: componentId, 
+            componentType: 'gallery', 
+            cards: broadcast.cards
+          }) 
+        }
+      },
       'audio': {
         component: (<Audio
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
           file={broadcast.file ? broadcast.file : null}
@@ -485,29 +597,10 @@ class GenericMessage extends React.Component {
           })
         }
       },
-      'video': {
-        component: (<Video
-          id={componentId}
-          addComponent={this.addComponent}
-          pages={this.props.pages}
-          key={componentId}
-          file={broadcast.fileurl ? broadcast : null}
-          handleFile={this.handleFile}
-          onRemove={this.removeComponent}
-          buttonActions={this.props.buttonActions}
-          replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => {
-          this.handleFile({
-            id: componentId,
-            componentType: 'video',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : ''
-          })
-        }
-      },
       'file': {
         component: (<File
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
           file={broadcast.file ? broadcast.file : null}
@@ -525,7 +618,7 @@ class GenericMessage extends React.Component {
       'list': {
         component: (<List
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
@@ -550,7 +643,7 @@ class GenericMessage extends React.Component {
       'media': {
         component: (<Media
           id={componentId}
-          addComponent={this.addComponent}
+          editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
           key={componentId}
@@ -626,49 +719,54 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    {/* {
-                      <Modal
-                        isOpen={this.state.isShowingAddComponentModal}
-                        onRequestClose={this.closeAddComponentModal}
-                        contentLabel='Example Modal'
-                     >
-                        <h2>Hello</h2>
-                        <button onClick={this.closeAddComponentModal}>close</button>
-                        <div>I am a modal</div>
-                        <form>
-                          <input />
-                          <button>tab navigation</button>
-                          <button>stays</button>
-                          <button>inside</button>
-                          <button>the modal</button>
-                        </form>
-                      </Modal>
-                    } */}
                     {
-                    this.state.isShowingAddComponentModal && this.openModal()
+                      this.state.isShowingAddComponentModal && this.openModal()
                     }
                     {
-                    this.state.isShowingModalResetAlert &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeResetAlertDialog}>
-                      <ModalDialog style={{width: '500px'}}
+                      this.state.isShowingModalCloseAlert &&
+                      <ModalContainer style={{width: '500px'}}
+                        onClose={this.closeModalAlertDialog}>
+                        <ModalDialog style={{width: '500px'}}
+                          onClose={this.closeModalAlertDialog}>
+                          <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
+                          <button style={{float: 'right', marginLeft: '10px'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeModalAlertDialog()
+                              this.closeAddComponentModal()
+                            }}>Yes
+                          </button>
+                          <button style={{float: 'right'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeModalAlertDialog()
+                            }}>Cancel
+                          </button>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    {
+                      this.state.isShowingModalResetAlert &&
+                      <ModalContainer style={{width: '500px'}}
                         onClose={this.closeResetAlertDialog}>
-                        <p>Are you sure you want to reset the message ?</p>
-                        <button style={{float: 'right', marginLeft: '10px'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.newConvo()
-                            this.closeResetAlertDialog()
-                          }}>Yes
-                        </button>
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.closeResetAlertDialog()
-                          }}>Cancel
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
+                        <ModalDialog style={{width: '500px'}}
+                          onClose={this.closeResetAlertDialog}>
+                          <p>Are you sure you want to reset the message ?</p>
+                          <button style={{float: 'right', marginLeft: '10px'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.newConvo()
+                              this.closeResetAlertDialog()
+                            }}>Yes
+                          </button>
+                          <button style={{float: 'right'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeResetAlertDialog()
+                            }}>Cancel
+                          </button>
+                        </ModalDialog>
+                      </ModalContainer>
                     }
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}

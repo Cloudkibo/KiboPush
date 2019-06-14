@@ -147,10 +147,10 @@ class AutopostingMessages extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '100px'}}>Sent</span>
                               </th>
-                              <th data-field='seen'
+                              {/* <th data-field='seen'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '100px'}}>Seen</span>
-                              </th>
+                              </th> */}
                               <th data-field='clicked'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '100px'}}>clicked</span>
@@ -166,7 +166,7 @@ class AutopostingMessages extends React.Component {
                                   <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{message.pageId.pageName}</span></td>
                                   <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(message.datetime)}</span></td>
                                   <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{message.sent}</span></td>
-                                  <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{message.seen}</span></td>
+                                  {/* <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{message.seen}</span></td> */}
                                   <td data-field='clicked' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{message.clicked}</span></td>
                                 </tr>
                               ))
