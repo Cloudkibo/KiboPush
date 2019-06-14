@@ -183,7 +183,7 @@ class ListModal extends React.Component {
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
       listItems: this.finalCards
-    })
+    }, this.props.edit)
   }
 
   closeModal () {

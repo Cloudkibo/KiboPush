@@ -32,7 +32,7 @@ class ImageModal extends React.Component {
       componentType: 'image',
       file: this.state.file,
       fileurl: this.state.file ? this.state.file.fileurl : '',
-      image_url: this.state.file ? this.state.file.image_url : ''})
+      image_url: this.state.file ? this.state.file.image_url : ''}, this.props.edit)
   }
 
   updateImage (imgSrc) {
