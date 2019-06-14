@@ -99,7 +99,7 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
           this.scrollToTop(`panel-heading${this.state.cards.length}`)
         })
       }
@@ -135,7 +135,7 @@ class CardModal extends React.Component {
         elementUrl: card.elementUrl,
         webviewsize: card.webviewsize,
         default_action: card.default_action,
-        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons})
+        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons}, this.props.edit)
     } else if (this.state.cards.length > 1) {
       let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
@@ -160,7 +160,7 @@ class CardModal extends React.Component {
         id: this.props.id,
         componentType: 'gallery',
         cards
-        })
+        }, this.props.edit)
     }
   }
 

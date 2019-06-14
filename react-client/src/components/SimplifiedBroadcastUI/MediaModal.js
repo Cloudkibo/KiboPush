@@ -45,7 +45,7 @@ class MediaModal extends React.Component {
       size: this.state.file.size,
       type: this.state.file.type,
       mediaType: this.state.imgSrc ? 'image' : 'video',
-      buttons})
+      buttons}, this.props.edit)
   }
 
   updateButtonStatus (status) {
