@@ -546,7 +546,7 @@ class ProfileArea extends React.Component {
                 </PopoverBody>
               </Popover>
               <div className='row' style={{ display: 'inline-block' }}>
-                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields </span>
+                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields</span>
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <span>
                     <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
@@ -558,7 +558,7 @@ class ProfileArea extends React.Component {
                     </a>
                     <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
-                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields else</a>
+                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                 }
               </div>
               <div className='row'>
