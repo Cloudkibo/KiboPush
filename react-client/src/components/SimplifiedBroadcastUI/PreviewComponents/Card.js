@@ -72,7 +72,7 @@ class Card extends React.Component {
   updateCardDetails (cardProps) {
     console.log('cardProps.cardDetails', cardProps.cardDetails)
     console.log('defaultAction in card', cardProps.cardDetails.default_action)
-    if (cardProps.cardDetails.default_action !== '' && cardProps.cardDetails.default_action !== undefined) {
+    if (cardProps.cardDetails.default_action) {
       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
         this.setState({elementUrl: cardProps.cardDetails.default_action.url, 
           default_action: cardProps.cardDetails.default_action})
