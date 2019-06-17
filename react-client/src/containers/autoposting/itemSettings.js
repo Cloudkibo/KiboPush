@@ -40,7 +40,12 @@ class ItemSettings extends React.Component {
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
       alertType: '',
-      actionType: this.props.location.state.item.actionType
+      actionType: this.props.location.state.item.actionType,
+      filterTweets: 'no',
+      moderateTweets: 'no',
+      tags: [],
+      filterTagsValue: '',
+      selectedPage: ''
     }
     props.clearAlertMessages()
     this.handlePageChange = this.handlePageChange.bind(this)
@@ -53,10 +58,41 @@ class ItemSettings extends React.Component {
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
+    this.handleTweetsFilter = this.handleTweetsFilter.bind(this)
+    this.handleTweetsModerate = this.handleTweetsModerate.bind(this)
+    this.handleTagsInput = this.handleTagsInput.bind(this)
+    this.handlePageSelect = this.handlePageSelect.bind(this)
   }
 
   handleActionType (e) {
     this.setState({actionType: e.target.value})
+  }
+
+  handleTweetsFilter (e) {
+    this.setState({filterTweets: e.target.value})
+    console.log(this.state.filterTweets)
+  }
+
+  handleTweetsModerate (e) {
+    this.setState({moderateTweets: e.target.value})
+    console.log('moderateTweets', this.state.moderateTweets)
+  }
+
+  handleTagsInput (e) {
+    let tagsInput = e.target.value
+    
+    let tags = []
+    tags = tagsInput.split(';')
+    if(tags.length >= 6) {
+      return this.msg.error('Tags cannot be more than 5')
+    }else{
+      this.setState({tags: tags})
+      this.setState({filterTagsValue: e.target.value})
+    }
+  }
+  
+  handlePageSelect (e) {
+    this.setState({selectedPage: e.target.value})
   }
 
   componentDidMount () {
@@ -312,7 +348,11 @@ class ItemSettings extends React.Component {
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,
       isActive: isActive,
-      actionType: this.state.actionType
+      actionType: this.state.actionType,
+      filterTweets: this.state.filterTweets === 'yes' ? true : false,
+      filterTags: this.state.tags,
+      moderateTweets: this.state.moderateTweets === 'yes' ? true : false,
+      approvalChannel: { type: 'messenger', pageId:  this.state.selectedPage}
     }
     this.props.editautoposting(autopostingData)
   }
@@ -456,6 +496,72 @@ class ItemSettings extends React.Component {
                   </div>
 
                 </div>
+                {this.props.location.state.item.subscriptionType === 'twitter' &&
+                <div>
+                <div className='m-form__seperator m-form__seperator--dashed' />
+                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                  <div className='m-form__heading'>
+                    <h3 className='m-form__heading-title'>
+                      Filter Tweets
+                    </h3>
+                  </div>
+                  <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                    <div className='m-radio-list'>
+                      <label className='m-radio'>
+                        <input type='radio' value='no' onChange={this.handleTweetsFilter} checked={this.state.filterTweets === 'no'} />
+                          Don't Filter
+                        <span />
+                      </label>
+                      <label className='m-radio'>
+                        <input type='radio' value='yes' onChange={this.handleTweetsFilter} checked={this.state.filterTweets === 'yes'} />
+                          Filter
+                        <span />
+                      </label>
+                      {this.state.filterTweets === 'yes' &&
+                      <div>
+                      <label>Enter upto 5 tags seperated by semi-colon (;)</label>
+                      <input className='form-control m-input'  value={this.state.filterTagsValue}
+                      onChange= {this.handleTagsInput}
+                      />
+                      </div>}
+                    </div>
+                  </div>
+                </div>
+              </div>}
+              {this.props.location.state.item.subscriptionType === 'twitter' &&
+                <div>
+                <div className='m-form__seperator m-form__seperator--dashed' />
+                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                  <div className='m-form__heading'>
+                    <h3 className='m-form__heading-title'>
+                      Moderate Tweets
+                    </h3>
+                  </div>
+                  <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                    <div className='m-radio-list'>
+                      <label className='m-radio'>
+                        <input type='radio' value='no' onChange={this.handleTweetsModerate} checked={this.state.moderateTweets === 'no'} />
+                          Send tweets without any approval
+                        <span />
+                      </label>
+                      <label className='m-radio'>
+                        <input type='radio' value='yes' onChange={this.handleTweetsModerate} checked={this.state.moderateTweets === 'yes'} />
+                          Ask for approval before sending any tweets
+                        <span />
+                      </label>
+                      {this.state.moderateTweets === 'yes' &&
+                      <div>
+                      <label>Select the page from which to ask for approval</label>
+                      <select className='form-control m-input' onChange={this.handlePageSelect} value={this.state.selectedPage}>
+                      {this.props.pages.map((item, i) => {
+                        return <option value={item.pageId}>{item.pageName}</option>
+                      })}
+                      </select>
+                      </div>}
+                    </div>
+                  </div>
+                </div>
+              </div>}
               </div>
               <div className='m-portlet__foot m-portlet__foot--fit'>
                 <div className='m-form__actions m-form__actions'>
