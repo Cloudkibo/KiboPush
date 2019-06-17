@@ -47,7 +47,9 @@ class App extends Component {
     console.log("Public URL ", process.env.PUBLIC_URL)
     return (
       <div>
-        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
+        { (auth.getToken() !== undefined || auth.getToken() !== '') &&
+          (
+            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -65,6 +67,8 @@ class App extends Component {
            : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
              { this.props.children }
            </div>
+
+         )
         }
       </div>
     )
