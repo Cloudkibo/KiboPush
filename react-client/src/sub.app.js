@@ -45,9 +45,10 @@ class App extends Component {
   }
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
+    console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        { (auth.getToken() !== undefined || auth.getToken() !== '') &&
+        { (auth.getToken() !== undefined && auth.getToken() !== '') &&
           (
             auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
