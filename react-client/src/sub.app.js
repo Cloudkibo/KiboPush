@@ -35,7 +35,7 @@ class App extends Component {
         this.setState({showContent: true})
         clearInterval(interval)
       }
-    }, 3000)
+    }, 1000)
   }
   componentWillUnmount () {
     this.unlisten()
