@@ -11,7 +11,8 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      path: '/'
+      path: '/',
+      showContent: false
     }
   }
 
@@ -29,6 +30,12 @@ class App extends Component {
         /* eslint-enable */
       }
     })
+    let interval = setInterval(() => {
+      if (auth.getToken() !== undefined && auth.getToken() !== '') {
+        this.setState({showContent: true})
+        clearInterval(interval)
+      }
+    }, 3000)
   }
   componentWillUnmount () {
     this.unlisten()
@@ -48,7 +55,7 @@ class App extends Component {
     console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        { (auth.getToken() !== undefined && auth.getToken() !== '') &&
+        { this.state.showContent &&
           (
             auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
