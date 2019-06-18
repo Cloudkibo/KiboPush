@@ -207,8 +207,11 @@ class sponsoredMessaging extends React.Component {
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{sponsoredMessage.status}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '290px'}}>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
+                              <span style={{width: '400px'}}>
+                                <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessaging/insights'>
+                                    Insights
+                                </ Link>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(landingPage)}>
                                     Edit
                                 </button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>

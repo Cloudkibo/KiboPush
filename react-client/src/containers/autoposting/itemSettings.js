@@ -39,7 +39,8 @@ class ItemSettings extends React.Component {
       tagValue: [],
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      actionType: this.props.location.state.item.actionType
     }
     props.clearAlertMessages()
     this.handlePageChange = this.handlePageChange.bind(this)
@@ -47,11 +48,15 @@ class ItemSettings extends React.Component {
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.editAutoposting = this.editAutoposting.bind(this)
-
+    this.handleActionType = this.handleActionType.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
+  }
+
+  handleActionType (e) {
+    this.setState({actionType: e.target.value})
   }
 
   componentDidMount () {
@@ -119,7 +124,7 @@ class ItemSettings extends React.Component {
     $('#selectPage').select2({
     /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages',
+      placeholder: 'Select Pages (Default: All)',
       allowClear: true,
       multiple: true,
       tags: true
@@ -306,7 +311,8 @@ class ItemSettings extends React.Component {
       segmentationGender: this.state.genderValue,
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,
-      isActive: isActive
+      isActive: isActive,
+      actionType: this.state.actionType
     }
     this.props.editautoposting(autopostingData)
   }
@@ -370,11 +376,10 @@ class ItemSettings extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='m-form__seperator m-form__seperator--dashed' />
-                <div className='m-form__section m-form__section--last'>
+                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
                   <div className='m-form__heading'>
                     <h3 className='m-form__heading-title'>
-                      Set Segmentation
+                      Select Pages
                     </h3>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -384,6 +389,46 @@ class ItemSettings extends React.Component {
                     <div className='col-lg-6'>
                       <select id='selectPage' />
                     </div>
+                  </div>
+                </div>
+                {
+                  this.props.location.state.item.subscriptionType === 'twitter' &&
+                  <div>
+                    <div className='m-form__seperator m-form__seperator--dashed' />
+                    <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Action
+                        </h3>
+                      </div>
+                      <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                        <div className='m-radio-list'>
+                          <label className='m-radio'>
+                            <input type='radio' value='messenger' onChange={this.handleActionType} checked={this.state.actionType === 'messenger'} />
+                              Send tweets to messenger subscribers
+                            <span />
+                          </label>
+                          <label className='m-radio'>
+                            <input type='radio' value='facebook' onChange={this.handleActionType} checked={this.state.actionType === 'facebook'} />
+                              Post tweets to Facebook page(s)
+                            <span />
+                          </label>
+                          <label className='m-radio'>
+                            <input type='radio' value='both' onChange={this.handleActionType} checked={this.state.actionType === 'both'} />
+                              Do both
+                            <span />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+                <div className='m-form__seperator m-form__seperator--dashed' />
+                <div className='m-form__section m-form__section--last'>
+                  <div className='m-form__heading'>
+                    <h3 className='m-form__heading-title'>
+                      Set Segmentation
+                    </h3>
                   </div>
                   <div className='form-group m-form__group row'>
                     <label className='col-lg-2 col-form-label'>

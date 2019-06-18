@@ -23,7 +23,7 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import GiphyPicker from 'react-gif-picker'
+import { Selector } from 'react-giphy-selector'
 import {
   isEmoji,
   getmetaurl,
@@ -82,7 +82,8 @@ class ChatBox extends React.Component {
       disabledValue: false,
       record: false,
       buttonState: 'start',
-      recording: false
+      recording: false,
+      scrolling: true
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -131,6 +132,12 @@ class ChatBox extends React.Component {
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
+    this.removeUrlMeta = this.removeUrlMeta.bind(this)
+  }
+
+  removeUrlMeta () {
+    this.setState({urlmeta: {}})
+    this.props.urlMeta = {}
   }
 
   showDialogRecording () {
@@ -224,14 +231,12 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
-    console.log('previousScrollHeight', this.previousScrollHeight)
-    console.log('scrollHeight', this.refs.chatScroll.scrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
       if (this.props.userChat && this.props.userChat.length > 0) {
-        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
       }
       this.props.disableScroll()
     }
@@ -249,7 +254,7 @@ class ChatBox extends React.Component {
   }
 
   showEmojiPicker () {
-    this.setState({showEmojiPicker: true})
+    this.setState({showEmojiPicker: true, scrolling: false})
   }
 
   toggleEmojiPicker () {
@@ -281,9 +286,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     this.closeDialogRecording()
-    console.log('recordedBlob is: ', recordedBlob)
     var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
-    console.log('files', file)
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -301,26 +304,10 @@ class ChatBox extends React.Component {
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
-    /* const promise = new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(recordedBlob.blob)
-      reader.onload = () => {
-        if (!reader.result) {
-          resolve(reader.result)
-        } else {
-          reject(Error('Failed to convert'))
-        }
-      }
-    })
-    promise.then(result => {
-      console.log('result', result)
-    }, err => {
-      console.log('error', err)
-    }) */
   }
 
   showStickers () {
-    this.setState({showStickers: true})
+    this.setState({showStickers: true, scrolling: false})
   }
 
   toggleStickerPicker () {
@@ -328,7 +315,7 @@ class ChatBox extends React.Component {
   }
 
   showGif () {
-    this.setState({showGifPicker: true})
+    this.setState({showGifPicker: true, scrolling: false})
   }
 
   toggleGifPicker () {
@@ -342,7 +329,8 @@ class ChatBox extends React.Component {
     }
     this.setState({
       componentType: 'sticker',
-      stickerUrl: sticker.image.hdpi
+      stickerUrl: sticker.image.hdpi,
+      scrolling: true
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
@@ -350,16 +338,18 @@ class ChatBox extends React.Component {
     this.toggleStickerPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
   }
 
   sendGif (gif) {
     var payload = {
       componentType: 'gif',
-      fileurl: gif.downsized.url
+      fileurl: gif.images.downsized.gif_url
     }
     this.setState({
       componentType: 'gif',
-      stickerUrl: gif.downsized.url
+      stickerUrl: gif.images.downsized.gif_url,
+      scrolling: true
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
@@ -367,21 +357,24 @@ class ChatBox extends React.Component {
     this.toggleGifPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
   }
 
   sendThumbsUp () {
     this.setState({
-      componentType: 'thumbsUp'
+      componentType: 'thumbsUp',
+      scrolling: true
     })
     var payload = {
       componentType: 'thumbsUp',
-      fileurl: 'https://app.kibopush.com/img/thumbsup.png'
+      fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
     }
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
     this.props.sendChatMessage(data)
     data.format = 'convos'
     this.props.userChat.push(data)
+    this.newMessage = true
     this.setState({textAreaValue: ''})
   }
 
@@ -510,6 +503,7 @@ class ChatBox extends React.Component {
           this.props.userChat.push(data)
         }
         this.newMessage = true
+        this.setState({scrolling: true})
       }
     }
   }
@@ -587,7 +581,6 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
-    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
@@ -634,9 +627,14 @@ class ChatBox extends React.Component {
     }
     if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      if (!this.state.scrolling) {
+        this.updateScrollTop()
+      }
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
-    this.updateScrollTop()
+    if (this.state.scrolling) {
+      this.updateScrollTop()
+    }
   }
 
   createGallery (cards) {
@@ -912,7 +910,9 @@ class ChatBox extends React.Component {
         <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
             <div>
-              <GiphyPicker onSelected={(gif) => { this.sendGif(gif) }} />
+              <Selector
+                apiKey='Rpb3AYX4FAfuQB2ROb6srJUj5kbkLfT8'
+                onGifSelected={(gif) => { this.sendGif(gif) }} />
             </div>
           </PopoverBody>
         </Popover>
@@ -1019,7 +1019,7 @@ class ChatBox extends React.Component {
                             this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
                               ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
@@ -1180,7 +1180,7 @@ class ChatBox extends React.Component {
                                 </Element>
                               </div>
                               : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg.datetime}>
+                                <Element name={msg._id}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
@@ -1852,8 +1852,9 @@ class ChatBox extends React.Component {
                   {
                      JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                      <div style={{clear: 'both', display: 'block'}}>
-                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
-                         <table style={{maxWidth: '318px'}}>
+                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block', padding: '5px'}}>
+                         <i style={{float: 'right', color: 'red', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
+                         <table style={{maxWidth: '318px', margin: '10px'}}>
                            {
                              this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                              ? <tbody>

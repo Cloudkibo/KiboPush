@@ -36,7 +36,7 @@ class Media extends React.Component {
       showPreview: false,
       file: props.file ? props.file : '',
       previewUrl: '',
-      mediaType: '',
+      mediaType: this.props.mediaType ? this.props.mediaType : '',
       styling: {minHeight: 30, maxWidth: 400}
     }
   }
@@ -74,6 +74,7 @@ class Media extends React.Component {
       this.props.handleMedia({error: 'invalid file'})
       return
     }
+    this.props.updateStatus({disabled: true})
     if (file && image) {
       this.setState({
         mediaType: 'image'
@@ -270,14 +271,14 @@ class Media extends React.Component {
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             <div style={{width: '100%'}}>
               {
-                (!this.state.showPreview && this.state.fileName === '') &&
+                (this.state.fileName === '') &&
                 <div className='align-center' style={{marginTop: '50px'}}>
                   <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Text' />
                   <h4 style={{pointerEvents: 'none', zIndex: -1}}> Media </h4>
                 </div>
               }
               {
-                (!this.state.showPreview && this.state.fileurl && this.state.fileurl !== '') &&
+                (this.state.fileurl && this.state.fileurl !== '') &&
                   <div className='align-center'>
                     { this.state.mediaType === 'image' &&
                     <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />

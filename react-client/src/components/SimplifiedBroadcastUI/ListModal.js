@@ -33,7 +33,8 @@ class ListModal extends React.Component {
       actionDisabled: false,
       cards,
       numOfElements: 2,
-      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact'
+      topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact',
+      edited: false
     }
     this.elementLimit = 4
     this.listComponents = [null, null, null, null]
@@ -49,10 +50,11 @@ class ListModal extends React.Component {
     this.addCard = this.addCard.bind(this)
     this.addButton = this.addButton.bind(this)
     this.changeTopElementStyle = this.changeTopElementStyle.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   changeTopElementStyle (e) {
-    this.setState({topElementStyle: e.target.value})
+    this.setState({topElementStyle: e.target.value, edited: true})
   }
 
   addElement () {
@@ -65,12 +67,12 @@ class ListModal extends React.Component {
         } else if (!cards[3].visible) {
           cards[3].visible = true
         }
-        this.setState({cards, numOfElements: ++this.state.numOfElements})
+        this.setState({cards, numOfElements: ++this.state.numOfElements, edited: true})
       }
   }
 
   updateImage (image, file) {
-    this.setState({imgSrc: image, file})
+    this.setState({imgSrc: image, file, edited: true})
   }
 
   handleTitleChange (e) {
@@ -78,7 +80,7 @@ class ListModal extends React.Component {
       if (this.state.title === '') {
         this.setState({disabled: true})
       } else {
-        this.setState({disabled: false})
+        this.setState({disabled: false, edited: true})
       }
     })
   }
@@ -88,13 +90,14 @@ class ListModal extends React.Component {
       if (this.state.subtitle === '') {
         this.setState({disabled: true})
       } else {
-        this.setState({disabled: false})
+        this.setState({disabled: false, edited: true})
       }
     })
   }
 
   updateStatus (status) {
     console.log('ListModal updateStatus', status)
+    status.edited = true
     this.setState(status)
   }
 
@@ -119,7 +122,7 @@ class ListModal extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid
     }
-    this.setState({cards})
+    this.setState({cards, edited: true})
   }
 
   closeCard (id) {
@@ -128,7 +131,7 @@ class ListModal extends React.Component {
     if (this.state.numOfElements <= 2) {
       console.log('List needs at least two elements')
       cards[id-1].invalid = true
-      this.setState({cards})
+      this.setState({cards, edited: true})
       return
     }
     cards[id - 1].component = {
@@ -139,7 +142,7 @@ class ListModal extends React.Component {
     }
     cards[id - 1].visible = false
     this.listComponents[id - 1] = null
-    this.setState({cards, numOfElements: --this.state.numOfElements})
+    this.setState({cards, numOfElements: --this.state.numOfElements, edited: true})
   }
 
   handleDone () {
@@ -180,21 +183,29 @@ class ListModal extends React.Component {
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
       listItems: this.finalCards
-    })
+    }, this.props.edit)
+  }
+
+  closeModal () {
+    if (!this.state.edited) {
+      this.props.closeModal()
+    } else {
+      this.props.showCloseModalAlertDialog()
+    }
   }
 
   render () {
     console.log('ListModal state', this.state)
     let visibleCards = this.state.cards.filter(card => card.visible)
     return (
-      <ModalContainer style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-        onClose={this.props.closeModal}>
-        <ModalDialog style={{width: '900px', left: '25vw', top: '82px', cursor: 'default'}}
-          onClose={this.props.closeModal}>
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+        onClose={this.closeModal}>
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+          onClose={this.closeModal}>
           <h3>Add List Component</h3>
           <hr />
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
 
               <h4>Top Element Style:</h4>
               <div style={{marginTop: '10px', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', padding: '10px', marginBottom: '30px'}}>
@@ -210,18 +221,21 @@ class ListModal extends React.Component {
               </div>
 
               <h4>Elements:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', marginBottom: '30px'}}>
+              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
                 {
                     this.state.cards.map((card, index) => {
                       if (card.visible) {
                         return (<AddCard
+                          index={index}
+                          buttonActions={this.state.buttonActions}
+                          errorMsg={'*At least two list elements are required'}
                           replyWithMessage={this.props.replyWithMessage}
                           card={this.state.cards[index]}
                           addCard={this.addCard}
                           ref={(ref) => { this.listComponents[index] = ref }}
-                          closeCard={() => { this.closeCard(card.component.id) }}
-                          id={card.component.id}
-                          updateStatus={(status) => { this.updateCardStatus(status, card.component.id) }} />)
+                          closeCard={() => { this.closeCard(index+1) }}
+                          id={index+1}
+                          updateStatus={(status) => { this.updateCardStatus(status, index+1) }} />)
                       }
                     })
                 }
@@ -249,7 +263,7 @@ class ListModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '500px', marginLeft: '-50px', paddingBottom: '100px'}} >
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px', paddingBottom: '100px'}} >
                 <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} >
                   {
                     visibleCards.map((card, index) => {
@@ -266,7 +280,8 @@ class ListModal extends React.Component {
                           <div className='row' style={{padding: '10px'}}>
                             <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
                               <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.component.title}</h6>
-                              <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                              <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '12px'}}>{card.component.subtitle}</p>
+                              <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '12px'}}>{card.component.default_action && card.component.default_action.url}</p>
                             </div>
                             {!largeStyle && <div className='col-6'>
                               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
@@ -311,13 +326,13 @@ class ListModal extends React.Component {
               </div>
             </div>
 
-            <div className='row'>
+            <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
-                <button onClick={this.props.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
                 <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Add'}
+                  {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>

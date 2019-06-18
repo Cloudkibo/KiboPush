@@ -470,3 +470,19 @@ export function savePageInformation (page) {
     data: page
   }
 }
+export function updateAutopostingSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_AUTOPOSTING_SUMMARY,
+    data
+  }
+}
+export function loadAutopostingSummaryForBackdoor (data) {
+  console.log('data for loadAutopostingSummaryForBackdoor', data)
+  return (dispatch) => {
+    callApi(`backdoor/fetchAutopostingDetails`, 'post', data)
+      .then(res => {
+        console.log('response from loadAutopostingSummaryForBackdoor', res)
+        dispatch(updateAutopostingSummary(res.payload))
+      })
+  }
+}

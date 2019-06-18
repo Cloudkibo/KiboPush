@@ -32,6 +32,15 @@ class Image extends React.Component {
     this.handleImage = this.handleImage.bind(this)
   }
 
+  componentWillReceiveProps (nextProps) {
+    let newState = {
+      file: nextProps.file ? nextProps.file : null,
+      imgSrc: nextProps.imgSrc ? nextProps.imgSrc : ''
+    }
+    console.log('AddImage newState', newState)
+    this.setState(newState)
+  }
+
   componentDidMount () {
     if (this.props.image && this.props.image.url) {
       console.log('in componentDidMount of Image', this.props.image)

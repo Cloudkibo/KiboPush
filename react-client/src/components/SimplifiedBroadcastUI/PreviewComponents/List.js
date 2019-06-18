@@ -3,30 +3,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ListModal from '../ListModal'
 
 class List extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.edit = this.edit.bind(this)
-    this.closeEdit = this.closeEdit.bind(this)
     this.state = {
       listItems: this.props.listItems ? this.props.listItems : [],
       showPlus: false,
       pageNumber: 2,
       buttons: props.buttons ? props.buttons : [],
       topElementStyle: this.props.topElementStyle ? this.props.topElementStyle : 'compact',
-      styling: {minHeight: 30, maxWidth: 400},
-      editing: false
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
 
   edit () {
     this.setState({editing: true})
-  }
-
-  closeEdit () {
-    this.setState({editing: false})
+    this.props.editComponent('list', {
+      buttonActions: this.props.buttonActions,
+      topElementStyle: this.state.topElementStyle,
+      id: this.props.id,
+      cards: this.props.listItems,
+      buttons: this.state.buttons
+    })
   }
 
   componentDidMount () {
@@ -77,28 +77,10 @@ class List extends React.Component {
     }
   }
 
-  openListModal () {
-    console.log('opening CardModal for edit', this.state)
-    return (<ListModal edit
-      buttonActions={this.props.buttonActions}
-      topElementStyle={this.state.topElementStyle}
-      id={this.props.id}
-      cards={this.props.listItems}
-      buttons={this.state.buttons}
-      replyWithMessage={this.props.replyWithMessage}
-      pageId={this.props.pageId}
-      closeModal={this.closeEdit}
-      addComponent={this.props.addComponent}
-      hideUserOptions={this.props.hideUserOptions} />)
-  }
-
   render () {
     let buttonPayloads = this.state.buttons.map((button) => button.payload)
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
-          this.state.editing && this.openListModal()
-        }
         <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: buttonPayloads}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, right: this.props.sequence ? 0 + 'px' : '100px', marginTop: '-20px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -121,7 +103,8 @@ class List extends React.Component {
                   <div className='row' style={{padding: '10px'}}>
                     <div className={largeStyle ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
                       <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{card.title}</h6>
-                      <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{card.subtitle}</p>
+                      <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '12px'}}>{card.subtitle}</p>
+                      <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '12px'}}>{card.default_action && card.default_action.url}</p>
                     </div>
                     {!largeStyle && <div className='col-6'>
                       <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >

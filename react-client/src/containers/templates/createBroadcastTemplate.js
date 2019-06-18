@@ -125,6 +125,7 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
+
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }

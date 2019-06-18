@@ -14,7 +14,6 @@ class Button extends React.Component {
       openPopover: false,
       title: this.props.button ? (this.props.button.type === 'element_share') ? 'Share' : this.props.button.title : this.props.title,
       url: this.props.button ? (!this.props.button.messenger_extensions ? this.props.button.url : '') : '',
-      disabled: false,
       sequenceValue: this.props.button ? this.props.button.sequenceValue : '',
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
@@ -26,7 +25,7 @@ class Button extends React.Component {
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false,
       showSequenceMessage: false,
-      buttonDisabled: true,
+      buttonDisabled: this.props.edit ? false : true,
       errorMsg:''
     }
 
@@ -56,9 +55,31 @@ class Button extends React.Component {
     this.handleWebView= this.handleWebView.bind(this)
   }
 
+  componentWillReceiveProps (nextProps) {
+    let newState = {
+      title: nextProps.tempButton ? (nextProps.tempButton.shareButton) ? 'Share' : nextProps.tempButton.title : nextProps.title,
+      url: nextProps.tempButton ? nextProps.tempButton.url : '',
+      openWebsite: nextProps.tempButton && nextProps.tempButton.url ? true: false,
+      shareButton: nextProps.tempButton && nextProps.tempButton.shareButton,
+      openWebView: nextProps.tempButton && nextProps.tempButton.webviewurl ? true : false,
+      webviewurl: nextProps.tempButton ? nextProps.tempButton.webviewurl : '',
+      webviewsize: nextProps.tempButton ? nextProps.tempButton.webviewsize : 'FULL',
+      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+    }
+    newState.openPopover = newState.openWebsite || newState.openWebView || newState.shareButton
+    console.log('Button newState', newState)
+    if (newState.openPopover) {
+      this.setState(newState)
+    }
+  }
+
+
+
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
+      let buttonData = {title: this.state.title, visible: true, webviewurl: this.state.webviewurl, index: this.props.index, webviewsize: event.target.value}
       this.setState({webviewsize: event.target.value})
+      this.props.updateButtonStatus({buttonData})
     }
   }
   replyWithMessage () {
@@ -80,13 +101,14 @@ class Button extends React.Component {
       openCreateMessage: false,
       shareButton: false
     })
-    this.props.onAdd(data)
+    this.props.onAdd(data, this.props.index)
   }
   shareButton () {
     this.setState({shareButton: true, buttonDisabled: false, title: 'Share'})
     if (this.props.updateButtonStatus) {
       let sharedIndex = this.props.index
-      this.props.updateButtonStatus({buttonDisabled: false}, sharedIndex)
+      let buttonData = {title: 'Share', visible: true, shareButton: true, index: this.props.index}
+      this.props.updateButtonStatus({buttonDisabled: false, buttonData}, sharedIndex)
     }
   }
   showWebsite () {
@@ -186,7 +208,7 @@ class Button extends React.Component {
 
   handleDoneEdit () {
     console.log('this.state', this.state)
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         id: this.props.index,
         type: 'web_url',
@@ -241,7 +263,7 @@ class Button extends React.Component {
 
   handleDone () {
     console.log('button handleDone')
-    if (this.state.url !== '') {
+    if (this.state.url) {
       let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
@@ -251,8 +273,8 @@ class Button extends React.Component {
           id: ''// messageId
         }
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
-    } else if (this.state.sequenceValue !== '') {
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.sequenceValue) {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -260,7 +282,7 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
           type: 'postback',
@@ -268,15 +290,15 @@ class Button extends React.Component {
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
         }
-        this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       }
     } else if (this.state.shareButton) {
       let data = {
         type: 'element_share',
         title: this.state.title
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
-    } else if (this.state.webviewurl !== '') {
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.webviewurl) {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
       }
@@ -288,7 +310,7 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
-      this.props.addButton(data, this.props.onAdd, this.msg, this.resetButton)
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 
@@ -316,25 +338,26 @@ class Button extends React.Component {
   }
 
   changeUrl (event) {
-    console.log('event', event.target.value)
-    if (isWebURL(this.state.url) && this.state.title !== '') {
+    console.log('chaning website url', event.target.value)
+    let buttonData = {title: this.state.title, visible: true, url: event.target.value, index: this.props.index}
+    if (isWebURL(event.target.value) && this.state.title !== '') {
       console.log('buttonDisabled: false')
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: false})
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
       }
     } else {
       this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true, buttonData})
       }
     }
     this.setState({url: event.target.value})
   }
   changeWebviewUrl (e) {
-    console.log('isWebURL(this.state.webviewurl)', isWebURL(this.state.webviewurl))
-    console.log('this.state.title', this.state.title)
-    if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
+    console.log('changing webviewurl', e.target.value)
+    let buttonData = {title: this.state.title, visible: true, webviewurl: e.target.value, index: this.props.index}
+    if (isWebURL(e.target.value) && this.state.title !== '') {
       // this.setState({buttonDisabled: false})
       // if (this.props.updateButtonStatus) {
       //   this.props.updateButtonStatus({buttonDisabled: false})
@@ -344,7 +367,7 @@ class Button extends React.Component {
     } else {
       this.setState({buttonDisabled: true})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: true})
+        this.props.updateButtonStatus({buttonDisabled: true, buttonData})
       }
 
     }
@@ -373,7 +396,8 @@ class Button extends React.Component {
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
-          <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
+          <div style={{color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
           <h6 style={{marginTop: '30px'}}>When this button is pressed:</h6>
           {
                   !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&

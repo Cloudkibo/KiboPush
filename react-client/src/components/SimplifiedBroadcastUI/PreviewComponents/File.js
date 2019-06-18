@@ -11,32 +11,22 @@ import {
 } from '../../../redux/actions/broadcast.actions'
 import { uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
-import FileModal from '../FileModal'
 
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: this.props.file ? this.props.file : null,
-      editing: false
+      file: this.props.file ? this.props.file : null
     }
     this.edit = this.edit.bind(this)
-    this.closeEditButton = this.closeEditButton.bind(this)
-    this.openFileModal = this.openFileModal.bind(this)
-  }
-
-  closeEditButton () {
-    this.setState({editing: false})
   }
 
   edit () {
-    this.setState({editing: true})
-  }
-
-  openFileModal () {
-    console.log('opening FileModal for edit', this.state)
-    return (<FileModal edit file={this.state.file} id={this.props.id} pageId={this.props.pageId} closeModal={this.closeEditButton} addComponent={this.props.addComponent} hideUserOptions={this.props.hideUserOptions} />)
+    this.props.editComponent('file', {
+      file: this.state.file, 
+      id: this.props.id
+    })
   }
 
   componentDidMount () {
@@ -61,9 +51,6 @@ class File extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        {
-          this.state.editing && this.openFileModal()
-        }
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-15px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
