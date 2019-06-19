@@ -36,7 +36,7 @@ class Home extends Component {
     console.log('this.props.location.state.isKiboLite', this.props.location.state)
     if(this.props.user && this.state.kiboLiteUrl) {
       return (
-        <Dashboard location={this.props.location} load/>
+        <Dashboard location={this.props.location} />
       )
     }
     else if (this.props.user && this.props.user.platform === 'sms') {
