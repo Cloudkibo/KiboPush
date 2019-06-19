@@ -227,7 +227,7 @@ class AddSurvey extends React.Component {
     if (this.props.currentSurvey && nextProps.questions) {
       this.setState({surveyQuestions: nextProps.questions})
     }
- 
+
   }
   updateDescription (e) {
     this.setState({description: e.target.value, alertType: '', alertMessage: ''})
@@ -612,7 +612,12 @@ class AddSurvey extends React.Component {
           //     }
           //   }
           // }
-          let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
+          let currentPageSubscribers
+          if (this.state.pageId) {
+            currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
+          } else {
+            currentPageSubscribers = this.props.subscribers
+          }
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey

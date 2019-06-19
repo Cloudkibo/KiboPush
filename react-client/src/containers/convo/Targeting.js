@@ -431,7 +431,7 @@ class Targeting extends React.Component {
       /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
-        
+
         var selectedOptions = e.target.selectedOptions
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
@@ -506,7 +506,7 @@ class Targeting extends React.Component {
     }
     console.log('current pageId', this.props.page.pageId)
     console.log('next pageId', nextProps.page)
-    if (this.props.page.pageId !== nextProps.page.pageId) {
+    if (this.props.page && nextProps.page && this.props.page.pageId !== nextProps.page.pageId) {
       this.initializeSubscribers(nextProps)
     }
   }

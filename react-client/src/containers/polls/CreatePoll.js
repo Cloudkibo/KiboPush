@@ -293,7 +293,13 @@ class CreatePoll extends React.Component {
         //     }
         //   }
         // }
-        let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
+        let currentPageSubscribers
+        if (this.state.pageId) {
+          currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
+        } else {
+          currentPageSubscribers = this.props.subscribers
+        }
+
         var data = {
           platform: 'Facebook',
           datetime: Date.now(),
