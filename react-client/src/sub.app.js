@@ -34,7 +34,6 @@ class App extends Component {
       if (auth.getToken() !== undefined && auth.getToken() !== '') {
         clearInterval(interval)
         this.setState({showContent: true})
-        window.location.reload()
       }
     }, 1000)
   }
@@ -56,14 +55,13 @@ class App extends Component {
     console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        { this.state.showContent &&
-          (
+        {
             auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
                <Sidebar />
-               { this.props.children }
+               {this.state.showContent && this.props.children }
              </div>
            </div>
            : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
@@ -76,8 +74,6 @@ class App extends Component {
            : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
              { this.props.children }
            </div>
-
-         )
         }
       </div>
     )
