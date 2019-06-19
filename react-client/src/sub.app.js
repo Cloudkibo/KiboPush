@@ -60,7 +60,7 @@ class App extends Component {
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               <Sidebar />
+               {this.state.showContent && <Sidebar /> }
                { this.state.showContent && this.props.children }
              </div>
            </div>
