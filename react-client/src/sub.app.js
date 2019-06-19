@@ -32,8 +32,9 @@ class App extends Component {
     })
     let interval = setInterval(() => {
       if (auth.getToken() !== undefined && auth.getToken() !== '') {
-        this.setState({showContent: true})
         clearInterval(interval)
+        this.setState({showContent: true})
+        window.location.reload()
       }
     }, 1000)
   }
@@ -55,13 +56,14 @@ class App extends Component {
     console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        {
+        { this.state.showContent &&
+          (
             auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               {this.state.showContent && <Sidebar /> }
-               { this.state.showContent && this.props.children }
+               <Sidebar />
+               { this.props.children }
              </div>
            </div>
            : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
@@ -75,6 +77,7 @@ class App extends Component {
              { this.props.children }
            </div>
 
+         )
         }
       </div>
     )
