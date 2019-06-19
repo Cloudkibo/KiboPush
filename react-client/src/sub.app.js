@@ -55,8 +55,7 @@ class App extends Component {
     console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        { this.state.showContent &&
-          (
+        {
             auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
@@ -76,7 +75,6 @@ class App extends Component {
              { this.props.children }
            </div>
 
-         )
         }
       </div>
     )
