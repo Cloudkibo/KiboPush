@@ -29,15 +29,14 @@ class Home extends Component {
   }
   componentDidMount() {
     console.log('this.props.location.state.isKiboLite in did mount', this.props.location.state)
-
   }
 
- 
+
   render () {
     console.log('this.props.location.state.isKiboLite', this.props.location.state)
     if(this.props.user && this.state.kiboLiteUrl) {
       return (
-        <Dashboard location={this.props.location} />
+        <Dashboard location={this.props.location} load/>
       )
     }
     else if (this.props.user && this.props.user.platform === 'sms') {

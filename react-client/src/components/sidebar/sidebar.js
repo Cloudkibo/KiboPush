@@ -52,6 +52,9 @@ class Sidebar extends Component {
       businessGateway: false,
       checkbox: true
     }
+    if (this.props.reload) {
+      window.location.reload()
+    }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
