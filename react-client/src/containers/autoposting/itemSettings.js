@@ -51,11 +51,11 @@ class ItemSettings extends React.Component {
       moderateTweets: 'no',
       tags: [],
       filterTagsValue: '',
-      selectedPage: '',//this.props.pages[0].pageId,
+      selectedPage: '',
       selectedPageFbId: '',
       selectedPageAccessToken: '',
       showMessengerModal: false,
-      fbAppId:'159385484629940',
+      fbAppId:this.props.fbAppId,
       showSubscribeButton: false
     }
     props.getFbAppId()
@@ -125,6 +125,8 @@ class ItemSettings extends React.Component {
   checkAdminSubscriber (payload) {
     if(payload.length <= 0) {
     this.setState({showSubscribeButton : true})
+    }else{
+      this.setState({showSubscribeButton : false})
     }
   }
 
