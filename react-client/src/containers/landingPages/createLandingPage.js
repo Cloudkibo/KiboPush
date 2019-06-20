@@ -37,7 +37,8 @@ class CreateLandingPage extends React.Component {
         initialState: this.props.location.state.landingPage.initialState,
         submittedState: this.props.location.state.landingPage.submittedState,
         optInMessage: this.props.location.state.landingPage.optInMessage,
-        currentTab: this.props.location.state.landingPage.currentTab
+        currentTab: this.props.location.state.landingPage.currentTab,
+        isActive: this.props.location.state.landingPage.isActive
       })
     }
     const hostname = window.location.hostname
@@ -73,6 +74,12 @@ class CreateLandingPage extends React.Component {
   }
   setStatus (value) {
     this.setState({isActive: value})
+    this.props.updateLandingPageData(this.props.location.state.landingPage, this.props.landingPage.currentTab, 'isActive', value)
+    this.props.editLandingPage(this.props.location.state.landingPage._id, {
+      initialState: this.props.landingPage.initialState,
+      submittedState: this.props.landingPage.submittedState,
+      optInMessage: this.props.landingPage.optInMessage,
+      isActive: value}, this.msg, 'Landing Page Activated Successfully')
   }
   render () {
     var alertOptions = {
@@ -98,7 +105,10 @@ class CreateLandingPage extends React.Component {
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       {
-                          this.props.location.state.module === 'edit' ? <Tabs module={this.props.location.state.module} landing_page_id={this.props.location.state.landingPage._id} /> : <Tabs />
+                          this.props.location.state.module === 'edit' ?
+                          <Tabs module={this.props.location.state.module}
+                            landing_page_id={this.props.location.state.landingPage._id} />
+                          : <Tabs />
                       }
 
                     </div>

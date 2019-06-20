@@ -132,7 +132,12 @@ class Tab extends React.Component {
           </div>
           { this.props.module === 'edit' &&
           <div className='tab-pane' id='tab_4'>
-            <Setup handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} landing_page_id={this.props.landing_page_id} />
+            <Setup
+              handleNext={this.handleNext}
+              handleBack={this.handleBack}
+              module={this.props.module}
+              landing_page_id={this.props.landing_page_id}
+              isActive={this.props.landingPage.isActive} />
           </div>
           }
         </div>
