@@ -38,7 +38,8 @@ const initialState = {
     }],
     currentTab: 'initialState',
     pageId: '',
-    error: false
+    error: false,
+    isActive: true
   }
 }
 

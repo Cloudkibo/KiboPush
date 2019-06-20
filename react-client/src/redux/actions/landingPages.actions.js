@@ -55,14 +55,18 @@ export function createLandingPage (data, msg) {
   }
 }
 
-export function editLandingPage (id, data, msg) {
+export function editLandingPage (id, data, msg, msgDescription) {
   console.log('data for editLandingPage', data)
   return (dispatch) => {
     callApi(`landingPage/update/${id}`, 'post', data)
     .then(res => {
       console.log('response from editLandingPage', res)
       if (res.status === 'success') {
-        msg.success('Landing Page saved successfully')
+        if (msgDescription) {
+          msg.success(msgDescription)
+        }
+        else msg.success('Landing Page saved successfully')
+        dispatch(fetchLandingPages())
       } else {
         msg.error('Failed to save landing page')
       }
@@ -161,7 +165,7 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       console.log('inside state action', landingPageData)
       landingPage[tabValue][updateKey][stateKey] = updateValue
       console.log('landingPage in action', landingPage)
-    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage') {
+    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage' || updateKey === 'isActive') {
       landingPage[updateKey] = updateValue
     } else {
       landingPage[tabValue][updateKey] = updateValue
