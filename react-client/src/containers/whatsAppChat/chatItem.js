@@ -26,6 +26,7 @@ class ChatItem extends React.Component {
     this.previousScrollHeight = undefined
     this.newMessage = false
     this.state = {
+      changedActiveSession: true
     }
     this.showContent = this.showContent.bind(this)
     this.shouldLoad = this.shouldLoad.bind(this)
@@ -116,6 +117,7 @@ class ChatItem extends React.Component {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shouldLoad()) {
+          this.setState({changedActiveSession: true})
           this.loadMoreMessage()
           // this.updateScrollTop()
         }
@@ -153,6 +155,9 @@ class ChatItem extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    if (this.state.changedActiveSession) {
+      this.previousScrollHeight = undefined
+    }
     // // this.getDisabledValue()
     // if (nextProps.urlMeta) {
     //   if (!nextProps.urlMeta.type) {
