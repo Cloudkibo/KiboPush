@@ -55,7 +55,7 @@ class ItemSettings extends React.Component {
       selectedPageFbId: '',
       selectedPageAccessToken: '',
       showMessengerModal: false,
-      fbAppId:'1429073230510150',
+      fbAppId:'159385484629940',
       showSubscribeButton: false
     }
     props.getFbAppId()
@@ -96,7 +96,7 @@ class ItemSettings extends React.Component {
 
   handleTagsInput (e) {
     let tagsInput = e.target.value
-    
+
     let tags = []
     tags = tagsInput.split(';')
     if(tags.length >= 6) {
@@ -106,14 +106,14 @@ class ItemSettings extends React.Component {
       this.setState({filterTagsValue: e.target.value})
     }
   }
-  
+
   handlePageSelect (e) {
   if(e.target.selectedIndex !== 0){
   let pageIds = this.props.pages.map((p) => p._id)
   let index = pageIds.indexOf(e.target.value)
   this.setState({selectedPage: e.target.value, selectedPageFbId: this.props.pages[index].pageId, selectedPageAccessToken: this.props.pages[index].accessToken })
   this.props.fetchAdminSubscriptions({pageId: e.target.value}, this.checkAdminSubscriber)
-  
+
     }
   }
 
@@ -123,7 +123,7 @@ class ItemSettings extends React.Component {
   }
 
   checkAdminSubscriber (payload) {
-    if(payload.length <= 0) { 
+    if(payload.length <= 0) {
     this.setState({showSubscribeButton : true})
     }
   }
@@ -424,9 +424,10 @@ class ItemSettings extends React.Component {
             <ModalDialog style={{width: '500px'}} onClose={this.closeModal}>
               <h3>Connect to Messenger:</h3>
               <MessengerSendToMessenger
-                pageId={this.state.selectedPageFbId} 
+                pageId={this.state.selectedPageFbId}
                 appId={this.state.fbAppId}
                 ctaText='SUBSCRIBE'
+                dataRef={`${this.props.user._id}__kibopush_test_broadcast_`}
               />
             </ModalDialog>
           </ModalContainer>
@@ -572,7 +573,7 @@ class ItemSettings extends React.Component {
                     <div className='m-radio-list'>
                       <label className='m-radio'>
                         <input type='radio' value='no' onChange={this.handleTweetsFilter} checked={this.state.filterTweets === 'no'} />
-                          Don't Filter
+                          {'Don\'t Filter'}
                         <span />
                       </label>
                       <label className='m-radio'>
@@ -624,7 +625,7 @@ class ItemSettings extends React.Component {
                       <br/>
                       {this.state.showSubscribeButton &&
                       <div>
-                      <label>You are not subscribed to selected page. In order to receive approval messages you need to become a subscriber. </label> 
+                      <label>You are not subscribed to selected page. In order to receive approval messages you need to become a subscriber. </label>
                       <br/>
                       <center>
                       <button className='btn btn-success btn-sm' type='button' onClick={() => this.setState({showMessengerModal:true})} >

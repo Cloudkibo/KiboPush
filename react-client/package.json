@@ -36,6 +36,7 @@
     "react-highlight-words": "^0.11.0",
     "react-loading": "^2.0.3",
     "react-messenger-plugin": "^2.1.0",
+    "react-messenger-send-to-messenger": "^0.2.0",
     "react-mic": "^9.1.2",
     "react-modal-dialog": "^4.0.7",
     "react-multimedia-capture": "^1.2.0",
