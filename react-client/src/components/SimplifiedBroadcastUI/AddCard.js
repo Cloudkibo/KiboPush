@@ -176,7 +176,9 @@ class AddCard extends React.Component {
             buttonActions={this.state.buttonActions}
             ref={(ref) => { this.AddButton = ref }}
             updateButtonStatus={this.updateStatus}
-            addComponent={(buttons) => this.addCard(buttons)} />
+            addComponent={(buttons) => this.addCard(buttons)}
+            disabled={this.props.disabled}
+            />
           <AddAction
             edit={this.props.edit}
             default_action={this.state.default_action}

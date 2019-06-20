@@ -459,7 +459,7 @@ class Button extends React.Component {
                     }} />
                     </h7>
                     <div style={{padding: '10px'}} className='card-block'>
-                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
                        Create Message
                        </button>
                     </div>
