@@ -11,7 +11,8 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      path: '/'
+      path: '/',
+      showContent: false
     }
   }
 
@@ -29,6 +30,12 @@ class App extends Component {
         /* eslint-enable */
       }
     })
+    let interval = setInterval(() => {
+      if (auth.getToken() !== undefined && auth.getToken() !== '') {
+        this.setState({showContent: true})
+        clearInterval(interval)
+      }
+    }, 1000)
   }
   componentWillUnmount () {
     this.unlisten()
@@ -45,14 +52,16 @@ class App extends Component {
   }
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
+    console.log('auth.getToken', auth.getToken())
     return (
       <div>
-        { auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
+        {
+          auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
                <Sidebar />
-               { this.props.children }
+               { this.state.showContent && this.props.children }
              </div>
            </div>
            : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1

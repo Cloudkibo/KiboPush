@@ -56,7 +56,7 @@ class EditTags extends React.Component {
     })
   }
   deleteTag (tag) {
-    this.props.deleteTag(tag, this.msg)
+    this.props.deleteTag(tag, this.msg,this.props.loadsubscriberData)
   }
   changeTag (e, tagId) {
     this.setState({
@@ -65,7 +65,8 @@ class EditTags extends React.Component {
   }
   saveTag (tag) {
     var payload = {'tag': tag, 'newTag': this.state.renameValue}
-    this.props.renameTag(payload, this.props.msg, this.handleEdit)
+    this.props.renameTag(payload, this.props.msg, this.handleEdit, this.props.loadsubscriberData)
+
   }
   handleEdit () {
     this.resetTag()

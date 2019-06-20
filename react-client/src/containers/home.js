@@ -29,10 +29,9 @@ class Home extends Component {
   }
   componentDidMount() {
     console.log('this.props.location.state.isKiboLite in did mount', this.props.location.state)
-
   }
 
- 
+
   render () {
     console.log('this.props.location.state.isKiboLite', this.props.location.state)
     if(this.props.user && this.state.kiboLiteUrl) {
