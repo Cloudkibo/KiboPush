@@ -74,7 +74,13 @@ class InitialState extends React.Component {
 
   removeImage () {
     console.log('clicked')
- 
+
+    this.setState({showImagePlacement:false})
+    if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', '')
+    } else {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '', 'mediaLink')
+    }
   }
 
   handleMediaPlacement (e) {

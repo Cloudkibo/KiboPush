@@ -200,7 +200,7 @@ class AddButton extends React.Component {
                     buttonActions={this.props.buttonActions}
                     replyWithMessage={this.props.replyWithMessage}
                     onAdd={this.onAddButton}
-                    disabled={this.props.disabled || true}
+                    disabled={this.props.disabled}
                     />
                 )
               }
