@@ -257,7 +257,7 @@ class ListModal extends React.Component {
                 ref={(ref) => { this.AddButton = ref }}
                 updateButtonStatus={this.updateStatus}
                 addComponent={(buttons) => this.addButton(buttons)} 
-                disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled}
+                disabled={this.state.disabled || this.state.actionDisabled}
                 />
             </div>
             <div className='col-1'>

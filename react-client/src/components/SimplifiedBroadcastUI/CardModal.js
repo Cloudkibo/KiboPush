@@ -313,7 +313,7 @@ class CardModal extends React.Component {
                                     closeCard={() => { this.closeCard(card.id) }}
                                     id={card.id}
                                     updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
-                                    disabled={this.state.disabled || this.state.buttonDisabled}
+                                    disabled={this.state.disabled || this.state.actionDisabled}
                                     />                 
                                 </div>
                               </div>
