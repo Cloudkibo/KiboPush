@@ -59,21 +59,30 @@ class App extends Component {
           auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
              <Header />
-             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               <Sidebar />
-               { this.state.showContent && this.props.children }
-             </div>
+             {
+               this.state.showContent &&
+               <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+                 <Sidebar />
+                 { this.props.children }
+               </div>
+             }
            </div>
            : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
            ? <div>
              <SimpleHeader />
+             {
+               this.state.showContent &&
+               <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+                 { this.props.children }
+               </div>
+             }
+           </div>
+           : (
+             this.state.showContent &&
              <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
                { this.props.children }
              </div>
-           </div>
-           : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-             { this.props.children }
-           </div>
+           )
         }
       </div>
     )
