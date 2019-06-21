@@ -24,6 +24,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
+import MessengerSendToMessenger from 'react-messenger-send-to-messenger'
+
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -344,6 +346,8 @@ class CreateConvo extends React.Component {
   }
 
   render () {
+    console.log('pageid', this.state.pageId.pageId)
+    console.log('appid',this.props.fbAppId)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -440,7 +444,7 @@ class CreateConvo extends React.Component {
         }
 
         {
-          this.state.showMessengerModal &&
+          this.state.showMessengerModal && this.props.fbAppId && this.props.fbAppId !== '' &&
           <ModalContainer style={{width: '500px'}}
             onClick={() => { this.setState({showMessengerModal: false}) }}
             onClose={() => { this.setState({showMessengerModal: false}) }}>
@@ -448,11 +452,10 @@ class CreateConvo extends React.Component {
               onClick={() => { this.setState({showMessengerModal: false}) }}
               onClose={() => { this.setState({showMessengerModal: false}) }}>
               <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
-              <MessengerPlugin
-                appId={this.props.fbAppId}
-                pageId={JSON.stringify(this.state.pageId)}
-                passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
-                onClick={() => { this.setState({showMessengerModal: false}) }}
+              <MessengerSendToMessenger
+                pageId={this.state.pageId.pageId}
+                appId="132767517443810"//{this.props.fbAppId}
+                dataRef={`${this.props.user._id}__kibopush_test_broadcast_`}
               />
             </ModalDialog>
           </ModalContainer>
