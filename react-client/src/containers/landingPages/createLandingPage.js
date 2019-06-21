@@ -79,7 +79,7 @@ class CreateLandingPage extends React.Component {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
       optInMessage: this.props.landingPage.optInMessage,
-      isActive: value}, this.msg, 'Landing Page Activated Successfully')
+      isActive: value}, this.msg, value ? 'Landing Page Activated Successfully' : 'Landing Page Deactivated Successfully')
   }
   render () {
     var alertOptions = {
