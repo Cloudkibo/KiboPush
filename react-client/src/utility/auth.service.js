@@ -53,7 +53,8 @@ function redirectToLogoutAccounts () {
     'kiboengage': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kiboengage.cloudkibo.com',
     'kibochat': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kibochat.cloudkibo.com',
     'kibolite': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kibolite.cloudkibo.com',
-    'app': 'https://accounts.cloudkibo.com/auth/logout?continue=https://app.kibopush.com'
+    'app': 'https://accounts.cloudkibo.com/auth/logout?continue=https://app.kibopush.com',
+    'localhost': 'http://localhost:3024/auth/logout?continue=http://localhost:3000'
   }
   let products = Object.keys(redirectUrls)
   for (let i = 0; i < products.length; i++) {
