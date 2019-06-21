@@ -1279,7 +1279,7 @@ class ChatBox extends React.Component {
                                                   msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                   msg.payload.buttons.map(b => (
                                                     <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
-                                                      {b.title}
+                                                      {b.type === 'element_share' ? 'Share' : b.title}
                                                     </a>
                                                   ))
                                                 }
@@ -1322,7 +1322,7 @@ class ChatBox extends React.Component {
                                                         msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                         msg.payload.buttons.map(b => (
                                                           <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
-                                                            {b.title}
+                                                            {b.type == 'element_share' ? 'Share' : b.title}
                                                           </a>
                                                         ))
                                                       }
@@ -1383,7 +1383,7 @@ class ChatBox extends React.Component {
                                                         {
                                                           list.buttons && list.buttons.map(button => (
                                                             <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '5px', minHeight: '50%', minWidth: '25%', marginLeft: '10%', marginTop: '-10px'}} >
-                                                              <h5 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h5>
+                                                              <h5 style={{color: '#0782FF', fontSize: '12px'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
                                                             </div>
                                                           ))
                                                         }
@@ -1396,7 +1396,7 @@ class ChatBox extends React.Component {
                                                 msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                 msg.payload.buttons.map(button =>(
                                                   <div>
-                                                    <h7 style={{color: '#0782FF'}}>{button.title}</h7>
+                                                    <h7 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h7>
                                                   </div>
                                                 ))
                                               }
@@ -1670,7 +1670,7 @@ class ChatBox extends React.Component {
                                                 type='button'
                                                 className='btn btn-secondary btn-block'
                                               >
-                                                {b.title}
+                                                {b.type == 'element_share' ? 'Share' : b.title}
                                               </a>
                                             ))
                                           }
