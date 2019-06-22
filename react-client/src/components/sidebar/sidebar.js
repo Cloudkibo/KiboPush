@@ -112,18 +112,20 @@ class Sidebar extends Component {
   }
 
   showAbandonedCarts () {
-    if (this.props.user && this.props.user.advancedMode) {
-      // include user persmissions
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/abandonedCarts' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
-            <span className='m-menu__link-text'>Abandoned Carts</span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
+    if (this.props.user) {
+      if (this.props.user.isSuperUser) {
+        // include user persmissions
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/abandonedCarts' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
+              <span className='m-menu__link-text'>Abandoned Carts</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
     }
   }
 
@@ -1028,6 +1030,7 @@ class Sidebar extends Component {
                   {this.showGrowthToolsItems()}
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
+                  {this.showAbandonedCarts()}
                   {this.showSettings()}
                   {this.showUserGuide()}
                 </ul>
