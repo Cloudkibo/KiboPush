@@ -206,7 +206,7 @@ class PageSubscribers extends React.Component {
     } else {
       const user = this.props.currentUser
       this.props.history.push({
-        pathname: `/dashboard`,
+        pathname: `/userDetails`,
         state: user
       })
     }

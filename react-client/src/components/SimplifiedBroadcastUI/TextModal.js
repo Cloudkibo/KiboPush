@@ -71,7 +71,9 @@ class TextModal extends React.Component {
                 buttonActions={this.state.buttonActions}
                 ref={(ref) => { this.AddButton = ref }}
                 updateButtonStatus={this.updateButtonStatus}
-                addComponent={(buttons) => this.addComponent(buttons)} />
+                addComponent={(buttons) => this.addComponent(buttons)}
+                disabled = {!this.state.text}
+                 />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />

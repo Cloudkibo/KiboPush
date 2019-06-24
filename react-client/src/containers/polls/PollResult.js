@@ -52,12 +52,13 @@ class PollResult extends React.Component {
           jsonStructure.PageName = this.props.pages[j].pageName
         }
       }
-      jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
+      jsonStructure['Statement'] = this.props.location.state.statement
       jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
       jsonStructure['Response'] = this.props.responsesfull[i].response
       jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
-      jsonStructure['PollId'] = this.props.responsesfull[i].pollId._id
-      jsonStructure['PageId'] = this.props.responsesfull[i].subscriberId.pageId
+      jsonStructure['PollId'] = this.props.responsesfull[i].pollId
+      jsonStructure['PageId'] = this.props.responsesfull[i].subscriberId.pageId._id
+      jsonStructure['PageName'] = this.props.responsesfull[i].subscriberId.pageId.pageName
       jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
       usersPayload.push(jsonStructure)
     }
@@ -73,7 +74,7 @@ class PollResult extends React.Component {
       keys.push(subKey)
     }
     var data = json2csv({data: usersPayload, fields: keys})
-    fileDownload(data, this.props.responsesfull[0].pollId.statement + '-report.csv')
+    fileDownload(data, this.props.location.state.statement + '-report.csv')
   }
 
   componentDidMount () {
@@ -199,7 +200,7 @@ class PollResult extends React.Component {
                         </div>
                         }
                         <h5>
-                          Polls Respones
+                          Poll Responses
                         </h5>
                       </div>
                     </div>
@@ -250,7 +251,7 @@ class PollResult extends React.Component {
                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
                     }}>
                       <canvas id='radar-chart' width={250} height={170} />
-                    </div>  : 
+                    </div>  :
                     <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
 
                     <h5> Currently there are no responses for this poll.</h5>

@@ -28,6 +28,7 @@ class InitialState extends React.Component {
     this.handleMediaPlacement = this.handleMediaPlacement.bind(this)
     this._onChange = this._onChange.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.removeImage = this.removeImage.bind(this)
   }
 
   componentDidMount () {
@@ -68,6 +69,17 @@ class InitialState extends React.Component {
         type: file.type, // jpg, png, gif
         size: file.size
       }, this.handleImage)
+    }
+  }
+
+  removeImage () {
+    console.log('clicked')
+
+    this.setState({showImagePlacement:false})
+    if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', '')
+    } else {
+      this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', '', 'mediaLink')
     }
   }
 
@@ -206,7 +218,10 @@ class InitialState extends React.Component {
                     <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                     <h4 style={{pointerEvents: 'none', zIndex: -1}}> Upload Image </h4>
                   </div>
-                  : <img style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
+                  : <span>
+                  <i className='fa fa-remove' style={{float:"right"}} onClick={this.removeImage}></i>
+                  <img style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
+                </span>
                   }
                 </div>
               </div>

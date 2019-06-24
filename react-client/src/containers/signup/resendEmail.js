@@ -56,7 +56,7 @@ class ResendEmail extends React.Component {
                   <div className='m-stack__item m-topbar__nav-wrapper'>
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
                       <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a onClick={() => { auth.logout() }} href='/' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
+                        <a onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
                           Logout
                         </a>
                       </li>

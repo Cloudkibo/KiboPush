@@ -71,6 +71,7 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
+    this.props.onSelect(images)
     var file = this.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {

@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from './Button'
+import { throws } from 'assert';
 
 class AddButton extends React.Component {
   constructor (props) {
@@ -176,6 +177,7 @@ class AddButton extends React.Component {
 
   render () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
+    console.log('disabled ', this.props.disabled)
     return (
       <div>
         <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
@@ -184,6 +186,8 @@ class AddButton extends React.Component {
               if (button.visible) {
                 return (
                   <Button
+                    cardId={this.props.cardId}
+                    scrollTo={visibleButtons.length-1 === index}
                     edit={this.props.edit}
                     handleText={this.props.handleText}
                     updateButtonStatus={this.updateButtonStatus}
@@ -198,7 +202,9 @@ class AddButton extends React.Component {
                     pageId={this.props.pageId}
                     buttonActions={this.props.buttonActions}
                     replyWithMessage={this.props.replyWithMessage}
-                    onAdd={this.onAddButton} />
+                    onAdd={this.onAddButton}
+                    disabled={this.props.disabled}
+                    />
                 )
               }
             })
