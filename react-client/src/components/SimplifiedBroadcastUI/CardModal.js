@@ -209,7 +209,7 @@ class CardModal extends React.Component {
       if (card && card.props) {
         if (card.props.card.disabled || card.props.card.buttonDisabled) {
           let cardData = card.props.card.component
-          let msg = `Card ${card.props.id} requires:`
+          let msg = `Card ${card.props.card.id} requires:`
           let requirements = []
           if (!cardData.title) {
             requirements.push('a title')
