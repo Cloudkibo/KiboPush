@@ -29,15 +29,24 @@ class AddCard extends React.Component {
       webviewsize: props.card.component.webviewsize ? props.card.component.webviewsize : 'FULL',
       default_action: props.card.component.default_action ? props.card.component.default_action : null
     }
+    this.titleId = `card${this.props.id}-title`
+    this.subtitleId = `card${this.props.id}-subtitle`
+    this.imageId = `card${this.props.id}-image`
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleSubtitleChange = this.handleSubtitleChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateStatus = this.updateStatus.bind(this)
     this.updateImage = this.updateImage.bind(this)
     this.updateFile = this.updateFile.bind(this)
+    this.inputSelected = this.inputSelected.bind(this)
     //this.props.updateStatus({title: this.state.title, subtitle: this.state.subtitle})
     console.log('AddCard constructor state', this.state)
     console.log('AddCard constructor props', this.props)
+  }
+
+  inputSelected (e, elementId) {
+    console.log(`${elementId} selected`)
+    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -151,14 +160,15 @@ class AddCard extends React.Component {
             <h4 style={{textAlign: 'left'}}>{this.props.cardComponent ? 'Card ' : 'Element '} #{this.props.index+1}</h4>
           </div>
           <hr style={{marginBottom: '30px'}} /> */}
-          <h4>Title:</h4>
-          <input placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
+          <h4 id={this.titleId}>Title:</h4>
+          <input onSelect={(e) => this.inputSelected(e, this.titleId)} placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
           <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
-          <h4>Subtitle:</h4>
-          <input placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
+          <h4 id={this.subtitleId}>Subtitle:</h4>
+          <input onSelect={(e) => this.inputSelected(e, this.subtitleId)} placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
           <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
-          <h4>Image:</h4>
+          <h4 id={this.imageId}>Image:</h4>
           <Image
+            onSelect={(e) => this.inputSelected(e, this.imageId)}
             edit={this.props.edit}
             required={this.props.onlyCard}
             imgSrc={this.state.imgSrc}
@@ -166,6 +176,7 @@ class AddCard extends React.Component {
             updateFile={this.updateFile}
             updateImage={this.updateImage} />
           <AddButton
+            cardId={this.props.id}
             edit={this.props.edit}
             required={this.props.onlyCard}
             replyWithMessage={this.props.replyWithMessage}
