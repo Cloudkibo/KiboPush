@@ -88,26 +88,34 @@ class SurveyResult extends React.Component {
       q1: [],
       statement: []
     }
+    let questionIds = this.props.questions.map((q) => q._id)
     for (var i = 0; i < this.props.responses.length; i++) {
       if (this.props.responses[i].subscriberId._id === subscriber) {
         temp.q1.push(this.props.responses[i].response)
-        temp.statement.push(this.props.responses[i].questionId.statement)
+        let index = questionIds.indexOf(this.props.responses[i].questionId)
+        if (index !== -1) {
+          temp.statement.push(this.props.questions[index].statement)
+        }
       }
     }
     responseData.push(temp)
     return temp
   }
   getFile () {
+    console.log('this.props.responses', this.props.responses)
+    console.log('this.props.responses', this.props.questions)
+    console.log('temp', temp)
     let usersPayload = []
     for (let i = 0; i < this.props.responses.length; i++) {
       var jsonStructure = {}
       if (this.exists(this.props.responses[i].subscriberId._id) === false) {
         var temp = this.sortData(this.props.responses[i].subscriberId._id)
-        for (let l = 0; l < this.props.pages.length; l++) {
-          if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
-            jsonStructure.PageName = this.props.pages[l].pageName
-          }
-        }
+        // for (let l = 0; l < this.props.pages.length; l++) {
+        //   if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
+        //     jsonStructure.PageName = this.props.pages[l].pageName
+        //   }
+        // }
+        jsonStructure.PageName = this.props.responses[i].subscriberId.pageId.pageName
         jsonStructure['SubscriberName'] = this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName
         for (var k = 0; k < temp.q1.length; k++) {
           jsonStructure['Q' + (k + 1)] = temp.statement[k]
@@ -115,7 +123,7 @@ class SurveyResult extends React.Component {
         }
         jsonStructure['DateTime'] = this.props.responses[i].datetime
         jsonStructure['SurveyId'] = this.props.responses[i].surveyId._id
-        jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId
+        jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId._id
         jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
         usersPayload.push(jsonStructure)
       }
@@ -263,11 +271,11 @@ class SurveyResult extends React.Component {
                             (d) => d.questionId === c._id)}
                             question={c} />
                           }
-                        
+
                         </div>
                       ))
                     }
-                    
+
                     </ul>
                     : <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
 
