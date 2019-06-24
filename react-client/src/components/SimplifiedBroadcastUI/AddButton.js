@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from './Button'
+import { throws } from 'assert';
 
 class AddButton extends React.Component {
   constructor (props) {
@@ -185,6 +186,8 @@ class AddButton extends React.Component {
               if (button.visible) {
                 return (
                   <Button
+                    cardId={this.props.cardId}
+                    scrollTo={visibleButtons.length-1 === index}
                     edit={this.props.edit}
                     handleText={this.props.handleText}
                     updateButtonStatus={this.updateButtonStatus}
