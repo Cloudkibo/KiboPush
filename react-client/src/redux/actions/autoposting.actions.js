@@ -54,6 +54,14 @@ export function showAutopostingMessages (data) {
   }
 }
 
+export function showAutopostingPosts (data) {
+  return {
+    type: ActionTypes.SHOW_AUTOPOSTING_POSTS,
+    autoposting_posts: data.posts,
+    count: data.count
+  }
+}
+
 export function loadAutopostingList () {
   return (dispatch) => {
     callApi('autoposting').then(res => dispatch(showautoposting(res.payload)))
@@ -105,6 +113,19 @@ export function loadAutopostingMessages (id, data) {
         console.log('response from getMessages', res)
         if (res.status === 'success') {
           dispatch(showAutopostingMessages(res.payload))
+        }
+      })
+  }
+}
+
+export function loadAutopostingPosts (id, data) {
+  console.log('data for loadAutopostingPosts', data)
+  return (dispatch) => {
+    callApi(`autoposting_fb_posts/${id}`, 'post', data)
+      .then(res => {
+        console.log('response from loadAutopostingPosts', res)
+        if (res.status === 'success') {
+          dispatch(showAutopostingPosts(res.payload))
         }
       })
   }

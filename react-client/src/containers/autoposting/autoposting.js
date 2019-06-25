@@ -117,10 +117,10 @@ class Autoposting extends React.Component {
     })
   }
 
-  gotoMessages (id) {
+  gotoMessages (item) {
     this.props.history.push({
       pathname: `/autopostingMessages`,
-      state: {id: id}
+      state: item
     })
   }
 
