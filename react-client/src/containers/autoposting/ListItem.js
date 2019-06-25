@@ -68,7 +68,7 @@ class ListItem extends React.Component {
               </span>
               {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
-                <Link onClick={() => this.props.gotoMessages(this.props.item._id)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <Link onClick={() => this.props.gotoMessages(this.props.item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-envelope' />
                 </Link>
               </span>
