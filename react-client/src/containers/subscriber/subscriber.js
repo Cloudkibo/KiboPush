@@ -1299,6 +1299,7 @@ class Subscriber extends React.Component {
         </select>
       }
     }
+    var hostname = window.location.hostname
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
@@ -1537,10 +1538,10 @@ class Subscriber extends React.Component {
                                         <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                         <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user.isSuperUser && hostname.includes('kiboengage.cloudkibo.com') &&
                                           <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                         }
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user.isSuperUser && hostname.includes('kiboengage.cloudkibo.com') &&
                                           <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                         }
                                       </DropdownMenu>
@@ -2064,12 +2065,14 @@ class Subscriber extends React.Component {
                                 <span>No Custom Field Found</span>
                               </div> }
                             </div>
-                            <div className='row'>
-                              <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
-                              <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
-                            </div>
-                            {
-                              this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
+                              <div className='row'>
+                                <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
+                                <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
+                              </div>
+                            }
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
+                              (this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
                               ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                 {
                                   this.props.subscriberSequences.map((seq, i) => (
@@ -2080,7 +2083,9 @@ class Subscriber extends React.Component {
                               : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                 <span> No Sequences Subcribed</span>
                               </div>
+                            )
                             }
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
                             <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddSeqInd} target='subSeqInd' toggle={this.toggleSeqInd}>
                               <PopoverHeader>Subscribe Sequence</PopoverHeader>
                               <PopoverBody>
@@ -2115,6 +2120,7 @@ class Subscriber extends React.Component {
                                 </div>
                               </PopoverBody>
                             </Popover>
+                          }
                           </div>
                         </div>
                         <div className='modal-footer' />
