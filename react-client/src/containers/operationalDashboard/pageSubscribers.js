@@ -263,7 +263,7 @@ class PageSubscribers extends React.Component {
                       <h3 className='m-portlet__head-text'>
                         Subscribers
                       </h3>
-                      <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 680 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
+                      <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 600 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
                     </div>
                   </div>
                 </div>

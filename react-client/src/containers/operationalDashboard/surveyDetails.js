@@ -137,9 +137,9 @@ class SurveyDetails extends React.Component {
                               (d) => d.questionId._id === c._id)}
                               question={c} />
                             : <ol>
-                              {c.options.map((c) => (
+                              {c.options.map((c,index) => (
                                 <li style={{marginLeft: '30px'}}
-                                  key={c}
+                                  key={index}
                                 >{c}
                                 </li>
                                   ))}
