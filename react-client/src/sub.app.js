@@ -12,7 +12,7 @@ class App extends Component {
     super(props)
     this.state = {
       path: '/',
-      showContent: false
+      showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
   }
 
@@ -30,12 +30,14 @@ class App extends Component {
         /* eslint-enable */
       }
     })
-    let interval = setInterval(() => {
-      if (auth.getToken() !== undefined && auth.getToken() !== '') {
-        this.setState({showContent: true})
-        clearInterval(interval)
-      }
-    }, 1000)
+    if (!this.state.showContent) {
+      let interval = setInterval(() => {
+        if (auth.getToken() !== undefined && auth.getToken() !== '') {
+          window.location.reload()
+          clearInterval(interval)
+        }
+      }, 1000)
+    }
   }
   componentWillUnmount () {
     this.unlisten()

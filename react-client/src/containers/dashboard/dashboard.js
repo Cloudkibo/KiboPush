@@ -442,12 +442,6 @@ class Dashboard extends React.Component {
       // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       // document.body.appendChild(addScript1)
     }
-    let addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
-    document.body.appendChild(addScript)
-    let addScript1 = document.createElement('script')
-    addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
-    document.body.appendChild(addScript1)
     // if (this.props.currentPage) {
     //   console.log('updating sentVsSeen currentPage')
     //   this.props.sentVsSeen(this.props.currentPage.pageId)
