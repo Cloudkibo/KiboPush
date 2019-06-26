@@ -57,7 +57,7 @@
     </script>
     <script type="text/javascript">
       // TODO add if env === production
-      if ("%NODE_ENV%" === "production") {
+      if (window.__kibo_environment === "production") { //if ("%NODE_ENV%" === "production") {
         window.__lo_site_id = 114153;
         (function() {
           var wa = document.createElement('script');
@@ -121,7 +121,7 @@
     <script src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous"></script>
     <script>
       // TODO if env === production
-      if ("%NODE_ENV%" === "production") {
+      if (window.__kibo_environment === "production") {
         function readCookie(name) {
           var nameEQ = name + "=";
           var ca = document.cookie.split(';');

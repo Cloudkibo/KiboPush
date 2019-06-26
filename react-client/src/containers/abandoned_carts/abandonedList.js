@@ -26,6 +26,10 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
+  componentWillReceiveProps (nextprops) {
+    console.log('nextprops', nextprops.abandonedList)
+  }
+
   handleStatusChange () {
     // I am putting 0 because dayem said only one store will be existing for right now
     this.setState({isActive: !this.state.isActive})
