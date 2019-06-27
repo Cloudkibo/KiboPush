@@ -11,13 +11,13 @@ class ListModal extends React.Component {
     let cards = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
-        cards.push({component: props.cards[i], visible: true, disabled: false})
+        cards.push({component: props.cards[i], visible: true, disabled: false, id: i + 1})
       } else {
         cards.push({
           visible: !!(i === 0 || i === 1),
           disabled: true,
+          id: i + 1,
           component: {
-            id: i + 1,
             title: '',
             subtitle: '',
             buttons: []
@@ -177,13 +177,34 @@ class ListModal extends React.Component {
   }
 
   addComponent () {
+    let cards = this.state.cards.map((card,index) => {
+      if (card.visible) {
+        let finalCard = this.finalCards.find(x => card.id === x.id)
+        console.log(`finalCard found for card ${card.id}`, finalCard)
+        return { 
+          id: card.id ? card.id : '',
+          fileurl: card.component.fileurl ? card.component.fileurl : '',
+          image_url: card.component.image_url ? card.component.image_url : '',
+          fileName: card.component.fileName ? card.component.fileName : '',
+          type: card.component.type ? card.component.type : '',
+          size: card.component.size ? card.component.size : '',
+          title: card.component.title,
+          subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
+          webviewurl: card.component.webviewurl,
+          elementUrl: card.component.elementUrl,
+          webviewsize: card.component.webviewsize,
+          default_action: card.component.default_action,
+          buttons: finalCard ? finalCard.buttons : card.component.buttons
+        }
+      }
+    })
     this.props.addComponent({
       id: this.props.id,
       componentType: 'list',
       buttons: [].concat(...this.finalButtons),
       topElementStyle: this.state.topElementStyle,
-      listItems: this.finalCards
-    })
+      listItems: cards.filter(card => !!card)
+      }, this.props.edit)
   }
 
   closeModal () {
@@ -230,12 +251,12 @@ class ListModal extends React.Component {
                           buttonActions={this.state.buttonActions}
                           errorMsg={'*At least two list elements are required'}
                           replyWithMessage={this.props.replyWithMessage}
-                          card={this.state.cards[index]}
+                          card={card}
                           addCard={this.addCard}
-                          ref={(ref) => { this.listComponents[index] = ref }}
-                          closeCard={() => { this.closeCard(index+1) }}
-                          id={index+1}
-                          updateStatus={(status) => { this.updateCardStatus(status, index+1) }} />)
+                          ref={(ref) => { this.listComponents[card.id-1] = ref }}
+                          closeCard={() => { this.closeCard(card.id) }}
+                          id={card.id}
+                          updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
                       }
                     })
                 }
@@ -256,7 +277,9 @@ class ListModal extends React.Component {
                 buttonActions={this.state.buttonActions}
                 ref={(ref) => { this.AddButton = ref }}
                 updateButtonStatus={this.updateStatus}
-                addComponent={(buttons) => this.addButton(buttons)} />
+                addComponent={(buttons) => this.addButton(buttons)} 
+                disabled={this.state.disabled || this.state.actionDisabled}
+                />
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />

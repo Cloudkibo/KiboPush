@@ -331,6 +331,7 @@ export const RESET_STATE_REF_URL = 'RESET_STATE_REF_URL'
 
 // constants for custom fields
 export const LOAD_CUSTOM_FIELDS = 'LOAD_CUSTOM_FIELDS'
+export const GET_CUSTOM_FIELD_SUBSCRIBER = 'GET_CUSTOM_FIELD_SUBSCRIBER'
 
 // constants for contacts
 export const LOAD_CONTACTS_LIST = 'LOAD_CONTACTS_LIST'

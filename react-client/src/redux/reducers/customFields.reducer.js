@@ -6,6 +6,10 @@ export function customFieldInfo (state = {}, action) {
       return Object.assign({}, state, {
         customFields: action.data
       })
+      case ActionTypes.GET_CUSTOM_FIELD_SUBSCRIBER:
+        return Object.assign({}, state, {
+          customFieldSubscriber: action.data
+        })
     default:
       return state
   }

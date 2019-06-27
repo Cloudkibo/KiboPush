@@ -33,7 +33,7 @@ class FileModal extends React.Component {
     this.props.addComponent({
       id: this.props.id,
       componentType: 'file',
-      file: this.state.file ? this.state.file : ''})
+      file: this.state.file ? this.state.file : ''}, this.props.edit)
   }
 
   updateFile (file) {

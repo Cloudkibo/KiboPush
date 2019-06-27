@@ -53,6 +53,8 @@ class Button extends React.Component {
     this.replyWithMessage = this.replyWithMessage.bind(this)
     this.resetButton = this.resetButton.bind(this)
     this.handleWebView= this.handleWebView.bind(this)
+
+    this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
   }
 
   componentWillReceiveProps (nextProps) {
@@ -70,6 +72,9 @@ class Button extends React.Component {
     console.log('Button newState', newState)
     if (newState.openPopover) {
       this.setState(newState)
+    }
+    if (nextProps.scrollTo) {
+      document.getElementById(this.buttonId).scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -392,7 +397,7 @@ class Button extends React.Component {
   }
   render () {
     return (
-      <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
+      <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
@@ -459,7 +464,7 @@ class Button extends React.Component {
                     }} />
                     </h7>
                     <div style={{padding: '10px'}} className='card-block'>
-                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
                        Create Message
                        </button>
                     </div>

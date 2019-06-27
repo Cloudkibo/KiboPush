@@ -24,7 +24,6 @@ class Gallery extends React.Component {
       cards[i].buttons = [].concat(cards[i].buttons)
     }
     this.props.editComponent('card', {
-      edit: true,
       cards: cards,
       buttonActions: this.props.buttonActions,
       id: this.props.id
@@ -54,7 +53,7 @@ class Gallery extends React.Component {
             </span>
           </div>
         }
-        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-25px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', marginRight: '30px'}} className="carousel slide ui-block" data-ride="carousel">
             <div className="carousel-inner">
             {
@@ -62,7 +61,7 @@ class Gallery extends React.Component {
                 <div className={'carousel-item ' + (index === 0 ? 'active' : '')}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '25px', margin: '-25px'}} />
+                        <img src={card.image_url} style={{maxHeight: '140px', maxWidth: '250px', padding: '10px', margin: '-10px'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>

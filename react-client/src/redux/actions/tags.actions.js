@@ -94,13 +94,14 @@ export function getSubscriberTags (id, msg) {
       })
   }
 }
-export function deleteTag (tag, msg) {
+export function deleteTag (tag, msg,loadsubscriberData) {
   console.log('Actions for deleteing Tag', tag)
   return (dispatch) => {
     callApi('tags/delete/', 'post', {tag})
       .then(res => {
         if (res.status === 'success') {
           msg.success(`${res.payload}`)
+          loadsubscriberData({tag_value: false})
           dispatch(loadTags())
         } else {
           if (res.status === 'failed' && res.description) {
@@ -112,7 +113,7 @@ export function deleteTag (tag, msg) {
       })
   }
 }
-export function renameTag (payload, msg, handleEdit) {
+export function renameTag (payload, msg, handleEdit,loadsubscriberData) {
   console.log('Actions for renaming Tag', payload)
   return (dispatch) => {
     callApi('tags/rename/', 'post', payload)
@@ -120,6 +121,7 @@ export function renameTag (payload, msg, handleEdit) {
         console.log('renameTag response', res)
         if (res.status === 'success' && res.payload) {
           msg.success('Tag has been changed')
+          loadsubscriberData({tag_value: true})
           dispatch(loadTags())
         } else {
           if (res.status === 'failed' && res.description) {

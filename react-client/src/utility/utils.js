@@ -1,3 +1,5 @@
+import cookie from 'react-cookie'
+
 export function formatAMPM (date) {
   let hours = date.getHours()
   let minutes = date.getMinutes()
@@ -77,4 +79,12 @@ export function getAccountsUrl () {
     url = 'https://accounts.cloudkibo.com'
   }
   return url
+}
+
+export function readShopifyInstallRequest () {
+  return cookie.load('installByShopifyStore')
+}
+
+export function removeShopifyInstallRequest () {
+  cookie.remove('installByShopifyStore')
 }

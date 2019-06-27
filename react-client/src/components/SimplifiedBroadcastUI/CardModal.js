@@ -68,6 +68,7 @@ class CardModal extends React.Component {
     this.toggleHover = this.toggleHover.bind(this)
     this.updateSelectedIndex = this.updateSelectedIndex.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
+    this.getRequirements = this.getRequirements.bind(this)
   }
 
   toggleHover (index, hover) {
@@ -99,7 +100,7 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
           this.scrollToTop(`panel-heading${this.state.cards.length}`)
         })
       }
@@ -135,7 +136,7 @@ class CardModal extends React.Component {
         elementUrl: card.elementUrl,
         webviewsize: card.webviewsize,
         default_action: card.default_action,
-        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons})
+        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons}, this.props.edit)
     } else if (this.state.cards.length > 1) {
       let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
@@ -160,7 +161,7 @@ class CardModal extends React.Component {
         id: this.props.id,
         componentType: 'gallery',
         cards
-        })
+        }, this.props.edit)
     }
   }
 
@@ -199,6 +200,45 @@ class CardModal extends React.Component {
     } else {
       this.setState({cards, selectedIndex: id-1, edited: true})
     }
+  }
+
+  getRequirements () {
+    return this.cardComponents.map((card, index) => {
+      console.log(`cardComponent ${index}`, card)
+      
+      if (card && card.props) {
+        if (card.props.card.disabled || card.props.card.buttonDisabled) {
+          let cardData = card.props.card.component
+          let msg = `Card ${card.props.card.id} requires:`
+          let requirements = []
+          if (!cardData.title) {
+            requirements.push('a title')
+          }
+          if (!cardData.subtitle) {
+            requirements.push('a subtitle')
+          }
+          if (!card.state.file) {
+            requirements.push('an image')
+          }
+          if (card.props.card.buttonDisabled) {
+            let visibleButtons = cardData.buttons.filter(button => button.visible)
+            console.log('visibleButtons', visibleButtons)
+            if (visibleButtons.length === 0) {
+              requirements.push('at least one valid button')
+            } else {
+              requirements.push('valid button(s)')
+            }
+          }
+          return (
+            <li style={{textAlign: 'left'}}>{msg}
+              <ul>
+                {requirements.map(req => <li>{req}</li>)}
+              </ul>
+            </li>
+          )
+        }
+      }
+    })
   }
 
   closeCard (id) {
@@ -312,7 +352,9 @@ class CardModal extends React.Component {
                                     ref={(ref) => { this.cardComponents[card.id-1] = ref }}
                                     closeCard={() => { this.closeCard(card.id) }}
                                     id={card.id}
-                                    updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />                 
+                                    updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
+                                    disabled={this.state.disabled || this.state.actionDisabled}
+                                    />                 
                                 </div>
                               </div>
                             </div>
@@ -358,7 +400,7 @@ class CardModal extends React.Component {
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
 
-                <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '100px'}} className="carousel slide ui-block" data-ride="carousel">
+                <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '75px'}} className="carousel slide ui-block" data-ride="carousel">
                   
                   {
                     this.state.cards.length > 1 &&                   
@@ -423,6 +465,14 @@ class CardModal extends React.Component {
                       </div>
                   }
                 </div>
+
+
+                <ul style={{marginLeft: '75px', marginTop: '75px', color: 'red'}}>
+                  {
+                    this.getRequirements()
+                  }
+                </ul>
+
                 </div>
               </div>
             </div>

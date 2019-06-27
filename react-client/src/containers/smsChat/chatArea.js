@@ -30,7 +30,8 @@ class ChatBox extends React.Component {
     this.state = {
       textAreaValue: '',
       showEmojiPicker: false,
-      disabledValue: false
+      disabledValue: false,
+      changedActiveSession: true
     }
     props.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
     props.markRead(this.props.activeSession._id, this.props.sessions)
@@ -80,6 +81,7 @@ class ChatBox extends React.Component {
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shouldLoad()) {
           this.loadMoreMessage()
+          this.setState({changedActiveSession: false})
           // this.updateScrollTop()
         }
       }
@@ -192,6 +194,9 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in chatArea', nextProps)
+    if (this.state.changedActiveSession) {
+      this.previousScrollHeight = undefined
+    }
     // // this.getDisabledValue()
     // if (nextProps.urlMeta) {
     //   if (!nextProps.urlMeta.type) {

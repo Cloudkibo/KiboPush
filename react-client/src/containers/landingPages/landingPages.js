@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import {fetchLandingPages, deleteLandingPage, setInitialState} from '../../redux/actions/landingPages.actions'
+import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -45,6 +45,13 @@ class LandingPage extends React.Component {
     this.perviewLink = this.perviewLink.bind(this)
     this.setupLandingPage = this.setupLandingPage.bind(this)
     this.closeDialogSetup = this.closeDialogSetup.bind(this)
+  }
+
+  activateLandingPage (landingPage) {
+    this.props.editLandingPage(landingPage._id, { initialState: landingPage.initialState,
+    submittedState: landingPage.submittedState,
+    optInMessage: landingPage.optInMessage,
+      isActive: true}, this.msg, 'Landing Page activated Successfully')
   }
 
   componentDidMount () {
@@ -330,12 +337,21 @@ class LandingPage extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>
                                     Delete
                                 </button>
+                                {landingPage.isActive &&
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.perviewLink(landingPage._id)}>
                                     Perview
                                 </button>
+                                }
+                                {landingPage.isActive &&
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.setupLandingPage(landingPage._id)}>
                                     Setup
                                 </button>
+                                }
+                                {!landingPage.isActive &&
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.activateLandingPage(landingPage)}>
+                                    Activate
+                                </button>
+                                }
                               </span>
                             </td>
                           </tr>
@@ -386,7 +402,8 @@ function mapDispatchToProps (dispatch) {
     fetchLandingPages: fetchLandingPages,
     deleteLandingPage: deleteLandingPage,
     loadMyPagesList: loadMyPagesList,
-    setInitialState: setInitialState
+    setInitialState: setInitialState,
+    editLandingPage: editLandingPage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)

@@ -21,7 +21,6 @@ class List extends React.Component {
   edit () {
     this.setState({editing: true})
     this.props.editComponent('list', {
-      edit: true,
       buttonActions: this.props.buttonActions,
       topElementStyle: this.state.topElementStyle,
       id: this.props.id,

@@ -2,9 +2,15 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export const getCustomFieldlist = (data) => {
-  console.log('all custom fields', data)
   return {
     type: ActionTypes.LOAD_CUSTOM_FIELDS,
+    data
+  }
+}
+
+export const getCustomFieldSubscriber = (data) => {
+  return {
+    type: ActionTypes.GET_CUSTOM_FIELD_SUBSCRIBER,
     data
   }
 }
@@ -75,7 +81,19 @@ export function setCustomFieldValue (body, handleResponse) {
   return () => {
     callApi('custom_field_subscribers/set_custom_field_value', 'post', body)
     .then(res => {
-      handleResponse(res)
+      handleResponse(res, body)
+    })
+  }
+}
+
+export function getCustomFieldValue (subscriberid) {
+  return (dispatch) => {
+    callApi('custom_field_subscribers/get_custom_field_subscriber/'+subscriberid, 'get')
+    .then(res => {
+      console.log('res.payload', res.payload)
+      if (res.status === 'success' && res.payload) {
+        dispatch(getCustomFieldSubscriber(res.payload))
+      }
     })
   }
 }

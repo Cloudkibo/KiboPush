@@ -24,7 +24,6 @@ class File extends React.Component {
 
   edit () {
     this.props.editComponent('file', {
-      edit: true,
       file: this.state.file, 
       id: this.props.id
     })
