@@ -36,9 +36,11 @@ class AutopostingSummary extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
-    if (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
-      nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
-      nextprops.autopostingSummary.facebookAutopostingGraph.length > 0) {
+    if (nextprops.autopostingSummary &&
+      (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 || 
+        nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
+        nextprops.autopostingSummary.facebookAutopostingGraph.length > 0
+      )) {
         if (nextprops.autopostingSummary.twitterAutopostingGraph && nextprops.autopostingSummary.twitterAutopostingGraph.length > 0) {
           var twitterData = this.includeZeroCounts(nextprops.autopostingSummary.twitterAutopostingGraph)
         }
@@ -158,6 +160,7 @@ class AutopostingSummary extends React.Component {
     }
   }
   render () {
+    console.log('backdoor', this.props.backdoor)
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
@@ -271,8 +274,8 @@ class AutopostingSummary extends React.Component {
                 description='Analytics about tweets you autopost on Facebook page(s)'
                 stats={[
                   {stat: 'Posts Published', value: this.props.autopostingSummary.posts},
-                  {stat: 'Likes / Post', value: this.props.autopostingSummary.likes / this.props.autopostingSummary.posts},
-                  {stat: 'Comments / Post', value: this.props.autopostingSummary.comments / this.props.autopostingSummary.posts}
+                  {stat: 'Likes / Post', value: parseInt(this.props.autopostingSummary.likes / this.props.autopostingSummary.posts, 10)},
+                  {stat: 'Comments / Post', value: parseInt(this.props.autopostingSummary.comments / this.props.autopostingSummary.posts, 10)}
                 ]}
               />
             </div>
