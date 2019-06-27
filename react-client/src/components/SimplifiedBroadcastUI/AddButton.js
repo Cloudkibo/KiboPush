@@ -187,7 +187,7 @@ class AddButton extends React.Component {
                 return (
                   <Button
                     cardId={this.props.cardId}
-                    scrollTo={visibleButtons.length-1 === index}
+                    scrollTo={!this.finalButtons[index] && visibleButtons.length-1 === index}
                     edit={this.props.edit}
                     handleText={this.props.handleText}
                     updateButtonStatus={this.updateButtonStatus}
