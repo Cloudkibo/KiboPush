@@ -247,6 +247,10 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/inviteUsingLinkWizard'
         })
+      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+        browserHistory.push({
+          pathname: '/abandonedCarts'
+        })
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -259,10 +263,6 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
-      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-        browserHistory.push({
-          pathname: '/abandonedCarts'
-        })
       }
       if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
