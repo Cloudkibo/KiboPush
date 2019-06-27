@@ -287,7 +287,7 @@ class Convo extends React.Component {
   }
   searchBroadcast (event) {
     this.setState({
-      searchValue: event.target.value
+      searchValue: event.target.value, pageNumber:0
     })
     if (event.target.value !== '') {
       this.setState({filter: true})

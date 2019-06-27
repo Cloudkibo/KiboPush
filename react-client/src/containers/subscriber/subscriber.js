@@ -771,7 +771,7 @@ class Subscriber extends React.Component {
   }
 
   searchSubscriber (event) {
-    this.setState({searchValue: event.target.value})
+    this.setState({searchValue: event.target.value, pageSelected:0})
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
@@ -792,6 +792,7 @@ class Subscriber extends React.Component {
     } else {
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     }
+
   }
 
   displayData (n, subscribers) {
