@@ -42,6 +42,7 @@ class InstallApp extends React.Component {
     if (re.test(this.state.pageUrl)) {
       let hostname = new URL(this.state.pageUrl).host
       this.setState({pageUrl: hostname})
+      removeShopifyInstallRequest()
     } else {
       this.msg.error('The URL format is not valid')
       event.preventDefault()
