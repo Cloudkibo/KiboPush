@@ -11,6 +11,7 @@ import {loadAutopostingSummary} from '../../redux/actions/dashboard.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import IconStack from '../../components/Dashboard/IconStackForAutoposting'
 import moment from 'moment'
+import LISTWIDGET from '../../components/Dashboard/listWidget'
 
 class AutopostingSummary extends React.Component {
   constructor (props, context) {
@@ -237,6 +238,30 @@ class AutopostingSummary extends React.Component {
               : <span>No reports to show for the applied filters. Please change the filters</span>
             }
             </center>
+            <br />
+            <br />
+            <div className='m-widget5'>
+              <LISTWIDGET
+                imageUrl='https://media.coschedule.com/uploads/social-media-post-ideas.png'
+                title='Tweets Moderation'
+                description='Analytics about tweets you moderated'
+                stats={[
+                  {stat: 'Tweets Moderated', value: this.props.autopostingSummary.tweetsForwarded + this.props.autopostingSummary.tweetsIgnored},
+                  {stat: 'Tweets Forwarded', value: this.props.autopostingSummary.tweetsForwarded},
+                  {stat: 'Tweets Ignored', value: this.props.autopostingSummary.tweetsIgnored}
+                ]}
+              />
+              <LISTWIDGET
+                imageUrl='https://media.coschedule.com/uploads/social-media-post-ideas.png'
+                title='Tweets Published on Facebook'
+                description='Analytics about tweets you autopost on Facebook page(s)'
+                stats={[
+                  {stat: 'Posts Published', value: this.props.autopostingSummary.posts},
+                  {stat: 'Likes / Post', value: this.props.autopostingSummary.likes / this.props.autopostingSummary.posts},
+                  {stat: 'Comments / Post', value: this.props.autopostingSummary.comments / this.props.autopostingSummary.posts}
+                ]}
+              />
+            </div>
           </div>
         }
           </div>
