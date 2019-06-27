@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertContainer from 'react-alert'
 import auth from './../../utility/auth.service'
+import { readShopifyInstallRequest, removeShopifyInstallRequest } from './../../utility/utils'
 class InstallApp extends React.Component {
   constructor () {
     super()
@@ -26,6 +27,9 @@ class InstallApp extends React.Component {
   componentDidMount () {
     if (this.props.pages && this.state.selectedPage === '' && this.props.pages.length > 0) {
       this.setState({selectedPage: this.props.pages[0].pageId})
+    }
+    if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+      this.setState({pageUrl: readShopifyInstallRequest())
     }
   }
 

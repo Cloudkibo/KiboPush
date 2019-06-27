@@ -24,6 +24,7 @@ import YouTube from 'react-youtube'
 import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
+import { readShopifyInstallRequest } from '../../utility/utils'
 import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
@@ -258,6 +259,10 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
+      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+        browserHistory.push({
+          pathname: '/abandonedCarts'
+        })
       }
       if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
