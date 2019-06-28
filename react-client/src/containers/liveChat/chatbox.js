@@ -1305,22 +1305,22 @@ class ChatBox extends React.Component {
                                                     <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                                       <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                                         {
-                                                          msg.payload.image_url &&
-                                                          <a href={msg.payload.image_url} target='_blank'>
-                                                            <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
+                                                          card.image_url &&
+                                                          <a href={card.image_url} target='_blank'>
+                                                            <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
                                                           </a>
                                                         }
                                                       </div>
                                                       <div style={{marginTop: '10px', padding: '5px'}}>
-                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
+                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
                                                         {
-                                                          msg.payload.subtitle &&
-                                                          <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.subtitle}</div>
+                                                          card.subtitle &&
+                                                          <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
                                                         }
                                                       </div>
                                                       {
-                                                        msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                                        msg.payload.buttons.map(b => (
+                                                        card.buttons && card.buttons.length > 0 &&
+                                                        card.buttons.map(b => (
                                                           <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
                                                             {b.type == 'element_share' ? 'Share' : b.title}
                                                           </a>
