@@ -55,7 +55,8 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0]
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
+      loadScript: true
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -76,6 +77,7 @@ class CreateConvo extends React.Component {
     this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.loadsdk = this.loadsdk.bind(this)
   }
 
   handleChange (state) {
@@ -148,6 +150,30 @@ class CreateConvo extends React.Component {
     this.setState({showInvalidSession: false})
   }
 
+  loadsdk (fbAppId) {
+    console.log('inside loadsdk', fbAppId)
+    window.fbAsyncInit = function () {
+      window.FB.init({
+        appId: fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) { return }
+      js = d.createElement(s); js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+    this.setState({loadScript: false})
+    if (window.FB) {
+      console.log('inside window.fb')
+      window.FB.XFBML.parse()
+    }
+  }
+
   handleSendBroadcast (res) {
     if (res.status === 'success') {
       this.initTab()
@@ -186,7 +212,11 @@ class CreateConvo extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    if (nextProps.broadcasts) { 
+    }
+
+    if (nextProps.fbAppId && this.state.loadScript) {
+      this.loadsdk(nextProps.fbAppId)
     }
   }
   showGuideLinesDialog () {
@@ -452,11 +482,12 @@ class CreateConvo extends React.Component {
               onClick={() => { this.setState({showMessengerModal: false}) }}
               onClose={() => { this.setState({showMessengerModal: false}) }}>
               <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
-              <MessengerSendToMessenger
+              <MessengerPlugin
+                appId={this.props.fbAppId}
                 pageId={this.state.pageId.pageId}
-                appId="132767517443810"//{this.props.fbAppId}
-                dataRef={`${this.props.user._id}__kibopush_test_broadcast_`}
-              />
+                size='large'
+                passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
+                />
             </ModalDialog>
           </ModalContainer>
         }
