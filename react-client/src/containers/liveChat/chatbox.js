@@ -1726,7 +1726,7 @@ class ChatBox extends React.Component {
                           textAlign: 'center'
                         }} className='fa fa-file-image-o' />
                       </i>
-                      <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+                      <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
                         ref='selectImage' style={styles.inputf} />
                     </div>
                     <div style={{display: 'inline-block'}} data-tip='attachments'>
