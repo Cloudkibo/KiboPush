@@ -37,7 +37,7 @@ class AutopostingSummary extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
     if (nextprops.autopostingSummary &&
-      (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 || 
+      (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
         nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
         nextprops.autopostingSummary.facebookAutopostingGraph.length > 0
       )) {
@@ -259,7 +259,7 @@ class AutopostingSummary extends React.Component {
             <br />
             <div className='m-widget5'>
               <LISTWIDGET
-                imageUrl='https://media.coschedule.com/uploads/social-media-post-ideas.png'
+                imageUrl='https://cdn.cloudkibo.com/public/img/tweetsmoderation.png'
                 title='Tweets Moderation'
                 description='Analytics about tweets you moderated'
                 stats={[
@@ -269,7 +269,7 @@ class AutopostingSummary extends React.Component {
                 ]}
               />
               <LISTWIDGET
-                imageUrl='https://media.coschedule.com/uploads/social-media-post-ideas.png'
+                imageUrl='https://cdn.cloudkibo.com/public/img/twittertofacebook.png'
                 title='Tweets Published on Facebook'
                 description='Analytics about tweets you autopost on Facebook page(s)'
                 stats={[

@@ -15,7 +15,7 @@ class ListWidget extends React.Component {
         </div>
         <div
           className='m-widget5__content'
-          style={{paddingLeft: '0px', verticalAlign: 'bottom', width: '250px'}}
+          style={{paddingLeft: '0px', verticalAlign: 'middle', width: '250px'}}
         >
           <h4 className='m-widget5__title'>
             {this.props.title}
