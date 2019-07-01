@@ -125,6 +125,17 @@ export function getAdminSubscriptions () {
     })
   }
 }
+
+export function fetchAdminSubscriptions (body, callback) {
+  return (dispatch) => {
+    callApi('adminsubscriptions/fetch','post',body).then(res => {
+      console.log('response from adminsubscriptions', res)
+      callback(res.payload)
+      dispatch(storeAdminSubscriptions(res.payload))
+    })
+  }
+}
+
 export function updateMode (data, user) {
   console.log('data for updateMode', data)
   return (dispatch) => {
