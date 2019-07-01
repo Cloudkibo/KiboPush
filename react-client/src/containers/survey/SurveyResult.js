@@ -122,7 +122,7 @@ class SurveyResult extends React.Component {
           jsonStructure['Response' + (k + 1)] = temp.q1[k]
         }
         jsonStructure['DateTime'] = this.props.responses[i].datetime
-        jsonStructure['SurveyId'] = this.props.responses[i].surveyId._id
+        jsonStructure['SurveyId'] = this.props.responses[i].surveyId
         jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId._id
         jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
         usersPayload.push(jsonStructure)
