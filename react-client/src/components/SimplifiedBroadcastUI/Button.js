@@ -385,7 +385,7 @@ class Button extends React.Component {
       let validDomain = false
       for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
         let domain = this.state.whitelistedDomains[i]
-        if (e.target.value.includes(getHostName(domain))) {
+        if (getHostName(e.target.value) === getHostName(domain)) {
           validDomain = true
           break
         }
