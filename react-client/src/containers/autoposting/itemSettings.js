@@ -15,7 +15,6 @@ class ItemSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
 
-    console.log('one item', this.props.fbAppId)
     this.state = {
       page: {
         options: []
@@ -47,13 +46,13 @@ class ItemSettings extends React.Component {
       alertMessage: '',
       alertType: '',
       actionType: this.props.location.state.item.actionType,
-      filterTweets: 'no',
-      moderateTweets: 'no',
-      tags: [],
-      filterTagsValue: '',
-      selectedPage: '',
+      filterTweets: this.props.location.state.item.filterTweets == true ? 'yes' : 'no',
+      moderateTweets: this.props.location.state.item.moderateTweets ? 'yes' : 'no',
+      tags: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags : [],
+      filterTagsValue: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags.join(';') : '',
+      selectedPage: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageId) ? this.props.location.state.item.approvalChannel.pageId : '',
       selectedPageFbId: '',
-      selectedPageAccessToken: '',
+      selectedPageAccessToken: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageAccessToken) ? this.props.location.state.item.approvalChannel.pageAccessToken : '',
       showMessengerModal: false,
       fbAppId:this.props.fbAppId,
       showSubscribeButton: false
@@ -370,6 +369,9 @@ class ItemSettings extends React.Component {
   }
 
   editAutoposting () {
+    if(this.state.filterTweets === 'yes' && this.state.filterTagsValue === ''){
+      return this.msg.error('Please enter atleast one tag')
+    }
     if (this.accountTitleValue.value === '') {
       return this.msg.error('Please add Account Title')
     }
@@ -410,7 +412,6 @@ class ItemSettings extends React.Component {
   }
 
   render () {
-    console.log('fbappid', this.props.fbAppId)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
