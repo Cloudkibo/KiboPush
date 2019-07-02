@@ -78,6 +78,7 @@ class ItemSettings extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.checkAdminSubscriber = this.checkAdminSubscriber.bind(this)
     this.handleSave = this.handleSave.bind(this)
+    this.saveCallback = this.saveCallback.bind(this)
   }
 
   handleActionType (e) {
@@ -364,7 +365,7 @@ class ItemSettings extends React.Component {
     if(payload.length > 0) {
       this.editAutoposting()
     }else{
-      return this.msg.error('You are not a subscriber')
+      return this.msg.error('You are not a subscriber of this Page. Please click on Subscriber button ')
     }
   }
 
