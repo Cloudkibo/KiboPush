@@ -160,7 +160,7 @@ class Image extends React.Component {
             </div>
           }
         </div>
-        <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
+        <div style={{color: 'red', textAlign: 'left'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>
     )
   }

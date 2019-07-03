@@ -319,7 +319,7 @@ class CardModal extends React.Component {
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.closeModal}>
-          <h3>Add {this.state.length > 1 ? 'Gallery' : 'Card'} Component</h3>
+          <h3>Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
             <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
