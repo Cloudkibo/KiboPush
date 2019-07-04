@@ -6,10 +6,15 @@ import { editautoposting, clearAlertMessages } from '../../redux/actions/autopos
 import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
+import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { ModalBackground } from 'react-modal-dialog';
+import MessengerSendToMessenger from 'react-messenger-send-to-messenger';
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
+
     this.state = {
       page: {
         options: []
@@ -40,8 +45,21 @@ class ItemSettings extends React.Component {
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
       alertType: '',
-      actionType: this.props.location.state.item.actionType
+      actionType: this.props.location.state.item.actionType,
+      filterTweets: this.props.location.state.item.filterTweets == true ? 'yes' : 'no',
+      moderateTweets: this.props.location.state.item.moderateTweets ? 'yes' : 'no',
+      tags: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags : [],
+      filterTagsValue: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags.join(';') : '',
+      selectedPage: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageId) ? this.props.location.state.item.approvalChannel.pageId : '',
+      selectedPageFbId: '',
+      selectedPageAccessToken: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageAccessToken) ? this.props.location.state.item.approvalChannel.pageAccessToken : '',
+      showMessengerModal: false,
+      fbAppId:this.props.fbAppId,
+      showSubscribeButton: false,
+      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledTime : '6 hours'
     }
+    props.getFbAppId()
+    props.getuserdetails()
     props.clearAlertMessages()
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
@@ -53,10 +71,67 @@ class ItemSettings extends React.Component {
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
+    this.handleTweetsFilter = this.handleTweetsFilter.bind(this)
+    this.handleTweetsModerate = this.handleTweetsModerate.bind(this)
+    this.handleTagsInput = this.handleTagsInput.bind(this)
+    this.handlePageSelect = this.handlePageSelect.bind(this)
+    this.closeModal = this.closeModal.bind(this)
+    this.checkAdminSubscriber = this.checkAdminSubscriber.bind(this)
+    this.handleSave = this.handleSave.bind(this)
+    this.saveCallback = this.saveCallback.bind(this)
+    this.handleRSSTime = this.handleRSSTime.bind(this)
+  }
+
+  handleRSSTime (event) {
+    this.setState({ rssTime: event.target.value })
   }
 
   handleActionType (e) {
     this.setState({actionType: e.target.value})
+  }
+
+  handleTweetsFilter (e) {
+    this.setState({filterTweets: e.target.value})
+  }
+
+  handleTweetsModerate (e) {
+    this.setState({moderateTweets: e.target.value})
+  }
+
+  handleTagsInput (e) {
+    let tagsInput = e.target.value
+
+    let tags = []
+    tags = tagsInput.split(';')
+    if(tags.length >= 6) {
+      return this.msg.error('Tags cannot be more than 5')
+    }else{
+      this.setState({tags: tags})
+      this.setState({filterTagsValue: e.target.value})
+    }
+  }
+
+  handlePageSelect (e) {
+  if(e.target.selectedIndex !== 0){
+  let pageIds = this.props.pages.map((p) => p._id)
+  let index = pageIds.indexOf(e.target.value)
+  this.setState({selectedPage: e.target.value, selectedPageFbId: this.props.pages[index].pageId, selectedPageAccessToken: this.props.pages[index].accessToken })
+  this.props.fetchAdminSubscriptions({pageId: e.target.value}, this.checkAdminSubscriber)
+
+    }
+  }
+
+  closeModal (e) {
+    console.log('close modal called')
+    this.setState({showMessengerModal: false})
+  }
+
+  checkAdminSubscriber (payload) {
+    if(payload.length <= 0) {
+    this.setState({showSubscribeButton : true})
+    }else{
+      this.setState({showSubscribeButton : false})
+    }
   }
 
   componentDidMount () {
@@ -281,7 +356,26 @@ class ItemSettings extends React.Component {
     this.setState({ isActive: event.target.value })
   }
 
+  handleSave () {
+    if(this.state.moderateTweets === 'yes'){
+    this.props.fetchAdminSubscriptions({pageId : this.state.selectedPage}, this.saveCallback)
+    }else{
+      this.editAutoposting()
+    }
+  }
+
+  saveCallback(payload) {
+    if(payload.length > 0) {
+      this.editAutoposting()
+    }else{
+      return this.msg.error('You are not a subscriber of this Page. Please click on Subscriber button ')
+    }
+  }
+
   editAutoposting () {
+    if(this.state.filterTweets === 'yes' && this.state.filterTagsValue === ''){
+      return this.msg.error('Please enter atleast one tag')
+    }
     if (this.accountTitleValue.value === '') {
       return this.msg.error('Please add Account Title')
     }
@@ -312,8 +406,14 @@ class ItemSettings extends React.Component {
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,
       isActive: isActive,
-      actionType: this.state.actionType
+      scheduledTime: this.state.rssTime,
+      actionType: this.state.actionType,
+      filterTweets: this.state.filterTweets === 'yes' ? true : false,
+      filterTags: this.state.tags,
+      moderateTweets: this.state.moderateTweets === 'yes' ? true : false,
+      approvalChannel: { type: 'messenger', pageId:  this.state.selectedPage, pageAccessToken: this.state.selectedPageAccessToken }
     }
+    console.log(autopostingData)
     this.props.editautoposting(autopostingData)
   }
 
@@ -328,7 +428,21 @@ class ItemSettings extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-subheader '>
+        {
+          this.state.showMessengerModal &&
+          <ModalContainer style={{width: '500px'}} onClose={this.closeModal}>
+            <ModalDialog style={{width: '500px'}} onClose={this.closeModal}>
+              <h3>Connect to Messenger:</h3>
+              <MessengerSendToMessenger
+                pageId={this.state.selectedPageFbId}
+                appId={this.state.fbAppId}
+                ctaText='SUBSCRIBE'
+                dataRef={`${this.props.user._id}__kibopush_test_broadcast_`}
+              />
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='m-subheader'>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Feed Settings</h3>
@@ -375,6 +489,21 @@ class ItemSettings extends React.Component {
                       </select>
                     </div>
                   </div>
+                  {
+                    this.props.location.state.item.subscriptionType === 'rss' &&
+                    <div className='form-group m-form__group row'>
+                      <label className='col-lg-2 col-form-label'>
+                        Time
+                      </label>
+                      <div className='col-lg-6' id='rules'>
+                        <select className='form-control m-input' onChange={this.handleRSSTime} value={this.state.rssTime}>
+                          <option value='6 hours'>Send updates after 6 hours</option>
+                          <option value='12 hours'>Send updates after 12 hours</option>
+                          <option value='24 hours'>Send updates after 24 hours</option>
+                        </select>
+                      </div>
+                    </div>
+                  }
                 </div>
                 <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
                   <div className='m-form__heading'>
@@ -456,13 +585,91 @@ class ItemSettings extends React.Component {
                   </div>
 
                 </div>
+                {this.props.location.state.item.subscriptionType === 'twitter' &&
+                <div>
+                <div className='m-form__seperator m-form__seperator--dashed' />
+                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                  <div className='m-form__heading'>
+                    <h3 className='m-form__heading-title'>
+                      Filter Tweets
+                    </h3>
+                  </div>
+                  <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                    <div className='m-radio-list'>
+                      <label className='m-radio'>
+                        <input type='radio' value='no' onChange={this.handleTweetsFilter} checked={this.state.filterTweets === 'no'} />
+                          {'Don\'t Filter'}
+                        <span />
+                      </label>
+                      <label className='m-radio'>
+                        <input type='radio' value='yes' onChange={this.handleTweetsFilter} checked={this.state.filterTweets === 'yes'} />
+                          Filter
+                        <span />
+                      </label>
+                      {this.state.filterTweets === 'yes' &&
+                      <div>
+                      <label>Enter upto 5 tags seperated by semi-colon (;)</label>
+                      <input className='form-control m-input'  value={this.state.filterTagsValue}
+                      onChange= {this.handleTagsInput}
+                      />
+                      </div>}
+                    </div>
+                  </div>
+                </div>
+              </div>}
+              {this.props.location.state.item.subscriptionType === 'twitter' &&
+                <div>
+                <div className='m-form__seperator m-form__seperator--dashed' />
+                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                  <div className='m-form__heading'>
+                    <h3 className='m-form__heading-title'>
+                      Moderate Tweets
+                    </h3>
+                  </div>
+                  <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                    <div className='m-radio-list'>
+                      <label className='m-radio'>
+                        <input type='radio' value='no' onChange={this.handleTweetsModerate} checked={this.state.moderateTweets === 'no'} />
+                          Send tweets without any approval
+                        <span />
+                      </label>
+                      <label className='m-radio'>
+                        <input type='radio' value='yes' onChange={this.handleTweetsModerate} checked={this.state.moderateTweets === 'yes'} />
+                          Ask for approval before sending any tweets
+                        <span />
+                      </label>
+                      {this.state.moderateTweets === 'yes' &&
+                      <div>
+                      <label>Select the page from which to ask for approval</label>
+                      <select className='form-control m-input' onChange={this.handlePageSelect} value={this.state.selectedPage}>
+                      <option>--Select--</option>
+                      {this.props.pages.map((item, i) => {
+                        return <option value={item._id}>{item.pageName}</option>
+                      })}
+                      </select>
+                      <br/>
+                      {this.state.showSubscribeButton &&
+                      <div>
+                      <label>You are not subscribed to selected page. In order to receive approval messages you need to become a subscriber. </label>
+                      <br/>
+                      <center>
+                      <button className='btn btn-success btn-sm' type='button' onClick={() => this.setState({showMessengerModal:true})} >
+                      Subscribe
+                      </button>
+                      </center>
+                      </div>}
+                      </div>}
+                    </div>
+                  </div>
+                </div>
+              </div>}
               </div>
               <div className='m-portlet__foot m-portlet__foot--fit'>
                 <div className='m-form__actions m-form__actions'>
                   <div className='row'>
                     <div className='col-lg-2' />
                     <div className='col-lg-6'>
-                      <button className='btn btn-primary' type='button' onClick={this.editAutoposting} >
+                      <button className='btn btn-primary' type='button' onClick={this.handleSave} >
                         Save Changes
                       </button>
                       <span>&nbsp;&nbsp;</span>
@@ -500,14 +707,17 @@ class ItemSettings extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('state from items mapsto', state)
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
     successMessage: (state.autopostingInfo.successMessageEdit),
     errorMessage: (state.autopostingInfo.errorMessageEdit),
     user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    fbAppId: (state.basicInfo.fbAppId),
+    adminPageSubscription: (state.basicInfo.adminPageSubscription),
+
   }
 }
 
@@ -516,7 +726,10 @@ function mapDispatchToProps (dispatch) {
     {
       editautoposting: editautoposting,
       clearAlertMessages: clearAlertMessages,
-      loadTags: loadTags
+      loadTags: loadTags,
+      getuserdetails: getuserdetails,
+      getFbAppId: getFbAppId,
+      fetchAdminSubscriptions: fetchAdminSubscriptions
     },
     dispatch)
 }

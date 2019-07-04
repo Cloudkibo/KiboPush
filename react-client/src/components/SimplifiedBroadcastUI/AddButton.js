@@ -222,7 +222,7 @@ class AddButton extends React.Component {
                   <h6> + Add Button </h6>
                 </div>
               </div>
-              <div style={{color: 'red', marginBottom: '30px'}}>{this.props.required && visibleButtons.length === 0 ? '*At least one required' : ''}</div>
+              <div style={{color: 'red', marginBottom: '30px', textAlign: 'left'}}>{this.props.required && visibleButtons.length === 0 ? '*At least one required' : ''}</div>
             </div>
         }
       </div>

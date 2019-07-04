@@ -3,6 +3,7 @@ import React from 'react'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
+import { Popover, PopoverBody } from 'reactstrap'
 
 class TextModal extends React.Component {
   constructor (props) {
@@ -17,7 +18,19 @@ class TextModal extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
+    this.toggleUserOptions = this.toggleUserOptions.bind(this)
+    this.getName = this.getName.bind(this)
     this.closeModal = this.closeModal.bind(this)
+  }
+
+  toggleUserOptions () {
+    this.setState({showUserOptions: !this.state.showUserOptions})
+  }
+
+  getName (e, name) {
+    console.log('getName', name)
+    let message = this.state.text + ((this.state.text && this.state.text.length > 0) ? ` {{${name}}}` : `{{${name}}}`)
+    this.setState({text: message, showUserOptions: false})
   }
 
   handleTextChange (e) {
@@ -51,9 +64,9 @@ class TextModal extends React.Component {
 
   render () {
     return (
-      <ModalContainer style={{width: '900px', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
-        <ModalDialog style={{width: '900px', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
+        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.closeModal}>
           <h3>Add Text Component</h3>
           <hr />
@@ -61,6 +74,34 @@ class TextModal extends React.Component {
             <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>Text:</h4>
               <textarea placeholder={'Please type here...'} value={this.state.text} style={{maxWidth: '100%', minHeight: '100px', borderColor: this.state.text === '' ? 'red' : ''}} onChange={this.handleTextChange} className='form-control' />
+              { (!this.props.hideUserOptions) &&
+                    <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: '-25px', marginRight: '2px'}}>
+                      <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
+                        <i onClick={this.toggleUserOptions} style={{height: '24px',
+                          width: '24px',
+                          position: 'relative',
+                          display: 'inline-block',
+                          cursor: 'pointer'}}>
+                          <i className='greetingMessage fa fa-user' style={{fontSize: '20px',
+                            left: '0px',
+                            width: '100%',
+                            height: '2em',
+                            textAlign: 'center',
+                            color: 'rgb(120, 120, 120)'}} />
+                        </i>
+                      </div>
+                    </div>
+              }
+
+      { (!this.props.hideUserOptions) &&
+          <Popover container={document.getElementsByClassName('narcissus_17w311v')[0]} placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
+            <PopoverBody>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+              <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+            </PopoverBody>
+          </Popover>
+        }
               <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
               <AddButton
                 replyWithMessage={this.props.replyWithMessage}
@@ -95,7 +136,6 @@ class TextModal extends React.Component {
                   </div>
                 </div>
             </div>
-
 
             <div className='row' style={{marginTop: '-5vh'}}>
               <div className='pull-right'>
