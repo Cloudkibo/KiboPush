@@ -7,12 +7,12 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
+import { loadAutopostingList, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
-import { Alert } from 'react-bs-notifier'
 import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
+import AlertContainer from 'react-alert'
 
 class Autoposting extends React.Component {
   constructor (props) {
@@ -21,13 +21,10 @@ class Autoposting extends React.Component {
       isShowingModal: false,
       isShowingModalDelete: false,
       showListItems: true,
-      alertMessage: '',
-      alertType: '',
       deleteid: '',
       showWordPressGuide: false
     }
     props.loadAutopostingList()
-    props.clearAlertMessages()
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
@@ -70,24 +67,7 @@ class Autoposting extends React.Component {
       showWordPressGuide: false
     })
   }
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        alertType: 'success'
-      })
-    } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
-    }
-  }
+  componentWillReceiveProps (nextProps) {}
 
   updateDeleteID (id) {
     this.setState({deleteid: id})
@@ -125,8 +105,16 @@ class Autoposting extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 3000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
         this.state.showWordPressGuide &&
         <ModalContainer style={{width: '500px', top: '80px'}}
@@ -291,7 +279,7 @@ class Autoposting extends React.Component {
                         onClose={this.closeDialog}>
                         <ModalDialog style={{width: '500px'}}
                           onClose={this.closeDialog}>
-                          <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} />
+                          <AddChannel msg={this.msg} onClose={this.closeDialog} openGuidelines={this.viewGuide} />
                         </ModalDialog>
                       </ModalContainer>
                     }
@@ -319,17 +307,6 @@ class Autoposting extends React.Component {
                 </div>
               </div>
               {
-                this.state.alertMessage !== '' &&
-                <div>
-                  <center>
-                    <Alert type={this.state.alertType}>
-                      {this.state.alertMessage}
-                    </Alert>
-                  </center>
-                  <br />
-                </div>
-              }
-              {
                 this.props.autopostingData && this.props.autopostingData.length > 0
                   ? this.props.autopostingData.map((item, i) => (
                     <div className='m-widget5'>
@@ -349,16 +326,13 @@ class Autoposting extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    autopostingData: (state.autopostingInfo.autopostingData),
-    successMessage: (state.autopostingInfo.successMessageCreate),
-    errorMessage: (state.autopostingInfo.errorMessageCreate)
+    autopostingData: (state.autopostingInfo.autopostingData)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadAutopostingList: loadAutopostingList,
-    clearAlertMessages: clearAlertMessages,
     deleteautoposting: deleteautoposting
   }, dispatch)
 }
