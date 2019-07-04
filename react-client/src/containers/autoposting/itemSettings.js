@@ -55,7 +55,8 @@ class ItemSettings extends React.Component {
       selectedPageAccessToken: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageAccessToken) ? this.props.location.state.item.approvalChannel.pageAccessToken : '',
       showMessengerModal: false,
       fbAppId:this.props.fbAppId,
-      showSubscribeButton: false
+      showSubscribeButton: false,
+      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledTime : '6 hours'
     }
     props.getFbAppId()
     props.getuserdetails()
@@ -78,6 +79,11 @@ class ItemSettings extends React.Component {
     this.checkAdminSubscriber = this.checkAdminSubscriber.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.saveCallback = this.saveCallback.bind(this)
+    this.handleRSSTime = this.handleRSSTime.bind(this)
+  }
+
+  handleRSSTime (event) {
+    this.setState({ rssTime: event.target.value })
   }
 
   handleActionType (e) {
@@ -86,12 +92,10 @@ class ItemSettings extends React.Component {
 
   handleTweetsFilter (e) {
     this.setState({filterTweets: e.target.value})
-    console.log(this.state.filterTweets)
   }
 
   handleTweetsModerate (e) {
     this.setState({moderateTweets: e.target.value})
-    console.log('moderateTweets', this.state.moderateTweets)
   }
 
   handleTagsInput (e) {
@@ -402,12 +406,14 @@ class ItemSettings extends React.Component {
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,
       isActive: isActive,
+      scheduledTime: this.state.rssTime,
       actionType: this.state.actionType,
       filterTweets: this.state.filterTweets === 'yes' ? true : false,
       filterTags: this.state.tags,
       moderateTweets: this.state.moderateTweets === 'yes' ? true : false,
       approvalChannel: { type: 'messenger', pageId:  this.state.selectedPage, pageAccessToken: this.state.selectedPageAccessToken }
     }
+    console.log(autopostingData)
     this.props.editautoposting(autopostingData)
   }
 
@@ -483,6 +489,21 @@ class ItemSettings extends React.Component {
                       </select>
                     </div>
                   </div>
+                  {
+                    this.props.location.state.item.subscriptionType === 'rss' &&
+                    <div className='form-group m-form__group row'>
+                      <label className='col-lg-2 col-form-label'>
+                        Time
+                      </label>
+                      <div className='col-lg-6' id='rules'>
+                        <select className='form-control m-input' onChange={this.handleRSSTime} value={this.state.rssTime}>
+                          <option value='6 hours'>Send updates after 6 hours</option>
+                          <option value='12 hours'>Send updates after 12 hours</option>
+                          <option value='24 hours'>Send updates after 24 hours</option>
+                        </select>
+                      </div>
+                    </div>
+                  }
                 </div>
                 <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
                   <div className='m-form__heading'>
