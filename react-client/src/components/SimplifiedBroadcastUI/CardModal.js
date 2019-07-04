@@ -229,13 +229,16 @@ class CardModal extends React.Component {
               requirements.push('valid button(s)')
             }
           }
-          return (
-            <li style={{textAlign: 'left'}}>{msg}
-              <ul>
-                {requirements.map(req => <li>{req}</li>)}
-              </ul>
-            </li>
-          )
+          console.log('requirements', requirements)
+          if (requirements.length > 0) {
+            return (
+              <li style={{textAlign: 'left', marginLeft: '75px', marginTop: '75px', color: 'red'}}>{msg}
+                <ul>
+                  {requirements.map(req => <li>{req}</li>)}
+                </ul>
+              </li>
+            )
+          }
         }
       }
     })
@@ -314,6 +317,8 @@ class CardModal extends React.Component {
   }
 
   render () {
+    let requirements = this.getRequirements().filter(req => !!req)
+    console.log('requirements', requirements)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
@@ -467,9 +472,17 @@ class CardModal extends React.Component {
                 </div>
 
 
-                <ul style={{marginLeft: '75px', marginTop: '75px', color: 'red'}}>
+                <ul>
                   {
-                    this.getRequirements()
+                    requirements.length > 0 ? requirements :             
+                    (
+                    <li style={{textAlign: 'left', color: 'green', marginLeft: '30px', marginTop: '75px'}}>{'All requirments fulfilled'}
+                      <ul>
+                        <li>Scroll down to add additional cards</li>
+                        <li>Click the Next button to finish</li>
+                      </ul>
+                    </li>
+                    )
                   }
                 </ul>
 
