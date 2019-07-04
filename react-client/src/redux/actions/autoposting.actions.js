@@ -9,20 +9,6 @@ export function showautoposting (data) {
   }
 }
 
-export function createAutopostingSuccess () {
-  return {
-    type: ActionTypes.CREATE_AUTOPOSTING_SUCCESS,
-    successMessage: 'Changes saved successfully!'
-  }
-}
-
-export function createAutopostingFailure (message) {
-  return {
-    type: ActionTypes.CREATE_AUTOPOSTING_FAILURE,
-    errorMessage: message
-  }
-}
-
 export function clearAlertMessages () {
   return {
     type: ActionTypes.CLEAR_AUTOPOSTING_ALERT_MESSAGES
@@ -68,16 +54,14 @@ export function loadAutopostingList () {
   }
 }
 
-export function createautoposting (data) {
+export function createautoposting (data, callback) {
   return (dispatch) => {
     callApi('autoposting/create', 'post', data)
       .then(res => {
         console.log('response from server', res)
+        callback(res)
         if (res.status === 'success') {
-          dispatch(createAutopostingSuccess())
           dispatch(loadAutopostingList())
-        } else {
-          dispatch(createAutopostingFailure(res.description))
         }
       })
   }
