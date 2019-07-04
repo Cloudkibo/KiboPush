@@ -20,6 +20,10 @@ class ListItem extends React.Component {
       icon = 'fa fa-wordpress'
       color = '#365899'
       image = 'https://cdn.cloudkibo.com/public/assets/app/media/img//logos/wordpress.png'
+    } else if (this.props.type === 'rss') {
+      icon = 'fa fa-rss'
+      color = '#365899'
+      image = 'https://cdn.cloudkibo.com/public/img/rss.png'
     }
     const item = {
       title: this.props.title,
