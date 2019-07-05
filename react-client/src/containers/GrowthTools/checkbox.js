@@ -133,7 +133,7 @@ class CheckBox extends React.Component {
              FB.AppEvents.logEvent('MessengerCheckboxUserConfirmation', null, {
                'app_id':app_id,
                'page_id':page_id,
-               'ref':'{cart_id: "'+ cart_id +'", type: "checkbox", industry: "commerce", company_id: "'+ company_id +'"}',
+               'ref': JSON.stringify({cart_id: "+ cart_id +", type: "checkbox", industry: "commerce", company_id: "+ company_id +"}),
                'user_ref':user_ref
              });
            }
