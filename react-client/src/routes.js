@@ -39,7 +39,7 @@ import PollsByDays from './containers/operationalDashboard/pollsByDays'
 import BroadcastsByDays from './containers/operationalDashboard/broadcastsByDays'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import Autoposting from './containers/autoposting/autoposting'
-import AutopostingMessages from './containers/autoposting/autoposting_messages'
+import MessagesContainer from './containers/autoposting/messagesContainer'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/livechat'
 import Settings from './containers/settings/settings'
@@ -191,7 +191,7 @@ const routes = (
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Convo} onEnter={requireAuth} />
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
-    <Route path='/autopostingMessages' component={AutopostingMessages} onEnter={requireAuth} />
+    <Route path='/autopostingMessages' component={MessagesContainer} onEnter={requireAuth} />
     <Route path='/autopostingItemSettings' component={ItemSettings} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />

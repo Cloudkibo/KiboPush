@@ -11,7 +11,8 @@ class SetUp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      landingPageUrl: `https://kiboengage.cloudkibo.com/landingPage/${this.props.landing_page_id}`    
+      landingPageUrl: `https://kiboengage.cloudkibo.com/landingPage/${this.props.landing_page_id}`,
+      deactivatedMessage: 'Please activate your landing Page to get the url'
     }
   }
   render () {
@@ -19,8 +20,10 @@ class SetUp extends React.Component {
       <div>
         <div className='form-group m-form__group m--margin-top-10'>
             Landing Page URL
-            <input className='form-control m-input m-input--air' value={this.state.landingPageUrl} />
+            <input className='form-control m-input m-input--air' value={this.props.isActive ? this.state.landingPageUrl : this.state.deactivatedMessage}
+              style={{color: this.props.isActive ? '#575962' : 'grey'}}/>
         </div>
+        {this.props.isActive &&
         <CopyToClipboard text={this.state.landingPageUrl}
           onCopy={() => {
             this.setState({copied: true})
@@ -48,6 +51,7 @@ class SetUp extends React.Component {
             Copy Link
           </button>
         </CopyToClipboard>
+        }
         <div style={{marginTop: '50px'}}>
           <Footer page='setup' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
         </div>

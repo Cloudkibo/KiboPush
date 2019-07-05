@@ -12,6 +12,7 @@ import {loadAutopostingSummaryForBackdoor} from '../../redux/actions/backdoor.ac
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import IconStack from '../../components/Dashboard/IconStackForAutoposting'
 import moment from 'moment'
+import LISTWIDGET from '../../components/Dashboard/listWidget'
 
 class AutopostingSummary extends React.Component {
   constructor (props, context) {
@@ -35,9 +36,11 @@ class AutopostingSummary extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
-    if (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
-      nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
-      nextprops.autopostingSummary.facebookAutopostingGraph.length > 0) {
+    if (nextprops.autopostingSummary &&
+      (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
+        nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
+        nextprops.autopostingSummary.facebookAutopostingGraph.length > 0
+      )) {
         if (nextprops.autopostingSummary.twitterAutopostingGraph && nextprops.autopostingSummary.twitterAutopostingGraph.length > 0) {
           var twitterData = this.includeZeroCounts(nextprops.autopostingSummary.twitterAutopostingGraph)
         }
@@ -157,6 +160,7 @@ class AutopostingSummary extends React.Component {
     }
   }
   render () {
+    console.log('backdoor', this.props.backdoor)
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
@@ -251,6 +255,30 @@ class AutopostingSummary extends React.Component {
               : <span>No reports to show for the applied filters</span>
             }
             </center>
+            <br />
+            <br />
+            <div className='m-widget5'>
+              <LISTWIDGET
+                imageUrl='https://cdn.cloudkibo.com/public/img/tweetsmoderation.png'
+                title='Tweets Moderation'
+                description='Analytics about tweets you moderated'
+                stats={[
+                  {stat: 'Tweets Moderated', value: this.props.autopostingSummary.tweetsForwarded + this.props.autopostingSummary.tweetsIgnored},
+                  {stat: 'Tweets Forwarded', value: this.props.autopostingSummary.tweetsForwarded},
+                  {stat: 'Tweets Ignored', value: this.props.autopostingSummary.tweetsIgnored}
+                ]}
+              />
+              <LISTWIDGET
+                imageUrl='https://cdn.cloudkibo.com/public/img/twittertofacebook.png'
+                title='Tweets Published on Facebook'
+                description='Analytics about tweets you autopost on Facebook page(s)'
+                stats={[
+                  {stat: 'Posts Published', value: this.props.autopostingSummary.posts},
+                  {stat: 'Likes / Post', value: parseInt(this.props.autopostingSummary.likes / this.props.autopostingSummary.posts, 10)},
+                  {stat: 'Comments / Post', value: parseInt(this.props.autopostingSummary.comments / this.props.autopostingSummary.posts, 10)}
+                ]}
+              />
+            </div>
           </div>
         }
           </div>

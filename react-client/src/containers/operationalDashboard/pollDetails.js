@@ -244,10 +244,16 @@ class ViewPollDetail extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='ui-block-content'>
+                  {this.state.totalResponses ?
                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
                     }}>
                       <canvas id='radar-chart' width={250} height={170} />
+                    </div>  : 
+                    <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+
+                    <h5> Currently there are no responses for this poll.</h5>
                     </div>
+                  }
                   </div>
                 </div>
               </div>

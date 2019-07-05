@@ -198,9 +198,9 @@ class BroadcastsInfo extends React.Component {
                           <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '50px'}}>Sent</span></th>
-                          <th data-field='seen'
+                          {/* <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '50px'}}>Seen</span></th>
+                            <span style={{width: '50px'}}>Seen</span></th> */}
                           <th data-field='more'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}} /></th>
@@ -228,10 +228,10 @@ class BroadcastsInfo extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '50px'}}>{broadcast.sent}</span></td>
-                              <td data-field='seen'
+                              {/* <td data-field='seen'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '50px'}}>{broadcast.seen}</span></td>
+                                  style={{width: '50px'}}>{broadcast.seen}</span></td> */}
                               <td data-field='more'
                                 className='m-datatable__cell'>
                                 <span

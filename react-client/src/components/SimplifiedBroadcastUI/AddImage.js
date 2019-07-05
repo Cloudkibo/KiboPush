@@ -71,6 +71,9 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
+    if (this.props.onSelect) {
+      this.props.onSelect(images)
+    }
     var file = this.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -157,7 +160,7 @@ class Image extends React.Component {
             </div>
           }
         </div>
-        <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
+        <div style={{color: 'red', textAlign: 'left'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>
     )
   }

@@ -24,6 +24,7 @@ import YouTube from 'react-youtube'
 import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
+import { readShopifyInstallRequest } from '../../utility/utils'
 import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
@@ -245,6 +246,10 @@ class Dashboard extends React.Component {
         console.log('going to push add page wizard')
         browserHistory.push({
           pathname: '/inviteUsingLinkWizard'
+        })
+      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+        browserHistory.push({
+          pathname: '/abandonedCarts'
         })
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers

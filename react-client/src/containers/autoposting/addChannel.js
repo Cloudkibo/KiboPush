@@ -1,20 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
+import { createautoposting } from '../../redux/actions/autoposting.actions'
 import { isWebURL, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      facebookColor: '#ff5e3a',
+      facebookColor: '#716aca',
       twitterColor: '',
-      youtubeColor: '',
+      rssColor: '',
       wordPressColor: '',
       facebookForeGroundColor: 'white',
       twitterForeGroundColor: 'black',
-      youtubeForeGroundColor: 'black',
+      rssForeGroundColor: 'black',
       wordPressForeGroundColor: 'black',
       showWordPressGuide: false,
       errorMessage: '',
@@ -22,6 +22,7 @@ class AddChannel extends React.Component {
     }
     this.onSelectItem = this.onSelectItem.bind(this)
     this.createAutoposting = this.createAutoposting.bind(this)
+    this.handleCreateAutopostingResponse = this.handleCreateAutopostingResponse.bind(this)
   }
   createAutoposting (type) {
     var autopostingData = {}
@@ -60,6 +61,10 @@ class AddChannel extends React.Component {
           incorrectUrl = true
         }
       }
+    } else if (type === 'rss') {
+      if (!isWebURL(this.rssSubscriptionUrl.value)) {
+        incorrectUrl = true
+      }
     } else if (type === 'wordpress') {
       if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
         incorrectUrl = true
@@ -93,11 +98,11 @@ class AddChannel extends React.Component {
           segmentationLocale: ''
         }
         break
-      case 'youtube':
+      case 'rss':
         autopostingData = {
-          subscriptionUrl: this.youtubeSubscriptionUrl.value,
+          subscriptionUrl: this.rssSubscriptionUrl.value,
           subscriptionType: type,
-          accountTitle: 'YouTube Channel',
+          accountTitle: 'RSS Feed',
           isSegmented: false,
           segmentationPageIds: [],
           segmentationGender: '',
@@ -117,16 +122,23 @@ class AddChannel extends React.Component {
         break
     }
     if (!incorrectUrl) {
-      this.props.clearAlertMessages()
       this.setState({
         errorMessage: ''
       })
-      this.props.createautoposting(autopostingData)
-      this.props.onClose()
+      this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
       this.setState({
         errorMessage: 'Incorrect Url'
       })
+    }
+  }
+
+  handleCreateAutopostingResponse (response) {
+    if (response.status === 'success') {
+      this.props.onClose()
+      this.props.msg.success('Changes saved successfully!')
+    } else {
+      this.props.msg.error(response.description)
     }
   }
 
@@ -137,37 +149,37 @@ class AddChannel extends React.Component {
     switch (value) {
       case 'facebook':
         this.setState({
-          facebookColor: '#ff5e3a',
+          facebookColor: '#716aca',
           twitterColor: '',
-          youtubeColor: '',
+          rssColor: '',
           wordPressColor: '',
           facebookForeGroundColor: 'white',
           twitterForeGroundColor: 'black',
-          youtubeForeGroundColor: 'black',
+          rssForeGroundColor: 'black',
           wordPressForeGroundColor: 'black'
         })
         break
       case 'twitter':
         this.setState({
           facebookColor: '',
-          twitterColor: '#ff5e3a',
-          youtubeColor: '',
+          twitterColor: '#716aca',
+          rssColor: '',
           wordPressColor: '',
           facebookForeGroundColor: 'black',
           twitterForeGroundColor: 'white',
-          youtubeForeGroundColor: 'black',
+          rssForeGroundColor: 'black',
           wordPressForeGroundColor: 'black'
         })
         break
-      case 'youtube':
+      case 'rss':
         this.setState({
           facebookColor: '',
           twitterColor: '',
-          youtubeColor: '#ff5e3a',
+          rssColor: '#716aca',
           wordPressColor: '',
           facebookForeGroundColor: 'black',
           twitterForeGroundColor: 'black',
-          youtubeForeGroundColor: 'white',
+          rssForeGroundColor: 'white',
           wordPressForeGroundColor: 'black'
         })
         break
@@ -175,11 +187,11 @@ class AddChannel extends React.Component {
         this.setState({
           facebookColor: '',
           twitterColor: '',
-          youtubeColor: '',
-          wordPressColor: '#ff5e3a',
+          rssColor: '',
+          wordPressColor: '#716aca',
           facebookForeGroundColor: 'black',
           twitterForeGroundColor: 'black',
-          youtubeForeGroundColor: 'black',
+          rssForeGroundColor: 'black',
           wordPressForeGroundColor: 'white'
         })
         break
@@ -190,11 +202,11 @@ class AddChannel extends React.Component {
     let facebookColor = this.state.facebookColor
     let twitterColor = this.state.twitterColor
     let wordPressColor = this.state.wordPressColor
-    let youtubeColor = this.state.youtubeColor
+    let rssColor = this.state.rssColor
     let facebookForeGroundColor = this.state.facebookForeGroundColor
     let twitterForeGroundColor = this.state.twitterForeGroundColor
     let wordPressForeGroundColor = this.state.wordPressForeGroundColor
-    // let youtubeForeGroundColor = this.state.youtubeForeGroundColor
+    let rssForeGroundColor = this.state.rssForeGroundColor
     return (
       <div>
         <h3>Connect Feed</h3>
@@ -212,6 +224,12 @@ class AddChannel extends React.Component {
             </button>
           </div>
           <div style={{display: 'inline-block', padding: '5px'}}>
+            <button onClick={() => this.onSelectItem('rss')} style={{backgroundColor: rssColor, color: rssForeGroundColor}} className='btn'>
+              <i className='fa fa-feed fa-2x' aria-hidden='true' />
+              <br />RSS Feed
+            </button>
+          </div>
+          <div style={{display: 'inline-block', padding: '5px'}}>
             <button onClick={() => this.onSelectItem('wordpress')} style={{backgroundColor: wordPressColor, color: wordPressForeGroundColor}} className='btn'>
               <i className='fa fa-wordpress fa-2x' aria-hidden='true' />
               <br />WordPress
@@ -219,68 +237,68 @@ class AddChannel extends React.Component {
           </div>
         </div>
         { facebookColor !== '' &&
-        <div>
           <div>
-            <label> Facebook Page Url </label>
-            <input placeholder='Enter FB url' ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
-            { this.state.type === 'facebook' &&
-              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-            }
+            <div>
+              <label> Facebook Page Url </label>
+              <input placeholder='Enter FB url' ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
+              { this.state.type === 'facebook' &&
+                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+              }
+            </div>
+            <button style={{float: 'right', margin: '10px'}}
+              onClick={() => this.createAutoposting('facebook')}
+              className='btn btn-primary btn-sm'>Add Facebook Account
+            </button>
           </div>
-          <button style={{float: 'right', margin: '10px'}}
-            onClick={() => this.createAutoposting('facebook')}
-            className='btn btn-primary btn-sm'>Add Facebook Account
-          </button>
-        </div>
         }
         { twitterColor !== '' &&
-        <div>
           <div>
-            <label> Twitter Account Url </label>
-            <input placeholder='Enter Twitter handle' ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
-            { this.state.type === 'twitter' &&
-              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-            }
+            <div>
+              <label> Twitter Account Url </label>
+              <input placeholder='Enter Twitter handle' ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
+              { this.state.type === 'twitter' &&
+                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+              }
+            </div>
+            <button style={{float: 'right', margin: '10px'}}
+              onClick={() => this.createAutoposting('twitter')}
+              className='btn btn-primary btn-sm'>Add Twitter Account
+            </button>
           </div>
-          <button style={{float: 'right', margin: '10px'}}
-            onClick={() => this.createAutoposting('twitter')}
-            className='btn btn-primary btn-sm'>Add Twitter Account
-          </button>
-        </div>
         }
-        { youtubeColor !== '' &&
-        <div>
+        { rssColor !== '' &&
           <div>
-            <label> YouTube Channel Url </label>
-            <input ref={(c) => { this.youtubeSubscriptionUrl = c }} type='text' className='form-control' />
-            { this.state.type === 'youtube' &&
-              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-            }
+            <div>
+              <label> RSS Feed Url </label>
+              <input placeholder='Enter RSS Feed url' ref={(c) => { this.rssSubscriptionUrl = c }} type='text' className='form-control' />
+              { this.state.type === 'rss' &&
+                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+              }
+            </div>
+            <button style={{float: 'right', margin: '10px'}}
+              onClick={() => this.createAutoposting('rss')}
+              className='btn btn-primary btn-sm'>Add RSS Feed
+            </button>
           </div>
-          <button style={{float: 'right', margin: '10px'}}
-            onClick={() => this.createAutoposting('youtube')}
-            className='btn btn-primary btn-sm'>Add YouTube Account
-          </button>
-        </div>
         }
         { wordPressColor !== '' &&
-        <div>
           <div>
-            <label> WordPress Channel Url </label>
-            <input ref={(c) => { this.wordpressSubscriptionUrl = c }} type='text' className='form-control' />
-            { this.state.type === 'wordpress' &&
-              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-            }
+            <div>
+              <label> WordPress Channel Url </label>
+              <input placeholder='Enter WordPress Channel url' ref={(c) => { this.wordpressSubscriptionUrl = c }} type='text' className='form-control' />
+              { this.state.type === 'wordpress' &&
+                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+              }
+            </div>
+            <button style={{float: 'right', marginTop: '10px'}}
+              onClick={this.props.openGuidelines}
+              className='btn btn-primary btn-sm'>View Integration Guidelines
+            </button>
+            <button style={{float: 'right', marginTop: '10px', marginRight: '10px'}}
+              onClick={() => this.createAutoposting('wordpress')}
+              className='btn btn-primary btn-sm'>Add WordPress Channel
+            </button>
           </div>
-          <button style={{float: 'right', marginTop: '10px'}}
-            onClick={this.props.openGuidelines}
-            className='btn btn-primary btn-sm'>View Integration Guidelines
-          </button>
-          <button style={{float: 'right', marginTop: '10px', marginRight: '10px'}}
-            onClick={() => this.createAutoposting('wordpress')}
-            className='btn btn-primary btn-sm'>Add WordPress Channel
-          </button>
-        </div>
         }
       </div>
     )
@@ -296,8 +314,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createautoposting: createautoposting,
-    clearAlertMessages: clearAlertMessages
+    createautoposting: createautoposting
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddChannel)

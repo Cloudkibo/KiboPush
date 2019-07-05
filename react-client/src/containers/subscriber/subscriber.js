@@ -158,6 +158,7 @@ class Subscriber extends React.Component {
     this.saveSetCustomField = this.saveSetCustomField.bind(this)
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
     this.updateOption = this.updateOption.bind(this)
+    this.loadsubscriberData= this.loadsubscriberData.bind(this)
   }
 
   saveSetCustomField () {
@@ -392,8 +393,23 @@ class Subscriber extends React.Component {
   }
   closeEditModal () {
     this.setState({showEditModal: false})
-    this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+    //this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
   }
+  loadsubscriberData (data) {
+    //this.setState({showEditModal: false})
+    if(data.tag_value === false) {
+      this.setState({filterByTag:''})
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '' , status_value: this.state.status_value}})
+
+    }
+    else if(data.tag_value === true) {
+      this.setState({filterByTag:''})
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag , status_value: this.state.status_value}})
+
+    }
+      }
+
+
   handleAddIndividual (value) {
     console.log('handleAddIndividual', value)
     var index = 0
@@ -755,7 +771,7 @@ class Subscriber extends React.Component {
   }
 
   searchSubscriber (event) {
-    this.setState({searchValue: event.target.value})
+    this.setState({searchValue: event.target.value, pageSelected:0})
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
@@ -776,6 +792,7 @@ class Subscriber extends React.Component {
     } else {
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     }
+
   }
 
   displayData (n, subscribers) {
@@ -1283,6 +1300,7 @@ class Subscriber extends React.Component {
         </select>
       }
     }
+    var hostname = window.location.hostname
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
@@ -1521,10 +1539,10 @@ class Subscriber extends React.Component {
                                         <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                         <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user.isSuperUser && hostname.includes('kiboengage.cloudkibo.com') &&
                                           <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
                                         }
-                                        { this.props.user.isSuperUser &&
+                                        { this.props.user.isSuperUser && hostname.includes('kiboengage.cloudkibo.com') &&
                                           <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                         }
                                       </DropdownMenu>
@@ -1540,7 +1558,7 @@ class Subscriber extends React.Component {
                                       onClose={this.closeEditModal}>
                                       <ModalDialog style={{width: '800px'}}
                                         onClose={this.closeEditModal}>
-                                        <EditTags currentTags={this.props.tags} msg={this.msg} />
+                                        <EditTags currentTags={this.props.tags} msg={this.msg}  loadsubscriberData={this.loadsubscriberData}/>
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
@@ -2048,12 +2066,14 @@ class Subscriber extends React.Component {
                                 <span>No Custom Field Found</span>
                               </div> }
                             </div>
-                            <div className='row'>
-                              <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
-                              <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
-                            </div>
-                            {
-                              this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
+                              <div className='row'>
+                                <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
+                                <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
+                              </div>
+                            }
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
+                              (this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
                               ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                 {
                                   this.props.subscriberSequences.map((seq, i) => (
@@ -2064,7 +2084,9 @@ class Subscriber extends React.Component {
                               : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                 <span> No Sequences Subcribed</span>
                               </div>
+                            )
                             }
+                            {hostname.includes('kiboengage.cloudkibo.com') &&
                             <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddSeqInd} target='subSeqInd' toggle={this.toggleSeqInd}>
                               <PopoverHeader>Subscribe Sequence</PopoverHeader>
                               <PopoverBody>
@@ -2099,6 +2121,7 @@ class Subscriber extends React.Component {
                                 </div>
                               </PopoverBody>
                             </Popover>
+                          }
                           </div>
                         </div>
                         <div className='modal-footer' />

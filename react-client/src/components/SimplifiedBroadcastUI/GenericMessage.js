@@ -35,6 +35,7 @@ class GenericMessage extends React.Component {
       hiddenComponents: hiddenComponents,
       componentType: ''
     }
+    this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
@@ -144,6 +145,7 @@ class GenericMessage extends React.Component {
 
   renameTitle () {
     console.log('in renameTitle')
+    console.log('default title', this.defaultTitle)
     if (this.titleConvo.value === '') {
       return
     }
@@ -346,7 +348,7 @@ class GenericMessage extends React.Component {
   }
 
   newConvo () {
-    this.setState({broadcast: [], list: []})
+    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle})
     this.props.handleChange({broadcast: []})
   }
 

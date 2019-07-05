@@ -4,8 +4,9 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton, editButton } from '../../redux/actions/broadcast.actions'
-import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
+import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -52,7 +53,18 @@ class Button extends React.Component {
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
     this.resetButton = this.resetButton.bind(this)
-    this.handleWebView= this.handleWebView.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
+
+    props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
+    this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
+  }
+
+  handleFetch (resp) {
+    console.log('done fetching whitelisted domains', resp)
+    if (resp.status === 'success') {
+      console.log('fetched whitelisted domains', resp.payload)
+      this.setState({whitelistedDomains: resp.payload})
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -70,6 +82,9 @@ class Button extends React.Component {
     console.log('Button newState', newState)
     if (newState.openPopover) {
       this.setState(newState)
+    }
+    if (nextProps.scrollTo) {
+      document.getElementById(this.buttonId).scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -299,9 +314,6 @@ class Button extends React.Component {
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.webviewurl) {
-      if (!isWebViewUrl(this.state.webviewurl)) {
-        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
-      }
       let data = {
         type: 'web_url',
         url: this.state.webviewurl, // User defined link,
@@ -357,42 +369,46 @@ class Button extends React.Component {
   changeWebviewUrl (e) {
     console.log('changing webviewurl', e.target.value)
     let buttonData = {title: this.state.title, visible: true, webviewurl: e.target.value, index: this.props.index}
-    if (isWebURL(e.target.value) && this.state.title !== '') {
-      // this.setState({buttonDisabled: false})
-      // if (this.props.updateButtonStatus) {
-      //   this.props.updateButtonStatus({buttonDisabled: false})
-      // }
-      this.props.checkWhitelistedDomains({pageId: this.props.pageId, domain: e.target.value}, this.handleWebView)
-
-    } else {
-      this.setState({buttonDisabled: true})
+    if (!isWebURL(e.target.value)) {
+      this.setState({buttonDisabled: true, errorMsg: ''})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: true, buttonData})
       }
-
+    } else {
+      if (!isWebViewUrl(e.target.value)) {
+        this.setState({webviewurl: e.target.value, buttonDisabled: true, errorMsg: 'Webview must include a protocol identifier e.g.(https://)'})
+        if (this.props.updateButtonStatus) {
+          this.props.updateButtonStatus({buttonDisabled: true, buttonData})
+        }
+        return
+      }
+      let validDomain = false
+      for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
+        let domain = this.state.whitelistedDomains[i]
+        if (getHostName(e.target.value) === getHostName(domain)) {
+          validDomain = true
+          break
+        }
+      }
+  
+      if (validDomain) {
+        this.setState({errorMsg:'', buttonDisabled: false})
+        if (this.props.updateButtonStatus) {
+          this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+        }
+      } else {
+        this.setState({buttonDisabled: true, errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.'})
+        if (this.props.updateButtonStatus) {
+          this.props.updateButtonStatus({buttonDisabled: true, buttonData})
+        }
+      }
     }
     this.setState({webviewurl: e.target.value})
   }
 
-  handleWebView (resp, url) {
-    console.log('resp.status', resp.status)
-    if (resp.status === 'success') {
-      if (resp.payload) {
-        this.setState({errorMsg:''})
-        this.setState({buttonDisabled: false})
-        if (this.props.updateButtonStatus) {
-          this.props.updateButtonStatus({buttonDisabled: false})
-        }
-      } else {
-        this.setState({errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.'})
-      }
-    } else {
-      this.setState({errorMsg: 'Unable to verify whitelisted domains.'})
-    }
-  }
   render () {
     return (
-      <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
+      <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
@@ -459,7 +475,7 @@ class Button extends React.Component {
                     }} />
                     </h7>
                     <div style={{padding: '10px'}} className='card-block'>
-                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === ''} onClick={this.replyWithMessage}>
+                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
                        Create Message
                        </button>
                     </div>
@@ -548,8 +564,8 @@ function mapDispatchToProps (dispatch) {
     fetchAllSequence: fetchAllSequence,
     editButton: editButton,
     addButton: addButton,
-   checkWhitelistedDomains: checkWhitelistedDomains
-
+   checkWhitelistedDomains: checkWhitelistedDomains,
+   fetchWhiteListedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Button)

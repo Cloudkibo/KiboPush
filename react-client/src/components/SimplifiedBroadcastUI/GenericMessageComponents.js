@@ -25,7 +25,7 @@ class GenericMessageComponents extends React.Component {
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('card') }}>
             <div className='align-center'>
               <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
-              <h6>Card</h6>
+              <h6>Gallery</h6>
             </div>
           </div>
         </div>

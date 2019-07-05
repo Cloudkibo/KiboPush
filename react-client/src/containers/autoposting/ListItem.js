@@ -20,6 +20,10 @@ class ListItem extends React.Component {
       icon = 'fa fa-wordpress'
       color = '#365899'
       image = 'https://cdn.cloudkibo.com/public/assets/app/media/img//logos/wordpress.png'
+    } else if (this.props.type === 'rss') {
+      icon = 'fa fa-rss'
+      color = '#365899'
+      image = 'https://cdn.cloudkibo.com/public/img/rss.png'
     }
     const item = {
       title: this.props.title,
@@ -68,7 +72,7 @@ class ListItem extends React.Component {
               </span>
               {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
-                <Link onClick={() => this.props.gotoMessages(this.props.item._id)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <Link onClick={() => this.props.gotoMessages(this.props.item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-envelope' />
                 </Link>
               </span>

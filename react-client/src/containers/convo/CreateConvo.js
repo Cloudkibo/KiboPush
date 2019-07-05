@@ -24,6 +24,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
+import MessengerSendToMessenger from 'react-messenger-send-to-messenger'
+
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -53,7 +55,8 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0]
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
+      loadScript: true
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -74,6 +77,7 @@ class CreateConvo extends React.Component {
     this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.loadsdk = this.loadsdk.bind(this)
   }
 
   handleChange (state) {
@@ -146,6 +150,30 @@ class CreateConvo extends React.Component {
     this.setState({showInvalidSession: false})
   }
 
+  loadsdk (fbAppId) {
+    console.log('inside loadsdk', fbAppId)
+    window.fbAsyncInit = function () {
+      window.FB.init({
+        appId: fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) { return }
+      js = d.createElement(s); js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+    this.setState({loadScript: false})
+    if (window.FB) {
+      console.log('inside window.fb')
+      window.FB.XFBML.parse()
+    }
+  }
+
   handleSendBroadcast (res) {
     if (res.status === 'success') {
       this.initTab()
@@ -184,7 +212,11 @@ class CreateConvo extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    if (nextProps.broadcasts) { 
+    }
+
+    if (nextProps.fbAppId && this.state.loadScript) {
+      this.loadsdk(nextProps.fbAppId)
     }
   }
   showGuideLinesDialog () {
@@ -344,6 +376,8 @@ class CreateConvo extends React.Component {
   }
 
   render () {
+    console.log('pageid', this.state.pageId.pageId)
+    console.log('appid',this.props.fbAppId)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -440,7 +474,7 @@ class CreateConvo extends React.Component {
         }
 
         {
-          this.state.showMessengerModal &&
+          this.state.showMessengerModal && this.props.fbAppId && this.props.fbAppId !== '' &&
           <ModalContainer style={{width: '500px'}}
             onClick={() => { this.setState({showMessengerModal: false}) }}
             onClose={() => { this.setState({showMessengerModal: false}) }}>
@@ -450,10 +484,10 @@ class CreateConvo extends React.Component {
               <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
               <MessengerPlugin
                 appId={this.props.fbAppId}
-                pageId={JSON.stringify(this.state.pageId)}
+                pageId={this.state.pageId.pageId}
+                size='large'
                 passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
-                onClick={() => { this.setState({showMessengerModal: false}) }}
-              />
+                />
             </ModalDialog>
           </ModalContainer>
         }
