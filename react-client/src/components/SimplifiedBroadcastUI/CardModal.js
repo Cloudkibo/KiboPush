@@ -232,7 +232,7 @@ class CardModal extends React.Component {
           console.log('requirements', requirements)
           if (requirements.length > 0) {
             return (
-              <li style={{textAlign: 'left', marginLeft: '75px', marginTop: '75px', color: 'red'}}>{msg}
+              <li style={{textAlign: 'left', marginLeft: '75px', color: 'red'}}>{msg}
                 <ul>
                   {requirements.map(req => <li>{req}</li>)}
                 </ul>
@@ -472,11 +472,11 @@ class CardModal extends React.Component {
                 </div>
 
 
-                <ul>
+                <ul style={{marginTop: '75px'}}>
                   {
                     requirements.length > 0 ? requirements :             
                     (
-                    <li style={{textAlign: 'left', color: 'green', marginLeft: '30px', marginTop: '75px'}}>{'All requirments fulfilled'}
+                    <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
                       <ul>
                         <li>Scroll down to add additional cards</li>
                         <li>Click the Next button to finish</li>
