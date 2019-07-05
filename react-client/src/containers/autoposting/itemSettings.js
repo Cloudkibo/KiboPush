@@ -10,6 +10,7 @@ import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { ModalBackground } from 'react-modal-dialog';
 import MessengerSendToMessenger from 'react-messenger-send-to-messenger';
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -433,12 +434,12 @@ class ItemSettings extends React.Component {
           <ModalContainer style={{width: '500px'}} onClose={this.closeModal}>
             <ModalDialog style={{width: '500px'}} onClose={this.closeModal}>
               <h3>Connect to Messenger:</h3>
-              <MessengerSendToMessenger
+              <MessengerPlugin
+                appId={this.props.fbAppId}
                 pageId={this.state.selectedPageFbId}
-                appId={this.state.fbAppId}
-                ctaText='SUBSCRIBE'
-                dataRef={`${this.props.user._id}__kibopush_test_broadcast_`}
-              />
+                size='large'
+                passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
+                />
             </ModalDialog>
           </ModalContainer>
         }
