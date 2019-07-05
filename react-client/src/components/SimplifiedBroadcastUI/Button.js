@@ -414,10 +414,12 @@ class Button extends React.Component {
           <h6>Button Title:</h6>
           <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
           <div style={{color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
-          <h6 style={{marginTop: '30px'}}>When this button is pressed:</h6>
-          {
+
+          <div style={{marginTop: '30px'}}>
+            {
                   !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&
                   <div>
+                    <h6 style={{color: 'red'}}>Select one of the below actions:</h6>
                     {
                       (this.props.buttonActions.indexOf('open website') > -1) &&
                       <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px'}} onClick={this.showWebsite}>
@@ -529,7 +531,7 @@ class Button extends React.Component {
                     </div>
                   </div>
                 }
-          {
+              {
                   this.state.openUnsubscribe &&
                   <div className='card'>
                     <h7 className='card-header'>Unsubscribe from Sequence <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeUnsubscribe} /></h7>
@@ -546,6 +548,7 @@ class Button extends React.Component {
                     </div>
                   </div>
                 }
+          </div>
         </div>
       </div>
     )
