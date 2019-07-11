@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
 import Analytics from './analytics'
+import { Link } from 'react-router'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
@@ -80,7 +81,7 @@ class AbandonedList extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         Abandoned Carts
-                        </h3>
+                      </h3>
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
@@ -98,6 +99,14 @@ class AbandonedList extends React.Component {
                       </button>
                       */
                     }
+                    <Link to='/storeSettings' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-gear' />
+                        <span>
+                          Settings
+                        </span>
+                      </span>
+                    </Link>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -144,7 +153,7 @@ class AbandonedList extends React.Component {
                             <td data-field='sentCount' className='m-datatable__cell'><span style={{width: '125px'}}>{item.sentCount}</span></td>
                             <td data-field='status' className='m-datatable__cell'><span style={{width: '250px'}}>
                               {
-                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={item.sentCount >= 3 } onClick={() => { this.onClickSendNow(item._id) }}>
+                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => { this.onClickSendNow(item._id) }}>
                                   <span>
                                     <i className='la la-info' />
                                     <span>
