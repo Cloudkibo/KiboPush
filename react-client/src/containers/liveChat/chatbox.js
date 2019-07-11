@@ -605,6 +605,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    this.newMessage=true
     this.getDisabledValue()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
