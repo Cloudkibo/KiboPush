@@ -149,7 +149,7 @@ class CreateSubList extends React.Component {
         this.setState({ parentListData: this.props.subscribers })
         let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
         console.log('Responses: ', responses)
-        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
+        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition,this.props.customFields, this.props.customFieldSubscribers, responses)
         console.log('subSetIds: ', subSetIds)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
@@ -163,7 +163,7 @@ class CreateSubList extends React.Component {
   handleGetParentList(response) {
     if (response.payload) {
       this.setState({ parentListData: response.payload })
-      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition)
+      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.props.customFields, this.props.customFieldSubscribers, this.state.joiningCondition)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -200,7 +200,7 @@ class CreateSubList extends React.Component {
       } else {
         this.setState({ parentListData: this.props.subscribers })
         let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
-        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
+        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.customFields, this.props.customFieldSubscribers, responses)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -315,6 +315,7 @@ class CreateSubList extends React.Component {
         conditions[i].text = ''
       }
     }
+    console.log(e.target.value)
     this.setState({ conditions: conditions })
   }
   changeCriteria(e, index) {
@@ -440,17 +441,65 @@ class CreateSubList extends React.Component {
           }
         </select>
       )
-    } else if (condition.condition) {
-      
     } else {
-      return (
-        <input className='form-control m-input'
-          onChange={(e) => this.changeText(e, i)}
-          value={condition.text}
-          id='text'
-          placeholder='Value'
-          type={condition.condition === 'subscriptionDate' || condition.condition === 'reply' ? 'date' : 'text'} />
-      )
+      var temp = condition.condition.split("_")
+      if (temp[0] === 'customfield' && temp[1] === 'text') {
+        return (
+          <input className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}
+            id='text'
+            placeholder='Value'
+            type='text' />
+        )
+      }
+      else if (temp[0] === 'customfield' && temp[1] === "number") {
+        return (
+          <input className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}
+            id='number'
+            placeholder='Value'
+            type='number' />
+        )
+      } else if (temp[0] === 'customfield' && temp[1] === "date") {
+        return (
+          <input className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}
+            id='date'
+            placeholder='Value'
+            type='date' />
+        )
+      } else if (temp[0] === 'customfield' && temp[1] === "datetime") {
+        return (
+          <input className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}
+            id='datetime'
+            placeholder='Value'
+            type='datetime-local' />
+        )
+      } else if (temp[0] === 'customfield' && temp[1] === "true/false") {
+        return (
+          <select className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}>
+            <option value=''>Select Criteria</option>
+            <option value='true'>True</option>
+            <option value='false'>False</option>
+          </select>
+        )
+      } else {
+        return (
+          <input className='form-control m-input'
+            onChange={(e) => this.changeText(e, i)}
+            value={condition.text}
+            id='text'
+            placeholder='Value'
+            type={condition.condition === 'subscriptionDate' || condition.condition === 'reply' ? 'date' : 'text'} />
+        )
+      }
     }
   }
 
@@ -463,7 +512,7 @@ class CreateSubList extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.props',this.props)
+    console.log('this.props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -651,7 +700,7 @@ class CreateSubList extends React.Component {
                                       <optgroup label="Custom Fields" data-max-options="10">
                                         {
                                           this.props.customFields && this.props.customFields.length > 0 && this.props.customFields.map((field) => (
-                                            <option value={field}>{field.name}</option>
+                                            <option value={`customfield_${field.type}_${field._id}`}>{field.name}</option>
                                           ))
                                         }
                                       </optgroup>
@@ -670,32 +719,53 @@ class CreateSubList extends React.Component {
                                   </td>
                                   <td data-field='title'
                                     className='m-datatable__cell' style={{ width: '25%' }}>
-                                    {this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply'
-                                      ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                    {this.state.conditions[i].condition.split("_")[0] === 'customfield'
+                                      ? <span>
+                                        {this.state.conditions[i].condition.split("_")[1] === 'date' || this.state.conditions[i].condition.split("_")[1] === 'datetime' || this.state.conditions[i].condition.split("_")[1] === 'number'
+                                        ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                         value={condition.criteria}>
                                         <option value=''>Select Criteria</option>
-                                        <option value='on'>on</option>
-                                        <option value='before'>Before</option>
-                                        <option value='after'>After</option>
+                                        <option value='is'>is</option>
+                                        <option value='greater'>Greater Than</option>
+                                        <option value='less'>Less Than</option>
                                       </select>
-                                      : <div>
-                                        {
-                                          this.state.conditions[i].condition === 'firstName' || this.state.conditions[i].condition === 'lastName'
-                                            ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                              value={condition.criteria}>
-                                              <option value=''>Select Criteria</option>
-                                              <option value='is'>is</option>
-                                              <option value='contains'>contains</option>
-                                              <option value='begins'>begins with</option>
-                                            </select>
-                                            : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                              value={condition.criteria}>
-                                              <option value=''>Select Criteria</option>
-                                              <option value='is'>is</option>
-                                            </select>
+                                      : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                      value={condition.criteria}>
+                                      <option value=''>Select Criteria</option>
+                                      <option value='is'>is</option>
+                                    </select>
                                         }
-                                      </div>
+                                      </span>
+                                      : <span>
+                                        {this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply'
+                                          ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                            value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='on'>on</option>
+                                            <option value='before'>Before</option>
+                                            <option value='after'>After</option>
+                                          </select>
+                                          : <div>
+                                            {
+                                              this.state.conditions[i].condition === 'firstName' || this.state.conditions[i].condition === 'lastName'
+                                                ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                                  value={condition.criteria}>
+                                                  <option value=''>Select Criteria</option>
+                                                  <option value='is'>is</option>
+                                                  <option value='contains'>contains</option>
+                                                  <option value='begins'>begins with</option>
+                                                </select>
+                                                : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                                  value={condition.criteria}>
+                                                  <option value=''>Select Criteria</option>
+                                                  <option value='is'>is</option>
+                                                </select>
+                                            }
+                                          </div>
+                                        }
+                                      </span>
                                     }
+
 
                                     <span className='m-form__help'>
                                       {
