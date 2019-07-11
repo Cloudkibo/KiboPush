@@ -24,14 +24,11 @@ class ItemSettings extends React.Component {
   }
 
   componentDidMount () {
-    console.log('in componentDidMount')
-    console.log()
     let date = this.props.store[0].schedule.split('.')
     this.setState({schedule: date[0]})
   }
 
   handleSchedule (e) {
-    console.log('e.target.value', e.target.value)
     this.setState({schedule: e.target.value})
   }
 
@@ -71,7 +68,7 @@ class ItemSettings extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.state.schedule', this.state.schedule)
+
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -172,7 +169,6 @@ class ItemSettings extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('state from items mapsto', state)
   return {
     store: (state.abandonedInfo.storeList)
   }
