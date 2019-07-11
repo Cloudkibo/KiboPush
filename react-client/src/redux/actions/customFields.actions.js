@@ -97,3 +97,15 @@ export function getCustomFieldValue (subscriberid) {
     })
   }
 }
+
+export function getCustomFieldSubscribers () {
+  return (dispatch) => {
+    callApi('custom_field_subscribers/get_custom_field_subscribers/', 'get')
+    .then(res => {
+      console.log('res.payload', res.payload)
+      if (res.status === 'success' && res.payload) {
+        dispatch(getCustomFieldSubscriber(res.payload))
+      }
+    })
+  }
+}
