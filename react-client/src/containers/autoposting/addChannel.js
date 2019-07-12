@@ -65,11 +65,15 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'rss') {
-      if (!isWebURL(this.rssSubscriptionUrl.value) || !isWebViewUrl(this.rssSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.rssSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.rssSubscriptionUrl.value)
+      if (!isWebUrl || !isWebViewURL) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
-      if (!isWebURL(this.wordpressSubscriptionUrl.value) || !isWebViewUrl(this.wordpressSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.wordpressSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.wordpressSubscriptionUrl.value)
+      if (!isWebUrl || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -133,12 +137,12 @@ class AddChannel extends React.Component {
       var errorMsg = ''
       if(isWebViewURL){
          errorMsg =  'Incorrect Url'
-    }else{
-      errorMsg =  'Please Include http(s)'
-    } 
-    this.setState({
-      errorMessage: errorMsg
-    })
+      }else{
+         errorMsg =  'Please Include http(s)'
+      } 
+      this.setState({
+        errorMessage: errorMsg
+      })
     }
   }
 
