@@ -27,14 +27,16 @@ class AddChannel extends React.Component {
   createAutoposting (type) {
     var autopostingData = {}
     var isWebUrl
+    var isWebViewURL  = false
     var incorrectUrl = false
     this.setState({
       type: type
     })
     if (type === 'facebook') {
-      isWebUrl = isWebViewUrl(this.facebookSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.facebookSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.facebookSubscriptionUrl.value)
       var isFacebookPage = isFacebookPageUrl(this.facebookSubscriptionUrl.value)
-      if (!isWebUrl || !isFacebookPage) {
+      if (!isWebUrl || !isFacebookPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -47,9 +49,10 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'twitter') {
-      isWebUrl = isWebViewUrl(this.twitterSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.twitterSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.twitterSubscriptionUrl.value)
       var isTwitterPage = isTwitterUrl(this.twitterSubscriptionUrl.value)
-      if (!isWebUrl || !isTwitterPage) {
+      if (!isWebUrl || !isTwitterPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -62,11 +65,11 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'rss') {
-      if (!isWebViewUrl(this.rssSubscriptionUrl.value)) {
+      if (!isWebURL(this.rssSubscriptionUrl.value) || !isWebViewUrl(this.rssSubscriptionUrl.value)) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
-      if (!isWebViewUrl(this.wordpressSubscriptionUrl.value)) {
+      if (!isWebURL(this.wordpressSubscriptionUrl.value) || !isWebViewUrl(this.wordpressSubscriptionUrl.value)) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -127,9 +130,15 @@ class AddChannel extends React.Component {
       })
       this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
-      this.setState({
-        errorMessage: 'Incorrect Url! Make sure it has http(s)'
-      })
+      var errorMsg = ''
+      if(isWebViewURL){
+         errorMsg =  'Incorrect Url'
+    }else{
+      errorMsg =  'Please Include http(s)'
+    } 
+    this.setState({
+      errorMessage: errorMsg
+    })
     }
   }
 
