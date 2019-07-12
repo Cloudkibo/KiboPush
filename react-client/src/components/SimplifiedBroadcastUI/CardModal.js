@@ -411,7 +411,7 @@ class CardModal extends React.Component {
                   
                   {
                     this.state.cards.length > 1 &&                   
-                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-75px'}}>
+                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
                         {
                           this.state.cards.map((card, index) => {
                               return (<li 
@@ -474,7 +474,7 @@ class CardModal extends React.Component {
                 </div>
 
 
-                <ul style={{marginTop: '75px'}}>
+                <ul style={{marginTop: '65px'}}>
                   {
                     requirements.length > 0 ? requirements :             
                     (
