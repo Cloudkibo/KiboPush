@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createautoposting } from '../../redux/actions/autoposting.actions'
-import { isWebURL, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -32,7 +32,7 @@ class AddChannel extends React.Component {
       type: type
     })
     if (type === 'facebook') {
-      isWebUrl = isWebURL(this.facebookSubscriptionUrl.value)
+      isWebUrl = isWebViewUrl(this.facebookSubscriptionUrl.value)
       var isFacebookPage = isFacebookPageUrl(this.facebookSubscriptionUrl.value)
       if (!isWebUrl || !isFacebookPage) {
         incorrectUrl = true
@@ -47,7 +47,7 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'twitter') {
-      isWebUrl = isWebURL(this.twitterSubscriptionUrl.value)
+      isWebUrl = isWebViewUrl(this.twitterSubscriptionUrl.value)
       var isTwitterPage = isTwitterUrl(this.twitterSubscriptionUrl.value)
       if (!isWebUrl || !isTwitterPage) {
         incorrectUrl = true
@@ -62,11 +62,11 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'rss') {
-      if (!isWebURL(this.rssSubscriptionUrl.value)) {
+      if (!isWebViewUrl(this.rssSubscriptionUrl.value)) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
-      if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
+      if (!isWebViewUrl(this.wordpressSubscriptionUrl.value)) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -128,7 +128,7 @@ class AddChannel extends React.Component {
       this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
       this.setState({
-        errorMessage: 'Incorrect Url'
+        errorMessage: 'Incorrect Url! Make sure it has http(s)'
       })
     }
   }
