@@ -44,6 +44,24 @@ class ListDetails extends React.Component {
     document.title = `${title} | list Details`;
   }
 
+  exportRecords () {
+    var data = this.prepareExportData()
+    var info = data
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+      } else {
+        fileDownload(csv, 'SegmentedList.csv')
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
@@ -51,22 +69,7 @@ class ListDetails extends React.Component {
     }
   }
 
-  displayData (n, subscribers) {
-    let offset = n * 4
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 4) > subscribers.length) {
-      limit = subscribers.length
-    } else {
-      limit = offset + 4
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = subscribers[i]
-      index++
-    }
-    this.setState({subscribersData: data, subscribersDataAll: subscribers})
-  }
+
   prepareExportData () {
     var data = []
     var subscriberObj = {}
@@ -86,25 +89,29 @@ class ListDetails extends React.Component {
     }
     return data
   }
-  exportRecords () {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        fileDownload(csv, 'SegmentedList.csv')
-      }
-    })
-  }
   handlePageClick (data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
+  }
+
+  prepareExportData () {
+    var data = []
+    var subscriberObj = {}
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      var subscriber = this.state.subscribersData[i]
+      subscriberObj = {
+        'Profile Picture': subscriber.profilePic,
+        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
+        'Page': subscriber.pageId.pageName,
+        'PhoneNumber': subscriber.phoneNumber,
+        'Email': subscriber.email,
+        'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
+        'Locale': subscriber.locale,
+        'Gender': subscriber.gender
+      }
+      data.push(subscriberObj)
+    }
+    return data
   }
 
   searchSubscriber (event) {
@@ -117,6 +124,23 @@ class ListDetails extends React.Component {
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
+  }
+
+  displayData (n, subscribers) {
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > subscribers.length) {
+      limit = subscribers.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = subscribers[i]
+      index++
+    }
+    this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
 
   render () {

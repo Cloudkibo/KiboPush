@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createautoposting } from '../../redux/actions/autoposting.actions'
-import { isWebURL, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -27,14 +27,16 @@ class AddChannel extends React.Component {
   createAutoposting (type) {
     var autopostingData = {}
     var isWebUrl
+    var isWebViewURL  = false
     var incorrectUrl = false
     this.setState({
       type: type
     })
     if (type === 'facebook') {
       isWebUrl = isWebURL(this.facebookSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.facebookSubscriptionUrl.value)
       var isFacebookPage = isFacebookPageUrl(this.facebookSubscriptionUrl.value)
-      if (!isWebUrl || !isFacebookPage) {
+      if (!isWebUrl || !isFacebookPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -48,8 +50,9 @@ class AddChannel extends React.Component {
       }
     } else if (type === 'twitter') {
       isWebUrl = isWebURL(this.twitterSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.twitterSubscriptionUrl.value)
       var isTwitterPage = isTwitterUrl(this.twitterSubscriptionUrl.value)
-      if (!isWebUrl || !isTwitterPage) {
+      if (!isWebUrl || !isTwitterPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -62,11 +65,15 @@ class AddChannel extends React.Component {
         }
       }
     } else if (type === 'rss') {
-      if (!isWebURL(this.rssSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.rssSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.rssSubscriptionUrl.value)
+      if (!isWebUrl || !isWebViewURL) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
-      if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
+      isWebUrl = isWebURL(this.wordpressSubscriptionUrl.value)
+      isWebViewURL = isWebViewUrl(this.wordpressSubscriptionUrl.value)
+      if (!isWebUrl || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
@@ -127,8 +134,14 @@ class AddChannel extends React.Component {
       })
       this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
+      var errorMsg = ''
+      if(isWebViewURL){
+         errorMsg =  'Incorrect Url'
+      }else{
+         errorMsg =  'Please Include http(s)'
+      } 
       this.setState({
-        errorMessage: 'Incorrect Url'
+        errorMessage: errorMsg
       })
     }
   }
