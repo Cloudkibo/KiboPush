@@ -74,6 +74,21 @@ export function updateStoreStatus (data, msg) {
   }
 }
 
+export function updateStoreInfo (id, data, msg) {
+  console.log('data for updateStoreInfo', data)
+  console.log('data for updateStoreInfo', id)
+  return (dispatch) => {
+    callApi(`abandonedCarts/updateStoreInfo/${id}`, 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          // Add logic to display success Message
+          console.log('updated successfully: ' + JSON.stringify(res))
+          msg.success('Settings updated successfully')
+        }
+      })
+  }
+}
+
 export function sendAbandonedCartNow (data, msg) {
   return (dispatch) => {
     callApi('abandonedCarts/sendCheckout', 'post', data)
