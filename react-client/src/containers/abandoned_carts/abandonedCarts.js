@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getShopifyStores } from '../../redux/actions/abandonedCarts.actions'
+import { getShopifyStores, getOrders } from '../../redux/actions/abandonedCarts.actions'
 import InstallApp from './installApp'
 import AbandonedList from './abandonedList'
 import ReactLoading from 'react-loading'
@@ -14,6 +14,7 @@ class AbandonedCarts extends React.Component {
   constructor (props) {
     super(props)
     this.props.getShopifyStores()
+    props.getOrders()
   }
   componentDidMount () {
     const hostname =  window.location.hostname;
@@ -46,7 +47,8 @@ function mapStateToProps (state) {
   console.log('state', state)
   return {
     storeList: (state.abandonedInfo.storeList),
-    isLoading: (state.abandonedInfo.isLoading)
+    isLoading: (state.abandonedInfo.isLoading),
+    orderList: (state.abandonedInfo.orderList)
     // user: (state.basicInfo.user),
     // bots: (state.botsInfo.bots),
     // count: (state.botsInfo.count),
@@ -57,7 +59,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      getShopifyStores: getShopifyStores
+      getShopifyStores: getShopifyStores,
+      getOrders: getOrders
     },
     dispatch)
 }

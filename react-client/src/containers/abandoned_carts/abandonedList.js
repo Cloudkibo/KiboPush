@@ -10,6 +10,7 @@ import ReactPaginate from 'react-paginate'
 import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
 import Analytics from './analytics'
 import { Link } from 'react-router'
+import OrderList from './orderList'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
@@ -188,6 +189,7 @@ class AbandonedList extends React.Component {
               </div>
             </div>
           </div>
+          <OrderList />
         </div>
       </div>
     )
@@ -198,6 +200,7 @@ function mapStateToProps (state) {
   console.log('state', state)
   return {
     abandonedList: (state.abandonedInfo.abandonedList),
+    orderList: (state.abandonedInfo.orderList),
     store: (state.abandonedInfo.storeList)
   }
 }

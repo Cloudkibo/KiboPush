@@ -11,6 +11,13 @@ export function updateStoreList (data) {
   }
 }
 
+export function updateOrderList (data) {
+  return {
+    type: ActionTypes.UPDATE_ORDER_LIST,
+    data
+  }
+}
+
 export function updateAbandonedList (data) {
   return {
     type: ActionTypes.UPDATE_ABANDONED_LIST,
@@ -46,6 +53,15 @@ export function getAbandonedCarts () {
     callApi('abandonedCarts/abandonedCheckouts').then(res => {
       console.log('Abandoned Checkouts', res.payload)
       dispatch(updateAbandonedList(res.payload))
+    })
+  }
+}
+
+export function getOrders () {
+  return (dispatch) => {
+    callApi('abandonedCarts/getOrders').then(res => {
+      console.log('response from getOrders', res)
+      dispatch(updateOrderList(res.payload))
     })
   }
 }
