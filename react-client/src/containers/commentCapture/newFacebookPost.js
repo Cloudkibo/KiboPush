@@ -46,7 +46,9 @@ class FacebookPosts extends React.Component {
       isVideo: false,
       videoPost: false,
       showImages: false,
-      showVideo: false
+      showVideo: false,
+      showSuccessMessage: false,
+      postId: ''
     }
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
@@ -68,6 +70,11 @@ class FacebookPosts extends React.Component {
     this.previewVideo = this.previewVideo.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
+  }
+
+  closeDialogDelete () {
+    this.setState({showSuccessMessage: false})
   }
 
   validationCommentCapture () {
@@ -254,7 +261,7 @@ class FacebookPosts extends React.Component {
     }
     this.props.editFacebookPost(payload, this.msg)
   }
-  reset () {
+  reset (postId) {
     this.setState({
       postText: '',
       showEmojiPicker: false,
@@ -263,7 +270,9 @@ class FacebookPosts extends React.Component {
       excludedKeywords: '',
       disabled: true,
       attachments: [],
-      keywordErrors: []
+      keywordErrors: [],
+      postId: postId,
+      showSuccessMessage: true
     })
   }
   validateFile (files, componentType) {
@@ -472,6 +481,18 @@ class FacebookPosts extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {
+          this.state.showSuccessMessage &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogDelete}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogDelete}>
+              <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
+              <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{cursor: 'pointer'}}>Click Here</a> to view your Facebook Page Post.</p>
+              <p>The people who comment on this post will receive the reply that you set. </p>
+          </ModalDialog>
+          </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -507,7 +528,7 @@ class FacebookPosts extends React.Component {
                     </div>
                     : <div className='form-group m-form__group' style={{display: 'flex'}}>
                       <div className='col-3'>
-                        <label className='col-form-label'>Choose Page</label>
+                        <label className='col-form-label'>Choose your Facebook Page</label>
                       </div>
                       <div className='col-9'>
                         <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
@@ -521,10 +542,11 @@ class FacebookPosts extends React.Component {
                     </div>
                       }
                     </div>
+                    <br />
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
-                        <div className='col-3'>
-                          <label className='col-form-label'>Facebook Post</label>
+                        <div className='col-6'>
+                          <label className='col-form-label'>Create a Facebook Post that will be published on your page</label>
                         </div>
                         <div className='col-12'>
                           { this.state.isEdit === 'false'
@@ -532,7 +554,7 @@ class FacebookPosts extends React.Component {
                           <textarea
                             className='form-control m-input m-input--solid'
                             id='postTextArea' rows='3'
-                            placeholder={this.state.isVideo ? 'Describe your video here' : 'Enter text to post on facebook'}
+                            placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
                             style={{height: '150px', resize: 'none'}}
                             value={this.state.postText}
                             onChange={this.onFacebookPostChange} />
@@ -628,11 +650,11 @@ class FacebookPosts extends React.Component {
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
-                          <label className='col-form-label'>Bot Reply</label>
+                          <label className='col-form-label'>Bot Configuration</label>
                         </div>
                         <div className='col-12'>
                           <p>
-                            Enter the reply that commentors will receive from your bot
+                            Create a reply that will be sent to people who comment on your Facebook Page Post
                           </p>
                         </div>
                         { this.state.isEdit === 'false'
@@ -640,7 +662,7 @@ class FacebookPosts extends React.Component {
                           <textarea
                             className='form-control m-input m-input--solid'
                             id='replyTextArea' rows='3'
-                            placeholder='Enter Reply'
+                            placeholder='Your reply to the commentor goes here...'
                             style={{height: '100px', resize: 'none'}}
                             value={this.state.autoReply}
                             onChange={this.replyChange} />
@@ -649,7 +671,7 @@ class FacebookPosts extends React.Component {
                           <textarea
                             className='form-control m-input m-input--solid'
                             id='replyTextArea' rows='3'
-                            placeholder='Enter Reply'
+                            placeholder='Create a reply that will be sent to people who comment on your Facebook Page Post...'
                             style={{height: '100px', resize: 'none'}}
                             value={this.state.autoReply}
                             disabled />
@@ -672,7 +694,7 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12' style={{marginTop: '10px'}}>
                           <p>
-                            Donot reply if these keywords are used in the comment. Example 'When, Where, How'
+                            Do not reply if these keywords are used in the comment. Example 'When, Where, How'
                           </p>
                         </div>
                         <div className='col-12'>
