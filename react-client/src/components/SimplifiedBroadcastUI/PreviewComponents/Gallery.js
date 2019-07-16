@@ -72,7 +72,7 @@ class Gallery extends React.Component {
             <div className="carousel-inner carousel-inner-preview" style={{top: 0, right: 0}}>
             {
             this.state.cards.map((card, index) => (
-                <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', margin: 'auto'}} className={"carousel-item carousel-item-preview" + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
+                <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', margin: 'auto', transform: index === this.state.selectedIndex-1 ? 'translate3d(62%, 0, 0)' : index === this.state.selectedIndex+1 ? 'translate3d(-20%, 0, 0' : ''}} className={"carousel-item carousel-item-preview " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                     {
                         card.image_url &&
                         <img src={card.image_url} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
