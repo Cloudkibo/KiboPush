@@ -17,11 +17,17 @@ class AbandonedList extends React.Component {
     super(props, context)
     this.props.getAbandonedCarts()
     this.state = {
-      showDropDown: false
+      showDropDown: false,
+      order: ''
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.onClickSendNow = this.onClickSendNow.bind(this)
+    this.setOrder = this.setOrder.bind(this)
+  }
+
+  setOrder (order) {
+    this.setState({order: order})
   }
 
   handlePageClick () {
@@ -99,7 +105,7 @@ class AbandonedList extends React.Component {
                         <td data-field='status' className='m-datatable__cell'><span style={{width: '125px'}}>{item.status}</span></td>
                         <td data-field='status' className='m-datatable__cell'><span style={{width: '250px'}}>
                           {
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => { this.viewMore(item._id) }}>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setOrder(item) }}>
                               <span>
                                 View More
                               </span>
@@ -129,6 +135,94 @@ class AbandonedList extends React.Component {
                 <p> No data to display </p>
               </div>
             }
+            <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+              <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
+                <div className='modal-content'>
+                  <div style={{display: 'block'}} className='modal-header'>
+                    <h5 className='modal-title' id='exampleModalLabel'>
+                      Order Details
+                    </h5>
+                    <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                      <span aria-hidden='true'>
+                        &times;
+                      </span>
+                    </button>
+                  </div>
+                  <div className='modal-body'>
+                    <div style={{maxHeight: '350px', overflowX: 'hidden', overflowY: 'scroll'}} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Order Id:</span>
+                            <br />
+                            <span>{this.state.order.orderId}</span>
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Created At:</span>
+                            <br />
+                            <span>{this.state.order.created_at}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Status:</span>
+                            <br />
+                            <span>{this.state.order.status}</span>
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Total Price:</span>
+                            <br />
+                            <span>{this.state.order.totalPrice}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Abandoned Checkout URL:</span>
+                            <br />
+                            <span><a href={this.state.order.abandonedCheckoutUrl} target='_blank' style={{cursor: 'pointer'}}>{this.state.order.abandonedCheckoutUrl}</a></span>
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Shopify Checkout Id:</span>
+                            <br />
+                            <span>{this.state.order.shopifyCheckoutId}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Cart Token:</span>
+                            <br />
+                            <span>{this.state.order.cartToken}</span>
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div>
+                            <span style={{fontWeight: 600}}>Checkout Token:</span>
+                            <br />
+                            <span>{this.state.order.checkoutToken}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='modal-footer' />
+                </div>
+              </div>
+            </div>
             </div>
           </div>
         </div>
