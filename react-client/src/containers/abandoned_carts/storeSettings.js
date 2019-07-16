@@ -14,22 +14,42 @@ class ItemSettings extends React.Component {
       cartAlertEnabled: props.store[0].cartAlertEnabled,
       sendOrderUpdates: props.store[0].sendOrderUpdates,
       alertMessage: props.store[0].alertMessage,
-      schedule: props.store[0].schedule
+      schedule: props.store[0].schedule,
+      criteria: props.store[0].schedule.condition === 'immediately' ? 'immediately' : 'after'
     }
     this.handleAlertStatus = this.handleAlertStatus.bind(this)
     this.handleOrderUpdatesStatus = this.handleOrderUpdatesStatus.bind(this)
     this.handleAlertMessage = this.handleAlertMessage.bind(this)
     this.handleSave = this.handleSave.bind(this)
-    this.handleSchedule = this.handleSchedule.bind(this)
+    this.changeCriteria = this.changeCriteria.bind(this)
+    this.changeCondition = this.changeCondition.bind(this)
+    this.changeValue = this.changeValue.bind(this)
   }
 
   componentDidMount () {
-    let date = this.props.store[0].schedule.split('.')
-    this.setState({schedule: date[0]})
   }
 
-  handleSchedule (e) {
-    this.setState({schedule: e.target.value})
+  changeCondition (e) {
+    let schedule = this.state.schedule
+    schedule.condition = e.target.value
+    this.setState({schedule: schedule})
+  }
+
+  changeCriteria (e) {
+    let schedule = this.state.schedule
+    if (e.target.value === 'immediately') {
+      schedule.condition = 'immediately'
+      this.setState({schedule: schedule, criteria: 'immediately'})
+    } else {
+      schedule.condition = this.state.schedule.condition
+      this.setState({criteria: 'after', schedule: schedule})
+    }
+  }
+
+  changeValue (e) {
+    let schedule = this.state.schedule
+    schedule.value = e.target.value
+    this.setState({schedule: schedule})
   }
 
   handleSave () {
@@ -116,8 +136,26 @@ class ItemSettings extends React.Component {
                     <label className='col-lg-2 col-form-label'>
                       Schedule
                     </label>
-                    <div className='col-lg-6'>
-                      <input type='datetime-local' className='form-control m-input' value={this.state.schedule} id='text' onChange={this.handleSchedule} disabled={!this.state.cartAlertEnabled} />
+                    <div className='row col-lg-6'>
+                      <div className='col-lg-5 col-md-5 col-sm-5' style={{ marginBottom: '10px' }}>
+                        <select className='form-control m-input' onChange={(e, i) => this.changeCriteria(e, i)}
+                          value={this.state.criteria}>
+                          <option value='after'>After</option>
+                          <option value='immediately'>Immediately</option>
+                        </select>
+                      </div>
+                      <div className='col-lg-3 col-md-3 col-sm-3'>
+                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.schedule.value} className='form-control' onChange={this.changeValue}
+                          disabled={this.state.criteria === 'immediately'} />
+                      </div>
+                      <div className='col-lg-4 col-md-4 col-sm-4'>
+                        <select className='form-control m-input' disabled={this.state.criteria === 'immediately'}
+                          value={this.state.schedule.condition} onChange={(e, i) => this.changeCondition(e, i)} >
+                          <option value='minutes'>Minutes</option>
+                          <option value='hours'>Hours</option>
+                          <option value='day(s)'>Day(s)</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
