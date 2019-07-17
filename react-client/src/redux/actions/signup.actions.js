@@ -59,7 +59,7 @@ export function resendEmail () {
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success') {
-          dispatch(resendSuccess(res.description))
+          dispatch(resendSuccess(res.payload))
         } else {
           dispatch(resendFailure())
         }
