@@ -318,6 +318,9 @@ class CardModal extends React.Component {
 
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
+    let settings = {
+      slidesToShow: 1
+    }
     console.log('requirements', requirements)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -403,13 +406,12 @@ class CardModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
-
-                <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '75px'}} className="carousel slide ui-block" data-ride="carousel">
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
+                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
                   
                   {
                     this.state.cards.length > 1 &&                   
-                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-75px'}}>
+                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
                         {
                           this.state.cards.map((card, index) => {
                               return (<li 
@@ -430,10 +432,10 @@ class CardModal extends React.Component {
                   {
                     this.state.cards.map((card, index) => {
                       return (
-                        <div className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "")}>
+                        <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px'}} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                             {
                                 card.component.image_url &&
-                                <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', margin: '-25px'}} />
+                                <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
                             }
                             <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
                             <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
@@ -459,11 +461,11 @@ class CardModal extends React.Component {
                   {
                     this.state.cards.length > 1 && 
                       <div>
-                        <a className="carousel-control-prev" style={{left:'-40px', top: '50%', bottom: '50%'}} href="#carouselExampleControls" role="button" data-slide="prev">
+                        <a className="carousel-control-prev" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="prev">
                           <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                           <span className="sr-only">Previous</span>
                         </a>
-                        <a className="carousel-control-next" style={{right: '-40px', top: '50%', bottom: '50%'}} href="#carouselExampleControls" role="button" data-slide="next">
+                        <a className="carousel-control-next" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="next">
                           <span className="carousel-control-next-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                           <span className="sr-only">Next</span>
                         </a>
@@ -472,7 +474,7 @@ class CardModal extends React.Component {
                 </div>
 
 
-                <ul style={{marginTop: '75px'}}>
+                <ul style={{marginTop: '65px'}}>
                   {
                     requirements.length > 0 ? requirements :             
                     (

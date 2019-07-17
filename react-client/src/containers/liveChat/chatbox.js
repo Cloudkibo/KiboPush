@@ -379,6 +379,7 @@ class ChatBox extends React.Component {
   }
 
   resetFileComponent () {
+    this.newMessage = true
     this.setState({
       attachment: [],
       attachmentType: '',
@@ -604,6 +605,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    this.newMessage=true
     this.getDisabledValue()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
@@ -621,6 +623,7 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false

@@ -11,6 +11,13 @@ export function updateStoreList (data) {
   }
 }
 
+export function updateOrderList (data) {
+  return {
+    type: ActionTypes.UPDATE_ORDER_LIST,
+    data
+  }
+}
+
 export function updateAbandonedList (data) {
   return {
     type: ActionTypes.UPDATE_ABANDONED_LIST,
@@ -50,6 +57,15 @@ export function getAbandonedCarts () {
   }
 }
 
+export function getOrders () {
+  return (dispatch) => {
+    callApi('abandonedCarts/getOrders').then(res => {
+      console.log('response from getOrders', res)
+      dispatch(updateOrderList(res.payload))
+    })
+  }
+}
+
 export function getAnalytics () {
   return (dispatch) => {
     callApi('abandonedCarts/sendAnalytics').then(res => {
@@ -69,6 +85,21 @@ export function updateStoreStatus (data, msg) {
           // Add logic to display success Message
           console.log('updated successfully: ' + JSON.stringify(res))
           msg.success('Status updated successfully')
+        }
+      })
+  }
+}
+
+export function updateStoreInfo (id, data, msg) {
+  console.log('data for updateStoreInfo', data)
+  console.log('data for updateStoreInfo', id)
+  return (dispatch) => {
+    callApi(`abandonedCarts/updateStoreInfo/${id}`, 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          // Add logic to display success Message
+          console.log('updated successfully: ' + JSON.stringify(res))
+          msg.success('Settings updated successfully')
         }
       })
   }

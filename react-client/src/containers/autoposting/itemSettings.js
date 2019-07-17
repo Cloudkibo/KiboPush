@@ -57,7 +57,7 @@ class ItemSettings extends React.Component {
       showMessengerModal: false,
       fbAppId:this.props.fbAppId,
       showSubscribeButton: false,
-      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledTime : '6 hours'
+      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledInterval : '24 hours'
     }
     props.getFbAppId()
     props.getuserdetails()
@@ -407,7 +407,8 @@ class ItemSettings extends React.Component {
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,
       isActive: isActive,
-      scheduledTime: this.state.rssTime,
+      subscriptionType: this.props.location.state.item.subscriptionType,
+      scheduledInterval: this.state.rssTime,
       actionType: this.state.actionType,
       filterTweets: this.state.filterTweets === 'yes' ? true : false,
       filterTags: this.state.tags,
@@ -498,7 +499,7 @@ class ItemSettings extends React.Component {
                       </label>
                       <div className='col-lg-6' id='rules'>
                         <select className='form-control m-input' onChange={this.handleRSSTime} value={this.state.rssTime}>
-                          <option value='6 hours'>Send updates after 6 hours</option>
+                          <option value='8 hours'>Send updates after 8 hours</option>
                           <option value='12 hours'>Send updates after 12 hours</option>
                           <option value='24 hours'>Send updates after 24 hours</option>
                         </select>

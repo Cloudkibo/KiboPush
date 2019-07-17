@@ -19,6 +19,11 @@ export function abandonedInfo (state = initialState, action) {
         abandonedList: action.data,
         isLoading: false
       })
+    case ActionTypes.UPDATE_ORDER_LIST:
+      return Object.assign({}, state, {
+        orderList: action.data,
+        isLoading: false
+      })
     case ActionTypes.UPDATE_ANALYTICS:
       return Object.assign({}, state, {
         analytics: action.data

@@ -12,9 +12,23 @@ class Gallery extends React.Component {
     this.edit = this.edit.bind(this)
     this.getDeletePayload = this.getDeletePayload.bind(this)
     this.state = {
-      cards: this.props.cards ? this.props.cards : []
+      cards: this.props.cards ? this.props.cards : [],
+      selectedIndex: 0
     }
     console.log('Gallery constructor state', this.state)
+  }
+
+  componentDidMount () {
+    //Improve Later
+    let that = this
+    $('#carouselExampleControls').on('slide.bs.carousel', function (e) {
+      var active = $(e.target).find('.carousel-inner > .carousel-item.active');
+      var from = active.index();
+      var next = $(e.relatedTarget);
+      var to = next.index();
+      console.log(from + ' => ' + to);
+      that.setState({selectedIndex: to})
+    })
   }
 
   edit () {
@@ -54,14 +68,14 @@ class Gallery extends React.Component {
           </div>
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-25px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div id="carouselExampleControls" data-interval="false" style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', marginRight: '30px'}} className="carousel slide ui-block" data-ride="carousel">
-            <div className="carousel-inner">
+        <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
+            <div className="carousel-inner carousel-inner-preview" style={{top: 0, right: 0}}>
             {
             this.state.cards.map((card, index) => (
-                <div className={'carousel-item ' + (index === 0 ? 'active' : '')}>
+                <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', margin: 'auto', transform: index === this.state.selectedIndex-1 ? 'translate3d(62%, 0, 0)' : index === this.state.selectedIndex+1 ? 'translate3d(-20%, 0, 0' : ''}} className={"carousel-item carousel-item-preview " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} style={{maxHeight: '140px', maxWidth: '250px', padding: '10px', margin: '-10px'}} />
+                        <img src={card.image_url} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
@@ -84,11 +98,11 @@ class Gallery extends React.Component {
             {
             this.state.cards.length > 1 && 
                 <div>
-                <a className="carousel-control-prev" style={{left:'-40px', top: '50%', bottom: '50%'}} href="#carouselExampleControls" role="button" data-slide="prev">
+                <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                     <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                     <span className="sr-only">Previous</span>
                 </a>
-                <a className="carousel-control-next" style={{right: '-40px', top: '50%', bottom: '50%'}} href="#carouselExampleControls" role="button" data-slide="next">
+                <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
                     <span className="carousel-control-next-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                     <span className="sr-only">Next</span>
                 </a>

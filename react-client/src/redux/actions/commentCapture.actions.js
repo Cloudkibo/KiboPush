@@ -52,7 +52,7 @@ export function createFacebookPost (data, msg, handleCreate) {
         console.log('response from server', res)
         if (res.status === 'success' && res.payload) {
           msg.success('Posted on Facebook successfully')
-          handleCreate()
+          handleCreate(res.payload)
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to post on facebook. ${res.description}`)

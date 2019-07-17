@@ -108,6 +108,7 @@ import Permissions from './containers/permissions/permissions'
 import Features from './containers/features/features'
 import Usage from './containers/usage/usage'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
+import StoreSettings from './containers/abandoned_carts/storeSettings'
 import ConnectFBPages from './containers/signup/connectFbPages'
 import DiscoverTabs from './containers/GrowthTools/discoverTabs'
 import LandingPageMessage from './containers/landingPages/createMessage'
@@ -296,6 +297,7 @@ const routes = (
     <Route path='/features' component={Features} onEnter={requireAuth} />
     <Route path='/usage' component={Usage} onEnter={requireAuth} />
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
+    <Route path='/storeSettings' component={StoreSettings} onEnter={requireAuth} />
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
