@@ -151,9 +151,9 @@ class ItemSettings extends React.Component {
                       <div className='col-lg-4 col-md-4 col-sm-4'>
                         <select className='form-control m-input' disabled={this.state.criteria === 'immediately'}
                           value={this.state.schedule.condition} onChange={(e, i) => this.changeCondition(e, i)} >
-                          <option value='minutes'>Minutes</option>
-                          <option value='hours'>Hours</option>
-                          <option value='day(s)'>Day(s)</option>
+                          <option value='minutes'>Minute(s)</option>
+                          <option value='hours'>Hour(s)</option>
+                          <option value='days'>Day(s)</option>
                         </select>
                       </div>
                     </div>
