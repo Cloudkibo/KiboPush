@@ -183,11 +183,7 @@ class ListModal extends React.Component {
         console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
           id: card.id ? card.id : '',
-          fileurl: card.component.fileurl ? card.component.fileurl : '',
           image_url: card.component.image_url ? card.component.image_url : '',
-          fileName: card.component.fileName ? card.component.fileName : '',
-          type: card.component.type ? card.component.type : '',
-          size: card.component.size ? card.component.size : '',
           title: card.component.title,
           subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
           webviewurl: card.component.webviewurl,
