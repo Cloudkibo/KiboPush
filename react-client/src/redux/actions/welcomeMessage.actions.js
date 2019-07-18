@@ -17,8 +17,8 @@ export function isWelcomeMessageEnabled (data) {
 }
 export function createWelcomeMessage (messageData, msg) {
   console.log('messageData', messageData)
-  let data = removeButtonOldurl({payload: messageData.welcomeMessage})
-  let dataToSend = {_id: messageData._id, welcomeMessage: data.payload}
+  // let data = removeButtonOldurl({payload: messageData.welcomeMessage})
+  let dataToSend = {_id: messageData._id, welcomeMessage: messageData.welcomeMessage}
   return (dispatch) => {
     callApi(`pages/createWelcomeMessage/`, 'post', dataToSend)
       .then(res => {

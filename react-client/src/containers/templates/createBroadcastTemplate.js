@@ -55,6 +55,7 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   handleChange (broadcast) {
+    console.log('in handleChange', broadcast)
     this.setState(broadcast)
   }
 
@@ -143,6 +144,7 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   editBroadcastTemplate () {
+    console.log('this.state.broadcast in save', this.state.broadcast)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }

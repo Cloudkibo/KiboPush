@@ -274,8 +274,8 @@ class AutopostingSummary extends React.Component {
                 description='Analytics about tweets you autopost on Facebook page(s)'
                 stats={[
                   {stat: 'Posts Published', value: this.props.autopostingSummary.posts},
-                  {stat: 'Likes / Post', value: parseInt(this.props.autopostingSummary.likes / this.props.autopostingSummary.posts, 10)},
-                  {stat: 'Comments / Post', value: parseInt(this.props.autopostingSummary.comments / this.props.autopostingSummary.posts, 10)}
+                  {stat: 'Likes / Post', value: this.props.autopostingSummary.likes === 0 ? 0 : parseInt(this.props.autopostingSummary.likes / this.props.autopostingSummary.posts, 10)},
+                  {stat: 'Comments / Post', value: this.props.autopostingSummary.comments === 0 ? 0 : parseInt(this.props.autopostingSummary.comments / this.props.autopostingSummary.posts, 10)}
                 ]}
               />
             </div>

@@ -70,7 +70,7 @@ class EditTemplate extends React.Component {
     if(nextProps.pages !== this.props.pages) {
     var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
     console.log('PageSelected', pages[0])
-    this.setState({selectedPage: pages[0].welcomeMessage}) 
+    this.setState({selectedPage: pages[0].welcomeMessage})
     }
   }
 
