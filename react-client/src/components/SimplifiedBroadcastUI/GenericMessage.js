@@ -21,6 +21,7 @@ import FileModal from './FileModal'
 import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import YoutubeVideoModal from './YoutubeVideoModal'
+import LinkCarousel from './LinkCarousel';
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -460,6 +461,17 @@ class GenericMessage extends React.Component {
         {...this.state.editData}
         buttonActions={this.props.buttonActions} 
         pages={this.props.pages} 
+        replyWithMessage={this.props.replyWithMessage} 
+        pageId={this.props.pageId} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal} 
+        addComponent={this.addComponent} />),
+      'link': (<LinkCarousel
+        buttons={[]} 
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        pages={this.props.pages} 
+        buttonActions={this.props.buttonActions} 
         replyWithMessage={this.props.replyWithMessage} 
         pageId={this.props.pageId} 
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}

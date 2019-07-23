@@ -119,6 +119,19 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
+        <div className='col-12' hidden={this.props.hiddenComponents.indexOf('link') > -1 ? true : null}>
+          <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('link') }}>
+            <div className='row'>
+              <div className='col-2'>
+                <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Link' style={{maxHeight: '40px', margin: '10px', marginLeft: '20px'}} />  
+              </div>
+              <div className='col-8'>
+                <h5>Link Carousel</h5>
+                <p>Enter up to 10 links to create a photo carousel</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
