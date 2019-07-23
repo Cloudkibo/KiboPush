@@ -97,7 +97,7 @@ class LinkCarouselModal extends React.Component {
 
     addLink () {
         let links = this.state.links
-        if (links.length < 10) {
+        if (links.length < this.elementLimit) {
             links.push({url: '', valid: false, loading: false})
             this.setState({links})
         } 
@@ -200,7 +200,7 @@ class LinkCarouselModal extends React.Component {
         console.log('changing link', e.target.value)
         let link = e.target.value
         let links = this.state.links
-        if (this.state.links.length < 10) {
+        if (this.state.links.length < this.elementLimit) {
             if (this.validateURL(link)) {
                 links[index] = {url: link, valid: true, loading: true}
             } else {
@@ -251,16 +251,19 @@ class LinkCarouselModal extends React.Component {
                             )
                         })
                     }
-                    <div className='ui-block hoverborder' 
-                        style={{minHeight: '30px', 
-                        width: '100%', 
-                        marginLeft: '0px', 
-                        borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}} 
-                        onClick={this.addLink}>
-                        <div style={{paddingTop: '5px'}} className='align-center'>
-                        <h6> + Add Link </h6>
+                    {
+                        this.state.links.length < this.elementLimit &&                     
+                        <div className='ui-block hoverborder' 
+                            style={{minHeight: '30px', 
+                            width: '100%', 
+                            marginLeft: '0px', 
+                            borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}} 
+                            onClick={this.addLink}>
+                            <div style={{paddingTop: '5px'}} className='align-center'>
+                            <h6> + Add Link </h6>
                         </div>
                     </div>
+                    }
                 </div>
                 <div className='col-1'>
                 <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
