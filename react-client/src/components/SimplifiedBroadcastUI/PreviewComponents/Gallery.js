@@ -37,11 +37,20 @@ class Gallery extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       cards[i].buttons = [].concat(cards[i].buttons)
     }
-    this.props.editComponent('card', {
-      cards: cards,
-      buttonActions: this.props.buttonActions,
-      id: this.props.id
-    })
+    if (this.props.links) {
+      this.props.editComponent('link', {
+        links: this.props.links,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+        id: this.props.id
+      })
+    } else {
+      this.props.editComponent('card', {
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+        id: this.props.id
+      })
+    }
   }
 
   getDeletePayload() {

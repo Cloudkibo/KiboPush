@@ -531,6 +531,7 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
           editComponent={this.showAddComponentModal}
@@ -556,6 +557,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
             description: broadcast.description ? broadcast.description : '',
@@ -575,6 +577,7 @@ class GenericMessage extends React.Component {
       'gallery': {
         component: (<Gallery 
           id={componentId} 
+          links={broadcast.links}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId} 
           pages={this.props.pages} 
@@ -587,6 +590,7 @@ class GenericMessage extends React.Component {
         handler: () => { 
           this.handleGallery({
             id: componentId, 
+            links: broadcast.links,
             componentType: 'gallery', 
             cards: broadcast.cards
           }) 

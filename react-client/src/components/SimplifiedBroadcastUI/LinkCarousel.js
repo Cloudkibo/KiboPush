@@ -31,7 +31,7 @@ class LinkCarouselModal extends React.Component {
         this.cardComponents = new Array(10)
         this.state = {
           cards,
-          links: [{valid: false, url: '', loading: false}],
+          links: props.links ? props.links : [{valid: false, url: '', loading: false}],
           selectedIndex: 0,
           currentCollapsed: false,
           disabled: props.edit ? false : true,
@@ -126,6 +126,7 @@ class LinkCarouselModal extends React.Component {
           let card = this.state.cards[0].component
           this.props.addComponent({
             id: this.props.id,
+            links: this.state.links,
             componentType: 'card',
             image_url: card.image_url ? card.image_url : '',
             title: card.title,
@@ -143,6 +144,7 @@ class LinkCarouselModal extends React.Component {
           })
           this.props.addComponent({
             id: this.props.id,
+            links: this.state.links,
             componentType: 'gallery',
             cards
             }, this.props.edit)
@@ -163,20 +165,23 @@ class LinkCarouselModal extends React.Component {
     }
     
     updateSelectedIndex (index) {
-        this.setState({selectedIndex: index}, () => {
-          this.scrollToTop(`panel-heading${index+1}`)
-        })
+        this.setState({selectedIndex: index})
     }
 
     handleUrlMetaData (data, index) {
         console.log('url meta data retrieved', data)
         let links = this.state.links
         let cards = this.state.cards
+        if (!data.title || !data.description || !data.image) {
+            links[index] = Object.assign(links[index], {loading: false, valid: false})
+            this.setState({links})
+            return
+        }
         cards[index] = {
             id: index+1,
             component: {
                 title: data.title,
-                subtitle: data.description,
+                subtitle: data.description.length > 80 ? data.description.substring(0,80)+'...' : data.description,
                 image_url: data.image,
                 buttons: [
                     {
@@ -188,7 +193,7 @@ class LinkCarouselModal extends React.Component {
             }
         }
         links[index] = Object.assign(links[index], {loading: false})
-        this.setState({links, cards})
+        this.setState({links, cards, selectedIndex: index})
     }
 
     handleLinkChange (e, index) {
@@ -231,7 +236,7 @@ class LinkCarouselModal extends React.Component {
                                 <div>
                                     <div className='row'>
                                         <div className='col-11'>
-                                            <input value={this.state.link} style={{ maxWidth: '100%', borderColor: !link.valid && !this.state.loading ? 'red' : (this.state.loading || link.valid) ? 'green' : ''}} onChange={(e) => this.handleLinkChange(e, index)} className='form-control' />
+                                            <input value={link.url} style={{ maxWidth: '100%', borderColor: !link.valid && !this.state.loading ? 'red' : (this.state.loading || link.valid) ? 'green' : ''}} onChange={(e) => this.handleLinkChange(e, index)} className='form-control' />
                                         </div>
 
                                         <div className='col-1'>

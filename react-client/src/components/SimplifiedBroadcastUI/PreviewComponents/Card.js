@@ -127,11 +127,20 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
     }]
-    this.props.editComponent('card', {
-      id: this.props.id,
-      cards: cards,
-      buttonActions: this.props.buttonActions
-    })
+    if (this.props.links) {
+      this.props.editComponent('link', {
+        links: this.props.links,
+        id: this.props.id,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+      })
+    } else {
+      this.props.editComponent('card', {
+        id: this.props.id,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+      })
+    }
   }
 
   render () {
@@ -145,10 +154,10 @@ class Card extends React.Component {
           </div>
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', marginLeft: '15px'}} >
+        <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '200px', marginLeft: '15px'}} >
           {
             this.state.imgSrc &&
-            <img src={this.state.imgSrc} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
+            <img src={this.state.imgSrc} style={{maxHeight: '120px', maxWidth: '200px', padding: '10px', margin: '-10px'}} />
           }
           <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
           <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
