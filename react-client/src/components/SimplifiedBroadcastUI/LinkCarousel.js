@@ -294,9 +294,9 @@ class LinkCarouselModal extends React.Component {
                                     <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
                                 }
                                 <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
-                                <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
-                                <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                                <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
+                                <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
+                                <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                                <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
                                 {
                                     card.component.buttons.map((button, index) => {
                                     if (button.visible || button.type) {
