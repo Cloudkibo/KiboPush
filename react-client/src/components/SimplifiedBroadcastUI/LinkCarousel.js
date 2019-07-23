@@ -180,7 +180,7 @@ class LinkCarouselModal extends React.Component {
         cards[index] = {
             id: index+1,
             component: {
-                title: data.title,
+                title: data.title.length > 80 ? data.title.substring(0,80)+'...' : data.title,
                 subtitle: data.description.length > 80 ? data.description.substring(0,80)+'...' : data.description,
                 image_url: data.image,
                 buttons: [
