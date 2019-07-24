@@ -270,7 +270,8 @@ class Subscriber extends React.Component {
   }
 
   handleResponse (res) {
-    if (res.status === 'Success') {
+    console.log(res)
+    if (res.status === 'success') {
       this.msg.success('Value set successfully')
       let temp = this.state.subscriber
       this.state.subscriber.customFields.forEach((field, i) => {
@@ -280,6 +281,7 @@ class Subscriber extends React.Component {
         }
       })
     } else {
+      console.log('i m here')
       if (res.status === 'failed') {
         this.msg.error(`Unable to set Custom field value. ${res.description}`)
       } else {

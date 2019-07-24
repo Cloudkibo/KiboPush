@@ -545,8 +545,9 @@ class ProfileArea extends React.Component {
                   </div>
                 </PopoverBody>
               </Popover>
-              <div className='row' style={{ display: 'inline-block' }}>
-                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields</span>
+              <div className='row'>
+              <div className='col-12'>
+                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <span>
                     <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
@@ -556,14 +557,16 @@ class ProfileArea extends React.Component {
                         : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
                       }
                     </a>
-                    <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                    <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', color: 'blue', paddingLeft: '20px', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
-                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', color: 'blue', paddingLeft: '20px', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                 }
+                </span>
+                </div>
               </div>
-              <div className='row'>
+              
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
-                  ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
+                  ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
                       this.props.customFieldOptions.map((field, i) => (
                         <div className='row'>
@@ -604,7 +607,7 @@ class ProfileArea extends React.Component {
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
                   </div>}
-              </div>
+                  
             </div>
           </div>
         </div>
