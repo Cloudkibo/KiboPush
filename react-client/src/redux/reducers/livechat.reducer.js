@@ -18,6 +18,20 @@ export function liveChat (state = initialState, action) {
         count: action.count
       })
 
+    case ActionTypes.UPDATE_SESSIONS:
+      let sessions = state.openSessions
+      let ids = sessions.map(s => s._id)
+      let index = ids.indexOf(action.data.subscriberId)
+      sessions[index].is_assigned = action.data.isAssigned
+      sessions[index].assigned_to = {
+        type: action.data.teamId ? 'team' : 'agent',
+        id: action.data.teamId ? action.data.teamId : action.data.agentId,
+        name: action.data.teamName ? action.data.teamName : action.data.agentName
+      }
+      return Object.assign({}, state, {
+        openSessions: sessions
+      })
+
     case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:
       return Object.assign({}, state, {
         openSessions: action.openSessions,

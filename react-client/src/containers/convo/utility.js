@@ -48,7 +48,7 @@
         }
       }
       if (broadcast[i].componentType === 'card') {
-        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+        if (broadcast[i].image_url === undefined || broadcast[i].image_url === '') {
           msg.error('Card must have an image')
           isValid = false
           break

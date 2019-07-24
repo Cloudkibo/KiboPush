@@ -75,7 +75,7 @@ class LinkCarouselModal extends React.Component {
     valid () {
         let links = this.state.links
         for (let i = 0; i < links.length; i++) {
-            if (!links[i].valid) {
+            if (!links[i].valid || links[i].loading) {
                 return false
             }
         }
@@ -178,7 +178,7 @@ class LinkCarouselModal extends React.Component {
         console.log('url meta data retrieved', data)
         let links = this.state.links
         let cards = this.state.cards
-        if (!data.title || !data.description || !data.image) {
+        if (!data || !data.title || !data.description || !data.image) {
             links[index] = Object.assign(links[index], {loading: false, valid: false})
             this.setState({links})
             return
