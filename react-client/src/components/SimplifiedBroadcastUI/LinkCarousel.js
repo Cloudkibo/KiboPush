@@ -85,12 +85,18 @@ class LinkCarouselModal extends React.Component {
     removeLink (index) {
         let links = this.state.links
         let cards = this.state.cards
+        let selectedIndex = this.state.selectedIndex
         if (links.length > 1) {
             links.splice(index, 1)
             if (cards[index]) {
                 cards.splice(index, 1)
             }
-            this.setState({links, cards})
+            if (selectedIndex === 0) {
+                selectedIndex = 1
+            } else {
+                selectedIndex = index - 1
+            }
+            this.setState({links, cards, selectedIndex})
         }
     }
 
@@ -220,7 +226,8 @@ class LinkCarouselModal extends React.Component {
     }
 
     render () {
-        console.log('links', this.state.links)
+        console.log('links in render', this.state.links)
+        console.log('cards in render', this.state.cards)
         return (
         <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
             onClose={this.closeModal}>
