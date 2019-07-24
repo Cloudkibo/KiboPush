@@ -225,6 +225,10 @@ class LinkCarouselModal extends React.Component {
         return urlregex.test(textval);
     }
 
+    componentWillUnmount() {
+        this.props.closeModal()
+    }
+
     render () {
         console.log('links in render', this.state.links)
         console.log('cards in render', this.state.cards)

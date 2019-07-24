@@ -211,6 +211,10 @@ class ListModal extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
   render () {
     console.log('ListModal state', this.state)
     let visibleCards = this.state.cards.filter(card => card.visible)
