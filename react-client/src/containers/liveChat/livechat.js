@@ -80,7 +80,7 @@ class LiveChat extends React.Component {
 
   handleResponse (res, body) {
     console.log("res",res)
-    if (res.status === 'Success') {
+    if (res.status === 'success') {
       this.msg.success('Value set successfully')
       let customFields = this.state.customFieldOptions
       let temp = this.props.customFields.map((cf) => cf._id)
