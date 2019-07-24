@@ -138,7 +138,7 @@ class AddChannel extends React.Component {
       if(isWebViewURL){
          errorMsg =  'Incorrect Url'
       }else{
-         errorMsg =  'Please Include http(s)'
+         errorMsg =  'Incorrect Url. Please make sure it includes http(s)'
       } 
       this.setState({
         errorMessage: errorMsg
