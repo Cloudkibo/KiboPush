@@ -37,11 +37,20 @@ class Gallery extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       cards[i].buttons = [].concat(cards[i].buttons)
     }
-    this.props.editComponent('card', {
-      cards: cards,
-      buttonActions: this.props.buttonActions,
-      id: this.props.id
-    })
+    if (this.props.links) {
+      this.props.editComponent('link', {
+        links: this.props.links,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+        id: this.props.id
+      })
+    } else {
+      this.props.editComponent('card', {
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+        id: this.props.id
+      })
+    }
   }
 
   getDeletePayload() {
@@ -78,9 +87,9 @@ class Gallery extends React.Component {
                         <img src={card.image_url} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
-                    <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
-                    <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.subtitle}</p>
-                    <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.default_action && card.default_action.url}</p>
+                    <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
+                    <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.subtitle}</p>
+                    <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.default_action && card.default_action.url}</p>
                     {
                         card.buttons.map((button, index) => {
                             return (
@@ -98,14 +107,20 @@ class Gallery extends React.Component {
             {
             this.state.cards.length > 1 && 
                 <div>
-                <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                    <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                    <span className="sr-only">Previous</span>
-                </a>
-                <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                  {
+                    this.state.selectedIndex > 0 && 
+                    <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                      <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                      <span className="sr-only">Previous</span>
+                    </a>
+                  }
+                  {
+                    this.state.selectedIndex < this.state.cards.length-1 &&
+                    <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
                     <span className="carousel-control-next-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                     <span className="sr-only">Next</span>
                 </a>
+                  }
                 </div>
             }
         </div>
