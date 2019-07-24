@@ -65,6 +65,13 @@ class LiveChat extends React.Component {
     this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
     this.saveCustomField = this.saveCustomField.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
+    this.getAgents = this.getAgents.bind(this)
+  }
+
+  getAgents (members) {
+    let agents = members.map(m => m.userId)
+    return agents
   }
 
   saveCustomField (data) {
@@ -149,10 +156,10 @@ class LiveChat extends React.Component {
     }
     if (agentIds.length > 0) {
       let notificationsData = {
-        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been assigned to your team ${this.state.teamObject.name}.`,
-        category: { type: 'chat_session', id: this.props.activeSession._id },
+        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team.`,
+        category: { type: 'chat_session', id: this.state.activeSession._id },
         agentIds: agentIds,
-        companyId: this.props.activeSession.companyId
+        companyId: this.state.activeSession.companyId
       }
       this.props.sendNotifications(notificationsData)
     }
@@ -376,7 +383,7 @@ class LiveChat extends React.Component {
                       Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                       <PROFILEAREA
                         teams={this.props.teams ? this.props.teams : []}
-                        agents={this.props.teamUniqueAgents && this.props.teamUniqueAgents.length > 0 ? this.props.teamUniqueAgents : this.props.members ? this.props.members : []}
+                        agents={this.props.teamUniqueAgents && this.props.teamUniqueAgents.length > 0 ? this.props.teamUniqueAgents : this.props.members ? this.getAgents(this.props.members) : []}
                         subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
                         activeSession={this.state.activeSession}
                         changeActiveSession={this.changeActiveSession}
