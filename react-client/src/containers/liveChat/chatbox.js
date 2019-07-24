@@ -5,7 +5,6 @@
 
 import React from 'react'
 import AlertContainer from 'react-alert'
-import 'emoji-mart/css/emoji-mart.css'
 import {
   fetchUserChats,
   uploadAttachment,
