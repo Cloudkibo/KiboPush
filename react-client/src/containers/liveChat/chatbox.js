@@ -5,6 +5,7 @@
 
 import React from 'react'
 import AlertContainer from 'react-alert'
+import 'emoji-mart/css/emoji-mart.css'
 import {
   fetchUserChats,
   uploadAttachment,
@@ -891,6 +892,8 @@ class ChatBox extends React.Component {
                 perLine={6}
                 skin={1}
                 set='facebook'
+                showPreview={false}
+                showSkinTones={false}
                 custom={[]}
                 autoFocus={false}
                 showPreview={false}
