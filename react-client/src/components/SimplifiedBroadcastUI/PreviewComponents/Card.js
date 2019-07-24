@@ -47,20 +47,20 @@ class Card extends React.Component {
     console.log('cardProps.cardDetails', this.props.cardDetails)
     if (this.props.cardDetails) {
       this.setState({default_action: this.props.cardDetails.default_action})
-      if (this.props.pages && this.props.cardDetails) {
-        this.props.uploadTemplate({pages: this.props.pages,
-          url: this.props.cardDetails.fileurl.url,
-          componentType: 'image',
-          id: this.props.cardDetails.fileurl.id,
-          name: this.props.cardDetails.fileName
-        }, { fileurl: '',
-          fileName: this.props.cardDetails.fileName,
-          type: this.props.cardDetails.type,
-          image_url: '',
-          size: this.props.cardDetails.size,
-          default_action: this.props.cardDetails.default_action
-        }, this.updateImageUrl, this.setLoading)
-      }
+      // if (this.props.pages && this.props.cardDetails) {
+      //   this.props.uploadTemplate({pages: this.props.pages,
+      //     url: this.props.cardDetails.fileurl.url,
+      //     componentType: 'image',
+      //     id: this.props.cardDetails.fileurl.id,
+      //     name: this.props.cardDetails.fileName
+      //   }, { fileurl: '',
+      //     fileName: this.props.cardDetails.fileName,
+      //     type: this.props.cardDetails.type,
+      //     image_url: '',
+      //     size: this.props.cardDetails.size,
+      //     default_action: this.props.cardDetails.default_action
+      //   }, this.updateImageUrl, this.setLoading)
+      // }
       this.updateCardDetails(this.props)
     }
   }
@@ -127,11 +127,20 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
     }]
-    this.props.editComponent('card', {
-      id: this.props.id,
-      cards: cards,
-      buttonActions: this.props.buttonActions
-    })
+    if (this.props.links) {
+      this.props.editComponent('link', {
+        links: this.props.links,
+        id: this.props.id,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+      })
+    } else {
+      this.props.editComponent('card', {
+        id: this.props.id,
+        cards: cards,
+        buttonActions: this.props.buttonActions,
+      })
+    }
   }
 
   render () {
@@ -145,15 +154,15 @@ class Card extends React.Component {
           </div>
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', marginLeft: '15px'}} >
+        <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '200px', marginLeft: '15px'}} >
           {
             this.state.imgSrc &&
-            <img src={this.state.imgSrc} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
+            <img src={this.state.imgSrc} style={{maxHeight: '120px', maxWidth: '200px', padding: '10px', margin: '-10px'}} />
           }
           <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
-          <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
-          <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
-          <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
+          <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
+          <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
+          <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
           {
             this.state.buttons.map(button => {
               return (

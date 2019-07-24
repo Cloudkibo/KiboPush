@@ -52,6 +52,22 @@ export function downloadYouTubeVideo (url, id, handleFunction) {
   }
 }
 
+export function urlMetaData (url, handleFunction) {
+  return (dispatch) => {
+    let data = {
+      url
+    }
+    console.log('urlMetaData data', data)
+    callApi('broadcasts/urlMetaData', 'post', data)
+      .then(res => {
+        console.log('response from urlMetaData', res)
+        if (handleFunction) {
+          handleFunction(res.payload)
+        }
+      })
+  }
+}
+
 export function uploadImage (file, pages, componentType, data, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
