@@ -1,3 +1,5 @@
+import { number } from "prop-types";
+
 export function getSubList(data, conditions, pages, joiningCondition, customFields, customFieldValues, responses) {
   console.log('data', data)
   console.log('conditions', conditions)
@@ -14,23 +16,97 @@ export function getSubList(data, conditions, pages, joiningCondition, customFiel
   for (let i = 0; i < conditions.length; i++) {
     console.log('conditions length', conditions.length)
     if (conditions[i].condition.split("_")[0] === 'customfield') {
-      console.log('called')
       if (conditions[i].criteria === 'is') {
-        field = conditions[i].condition.split("_")
         text = conditions[i].text
-        for (let i = 0; i < customFieldValues.length; i++) {
-          obj = customFieldValues[i]
-          if (obj.value.toLowerCase() === text.toLowerCase()) {
-            filteredData.push(obj)
+        for (let j = 0; j < customFieldValues.length; j++) {
+          obj = customFieldValues[j]
+          if(obj.customFieldId._id === conditions[i].condition.split("_")[2]){
+            if (obj.value.toLowerCase() === text.toLowerCase()) {
+              filteredData.push(obj.subscriberId)
+            }
           }
         }
       }
       else if(conditions[i].criteria === 'greater') {
-
+        if(conditions[i].condition.split("_")[1] === 'number') {
+          text = conditions[i].text
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]) {
+              const value = parseInt(obj.value)
+              text = parseInt(text)
+              if (value > text) {
+                filteredData.push(obj.subscriberId)
+              }
+            }
+          }
+        } else if(conditions[i].condition.split("_")[1] === 'date') {
+          text = new Date(conditions[i].text)
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]) {
+              const value = new Date(obj.value)
+            if(value > text) {
+              filteredData.push(obj.subscriberId)
+            }
+            }
+          }
+        } else if(conditions[i].condition.split("_")[1] === 'datetime') {
+          text = new Date(conditions[i].text)
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]) {
+              const value = new Date(obj.value)
+            if(value > text) {
+              filteredData.push(obj.subscriberId)
+            }
+            }
+          }
+        }
       }
       else if(conditions[i].criteria === 'less') {
-        
+         if(conditions[i].condition.split("_")[1] === 'number') {
+          text = conditions[i].text
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]){
+              const value = parseInt(obj.value)
+            text = parseInt(text)
+            if (value < text) {
+              filteredData.push(obj.subscriberId)
+            }
+            }
+          }
+        } else if(conditions[i].condition.split("_")[1] === 'date') {
+          text = new Date(conditions[i].text)
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]){
+              const value = new Date(obj.value)
+              if(value < text) {
+                filteredData.push(obj.subscriberId)
+              }
+            }
+          }
+
+        } else if(conditions[i].condition.split("_")[1] === 'datetime') {
+          text = new Date(conditions[i].text)
+          for (let j = 0; j < customFieldValues.length; j++) {
+            obj = customFieldValues[j]
+            if(obj.customFieldId._id === conditions[i].condition.split("_")[2]) {
+              const value = new Date(obj.value)
+            if(value < text) {
+              filteredData.push(obj.subscriberId)
+            }
+            }
+          }
+        }
       }
+      if (joiningCondition === 'AND') {
+        console.log()
+        data = filteredData
+        filteredData = []
+      } else return
     } else {
       console.log('else called')
       if (conditions[i].criteria === 'is') {
@@ -260,6 +336,7 @@ export function getSubList(data, conditions, pages, joiningCondition, customFiel
           }
         }
         if (joiningCondition === 'AND') {
+          console.log()
           data = filteredData
           filteredData = []
         }

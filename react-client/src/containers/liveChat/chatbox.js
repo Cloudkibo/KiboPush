@@ -891,6 +891,8 @@ class ChatBox extends React.Component {
                 perLine={6}
                 skin={1}
                 set='facebook'
+                showPreview={false}
+                showSkinTones={false}
                 custom={[]}
                 autoFocus={false}
                 showPreview={false}

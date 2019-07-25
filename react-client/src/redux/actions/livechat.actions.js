@@ -13,6 +13,13 @@ export function handleCustomers (customers) {
   }
 }
 
+export function updateSessions (data) {
+  return {
+    type: ActionTypes.UPDATE_SESSIONS,
+    data
+  }
+}
+
 export function updateSessionsData (session, customerId) {
   if (session.status === 'new') {
     return {
@@ -358,7 +365,7 @@ export function assignToAgent (data) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
-      // dispatch(fetchSessions())
+      dispatch(updateSessions(data))
     })
   }
 }
@@ -374,7 +381,7 @@ export function assignToTeam (data) {
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
-      // dispatch(fetchSessions())
+      dispatch(updateSessions(data))
     })
   }
 }
