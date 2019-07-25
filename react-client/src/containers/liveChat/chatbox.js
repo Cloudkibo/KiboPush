@@ -1656,6 +1656,7 @@ class ChatBox extends React.Component {
                                             </div>
                                             <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               {msg.payload.text}
+                                              {console.log('msg.payload', msg)}
                                             </div>
                                           </div>
                                           {
@@ -1673,6 +1674,7 @@ class ChatBox extends React.Component {
                                                 type='button'
                                                 className='btn btn-secondary btn-block'
                                               >
+                                                {console.log('buttons', b)}
                                                 {b.type == 'element_share' ? 'Share' : b.title}
                                               </a>
                                             ))
