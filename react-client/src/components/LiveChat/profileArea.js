@@ -338,7 +338,6 @@ class ProfileArea extends React.Component {
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
-      width: '258px',
       borderRadius: '30px',
       marginBottom: '7px',
       background: 'rgb(60, 60, 123, 0.5)'
@@ -346,7 +345,6 @@ class ProfileArea extends React.Component {
     var hoverOff = {
       cursor: 'pointer',
       border: '1px solid rgb(220, 220, 220)',
-      width: '258px',
       borderRadius: '30px',
       marginBottom: '7px',
       background: 'white'
@@ -567,20 +565,21 @@ class ProfileArea extends React.Component {
               </Popover>
               <div className='row'>
               <div className='col-12'>
-                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields
+                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <span>
-                    <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
+                    <a data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
                       onClick={this.showToggle}>
+                        Custom Fields
                       {this.state.show
                         ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
                         : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
                       }
                     </a>
-                    <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', color: 'blue', paddingLeft: '20px', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
-                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', color: 'blue', paddingLeft: '20px', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                  : null
                 }
+                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                 </span>
                 </div>
               </div>
