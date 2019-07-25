@@ -1658,7 +1658,6 @@ class ChatBox extends React.Component {
                                             </div>
                                             <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               {msg.payload.text}
-                                              {console.log('msg.payload', msg)}
                                             </div>
                                           </div>
                                           {
@@ -1671,12 +1670,11 @@ class ChatBox extends React.Component {
                                                 style={{
                                                   margin: '3px 3px -4px 3px',
                                                   borderRadius: msg.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
-                                                  borderColor: '#716aca'
+                                                  borderColor: '#716aca',
+                                                  width: '230px'
                                                 }}
-                                                type='button'
-                                                className='btn btn-secondary btn-block'
+                                                className='btn btn-outline-primary btn-block'
                                               >
-                                                {console.log('buttons', b)}
                                                 {b.type == 'element_share' ? 'Share' : b.title}
                                               </a>
                                             ))
