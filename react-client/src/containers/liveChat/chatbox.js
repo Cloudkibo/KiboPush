@@ -488,6 +488,7 @@ class ChatBox extends React.Component {
           this.props.sendAttachment(data, this.handleSendAttachment)
           data.format = 'convos'
           this.props.userChat.push(data)
+          this.setState({uploaded: false})
         } else if (isUrl !== null && isUrl !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
@@ -1717,7 +1718,7 @@ class ChatBox extends React.Component {
                     : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
                   }
                   <div>
-                    <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                    <div style={{display: 'inline-block'}} data-tip='Upload Image'>
                       <i style={styles.iconclass} onClick={() => {
                         this.refs.selectImage.click()
                       }}>
@@ -1734,7 +1735,7 @@ class ChatBox extends React.Component {
                       <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
                         ref='selectImage' style={styles.inputf} />
                     </div>
-                    <div style={{display: 'inline-block'}} data-tip='attachments'>
+                    <div style={{display: 'inline-block'}} data-tip='Upload File'>
                       { this.state.uploadedId !== ''
                         ? <div>
                           <i style={styles.iconclass} onClick={() => {
@@ -1773,21 +1774,24 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
-                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center',
-                          color: '#787878'
-                        }} className='fa fa-microphone' />
-                      </i>
-                    </div>
-                    <div style={{display: 'inline-block'}} data-tip='emoticons1'>
+                    {
+                      this.props.user.isSuperUser &&
+                      <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                        <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center',
+                            color: '#787878'
+                          }} className='fa fa-microphone' />
+                        </i>
+                      </div>
+                    }
+                    <div style={{display: 'inline-block'}} data-tip='emoticons'>
                       <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
                         <i style={{
                           fontSize: '20px',
