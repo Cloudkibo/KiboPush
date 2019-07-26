@@ -21,7 +21,7 @@ class Home extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.user && nextProps.user.platform === 'messenger' && nextProps.user.showIntegrations) {
+    if (nextProps.user && nextProps.user.platform === 'messenger' && nextProps.user.role === 'buyer' && nextProps.user.showIntegrations) {
       browserHistory.push({
         pathname: '/facebookIntegration'
       })
