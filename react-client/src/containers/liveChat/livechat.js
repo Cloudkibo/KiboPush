@@ -303,24 +303,34 @@ class LiveChat extends React.Component {
       })
     }
     if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
-      var temp = nextProps.openSessions
-      for (var z = 0; z < temp.length; z++) {
-        if (temp[z]._id === nextProps.unreadSession) {
-          temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+      if (
+        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')
+      ) {
+        var temp = nextProps.openSessions
+        for (var z = 0; z < temp.length; z++) {
+          if (temp[z]._id === nextProps.unreadSession) {
+            temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+          }
         }
+        this.props.resetUnreadSession()
       }
-      this.props.resetUnreadSession()
     }
     if (nextProps.socketSession && nextProps.socketSession !== '') {
-      let sessionIds = nextProps.openSessions.map((s) => s._id)
-      if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
-        this.props.updateUserChat(nextProps.socketMessage)
-        this.props.resetSocket()
-      } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
-        this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
-        this.props.resetSocket()
-      } else {
-        this.props.resetSocket()
+      if (
+        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')
+      ) {
+        let sessionIds = nextProps.openSessions.map((s) => s._id)
+        if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
+          this.props.updateUserChat(nextProps.socketMessage)
+          this.props.resetSocket()
+        } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
+          this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
+          this.props.resetSocket()
+        } else {
+          this.props.resetSocket()
+        }
       }
     }
   }
@@ -383,7 +393,7 @@ class LiveChat extends React.Component {
                       Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                       <PROFILEAREA
                         teams={this.props.teams ? this.props.teams : []}
-                        agents={this.props.teamUniqueAgents && this.props.teamUniqueAgents.length > 0 ? this.props.teamUniqueAgents : this.props.members ? this.getAgents(this.props.members) : []}
+                        agents={this.props.members ? this.getAgents(this.props.members) : []}
                         subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
                         activeSession={this.state.activeSession}
                         changeActiveSession={this.changeActiveSession}
@@ -432,6 +442,7 @@ function mapStateToProps(state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
+    socketData: (state.liveChat.socketData),
     unreadSession: (state.liveChat.unreadSession),
     tags: (state.tagsInfo.tags),
     teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
