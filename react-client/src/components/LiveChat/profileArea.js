@@ -107,14 +107,14 @@ class ProfileArea extends React.Component {
   }
 
   unassignTeam() {
-    this.setState({ isAssigned: false })
+    this.setState({ isAssigned: false, assignedTeam: '' })
     let data = {
-      teamId: this.state.teamObject._id,
-      teamName: this.state.teamObject.name,
+      teamId: this.props.activeSession.assigned_to.id,
+      teamName: this.props.activeSession.assigned_to.name,
       subscriberId: this.props.activeSession._id,
       isAssigned: false
     }
-    this.props.fetchTeamAgents(this.state.teamObject._id)
+    this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
     this.props.assignToTeam(data)
   }
 
@@ -146,10 +146,10 @@ class ProfileArea extends React.Component {
   }
 
   unassignAgent() {
-    this.setState({ isAssigned: false })
+    this.setState({ isAssigned: false, assignedAgent: '' })
     let data = {
-      agentId: this.state.agentObject._id,
-      agentName: this.state.agentObject.name,
+      agentId: this.props.activeSession.assigned_to.id,
+      agentName: this.props.activeSession.assigned_to.name,
       subscriberId: this.props.activeSession._id,
       isAssigned: false
     }
@@ -275,25 +275,33 @@ class ProfileArea extends React.Component {
     this.props.assignTags(payload, this.props.msg)
   }
 
-  componentWillMount() {
-    if (this.props.activeSession.is_assigned) {
-      if (this.props.activeSession.assigned_to.type === 'agent') {
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.activeSession.is_assigned) {
+      if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
-          assignedAgent: this.props.activeSession.assigned_to.name,
-          role: this.props.activeSession.assigned_to.type,
-          isAssigned: this.props.activeSession.is_assigned
+          assignedAgent: nextProps.activeSession.assigned_to.name,
+          role: nextProps.activeSession.assigned_to.type,
+          isAssigned: nextProps.activeSession.is_assigned
         })
       } else {
         this.setState({
-          assignedTeam: this.props.activeSession.assigned_to.name,
-          role: this.props.activeSession.assigned_to.type,
-          isAssigned: this.props.activeSession.is_assigned
+          assignedTeam: nextProps.activeSession.assigned_to.name,
+          role: nextProps.activeSession.assigned_to.type,
+          isAssigned: nextProps.activeSession.is_assigned
         })
       }
+    } else {
+      this.setState({
+        assignedAgent: '',
+        assignedTeam: '',
+        role: '',
+        isAssigned: ''
+      })
     }
   }
 
   render() {
+    console.log('state in profile', this.state)
     let setFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
@@ -330,7 +338,6 @@ class ProfileArea extends React.Component {
     var hoverOn = {
       cursor: 'pointer',
       border: '1px solid #3c3c7b',
-      width: '258px',
       borderRadius: '30px',
       marginBottom: '7px',
       background: 'rgb(60, 60, 123, 0.5)'
@@ -338,7 +345,6 @@ class ProfileArea extends React.Component {
     var hoverOff = {
       cursor: 'pointer',
       border: '1px solid rgb(220, 220, 220)',
-      width: '258px',
       borderRadius: '30px',
       marginBottom: '7px',
       background: 'white'
@@ -404,11 +410,25 @@ class ProfileArea extends React.Component {
                       </div>
                     }
                     {
+                      this.state.isAssigned &&
+                      (
+                        this.state.role === 'team'
+                        ? <div>
+                          <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
+                          <br />
+                          <br />
+                        </div>
+                        : <div>
+                          <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
+                          <br />
+                          <br />
+                        </div>
+                      )
+                    }
+                    {
                       this.props.user && this.props.user.role !== 'agent' &&
                       (
-                        this.state.isAssigned && this.state.role === 'team'
-                          ? <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
-                          : this.state.showAssignTeam
+                        this.state.showAssignTeam
                             ? <div className='m-accordion__item'>
                               <div className='m-accordion__item-head'>
                                 <span className='m-accordion__item-icon'>
@@ -447,9 +467,7 @@ class ProfileArea extends React.Component {
                       )
                     }
                     {
-                      this.state.isAssigned && this.state.role === 'agent'
-                        ? <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
-                        : this.state.showAssignAgent
+                      this.state.showAssignAgent
                           ? <div className='m-accordion__item'>
                             <div className='m-accordion__item-head'>
                               <span className='m-accordion__item-icon'>
@@ -545,25 +563,29 @@ class ProfileArea extends React.Component {
                   </div>
                 </PopoverBody>
               </Popover>
-              <div className='row' style={{ display: 'inline-block' }}>
-                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '13px' }}>Custom Fields</span>
+              <div className='row'>
+              <div className='col-12'>
+                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <span>
-                    <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
+                    <a data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
                       onClick={this.showToggle}>
+                        Custom Fields
                       {this.state.show
                         ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
                         : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
                       }
                     </a>
-                    <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
-                  : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '47px', fontSize: '13px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                  : null
                 }
+                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                </span>
+                </div>
               </div>
-              <div className='row'>
+              
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
-                  ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
+                  ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
                       this.props.customFieldOptions.map((field, i) => (
                         <div className='row'>
@@ -604,7 +626,7 @@ class ProfileArea extends React.Component {
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
                   </div>}
-              </div>
+                  
             </div>
           </div>
         </div>

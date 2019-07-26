@@ -292,19 +292,6 @@ class CardModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
-  
-  // componentDidUpdate () {
-  //   let currentCardClasses = document.getElementById(`collapse${this.state.selectedIndex+1}`).classList
-  //   console.log('componentDidUpdate currentCardClasses', currentCardClasses)
-  //   console.log('currentCardClasses contains collapsed', currentCardClasses.contains('collapsed'))
-  //   if (currentCardClasses.contains('collapsed')) {
-  //     this.setState({currentCollapsed: true})
-  //   } else {
-  //     if (this.state.currentCollapsed) {
-  //       this.setState({currentCollapsed: false})
-  //     }
-  //   }
-  // }
 
   scrollToTop(elementId) {
     document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
@@ -314,6 +301,11 @@ class CardModal extends React.Component {
     this.setState({selectedIndex: index}, () => {
       this.scrollToTop(`panel-heading${index+1}`)
     })
+  }
+
+
+  componentWillUnmount() {
+    this.props.closeModal()
   }
 
   render () {

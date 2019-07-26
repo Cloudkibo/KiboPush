@@ -266,6 +266,12 @@ class CreateSubList extends React.Component {
       errorMessages.push(errorMessage)
       this.setState({ errorMessages: errorMessages })
     }
+    if (this.state.newListName && this.props.customerLists && this.props.customerLists.filter(e => e.listName.toLowerCase() === this.state.newListName.toLowerCase()).length > 0) {
+      errors = true
+      errorMessage = { error: 'listName', message: 'List with this name already exists' }
+      errorMessages.push(errorMessage)
+      this.setState({ errorMessages: errorMessages })
+    }
     let conditionErrors = []
     let conditionError = {}
     let isErrorInCondition = false
@@ -315,7 +321,6 @@ class CreateSubList extends React.Component {
         conditions[i].text = ''
       }
     }
-    console.log(e.target.value)
     this.setState({ conditions: conditions })
   }
   changeCriteria(e, index) {
@@ -332,7 +337,6 @@ class CreateSubList extends React.Component {
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].text = (e.target.value).trim()
-        console.log('text: ' + conditions[i].text)
       }
     }
     this.setState({ conditions: conditions })
@@ -504,7 +508,6 @@ class CreateSubList extends React.Component {
   }
 
   render() {
-    console.log('in create sub list')
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -512,7 +515,6 @@ class CreateSubList extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 import {
   addPages,
   enablePage,
@@ -71,6 +72,7 @@ class AddPage extends React.Component {
       this.setState({showAlert: true, alertmsg: nextprops.message})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
+
     } else {
       this.setState({showAlert: false, alertmsg: ''})
     }
@@ -89,8 +91,17 @@ class AddPage extends React.Component {
   }
   render () {
     console.log('addPage props', this.props)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+
         {
           this.state.showErrorDialog &&
           <ModalContainer style={{width: '500px'}}
@@ -153,10 +164,8 @@ class AddPage extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               {this.state.showAlert === true &&
-                <div className='alert alert-danger alert-dismissible fade show' role='alert'>
-                  <button type='button' onClick={this.onDismissAlert} className='close' aria-label='Close' />
-                  {this.state.alertmsg}
-                  </div>
+              this.msg.error(this.state.alertmsg) ?
+              this.onDismissAlert() : null
               }
               <div className='m-portlet m-portlet--full-height '>
                 <div className='m-portlet__head'>

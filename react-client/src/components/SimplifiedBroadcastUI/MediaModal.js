@@ -54,6 +54,11 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
+
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
   updateStatus (status) {
     status.edited = true
     this.setState(status)
