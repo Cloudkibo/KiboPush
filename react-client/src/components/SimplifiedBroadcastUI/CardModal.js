@@ -303,6 +303,11 @@ class CardModal extends React.Component {
     })
   }
 
+
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
     let settings = {

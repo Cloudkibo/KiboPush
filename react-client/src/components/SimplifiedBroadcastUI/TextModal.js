@@ -62,6 +62,10 @@ class TextModal extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
   render () {
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
