@@ -72,7 +72,7 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
-  if (data.action === 'new_chat') {
+  if (data.action === 'new_chat' || data.action === 'agent_replied') {
     console.log('new message received from customer')
     store.dispatch(socketUpdate(data.payload))
   } if (data.action === 'new_chat_sms') {
