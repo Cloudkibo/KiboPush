@@ -70,6 +70,8 @@ class Header extends React.Component {
       } else {
         this.props.updatePlatform({platform: value})
       }
+    } else {
+      this.props.updatePlatform({platform: value})
     }
   }
 
