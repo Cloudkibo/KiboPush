@@ -51,23 +51,25 @@ class Header extends React.Component {
 
   updatePlatformValue (e, value) {
     console.log('in updatePlatformValue', value)
-    if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'sms'
-      })
-    } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'whatsApp'
-      })
-    } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'messenger'
-      })
-    } else {
-      this.props.updatePlatform({platform: value})
+    if (this.props.user && this.props.user.role === 'buyer') {
+      if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'sms'
+        })
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'whatsApp'
+        })
+      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'messenger'
+        })
+      } else {
+        this.props.updatePlatform({platform: value})
+      }
     }
   }
 
