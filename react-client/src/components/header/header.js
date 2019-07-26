@@ -749,12 +749,14 @@ class Header extends React.Component {
                                     </Link>
                                   }
                                   </li>
-                                  <li className='m-nav__item'>
-                                    <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
-                                      <i className='m-nav__link-icon la la-unlink' />
-                                      <span className='m-nav__link-text'>Disconnect Facebook</span>
-                                    </a>
-                                  </li>
+                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                    <li className='m-nav__item'>
+                                      <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
+                                        <i className='m-nav__link-icon la la-unlink' />
+                                        <span className='m-nav__link-text'>Disconnect Facebook</span>
+                                      </a>
+                                    </li>
+                                  }
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
                                     <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>

@@ -202,7 +202,7 @@ class Dashboard extends React.Component {
           pathname: '/resendVerificationEmail'
         })
       } else
-      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp) {
+      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
         browserHistory.push({
           pathname: '/integrations'
         })
