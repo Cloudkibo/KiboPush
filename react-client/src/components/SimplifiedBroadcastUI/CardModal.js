@@ -59,6 +59,7 @@ class CardModal extends React.Component {
     console.log('CardModal state in constructor', this.state)
     console.log('CardModal props in constructor', this.props)
     this.finalCards = []
+    this.showingAdditionalCardsModal = false
     this.handleDone = this.handleDone.bind(this)
     this.addElement = this.addElement.bind(this)
     this.updateCardStatus = this.updateCardStatus.bind(this)
@@ -69,6 +70,8 @@ class CardModal extends React.Component {
     this.updateSelectedIndex = this.updateSelectedIndex.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
     this.getRequirements = this.getRequirements.bind(this)
+    this.showAdditionalCardsModal = this.showAdditionalCardsModal.bind(this)
+    this.closeAdditonalCardsModal = this.closeAdditonalCardsModal.bind(this)
   }
 
   toggleHover (index, hover) {
@@ -86,6 +89,8 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({selectedIndex: to})
     })
+    this.requirements = this.getRequirements().filter(req => !!req)
+    console.log('requirements', this.requirements)
   }
 
   addElement () {
@@ -207,10 +212,10 @@ class CardModal extends React.Component {
       console.log(`cardComponent ${index}`, card)
       
       if (card && card.props) {
+        let requirements = []
         if (card.props.card.disabled || card.props.card.buttonDisabled) {
           let cardData = card.props.card.component
           let msg = `Card ${card.props.card.id} requires:`
-          let requirements = []
           if (!cardData.title) {
             requirements.push('a title')
           }
@@ -240,8 +245,20 @@ class CardModal extends React.Component {
             )
           }
         }
+        if (requirements.length === 0) {
+          this.showAdditionalCardsModal()
+        }
       }
     })
+  }
+
+  showAdditionalCardsModal () {
+    this.showingAdditionalCardsModal = true
+  }
+
+  closeAdditonalCardsModal () {
+    this.showingAdditionalCardsModal = false
+    this.setState({showingAdditionalCardsModal: false})
   }
 
   closeCard (id) {
@@ -303,17 +320,51 @@ class CardModal extends React.Component {
     })
   }
 
-  render () {
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let requirements = this.getRequirements().filter(req => !!req)
+    console.log('requirements', requirements)
+    this.setState({requirements})
+  }
+
+  render () {
+    // let requirements = this.getRequirements().filter(req => !!req)
+    // console.log('requirements', requirements)
     let settings = {
       slidesToShow: 1
     }
-    console.log('requirements', requirements)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.closeModal}>
+
+          {
+            this.showingAdditionalCardsModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeAdditonalCardsModal}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeAdditonalCardsModal}>
+                <p>You just completed all requirements for a card. Do you want to add an additional card?</p>
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.addElement()
+                    this.closeAdditonalCardsModal()
+                  }}>Yes
+                </button>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeAdditonalCardsModal()
+                  }}>Cancel
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <h3>Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
@@ -394,8 +445,7 @@ class CardModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
-                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
-                  
+                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">  
                   {
                     this.state.cards.length > 1 &&                   
                       <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
@@ -463,7 +513,7 @@ class CardModal extends React.Component {
 
                 <ul style={{marginTop: '65px'}}>
                   {
-                    requirements.length > 0 ? requirements :             
+                    this.requirements && this.requirements.length > 0 ? this.requirements :             
                     (
                     <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
                       <ul>
