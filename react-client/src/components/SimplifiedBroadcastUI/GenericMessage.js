@@ -384,98 +384,98 @@ class GenericMessage extends React.Component {
 
   openModal () {
     let modals = {
-      'text': (<TextModal 
+      'text': (<TextModal
         buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        pages={this.props.pages} 
-        buttonActions={this.props.buttonActions} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
-        addComponent={this.addComponent} 
+        closeModal={this.closeAddComponentModal}
+        addComponent={this.addComponent}
         hideUserOptions={this.props.hideUserOptions} />),
-      'card': (<CardModal 
-        buttons={[]} 
+      'card': (<CardModal
+        buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        pages={this.props.pages} 
-        buttonActions={this.props.buttonActions} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
-      'list': (<ListModal 
-        buttons={[]} 
+      'list': (<ListModal
+        buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        pages={this.props.pages} 
-        buttonActions={this.props.buttonActions} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
-      'image': (<ImageModal 
+      'image': (<ImageModal
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        replyWithMessage={this.props.replyWithMessage} 
-        pages={this.props.pages} 
-        pageId={this.props.pageId} 
+        replyWithMessage={this.props.replyWithMessage}
+        pages={this.props.pages}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        replyWithMessage={this.props.replyWithMessage} 
-        pages={this.props.pages} 
-        pageId={this.props.pageId} 
+        replyWithMessage={this.props.replyWithMessage}
+        pages={this.props.pages}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
-      'audio': (<AudioModal 
+      'audio': (<AudioModal
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        replyWithMessage={this.props.replyWithMessage} 
+        replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages} pageId={this.props.pageId}
-        showCloseModalAlertDialog={this.showCloseModalAlertDialog} 
-        closeModal={this.closeAddComponentModal} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
-        buttons={[]} 
+        buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        buttonActions={this.props.buttonActions} 
-        pages={this.props.pages} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        buttonActions={this.props.buttonActions}
+        pages={this.props.pages}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal 
-        buttons={[]} 
+      'video': (<YoutubeVideoModal
+        buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        buttonActions={this.props.buttonActions} 
-        pages={this.props.pages} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        buttonActions={this.props.buttonActions}
+        pages={this.props.pages}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
-        buttons={[]} 
+        buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
-        pages={this.props.pages} 
-        buttonActions={this.props.buttonActions} 
-        replyWithMessage={this.props.replyWithMessage} 
-        pageId={this.props.pageId} 
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal} 
+        closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
@@ -575,25 +575,25 @@ class GenericMessage extends React.Component {
         }
       },
       'gallery': {
-        component: (<Gallery 
-          id={componentId} 
+        component: (<Gallery
+          id={componentId}
           links={broadcast.links}
           editComponent={this.showAddComponentModal}
-          pageId={this.state.pageId} 
-          pages={this.props.pages} 
-          key={componentId} 
-          cards={broadcast.cards} 
-          handleGallery={this.handleGallery} 
-          onRemove={this.removeComponent} 
-          buttonActions={this.props.buttonActions} 
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          cards={broadcast.cards}
+          handleGallery={this.handleGallery}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage} />),
-        handler: () => { 
+        handler: () => {
           this.handleGallery({
-            id: componentId, 
+            id: componentId,
             links: broadcast.links,
-            componentType: 'gallery', 
+            componentType: 'gallery',
             cards: broadcast.cards
-          }) 
+          })
         }
       },
       'audio': {
