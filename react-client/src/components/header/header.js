@@ -51,21 +51,25 @@ class Header extends React.Component {
 
   updatePlatformValue (e, value) {
     console.log('in updatePlatformValue', value)
-    if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'sms'
-      })
-    } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'whatsApp'
-      })
-    } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-      browserHistory.push({
-        pathname: '/integrations',
-        state: 'messenger'
-      })
+    if (this.props.user && this.props.user.role === 'buyer') {
+      if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'sms'
+        })
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'whatsApp'
+        })
+      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+        browserHistory.push({
+          pathname: '/integrations',
+          state: 'messenger'
+        })
+      } else {
+        this.props.updatePlatform({platform: value})
+      }
     } else {
       this.props.updatePlatform({platform: value})
     }
@@ -749,12 +753,14 @@ class Header extends React.Component {
                                     </Link>
                                   }
                                   </li>
-                                  <li className='m-nav__item'>
-                                    <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
-                                      <i className='m-nav__link-icon la la-unlink' />
-                                      <span className='m-nav__link-text'>Disconnect Facebook</span>
-                                    </a>
-                                  </li>
+                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                    <li className='m-nav__item'>
+                                      <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
+                                        <i className='m-nav__link-icon la la-unlink' />
+                                        <span className='m-nav__link-text'>Disconnect Facebook</span>
+                                      </a>
+                                    </li>
+                                  }
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
                                     <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>

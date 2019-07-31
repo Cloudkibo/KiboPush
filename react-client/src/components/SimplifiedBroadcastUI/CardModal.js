@@ -322,15 +322,7 @@ class CardModal extends React.Component {
   componentWillUnmount() {
     this.props.closeModal()
   }
-
-  // componentDidUpdate(prevProps, prevState, snapshot) {
-  //   let requirements = this.getRequirements().filter(req => !!req)
-  //   console.log('requirements', requirements)
-  //   if (this.state.requirements !== requirements) {
-  //     this.setState({requirements})
-  //   }
-  // }
-
+  
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
     console.log('requirements', requirements)

@@ -47,8 +47,9 @@ class TextModal extends React.Component {
   }
 
   addComponent (buttons) {
+    console.log('addComponent in TextModal', this.props)
     this.props.addComponent({
-      id: this.props.id ? this.props.id : null,
+      id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'text',
       text: this.state.text,
       buttons}, this.props.edit)
@@ -60,6 +61,10 @@ class TextModal extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
+  }
+
+  componentWillUnmount() {
+    this.props.closeModal()
   }
 
   render () {

@@ -141,6 +141,11 @@ class YoutubeVideoModal extends React.Component {
     }
   }
 
+
+  componentWillUnmount() {
+    this.props.closeModal()
+  }
+
   render () {
     console.log('video link', this.state.link)
     let visibleButtons = this.state.buttons.filter(button => button.visible)
