@@ -35,7 +35,8 @@ class CardModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
       buttonDisabled: false,
       actionDisabled: false,
-      numOfElements: cards.length
+      numOfElements: cards.length,
+      closeAdditonalCardsModal: true
     }
 
     this.carouselIndicatorStyle = {
@@ -89,8 +90,7 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({selectedIndex: to})
     })
-    this.requirements = this.getRequirements().filter(req => !!req)
-    console.log('requirements', this.requirements)
+    this.setState({closeAdditonalCardsModal: false})
   }
 
   addElement () {
@@ -105,7 +105,7 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true, closeAdditonalCardsModal: false}, () => {
           this.scrollToTop(`panel-heading${this.state.cards.length}`)
         })
       }
@@ -257,8 +257,7 @@ class CardModal extends React.Component {
   }
 
   closeAdditonalCardsModal () {
-    this.showingAdditionalCardsModal = false
-    this.setState({showingAdditionalCardsModal: false})
+    this.setState({closeAdditonalCardsModal: true})
   }
 
   closeCard (id) {
@@ -324,15 +323,17 @@ class CardModal extends React.Component {
     this.props.closeModal()
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    let requirements = this.getRequirements().filter(req => !!req)
-    console.log('requirements', requirements)
-    this.setState({requirements})
-  }
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   let requirements = this.getRequirements().filter(req => !!req)
+  //   console.log('requirements', requirements)
+  //   if (this.state.requirements !== requirements) {
+  //     this.setState({requirements})
+  //   }
+  // }
 
   render () {
-    // let requirements = this.getRequirements().filter(req => !!req)
-    // console.log('requirements', requirements)
+    let requirements = this.getRequirements().filter(req => !!req)
+    console.log('requirements', requirements)
     let settings = {
       slidesToShow: 1
     }
@@ -343,7 +344,7 @@ class CardModal extends React.Component {
           onClose={this.closeModal}>
 
           {
-            this.showingAdditionalCardsModal &&
+            (requirements && requirements.length === 0 && !this.state.closeAdditonalCardsModal) &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeAdditonalCardsModal}>
               <ModalDialog style={{width: '500px'}}
@@ -352,8 +353,8 @@ class CardModal extends React.Component {
                 <button style={{float: 'right', marginLeft: '10px'}}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.addElement()
                     this.closeAdditonalCardsModal()
+                    this.addElement()
                   }}>Yes
                 </button>
                 <button style={{float: 'right'}}
@@ -513,7 +514,7 @@ class CardModal extends React.Component {
 
                 <ul style={{marginTop: '65px'}}>
                   {
-                    this.requirements && this.requirements.length > 0 ? this.requirements :             
+                    requirements && requirements.length > 0 ? requirements :             
                     (
                     <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
                       <ul>
