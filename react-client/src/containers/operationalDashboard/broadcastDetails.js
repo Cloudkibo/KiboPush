@@ -21,8 +21,8 @@ class ViewBroadcastTemplate extends React.Component {
 
   componentDidMount () {
     if (this.props.location.state) {
-      this.displayData(0, this.props.location.state.data.subscriber)
-      this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
+      // this.displayData(0, this.props.location.state.data.subscriber)
+      // this.setState({ totalLengthSubscriber: this.props.location.state.data.subscriber.length })
     }
     const hostname =  window.location.hostname;
     let title = '';
