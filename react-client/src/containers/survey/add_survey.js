@@ -18,6 +18,7 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
 import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
@@ -660,6 +661,7 @@ class AddSurvey extends React.Component {
     // const { disabled, stayOpen } = this.state
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.isShowingModalGuideLines &&
