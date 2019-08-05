@@ -206,14 +206,24 @@ class LinkCarouselModal extends React.Component {
         console.log('changing link', e.target.value)
         let link = e.target.value
         let links = this.state.links
+        let cards = this.state.cards
         if (this.state.links.length < this.elementLimit) {
             if (this.validateURL(link)) {
                 links[index] = {url: link, valid: true, loading: true}
             } else {
+                cards[index] = {
+                    disabled: true,
+                    id: index+1,
+                    component: {
+                      title: '',
+                      subtitle: '',
+                      buttons: []
+                    }
+                }
                 links[index] = {url: link, valid: false, loading: false}
             }
         }
-        this.setState({links}, () => {
+        this.setState({links, cards}, () => {
           if (links[index].valid) {
             this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index))
           }
