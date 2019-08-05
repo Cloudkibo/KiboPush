@@ -24,11 +24,9 @@ class SubscriptionPermissionAlert extends React.Component {
     this.setState({isShowingModal: false})
   }
   componentDidMount () {
-    console.log('in componentDidMount of subscriptionPermissionAlert', this.props.pages)
     let pages = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (!this.props.pages[i].gotPageSubscriptionPermission) {
-        console.log('inside if')
         pages.push(this.props.pages[i])
       }
     }
