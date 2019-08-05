@@ -23,7 +23,8 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import { Selector } from 'react-giphy-selector'
+import GiphySelect from 'react-giphy-select'
+import 'react-giphy-select/lib/styles.css'
 import {
   isEmoji,
   getmetaurl,
@@ -339,11 +340,11 @@ class ChatBox extends React.Component {
   sendGif (gif) {
     var payload = {
       componentType: 'gif',
-      fileurl: gif.images.downsized.gif_url
+      fileurl: gif.images.downsized.url
     }
     this.setState({
       componentType: 'gif',
-      stickerUrl: gif.images.downsized.gif_url,
+      stickerUrl: gif.images.downsized.url,
       scrolling: true
     })
     var session = this.props.currentSession
@@ -913,13 +914,11 @@ class ChatBox extends React.Component {
             </div>
           </PopoverBody>
         </Popover>
-        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover' target='gifPickerChat' toggle={this.toggleGifPicker}>
+        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
-            <div>
-              <Selector
-                apiKey='Rpb3AYX4FAfuQB2ROb6srJUj5kbkLfT8'
-                onGifSelected={(gif) => { this.sendGif(gif) }} />
-            </div>
+            <GiphySelect
+              onEntrySelect={(gif) => { this.sendGif(gif) }}
+            />
           </PopoverBody>
         </Popover>
         {
