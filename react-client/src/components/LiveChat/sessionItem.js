@@ -37,10 +37,10 @@ class SessionItem extends React.Component {
               ? <span className='m-widget4__sub'>
                 {
                   !this.props.session.lastRepliedBy
-                  ? <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastPayload.text.slice(0, 30) + '...' : this.props.session.lastPayload.text}</span>
+                  ? <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.firstName + ': ' + this.props.session.lastPayload.text.slice(0, 30) + '...' : this.props.session.firstName + ': ' + this.props.session.lastPayload.text}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You: {(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastPayload.text.slice(0, 25) + '...' : this.props.session.lastPayload.text }</span>
-                  : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastPayload.text}</span>
+                  : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
                 }
               </span>
               : this.props.session.lastPayload && this.props.session.lastPayload.componentType &&
