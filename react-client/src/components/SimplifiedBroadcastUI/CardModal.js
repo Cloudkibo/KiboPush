@@ -35,7 +35,8 @@ class CardModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
       buttonDisabled: false,
       actionDisabled: false,
-      numOfElements: cards.length
+      numOfElements: cards.length,
+      closeAdditonalCardsModal: true
     }
 
     this.carouselIndicatorStyle = {
@@ -59,6 +60,7 @@ class CardModal extends React.Component {
     console.log('CardModal state in constructor', this.state)
     console.log('CardModal props in constructor', this.props)
     this.finalCards = []
+    this.showingAdditionalCardsModal = false
     this.handleDone = this.handleDone.bind(this)
     this.addElement = this.addElement.bind(this)
     this.updateCardStatus = this.updateCardStatus.bind(this)
@@ -69,6 +71,8 @@ class CardModal extends React.Component {
     this.updateSelectedIndex = this.updateSelectedIndex.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
     this.getRequirements = this.getRequirements.bind(this)
+    this.showAdditionalCardsModal = this.showAdditionalCardsModal.bind(this)
+    this.closeAdditonalCardsModal = this.closeAdditonalCardsModal.bind(this)
   }
 
   toggleHover (index, hover) {
@@ -86,6 +90,7 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({selectedIndex: to})
     })
+    this.setState({closeAdditonalCardsModal: false})
   }
 
   addElement () {
@@ -100,7 +105,7 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true, closeAdditonalCardsModal: false}, () => {
           this.scrollToTop(`panel-heading${this.state.cards.length}`)
         })
       }
@@ -207,10 +212,10 @@ class CardModal extends React.Component {
       console.log(`cardComponent ${index}`, card)
       
       if (card && card.props) {
+        let requirements = []
         if (card.props.card.disabled || card.props.card.buttonDisabled) {
           let cardData = card.props.card.component
           let msg = `Card ${card.props.card.id} requires:`
-          let requirements = []
           if (!cardData.title) {
             requirements.push('a title')
           }
@@ -240,8 +245,19 @@ class CardModal extends React.Component {
             )
           }
         }
+        if (requirements.length === 0) {
+          this.showAdditionalCardsModal()
+        }
       }
     })
+  }
+
+  showAdditionalCardsModal () {
+    this.showingAdditionalCardsModal = true
+  }
+
+  closeAdditonalCardsModal () {
+    this.setState({closeAdditonalCardsModal: true})
   }
 
   closeCard (id) {
@@ -303,22 +319,45 @@ class CardModal extends React.Component {
     })
   }
 
-
   componentWillUnmount() {
     this.props.closeModal()
   }
-
+  
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
+    console.log('requirements', requirements)
     let settings = {
       slidesToShow: 1
     }
-    console.log('requirements', requirements)
     return (
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
           onClose={this.closeModal}>
+
+          {
+            (requirements && requirements.length === 0 && !this.state.closeAdditonalCardsModal) &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeAdditonalCardsModal}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeAdditonalCardsModal}>
+                <p>You just completed all requirements for a card. Do you want to add an additional card?</p>
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeAdditonalCardsModal()
+                    this.addElement()
+                  }}>Yes
+                </button>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeAdditonalCardsModal()
+                  }}>Cancel
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <h3>Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
           <hr />
           <div className='row'>
@@ -399,8 +438,7 @@ class CardModal extends React.Component {
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
-                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
-                  
+                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">  
                   {
                     this.state.cards.length > 1 &&                   
                       <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
@@ -453,14 +491,22 @@ class CardModal extends React.Component {
                   {
                     this.state.cards.length > 1 && 
                       <div>
-                        <a className="carousel-control-prev" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="prev">
-                          <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                          <span className="sr-only">Previous</span>
-                        </a>
-                        <a className="carousel-control-next" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="next">
-                          <span className="carousel-control-next-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                          <span className="sr-only">Next</span>
-                        </a>
+
+                        {
+                          this.state.selectedIndex > 0 &&                         
+                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" style={{top: '125px'}} role="button">
+                           <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                           <span className="sr-only">Previous</span>
+                          </a>
+                        }
+                        {
+                          this.state.selectedIndex < this.state.cards.length-1 && 
+                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" style={{top: '125px'}} role="button" >
+                            <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                            <span className="sr-only">Next</span>
+                          </a>
+
+                        }
                       </div>
                   }
                 </div>
@@ -468,7 +514,7 @@ class CardModal extends React.Component {
 
                 <ul style={{marginTop: '65px'}}>
                   {
-                    requirements.length > 0 ? requirements :             
+                    requirements && requirements.length > 0 ? requirements :             
                     (
                     <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
                       <ul>

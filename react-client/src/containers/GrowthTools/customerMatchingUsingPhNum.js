@@ -406,7 +406,7 @@ class CustomerMatching extends React.Component {
     var res = nextProps.uploadResponse.fileUploadResponse
     if (res.status === 'failed') {
       this.setState({
-        alertMessage: (`${res.status} : ${res.description}`),
+        alertMessage: (`${res.status} : ${res.payload}`),
         type: 'danger',
         disabled: true
       })
@@ -419,7 +419,7 @@ class CustomerMatching extends React.Component {
         })
       } else {
         this.setState({
-          alertMessage: (res.description),
+          alertMessage: (res.payload),
           type: 'success',
           disabled: true
         })

@@ -625,7 +625,7 @@ class Settings extends React.Component {
                     */}
                     </li>
                     }
-                    { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                    { this.props.user && !this.props.user.facebookInfo && this.props.user.role === 'buyer' &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-facebook' />

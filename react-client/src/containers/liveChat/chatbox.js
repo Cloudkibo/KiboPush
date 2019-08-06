@@ -23,7 +23,8 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import { Selector } from 'react-giphy-selector'
+import GiphySelect from 'react-giphy-select'
+import 'react-giphy-select/lib/styles.css'
 import {
   isEmoji,
   getmetaurl,
@@ -165,19 +166,15 @@ class ChatBox extends React.Component {
   }
 
   loadMoreMessage () {
-    console.log('loadMoreMessage called')
     this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id})
   }
 
   handleAgentsForDisbaledValue (teamAgents) {
     let agentIds = []
-    console.log('handleAgentsForDisbaledValue', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
       agentIds.push(teamAgents[i].agentId._id)
     }
-    console.log('agentIds', agentIds)
     if (!agentIds.includes(this.props.user._id)) {
-      console.log('this.props.user._id', this.props.user._id)
       this.setState({disabledValue: true})
     }
   }
@@ -263,7 +260,6 @@ class ChatBox extends React.Component {
 
   showRecorder () {
     this.setState({showRecorder: true})
-    console.log('in recorder')
   }
 
   closeRecorder () {
@@ -344,11 +340,11 @@ class ChatBox extends React.Component {
   sendGif (gif) {
     var payload = {
       componentType: 'gif',
-      fileurl: gif.images.downsized.gif_url
+      fileurl: gif.images.downsized.url
     }
     this.setState({
       componentType: 'gif',
-      stickerUrl: gif.images.downsized.gif_url,
+      stickerUrl: gif.images.downsized.url,
       scrolling: true
     })
     var session = this.props.currentSession
@@ -606,7 +602,13 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.newMessage=true
+    if (nextProps.userChat.length > 0 && this.props.userChat.length > 0) {
+      if (nextProps.userChat[0].subscriber_id !== this.props.userChat[0].subscriber_id) {
+        this.newMessage = true
+      } else if (!(nextProps.userChat.length > this.props.userChat.length + 1)) {
+        this.newMessage = true
+      }
+    }
     this.getDisabledValue()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
@@ -624,7 +626,6 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
@@ -913,13 +914,11 @@ class ChatBox extends React.Component {
             </div>
           </PopoverBody>
         </Popover>
-        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover' target='gifPickerChat' toggle={this.toggleGifPicker}>
+        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
-            <div>
-              <Selector
-                apiKey='Rpb3AYX4FAfuQB2ROb6srJUj5kbkLfT8'
-                onGifSelected={(gif) => { this.sendGif(gif) }} />
-            </div>
+            <GiphySelect
+              onEntrySelect={(gif) => { this.sendGif(gif) }}
+            />
           </PopoverBody>
         </Popover>
         {
