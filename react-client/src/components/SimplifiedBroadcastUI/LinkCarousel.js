@@ -180,7 +180,16 @@ class LinkCarouselModal extends React.Component {
         let cards = this.state.cards
         if (!data || !data.title || !data.description || !data.image) {
             links[index] = Object.assign(links[index], {loading: false, valid: false})
-            this.setState({links})
+            cards[index] = {
+                disabled: true,
+                id: index+1,
+                component: {
+                  title: '',
+                  subtitle: '',
+                  buttons: []
+                }
+            }
+            this.setState({links, cards})
             return
         }
         cards[index] = {
