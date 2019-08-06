@@ -7,6 +7,7 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
 import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
@@ -75,12 +76,12 @@ class Dashboard extends React.Component {
   componentWillMount () {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.getuserdetails()
-    this.props.loadMyPagesList()
     this.props.loadDashboardData()
     this.props.updateSubscriptionPermission()
     this.props.loadSubscribersList()
     this.props.loadGraphData(0)
     this.props.loadTopPages()
+    this.props.loadMyPagesList()
     this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
     this.props.loadSentSeen({pageId: 'all', days: '30'})
   }
@@ -519,6 +520,7 @@ class Dashboard extends React.Component {
     const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {this.props.pages && this.props.pages.length > 0 && <SubscriptionPermissionALert />}
         {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}

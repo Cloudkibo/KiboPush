@@ -18,6 +18,8 @@ import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
+
 class Page extends React.Component {
   constructor (props) {
     super(props)
@@ -25,7 +27,7 @@ class Page extends React.Component {
       isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      displayVideo: true, 
+      displayVideo: true,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -191,6 +193,7 @@ class Page extends React.Component {
     console.log('showingSearchResult', this.state.showingSearchResult)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}

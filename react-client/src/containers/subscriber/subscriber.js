@@ -22,6 +22,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import YouTube from 'react-youtube'
 var json2csv = require('json2csv')
 
@@ -1341,6 +1342,7 @@ class Subscriber extends React.Component {
         <CustomFields />
         <CreateCustomField />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <SubscriptionPermissionALert />
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           {
             this.state.showVideo &&
