@@ -90,7 +90,9 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({selectedIndex: to})
     })
-    this.setState({closeAdditionalCardsModal: false})
+    if (!this.props.edit) {
+      this.setState({closeAdditionalCardsModal: false})
+    }
   }
 
   addElement () {
