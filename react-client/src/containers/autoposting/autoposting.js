@@ -13,6 +13,7 @@ import ListItem from './ListItem'
 import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class Autoposting extends React.Component {
   constructor (props) {
@@ -114,6 +115,7 @@ class Autoposting extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
         this.state.showWordPressGuide &&

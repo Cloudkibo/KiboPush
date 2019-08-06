@@ -10,6 +10,7 @@ import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { ModalBackground } from 'react-modal-dialog';
 import MessengerSendToMessenger from 'react-messenger-send-to-messenger';
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class ItemSettings extends React.Component {
@@ -429,6 +430,7 @@ class ItemSettings extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showMessengerModal &&
