@@ -232,7 +232,7 @@ class LinkCarouselModal extends React.Component {
                 links[index] = {url: link, valid: false, loading: false}
             }
         }
-        this.setState({links, cards}, () => {
+        this.setState({links, cards, edited: true}, () => {
           if (links[index].valid) {
             this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index))
           }
@@ -355,14 +355,21 @@ class LinkCarouselModal extends React.Component {
                     {
                         this.state.cards.length > 1 && 
                         <div>
-                            <a className="carousel-control-prev" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span className="carousel-control-prev-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                            <span className="sr-only">Previous</span>
-                            </a>
-                            <a className="carousel-control-next" style={{top: '125px'}} href="#carouselExampleControls" role="button" data-slide="next">
-                            <span className="carousel-control-next-icon" style={{backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                        {
+                          this.state.selectedIndex > 0 &&                         
+                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" style={{top: '125px'}} role="button">
+                           <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                           <span className="sr-only">Previous</span>
+                          </a>
+                        }
+                        {
+                          this.state.selectedIndex < this.state.cards.length-1 && 
+                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" style={{top: '125px'}} role="button" >
+                            <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                             <span className="sr-only">Next</span>
-                            </a>
+                          </a>
+
+                        }
                         </div>
                     }
                     </div>
