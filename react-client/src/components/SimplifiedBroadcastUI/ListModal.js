@@ -186,9 +186,9 @@ class ListModal extends React.Component {
           image_url: card.component.image_url ? card.component.image_url : '',
           title: card.component.title,
           subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
-          webviewurl: card.component.webviewurl,
-          elementUrl: card.component.elementUrl,
-          webviewsize: card.component.webviewsize,
+          ...(card.component.webviewurl && {webviewurl: card.component.webviewurl}),
+          ...(card.component.elementUrl && {webviewurl: card.component.elementUrl}),
+          ...(card.component.webviewsize && {webviewsize: card.component.webviewsize}),
           default_action: card.component.default_action,
           buttons: finalCard ? finalCard.buttons : card.component.buttons
         }
