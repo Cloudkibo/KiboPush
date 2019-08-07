@@ -111,7 +111,7 @@ class AbandonedList extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  {this.props.orderList && this.props.orderList.length > 0
+                  {this.props.abandonedList && this.props.abandonedList.length > 0
                     ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                       <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflow: 'inherit' }}>
                         <thead className='m-datatable__head'>
