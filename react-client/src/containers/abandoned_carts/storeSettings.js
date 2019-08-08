@@ -7,7 +7,7 @@ import AlertContainer from 'react-alert'
 import { updateStoreInfo } from '../../redux/actions/abandonedCarts.actions'
 
 class ItemSettings extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.state = {
@@ -26,33 +26,35 @@ class ItemSettings extends React.Component {
     this.changeValue = this.changeValue.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
   }
 
-  changeCondition (e) {
+  changeCondition(e) {
     let schedule = this.state.schedule
     schedule.condition = e.target.value
-    this.setState({schedule: schedule})
+    this.setState({ schedule: schedule })
   }
 
-  changeCriteria (e) {
+  changeCriteria(e) {
     let schedule = this.state.schedule
     if (e.target.value === 'immediately') {
       schedule.condition = 'immediately'
-      this.setState({schedule: schedule, criteria: 'immediately'})
+      this.setState({ schedule: schedule, criteria: 'immediately' })
     } else {
       schedule.condition = this.state.schedule.condition
-      this.setState({criteria: 'after', schedule: schedule})
+      this.setState({ criteria: 'after', schedule: schedule })
     }
   }
 
-  changeValue (e) {
+  changeValue(e) {
     let schedule = this.state.schedule
     schedule.value = e.target.value
-    this.setState({schedule: schedule})
+    if (schedule.value > 0 || schedule.value === '') {
+      this.setState({ schedule: schedule })
+    }
   }
 
-  handleSave () {
+  handleSave() {
     if (this.state.cartAlertEnabled && this.state.alertMessage === '') {
       this.msg.error('Alert Message cannot be empty')
       return
@@ -61,26 +63,27 @@ class ItemSettings extends React.Component {
       this.msg.error('Invalid Schedule')
       return
     }
-    this.props.updateStoreInfo(this.props.store[0]._id, {cartAlertEnabled: this.state.cartAlertEnabled,
+    this.props.updateStoreInfo(this.props.store[0]._id, {
+      cartAlertEnabled: this.state.cartAlertEnabled,
       sendOrderUpdates: this.state.sendOrderUpdates,
       alertMessage: this.state.alertMessage,
       schedule: this.state.schedule
     }, this.msg)
   }
 
-  handleAlertMessage (e) {
-    this.setState({alertMessage: e.target.value})
+  handleAlertMessage(e) {
+    this.setState({ alertMessage: e.target.value })
   }
 
-  handleOrderUpdatesStatus (e) {
-    this.setState({sendOrderUpdates: e.target.checked})
+  handleOrderUpdatesStatus(e) {
+    this.setState({ sendOrderUpdates: e.target.checked })
   }
 
-  handleAlertStatus (e) {
-    this.setState({cartAlertEnabled: e.target.checked})
+  handleAlertStatus(e) {
+    this.setState({ cartAlertEnabled: e.target.checked })
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -145,7 +148,7 @@ class ItemSettings extends React.Component {
                         </select>
                       </div>
                       <div className='col-lg-3 col-md-3 col-sm-3'>
-                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.schedule.value} className='form-control' onChange={this.changeValue}
+                        <input id='example-text-input' type='number' min='1' step='1' value={this.state.schedule.value} className='form-control' onChange={this.changeValue}
                           disabled={this.state.criteria === 'immediately'} />
                       </div>
                       <div className='col-lg-4 col-md-4 col-sm-4'>
@@ -159,7 +162,7 @@ class ItemSettings extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                <div style={{ marginBottom: '40px' }} className='m-form__section m-form__section--last'>
                   <div className='m-form__heading'>
                     <h3 className='m-form__heading-title'>
                       New Order
@@ -206,13 +209,13 @@ class ItemSettings extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     store: (state.abandonedInfo.storeList)
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       updateStoreInfo
