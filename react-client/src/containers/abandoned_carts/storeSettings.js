@@ -49,7 +49,6 @@ class ItemSettings extends React.Component {
   changeValue(e) {
     let schedule = this.state.schedule
     schedule.value = e.target.value
-    console.log(schedule.value)
     if (schedule.value > 0 || schedule.value === '') {
       this.setState({ schedule: schedule })
     }
