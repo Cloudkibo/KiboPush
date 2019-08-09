@@ -95,11 +95,11 @@ class MessagesContainer extends React.Component {
   handlePageClickMessages (data) {
     if (data.selected === 0) {
       this.props.loadAutopostingMessages(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10})
-    } else if (this.state.pageNumber < data.selected) {
+    } else if (this.state.messagesPageNumber < data.selected) {
       this.props.loadAutopostingMessages(this.props.location.state._id,
         {
           first_page: 'next',
-          current_page: this.state.pageNumber,
+          current_page: this.state.messagesPageNumber,
           requested_page: data.selected,
           last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none',
           number_of_records: 10
@@ -109,7 +109,7 @@ class MessagesContainer extends React.Component {
       this.props.loadAutopostingMessages(this.props.location.state._id,
         {
           first_page: 'previous',
-          current_page: this.state.pageNumber,
+          current_page: this.state.messagesPageNumber,
           requested_page: data.selected,
           last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[0]._id : 'none',
           number_of_records: 10
@@ -121,13 +121,14 @@ class MessagesContainer extends React.Component {
   }
 
   handlePageClickPosts (data) {
+
     if (data.selected === 0) {
       this.props.loadAutopostingPosts(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10})
-    } else if (this.state.pageNumber < data.selected) {
+    } else if (this.state.messagesPageNumber < data.selected) {
       this.props.loadAutopostingPosts(this.props.location.state._id,
         {
           first_page: 'next',
-          current_page: this.state.pageNumber,
+          current_page: this.state.messagesPageNumber,
           requested_page: data.selected,
           last_id: this.props.autoposting_posts.length > 0 ? this.props.autoposting_posts[this.props.autoposting_posts.length - 1]._id : 'none',
           number_of_records: 10
@@ -137,7 +138,7 @@ class MessagesContainer extends React.Component {
       this.props.loadAutopostingPosts(this.props.location.state._id,
         {
           first_page: 'previous',
-          current_page: this.state.pageNumber,
+          current_page: this.state.messagesPageNumber,
           requested_page: data.selected,
           last_id: this.props.autoposting_posts.length > 0 ? this.props.autoposting_posts[0]._id : 'none',
           number_of_records: 10
