@@ -25,7 +25,7 @@ class SessionItem extends React.Component {
       <div key={this.props.session._id}>
         <div style={this.props.session._id === (this.props.activeSession !== {} && this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.props.changeActiveSession(this.props.session)} className='m-widget4__item'>
           <div className='m-widget4__img m-widget4__img--pic'>
-            <img style={{width: '56px', height: '56px'}} src={this.props.session.profilePic} alt='' />
+            <img onError={(e) => this.props.profilePicError(e, this.props.session)} style={{width: '56px', height: '56px'}} src={this.props.session.profilePic} alt='' />
           </div>
           <div className='m-widget4__info'>
             <span className='m-widget4__title'>

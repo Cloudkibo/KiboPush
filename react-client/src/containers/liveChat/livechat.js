@@ -33,7 +33,7 @@ import {
 import { setCustomFieldValue, loadCustomFields, getCustomFieldValue } from '../../redux/actions/customFields.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
-
+import { updatePicture } from '../../redux/actions/subscribers.actions'
 // Components
 import INFO from '../../components/LiveChat/info.js'
 import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
@@ -335,6 +335,18 @@ class LiveChat extends React.Component {
     }
   }
 
+  profilePicError(e, subscriber, sessionType) {
+    console.log('profile picture error', subscriber)
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+    this.props.updatePicture({ subscriber }, null, () => {
+      this.fetchSessions({ first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } })
+    })
+  }
+
   render() {
     var alertOptions = {
       offset: 14,
@@ -359,6 +371,7 @@ class LiveChat extends React.Component {
                 this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='row'>
                     <SESSIONSAREA
+                      profilePicError={this.profilePicError}
                       openSessions={this.props.openSessions}
                       closeSessions={this.props.closeSessions}
                       openCount={this.props.openCount}
@@ -458,6 +471,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    updatePicture,
     fetchOpenSessions,
     fetchCloseSessions,
     fetchUserChats,

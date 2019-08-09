@@ -75,6 +75,7 @@ class SessionsArea extends React.Component {
             </ul>
           </div>
           <BODY
+            profilePicError={this.props.profilePicError}
             openSessions={this.props.openSessions}
             closeSessions={this.props.closeSessions}
             openCount={this.props.openCount}
