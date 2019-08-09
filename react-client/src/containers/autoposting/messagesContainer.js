@@ -93,8 +93,6 @@ class MessagesContainer extends React.Component {
   }
 
   handlePageClickMessages (data) {
-    console.log('this.state.messagesPageNumber', this.state.messagesPageNumber )
-    console.log('data.selected', data.selected)
     if (data.selected === 0) {
       this.props.loadAutopostingMessages(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10})
     } else if (this.state.messagesPageNumber < data.selected) {
