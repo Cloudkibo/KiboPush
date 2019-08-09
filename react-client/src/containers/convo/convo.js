@@ -20,6 +20,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -325,6 +326,7 @@ class Convo extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {

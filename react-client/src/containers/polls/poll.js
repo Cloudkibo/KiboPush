@@ -24,6 +24,8 @@ import YouTube from 'react-youtube'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
+
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
@@ -264,6 +266,7 @@ class Poll extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&

@@ -36,7 +36,7 @@ class CardModal extends React.Component {
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
-      closeAdditonalCardsModal: true
+      closeAdditionalCardsModal: true
     }
 
     this.carouselIndicatorStyle = {
@@ -72,7 +72,7 @@ class CardModal extends React.Component {
     this.scrollToTop = this.scrollToTop.bind(this)
     this.getRequirements = this.getRequirements.bind(this)
     this.showAdditionalCardsModal = this.showAdditionalCardsModal.bind(this)
-    this.closeAdditonalCardsModal = this.closeAdditonalCardsModal.bind(this)
+    this.closeAdditionalCardsModal = this.closeAdditionalCardsModal.bind(this)
   }
 
   toggleHover (index, hover) {
@@ -90,7 +90,9 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({selectedIndex: to})
     })
-    this.setState({closeAdditonalCardsModal: false})
+    if (!this.props.edit) {
+      this.setState({closeAdditionalCardsModal: false})
+    }
   }
 
   addElement () {
@@ -105,7 +107,8 @@ class CardModal extends React.Component {
             subtitle: '',
             buttons: []
           }})
-        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true, closeAdditonalCardsModal: false}, () => {
+        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
+          this.setState({closeAdditionalCardsModal: false})
           this.scrollToTop(`panel-heading${this.state.cards.length}`)
         })
       }
@@ -256,8 +259,8 @@ class CardModal extends React.Component {
     this.showingAdditionalCardsModal = true
   }
 
-  closeAdditonalCardsModal () {
-    this.setState({closeAdditonalCardsModal: true})
+  closeAdditionalCardsModal () {
+    this.setState({closeAdditionalCardsModal: true})
   }
 
   closeCard (id) {
@@ -288,7 +291,7 @@ class CardModal extends React.Component {
     }
     console.log('remaining cards after closing card', cards)
     let selectedIndex = cards.length-1
-    this.setState({cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled})
+    this.setState({closeAdditionalCardsModal: true, cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled})
   }
 
   addCard (card) {
@@ -336,23 +339,23 @@ class CardModal extends React.Component {
           onClose={this.closeModal}>
 
           {
-            (requirements && requirements.length === 0 && !this.state.closeAdditonalCardsModal) &&
+            (requirements && requirements.length === 0 && !this.state.closeAdditionalCardsModal) &&
             <ModalContainer style={{width: '500px'}}
-              onClose={this.closeAdditonalCardsModal}>
+              onClose={this.closeAdditionalCardsModal}>
               <ModalDialog style={{width: '500px'}}
-                onClose={this.closeAdditonalCardsModal}>
+                onClose={this.closeAdditionalCardsModal}>
                 <p>You just completed all requirements for a card. Do you want to add an additional card?</p>
                 <button style={{float: 'right', marginLeft: '10px'}}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.closeAdditonalCardsModal()
+                    this.closeAdditionalCardsModal()
                     this.addElement()
                   }}>Yes
                 </button>
                 <button style={{float: 'right'}}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.closeAdditonalCardsModal()
+                    this.closeAdditionalCardsModal()
                   }}>Cancel
                 </button>
               </ModalDialog>

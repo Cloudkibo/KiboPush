@@ -181,17 +181,7 @@ class ListModal extends React.Component {
       if (card.visible) {
         let finalCard = this.finalCards.find(x => card.id === x.id)
         console.log(`finalCard found for card ${card.id}`, finalCard)
-        return { 
-          id: card.id ? card.id : '',
-          image_url: card.component.image_url ? card.component.image_url : '',
-          title: card.component.title,
-          subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
-          webviewurl: card.component.webviewurl,
-          elementUrl: card.component.elementUrl,
-          webviewsize: card.component.webviewsize,
-          default_action: card.component.default_action,
-          buttons: finalCard ? finalCard.buttons : card.component.buttons
-        }
+        return finalCard
       }
     })
     this.props.addComponent({
