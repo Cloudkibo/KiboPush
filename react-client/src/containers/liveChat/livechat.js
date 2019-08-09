@@ -55,6 +55,7 @@ class LiveChat extends React.Component {
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
     this.handleSaveTags = this.handleSaveTags.bind(this)
     this.unassignTags = this.unassignTags.bind(this)
