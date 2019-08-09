@@ -31,6 +31,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session) => (
                     <SESSIONITEM
+                      profilePicError={this.props.profilePicError}
                       session={session}
                       activeSession={this.props.activeSession}
                       changeActiveSession={this.props.changeActiveSession}
