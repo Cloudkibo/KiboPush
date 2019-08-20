@@ -43,14 +43,24 @@ class SessionItem extends React.Component {
                   : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
                 }
               </span>
-              : this.props.session.lastPayload && this.props.session.lastPayload.componentType &&
-              <span className='m-widget4__sub'>
+              : this.props.session.lastPayload && this.props.session.lastPayload.componentType
+              ? <span className='m-widget4__sub'>
                 {
                   (!this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null) && this.props.session.lastPayload
                   ? <span>{this.props.session.firstName} sent {this.props.session.lastPayload.componentType}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You sent {this.props.session.lastPayload.componentType}</span>
                   : <span>{this.props.session.lastRepliedBy.name} sent {this.props.session.lastPayload.componentType}</span>
+                }
+              </span>
+              : this.props.session.lastPayload && this.props.session.lastPayload.attachments &&
+              <span className='m-widget4__sub'>
+                {
+                  (!this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null) && this.props.session.lastPayload
+                  ? <span>{this.props.session.firstName} sent {this.props.session.lastPayload.attachments[0].type}</span>
+                  : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
+                  ? <span>You sent {this.props.session.lastPayload.attachments[0].type}</span>
+                  : <span>{this.props.session.lastRepliedBy.name} sent {this.props.session.lastPayload.attachments[0].type}</span>
                 }
               </span>
             }
