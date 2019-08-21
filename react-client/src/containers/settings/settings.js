@@ -271,10 +271,11 @@ class Settings extends React.Component {
     this.initializeSwitch(this.state.buttonState)
     this.initializeSwitchNGP(this.state.ngpButtonState)
 
+    console.log('this.state.ngpButtonState', this.state.ngpButtonState)
     if (this.state.ngpButtonState) {
-      this.setState({ isDisableInput: false, isDisableButton: false })
-    } else {
       this.setState({ isDisableInput: true, isDisableButton: true })
+    } else {
+      this.setState({ isDisableInput: false, isDisableButton: false })
     }
     if (this.props.location.state && this.props.location.state.tab) {
       if (this.props.location.state.tab === 'whitelistDomains') {
@@ -358,6 +359,7 @@ class Settings extends React.Component {
     /* eslint-disable */
     $('input[name="switch-NGP"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
+      console.log('state',state)
       self.setState({ngpButtonState: state})
       if (state === true) {
         self.setState({ngpDisable: false, ngpButtonState: true})
@@ -373,6 +375,7 @@ class Settings extends React.Component {
     this.props.reset({company_id: this.props.user._id})
   }
   saveNGPBtn (e) {
+    
     e.preventDefault()
     this.props.saveNGP({
       company_id: this.props.user.companyId,
@@ -432,7 +435,9 @@ class Settings extends React.Component {
     }
     /*
     NGP Work Starts
-    */
+    */console.log('nextProps.apiEnableNGP', nextProps.apiEnableNGP)
+   console.log('nextProps.apiDisableNGP', nextProps.apiDisableNGP)
+   console.log('this.state.ngpDisable', this.state.ngpDisable)
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
         this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false})
@@ -450,14 +455,24 @@ class Settings extends React.Component {
         this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
-    if (nextProps.apiSuccessNGP) {
+    if (nextProps.apiSuccessNGP && !nextProps.apiEnableNGP && !nextProps.apiDisableNGP) {
+      console.log('nextProps.apiSuccessNGP', nextProps.apiSuccessNGP)
+      console.log('nextProps.apiFailureNGP', nextProps.apiFailureNGP)
       if (this.state.count_ngp === 1) {
         this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
-        if (this.state.count1_ngp !== 1) {
-          this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
-          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
+        if(nextProps.apiSuccessNGP.enabled) {
+          this.setState({isDisableButton: false, isDisableInput: false})
+
         }
-        this.setState({count_ngp: 2})
+        else {
+           this.setState({isDisableButton: true, isDisableInput: true})
+
+        }
+        // if (this.state.count1_ngp !== 1) {
+        //   this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
+        //   this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
+        // }
+        // this.setState({count_ngp: 2})
       }
     } else if (nextProps.apiFailureNGP) {
       if (this.state.firstTimeNGP === true) {

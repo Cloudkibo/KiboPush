@@ -181,6 +181,7 @@ export function disableSuccessNGP (data) {
 }
 
 export function saveSuccessNGP (data) {
+  console.log('saveSuccessNGP',data )
   return {
     type: ActionTypes.RESET_SUCCESS_NGP,
     data

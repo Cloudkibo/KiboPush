@@ -50,7 +50,8 @@ export function settingsInfo (state = initialState, action) {
       })
     case ActionTypes.RESET_SUCCESS_NGP:
       return Object.assign({}, state, {
-        resetDataNGP: action.data
+        resetDataNGP: action.data,
+        apiSuccessNGP:action.data
       })
     case ActionTypes.GET_API_SUCCESS_NGP:
       return Object.assign({}, state, {
