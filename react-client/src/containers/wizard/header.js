@@ -63,6 +63,7 @@ class Header extends React.Component {
     } else if (hostname == 'kiboengage.cloudkibo.com') {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
+    console.log('this.props.otherPages in header', this.props.otherPages)
     console.log("window.location.hostname.toLowerCase().includes('kiboengage')", window.location.hostname.toLowerCase().includes('kiboengage'))
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
@@ -97,6 +98,7 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
+                  {this.props.user && this.props.user.facebookInfo && this.props.otherPages &&
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
@@ -171,7 +173,7 @@ class Header extends React.Component {
                         </div>
                       </div>
                     </li>
-
+                  }
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
@@ -268,7 +270,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
     socketSession: (state.liveChat.socketSession),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    otherPages: (state.pagesInfo.otherPages)
   }
 }
 
