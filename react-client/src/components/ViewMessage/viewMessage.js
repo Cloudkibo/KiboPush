@@ -3,6 +3,7 @@ import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
 import RightArrow from '../../containers/convo/RightArrow'
 import LeftArrow from '../../containers/convo/LeftArrow'
+import {setWebViewUrl} from './../../utility/utils'
 
 class ViewMessage extends React.Component {
   constructor (props, context) {
@@ -127,7 +128,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
 
                                             <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
@@ -153,7 +154,7 @@ class ViewMessage extends React.Component {
                                             {
                                               card.buttons && card.buttons.length > 0 &&
                                               card.buttons.map((button, i) => (
-                                                <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
@@ -170,7 +171,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{borderColor: '#716aca', whiteSpace: 'inherit', width: '175px', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{borderColor: '#716aca', whiteSpace: 'inherit', width: '175px', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
                                             <span>{button.title}</span>
                                           </a>
                                         ))
@@ -199,7 +200,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
                                             <span>{button.title}</span>
                                           </a>
                                         ))
@@ -225,7 +226,7 @@ class ViewMessage extends React.Component {
                                             {
                                               item.buttons && item.buttons.length > 0 &&
                                               item.buttons.map((button, i) => (
-                                                <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                                   <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                                 </a>
                                               ))
@@ -235,7 +236,7 @@ class ViewMessage extends React.Component {
                                         ))}
                                         {b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? button.url : '#'} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                             <span>{button.type === 'element_share' ? 'share' : button.title}</span>
                                           </a>
                                         ))
