@@ -486,3 +486,34 @@ export function loadAutopostingSummaryForBackdoor (data) {
       })
   }
 }
+export function updatePageUsers (data) {
+  return {
+    type: ActionTypes.UPDATE_PAGE_USERS,
+    data
+  }
+}
+export function loadPageUsers (data) {
+  console.log('data for loadPageUsers', data)
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageUsers`, 'post', data)
+      .then(res => {
+        console.log('response from loadPageUsers', res)
+        dispatch(updatePageUsers(res.payload))
+      })
+  }
+}
+export function updatePagePermissions (data) {
+  return {
+    type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
+    data
+  }
+}
+export function loadPagePermissions (id) {
+  return (dispatch) => {
+    callApi(`backdoor/getPagePermissions/${id}`)
+      .then(res => {
+        console.log('response from loadPagePermissions', res)
+        dispatch(updatePagePermissions(res.payload))
+      })
+  }
+}
