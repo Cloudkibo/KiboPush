@@ -19,8 +19,6 @@ class PageUsers extends React.Component {
     }
     props.loadPagePermissions(this.props.location.state.pageId)
 
-    this.displayData = this.displayData.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   scrollToTop () {
@@ -41,53 +39,7 @@ class PageUsers extends React.Component {
     document.title = `${title} | Page Permissions`
   }
 
-  displayData (n, pageUsers) {
-    let offset = n * 10
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 10) > pageUsers.length) {
-      limit = pageUsers.length
-    } else {
-      limit = offset + 10
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = pageUsers[i]
-      index++
-    }
-    this.setState({pageUsersData: data})
-  }
-
-  handlePageClick (data) {
-    if (data.selected === 0) {
-      this.props.loadPageUsers({
-        last_id: 'none',
-        number_of_records: 10,
-        first_page: 'first',
-        pageId: this.props.location.state.pageId })
-    } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPageUsers({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.pageUsers.length > 0 ? this.props.pageUsers[this.props.pageUsers.length - 1]._id : 'none',
-        number_of_records: 10,
-        first_page: 'next',
-        pageId: this.props.location.state.pageId })
-    } else {
-      this.props.loadPageUsers({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.pageUsers.length > 0 ? this.props.pageUsers[0]._id : 'none',
-        number_of_records: 10,
-        first_page: 'previous',
-        pageId: this.props.location.state.pageId })
-    }
-    this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.props.pageUsers)
-  }
-
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps.pagePermissions', nextProps.pagePermissions)
     if (nextProps.pagePermissions) {
       let appLevelKeys = Object.keys(nextProps.pagePermissions.appLevelPermissions)
       let pageLevelKeys = Object.keys(nextProps.pagePermissions.pageLevelPermissions)
