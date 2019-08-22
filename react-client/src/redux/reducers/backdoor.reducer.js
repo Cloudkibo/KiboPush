@@ -181,7 +181,15 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         kiboTopPages: action.data
       })
-
+    case ActionTypes.UPDATE_PAGE_USERS:
+      return Object.assign({}, state, {
+        pageUsers: action.data.pageUsers,
+        pageUsersCount: action.data.count
+      })
+    case ActionTypes.UPDATE_PAGE_PERMISSIONS:
+      return Object.assign({}, state, {
+        pagePermissions: action.data
+      })
     default:
       return state
   }

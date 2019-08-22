@@ -136,6 +136,8 @@ import WhatsAppChat from './containers/whatsAppChat/whatsAppChat'
 import sponsoredMessaging from './containers/sponsoredMessaging'
 import createsponsoredMessaging from './containers/sponsoredMessaging/createSponsoredMessage'
 import sponsoredMessageInsights from './containers/sponsoredMessaging/insights'
+import BackdoorPageUsers from './containers/operationalDashboard/pageUsers'
+import BackdoorPagePermissions from './containers/operationalDashboard/pagePermissions'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -332,6 +334,8 @@ const routes = (
     <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
     <Route path='/createsponsoredMessage' component={createsponsoredMessaging} />
     <Route path='/sponsoredMessaging/insights' component={sponsoredMessageInsights} />
+    <Route path='/backdoorPageUsers' component={BackdoorPageUsers} onEnter={requireAuth} />
+    <Route path='/backdoorPagePermissions' component={BackdoorPagePermissions} onEnter={requireAuth} />
   </Route>
 
 )
