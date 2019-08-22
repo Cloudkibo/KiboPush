@@ -20,7 +20,8 @@ import {
   updateSurveysList,
   updateSurveyDetails,
   deleteAccountResponse,
-  updatePollDetails
+  updatePollDetails,
+  updateUniquePagesDetails
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -190,6 +191,16 @@ export function loadPollDetails (id) {
       .then(res => {
         console.log('response from loadPollDetails', res)
         dispatch(updatePollDetails(res))
+      })
+  }
+}
+
+export function loadUniquePages (data) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchUniquePages`, 'post', data)
+      .then(res => {
+        console.log('response from fetchUniquePages', res)
+        dispatch(updateUniquePagesDetails(res))
       })
   }
 }

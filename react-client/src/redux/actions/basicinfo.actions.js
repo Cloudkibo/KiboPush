@@ -95,7 +95,7 @@ export function getuserdetails () {
 
 export function updatePicture () {
   return (dispatch) => {
-    callApi('users/updatePicture')
+    callApi('users/updatePicture', 'get', undefined, 'accounts')
       .then(res => {
         console.log('response from updatePicture', res)
         if (res.status === 'success') {
