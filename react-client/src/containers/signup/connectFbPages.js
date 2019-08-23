@@ -136,7 +136,7 @@ class AddPage extends React.Component {
                       If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank'>Create A New Facebook Page</a> and then  
                       <a href='/auth/facebook/' target='_blank'> ReConnect</a> kibopush app with your facebook account.</li>
                       <li>If you have facebook page, please make sure you have approved kibopush to manage atleast one of your facebook pages. Do check </li>
-                      <a href='#' target='_blank'> Documentation</a> for furthure assistance.
+                      <a href='https://kibopush.com/allow_kibopush_manage_facebook_pages' target='_blank'> Documentation</a> for furthure assistance.
                     </ul> 
                   </div>
                   </div>
