@@ -9,17 +9,13 @@ class UniquePages extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      uniquePagesData: [],
-      totalLength: 0,
       searchValue: '',
       filter: true,
       pageNumber: 0,
       showUniquePages: false
     }
-    this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUniquePages = this.searchUniquePages.bind(this)
-    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.toggle = this.toggle.bind(this)
     this.props.loadUniquePages({pageNumber: 1})
   }
@@ -41,27 +37,10 @@ class UniquePages extends React.Component {
     document.title = `${title} | Unique Pages`
   }
 
-  displayData (n, uniquePages) {
-    let offset = n * 10
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 10) > uniquePages.length) {
-      limit = uniquePages.length
-    } else {
-      limit = offset + 10
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = uniquePages[i]
-      index++
-    }
-    this.setState({uniquePagesData: data})
-  }
 
   handlePageClick (data) {
     this.props.loadUniquePages({pageNumber: data.selected+1})
     this.setState({pageNumber: data.selected+1})
-    this.displayData(data.selected, this.props.uniquePages)
   }
 
   searchUniquePages (event) {
@@ -72,13 +51,6 @@ class UniquePages extends React.Component {
     } else {
       this.props.loadUniquePages({pageNumber: this.state.pageNumber})
     }
-  }
-
-  onBroadcastClick (broadcast) {
-    browserHistory.push({
-      pathname: `/viewBroadcastDetail`,
-      state: {title: broadcast.title, payload: broadcast.payload, data: broadcast}
-    })
   }
 
   render () {
@@ -115,7 +87,7 @@ class UniquePages extends React.Component {
             <div className='m-portlet__body'>
               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 {
-                  this.props.uniquePages && this.props.uniquePages.length > 0
+                  this.props.uniquePages && this.props.uniquePages.data && this.props.uniquePages.data.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table'
                       id='m-datatable--27866229129' style={{
@@ -142,7 +114,7 @@ class UniquePages extends React.Component {
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                         {
-                          this.props.uniquePages.map((uniquePage, i) => (
+                          this.props.uniquePages.data.map((uniquePage, i) => (
                             <tr data-row={i}
                               className='m-datatable__row m-datatable__row--even'
                               style={{height: '55px'}} key={i}>
@@ -177,7 +149,7 @@ class UniquePages extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.props.uniquePages.length / 10)}
+                      pageCount={Math.ceil(this.props.uniquePages.totalCount / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
