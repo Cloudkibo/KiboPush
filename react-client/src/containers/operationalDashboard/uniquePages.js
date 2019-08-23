@@ -14,10 +14,8 @@ class UniquePages extends React.Component {
       pageNumber: 0,
       showUniquePages: false
     }
-    this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUniquePages = this.searchUniquePages.bind(this)
-    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.toggle = this.toggle.bind(this)
     this.props.loadUniquePages({pageNumber: 1})
   }
