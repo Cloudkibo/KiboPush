@@ -179,6 +179,14 @@ export function updatePollDetails (data) {
   }
 }
 
+export function updateUniquePagesDetails (data) {
+  return {
+    type: ActionTypes.LOAD_UNIQUE_PAGES_DETAILS,
+    data: data.payload
+  }
+}
+
+
 export function saveUserInformation (user) {
   return {
     type: ActionTypes.SAVE_USER_INFORMATION,

@@ -8,6 +8,7 @@ import SurveysByDays from './surveysByDays'
 import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
+import UniquePages from './uniquePages'
 import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
 //  import ListItem from './ListItem'
@@ -597,6 +598,7 @@ class OperationalDashboard extends React.Component {
           <BroadcastsByDays />
           <SurveysByDays />
           <PollsByDays />
+          <UniquePages />
         </div>
       </div>
     )
