@@ -11,7 +11,7 @@ class UniquePages extends React.Component {
     this.state = {
       searchValue: '',
       filter: true,
-      pageNumber: 0,
+      pageNumber: 1,
       showUniquePages: false
     }
     this.handlePageClick = this.handlePageClick.bind(this)
