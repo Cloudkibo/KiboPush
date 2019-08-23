@@ -156,7 +156,7 @@ class UniquePages extends React.Component {
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'}
-                      forcePage={this.state.pageNumber} />
+                      forcePage={this.state.pageNumber-1} />
                   </div>
                   : <p> No data to display. </p>
                 }
