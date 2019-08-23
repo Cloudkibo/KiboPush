@@ -151,7 +151,7 @@ class UniquePages extends React.Component {
                                 <span
                                   style={{width: '120px'}}>{uniquePage.pageName}</span></td>
                               <td data-field='connectedBy' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{uniquePage.connectedBy.name}</span></td>
+                                <span style={{width: '120px'}}>{uniquePage.connectedBy ? uniquePage.connectedBy.name : 'Not connected'}</span></td>
                               <td data-field='actions'
                                 className='m-datatable__cell'>
                                 <span
