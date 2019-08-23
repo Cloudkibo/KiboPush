@@ -20,6 +20,27 @@ class UniquePages extends React.Component {
     this.props.loadUniquePages({pageNumber: 1})
   }
 
+  goToPermissions (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/BackdoorPagePermissions',
+        state: {
+          pageId: pageId,
+          pageName: pageName
+        }
+      })
+  }
+
+
+  goToPermissions (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/FacebookPageUsers',
+        state: {
+          pageId: pageId,
+          pageName: pageName
+        }
+      })
+  }
+
   toggle () {
     this.props.loadUniquePages({pageNumber: 1})
     this.setState({showUniquePages: !this.state.showUniquePages})
@@ -135,8 +156,11 @@ class UniquePages extends React.Component {
                                     <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Users
                                     </button>
-                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <button onClick={() => this.goToPermissions(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Permissions
+                                    </button>
+                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                        View Tags
                                     </button>
                                 </span>
                               </td>
