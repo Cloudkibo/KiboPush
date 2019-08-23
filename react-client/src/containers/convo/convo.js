@@ -195,7 +195,7 @@ class Convo extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createBroadcast`,
-      state: {module: 'convo', subscribers: this.props.subscribers, pages: this.state.pageValue}
+      state: {module: 'convo', pages: this.state.pageValue}
     })
   }
 

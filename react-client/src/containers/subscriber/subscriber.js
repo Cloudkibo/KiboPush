@@ -1095,7 +1095,7 @@ class Subscriber extends React.Component {
     //  var filtered = []
     console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByTag: e.target.value })
+      this.setState({ filter: true, filterByTag: e.target.value, pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].tags) {
@@ -1109,7 +1109,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByTag: '' })
+      this.setState({ filterByTag: '', pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1126,7 +1126,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByPage: e.target.value })
+      this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
@@ -1135,7 +1135,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByPage: '' })
+      this.setState({ filterByPage: '', pageSelected: 0})
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1162,7 +1162,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByGender: e.target.value })
+      this.setState({ filter: true, filterByGender: e.target.value , pageSelected: 0})
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
@@ -1171,7 +1171,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByGender: '' })
+      this.setState({ filterByGender: '', pageSelected: 0})
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1189,7 +1189,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByLocale: e.target.value })
+      this.setState({ filter: true, filterByLocale: e.target.value, pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
@@ -1198,7 +1198,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByLocale: '' })
+      this.setState({ filterByLocale: '', pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1216,7 +1216,7 @@ class Subscriber extends React.Component {
     // var filtered = []
     this.setState({ statusValue: e.target.value })
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true })
+      this.setState({ filter: true , pageSelected: 0})
       if (e.target.value === 'subscribed') {
         this.setState({ status_value: true })
         this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true } })
@@ -1233,7 +1233,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ status_value: '' })
+      this.setState({ status_value: '', pageSelected: 0})
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: '' } })
     }
     // this.setState({filteredData: filteredData})

@@ -20,7 +20,8 @@ import {
   updateSurveysList,
   updateSurveyDetails,
   deleteAccountResponse,
-  updatePollDetails
+  updatePollDetails,
+  updateUniquePagesDetails
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -190,6 +191,16 @@ export function loadPollDetails (id) {
       .then(res => {
         console.log('response from loadPollDetails', res)
         dispatch(updatePollDetails(res))
+      })
+  }
+}
+
+export function loadUniquePages (data) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchUniquePages`, 'post', data)
+      .then(res => {
+        console.log('response from fetchUniquePages', res)
+        dispatch(updateUniquePagesDetails(res))
       })
   }
 }
@@ -483,6 +494,37 @@ export function loadAutopostingSummaryForBackdoor (data) {
       .then(res => {
         console.log('response from loadAutopostingSummaryForBackdoor', res)
         dispatch(updateAutopostingSummary(res.payload))
+      })
+  }
+}
+export function updatePageUsers (data) {
+  return {
+    type: ActionTypes.UPDATE_PAGE_USERS,
+    data
+  }
+}
+export function loadPageUsers (data) {
+  console.log('data for loadPageUsers', data)
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageUsers`, 'post', data)
+      .then(res => {
+        console.log('response from loadPageUsers', res)
+        dispatch(updatePageUsers(res.payload))
+      })
+  }
+}
+export function updatePagePermissions (data) {
+  return {
+    type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
+    data
+  }
+}
+export function loadPagePermissions (id) {
+  return (dispatch) => {
+    callApi(`backdoor/getPagePermissions/${id}`)
+      .then(res => {
+        console.log('response from loadPagePermissions', res)
+        dispatch(updatePagePermissions(res.payload))
       })
   }
 }

@@ -112,7 +112,7 @@ class Autoposting extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -250,7 +250,7 @@ class Autoposting extends React.Component {
                               onClose={this.closeDialog}>
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialog}>
-                                <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} />
+                                <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} msg={this.msg} />
                               </ModalDialog>
                             </ModalContainer>
                           }

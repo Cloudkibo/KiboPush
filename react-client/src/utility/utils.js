@@ -97,3 +97,8 @@ export function readShopifyInstallRequest () {
 export function removeShopifyInstallRequest () {
   cookie.remove('installByShopifyStore')
 }
+
+export function setWebViewUrl(url){
+  let newUrl = isWebViewUrl(url) ? url : `http://${url}` 
+  return newUrl
+}
