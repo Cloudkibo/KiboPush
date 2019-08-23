@@ -115,7 +115,7 @@ class UniquePages extends React.Component {
             <div className='m-portlet__body'>
               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 {
-                  this.state.BroadcastData && this.state.BroadcastData.length > 0
+                  this.props.uniquePagesData && this.state.uniquePagesData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table'
                       id='m-datatable--27866229129' style={{
