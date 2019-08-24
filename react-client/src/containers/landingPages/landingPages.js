@@ -90,6 +90,7 @@ class LandingPage extends React.Component {
     this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
   }
   onEdit (landingPage) {
+    console.log('edit landing page called', landingPage)
     landingPage.currentTab= 'initialState'
     browserHistory.push({
       pathname: `/editLandingPage`,
