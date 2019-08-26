@@ -61,15 +61,15 @@ class Targeting extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
-    this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
-    this.initializeSubscribers = this.initializeSubscribers.bind(this)
+    // this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
+    // this.initializeSubscribers = this.initializeSubscribers.bind(this)
     props.loadTags()
     props.loadCustomerLists()
   }
 
-  subscriberReachEstimation () {
-    this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
-  }
+  // subscriberReachEstimation () {
+  //   this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
+  // }
 
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -119,7 +119,7 @@ class Targeting extends React.Component {
     this.initializePageSelect(options)
     this.initializePollSelect(pollOptions)
     this.initializeSurveySelect(surveyOptions)
-    this.initializeSubscribers(this.props)
+    // this.initializeSubscribers(this.props)
     /* eslint-disable */
     $('.selectSegmentation').addClass('hideSegmentation')
     $('.selectList').addClass('hideSegmentation')
@@ -506,18 +506,18 @@ class Targeting extends React.Component {
     }
     console.log('current pageId', this.props.page.pageId)
     console.log('next pageId', nextProps.page)
-    if (this.props.page && nextProps.page && this.props.page.pageId !== nextProps.page.pageId) {
-      this.initializeSubscribers(nextProps)
-    }
+    // if (this.props.page && nextProps.page && this.props.page.pageId !== nextProps.page.pageId) {
+    //   this.initializeSubscribers(nextProps)
+    // }
   }
 
-  initializeSubscribers (props) {
-    let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === props.page.pageId)
-    console.log('currentPageSubscribers', currentPageSubscribers)
-    this.setState({subscribers: currentPageSubscribers}, () => {
-      this.subscriberReachEstimation()
-    })
-  }
+  // initializeSubscribers (props) {
+  //   let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === props.page.pageId)
+  //   console.log('currentPageSubscribers', currentPageSubscribers)
+  //   this.setState({subscribers: currentPageSubscribers}, () => {
+  //     this.subscriberReachEstimation()
+  //   })
+  // }
 
   render () {
     return (
