@@ -14,10 +14,6 @@ class PageTags extends React.Component {
       showPageTags: true
     }
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.searchUniquePages = this.searchUniquePages.bind(this)
-    this.toggle = this.toggle.bind(this)
-    this.goToUsers = this.goToUsers.bind(this)
-    this.goToPermissions = this.goToPermissions.bind(this)
     this.displayData = this.displayData.bind(this)
     this.props.loadPageTags(this.props.location.state.pageId)
   }
@@ -66,16 +62,6 @@ class PageTags extends React.Component {
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pageTags)
-  }
-
-  searchUniquePages (event) {
-    this.setState({searchValue: event.target.value.toLowerCase()})
-    if (event.target.value !== '') {
-      this.setState({filter: true})
-      this.props.loadPageTags({pageName: event.target.value})
-    } else {
-      this.props.loadPageTags({pageNumber: this.state.pageNumber})
-    }
   }
 
   render () {
