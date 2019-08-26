@@ -18,6 +18,7 @@ class PageTags extends React.Component {
     this.toggle = this.toggle.bind(this)
     this.goToUsers = this.goToUsers.bind(this)
     this.goToPermissions = this.goToPermissions.bind(this)
+    this.displayData = this.displayData.bind(this)
     this.props.loadPageTags(this.props.location.state.pageId)
   }
 
