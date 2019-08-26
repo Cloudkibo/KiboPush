@@ -21,7 +21,8 @@ import {
   updateSurveyDetails,
   deleteAccountResponse,
   updatePollDetails,
-  updateUniquePagesDetails
+  updateUniquePagesDetails,
+  updateCurrentPageTags
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -201,6 +202,16 @@ export function loadUniquePages (data) {
       .then(res => {
         console.log('response from fetchUniquePages', res)
         dispatch(updateUniquePagesDetails(res))
+      })
+  }
+}
+
+export function loadPageTags (pageId) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageTags/${pageId}`, 'get')
+      .then(res => {
+        console.log('response from fetchPageTags', res)
+        dispatch(updateCurrentPageTags(res))
       })
   }
 }
