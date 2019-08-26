@@ -137,7 +137,7 @@ class Tab extends React.Component {
               handleBack={this.handleBack}
               module={this.props.module}
               landing_page_id={this.props.landing_page_id}
-              isActive={this.props.landingPage.isActive} />
+              isActive={this.props.isActive} />
           </div>
           }
         </div>
@@ -147,7 +147,6 @@ class Tab extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('state in tabs', state)
   return {
     landingPage: state.landingPagesInfo.landingPage
   }
