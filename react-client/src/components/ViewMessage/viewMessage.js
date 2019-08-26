@@ -39,14 +39,11 @@ class ViewMessage extends React.Component {
   render () {
     console.log('this.props.payload', this.props.payload)
     var settings = {
-      arrows: true,
       dots: false,
       infinite: false,
       speed: 500,
       slidesToShow: 1,
       slidesToScroll: 1,
-      nextArrow: <RightArrow />,
-      prevArrow: <LeftArrow />
     }
     return (
       <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: 'auto', height: 'auto', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
