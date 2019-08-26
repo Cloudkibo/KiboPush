@@ -205,6 +205,16 @@ export function loadUniquePages (data) {
   }
 }
 
+export function loadPageTags (pageId) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageTags/${pageId}`, 'get')
+      .then(res => {
+        console.log('response from fetchPageTags', res)
+        dispatch(updateCurrentPageTags(res))
+      })
+  }
+}
+
 export function downloadFile () {
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)

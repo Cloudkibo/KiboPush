@@ -186,6 +186,12 @@ export function updateUniquePagesDetails (data) {
   }
 }
 
+export function updateCurrentPageTags (data) {
+  return {
+    type: ActionsTypes.LOAD_PAGE_TAGS,
+    data: data.payload
+  }
+}
 
 export function saveUserInformation (user) {
   return {

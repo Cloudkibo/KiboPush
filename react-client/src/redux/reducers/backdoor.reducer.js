@@ -28,6 +28,10 @@ export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_UNIQUE_PAGES_DETAILS:
         return Object.assign({}, state, {
+          pageTags: action.data
+        })
+    case ActionTypes.LOAD_UNIQUE_PAGES_DETAILS:
+        return Object.assign({}, state, {
           uniquePages: action.data
         })
     case ActionTypes.LOAD_USERS_LIST:
