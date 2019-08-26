@@ -23,6 +23,14 @@ export function updateSubscribersList (data) {
   }
 }
 
+export function updateSubscribersCount (data) {
+  console.log('subscribers count', data)
+  return {
+    type: ActionTypes.LOAD_SUBSCRIBERS_COUNT,
+    data
+  }
+}
+
 export function updateAllLocales (data) {
   console.log('Data Fetched From Subscribers', data)
   return {
@@ -148,5 +156,13 @@ export function subscribe (id, handleSubscription) {
       .then(res => {
         handleSubscription(res, 'sub')
       })
+  }
+}
+
+export function loadSubscribersCount (data) {
+  return (dispatch) => {
+    callApi('subscribers/getCount', 'post', data).then(res =>
+      dispatch(updateSubscribersCount(res.payload))
+    )
   }
 }
