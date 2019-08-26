@@ -188,7 +188,7 @@ export function updateUniquePagesDetails (data) {
 
 export function updateCurrentPageTags (data) {
   return {
-    type: ActionsTypes.LOAD_PAGE_TAGS,
+    type: ActionTypes.LOAD_PAGE_TAGS,
     data: data.payload
   }
 }

@@ -32,7 +32,7 @@ class PageTags extends React.Component {
       limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      data[index] = broadcasts[i]
+      data[index] = pageTags[i]
       index++
     }
     this.setState({pageTagsData: data})

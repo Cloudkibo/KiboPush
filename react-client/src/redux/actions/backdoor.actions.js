@@ -21,7 +21,8 @@ import {
   updateSurveyDetails,
   deleteAccountResponse,
   updatePollDetails,
-  updateUniquePagesDetails
+  updateUniquePagesDetails,
+  updateCurrentPageTags
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
