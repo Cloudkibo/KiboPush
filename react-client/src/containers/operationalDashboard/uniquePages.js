@@ -19,6 +19,7 @@ class UniquePages extends React.Component {
     this.toggle = this.toggle.bind(this)
     this.goToUsers = this.goToUsers.bind(this)
     this.goToPermissions = this.goToPermissions.bind(this)
+    this.goToPageTags = this.goToPageTags.bind(this)
     this.props.loadUniquePages({pageNumber: 1})
   }
 
