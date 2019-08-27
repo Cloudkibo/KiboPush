@@ -119,7 +119,7 @@ class UniquePages extends React.Component {
               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-row'>
                   <div className='form-group col-md-6' >
-                    <input type='text' placeholder='Search by Page Name...' className='form-control m-input m-input--solid' onChange={this.searchUniquePages} />
+                    <input type='text' style={{marginBottom: '20px'}} placeholder='Search by Page Name...' className='form-control m-input m-input--solid' onChange={this.searchUniquePages} />
                     <span className='m-input-icon__icon m-input-icon__icon--left' />
                   </div>
                 </div>
