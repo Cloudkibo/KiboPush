@@ -53,7 +53,7 @@ class PageTags extends React.Component {
     if (nextProps.pageTags) {
         let kiboPageTags = nextProps.pageTags.kiboPageTags.map(kiboPageTag => {
             let fbPageTag = nextProps.pageTags.fbPageTags.find(x => {
-                x.id === kiboPageTag.labelFbId
+                return x.id === kiboPageTag.labelFbId
             })
             if (fbPageTag) {
                 return {
@@ -74,7 +74,7 @@ class PageTags extends React.Component {
 
         let fbPageTags = nextProps.pageTags.fbPageTags.map(fbPageTag => {
             let kiboPageTag = nextProps.pageTags.kiboPageTags.find(x => {
-                x.labelFbId === fbPageTag.id
+                return x.labelFbId === fbPageTag.id
             })
             if (!kiboPageTag) {
                 return {
