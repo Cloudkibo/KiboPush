@@ -8,10 +8,11 @@ class PageTags extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      searchValue: '',
-      filter: true,
-      pageNumber: 1,
-      showPageTags: true
+        pageTagsData: [],
+        searchValue: '',
+        filter: true,
+        pageNumber: 1,
+        showPageTags: true
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.displayData = this.displayData.bind(this)
