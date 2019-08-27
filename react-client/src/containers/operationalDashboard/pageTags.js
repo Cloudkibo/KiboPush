@@ -78,7 +78,7 @@ class PageTags extends React.Component {
             })
             if (!kiboPageTag) {
                 return {
-                    tagName: kiboPageTag.tag,
+                    tagName: fbPageTag.name,
                     default: fbPageTag.name.startsWith("_pageId") || fbPageTag.name === 'male' || fbPageTag.name === 'female',
                     facebook: true,
                     kibopush: false
