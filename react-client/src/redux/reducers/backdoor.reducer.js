@@ -26,6 +26,10 @@ const initialState = {
 
 export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.LOAD_PAGE_TAGS:
+        return Object.assign({}, state, {
+          pageTags: action.data
+        })
     case ActionTypes.LOAD_UNIQUE_PAGES_DETAILS:
         return Object.assign({}, state, {
           uniquePages: action.data

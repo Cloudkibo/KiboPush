@@ -57,7 +57,7 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
       if (res.status === 'success' && res.payload) {
         var data = res.payload
         var payload = {
-          pageId: data.jsonAd.pageId,
+          // pageId: data.jsonAd.pageId,
           jsonAdId: data.jsonAd._id,
           title: data.jsonAd.title,
           jsonAdMessages: data.jsonAdMessages
@@ -91,7 +91,7 @@ export function saveJsonAd (data, msg, handleSave) {
         if (res.status === 'success') {
           var data = res.payload
           var payload = {
-            pageId: data.jsonAd.pageId,
+            // pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
             title: data.jsonAd.title,
             jsonAdMessages: data.jsonAdMessages

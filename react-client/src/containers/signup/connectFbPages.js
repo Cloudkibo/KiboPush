@@ -123,20 +123,24 @@ class AddPage extends React.Component {
           <div className='row'>
             {this.state.showWarning
             ? <div className='m-portlet m-portlet--full-height col-12'>
-              <div className='m-portlet__body'>
-                <center>
-                  <span>You are not admin of any Facebook page. Please create your page on Facebook in order to use the app and then click on the button below:</span>
-                  <div className='m-stack__item m-stack__item--center' style={{textAlign: 'center', paddingTop: 25}}>
-                    <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
-                      <span>
-                        <i className='la la-power-off' />
-                        <span>Re-connect with Facebook</span>
-                      </span>
-                    </a>
+                  <div className='m-portlet__body'>
+                  <div>
+                    <strong>
+                      <i style={{fontSize: '22px'}} className='fa fa-warning' /> <span style={{fontSize: '22px'}}>Something Went Wrong</span>
+                    </strong>
+                    </div>
+                  <div style={{paddingLeft:'50px'}}>
+                    <span style={{fontSize: '16px', lineHeight: '70px'}}>Try:</span>
+                    <ul>
+                      <li>Please make sure you are admin of atleast one facebook page from  <a href='https://www.facebook.com/bookmarks/pages/' target='_blank'>Facebook Pages</a>. 
+                      If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank'>Create A New Facebook Page</a> and then  
+                      <a href='/auth/facebook/' target='_blank'> ReConnect</a> kibopush app with your facebook account.</li>
+                      <li>If you have facebook page, please make sure you have approved kibopush to manage atleast one of your facebook pages. Do check </li>
+                      <a href='https://kibopush.com/allow_kibopush_manage_facebook_pages' target='_blank'> Documentation</a> for furthure assistance.
+                    </ul> 
                   </div>
-                </center>
-              </div>
-            </div>
+                  </div>
+                </div>
             : <div className='col-xl-12'>
               {
                 this.state.showAlert === true &&

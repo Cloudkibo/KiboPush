@@ -103,7 +103,7 @@ class PageUsers extends React.Component {
                 { this.props.pagePermissions && this.state.pageLevelKeys.length > 0
                 ? <div className='m-section'>
                     <h3 className='m-section__heading'>
-                      App Level Permissions
+                      Page Level Permissions
                     </h3>
                     <div className='m-section__content'>
                       <div className='m-demo' data-code-preview='true' data-code-html='true' data-code-js='false'>

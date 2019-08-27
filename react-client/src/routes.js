@@ -138,6 +138,7 @@ import createsponsoredMessaging from './containers/sponsoredMessaging/createSpon
 import sponsoredMessageInsights from './containers/sponsoredMessaging/insights'
 import BackdoorPageUsers from './containers/operationalDashboard/pageUsers'
 import BackdoorPagePermissions from './containers/operationalDashboard/pagePermissions'
+import BackdoorPageTags from './containers/operationalDashboard/pageTags'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -336,6 +337,7 @@ const routes = (
     <Route path='/sponsoredMessaging/insights' component={sponsoredMessageInsights} />
     <Route path='/backdoorPageUsers' component={BackdoorPageUsers} onEnter={requireAuth} />
     <Route path='/backdoorPagePermissions' component={BackdoorPagePermissions} onEnter={requireAuth} />
+    <Route path='/backdoorPageTags' component={BackdoorPageTags} onEnter={requireAuth} />
   </Route>
 
 )

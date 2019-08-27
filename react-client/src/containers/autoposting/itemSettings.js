@@ -556,6 +556,38 @@ class ItemSettings extends React.Component {
                     </div>
                   </div>
                 }
+                {
+                  this.props.location.state.item.subscriptionType === 'rss' &&
+                  <div>
+                    <div className='m-form__seperator m-form__seperator--dashed' />
+                    <div style={{marginBottom: '40px'}} className='m-form__section m-form__section--last'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Action
+                        </h3>
+                      </div>
+                      <div style={{paddingLeft: '100px'}} className='form-group m-form__group row'>
+                        <div className='m-radio-list'>
+                          <label className='m-radio'>
+                            <input type='radio' value='messenger' onChange={this.handleActionTypeFor} checked={this.state.actionType === 'messenger'} />
+                              Send RSS Feed updates to messenger subscribers
+                            <span />
+                          </label>
+                          <label className='m-radio'>
+                            <input type='radio' value='facebook' onChange={this.handleActionType} checked={this.state.actionType === 'facebook'} />
+                              Post RSS Feed updates on Facebook page(s)
+                            <span />
+                          </label>
+                          <label className='m-radio'>
+                            <input type='radio' value='both' onChange={this.handleActionType} checked={this.state.actionType === 'both'} />
+                              Do both
+                            <span />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
                 <div className='m-form__seperator m-form__seperator--dashed' />
                 <div className='m-form__section m-form__section--last'>
                   <div className='m-form__heading'>

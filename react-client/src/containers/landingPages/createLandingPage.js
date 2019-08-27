@@ -107,7 +107,9 @@ class CreateLandingPage extends React.Component {
                       {
                           this.props.location.state.module === 'edit' ?
                           <Tabs module={this.props.location.state.module}
-                            landing_page_id={this.props.location.state.landingPage._id} />
+                            landing_page_id={this.props.location.state.landingPage._id}
+                            isActive={this.state.isActive}
+                             />
                           : <Tabs />
                       }
 
@@ -125,7 +127,7 @@ class CreateLandingPage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('state in edit landing page', state)
   return {
     landingPage: state.landingPagesInfo.landingPage
   }

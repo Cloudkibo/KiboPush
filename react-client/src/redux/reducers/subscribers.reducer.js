@@ -21,6 +21,10 @@ export function subscribersInfo (state = {}, action) {
       return Object.assign({}, state, {
         locales: action.data
       })
+    case ActionTypes.LOAD_SUBSCRIBERS_COUNT:
+      return Object.assign({}, state, {
+        subscribersCount: action.data.count
+      })
 
     default:
       return state

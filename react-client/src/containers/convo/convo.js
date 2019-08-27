@@ -6,12 +6,12 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
   clearAlertMessage,
   loadBroadcastsList,
-  sendbroadcast, allBroadcasts
+  allBroadcasts
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -41,8 +41,7 @@ class Convo extends React.Component {
       pageValue: ''
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
-    props.loadSubscribersList()
-    this.sendBroadcast = this.sendBroadcast.bind(this)
+    props.loadSubscribersCount({})
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
@@ -207,17 +206,6 @@ class Convo extends React.Component {
       })
   }
 
-  sendBroadcast (broadcast) {
-    if (this.props.subscribers.length === 0) {
-      this.setState({
-        alertMessage: 'You dont have any Subscribers',
-        type: 'danger'
-      })
-    } else {
-      this.props.sendbroadcast(broadcast)
-    }
-  }
-
   componentDidUpdate (nextProps) {
     if (this.props.pages && this.state.isShowingModal && this.state.pageValue === '') {
       let options = []
@@ -237,7 +225,6 @@ class Convo extends React.Component {
     if (nextProps.count) {
       this.setState({ totalLength: nextProps.count })
     }
-    this.sendBroadcast = this.sendBroadcast.bind(this)
     if (nextProps.successMessage) {
       this.setState({
         alertMessage: nextProps.successMessage,
@@ -379,7 +366,7 @@ class Convo extends React.Component {
           {
             this.props.pages && this.props.pages.length === 0
             ? <AlertMessage type='page' />
-          : this.props.subscribers && this.props.subscribers.length === 0 &&
+          : this.props.subscribersCount === 0 &&
             <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -403,7 +390,7 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onClick={this.showDialog}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribersCount === 0} onClick={this.showDialog}>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -457,7 +444,7 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   {
-                    this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
+                    this.state.isShowingZeroModal && ((this.props.subscribersCount === 0) || (this.props.pages && this.props.pages.length === 0)) &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeZeroSubDialog}>
                       <ModalDialog style={{width: '700px', top: '75px'}}
@@ -604,7 +591,7 @@ function mapStateToProps (state) {
     count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
+    subscribersCount: (state.subscribersInfo.subscribersCount),
     user: (state.basicInfo.user)
   }
 }
@@ -613,9 +600,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList: loadBroadcastsList,
     addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList,
+    loadSubscribersCount: loadSubscribersCount,
     allBroadcasts: allBroadcasts
   }, dispatch)
 }

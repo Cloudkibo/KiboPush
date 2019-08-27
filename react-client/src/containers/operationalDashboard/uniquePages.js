@@ -11,13 +11,47 @@ class UniquePages extends React.Component {
     this.state = {
       searchValue: '',
       filter: true,
-      pageNumber: 0,
+      pageNumber: 1,
       showUniquePages: false
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUniquePages = this.searchUniquePages.bind(this)
     this.toggle = this.toggle.bind(this)
+    this.goToUsers = this.goToUsers.bind(this)
+    this.goToPermissions = this.goToPermissions.bind(this)
+    this.goToPageTags = this.goToPageTags.bind(this)
     this.props.loadUniquePages({pageNumber: 1})
+  }
+
+  goToUsers (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/backdoorPageUsers',
+        state: {
+          pageId: pageId,
+          pageName: pageName
+        }
+      })
+  }
+
+
+  goToPermissions (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/backdoorPagePermissions',
+        state: {
+          pageId: pageId,
+          pageName: pageName
+        }
+      })
+  }
+
+  goToPageTags (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/backdoorPageTags',
+        state: {
+            pageId: pageId,
+            pageName: pageName
+        }
+      })
   }
 
   toggle () {
@@ -132,11 +166,14 @@ class UniquePages extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>
-                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <button onClick={() => this.goToUsers(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Users
                                     </button>
-                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <button onClick={() => this.goToPermissions(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Permissions
+                                    </button>
+                                    <button onClick={() => this.goToPageTags(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                        View Tags
                                     </button>
                                 </span>
                               </td>
@@ -156,7 +193,7 @@ class UniquePages extends React.Component {
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'}
-                      forcePage={this.state.pageNumber} />
+                      forcePage={this.state.pageNumber-1} />
                   </div>
                   : <p> No data to display. </p>
                 }

@@ -11,6 +11,7 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
+import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
@@ -116,6 +117,20 @@ class CreateConvo extends React.Component {
       localeValue: targeting.localeValue,
       tagValue: targeting.tagValue
     })
+    let data = {}
+    if (targeting.pageValue.length > 0) {
+      data['pageValue'] = targeting.pageValue
+    }
+    if (targeting.genderValue.length > 0) {
+      data['genderValue'] = targeting.genderValue
+    }
+    if (targeting.localeValue.length > 0) {
+      data['localeValue'] = targeting.localeValue[0]
+    }
+    if (targeting.tagValue.length > 0) {
+      data['tagValue'] = targeting.tagValue[0]
+    }
+    this.props.loadSubscribersCount(data)
   }
   initTab () {
     /* eslint-disable */
@@ -259,8 +274,8 @@ class CreateConvo extends React.Component {
     console.log('this.props.location.state.pages', this.props.location.state.pages)
     console.log('this.props.pages', this.props.pages)
     let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
-    var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
-    if (res === false) {
+    // var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+    if (this.props.subscribersCount === 0) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       // let tagIDs = []
@@ -271,7 +286,6 @@ class CreateConvo extends React.Component {
       //     }
       //   }
       // }
-      let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === this.state.pageId.pageId)
       console.log('payload before', this.state.broadcast)
       var data = {
         platform: 'facebook',
@@ -286,7 +300,7 @@ class CreateConvo extends React.Component {
         segmentationList: this.state.listSelected,
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        subscribersCount: currentPageSubscribers.length
+        subscribersCount: this.props.subscribersCount
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -575,7 +589,7 @@ class CreateConvo extends React.Component {
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='broadcast' />
+                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} page={this.state.pageId} component='broadcast' />
                         </div>
 
                       </div>
@@ -601,7 +615,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription,
-    subscribers: (state.subscribersInfo.subscribers),
+    subscribersCount: (state.subscribersInfo.subscribersCount),
     tags: (state.tagsInfo.tags)
   }
 }
@@ -619,7 +633,8 @@ function mapDispatchToProps (dispatch) {
       getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions,
-      loadTags: loadTags
+      loadTags: loadTags,
+      loadSubscribersCount: loadSubscribersCount
     },
     dispatch)
 }
