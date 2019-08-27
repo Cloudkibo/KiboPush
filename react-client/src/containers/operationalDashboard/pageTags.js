@@ -26,9 +26,11 @@ class PageTags extends React.Component {
     switch (event.target.value) {
       case 'all':
         this.displayData(0, this.state.pageTags)
+        this.setState({totalLength: this.state.pageTags.length, pageNumber: 0})
         break
       case 'incorrect':
         this.displayData(0, this.state.incorrectRecords)
+        this.setState({totalLength: this.state.incorrectRecords.length, pageNumber: 0})
         break
       default:
         break
@@ -137,17 +139,14 @@ class PageTags extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
 
-                <h3>{this.props.location.state.pageName}</h3>
+                <h1>{this.props.location.state.pageName}</h1>
 
-                <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit' style={{height: 'fit-content'}}>
-                    <div className='m-portlet__head'>
-                        <div className='m-portlet__head-tools' style={{textAlign: 'left'}}>
-                            <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
-                                <option value='all' disabled>Show all records</option>
-                                <option value='incorrect'>Show incorrect records</option>
-                            </select>
-                        </div>
-                    </div>
+                
+                <div style={{textAlign: 'right', marginTop: '-60px'}}>
+                    <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
+                        <option value='all'>Show all records</option>
+                        <option value='incorrect'>Show incorrect records</option>
+                    </select>
                 </div>
 
                 <div className='m-portlet__body'>
