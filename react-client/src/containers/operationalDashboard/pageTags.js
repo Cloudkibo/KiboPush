@@ -91,9 +91,10 @@ class PageTags extends React.Component {
 
         let pageTagsData = [...kiboPageTags, ...fbPageTags]
         pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
+        let incorrectRecords = pageTagsData.filter(pageTag => pageTag.facebook !== pageTag.kibopush)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData})
+        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, incorrectRecords})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -115,46 +116,61 @@ class PageTags extends React.Component {
 
 
 
-        <div className='m-portlet__body'>
-        <div className='row m-row--full-height'>
-            <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
-                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
-                    <div className='m-portlet__body'>
-                        <div className='m-widget26'>
-                            <div className='m-widget26__number'>
-                                {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
-                                <small>
-                                    KiboPush Tags
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div className='m--space-30' />
-
-            <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
-                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
-                    <div className='m-portlet__body'>
-                        <div className='m-widget26'>
-                            <div className='m-widget26__number'>
-                                {this.props.pageTags && this.props.pageTags.fbPageTags.length}
-                                <small>
-                                    Facebook Tags
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
 
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
+
+                <div className='m-portlet__body'>
+                    <div className='row m-row--full-height'>
+                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                            <div className='m-portlet m-portlet--border-bottom-brand'>
+                                <div className='m-portlet__body'>
+                                    <div className='m-widget26'>
+                                        <div className='m-widget26__number'>
+                                            {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
+                                            <small>
+                                                KiboPush Tags
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                            <div className='m-portlet m-portlet--border-bottom-danger'>
+                                <div className='m-portlet__body'>
+                                    <div className='m-widget26'>
+                                        <div className='m-widget26__number'>
+                                            {this.props.pageTags && this.props.pageTags.fbPageTags.length}
+                                            <small>
+                                                Facebook Tags
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                            <div className='m-portlet m-portlet--border-bottom-success'>
+                                <div className='m-portlet__body'>
+                                    <div className='m-widget26'>
+                                        <div className='m-widget26__number'>
+                                            {this.state.incorrectRecords && this.state.incorrectRecords.length}
+                                            <small>
+                                                Incorrect Records
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
