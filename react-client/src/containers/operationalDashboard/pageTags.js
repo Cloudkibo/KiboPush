@@ -142,7 +142,7 @@ class PageTags extends React.Component {
                 <h1 style={{marginBottom: '-30px'}}>{this.props.location.state.pageName}</h1>
 
                 
-                <div style={{textAlign: 'right', marginBottom: '-30px'}}>
+                <div style={{textAlign: 'right', marginBottom: '30px'}}>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
                         <option value='all'>Show all records</option>
                         <option value='incorrect'>Show incorrect records</option>
