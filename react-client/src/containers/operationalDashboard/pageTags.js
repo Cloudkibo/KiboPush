@@ -89,7 +89,7 @@ class PageTags extends React.Component {
 
 
 
-        let pageTagsData = [kiboPageTags, fbPageTags]
+        let pageTagsData = [...kiboPageTags, ...fbPageTags]
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
         this.setState({ totalLength: pageTagsData.length })
