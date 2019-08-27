@@ -139,10 +139,10 @@ class PageTags extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
 
-                <h1>{this.props.location.state.pageName}</h1>
+                <h1 style={{marginBottom: '-30px'}}>{this.props.location.state.pageName}</h1>
 
                 
-                <div style={{textAlign: 'right', marginTop: '-60px'}}>
+                <div style={{textAlign: 'right', marginBottom: '-30px'}}>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
                         <option value='all'>Show all records</option>
                         <option value='incorrect'>Show incorrect records</option>
@@ -200,15 +200,6 @@ class PageTags extends React.Component {
 
 
               <div className='m-portlet'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        {this.props.location.state.pageName}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
                 <div className='m-portlet__body'>
                   <div>
                   { this.state.pageTagsData && this.state.pageTagsData.length > 0
