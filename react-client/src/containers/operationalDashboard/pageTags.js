@@ -49,8 +49,8 @@ class PageTags extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in broadcastbydays', nextProps)
-    if (nextProps.pageTags && nextProps.count) {
-        let pageTagsData = [...nextProps.pageTags.kiboPageTags.tags, ...nextProps.pageTags.fbPageTags]
+    if (nextProps.pageTags) {
+        let pageTagsData = [...nextProps.pageTags.kiboPageTags, ...nextProps.pageTags.fbPageTags]
         this.displayData(0, nextProps.pageTagsData)
         this.setState({ totalLength: pageTagsData.length })
     } else {
