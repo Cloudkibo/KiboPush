@@ -52,7 +52,7 @@ class PageTags extends React.Component {
     if (nextProps.pageTags) {
         let pageTagsData = [...nextProps.pageTags.kiboPageTags, ...nextProps.pageTags.fbPageTags]
         console.log('pageTagsData', pageTagsData)
-        this.displayData(0, nextProps.pageTagsData)
+        this.displayData(0, pageTagsData)
         this.setState({ totalLength: pageTagsData.length })
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
