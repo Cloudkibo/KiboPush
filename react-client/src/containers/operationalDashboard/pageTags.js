@@ -90,6 +90,7 @@ class PageTags extends React.Component {
 
 
         let pageTagsData = [...kiboPageTags, ...fbPageTags]
+        pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
         this.setState({ totalLength: pageTagsData.length })
@@ -157,9 +158,9 @@ class PageTags extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='tagName' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageTag.tagName}</span></td>
-                            <td data-field='default' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.default}</span></td>
-                            <td data-field='kibopush' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.kibopush}</span></td>
-                            <td data-field='facebook' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.facebook}</span></td>
+                            <td data-field='default' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{""+pageTag.default}</span></td>
+                            <td data-field='kibopush' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{""+pageTag.kibopush}</span></td>
+                            <td data-field='facebook' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{""+pageTag.facebook}</span></td>
                           </tr>
                         ))
                       }
