@@ -130,7 +130,7 @@ class PageTags extends React.Component {
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                         {
-                          this.state.pageTagsData.data.map((pageTag, i) => (
+                          this.state.pageTagsData.map((pageTag, i) => (
                             <tr data-row={i}
                               className='m-datatable__row m-datatable__row--even'
                               style={{height: '55px'}} key={i}>
