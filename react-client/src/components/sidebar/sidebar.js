@@ -558,7 +558,7 @@ class Sidebar extends Component {
 
   showSequenceMessaging () {
     if (this.props.user && this.state.sequenceMessaging) {
-      if (this.props.user.isSuperUser) {
+      if (this.props.user.isSuperUser || this.props.user.companyId === "5d56acdabb04900ef9839dde") {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/sequenceMessaging' className='m-menu__link'>
