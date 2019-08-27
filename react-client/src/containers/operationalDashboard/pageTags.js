@@ -11,7 +11,7 @@ class PageTags extends React.Component {
         pageTagsData: [],
         searchValue: '',
         filter: true,
-        pageNumber: 1,
+        pageNumber: 0,
         showPageTags: true
     }
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -51,7 +51,45 @@ class PageTags extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in broadcastbydays', nextProps)
     if (nextProps.pageTags) {
-        let pageTagsData = [...nextProps.pageTags.kiboPageTags, ...nextProps.pageTags.fbPageTags]
+        let kiboPageTags = nextProps.pageTags.kiboPageTags.map(kiboPageTag => {
+            let fbPageTag = nextProps.pageTags.fbPageTags.find(x => {
+                x.id === kiboPageTag.labelFbId
+            })
+            if (fbPageTag) {
+                return {
+                    tagName: kiboPageTag.tag,
+                    default: kiboPageTag.defaultTag,
+                    facebook: true,
+                    kibopush: true
+                }
+            } else {
+                return {
+                    tagName: kiboPageTag.tag,
+                    default: kiboPageTag.defaultTag,
+                    facebook: false,
+                    kibopush: true
+                }
+            }
+        })
+
+        let fbPageTags = nextProps.pageTags.fbPageTags.map(fbPageTag => {
+            let kiboPageTag = nextProps.pageTags.kiboPageTags.find(x => {
+                x.labelFbId === fbPageTag.id
+            })
+            if (!kiboPageTag) {
+                return {
+                    tagName: kiboPageTag.tag,
+                    default: fbPageTag.name.startsWith("_pageId") || fbPageTag.name === 'male' || fbPageTag.name === 'female',
+                    facebook: true,
+                    kibopush: false
+                }
+            }
+        })
+
+
+
+
+        let pageTagsData = [kiboPageTags, fbPageTags]
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
         this.setState({ totalLength: pageTagsData.length })
@@ -66,130 +104,222 @@ class PageTags extends React.Component {
     this.displayData(data.selected, this.props.pageTags)
   }
 
+
   render () {
-    console.log('uniquePages state', this.state)
+    console.log('pageTags state', this.state)
     return (
-      <div className='row'>
-        <div
-          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-          <div className='m-portlet m-portlet--mobile'>
-            <div className='m-portlet__head'>
-              <div className='m-portlet__head-caption'>
-                <div className='m-portlet__head-title'>
-                  <h3 className='m-portlet__head-text'>
-                    {this.props.location.state.pageName}
-                  </h3>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        {this.props.location.state.pageName}
+                      </h3>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className='m-portlet__head-tools'>
-                <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                  <li className='nav-item m-tabs__item' />
-                  <li className='nav-item m-tabs__item' />
-                  <li className='m-portlet__nav-item'>
-                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
-                      {this.state.showPageTags
-                      ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
-                    : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
-                  }
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            {this.state.showPageTags &&
-            <div className='m-portlet__body'>
-              <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                {
-                  this.state.pageTagsData.length > 0
+                <div className='m-portlet__body'>
+                  <div>
+                  { this.state.pageTagsData && this.state.pageTagsData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table'
-                      id='m-datatable--27866229129' style={{
-                        display: 'block',
-                        height: 'auto',
-                        overflowX: 'auto'
-                      }}>
+                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
                           <th data-field='tagName'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Tag Name</span></th>
+                            <span style={{width: '150px'}}>Tag Name</span>
+                          </th>
                           <th data-field='default'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Default</span></th>
+                            <span style={{width: '100px'}}>Default</span>
+                          </th>
                           <th data-field='kibopush'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>KiboPush</span></th>
+                            <span style={{width: '100px'}}>KiboPush</span>
+                          </th>
                           <th data-field='facebook'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Facebook</span></th>
-                        <th data-field='actions'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Actions</span></th>
+                            <span style={{width: '100px'}}>Facebook</span>
+                          </th>
                         </tr>
                       </thead>
-                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                      <tbody className='m-datatable__body'>
                         {
-                          this.state.pageTagsData.map((pageTag, i) => (
-                            <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                                
-                                <td data-field='tagName' className='m-datatable__cell'>
-                                    <span style={{width: '120px'}}>{pageTag.name ? pageTag.name : pageTag.tag}</span>
-                                </td>
-
-                               <td data-field='default' className='m-datatable__cell'>
-                                    <span style={{width: '120px'}}>{pageTag.defaultTag}</span>
-                                </td>
-                                
-                                <td data-field='kibopush' className='m-datatable__cell'>
-                                    <span style={{width: '120px'}}>{pageTag.labelFbId ? 'True' : 'False'}</span>
-                                </td>
-                            
-                                <td data-field='facebook' className='m-datatable__cell'>
-                                    <span style={{width: '120px'}}>{pageTag.id ? 'True' : 'False'}</span>
-                                </td>
-
-                                <td data-field='actions'
-                                    className='m-datatable__cell'>
-                                    <span
-                                    style={{width: '120px'}}>
-                                        <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                            View More
-                                        </button>
-                                    </span>
-                                </td>
-
-                            </tr>
-                          ))
-                        }
+                        this.state.pageTagsData.map((pageTag, i) => (
+                          <tr data-row={i}
+                            className='m-datatable__row m-datatable__row--even'
+                            style={{height: '55px'}} key={i}>
+                            <td data-field='tagName' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageTag.tagName}</span></td>
+                            <td data-field='default' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.default}</span></td>
+                            <td data-field='kibopush' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.kibopush}</span></td>
+                            <td data-field='facebook' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageTag.facebook}</span></td>
+                          </tr>
+                        ))
+                      }
                       </tbody>
                     </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 10)}
-                      marginPagesDisplayed={1}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'}
-                      forcePage={this.state.pageNumber} />
+                    <div className='pagination'>
+                      <ReactPaginate
+                        previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 10)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        forcePage={this.state.pageNumber}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'} />
+                    </div>
                   </div>
-                  : <p> No data to display. </p>
+                  : <span>
+                    <p> No data to display </p>
+                  </span>
                 }
-              </div>
+
+                  </div>
+                </div>
               </div>
             </div>
-          }
           </div>
         </div>
       </div>
     )
   }
+
+//   render () {
+//     console.log('uniquePages state', this.state)
+//     return (
+//       <div className='row'>
+//         <div
+//           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+//           <div className='m-portlet m-portlet--mobile'>
+//             <div className='m-portlet__head'>
+//               <div className='m-portlet__head-caption'>
+//                 <div className='m-portlet__head-title'>
+//                   <h3 className='m-portlet__head-text'>
+//                     {this.props.location.state.pageName}
+//                   </h3>
+//                 </div>
+//               </div>
+//               <div className='m-portlet__head-tools'>
+//                 <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+//                   <li className='nav-item m-tabs__item' />
+//                   <li className='nav-item m-tabs__item' />
+//                   <li className='m-portlet__nav-item'>
+//                     <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+//                       {this.state.showPageTags
+//                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
+//                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
+//                   }
+//                     </a>
+//                   </li>
+//                 </ul>
+//               </div>
+//             </div>
+//             {this.state.showPageTags &&
+//             <div className='m-portlet__body'>
+//               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+//                 {
+//                   this.state.pageTagsData.length > 0
+//                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+//                     <table className='m-datatable__table'
+//                       id='m-datatable--27866229129' style={{
+//                         display: 'block',
+//                         height: 'auto',
+//                         overflowX: 'auto'
+//                       }}>
+//                       <thead className='m-datatable__head'>
+//                         <tr className='m-datatable__row'
+//                           style={{height: '53px'}}>
+//                           <th data-field='tagName'
+//                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+//                             <span style={{width: '120px'}}>Tag Name</span></th>
+//                           <th data-field='default'
+//                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+//                             <span style={{width: '120px'}}>Default</span></th>
+//                           <th data-field='kibopush'
+//                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+//                             <span style={{width: '120px'}}>KiboPush</span></th>
+//                           <th data-field='facebook'
+//                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+//                             <span style={{width: '120px'}}>Facebook</span></th>
+//                         <th data-field='actions'
+//                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+//                             <span style={{width: '120px'}}>Actions</span></th>
+//                         </tr>
+//                       </thead>
+//                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+//                         {
+//                           this.state.pageTagsData.map((pageTag, i) => (
+//                             <tr data-row={i}
+//                               className='m-datatable__row m-datatable__row--even'
+//                               style={{height: '55px'}} key={i}>
+                                
+//                                 <td data-field='tagName' className='m-datatable__cell'>
+//                                     <span style={{width: '120px'}}>{pageTag.name ? pageTag.name : pageTag.tag}</span>
+//                                 </td>
+
+//                                <td data-field='default' className='m-datatable__cell'>
+//                                     <span style={{width: '120px'}}>{pageTag.defaultTag}</span>
+//                                 </td>
+                                
+//                                 <td data-field='kibopush' className='m-datatable__cell'>
+//                                     <span style={{width: '120px'}}>{pageTag.labelFbId ? 'True' : 'False'}</span>
+//                                 </td>
+                            
+//                                 <td data-field='facebook' className='m-datatable__cell'>
+//                                     <span style={{width: '120px'}}>{pageTag.id ? 'True' : 'False'}</span>
+//                                 </td>
+
+//                                 <td data-field='actions'
+//                                     className='m-datatable__cell'>
+//                                     <span
+//                                     style={{width: '120px'}}>
+//                                         <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+//                                             View More
+//                                         </button>
+//                                     </span>
+//                                 </td>
+
+//                             </tr>
+//                           ))
+//                         }
+//                       </tbody>
+//                     </table>
+//                     <ReactPaginate previousLabel={'previous'}
+//                       nextLabel={'next'}
+//                       breakLabel={<a>...</a>}
+//                       breakClassName={'break-me'}
+//                       pageCount={Math.ceil(this.state.totalLength / 10)}
+//                       marginPagesDisplayed={1}
+//                       pageRangeDisplayed={3}
+//                       onPageChange={this.handlePageClick}
+//                       containerClassName={'pagination'}
+//                       subContainerClassName={'pages pagination'}
+//                       activeClassName={'active'}
+//                       forcePage={this.state.pageNumber} />
+//                   </div>
+//                   : <p> No data to display. </p>
+//                 }
+//               </div>
+//               </div>
+//             </div>
+//           }
+//           </div>
+//         </div>
+//       </div>
+//     )
+//   }
 }
 
 function mapStateToProps (state) {
