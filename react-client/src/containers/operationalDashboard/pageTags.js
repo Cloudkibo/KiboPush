@@ -115,34 +115,39 @@ class PageTags extends React.Component {
 
 
 
-        <div className='m-portlet__body' style={{marginTop: '-28px'}}>
+        <div className='m-portlet__body'>
         <div className='row m-row--full-height'>
-            <div className='col-sm-12 col-md-12 col-lg-6' style={{paddingRight: '2px'}}>
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
-                <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                    <div className='m-widget26__number'>
-                    {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
-                    <small>
-                        KiboPush Tags
-                    </small>
+            <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+                    <div className='m-portlet__body'>
+                        <div className='m-widget26'>
+                            <div className='m-widget26__number'>
+                                {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
+                                <small>
+                                    KiboPush Tags
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                </div>
             </div>
+
+
             <div className='m--space-30' />
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger' style={{marginTop: '-26px'}}>
-                <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                    <div className='m-widget26__number'>
-                    {this.props.pageTags && this.props.pageTags.fbPageTags.length}
-                    <small>
-                        Facebook Page Tags
-                    </small>
+
+            <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+                    <div className='m-portlet__body'>
+                        <div className='m-widget26'>
+                            <div className='m-widget26__number'>
+                                {this.props.pageTags && this.props.pageTags.fbPageTags.length}
+                                <small>
+                                    Facebook Tags
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                </div>
-            </div>
             </div>
             </div>
         </div>
