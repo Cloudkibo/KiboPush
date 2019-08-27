@@ -93,7 +93,7 @@ class PageTags extends React.Component {
         pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length })
+        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -102,7 +102,7 @@ class PageTags extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.props.pageTags)
+    this.displayData(data.selected, this.state.pageTags)
   }
 
 
