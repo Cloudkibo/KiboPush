@@ -1012,7 +1012,7 @@ class Subscriber extends React.Component {
         if (nextProps.sequences[a].sequence.trigger.event === 'subscribes_to_sequence') {
           sequenceOptions.push({ 'value': nextProps.sequences[a].sequence._id, 'label': nextProps.sequences[a].sequence.name })
         }
-        if (nextProps.sequences[a].sequence.trigger.event === 'subscribes_to_sequence' && nextProps.sequences[a].subscibers.length > 0) {
+        if (nextProps.sequences[a].sequence.trigger.event === 'subscribes_to_sequence' && nextProps.sequences[a].subscribers.length > 0) {
           unsubSequenceOptions.push({ 'value': nextProps.sequences[a].sequence._id, 'label': nextProps.sequences[a].sequence.name })
         }
       }
