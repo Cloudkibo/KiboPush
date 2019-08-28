@@ -1701,7 +1701,7 @@ class Subscriber extends React.Component {
                                             options={this.state.sequenceOptions}
                                             onChange={this.handleSequence}
                                             value={this.state.sequenceValue}
-                                            placeholder='Remove User Tags'
+                                            placeholder='Select Sequence...'
                                           />
                                         </div>
                                         <div className='col-12'>
