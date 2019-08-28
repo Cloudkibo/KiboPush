@@ -1008,7 +1008,7 @@ class Subscriber extends React.Component {
     if (nextProps.sequences) {
       let sequenceOptions = []
       for (let a = 0; a < nextProps.sequences.length; a++) {
-        if (nextProps.sequences[a].sequence.trigger.event === 'subscribes_to_sequence') {
+        if (nextProps.sequences[a].sequence.trigger.event === 'subscribes_to_sequence' && nextProps.sequences[a].messages.length > 0) {
           sequenceOptions.push({ 'value': nextProps.sequences[a].sequence._id, 'label': nextProps.sequences[a].sequence.name })
         }
       }
