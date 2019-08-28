@@ -448,6 +448,12 @@ class Settings extends React.Component {
         this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
+    if (!nextProps.apiDisableNGP && nextProps.apiEnableNGP) {
+      console.log('call this function')
+      if (this.state.ngpDisable === true) {
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false, ngpButtonState: true})
+      }
+    }
     if (nextProps.resetDataNGP) {
       if (this.state.ngpDisable === false) {
         this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret, isDisableInput: false, isDisableButton: false})
