@@ -1702,9 +1702,9 @@ class Subscriber extends React.Component {
                                         <div className='col-12'>
                                           <label>Select Sequence</label>
                                           <Select
-                                            options={this.state.sequenceOptions}
+                                            options={this.state.unsubSequenceOptions}
                                             onChange={this.handleSequence}
-                                            value={this.state.unsubSequenceOptions}
+                                            value={this.state.sequenceValue}
                                             placeholder='Select Sequence...'
                                           />
                                         </div>
