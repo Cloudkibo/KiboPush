@@ -184,6 +184,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <GenericMessage
+                  pages={this.props.pages.map(page => page._id)}
                   broadcast={this.state.broadcast}
                   handleChange={this.handleChange}
                   setReset={reset => { this.reset = reset }}
@@ -201,6 +202,7 @@ class CreateMessage extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    pages: state.pagesInfo.pages
   }
 }
 
