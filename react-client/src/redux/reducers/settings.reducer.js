@@ -42,7 +42,8 @@ export function settingsInfo (state = initialState, action) {
       })
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
-        apiEnableNGP: action.data
+        apiEnableNGP: action.data,
+        apiDisableNGP: undefined
       })
     case ActionTypes.DISABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
