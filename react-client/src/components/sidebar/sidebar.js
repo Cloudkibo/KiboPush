@@ -50,7 +50,8 @@ class Sidebar extends Component {
       isKiboChat: false,
       messengerAds: true,
       businessGateway: false,
-      checkbox: true
+      checkbox: true,
+      abandonedCarts: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -63,7 +64,7 @@ class Sidebar extends Component {
       this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, isKiboChat: true})
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       console.log('kiboEngage')
-      this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
+      this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false, abandonedCarts: true })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
@@ -113,7 +114,7 @@ class Sidebar extends Component {
 
   showAbandonedCarts () {
     if (this.props.user) {
-      if (this.props.user.isSuperUser) {
+      if (this.state.abandonedCarts && this.props.user.isSuperUser) {
         // include user persmissions
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
