@@ -9,7 +9,6 @@ class UniquePages extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      searchValue: '',
       filter: true,
       pageNumber: 1,
       showUniquePages: false
@@ -78,9 +77,7 @@ class UniquePages extends React.Component {
   }
 
   searchUniquePages (event) {
-    this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
-      this.setState({filter: true})
       this.props.loadUniquePages({pageName: event.target.value})
     } else {
       this.props.loadUniquePages({pageNumber: this.state.pageNumber})
@@ -120,6 +117,12 @@ class UniquePages extends React.Component {
             {this.state.showUniquePages &&
             <div className='m-portlet__body'>
               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                <div className='form-row'>
+                  <div className='form-group col-md-6' >
+                    <input type='text' style={{marginBottom: '20px'}} placeholder='Search by Page Name...' className='form-control m-input m-input--solid' onChange={this.searchUniquePages} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left' />
+                  </div>
+                </div>
                 {
                   this.props.uniquePages && this.props.uniquePages.data && this.props.uniquePages.data.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>

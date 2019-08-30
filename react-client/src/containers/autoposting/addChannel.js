@@ -151,7 +151,13 @@ class AddChannel extends React.Component {
       this.props.onClose()
       this.props.msg.success('Changes saved successfully!')
     } else {
-      this.props.msg.error(response.description)
+      if (typeof response.description === 'string' || response.description instanceof String) {
+        this.props.msg.error(response.description)
+
+      }
+      else {
+        this.props.msg.error('Failed to create autoposting')
+      }
     }
   }
 

@@ -260,8 +260,9 @@ class FacebookPosts extends React.Component {
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     this.props.editFacebookPost(payload, this.msg)
+    this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
   }
-  reset (postId) {
+  reset (postId, showSuccessMessage) {
     this.setState({
       postText: '',
       showEmojiPicker: false,
@@ -271,8 +272,8 @@ class FacebookPosts extends React.Component {
       disabled: true,
       attachments: [],
       keywordErrors: [],
-      postId: postId,
-      showSuccessMessage: true
+      postId: postId || '',
+      showSuccessMessage: showSuccessMessage || false
     })
   }
   validateFile (files, componentType) {
