@@ -269,6 +269,8 @@ class Header extends React.Component {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
 
+    console.log('this.props.user.facebookInfo in header', this.props.user)
+
     return (
       <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
@@ -518,6 +520,7 @@ class Header extends React.Component {
                           </div>
                         </div>
                       </li>
+                      {this.props.user && this.props.user.facebookInfo &&
                       <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
@@ -533,7 +536,7 @@ class Header extends React.Component {
                                 <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
                                   <div className='m-nav-grid m-nav-grid--skin-light'>
                                     <div className='m-nav-grid__row'>
-                                      {
+                                      { 
                                         (window.location.hostname.toLowerCase().includes('kiboengage') &&
                                         this.props.subscribers &&
                                           this.props.subscribers.length === 0)
@@ -548,7 +551,7 @@ class Header extends React.Component {
                                           : null
                                       }
 
-                                      {
+                                      { 
                                         (window.location.hostname.toLowerCase().includes('kiboengage') &&
                                         this.props.subscribers &&
                                           this.props.subscribers.length === 0)
@@ -567,7 +570,7 @@ class Header extends React.Component {
                                     </div>
                                     <div className='m-nav-grid__row'>
 
-                                      {
+                                      { 
                                         (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/surveys' className='m-nav-grid__item'>
@@ -580,7 +583,8 @@ class Header extends React.Component {
                                           </Link>
                                            : null
                                       }
-                                      {!window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                      { 
+                                        !window.location.hostname.toLowerCase().includes('kiboengage') &&
                                       <Link to='/bots' className='m-nav-grid__item'>
                                         <i className='m-nav-grid__icon flaticon-clipboard' />
                                         <span className='m-nav-grid__text'>Create New Bot</span>
@@ -594,6 +598,7 @@ class Header extends React.Component {
                           </div>
                         </div>
                       </li>
+                      }
                       {/* APP CHOOSER */}
                       <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
