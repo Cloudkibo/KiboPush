@@ -1052,7 +1052,7 @@ class Sidebar extends Component {
                   {this.showGrowthToolsItems()}
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
-                  {this.showAbandonedCarts()}
+                  {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
                   {this.showSettings()}
                   {this.showUserGuide()}
                 </ul>
