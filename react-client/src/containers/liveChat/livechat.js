@@ -305,8 +305,8 @@ class LiveChat extends React.Component {
     }
     if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
       if (
-        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
-        (!nextProps.socketData.action === 'agent_replied')
+        ((nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
@@ -319,8 +319,8 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession && nextProps.socketSession !== '') {
       if (
-        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
-        (!nextProps.socketData.action === 'agent_replied')
+        ((nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         let sessionIds = nextProps.openSessions.map((s) => s._id)
         if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
