@@ -93,6 +93,7 @@ class ChatArea extends React.Component {
             loadingUrl={this.props.loadingUrl}
             urlValue={this.props.urlValue}
             user={this.props.user}
+            updatePendingSession={this.props.updatePendingSession}
           />
         </div>
       </div>

@@ -84,7 +84,8 @@ class ChatBox extends React.Component {
       record: false,
       buttonState: 'start',
       recording: false,
-      scrolling: true
+      scrolling: true,
+      isShowingModalPending: false
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -121,6 +122,8 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogPending = this.showDialogPending.bind(this)
+    this.closeDialogPending = this.closeDialogPending.bind(this)
     this.showDialogRecording = this.showDialogRecording.bind(this)
     this.closeDialogRecording = this.closeDialogRecording.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
@@ -155,6 +158,14 @@ class ChatBox extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  showDialogPending () {
+    this.setState({isShowingModalPending: true})
+  }
+
+  closeDialogPending () {
+    this.setState({isShowingModalPending: false})
   }
 
   shouldLoad () {
@@ -502,6 +513,7 @@ class ChatBox extends React.Component {
         }
         this.newMessage = true
         this.setState({scrolling: true})
+        this.props.updatePendingSession(this.props.currentSession)
       }
     }
   }
@@ -818,6 +830,32 @@ class ChatBox extends React.Component {
           </ModalContainer>
         }
         {
+          this.state.isShowingModalPending &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogPending}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogPending}>
+              <h3>Remove Pending Response</h3>
+              <p>Are you sure you want to remove this session as pending response?</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={(e) => {
+                    this.props.removePending(this.props.currentSession)
+                    this.closeDialogPending()
+                  }}>
+                    Yes
+                  </button>
+                </div>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={this.closeDialogPending}>
+                    No
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
           this.state.isShowingModalRecording &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogRecording}>
@@ -998,10 +1036,12 @@ class ChatBox extends React.Component {
             {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
+                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
+                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
