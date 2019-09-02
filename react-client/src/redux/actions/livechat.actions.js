@@ -344,6 +344,14 @@ export function markRead (sessionid) {
   }
 }
 
+export function updatePendingResponse (data) {
+  return (dispatch) => {
+    callApi(`sessions/updatePendingResponse`, 'post', data).then(res => {
+      console.log('response from updatePendingSession', res)
+    })
+  }
+}
+
 export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
