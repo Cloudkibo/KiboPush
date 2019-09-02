@@ -20,6 +20,7 @@ class Button extends React.Component {
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
       shareButton: this.props.button ? this.props.button.type === 'element_share' : false,
+      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
@@ -48,7 +49,9 @@ class Button extends React.Component {
     this.closeUnsubscribe = this.closeUnsubscribe.bind(this)
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.shareButton = this.shareButton.bind(this)
+    this.sendSequenceMessageButton = this.sendSequenceMessageButton.bind(this)
     this.closeShareButton = this.closeShareButton.bind(this)
+    this.closeSendSequenceMessageButton = this.closeSendSequenceMessageButton.bind(this)
     this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
@@ -69,16 +72,21 @@ class Button extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     let newState = {
-      title: nextProps.tempButton ? (nextProps.tempButton.shareButton) ? 'Share' : nextProps.tempButton.title : nextProps.title,
+      title: nextProps.tempButton
+        ? (nextProps.tempButton.shareButton)
+          ? 'Share'
+          : nextProps.tempButton.title
+        : nextProps.title,
       url: nextProps.tempButton ? nextProps.tempButton.url : '',
       openWebsite: nextProps.tempButton && nextProps.tempButton.url ? true: false,
       shareButton: nextProps.tempButton && nextProps.tempButton.shareButton,
+      sendSequenceMessageButton: nextProps.tempButton && nextProps.tempButton.sendSequenceMessageButton,
       openWebView: nextProps.tempButton && nextProps.tempButton.webviewurl ? true : false,
       webviewurl: nextProps.tempButton ? nextProps.tempButton.webviewurl : '',
       webviewsize: nextProps.tempButton ? nextProps.tempButton.webviewsize : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL']
     }
-    newState.openPopover = newState.openWebsite || newState.openWebView || newState.shareButton
+    newState.openPopover = newState.openWebsite || newState.openWebView || newState.shareButton || newState.sendSequenceMessageButton
     console.log('Button newState', newState)
     if (newState.openPopover) {
       this.setState(newState)
@@ -114,7 +122,8 @@ class Button extends React.Component {
       openSubscribe: false,
       openUnsubscribe: false,
       openCreateMessage: false,
-      shareButton: false
+      shareButton: false,
+      sendSequenceMessageButton: false
     })
     this.props.onAdd(data, this.props.index)
   }
@@ -124,6 +133,13 @@ class Button extends React.Component {
       let sharedIndex = this.props.index
       let buttonData = {title: 'Share', visible: true, shareButton: true, index: this.props.index}
       this.props.updateButtonStatus({buttonDisabled: false, buttonData}, sharedIndex)
+    }
+  }
+  sendSequenceMessageButton () {
+    this.setState({sendSequenceMessageButton: true, title: ''})
+    if (this.props.updateButtonStatus) {
+      let buttonData = {title: '', visible: true, sendSequenceMessageButton: true, index: this.props.index}
+      this.props.updateButtonStatus({buttonDisabled: true, buttonData})
     }
   }
   showWebsite () {
@@ -153,6 +169,12 @@ class Button extends React.Component {
   }
   closeShareButton () {
     this.setState({shareButton: false, buttonDisabled: true, title: ''})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+  closeSendSequenceMessageButton () {
+    this.setState({sendSequenceMessageButton: false, buttonDisabled: true, title: ''})
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -197,6 +219,8 @@ class Button extends React.Component {
       this.closeWebview()
     } else if (this.state.shareButton === true) {
       this.closeShareButton()
+    } else if (this.state.sendSequenceMessageButton === true) {
+      this.closeSendSequenceMessageButton()
     } else if (this.state.openSubscribe === true) {
       this.closeSubscribe()
     } else if (this.state.openUnsubscribe === true) {
@@ -217,7 +241,8 @@ class Button extends React.Component {
       openWebView: false,
       openSubscribe: false,
       openUnsubscribe: false,
-      shareButton: false
+      shareButton: false,
+      sendSequenceMessageButton: false
     })
   }
 
@@ -237,6 +262,14 @@ class Button extends React.Component {
         id: this.props.index,
         type: 'element_share',
         title: this.state.title
+      }
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
+    } else if (this.state.sendSequenceMessageButton) {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        messageId: 'messageId'
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
@@ -313,6 +346,13 @@ class Button extends React.Component {
         title: this.state.title
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.sendSequenceMessageButton) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        messageId: 'messageId'
+      }
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.webviewurl) {
       let data = {
         type: 'web_url',
@@ -333,6 +373,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.shareButton && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.sendSequenceMessageButton && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -390,7 +435,7 @@ class Button extends React.Component {
           break
         }
       }
-  
+
       if (validDomain) {
         this.setState({errorMsg:'', buttonDisabled: false})
         if (this.props.updateButtonStatus) {
@@ -417,7 +462,7 @@ class Button extends React.Component {
 
           <div style={{marginTop: '30px'}}>
             {
-                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView && !this.state.openCreateMessage &&
+                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage &&
                   <div>
                     <h6 style={{color: 'red'}}>Select one of the below actions:</h6>
                     {
@@ -444,6 +489,12 @@ class Button extends React.Component {
                       (this.props.buttonActions.indexOf('add share') > -1) &&
                       <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
+                      </div>
+                    }
+                    {
+                      (this.props.buttonActions.indexOf('send sequence message') > -1) &&
+                      <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.sendSequenceMessageButton}>
+                        <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Send Sequence Message</h7>
                       </div>
                     }
                     { (this.props.buttonActions.indexOf('subscribe sequence') > -1) && this.state.showSequenceMessage &&
@@ -514,6 +565,12 @@ class Button extends React.Component {
                     <h7 className='card-header'>Share this message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeShareButton} /></h7>
                   </div>
                 }
+                {
+                    this.state.sendSequenceMessageButton &&
+                    <div className='card'>
+                      <h7 className='card-header'>Send Sequence Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeSendSequenceMessageButton} /></h7>
+                    </div>
+                  }
           {
                   this.state.openSubscribe &&
                   <div className='card'>

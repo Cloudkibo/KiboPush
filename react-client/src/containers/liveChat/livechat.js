@@ -21,7 +21,8 @@ import {
   resetUnreadSession,
   updateUserChat,
   clearSearchResult,
-  markRead
+  markRead,
+  updatePendingResponse
 } from '../../redux/actions/livechat.actions'
 import {
   getSubscriberTags,
@@ -54,6 +55,7 @@ class LiveChat extends React.Component {
       customFieldOptions: {}
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
+    this.updatePendingSession = this.updatePendingSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
@@ -68,6 +70,7 @@ class LiveChat extends React.Component {
     this.saveCustomField = this.saveCustomField.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
     this.getAgents = this.getAgents.bind(this)
+    this.removePending = this.removePending.bind(this)
   }
 
   getAgents (members) {
@@ -135,6 +138,33 @@ class LiveChat extends React.Component {
       this.props.getSubscriberTags(session._id, this.msg)
       this.props.getCustomFieldValue(session._id)
     }
+  }
+
+  updatePendingSession(session) {
+    console.log('in updatePendingSession', session)
+    session.pendingResponse = false
+    if (Object.keys(session).length > 0 && session.constructor === Object) {
+      if (this.state.tabValue === 'open') {
+        var temp = this.props.openSessions
+        for (var i = 0; i < temp.length; i++) {
+          if (temp[i]._id === session._id && temp[i].pendingResponse) {
+            temp[i].pendingResponse = false
+          }
+        }
+      } else {
+        var tempClose = this.props.closeSessions
+        for (var j = 0; j < tempClose.length; j++) {
+          if (tempClose[j]._id === session._id && tempClose[j].pendingResponse) {
+            tempClose[j].pendingResponse = false
+          }
+        }
+      }
+    }
+  }
+
+  removePending (session) {
+    this.props.updatePendingResponse({id: session._id, pendingResponse: false})
+    this.updatePendingSession(session)
   }
 
   fetchSessions(data, type) {
@@ -305,13 +335,14 @@ class LiveChat extends React.Component {
     }
     if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
       if (
-        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
-        (!nextProps.socketData.action === 'agent_replied')
+        ((nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
           if (temp[z]._id === nextProps.unreadSession) {
             temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+            temp[z].pendingResponse = true
           }
         }
         this.props.resetUnreadSession()
@@ -319,8 +350,8 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession && nextProps.socketSession !== '') {
       if (
-        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
-        (!nextProps.socketData.action === 'agent_replied')
+        ((nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         let sessionIds = nextProps.openSessions.map((s) => s._id)
         if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
@@ -401,6 +432,8 @@ class LiveChat extends React.Component {
                         showSearch={this.showSearch}
                         currentSession={this.state.activeSession}
                         changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox}
+                        updatePendingSession={this.updatePendingSession}
+                        removePending={this.removePending}
                       />
                     }
                     {
@@ -496,7 +529,8 @@ function mapDispatchToProps(dispatch) {
     loadMembersList,
     getCustomFieldValue,
     loadCustomFields,
-    setCustomFieldValue
+    setCustomFieldValue,
+    updatePendingResponse
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

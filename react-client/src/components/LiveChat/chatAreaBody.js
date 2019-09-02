@@ -157,6 +157,7 @@ class ChatAreaBody extends React.Component {
           data.format = 'convos'
           this.props.userChat.push(data)
         }
+        this.props.updatePendingSession(this.props.activeSession)
         this.newMessage = true
       }
     }

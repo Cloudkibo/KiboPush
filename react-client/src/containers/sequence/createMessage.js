@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { editMessage } from '../../redux/actions/sequence.action'
+import { editMessage, createMessage } from '../../redux/actions/sequence.action'
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
@@ -17,7 +17,7 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'add share'],
+      buttonActions: ['open website', 'add share', 'send sequence message'],
       broadcast: this.props.location.state ? this.props.location.state.payload : [],
       convoTitle: 'Broadcast Title',
       isShowingModalGuideLines: false
@@ -69,12 +69,20 @@ class CreateMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
-    console.log('edit Message', this.state.broadcast)
-    this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
-    browserHistory.push({
-      pathname: `/viewMessage`,
-      state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
-    })
+    console.log('edit Message', this.state)
+    if (this.props.location.state.action === 'create') {
+      let payload = this.props.location.state.data
+      payload.payload = this.state.broadcast
+      payload.title = this.state.convoTitle
+      payload.sequenceId = this.props.location.state.sequenceId
+      this.props.createMessage(payload, browserHistory, this.msg, this.props.location.state.name)
+    } else if (this.props.location.state.action === 'edit') {
+      this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
+      browserHistory.push({
+        pathname: `/viewMessage`,
+        state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+      })
+    }
   }
 
   scrollToTop () {
@@ -91,7 +99,7 @@ class CreateMessage extends React.Component {
     } else {
       browserHistory.push({
         pathname: `/editSequence`,
-        state: {module: 'view', _id: this.props.location.state.id, name: this.state.convoTitle}
+        state: {module: 'view', _id: this.props.location.state.sequenceId, name: this.state.convoTitle}
       })
     }
   }
@@ -209,7 +217,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      editMessage: editMessage
+      editMessage: editMessage,
+      createMessage
     },
     dispatch)
 }

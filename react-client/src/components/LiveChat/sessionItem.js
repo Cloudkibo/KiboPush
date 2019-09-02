@@ -95,6 +95,14 @@ class SessionItem extends React.Component {
               </a>
             }
           </div>
+          <div className='m-widget4__ext'>
+            {
+              this.props.session.pendingResponse &&
+              <a style={{backgroundColor: '#c4c5d6', color: '#000000'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                pending
+              </a>
+            }
+          </div>
         </div>
       </div>
     )

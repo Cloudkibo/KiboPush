@@ -15,7 +15,9 @@ class SessionsArea extends React.Component {
       filter_criteria: {
         sort_value: -1,
         page_value: '',
-        search_value: ''
+        search_value: '',
+        pendingResponse: '',
+        unreadMessages: ''
       }
     }
     this.changeTab = this.changeTab.bind(this)
@@ -44,7 +46,9 @@ class SessionsArea extends React.Component {
       filter_criteria: {
         sort_value: this.state.sort_value,
         page_value: this.state.page_value,
-        search_value: this.state.search_value
+        search_value: this.state.search_value,
+        pendingResponse: this.state.pendingResponse,
+        unreadMessages: this.state.unreadMessages
       }
     }, type)
   }
