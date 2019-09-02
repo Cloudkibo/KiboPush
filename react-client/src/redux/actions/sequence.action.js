@@ -59,7 +59,7 @@ export function updateSegmentation (data, msg) {
   }
 }
 
-export function createMessage (data) {
+export function createMessage (data, browserHistory, msg, sequenceName) {
   console.log('data createMessage', data)
   return (dispatch) => {
     callApi('sequenceMessaging/createMessage', 'post', data)
@@ -67,6 +67,12 @@ export function createMessage (data) {
         console.log('response from createMessage', res)
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
+          browserHistory.push({
+            pathname: '/editSequence',
+            state: {module: 'view', _id: data.sequenceId, name: sequenceName}
+          })
+        } else {
+          msg.error('Failed to create message')
         }
       })
   }
@@ -221,13 +227,13 @@ export function deleteSequence (id, msg) {
     callApi(`sequenceMessaging/deleteSequence/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Sequence deleted successfully')
+          if (msg) msg.success('Sequence deleted successfully')
           dispatch(fetchAllSequence())
         } else {
           if (res.status === 'failed' && res.description) {
-            msg.error(`Failed to delete Sequence. ${res.description}`)
+            if (msg) msg.error(`Failed to delete Sequence. ${res.description}`)
           } else {
-            msg.error('Failed to delete Sequence')
+            if (msg) msg.error('Failed to delete Sequence')
           }
         }
       })

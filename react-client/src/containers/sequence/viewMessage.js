@@ -44,7 +44,7 @@ class ViewBroadcastTemplate extends React.Component {
   goBack () {
     browserHistory.push({
       pathname: `/editSequence`,
-      state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+      state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.name}
     })
   }
 
