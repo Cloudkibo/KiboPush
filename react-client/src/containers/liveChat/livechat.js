@@ -335,8 +335,8 @@ class LiveChat extends React.Component {
     }
     if (nextProps.unreadSession && nextProps.openSessions.length > 0) {
       if (
-        (nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
-        (!nextProps.socketData.action === 'agent_replied')
+        ((nextProps.socketData.action === 'agent_replied' && this.props.user._id !== nextProps.socketData.user_id) ||
+        (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
