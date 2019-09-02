@@ -7,7 +7,17 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
+import {
+  fetchAllSequence,
+  createSequence,
+  fetchAllMessages,
+  deleteMessage,
+  setSchedule,
+  setStatus,
+  updateSegmentation,
+  deleteSequence,
+  updateTrigger
+} from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
@@ -18,6 +28,7 @@ import { allLocales } from '../../redux/actions/subscribers.actions'
 class CreateSequence extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.addMessageFlag = false
     this.state = {
       isShowingModalDelete: false,
       deleteid: '',
@@ -52,7 +63,8 @@ class CreateSequence extends React.Component {
       selectedTriggerBtnTitle: '',
       dropdownConditionOpen: false,
       genders: ['male', 'female', 'other'],
-      segmentation: []
+      segmentation: [],
+      showBackWarning: false
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -91,7 +103,10 @@ class CreateSequence extends React.Component {
     this.changeText = this.changeText.bind(this)
     this.removeCondition = this.removeCondition.bind(this)
     this.updateTextBox = this.updateTextBox.bind(this)
+    this.goBack = this.goBack.bind(this)
+    this.closeBackWarning = this.closeBackWarning.bind(this)
   }
+
   updateMessageTitle (message) {
     console.log('Trigger event is ', this.triggerEvent)
     let trigMsg = ''
@@ -214,12 +229,33 @@ class CreateSequence extends React.Component {
     return !errors
   }
 
+  goBack () {
+    if (this.props.messages.length === 0) {
+      this.setState({showBackWarning: true})
+    } else {
+      browserHistory.push({
+        pathname: `/sequenceMessaging`
+      })
+    }
+  }
+
+  componentWillUnmount () {
+    console.log('componentWillUnmount called', this.addMessageFlag)
+    if (this.props.messages.length === 0 && !this.addMessageFlag){
+      this.props.deleteSequence(this.state.sequenceId)
+    }
+  }
+
+  closeBackWarning () {
+    this.setState({showBackWarning: false})
+  }
+
   gotoView (message) {
     //  this.props.createSequence({name: this.state.name})
     if (message.payload && message.payload.length > 0) {
       browserHistory.push({
         pathname: `/viewMessage`,
-        state: {title: message.title, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
+        state: {title: message.title, name: this.props.location.state.name, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
     } else {
       browserHistory.push({
@@ -373,10 +409,26 @@ class CreateSequence extends React.Component {
   }
 
   createMessage () {
+    this.addMessageFlag = true
     var d1 = new Date()
     d1.setDate(d1.getDate() + 1)
     var utcDate = new Date(d1).toISOString()
-    this.props.createMessage({sequenceId: this.state.sequenceId, schedule: {condition: 'day(s)', days: '1', date: utcDate}, title: 'New Message', payload: []})
+    let payload = {
+      schedule: {condition: 'day(s)', days: '1', date: utcDate},
+      title: 'New Message',
+      payload: []
+    }
+    browserHistory.push({
+      pathname: `/createMessageSeq`,
+      state: {
+        data: payload,
+        payload: [],
+        title: 'New Message',
+        action: 'create',
+        name: this.props.location.state.name,
+        sequenceId: this.state.sequenceId
+      }
+    })
   }
 
   changeTime (event) {
@@ -457,7 +509,7 @@ class CreateSequence extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.location.state.module === 'create' && nextProps.createdSequence !== '') {
+    if (this.props.location.state.module === 'create' && (nextProps.createdSequence && nextProps.createdSequence !== '')) {
       this.setState({sequenceId: nextProps.createdSequence._id})
       this.props.fetchAllMessages(nextProps.createdSequence._id)
     }
@@ -570,6 +622,30 @@ class CreateSequence extends React.Component {
                       this.props.deleteMessage(this.state.deleteid, this.msg, this.state.sequenceId)
                       this.closeDialogDelete()
                     }}>Delete
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
+            {
+              this.state.showBackWarning &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeBackWarning}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeBackWarning}>
+                  <h3>Warning!</h3>
+                  <p>You have not added any messages in the sequence. Your changes will be discarded. Do you want to continue?</p>
+                  <button
+                    className='btn btn-primary btn-sm pull-right'
+                    onClick={() => {
+                      this.props.deleteSequence(this.state.sequenceId)
+                      browserHistory.push({pathname: '/sequenceMessaging'})
+                    }}>Yes
+                  </button>
+                  <button
+                    style={{marginRight: '5px'}}
+                    className='btn btn-secondary btn-sm pull-right'
+                    onClick={() => {this.closeBackWarning()}}
+                  >No
                   </button>
                 </ModalDialog>
               </ModalContainer>
@@ -1051,11 +1127,11 @@ class CreateSequence extends React.Component {
           </div>
           <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
             <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
-              <Link
-                to='/sequenceMessaging'
+              <button
+                onClick={this.goBack}
                 className='btn btn-primary' style={{'marginLeft': '10px'}}>
                 Back
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -1084,13 +1160,13 @@ function mapDispatchToProps (dispatch) {
     fetchAllMessages: fetchAllMessages,
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
-    createMessage: createMessage,
     updateTrigger: updateTrigger,
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
     updateSegmentation: updateSegmentation,
     loadTags: loadTags,
     allLocales: allLocales,
+    deleteSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
