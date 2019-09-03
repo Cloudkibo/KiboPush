@@ -6,6 +6,7 @@
 import React from 'react'
 import AlertContainer from 'react-alert'
 import {
+  fetchOpenSessions,
   fetchUserChats,
   uploadAttachment,
   deletefile,
@@ -419,6 +420,7 @@ class ChatBox extends React.Component {
     })
   }
   setMessageData (session, payload) {
+    console.log('current session', session)
     var data = ''
     data = {
       sender_id: session.pageId._id, // this is the page id: _id of Pageid
@@ -437,6 +439,24 @@ class ChatBox extends React.Component {
         name: this.props.user.name
       }
     }
+    // var indexes = this.props.openSessions.filter((new_session, index) => {
+    //     if(new_session._id === session._id) {
+    //       console.log('index', index)
+    //       return index
+    //     }
+    // })
+    // console.log('indexes', indexes)
+
+    var index=0
+    for(var i=0; i< this.props.openSessions.length; i++) {
+      if(this.props.openSessions[i]._id === session._id) {
+          index=i
+      }
+    }
+    this.props.openSessions[index].last_activity_time = Date.now()
+    this.props.openSessions.sort(function (a, b) {
+      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    })
     return data
   }
   setDataPayload (component) {
@@ -1977,7 +1997,7 @@ function mapStateToProps (state) {
     loadingUrl: (state.liveChat.loadingUrl),
     urlMeta: (state.liveChat.urlMeta),
     user: (state.basicInfo.user),
-    socketData: (state.liveChat.socketData)
+    socketData: (state.liveChat.socketData),
   }
 }
 
