@@ -32,6 +32,7 @@ class Sequence extends React.Component {
       seqTriggerVal: 'subscribes_to_sequence',
       selectedDropdownVal: '',
       unsubscribeToSequenceVal: '',
+      pollValue: '',
       selectDropdownName: '',
       isShowSequenceDropDown: false,
       isShowSequenceDropDownUnsub: false,
@@ -258,7 +259,7 @@ class Sequence extends React.Component {
   }
 
   handlePollsDropdown (event) {
-    this.setState({ selectedDropdownVal: event.target.value })
+    this.setState({ pollValue: event.target.value })
   }
 
   handleSaveTrigger (event) {
@@ -272,7 +273,7 @@ class Sequence extends React.Component {
     } else if (this.state.seqTriggerVal === 'unsubscribes_from_other_sequence') {
       value = this.state.unsubscribeToSequenceVal
     } else if (this.state.seqTriggerVal === 'responds_to_poll') {
-      value = this.state.selectedDropdownVal
+      value = this.state.pollValue
     }
 
     var data = {
@@ -294,6 +295,9 @@ class Sequence extends React.Component {
     if (nextProps.sequences && nextProps.sequences.length > 0) {
       this.displayData(0, nextProps.sequences)
       this.setState({ totalLength: nextProps.sequences.length })
+    }
+    if (nextProps.polls && nextProps.polls.length > 0) {
+      this.setState({pollValue: nextProps.polls[0]._id})
     }
   }
 
@@ -488,7 +492,7 @@ class Sequence extends React.Component {
                      When subscriber responds to specific poll
                     {
                       this.state.isShowPollsDropdown && this.props.polls.length > 0 &&
-                      <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.selectedDropdownVal} >
+                      <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.pollValue} >
                         {
                           this.props.polls.map(function (poll) {
                             return <option key={poll._id}
