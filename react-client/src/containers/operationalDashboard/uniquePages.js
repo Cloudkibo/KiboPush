@@ -53,6 +53,16 @@ class UniquePages extends React.Component {
       })
   }
 
+  goToSubscribersWithTags (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/backdoorPageSubscribersWithTags',
+        state: {
+            pageId: pageId,
+            pageName: pageName
+        }
+      })
+  }
+
   toggle () {
     this.props.loadUniquePages({pageNumber: 1})
     this.setState({showUniquePages: !this.state.showUniquePages})
@@ -177,6 +187,9 @@ class UniquePages extends React.Component {
                                     </button>
                                     <button onClick={() => this.goToPageTags(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Tags
+                                    </button>
+                                    <button onClick={() => this.goToSubscribersWithTags(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                        View Subscribers
                                     </button>
                                 </span>
                               </td>
