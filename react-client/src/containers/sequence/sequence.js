@@ -31,6 +31,7 @@ class Sequence extends React.Component {
       isShowModalTrigger: false,
       seqTriggerVal: 'subscribes_to_sequence',
       selectedDropdownVal: '',
+      unsubscribeToSequenceVal: '',
       selectDropdownName: '',
       isShowSequenceDropDown: false,
       isShowSequenceDropDownUnsub: false,
@@ -165,7 +166,7 @@ class Sequence extends React.Component {
         sequenceList.push(sequence2)
       }
     })
-    this.setState({sequenceList: sequenceList})
+    this.setState({sequenceList: sequenceList, unsubscribeToSequenceVal: sequenceList[0].sequence._id})
     let seqEvent = sequence.sequence.trigger.event
     // if (seqEvent === 'seen_all_sequence_messages') {
     //   this.state.sequencesData.map((sequence2) => {
@@ -253,7 +254,7 @@ class Sequence extends React.Component {
     this.setState({ selectedDropdownVal: event.target.value })
   }
   handleSequenceDropdown2 (event) {
-    this.setState({ selectedDropdownVal: event.target.value })
+    this.setState({ unsubscribeToSequenceVal: event.target.value })
   }
 
   handlePollsDropdown (event) {
@@ -269,7 +270,7 @@ class Sequence extends React.Component {
     } else if (this.state.seqTriggerVal === 'seen_all_sequence_messages') {
       value = this.state.selectedDropdownVal
     } else if (this.state.seqTriggerVal === 'unsubscribes_from_other_sequence') {
-      value = this.state.selectedDropdownVal
+      value = this.state.unsubscribeToSequenceVal
     } else if (this.state.seqTriggerVal === 'responds_to_poll') {
       value = this.state.selectedDropdownVal
     }
@@ -469,7 +470,7 @@ class Sequence extends React.Component {
                      When subscriber unsubscribes from specific sequence
                     {
                       this.state.isShowSequenceDropDownUnsub && this.state.sequenceList.length > 0 &&
-                      <select className='form-control m-input' onChange={this.handleSequenceDropdown2} value={this.state.selectedDropdownVal}
+                      <select className='form-control m-input' onChange={this.handleSequenceDropdown2} value={this.state.unsubscribeToSequence}
                       >
                         {
                           this.state.sequenceList.map(function (sequence) {
