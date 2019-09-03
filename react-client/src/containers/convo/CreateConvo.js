@@ -118,8 +118,9 @@ class CreateConvo extends React.Component {
       tagValue: targeting.tagValue
     })
     let data = {}
+    console.log(this.props.location.state.pages)
     if (targeting.pageValue.length > 0) {
-      data['pageValue'] = targeting.pageValue
+      data['pageValue'] = this.props.location.state.pages
     }
     if (targeting.genderValue.length > 0) {
       data['genderValue'] = targeting.genderValue
