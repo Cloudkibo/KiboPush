@@ -128,7 +128,7 @@ class PageSubscribersWithTags extends React.Component {
                                 <span style={{maxHeight: '200px', width: '150px', overflowY: 'scroll'}}> 
                                     {
                                         pageSubscriber.assignedTags.map(tag => {
-                                            return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block'}}>{tag.tag}</span>)
+                                            return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
                                         })
                                     } 
                                 </span>
@@ -137,7 +137,7 @@ class PageSubscribersWithTags extends React.Component {
                                 <span style={{maxHeight: '200px', width: '150px', overflowY: 'scroll'}}> 
                                     {
                                         pageSubscriber.unassignedTags.map(tag => {
-                                            return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block'}}>{tag.tag}</span>)
+                                            return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
                                         })
                                     } 
                                 </span>
