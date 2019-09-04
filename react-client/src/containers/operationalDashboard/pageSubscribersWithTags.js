@@ -125,7 +125,7 @@ class PageSubscribersWithTags extends React.Component {
                             style={{height: '55px', border: 'solid #F4F3FB'}} key={i}>
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageSubscriber.subscriber.firstName + ' ' + pageSubscriber.subscriber.lastName}</span></td>
                             <td data-field='assignedTags' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{maxHeight: '200px', width: '150px', overflowY: 'scroll'}}> 
+                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}> 
                                     {
                                         pageSubscriber.assignedTags.map(tag => {
                                             return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
@@ -134,7 +134,7 @@ class PageSubscribersWithTags extends React.Component {
                                 </span>
                             </td>
                             <td data-field='unassignedTags' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{maxHeight: '200px', width: '150px', overflowY: 'scroll'}}> 
+                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}> 
                                     {
                                         pageSubscriber.unassignedTags.map(tag => {
                                             return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
