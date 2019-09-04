@@ -167,7 +167,12 @@ class Sequence extends React.Component {
         sequenceList.push(sequence2)
       }
     })
-    this.setState({sequenceList: sequenceList, unsubscribeToSequenceVal: sequenceList[0].sequence._id})
+    if (sequenceList.length > 0) {
+      this.setState({
+        sequenceList: sequenceList,
+        unsubscribeToSequenceVal: sequenceList[0].sequence._id
+      })
+    }
     let seqEvent = sequence.sequence.trigger.event
     // if (seqEvent === 'seen_all_sequence_messages') {
     //   this.state.sequencesData.map((sequence2) => {
