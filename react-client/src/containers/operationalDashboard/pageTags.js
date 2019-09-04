@@ -83,7 +83,7 @@ class PageTags extends React.Component {
         filter = true
       }
       console.log('after applying filters', filteredData)
-      this.setState({filteredData, filter})
+      this.setState({filteredData, filter, totalLength: filteredData.length})
       this.displayData(0, filteredData)
   }
 
