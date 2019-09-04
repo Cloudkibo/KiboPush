@@ -59,7 +59,7 @@ class PageTags extends React.Component {
   }
 
   applyNecessaryFilters() {
-      debugger;
+      //debugger;
       let filteredData = this.state.pageTags
       let filter = false
       if (this.state.selectedValue === 'incorrect') {
