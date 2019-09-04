@@ -342,7 +342,7 @@ class ChatBox extends React.Component {
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
     this.toggleStickerPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
@@ -361,7 +361,7 @@ class ChatBox extends React.Component {
     })
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
     this.toggleGifPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
@@ -379,7 +379,7 @@ class ChatBox extends React.Component {
     }
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
     data.format = 'convos'
     this.props.userChat.push(data)
     this.newMessage = true
@@ -447,16 +447,16 @@ class ChatBox extends React.Component {
     // })
     // console.log('indexes', indexes)
 
-    var index=0
-    for(var i=0; i< this.props.openSessions.length; i++) {
-      if(this.props.openSessions[i]._id === session._id) {
-          index=i
-      }
-    }
-    this.props.openSessions[index].last_activity_time = Date.now()
-    this.props.openSessions.sort(function (a, b) {
-      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-    })
+    // var index=0
+    // for(var i=0; i< this.props.openSessions.length; i++) {
+    //   if(this.props.openSessions[i]._id === session._id) {
+    //       index=i
+    //   }
+    // }
+    // this.props.openSessions[index].last_activity_time = Date.now()
+    // this.props.openSessions.sort(function (a, b) {
+    //   return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    // })
     return data
   }
   setDataPayload (component) {
@@ -519,14 +519,14 @@ class ChatBox extends React.Component {
         } else if (isUrl !== null && isUrl !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
+          this.props.sendChatMessage(data, this.props.fetchOpenSessions)
           this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
+          this.props.sendChatMessage(data, this.props.fetchOpenSessions)
           this.setState({textAreaValue: ''})
           data.format = 'convos'
           this.props.userChat.push(data)
@@ -2003,6 +2003,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    fetchOpenSessions: fetchOpenSessions,
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
     deletefile: (deletefile),
