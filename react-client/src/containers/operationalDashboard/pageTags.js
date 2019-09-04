@@ -29,6 +29,7 @@ class PageTags extends React.Component {
         this.setState({totalLength: this.state.pageTags.length, pageNumber: 0})
         break
       case 'incorrect':
+        console.log('showing incorrect records')
         this.displayData(0, this.state.incorrectRecords)
         this.setState({totalLength: this.state.incorrectRecords.length, pageNumber: 0})
         break
@@ -121,7 +122,11 @@ class PageTags extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.state.pageTags)
+    if (this.state.selectedValue === 'incorrect') {
+        this.displayData(data.selected, this.state.incorrectRecords)
+    } else {
+        this.displayData(data.selected, this.state.pageTags)
+    }
   }
 
 
