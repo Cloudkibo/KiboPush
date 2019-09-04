@@ -186,6 +186,13 @@ export function updateUniquePagesDetails (data) {
   }
 }
 
+export function updateSubscribersWithTags (data) {
+  return {
+    type: ActionTypes.LOAD_SUBSCRIBERS_WITH_TAGS,
+    data: data.payload
+  }
+}
+
 export function updateCurrentPageTags (data) {
   return {
     type: ActionTypes.LOAD_PAGE_TAGS,
