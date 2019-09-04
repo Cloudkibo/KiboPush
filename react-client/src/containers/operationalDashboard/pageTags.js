@@ -8,9 +8,13 @@ class PageTags extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+        filteredData: [],
         pageTagsData: [],
         searchValue: '',
-        filter: true,
+        defaultValue: '',
+        fbValue: '',
+        kiboValue: '',
+        filter: false,
         pageNumber: 0,
         showPageTags: true,
         selectedValue: 'all'
@@ -18,15 +22,93 @@ class PageTags extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.displayData = this.displayData.bind(this)
     this.onFilterChange = this.onFilterChange.bind(this)
+    this.onTagNameSearch = this.onTagNameSearch.bind(this)
+    this.onFbFilter = this.onFbFilter.bind(this)
+    this.onKiboFilter = this.onKiboFilter.bind(this)
+    this.onDefaultFilter = this.onDefaultFilter.bind(this)
+    this.applyNecessaryFilters = this.applyNecessaryFilters.bind(this)
+    this.applySearchFilter = this.applySearchFilter.bind(this)
+    this.applyFbFilter = this.applyFbFilter.bind(this)
+    this.applyKiboFilter = this.applyKiboFilter.bind(this)
+    this.applyDefaultFilter = this.applyDefaultFilter.bind(this)
     this.props.loadPageTags(this.props.location.state.pageId)
+  }
+
+  onTagNameSearch (event) {
+      this.setState({searchValue: event.target.value}, () => {
+          this.applyNecessaryFilters()
+      })
+  }
+
+  onFbFilter (event) {
+    this.setState({fbValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onKiboFilter (event) {
+    this.setState({kiboValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onDefaultFilter (event) {
+    this.setState({defaultValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  applyNecessaryFilters() {
+      debugger;
+      let filteredData = this.state.pageTags
+      let filter = false
+      if (this.state.selectedValue === 'incorrect') {
+        filteredData = this.state.incorrectRecords
+      }   
+      if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
+        filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
+        filter = true
+      }
+      if (this.state.kiboValue !== '' && this.state.kiboValue !== 'all') {
+        filteredData = this.applyKiboFilter(filteredData, this.state.kiboValue)
+        filter = true
+      }
+      if (this.state.defaultValue !== '' && this.state.defaultValue !== 'all') {
+        filteredData = this.applyDefaultFilter(filteredData, this.state.defaultValue)
+        filter = true
+      }
+      if (this.state.searchValue !== '') {
+        console.log(`applying search filter ${this.state.searchValue} ${JSON.stringify(filteredData)}`)
+        filteredData = this.applySearchFilter(filteredData, this.state.searchValue)
+        filter = true
+      }
+      console.log('after applying filters', filteredData)
+      this.setState({filteredData, filter})
+      this.displayData(0, filteredData)
+  }
+
+  applySearchFilter(data, search) {
+    return data.filter(x => x.tagName.includes(search))
+  }
+
+  applyFbFilter(data, fb) {
+      return data.filter(x => (''+x.facebook) === fb)
+  }
+
+  applyKiboFilter(data, kibo) {
+    return data.filter(x => (''+x.kibopush) === kibo)
+  }
+
+  applyDefaultFilter(data, def) {
+    return data.filter(x => (''+x.default) === def)
   }
 
   onFilterChange (event) {
     this.setState({selectedValue: event.target.value})
     switch (event.target.value) {
       case 'all':
-        this.displayData(0, this.state.pageTags)
-        this.setState({totalLength: this.state.pageTags.length, pageNumber: 0})
+        this.displayData(0, this.state.filteredData)
+        this.setState({totalLength: this.state.filteredData.length, pageNumber: 0})
         break
       case 'incorrect':
         console.log('showing incorrect records')
@@ -104,16 +186,12 @@ class PageTags extends React.Component {
                 }
             }
         })
-
-
-
-
         let pageTagsData = [...kiboPageTags, ...fbPageTags]
         pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
         let incorrectRecords = pageTagsData.filter(pageTag => pageTag.facebook !== pageTag.kibopush)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, incorrectRecords})
+        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -122,10 +200,12 @@ class PageTags extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
-    if (this.state.selectedValue === 'incorrect') {
+    if (this.state.selectedValue === 'incorrect' && !this.state.filter) {
         this.displayData(data.selected, this.state.incorrectRecords)
+    } else if (this.state.filter) {
+        this.displayData(data.selected, this.state.filteredData)
     } else {
-        this.displayData(data.selected, this.state.pageTags)
+        this.displayData(data.selected, this.state.filteredData)
     }
   }
 
@@ -207,14 +287,47 @@ class PageTags extends React.Component {
               <div className='m-portlet'>
                 <div className='m-portlet__body'>
                   <div>
-                  { this.state.pageTagsData && this.state.pageTagsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                  <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                    
+                    <div className='form-row'>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <input type='text' placeholder='Search by tag name' className='form-control' value={this.state.searchValue} onChange={this.onTagNameSearch} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value={this.state.defaultValue} onChange={this.onDefaultFilter} >
+                        <option value='' disabled>Filter by default</option>
+                        <option value='true'>default</option>
+                        <option value='false'>not default</option>
+                        <option value='all'>all</option>
+                      </select>
+                    </div>
+
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value={this.state.kiboValue} onChange={this.onKiboFilter} >
+                        <option value='' disabled>Filter by kibopush</option>
+                        <option value='true'>kibopush</option>
+                        <option value='false'>not kibopush</option>
+                        <option value='all'>all</option>
+                      </select>
+                    </div>
+
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value={this.state.fbValue} onChange={this.onFbFilter} >
+                        <option value='' disabled>Filter by facebook</option>
+                        <option value='true'>facebook</option>
+                        <option value='false'>not facebook</option>
+                        <option value='all'>all</option>
+                      </select>
+                    </div>
+                  </div>
+
+
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
                           <th data-field='tagName'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>  
                             <span style={{width: '150px'}}>Tag Name</span>
                           </th>
                           <th data-field='default'
@@ -231,7 +344,10 @@ class PageTags extends React.Component {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className='m-datatable__body'>
+
+                      {
+                        this.state.pageTagsData && this.state.pageTagsData.length > 0 ?
+                        <tbody className='m-datatable__body'>
                         {
                         this.state.pageTagsData.map((pageTag, i) => (
                           <tr data-row={i}
@@ -245,6 +361,11 @@ class PageTags extends React.Component {
                         ))
                       }
                       </tbody>
+                        : 
+                        <span>
+                            <h4 style={{margin: '20px', textAlign: 'center'}}> No subscribers </h4>
+                        </span>
+                      }
                     </table>
                     <div className='pagination'>
                       <ReactPaginate
@@ -262,10 +383,10 @@ class PageTags extends React.Component {
                         activeClassName={'active'} />
                     </div>
                   </div>
-                  : <span>
+                  {/* : <span>
                     <p> No data to display </p>
                   </span>
-                }
+                } */}
 
                   </div>
                 </div>
