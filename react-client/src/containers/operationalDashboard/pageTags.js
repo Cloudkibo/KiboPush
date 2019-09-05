@@ -363,7 +363,7 @@ class PageTags extends React.Component {
                       </tbody>
                         : 
                         <span>
-                            <h4 style={{margin: '20px', textAlign: 'center'}}> No subscribers </h4>
+                            <h4 style={{margin: '20px', textAlign: 'center'}}> No Pages Found </h4>
                         </span>
                       }
                     </table>
