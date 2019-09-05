@@ -27,7 +27,6 @@ class SessionsAreaHead extends React.Component {
   }
 
   hideDropDown () {
-    console.log('in hideDropDown')
     this.setState({showDropDown: false, pageValue: '', unreadMessages: '', pendingResponse: '', filter: false})
     let data = {
       first_page: true,
@@ -126,7 +125,6 @@ class SessionsAreaHead extends React.Component {
 
   handlePendingFilter (e) {
     this.setState({pendingResponse: e, filter: true})
-    console.log('event', e)
     let data = {
       first_page: true,
       last_id: 'none',
