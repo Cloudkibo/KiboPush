@@ -199,7 +199,7 @@ class UnansweredQueries extends React.Component {
 
                   </div>
                 </div>
-                : <div className='table-responsive' style={{ width: '150%' }}>
+                : <div className='table-responsive'>
                   <p> No data to display </p>
                 </div>
               }
