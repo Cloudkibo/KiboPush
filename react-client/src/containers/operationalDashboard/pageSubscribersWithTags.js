@@ -216,10 +216,10 @@ class PageSubscribersWithTags extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
-                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline'}}>{this.state.pageSubscribersData.length} Records</span>
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersData.length} Records</span>
                       </h3>
 
-                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '450px'}}>
+                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '400px'}}>
                         <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
                             <option value='' disabled>Select Page Owner</option>
                             {
