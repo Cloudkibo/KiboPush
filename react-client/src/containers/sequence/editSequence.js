@@ -272,7 +272,7 @@ class CreateSequence extends React.Component {
         buttonId: this.state.selectedButton },
       type: 'message',
       messageId: this.state.selectedMessageId
-    })
+    }, this.msg)
 
     this.props.fetchAllMessages(this.state.sequenceId)
     this.setState({ShowTrigger: false})
@@ -327,6 +327,7 @@ class CreateSequence extends React.Component {
         message.payload.map((payload, j) => {
           if (payload.buttons) {
             payload.buttons.map((button, k) => {
+              if (button.type === 'postback')
               buttonList.push(button)
             })
           }
