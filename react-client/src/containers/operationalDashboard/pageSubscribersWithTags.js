@@ -22,7 +22,8 @@ class PageSubscribersWithTags extends React.Component {
       assignedTagsValue: '',
       statusValue: '',
       filter: false,
-      filteredData: []
+      filteredData: [],
+      pageOwners: []
     }
     props.loadSubscribersWithTags(this.props.location.state.pageId)
     this.displayData = this.displayData.bind(this)
@@ -36,7 +37,14 @@ class PageSubscribersWithTags extends React.Component {
     this.applyAssignedFilter = this.applyAssignedFilter.bind(this)
     this.applyUnassignedFilter = this.applyUnassignedFilter.bind(this)
     this.applyStatusFilter = this.applyStatusFilter.bind(this)
+    this.onPageOwnerSelect = this.onPageOwnerSelect.bind(this)
     console.log('this.props in pageSubscribersWithTags', this.props)
+  }
+
+  onPageOwnerSelect (event) {
+      this.setState({pageSubscribersData: pageSubscribersDataSorted[event.target.value]}, () => {
+        this.applyNecessaryFilters()
+      })
   }
 
   onUserNameSearch (event) {
@@ -170,10 +178,26 @@ class PageSubscribersWithTags extends React.Component {
     }
   }
 
+  unique(array, propertyName) {
+    return array.filter((e, i) => array.findIndex(a => a[propertyName] === e[propertyName]) === i);
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers) {
-      this.displayData(0, nextProps.pageSubscribers)
-      this.setState({ totalLength: nextProps.pageSubscribers.length })
+      console.log('nextProps.pageSubscribers', nextProps.pageSubscribers)
+      let pageOwners = this.unique(nextProps.pageSubscribers.map(sub => sub.subscriber.pageOwner), '_id')
+      let pageSubscribersDataSorted = {}
+      for (let i = 0; i < pageOwners.length; i++) {
+          pageSubscribersDataSorted[pageOwners[i]._id] = nextProps.pageSubscribers.filter(sub => sub.subscriber.pageOwner._id === pageOwners[i]._id)
+      }
+      console.log('pageSubscribersData sorted', pageSubscribersDataSorted)
+      console.log('pageOwners', pageOwners)
+      if (pageOwners[0]) {
+        this.displayData(0, pageSubscribersDataSorted[pageOwners[0]._id])
+      } else {
+        this.displayData(0, [])
+      }
+      this.setState({ currentPageOwner: pageOwners[0] ? pageOwners[0]._id : '', pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
     }
   }
 
@@ -192,7 +216,17 @@ class PageSubscribersWithTags extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline'}}>{this.state.pageSubscribersData.length} Records</span>
                       </h3>
+
+                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '450px'}}>
+                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
+                            <option value='' disabled>Select Page Owner</option>
+                            {
+                                this.state.pageOwners.map(pageOwner => <option value={pageOwner._id}>{pageOwner.name}</option>)
+                            }
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
