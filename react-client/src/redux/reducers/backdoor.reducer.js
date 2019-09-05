@@ -26,6 +26,10 @@ const initialState = {
 
 export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.LOAD_SUBSCRIBERS_WITH_TAGS: 
+      return Object.assign({}, state, {
+        subscribersWithTags: action.data
+      })
     case ActionTypes.LOAD_PAGE_TAGS:
         return Object.assign({}, state, {
           pageTags: action.data
