@@ -16,12 +16,26 @@ class PageUsers extends React.Component {
     this.state = {
       pageUsersData: [],
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      searchValue: '',
+      connectedFilter: '',
+      typeFilter: '',
+      adminFilter: ''
     }
-    props.loadPageUsers({last_id: 'none', number_of_records: 10, first_page: 'first', pageId: this.props.location.state.pageId})
+    props.loadPageUsers({
+      pageId: this.props.location.state.pageId,
+      search_value: '',
+      connected_filter: '',
+      type_filter: '',
+      admin_filter: ''
+    })
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.handleFilterByType = this.handleFilterByType.bind(this)
+    this.handleFilterByConnected = this.handleFilterByConnected.bind(this)
+    this.handleFilterByAdmin = this.handleFilterByAdmin.bind(this)
+    this.searchUser = this.searchUser.bind(this)
   }
 
   scrollToTop () {
@@ -60,31 +74,103 @@ class PageUsers extends React.Component {
   }
 
   handlePageClick (data) {
-    if (data.selected === 0) {
-      this.props.loadPageUsers({
-        last_id: 'none',
-        number_of_records: 10,
-        first_page: 'first',
-        pageId: this.props.location.state.pageId })
-    } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPageUsers({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.pageUsers.length > 0 ? this.props.pageUsers[this.props.pageUsers.length - 1]._id : 'none',
-        number_of_records: 10,
-        first_page: 'next',
-        pageId: this.props.location.state.pageId })
-    } else {
-      this.props.loadPageUsers({
-        current_page: this.state.pageNumber,
-        requested_page: data.selected,
-        last_id: this.props.pageUsers.length > 0 ? this.props.pageUsers[0]._id : 'none',
-        number_of_records: 10,
-        first_page: 'previous',
-        pageId: this.props.location.state.pageId })
-    }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pageUsers)
+  }
+
+  handleFilterByConnected (e) {
+    if (e.target.value === 'true') {
+      this.setState({connectedFilter: true, pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: true,
+        type_filter: this.state.typeFilter,
+        admin_filter: this.state.adminFilter })
+    } else if (e.target.value === 'false') {
+      this.setState({connectedFilter: false, pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: false,
+        type_filter: this.state.typeFilter,
+        admin_filter: this.state.adminFilter })
+    } else {
+      this.setState({connectedFilter: '', pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: '',
+        type_filter: this.state.typeFilter,
+        admin_filter: this.state.adminFilter })
+    }
+  }
+
+  handleFilterByType (e) {
+    if (e.target.value !== '') {
+      this.setState({typeFilter: e.target.value, pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: this.state.connectedFilter,
+        type_filter: e.target.value,
+        admin_filter: this.state.adminFilter })
+    } else {
+      this.setState({typeFilter: '', pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: this.state.connectedFilter,
+        type_filter: '',
+        admin_filter: this.state.adminFilter })
+    }
+  }
+
+  handleFilterByAdmin (e) {
+    if (e.target.value === 'true') {
+      this.setState({adminFilter: true, pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: this.state.connectedFilter,
+        type_filter: this.state.typeFilter,
+        admin_filter: true })
+    } else if (e.target.value === 'false') {
+      this.setState({adminFilter: false, pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: this.state.connectedFilter,
+        type_filter: this.state.typeFilter,
+        admin_filter: false })
+    } else {
+      this.setState({adminFilter: '', pageNumber: 0})
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: this.state.searchValue,
+        connected_filter: this.state.connectedFilter,
+        type_filter: this.state.typeFilter,
+        admin_filter: '' })
+    }
+  }
+
+  searchUser (e) {
+    this.setState({searchValue: e.target.value, pageNumber: 0})
+    if (e.target.value !== '') {
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: e.target.value,
+        connected_filter: this.state.connectedFilter,
+        type_filter: this.state.typeFilter,
+        admin_filter: this.state.adminFilter })
+    } else {
+      this.props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: '',
+        connected_filter: this.state.connectedFilter,
+        type_filter: this.state.typeFilter,
+        admin_filter: this.state.adminFilter })
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -109,12 +195,75 @@ class PageUsers extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        {this.props.location.state.pageName}
+                        {this.props.location.state.pageName}&nbsp;&nbsp;&nbsp;
+                        <span className='m-badge m-badge--wide m-badge--primary'>{this.props.pageUsersCount} Users</span>
                       </h3>
                     </div>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-12 order-2 order-xl-1'>
+                      <div className='row filters'>
+                        <div className='col-md-4'>
+                          <div className='m-form__group m-form__group--inline'>
+                            <div className=''>
+                              <label style={{ width: '60px' }}>Account:</label>
+                            </div>
+                            <div className='m-form__control'>
+                              <select className='custom-select' id='m_form_status' style={{ width: '250px' }} tabIndex='-98' value={this.state.typeFilter} onChange={this.handleFilterByType}>
+                                <option key='' value='' disabled>Filter by Account...</option>
+                                <option key='individual' value='individual'>Individual</option>
+                                <option key='team' value='team'>Team</option>
+                                <option key='all' value=''>All</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className='d-md-none m--margin-bottom-10' />
+                        </div>
+                        <div className='col-md-4'>
+                          <div className='m-form__group m-form__group--inline'>
+                            <div className=''>
+                              <label style={{ width: '60px' }}>Connected:</label>
+                            </div>
+                            <div className='m-form__control'>
+                              <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.connectedFilter} onChange={this.handleFilterByConnected}>
+                                <option key='' value='' disabled>Filter by Connected...</option>
+                                <option key='true' value='true'>True</option>
+                                <option key='false' value='false'>False</option>
+                                <option key='all' value=''>All</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-md-4'>
+                          <div className='m-form__group m-form__group--inline'>
+                            <div className=''>
+                              <label style={{ width: '60px' }}>Admin:</label>
+                            </div>
+                            <div className='m-form__control'>
+                              <select className='custom-select' style={{ width: '250px' }} id='m_form_type' tabIndex='-98' value={this.state.adminFilter} onChange={this.handleFilterByAdmin}>
+                                <option key='' value='' disabled>Filter by Admin...</option>
+                                <option key='true' value='true'>True</option>
+                                <option key='false' value='false'>False</option>
+                                <option key='all' value=''>All</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                        <div className='col-md-12'>
+                          <div className='m-input-icon m-input-icon--left'>
+                            <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search User by Name...' id='generalSearch' onChange={this.searchUser} />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                              <span><i className='la la-search' /></span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div>
                   { this.state.pageUsersData && this.state.pageUsersData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -124,7 +273,7 @@ class PageUsers extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='name'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>User Name</span>
+                            <span style={{width: '120px'}}>User Name</span>
                           </th>
                           <th data-field='type'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -134,6 +283,14 @@ class PageUsers extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Connected</span>
                           </th>
+                          <th data-field='facebook'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Facebook Name</span>
+                          </th>
+                          <th data-field='admin'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '50px'}}>Admin</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -142,10 +299,12 @@ class PageUsers extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageUser.user.name}</span></td>
+                            <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{pageUser.user.name}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(pageUser.plan.unique_ID === 'plan_A' || pageUser.plan.unique_ID === 'plan_B') ? 'Individual' : 'Team' }</span></td>
                             <td data-field='connected' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageUser.connected ? 'true' : 'false'}</span></td>
-                          </tr>
+                            <td data-field='facebook' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageUser.user.facebookInfo ? pageUser.user.facebookInfo.name : '-'}</span></td>
+                            <td data-field='admin' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '50px'}}>{pageUser.admin ? 'true' : 'false'}</span></td>
+                      </tr>
                         ))
                       }
                       </tbody>
