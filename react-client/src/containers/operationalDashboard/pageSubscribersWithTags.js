@@ -16,12 +16,121 @@ class PageSubscribersWithTags extends React.Component {
     this.state = {
       pageSubscribersData: [],
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      searchValue: '',
+      unassignedTagsValue: '',
+      assignedTagsValue: '',
+      statusValue: '',
+      filter: false,
+      filteredData: [],
+      pageOwners: []
     }
     props.loadSubscribersWithTags(this.props.location.state.pageId)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.onUserNameSearch = this.onUserNameSearch.bind(this)
+    this.onAssignedTagsSearch = this.onAssignedTagsSearch.bind(this)
+    this.onUnassignedTagsSearch = this.onUnassignedTagsSearch.bind(this)
+    this.onStatusFilter = this.onStatusFilter.bind(this)
+    this.applyNecessaryFilters = this.applyNecessaryFilters.bind(this)
+    this.applyUserFilter = this.applyUserFilter.bind(this)
+    this.applyAssignedFilter = this.applyAssignedFilter.bind(this)
+    this.applyUnassignedFilter = this.applyUnassignedFilter.bind(this)
+    this.applyStatusFilter = this.applyStatusFilter.bind(this)
+    this.onPageOwnerSelect = this.onPageOwnerSelect.bind(this)
     console.log('this.props in pageSubscribersWithTags', this.props)
+  }
+
+  onPageOwnerSelect (event) {
+      this.setState({pageSubscribersData: pageSubscribersDataSorted[event.target.value]}, () => {
+        this.applyNecessaryFilters()
+      })
+  }
+
+  onUserNameSearch (event) {
+      this.setState({searchValue: event.target.value}, () => {
+          this.applyNecessaryFilters()
+      })
+  }
+
+  onAssignedTagsSearch (event) {
+      this.setState({assignedTagsValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onUnassignedTagsSearch (event) {
+      this.setState({unassignedTagsValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onStatusFilter (event) {
+      this.setState({statusValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  applyNecessaryFilters() {
+    debugger;
+    let filteredData = this.props.pageSubscribers
+    let filter = false
+    if (this.state.searchValue !== '') {
+      filteredData = this.applyUserFilter(filteredData, this.state.searchValue)
+      filter = true
+    }
+    if (this.state.unassignedTagsValue !== '') {
+      filteredData = this.applyUnassignedFilter(filteredData, this.state.unassignedTagsValue)
+      filter = true
+    }
+    if (this.state.assignedTagsValue !== '') {
+      filteredData = this.applyAssignedFilter(filteredData, this.state.assignedTagsValue)
+      filter = true
+    }
+    if (this.state.statusValue !== '' && this.state.statusValue !== 'all') {
+      console.log(`applying search filter ${this.state.searchValue} ${JSON.stringify(filteredData)}`)
+      filteredData = this.applyStatusFilter(filteredData, this.state.statusValue)
+      filter = true
+    }
+    console.log('after applying filters', filteredData)
+    this.setState({filteredData, filter, totalLength: filteredData.length})
+    this.displayData(0, filteredData)
+  }   
+
+  applyUserFilter (data, search) {
+    return data.filter(x => x.subscriber.firstName.includes(search) || x.subscriber.lastName.includes(search))
+  }
+
+  applyAssignedFilter (data, search) {
+    return data.filter(x => {
+        for (let i = 0; i < x.assignedTags.length; i++) {
+            let tagName = x.assignedTags[i].tag
+            if (tagName.includes(search)) {
+                return true
+            }
+        }
+    })
+  }
+
+  applyUnassignedFilter (data, search) {
+    return data.filter(x => {
+        for (let i = 0; i < x.unassignedTags.length; i++) {
+            let tagName = x.unassignedTags[i].tag
+            if (tagName.includes(search)) {
+                return true
+            }
+        }
+    })
+  }
+
+  applyStatusFilter (data, search) {
+    return data.filter(x => {
+        if (search === 'correct') {
+            return x.unassignedTags.length === 0
+        } else if (search === 'incorrect') {
+            return x.unassignedTags.length > 0
+        }
+    })
   }
 
   scrollToTop () {
@@ -62,13 +171,33 @@ class PageSubscribersWithTags extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.props.pageSubscribers)
+    if (!this.state.filter) {
+        this.displayData(data.selected, this.props.pageSubscribers)
+    } else {
+        this.displayData(data.selected, this.state.filteredData)
+    }
+  }
+
+  unique(array, propertyName) {
+    return array.filter((e, i) => array.findIndex(a => a[propertyName] === e[propertyName]) === i);
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers) {
-      this.displayData(0, nextProps.pageSubscribers)
-      this.setState({ totalLength: nextProps.pageSubscribers.length })
+      console.log('nextProps.pageSubscribers', nextProps.pageSubscribers)
+      let pageOwners = this.unique(nextProps.pageSubscribers.map(sub => sub.subscriber.pageOwner), '_id')
+      let pageSubscribersDataSorted = {}
+      for (let i = 0; i < pageOwners.length; i++) {
+          pageSubscribersDataSorted[pageOwners[i]._id] = nextProps.pageSubscribers.filter(sub => sub.subscriber.pageOwner._id === pageOwners[i]._id)
+      }
+      console.log('pageSubscribersData sorted', pageSubscribersDataSorted)
+      console.log('pageOwners', pageOwners)
+      if (pageOwners[0]) {
+        this.displayData(0, pageSubscribersDataSorted[pageOwners[0]._id])
+      } else {
+        this.displayData(0, [])
+      }
+      this.setState({ currentPageOwner: pageOwners[0] ? pageOwners[0]._id : '', pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
     }
   }
 
@@ -87,15 +216,48 @@ class PageSubscribersWithTags extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline'}}>{this.state.pageSubscribersData.length} Records</span>
                       </h3>
+
+                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '450px'}}>
+                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
+                            <option value='' disabled>Select Page Owner</option>
+                            {
+                                this.state.pageOwners.map(pageOwner => <option value={pageOwner._id}>{pageOwner.name}</option>)
+                            }
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div>
-                  { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                    <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                      
+                    <div className='form-row'>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <input type='text' placeholder='Search by user name' className='form-control' value={this.state.searchValue} onChange={this.onUserNameSearch} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <input type='text' placeholder='Search assigned tags' className='form-control' value={this.state.assignedTagsValue} onChange={this.onAssignedTagsSearch} />
+                    </div>
+
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <input type='text' placeholder='Search unassigned tags' className='form-control' value={this.state.unassignedTagsValue} onChange={this.onUnassignedTagsSearch} />
+                    </div>
+
+                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value={this.state.statusValue} onChange={this.onStatusFilter} >
+                        <option value='' disabled>Filter by status</option>
+                        <option value='correct'>correct</option>
+                        <option value='incorrect'>incorrect</option>
+                        <option value='all'>all</option>
+                      </select>
+                    </div>
+                    </div>
+                      
+                      
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
@@ -117,7 +279,9 @@ class PageSubscribersWithTags extends React.Component {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className='m-datatable__body'>
+
+                      { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
+                        ? (<tbody className='m-datatable__body'>
                         {
                         this.state.pageSubscribersData.map((pageSubscriber, i) => (
                           <tr data-row={i}
@@ -154,7 +318,11 @@ class PageSubscribersWithTags extends React.Component {
                           </tr>
                         ))
                       }
-                      </tbody>
+                      </tbody>) : 
+                      <span>
+                            <h4 style={{margin: '20px', textAlign: 'center'}}> No Subscribers Found </h4>
+                        </span>
+                      }
                     </table>
                     <div className='pagination'>
                       <ReactPaginate
@@ -172,10 +340,6 @@ class PageSubscribersWithTags extends React.Component {
                         activeClassName={'active'} />
                     </div>
                   </div>
-                  : <span>
-                    <p> No data to display </p>
-                  </span>
-                }
 
                   </div>
                 </div>
