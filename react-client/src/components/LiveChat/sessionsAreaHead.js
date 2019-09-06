@@ -27,7 +27,6 @@ class SessionsAreaHead extends React.Component {
   }
 
   hideDropDown () {
-    console.log('in hideDropDown')
     this.setState({showDropDown: false, pageValue: '', unreadMessages: '', pendingResponse: '', filter: false})
     let data = {
       first_page: true,
@@ -87,26 +86,45 @@ class SessionsAreaHead extends React.Component {
   }
 
   handlePageFilter (value) {
-    let data = {
-      first_page: true,
-      last_id: 'none',
-      number_of_records: 10,
-      filter: true,
-      filter_criteria: {
-        sort_value: this.state.sortValue,
-        page_value: value,
-        search_value: this.state.searchValue,
-        pendingResponse: this.state.pendingResponse,
-        unreadMessages: this.state.unreadMessages
+    if (value === this.state.pageValue) {
+      this.setState({pageValue: '', filter: true})
+      let data = {
+        first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {
+          sort_value: this.state.sortValue,
+          page_value: '',
+          search_value: this.state.searchValue,
+          pendingResponse: this.state.pendingResponse,
+          unreadMessages: this.state.unreadMessages
+        }
       }
+      this.props.fetchSessions(data)
+      this.props.updateState(data)
+    } else {
+      let data = {
+        first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {
+          sort_value: this.state.sortValue,
+          page_value: value,
+          search_value: this.state.searchValue,
+          pendingResponse: this.state.pendingResponse,
+          unreadMessages: this.state.unreadMessages
+        }
+      }
+      this.setState({pageValue: value, filter: true})
+      this.props.fetchSessions(data)
+      this.props.updateState(data)
     }
-    this.setState({pageValue: value, filter: true})
-    this.props.fetchSessions(data)
-    this.props.updateState(data)
   }
 
   handlePendingFilter (e) {
-    console.log('event', e.target.value)
+    this.setState({pendingResponse: e, filter: true})
     let data = {
       first_page: true,
       last_id: 'none',
@@ -116,16 +134,16 @@ class SessionsAreaHead extends React.Component {
         sort_value: this.state.sortValue,
         page_value: this.state.pageValue,
         search_value: this.state.searchValue,
-        pendingResponse: true,
+        pendingResponse: e,
         unreadMessages: this.state.unreadMessages
       }
     }
-    this.setState({pendingResponse: true, filter: true})
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
 
   handleUnreadFilter (e) {
+    this.setState({unreadMessages: e, filter: true})
     let data = {
       first_page: true,
       last_id: 'none',
@@ -136,10 +154,9 @@ class SessionsAreaHead extends React.Component {
         page_value: this.state.pageValue,
         search_value: this.state.searchValue,
         pendingResponse: this.state.pendingResponse,
-        unreadMessages: true
+        unreadMessages: e
       }
     }
-    this.setState({unreadMessages: true, filter: true})
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
@@ -208,7 +225,7 @@ class SessionsAreaHead extends React.Component {
                                 </span>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={this.handleUnreadFilter} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a onClick={() => this.handleUnreadFilter(this.state.unreadMessages ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.unreadMessages
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -221,7 +238,7 @@ class SessionsAreaHead extends React.Component {
                                 </a>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={(e) => this.handlePendingFilter(e)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a onClick={() => this.handlePendingFilter(this.state.pendingResponse ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.pendingResponse
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
