@@ -11,15 +11,18 @@ class UniquePages extends React.Component {
     this.state = {
       filter: true,
       pageNumber: 1,
-      showUniquePages: false
+      showUniquePages: false,
+      connectedFacebook: '',
+      pageName: ''
     }
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.handleFilterByFBConnected = this.handleFilterByFBConnected.bind(this)
     this.searchUniquePages = this.searchUniquePages.bind(this)
     this.toggle = this.toggle.bind(this)
     this.goToUsers = this.goToUsers.bind(this)
     this.goToPermissions = this.goToPermissions.bind(this)
     this.goToPageTags = this.goToPageTags.bind(this)
-    this.props.loadUniquePages({pageNumber: 1})
+    this.props.loadUniquePages({pageNumber: 1, connectedFacebook: '', pageName: ''})
   }
 
   goToUsers (pageId, pageName) {
@@ -64,7 +67,7 @@ class UniquePages extends React.Component {
   }
 
   toggle () {
-    this.props.loadUniquePages({pageNumber: 1})
+    this.props.loadUniquePages({pageNumber: 1, pageName: this.state.pageName, connectedFacebook: this.state.connectedFacebook})
     this.setState({showUniquePages: !this.state.showUniquePages})
   }
 
@@ -82,15 +85,29 @@ class UniquePages extends React.Component {
 
 
   handlePageClick (data) {
-    this.props.loadUniquePages({pageNumber: data.selected+1})
+    this.props.loadUniquePages({pageNumber: data.selected+1,  pageName: this.state.pageName, connectedFacebook: this.state.connectedFacebook})
     this.setState({pageNumber: data.selected+1})
   }
 
   searchUniquePages (event) {
+    this.setState({pageName: event.target.value})
     if (event.target.value !== '') {
-      this.props.loadUniquePages({pageName: event.target.value})
+      this.props.loadUniquePages({pageName: event.target.value, connectedFacebook: this.state.connectedFacebook})
     } else {
-      this.props.loadUniquePages({pageNumber: this.state.pageNumber})
+      this.props.loadUniquePages({pageNumber: this.state.pageNumber, pageName: '', connectedFacebook: this.state.connectedFacebook})
+    }
+  }
+
+  handleFilterByFBConnected (e) {
+    if (e.target.value === 'true') {
+      this.setState({connectedFacebook: true})
+      this.props.loadUniquePages({pageName: this.state.pageName, connectedFacebook: true})
+    } else if (e.target.value === 'false') {
+      this.setState({connectedFacebook: false})
+      this.props.loadUniquePages({pageName: this.state.pageName, connectedFacebook: false})
+    } else {
+      this.setState({connectedFacebook: ''})
+      this.props.loadUniquePages({pageName: this.state.pageName, connectedFacebook: ''})
     }
   }
 
@@ -105,7 +122,10 @@ class UniquePages extends React.Component {
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
                   <h3 className='m-portlet__head-text'>
-                    Pages and Permissions
+                    Pages and Permissions&nbsp;&nbsp;&nbsp;
+                    {this.props.uniquePages && this.props.uniquePages.totalCount &&
+                      <span className='m-badge m-badge--wide m-badge--primary'>{`${this.props.uniquePages.totalCount} Pages`}</span>
+                    }
                   </h3>
                 </div>
               </div>
@@ -129,8 +149,20 @@ class UniquePages extends React.Component {
               <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-row'>
                   <div className='form-group col-md-6' >
-                    <input type='text' style={{marginBottom: '20px'}} placeholder='Search by Page Name...' className='form-control m-input m-input--solid' onChange={this.searchUniquePages} />
+                    <input type='text' style={{marginBottom: '20px'}} placeholder='Search by Page Name...' className='form-control m-input m-input--solid' onChange={this.searchUniquePages} value={this.state.pageName} />
                     <span className='m-input-icon__icon m-input-icon__icon--left' />
+                  </div>
+                  <div className='form-group col-md-6'>
+                    <div className='m-form__group m-form__group--inline'>
+                      <div className='m-form__control'>
+                        <select className='custom-select' style={{ width: '500px' }} id='m_form_type' tabIndex='-98' value={this.state.connectedFacebook} onChange={this.handleFilterByFBConnected}>
+                          <option key='' value='' disabled>Filter by Connected on Facebook</option>
+                          <option key='true' value='true'>True</option>
+                          <option key='false' value='false'>False</option>
+                          <option key='all' value=''>All</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 {
@@ -154,6 +186,9 @@ class UniquePages extends React.Component {
                           <th data-field='connectedBy'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}}>Connected By</span></th>
+                          <th data-field='connectedfb'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '120px'}}>Connected on Facebook</span></th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}}>Actions</span></th>
@@ -175,7 +210,9 @@ class UniquePages extends React.Component {
                                   style={{width: '120px'}}>{uniquePage.count}</span></td>
                               <td data-field='connectedBy' className='m-datatable__cell'>
                                 <span style={{width: '120px'}}>{uniquePage.connectedBy ? uniquePage.connectedBy.name : 'Not connected'}</span></td>
-                              <td data-field='actions'
+                              <td data-field='connectedfb' className='m-datatable__cell'>
+                                <span style={{width: '120px'}}>{uniquePage.connectedFacebook ? 'True' : 'False'}</span></td>
+                            <td data-field='actions'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>
