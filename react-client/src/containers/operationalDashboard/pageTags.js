@@ -32,6 +32,7 @@ class PageTags extends React.Component {
     this.applyKiboFilter = this.applyKiboFilter.bind(this)
     this.applyDefaultFilter = this.applyDefaultFilter.bind(this)
     this.props.loadPageTags(this.props.location.state.pageId)
+    this.loadedTags = false
   }
 
   onTagNameSearch (event) {
@@ -104,20 +105,9 @@ class PageTags extends React.Component {
   }
 
   onFilterChange (event) {
-    this.setState({selectedValue: event.target.value})
-    switch (event.target.value) {
-      case 'all':
-        this.displayData(0, this.state.filteredData)
-        this.setState({totalLength: this.state.filteredData.length, pageNumber: 0})
-        break
-      case 'incorrect':
-        console.log('showing incorrect records')
-        this.displayData(0, this.state.incorrectRecords)
-        this.setState({totalLength: this.state.incorrectRecords.length, pageNumber: 0})
-        break
-      default:
-        break
-    }
+    this.setState({selectedValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
   }
 
   displayData (n, pageTags) {
@@ -151,6 +141,7 @@ class PageTags extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in broadcastbydays', nextProps)
+    this.loadedTags = true
     if (nextProps.pageTags) {
         let kiboPageTags = nextProps.pageTags.kiboPageTags.map(kiboPageTag => {
             let fbPageTag = nextProps.pageTags.fbPageTags.find(x => {
@@ -224,7 +215,10 @@ class PageTags extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
 
-                <h1 style={{marginBottom: '-30px'}}>{this.props.location.state.pageName}</h1>
+                <h1 style={{marginBottom: '-30px'}}>
+                    {this.props.location.state.pageName}
+                    <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline', fontSize: '0.4em'}}>{this.state.filteredData.length} Tags</span>
+                </h1>
 
                 
                 <div style={{textAlign: 'right', marginBottom: '30px'}}>
@@ -363,7 +357,7 @@ class PageTags extends React.Component {
                       </tbody>
                         : 
                         <span>
-                            <h4 style={{margin: '20px', textAlign: 'center'}}> No Pages Found </h4>
+                            <h4 style={{margin: '20px', textAlign: 'center'}}> {this.loadedTags ? 'No Tags Found' : 'Loading Tags...'} </h4>
                         </span>
                       }
                     </table>
