@@ -257,7 +257,7 @@ class PageSubscribersWithTags extends React.Component {
                               </div>
                               <div id={`collapse`} className={"panel-collapse collapse"}>
                                 <div className="panel-body">
-                                    <div style={{maxHeight: '200px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid black 1px', padding: '10px', marginBottom: '10px'}}>
+                                    <div style={{maxHeight: '200px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
                                         {
                                             this.state.pageOwners.map(pageOwner => {
                                                 return (<p><a style={{cursor: 'pointer'}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.name}</a>: 
