@@ -79,7 +79,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   applyNecessaryFilters() {
-    debugger;
+    //debugger;
     let filteredData = this.state.pageSubscribersDataSorted[this.state.currentPageOwner]
     let filter = false
     if (this.state.searchValue !== '') {
