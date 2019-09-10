@@ -72,7 +72,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   applyNecessaryFilters() {
-    debugger;
+    //debugger;
     let filteredData = this.props.pageSubscribers
     let filter = false
     if (this.state.searchValue !== '') {
@@ -235,7 +235,7 @@ class PageSubscribersWithTags extends React.Component {
                     <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       
-                    <div className='form-row'>
+                    <div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search by user name' className='form-control' value={this.state.searchValue} onChange={this.onUserNameSearch} />
                     </div>

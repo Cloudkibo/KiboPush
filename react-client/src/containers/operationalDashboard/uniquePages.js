@@ -22,6 +22,7 @@ class UniquePages extends React.Component {
     this.goToUsers = this.goToUsers.bind(this)
     this.goToPermissions = this.goToPermissions.bind(this)
     this.goToPageTags = this.goToPageTags.bind(this)
+    this.goToPageAdmins = this.goToPageAdmins.bind(this)
     this.props.loadUniquePages({pageNumber: 1, connectedFacebook: '', pageName: ''})
   }
 
@@ -35,6 +36,15 @@ class UniquePages extends React.Component {
       })
   }
 
+  goToPageAdmins (pageId, pageName) {
+    browserHistory.push({
+        pathname: '/backdoorPageAdmins',
+        state: {
+          pageId: pageId,
+          pageName: pageName
+        }
+      })
+  }
 
   goToPermissions (pageId, pageName) {
     browserHistory.push({
@@ -227,6 +237,9 @@ class UniquePages extends React.Component {
                                     </button>
                                     <button onClick={() => this.goToSubscribersWithTags(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                         View Subscribers
+                                    </button>
+                                    <button onClick={() => this.goToPageAdmins(uniquePage.pageId, uniquePage.pageName)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                        View Admins
                                     </button>
                                 </span>
                               </td>
