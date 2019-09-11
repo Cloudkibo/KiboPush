@@ -45,16 +45,12 @@ class PageSubscribersWithTags extends React.Component {
     this.applyUnassignedFilter = this.applyUnassignedFilter.bind(this)
     this.applyStatusFilter = this.applyStatusFilter.bind(this)
     this.onPageOwnerSelect = this.onPageOwnerSelect.bind(this)
-    console.log('this.props in pageSubscribersWithTags', this.props)
   }
 
   onPageOwnerSelect (event) {
       this.setState({currentPageOwner: event.target.value}, () => {
         this.applyNecessaryFilters()
       })
-  }
-
-    console.log('this.props in pageSubscribersWithTags', this.props)
   }
 
   onUserNameSearch (event) {
