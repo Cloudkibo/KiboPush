@@ -200,6 +200,13 @@ export function updateCurrentPageTags (data) {
   }
 }
 
+export function updatePageAdmins (data) {
+  return {
+    type: ActionTypes.UPDATE_PAGE_ADMINS,
+    data
+  }
+} 
+
 export function saveUserInformation (user) {
   return {
     type: ActionTypes.SAVE_USER_INFORMATION,

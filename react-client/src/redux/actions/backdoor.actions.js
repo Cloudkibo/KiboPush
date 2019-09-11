@@ -23,7 +23,8 @@ import {
   updatePollDetails,
   updateUniquePagesDetails,
   updateCurrentPageTags,
-  updateSubscribersWithTags
+  updateSubscribersWithTags,
+  updatePageAdmins
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -525,6 +526,7 @@ export function updatePageUsers (data) {
     data
   }
 }
+
 export function loadPageUsers (data) {
   console.log('data for loadPageUsers', data)
   return (dispatch) => {
@@ -535,6 +537,17 @@ export function loadPageUsers (data) {
       })
   }
 }
+
+export function loadPageAdmins (pageId) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageAdmins/${pageId}`)
+      .then(res => {
+        console.log('response from loadPageUsers', res)
+        dispatch(updatePageAdmins(res.payload))
+      })
+  }
+}
+
 export function updatePagePermissions (data) {
   return {
     type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
