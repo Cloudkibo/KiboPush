@@ -263,7 +263,7 @@ export function updateTrigger (data, msg) {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Sequence Trigger Updated Successfully')
+          msg.success('Trigger Updated Successfully')
         } else {
           if (res.status === 'failed' && res.description) {
             console.log('error in updating sequence trigger' + res.description)

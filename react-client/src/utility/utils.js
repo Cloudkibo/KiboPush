@@ -56,6 +56,11 @@ export function isTwitterUrl (value) {
   let regexp = /^(https?:\/\/)?(www\.)?twitter.com\/(?!\/)[_a-zA-Z0-9/]*/g
   return regexp.test(value)
 }
+
+export function isRssUrl(value) {
+  let regexp = /(feed|rss)/
+  return regexp.test(value)
+}
 export function testUserName (userName) {
   if (userName.length < 1) {
     return false

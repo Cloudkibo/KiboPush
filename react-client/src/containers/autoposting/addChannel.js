@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createautoposting } from '../../redux/actions/autoposting.actions'
-import { isWebURL, isWebViewUrl, isFacebookPageUrl, isTwitterUrl, testUserName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, isFacebookPageUrl, isTwitterUrl, testUserName, isRssUrl } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -67,7 +67,8 @@ class AddChannel extends React.Component {
     } else if (type === 'rss') {
       isWebUrl = isWebURL(this.rssSubscriptionUrl.value)
       isWebViewURL = isWebViewUrl(this.rssSubscriptionUrl.value)
-      if (!isWebUrl || !isWebViewURL) {
+      var RssURL = isRssUrl(this.rssSubscriptionUrl.value)
+      if (!isWebUrl || !isWebViewURL || !RssURL) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
