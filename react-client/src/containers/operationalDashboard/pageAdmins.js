@@ -226,7 +226,7 @@ class PageAdmins extends React.Component {
                           </th>
                           <th data-field='email'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '200px'}}>Email</span>
+                            <span style={{width: '250px'}}>Email</span>
                           </th>
                         </tr>
                       </thead>
@@ -247,7 +247,7 @@ class PageAdmins extends React.Component {
                                     <span style={{width: '200px'}}>{pageAdmin.email ? 'True' : 'False'}</span>
                                 </td>
                                 <td data-field='email' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{width: '200px'}}>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
+                                    <span style={{width: '250px'}}>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
                                 </td>
                           </tr>
                             ))
