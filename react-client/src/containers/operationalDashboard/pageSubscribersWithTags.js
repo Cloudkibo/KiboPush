@@ -123,7 +123,7 @@ class PageSubscribersWithTags extends React.Component {
     return data.filter(x => {
         for (let i = 0; i < x.unassignedTags.length; i++) {
             let tagName = x.unassignedTags[i].tag
-            if (tagName.toLowerCase().includes(search.toLowerCase()) {
+            if (tagName.toLowerCase().includes(search.toLowerCase())) {
                 return true
             }
         }
