@@ -23,7 +23,8 @@ class PageSubscribersWithTags extends React.Component {
       statusValue: '',
       filter: false,
       filteredData: [],
-      pageOwners: []
+      pageOwners: [],
+      connectedUser: null
     }
     props.loadSubscribersWithTags(this.props.location.state.pageId)
     props.loadPageUsers({
@@ -45,6 +46,7 @@ class PageSubscribersWithTags extends React.Component {
     this.applyUnassignedFilter = this.applyUnassignedFilter.bind(this)
     this.applyStatusFilter = this.applyStatusFilter.bind(this)
     this.onPageOwnerSelect = this.onPageOwnerSelect.bind(this)
+    this.dataLoaded = false
   }
 
   onPageOwnerSelect (event) {
@@ -193,6 +195,11 @@ class PageSubscribersWithTags extends React.Component {
     if (nextProps.pageSubscribers) {
       console.log('nextProps.pageSubscribers', nextProps.pageSubscribers)
       if (nextProps.pageUsers) {
+        let connectedUser = null
+        let connectedUserIndex = nextProps.pageUsers.findIndex(pageUser => pageUser.connected)
+        if (connectedUserIndex >= 0) {
+            connectedUser = nextProps.pageUsers[connectedUserIndex].user._id 
+        }
         let pageOwners = nextProps.pageUsers.map(pageUser => pageUser.user)
         for (let i = 0; i < pageOwners.length; i++) {
             pageSubscribersDataSorted[pageOwners[i]._id] = nextProps.pageSubscribers.filter(sub => sub.subscriber.pageOwner._id === pageOwners[i]._id)
@@ -213,7 +220,8 @@ class PageSubscribersWithTags extends React.Component {
         } else {
           this.displayData(0, [])
         }
-        this.setState({ currentPageOwner, pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
+        this.setState({ connectedUser, currentPageOwner, pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
+        this.dataLoaded = true
       }
     }
     // if (nextProps.pageUsers) {
@@ -247,19 +255,19 @@ class PageSubscribersWithTags extends React.Component {
                         {this.props.location.state.pageName} Subscribers
                         <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersData.length} Subscribers</span>
                         
-                        <div style={{marginTop: '20px'}} className="panel-group" id="accordion">
+                        <div style={{marginTop: '20px', width: '440px'}} className="panel-group" id="accordion">
                             <div className="panel panel-default">
                               <div id={`panel-heading`} className="panel-heading">
-                                <h4 className="panel-title" style={{fontSize: '22px'}}>
+                                <h4 className="panel-title" style={{fontSize: '22px', textAlign: 'center'}}>
                                   <a data-toggle="collapse" data-parent="#accordion" href={`#collapse`}>Summary</a>
                                 </h4>
                               </div>
                               <div id={`collapse`} className={"panel-collapse collapse"}>
                                 <div className="panel-body">
-                                    <div style={{maxHeight: '200px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
+                                    <div style={{maxHeight: '200px', width: '400px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
                                         {
                                             this.state.pageOwners.map(pageOwner => {
-                                                return (<p><a style={{cursor: 'pointer'}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.name}</a>: 
+                                                return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>: 
                                                             <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
                                                                 {this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
                                                             </span>
@@ -293,12 +301,12 @@ class PageSubscribersWithTags extends React.Component {
                     
 
                         
-                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '400px'}}>
-                        <h6 style={{marginRight: '30px'}}>Select Page Owner:</h6>
-                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
+                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '150px'}}>
+                        <h6 style={{marginRight: '140px'}}>Select Page Owner:</h6>
+                        <select style={{width: '280px'}} className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
                             <option value='' disabled>Select Page Owner</option>
                             {
-                                this.state.pageOwners.map(pageOwner => <option value={pageOwner._id}>{pageOwner.name}</option>)
+                                this.state.pageOwners.map(pageOwner => <option value={pageOwner._id}>{pageOwner.email}</option>)
                             }
                         </select>
                       </div>
@@ -396,7 +404,7 @@ class PageSubscribersWithTags extends React.Component {
                       }
                       </tbody>) : 
                       <span>
-                            <h4 style={{margin: '20px', textAlign: 'center'}}> No Subscribers Found </h4>
+                            <h4 style={{margin: '20px', textAlign: 'center'}}> {this.dataLoaded ? 'No Subscribers Found' : 'Loading Subscribers...'} </h4>
                         </span>
                       }
                     </table>

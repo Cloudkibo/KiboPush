@@ -275,6 +275,10 @@ class PageUsers extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}}>User Name</span>
                           </th>
+                          <th data-field='subscribers'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>No. of Subscribers</span>
+                          </th>
                           <th data-field='type'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Account Type</span>
@@ -300,6 +304,7 @@ class PageUsers extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{pageUser.user.name}</span></td>
+                            <td data-field='subscribers' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageUser.subscribers.length}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(pageUser.plan.unique_ID === 'plan_A' || pageUser.plan.unique_ID === 'plan_B') ? 'Individual' : 'Team' }</span></td>
                             <td data-field='connected' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{pageUser.connected ? 'true' : 'false'}</span></td>
                             <td data-field='facebook' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageUser.user.facebookInfo ? pageUser.user.facebookInfo.name : '-'}</span></td>
