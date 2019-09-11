@@ -134,6 +134,8 @@ class PageTags extends React.Component {
       let filter = false
       if (this.state.selectedValue === 'incorrect') {
         filteredData = this.state.incorrectRecords
+      } else if (this.state.selectedValue === 'correct') {
+        filteredData = this.state.correctRecords  
       }   
       if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
         filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
@@ -249,9 +251,10 @@ class PageTags extends React.Component {
         let pageTagsData = [...kiboPageTags, ...fbPageTags]
         pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
         let incorrectRecords = pageTagsData.filter(pageTag => pageTag.facebook !== pageTag.kibopush)
+        let correctRecords = pageTagsData.filter(pageTag => pageTag.facebook === pageTag.kibopush)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords})
+        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords, correctRecords})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -262,6 +265,8 @@ class PageTags extends React.Component {
     this.setState({pageNumber: data.selected})
     if (this.state.selectedValue === 'incorrect' && !this.state.filter) {
         this.displayData(data.selected, this.state.incorrectRecords)
+    } else if (this.state.selectedValue === 'correct' && !this.state.filter) {
+        this.displayData(data.selected, this.state.correctRecords)
     } else if (this.state.filter) {
         this.displayData(data.selected, this.state.filteredData)
     } else {
@@ -294,12 +299,13 @@ class PageTags extends React.Component {
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
                         <option value='all'>Show all records</option>
                         <option value='incorrect'>Show incorrect records</option>
+                        <option value='correct'>Show correct records</option>
                     </select>
                 </div>
 
                 <div className='m-portlet__body'>
                     <div className='row m-row--full-height'>
-                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                        <div className='col-sm-12 col-md-12 col-lg-3' style={{paddingRight: '2px'}}>
                             <div className='m-portlet m-portlet--border-bottom-brand'>
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
@@ -314,7 +320,7 @@ class PageTags extends React.Component {
                             </div>
                         </div>
 
-                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                        <div className='col-sm-12 col-md-12 col-lg-3' style={{paddingRight: '2px'}}>
                             <div className='m-portlet m-portlet--border-bottom-danger'>
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
@@ -329,7 +335,7 @@ class PageTags extends React.Component {
                             </div>
                         </div>
 
-                        <div className='col-sm-12 col-md-12 col-lg-4' style={{paddingRight: '2px'}}>
+                        <div className='col-sm-12 col-md-12 col-lg-3' style={{paddingRight: '2px'}}>
                             <div className='m-portlet m-portlet--border-bottom-success'>
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
@@ -343,6 +349,22 @@ class PageTags extends React.Component {
                                 </div>
                             </div>
                         </div>
+
+                        <div className='col-sm-12 col-md-12 col-lg-3' style={{paddingRight: '2px'}}>
+                            <div className='m-portlet m-portlet--border-bottom-accent'>
+                                <div className='m-portlet__body'>
+                                    <div className='m-widget26'>
+                                        <div className='m-widget26__number'>
+                                            {this.state.correctRecords && this.state.correctRecords.length}
+                                            <small>
+                                                Correct Records
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
