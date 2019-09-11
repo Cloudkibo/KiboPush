@@ -104,6 +104,75 @@ class PageTags extends React.Component {
     return data.filter(x => (''+x.default) === def)
   }
 
+  onTagNameSearch (event) {
+      this.setState({searchValue: event.target.value}, () => {
+          this.applyNecessaryFilters()
+      })
+  }
+
+  onFbFilter (event) {
+    this.setState({fbValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onKiboFilter (event) {
+    this.setState({kiboValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  onDefaultFilter (event) {
+    this.setState({defaultValue: event.target.value}, () => {
+        this.applyNecessaryFilters()
+    })
+  }
+
+  applyNecessaryFilters() {
+      //debugger;
+      let filteredData = this.state.pageTags
+      let filter = false
+      if (this.state.selectedValue === 'incorrect') {
+        filteredData = this.state.incorrectRecords
+      }   
+      if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
+        filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
+        filter = true
+      }
+      if (this.state.kiboValue !== '' && this.state.kiboValue !== 'all') {
+        filteredData = this.applyKiboFilter(filteredData, this.state.kiboValue)
+        filter = true
+      }
+      if (this.state.defaultValue !== '' && this.state.defaultValue !== 'all') {
+        filteredData = this.applyDefaultFilter(filteredData, this.state.defaultValue)
+        filter = true
+      }
+      if (this.state.searchValue !== '') {
+        console.log(`applying search filter ${this.state.searchValue} ${JSON.stringify(filteredData)}`)
+        filteredData = this.applySearchFilter(filteredData, this.state.searchValue)
+        filter = true
+      }
+      console.log('after applying filters', filteredData)
+      this.setState({filteredData, filter, totalLength: filteredData.length})
+      this.displayData(0, filteredData)
+  }
+
+  applySearchFilter(data, search) {
+    return data.filter(x => x.tagName.includes(search))
+  }
+
+  applyFbFilter(data, fb) {
+      return data.filter(x => (''+x.facebook) === fb)
+  }
+
+  applyKiboFilter(data, kibo) {
+    return data.filter(x => (''+x.kibopush) === kibo)
+  }
+
+  applyDefaultFilter(data, def) {
+    return data.filter(x => (''+x.default) === def)
+  }
+
   onFilterChange (event) {
     this.setState({selectedValue: event.target.value}, () => {
         this.applyNecessaryFilters()
@@ -284,6 +353,7 @@ class PageTags extends React.Component {
                   <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                     
+
                     <div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search by tag name' className='form-control' value={this.state.searchValue} onChange={this.onTagNameSearch} />

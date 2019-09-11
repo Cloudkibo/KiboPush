@@ -54,6 +54,9 @@ class PageSubscribersWithTags extends React.Component {
       })
   }
 
+    console.log('this.props in pageSubscribersWithTags', this.props)
+  }
+
   onUserNameSearch (event) {
       this.setState({searchValue: event.target.value}, () => {
           this.applyNecessaryFilters()
@@ -311,6 +314,7 @@ class PageSubscribersWithTags extends React.Component {
                     <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       
+
                     <div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search by user name' className='form-control' value={this.state.searchValue} onChange={this.onUserNameSearch} />
