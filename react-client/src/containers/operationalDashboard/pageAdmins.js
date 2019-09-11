@@ -247,7 +247,7 @@ class PageAdmins extends React.Component {
                                     <span style={{width: '150px'}}>{pageAdmin.email ? 'True' : 'False'}</span>
                                 </td>
                                 <td data-field='email' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{width: '150px'}}>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
+                                    <span>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
                                 </td>
                           </tr>
                             ))
