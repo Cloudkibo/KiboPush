@@ -284,19 +284,6 @@ class PageSubscribersWithTags extends React.Component {
                               </div>
                             </div>
                           </div>  
-
-                        {/* <p style={{marginTop: '15px', fontSize: '0.9em'}}>Summary:</p>
-                        <div style={{fontSize: '0.7em', border: 'solid black 1px', padding: '10px', marginBottom: '10px'}}>
-                            {
-                                this.state.pageOwners.map(pageOwner => {
-                                    return (<p>{pageOwner.name}: 
-                                                <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
-                                                    {this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
-                                                </span>
-                                            </p>)
-                                })
-                            }
-                        </div> */}
                       </h3>
                     
 
