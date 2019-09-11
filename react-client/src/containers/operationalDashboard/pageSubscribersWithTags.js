@@ -6,7 +6,7 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadSubscribersWithTags } from '../../redux/actions/backdoor.actions'
+import { loadSubscribersWithTags, loadPageUsers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 
@@ -26,6 +26,13 @@ class PageSubscribersWithTags extends React.Component {
       pageOwners: []
     }
     props.loadSubscribersWithTags(this.props.location.state.pageId)
+    props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: '',
+        connected_filter: '',
+        type_filter: '',
+        admin_filter: ''
+    })
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.onUserNameSearch = this.onUserNameSearch.bind(this)
@@ -42,7 +49,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   onPageOwnerSelect (event) {
-      this.setState({pageSubscribersData: pageSubscribersDataSorted[event.target.value]}, () => {
+      this.setState({currentPageOwner: event.target.value}, () => {
         this.applyNecessaryFilters()
       })
   }
@@ -73,7 +80,7 @@ class PageSubscribersWithTags extends React.Component {
 
   applyNecessaryFilters() {
     //debugger;
-    let filteredData = this.props.pageSubscribers
+    let filteredData = this.state.pageSubscribersDataSorted[this.state.currentPageOwner]
     let filter = false
     if (this.state.searchValue !== '') {
       filteredData = this.applyUserFilter(filteredData, this.state.searchValue)
@@ -183,22 +190,45 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    let pageSubscribersDataSorted = {}
     if (nextProps.pageSubscribers) {
       console.log('nextProps.pageSubscribers', nextProps.pageSubscribers)
-      let pageOwners = this.unique(nextProps.pageSubscribers.map(sub => sub.subscriber.pageOwner), '_id')
-      let pageSubscribersDataSorted = {}
-      for (let i = 0; i < pageOwners.length; i++) {
-          pageSubscribersDataSorted[pageOwners[i]._id] = nextProps.pageSubscribers.filter(sub => sub.subscriber.pageOwner._id === pageOwners[i]._id)
+      if (nextProps.pageUsers) {
+        let pageOwners = nextProps.pageUsers.map(pageUser => pageUser.user)
+        for (let i = 0; i < pageOwners.length; i++) {
+            pageSubscribersDataSorted[pageOwners[i]._id] = nextProps.pageSubscribers.filter(sub => sub.subscriber.pageOwner._id === pageOwners[i]._id)
+        }
+        console.log('pageSubscribersData sorted', pageSubscribersDataSorted)
+        console.log('pageOwners', pageOwners)
+        let currentPageOwner = ''
+        if (pageOwners.length > 0) {
+            for (let i = 0; i < pageOwners.length; i++) {
+                if (pageSubscribersDataSorted[pageOwners[i]._id] && pageSubscribersDataSorted[pageOwners[i]._id].length > 0) {
+                    currentPageOwner = pageOwners[i]._id
+                }
+            }
+            if (currentPageOwner === '') {
+                currentPageOwner = pageOwners[0]._id
+            }
+          this.displayData(0, pageSubscribersDataSorted[currentPageOwner])
+        } else {
+          this.displayData(0, [])
+        }
+        this.setState({ currentPageOwner, pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
       }
-      console.log('pageSubscribersData sorted', pageSubscribersDataSorted)
-      console.log('pageOwners', pageOwners)
-      if (pageOwners[0]) {
-        this.displayData(0, pageSubscribersDataSorted[pageOwners[0]._id])
-      } else {
-        this.displayData(0, [])
-      }
-      this.setState({ currentPageOwner: pageOwners[0] ? pageOwners[0]._id : '', pageOwners, totalLength: nextProps.pageSubscribers.length, pageSubscribersDataSorted })
     }
+    // if (nextProps.pageUsers) {
+    //     if (!pageSubscribersDataSorted) {
+    //         pageSubscribersDataSorted = this.state.pageSubscribersDataSorted
+    //     }
+    //     for (let i = 0; i < nextProps.pageUsers.length; i++) {
+    //         if (!pageSubscribersDataSorted[nextProps.pageUsers.user._id]) {
+    //             pageSubscribersDataSorted[nextProps.pageUsers.user._id] = []
+    //         }
+    //     }
+    //     for (let i = 0; i < )
+    //     this.setState({ pageSubscribersDataSorted })
+    // }
   }
 
   render () {
@@ -213,13 +243,59 @@ class PageSubscribersWithTags extends React.Component {
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
+                    <div style={{marginTop: '30px'}} className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
-                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline'}}>{this.state.pageSubscribersData.length} Records</span>
-                      </h3>
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersData.length} Subscribers</span>
+                        
+                        <div style={{marginTop: '20px'}} className="panel-group" id="accordion">
+                            <div className="panel panel-default">
+                              <div id={`panel-heading`} className="panel-heading">
+                                <h4 className="panel-title" style={{fontSize: '22px'}}>
+                                  <a data-toggle="collapse" data-parent="#accordion" href={`#collapse`}>Summary</a>
+                                </h4>
+                              </div>
+                              <div id={`collapse`} className={"panel-collapse collapse"}>
+                                <div className="panel-body">
+                                    <div style={{maxHeight: '200px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
+                                        {
+                                            this.state.pageOwners.map(pageOwner => {
+                                                return (<p><a style={{cursor: 'pointer'}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.name}</a>: 
+                                                            <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
+                                                                {this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
+                                                            </span>
+                                                        </p>)
+                                            })
+                                        }
+                                    </div> 
+                                    <p style={{marginTop: '20px', fontSize: '1em'}}>Total: 
+                                        <span className="m-badge m-badge--brand m-badge--wide" style={{fontSize: '1em', marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
+                                            {this.props.pageSubscribers && this.props.pageSubscribers.length} subscribers
+                                        </span>
+                                    </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>  
 
-                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '450px'}}>
+                        {/* <p style={{marginTop: '15px', fontSize: '0.9em'}}>Summary:</p>
+                        <div style={{fontSize: '0.7em', border: 'solid black 1px', padding: '10px', marginBottom: '10px'}}>
+                            {
+                                this.state.pageOwners.map(pageOwner => {
+                                    return (<p>{pageOwner.name}: 
+                                                <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
+                                                    {this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
+                                                </span>
+                                            </p>)
+                                })
+                            }
+                        </div> */}
+                      </h3>
+                    
+
+                        
+                      <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '400px'}}>
+                        <h6 style={{marginRight: '30px'}}>Select Page Owner:</h6>
                         <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
                             <option value='' disabled>Select Page Owner</option>
                             {
@@ -356,13 +432,15 @@ function mapStateToProps (state) {
   console.log(state)
   //console.log(state.backdoorInfo.subscribersWithTags)
   return {
-    pageSubscribers: (state.backdoorInfo.subscribersWithTags)
+    pageSubscribers: (state.backdoorInfo.subscribersWithTags),
+    pageUsers: (state.backdoorInfo.pageUsers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadSubscribersWithTags
+    loadSubscribersWithTags,
+    loadPageUsers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PageSubscribersWithTags)
