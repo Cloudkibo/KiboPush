@@ -303,7 +303,7 @@ class PageSubscribersWithTags extends React.Component {
                         
                       <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '150px'}}>
                         <h6 style={{marginRight: '140px'}}>Select Page Owner:</h6>
-                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
+                        <select style={{width: '280px'}} className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
                             <option value='' disabled>Select Page Owner</option>
                             {
                                 this.state.pageOwners.map(pageOwner => <option value={pageOwner._id}>{pageOwner.email}</option>)
