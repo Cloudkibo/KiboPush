@@ -218,15 +218,15 @@ class PageAdmins extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='name'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Facebook Name</span>
+                            <span style={{width: '200px'}}>Facebook Name</span>
                           </th>
                           <th data-field='kibopush'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>On KiboPush</span>
+                            <span style={{width: '200px'}}>On KiboPush</span>
                           </th>
                           <th data-field='email'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Email</span>
+                            <span style={{width: '200px'}}>Email</span>
                           </th>
                         </tr>
                       </thead>
@@ -241,13 +241,13 @@ class PageAdmins extends React.Component {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='name' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{width: '150px'}}>{pageAdmin.name}</span>
+                                    <span style={{width: '200px'}}>{pageAdmin.name}</span>
                                 </td>
                                 <td data-field='kibopush' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{width: '150px'}}>{pageAdmin.email ? 'True' : 'False'}</span>
+                                    <span style={{width: '200px'}}>{pageAdmin.email ? 'True' : 'False'}</span>
                                 </td>
                                 <td data-field='email' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
+                                    <span style={{width: '200px'}}>{pageAdmin.email ? pageAdmin.email :  '-'}</span>
                                 </td>
                           </tr>
                             ))
