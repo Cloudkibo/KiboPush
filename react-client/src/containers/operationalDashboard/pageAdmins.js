@@ -157,7 +157,7 @@ class PageAdmins extends React.Component {
                     }
                 }
                 if (!pageAdmins[i]) {
-                    pageAdmins[i] = nextProps.pageAdmins[j]
+                    pageAdmins[i] = nextProps.pageAdmins[i]
                 }
             }
             console.log('pageAdmins', pageAdmins)
