@@ -61,11 +61,11 @@ class PageAdmins extends React.Component {
 
   
   applyNameFilter (data, search) {
-    return data.filter(x => x.name.includes(search))
+    return data.filter(x => (x.name).toLowerCase().includes(search.toLowerCase()))
   }
   
   applyEmailFilter (data, search) {
-    return data.filter(x => x.email && x.email.includes(search))
+    return data.filter(x => x.email && (x.email).toLowerCase().includes(search.toLowerCase()))
   }
 
   applyKiboFilter (data, search) {

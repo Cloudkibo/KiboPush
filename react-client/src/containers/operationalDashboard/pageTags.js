@@ -89,7 +89,7 @@ class PageTags extends React.Component {
   }
 
   applySearchFilter(data, search) {
-    return data.filter(x => x.tagName.includes(search))
+    return data.filter(x => (x.tagName).toLowerCase().includes(search.toLowerCase()))
   }
 
   applyFbFilter(data, fb) {

@@ -105,14 +105,14 @@ class PageSubscribersWithTags extends React.Component {
   }   
 
   applyUserFilter (data, search) {
-    return data.filter(x => x.subscriber.firstName.includes(search) || x.subscriber.lastName.includes(search))
+    return data.filter(x => (x.subscriber.firstName).toLowerCase().includes(search.toLowerCase()) || (x.subscriber.lastName).toLowerCase().includes(search.toLowerCase()))
   }
 
   applyAssignedFilter (data, search) {
     return data.filter(x => {
         for (let i = 0; i < x.assignedTags.length; i++) {
             let tagName = x.assignedTags[i].tag
-            if (tagName.includes(search)) {
+            if (tagName.toLowerCase().includes(search.toLowerCase())) {
                 return true
             }
         }
@@ -123,7 +123,7 @@ class PageSubscribersWithTags extends React.Component {
     return data.filter(x => {
         for (let i = 0; i < x.unassignedTags.length; i++) {
             let tagName = x.unassignedTags[i].tag
-            if (tagName.includes(search)) {
+            if (tagName.toLowerCase().includes(search.toLowerCase()) {
                 return true
             }
         }
