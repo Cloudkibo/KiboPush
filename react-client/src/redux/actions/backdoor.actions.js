@@ -24,7 +24,8 @@ import {
   updateUniquePagesDetails,
   updateCurrentPageTags,
   updateSubscribersWithTags,
-  updatePageAdmins
+  updatePageAdmins,
+  updateCompanyInfo
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -524,6 +525,17 @@ export function updatePageUsers (data) {
   return {
     type: ActionTypes.UPDATE_PAGE_USERS,
     data
+  }
+}
+
+export function loadCompanyInfo (data) {
+  console.log('loading companyInfo', data)
+  return (dispatch) => {
+    callApi(`backdoor/fetchCompanyInfo`, 'post', data)
+    .then(res => {
+      console.log('response from loadCompanyInfo', res)
+      dispatch(updateCompanyInfo(res.payload))
+    })
   }
 }
 
