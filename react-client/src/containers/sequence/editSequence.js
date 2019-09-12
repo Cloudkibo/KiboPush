@@ -105,6 +105,7 @@ class CreateSequence extends React.Component {
     this.updateTextBox = this.updateTextBox.bind(this)
     this.goBack = this.goBack.bind(this)
     this.closeBackWarning = this.closeBackWarning.bind(this)
+    this.removeSegmentation = this.removeSegmentation.bind(this)
   }
 
   updateMessageTitle (message) {
@@ -126,6 +127,20 @@ class CreateSequence extends React.Component {
         sequenceId: this.state.selectedSequenceId,
         segmentation: this.state.conditions,
         segmentationCondition: this.state.joiningCondition
+      }
+      console.log('segmentation data', data)
+      this.props.updateSegmentation(data)
+      this.closeDialogSegmentation()
+    }
+  }
+
+  removeSegmentation () {
+    if (this.validateSegmentation()) {
+      let data = {
+        messageId: this.state.selectedMessageId,
+        sequenceId: this.state.selectedSequenceId,
+        segmentation: [],
+        segmentationCondition: 'or'
       }
       console.log('segmentation data', data)
       this.props.updateSegmentation(data)
@@ -815,6 +830,10 @@ class CreateSequence extends React.Component {
                   <div style={{textAlign: 'center'}}>
                     <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md' style={{marginLeft: '20px', marginTop: '20px'}}> Save </button>
                    <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Cancel </button>
+                   {
+                     this.state.conditions.length > 0 && this.state.conditions[0].value !== '' &&
+                     <button onClick={() => this.removeSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Remove Segmentation </button>
+                   }
                    </div>
 
                 </ModalDialog>
