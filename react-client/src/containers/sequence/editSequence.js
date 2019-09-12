@@ -105,6 +105,8 @@ class CreateSequence extends React.Component {
     this.updateTextBox = this.updateTextBox.bind(this)
     this.goBack = this.goBack.bind(this)
     this.closeBackWarning = this.closeBackWarning.bind(this)
+    this.removeSegmentation = this.removeSegmentation.bind(this)
+    this.removeTrigger = this.removeTrigger.bind(this)
   }
 
   updateMessageTitle (message) {
@@ -126,6 +128,20 @@ class CreateSequence extends React.Component {
         sequenceId: this.state.selectedSequenceId,
         segmentation: this.state.conditions,
         segmentationCondition: this.state.joiningCondition
+      }
+      console.log('segmentation data', data)
+      this.props.updateSegmentation(data)
+      this.closeDialogSegmentation()
+    }
+  }
+
+  removeSegmentation () {
+    if (this.validateSegmentation()) {
+      let data = {
+        messageId: this.state.selectedMessageId,
+        sequenceId: this.state.selectedSequenceId,
+        segmentation: [],
+        segmentationCondition: 'or'
       }
       console.log('segmentation data', data)
       this.props.updateSegmentation(data)
@@ -270,6 +286,19 @@ class CreateSequence extends React.Component {
         event: this.state.eventNameSelected,
         value: this.state.selectedMessageClickId,
         buttonId: this.state.selectedButton },
+      type: 'message',
+      messageId: this.state.selectedMessageId
+    }, this.msg)
+
+    this.props.fetchAllMessages(this.state.sequenceId)
+    this.setState({ShowTrigger: false})
+  }
+  removeTrigger () {
+    this.props.updateTrigger({
+      trigger: {
+        event: 'none',
+        value: null
+      },
       type: 'message',
       messageId: this.state.selectedMessageId
     }, this.msg)
@@ -815,6 +844,10 @@ class CreateSequence extends React.Component {
                   <div style={{textAlign: 'center'}}>
                     <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md' style={{marginLeft: '20px', marginTop: '20px'}}> Save </button>
                    <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Cancel </button>
+                   {
+                     this.state.conditions.length > 0 && this.state.conditions[0].value !== '' &&
+                     <button onClick={() => this.removeSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Remove Segmentation </button>
+                   }
                    </div>
 
                 </ModalDialog>
@@ -920,7 +953,8 @@ class CreateSequence extends React.Component {
                   </div>
 
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
