@@ -540,7 +540,40 @@ class Targeting extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px'}}>
+        <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
+          <span class="m--font-bolder">
+					  Message Type
+				  </span>
+        </div>
+        <div className='col-10' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
+          <div className="m-radio-list">
+					  <label className="m-radio m-radio--solid m-radio--brand">
+						  <input type="radio" value="5" name='message_type' />
+						  Non-Promotional Content
+              <span></span>
+					  </label>
+            <span class="m-form__help">
+              These broadcasts cannot contain any promotions (no sales, coupons and discounts, etc.) and 
+              should be within one of the 16 allowed use cases defined by 
+              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank'> Facebook</a>.
+					  </span>
+            <div className="m-alert m-alert--outline m-alert--outline-2x alert alert-warning alert-dismissible fade show" role="alert">
+							<button type="button" style={{top: '-10px'}} className="close" data-dismiss="alert" aria-label="Close"></button>
+							<strong>Non-compliant! </strong> messages may result in your page being suspended by Facebook.
+						</div>
+					  <label className="m-radio m-radio--solid m-radio--brand">
+						  <input type="radio" value="6" name='message_type' />
+						  Promotional Content
+              <span></span>
+					  </label>
+            <span class="m-form__help">
+              These broadcasts can contain promotions, but the target audience is limited to subscribers who
+              interacted with your bot in the last 24 hours. 
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank'> Learn more here</a>
+					  </span>
+				  </div>
+        </div>
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
@@ -561,30 +594,23 @@ class Targeting extends React.Component {
         { /*
           <h5 style={{paddingLeft: '20px', paddingBottom: '0px', marginBottom: '30px'}}>This {this.props.component} will be sent to <strong>{this.props.currentReachEstimation || this.props.currentReachEstimation === 0 ? this.props.currentReachEstimation : 'calculating...'}</strong> subscribers</h5>
         */ }
-        <div className='col-12' style={{paddingLeft: '20px'}}>
+        {/* <div className='col-12' style={{paddingLeft: '20px'}}>
           {this.state.showSubscriptionMsg &&
           <div style={{paddingBottom: '10px'}}>
             <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
-            { /*  this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
-              If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
-              <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
-            </span>
-            */}
-            { /*  this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-              If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
-            </span>
-            */}
-            { /*  this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-              If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
-            </span>
-            */}
             <span style={{fontSize: '0.9rem'}}>
               This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
               <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
             </span>
           </div>
           }
-          <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+          </div> */}
+          <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+            <span class="m--font-bolder">
+					    Targeting
+				    </span>
+          </div>
+          <div className='col-10' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
             {
               this.props.component !== 'broadcast' &&
               <div>
@@ -789,7 +815,6 @@ class Targeting extends React.Component {
               </div>
             </div>
           </div>
-        </div>
       </div>
     )
   }

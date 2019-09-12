@@ -571,8 +571,8 @@ class CreateConvo extends React.Component {
                         </li>
                         <li>
                           {this.state.broadcast.length > 0
-                            ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                            : <a>Targeting</a>
+                            ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Settings </a>
+                            : <a>Settings</a>
                           }
                         </li>
 
