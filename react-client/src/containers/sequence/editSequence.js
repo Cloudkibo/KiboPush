@@ -106,6 +106,7 @@ class CreateSequence extends React.Component {
     this.goBack = this.goBack.bind(this)
     this.closeBackWarning = this.closeBackWarning.bind(this)
     this.removeSegmentation = this.removeSegmentation.bind(this)
+    this.removeTrigger = this.removeTrigger.bind(this)
   }
 
   updateMessageTitle (message) {
@@ -285,6 +286,19 @@ class CreateSequence extends React.Component {
         event: this.state.eventNameSelected,
         value: this.state.selectedMessageClickId,
         buttonId: this.state.selectedButton },
+      type: 'message',
+      messageId: this.state.selectedMessageId
+    }, this.msg)
+
+    this.props.fetchAllMessages(this.state.sequenceId)
+    this.setState({ShowTrigger: false})
+  }
+  removeTrigger () {
+    this.props.updateTrigger({
+      trigger: {
+        event: 'none',
+        value: null
+      },
       type: 'message',
       messageId: this.state.selectedMessageId
     }, this.msg)
@@ -939,7 +953,8 @@ class CreateSequence extends React.Component {
                   </div>
 
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
