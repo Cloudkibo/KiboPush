@@ -15,7 +15,8 @@ class PageUsers extends React.Component {
     super(props, context)
     this.state = {
       appLevelKeys: [],
-      pageLevelKeys: []
+      pageLevelKeys: [],
+      errorMessage: ''
     }
     props.loadPagePermissions(this.props.location.state.pageId)
 
@@ -43,7 +44,14 @@ class PageUsers extends React.Component {
     if (nextProps.pagePermissions) {
       let appLevelKeys = Object.keys(nextProps.pagePermissions.appLevelPermissions)
       let pageLevelKeys = Object.keys(nextProps.pagePermissions.pageLevelPermissions)
-      this.setState({appLevelKeys: appLevelKeys, pageLevelKeys: pageLevelKeys})
+      this.setState({appLevelKeys: appLevelKeys, pageLevelKeys: pageLevelKeys, error: ''})
+    }
+    if (nextProps.error && nextProps.error !== '') {
+      let error = nextProps.error.split('permissions ')
+      console.log('error', error)
+      error = JSON.parse(error[1])
+      console.log('error parse', error)
+      this.setState({errorMessage: error})
     }
   }
 
@@ -66,7 +74,9 @@ class PageUsers extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div>
+                  {this.state.errorMessage && this.state.errorMessage !== '' && this.state.errorMessage.message
+                  ? <span style={{color: 'red'}}>{this.state.errorMessage.message}</span>
+                  : <div>
                   { this.props.pagePermissions && this.state.appLevelKeys.length > 0
                   ? <div className='m-section'>
 											<h3 className='m-section__heading'>
@@ -136,6 +146,7 @@ class PageUsers extends React.Component {
                 </span>
               }
                   </div>
+                }
                 </div>
               </div>
             </div>
@@ -149,7 +160,8 @@ class PageUsers extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pagePermissions: (state.backdoorInfo.pagePermissions)
+    pagePermissions: (state.backdoorInfo.pagePermissions),
+    error: (state.backdoorInfo.error)
   }
 }
 

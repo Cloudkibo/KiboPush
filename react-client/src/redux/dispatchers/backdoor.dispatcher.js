@@ -186,6 +186,13 @@ export function updateUniquePagesDetails (data) {
   }
 }
 
+export function updateCompanyInfo (data) {
+  return {
+    type: ActionTypes.LOAD_COMPANY_INFO,
+    data
+  }
+}
+
 export function updateSubscribersWithTags (data) {
   return {
     type: ActionTypes.LOAD_SUBSCRIBERS_WITH_TAGS,
