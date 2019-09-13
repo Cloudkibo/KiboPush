@@ -515,26 +515,62 @@ class CreatePoll extends React.Component {
                             <div style={{top: '10px'}}>
                               <label className='control-label'> Add 3 responses</label>
                               <fieldset className='input-group-vertical'>
-                                <div id='responses' className='form-group m-form__group'>
+                              <div className='row'>
+                                <div id='responses' className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response1</label>
                                   <input type='text' className='form-control'
                                     value={this.state.option1}
                                     onChange={(e) => this.updateOptions(e, 1)}
-                                    placeholder='Response 1' maxLength='20' />
+                                    placeholder='Response 1' maxLength='20'/>
                                 </div>
-                                <div className='form-group m-form__group'>
+                                <div className='col-xl-2'>
+                                  <button className='btn btn-primary btn-sm m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                        <span>
+                                          <i className='la la-plus' />
+                                          <span>
+                                            Set Action
+                                          </span>
+                                        </span>
+                                    </button>
+                                </div>
+                                </div>
+                                <div className='row'>
+                                <div className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response2</label>
                                   <input type='text' className='form-control'
                                     value={this.state.option2}
                                     onChange={(e) => this.updateOptions(e, 2)}
                                     placeholder='Response 2' maxLength='20' />
                                 </div>
-                                <div className='form-group m-form__group'>
+                                <div className='col-xl-2'>
+                                  <button className='btn btn-primary btn-sm m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                        <span>
+                                          <i className='la la-plus' />
+                                          <span>
+                                            Set Action
+                                          </span>
+                                        </span>
+                                    </button>
+                                </div>
+                                </div>
+                                <div className='row'>
+                                <div className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response3</label>
                                   <input type='text' className='form-control'
                                     value={this.state.option3}
                                     onChange={(e) => this.updateOptions(e, 3)}
                                     placeholder='Response 3' maxLength='20' />
+                                </div>
+                                <div className='col-xl-2'>
+                                  <button className='btn btn-primary btn-sm m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                        <span>
+                                          <i className='la la-plus' />
+                                          <span>
+                                            Set Action
+                                          </span>
+                                        </span>
+                                    </button>
+                                </div>
                                 </div>
                               </fieldset>
                             </div>
