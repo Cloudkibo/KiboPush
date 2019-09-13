@@ -560,10 +560,17 @@ export function loadPageAdmins (pageId) {
   }
 }
 
-export function updatePagePermissions (data) {
-  return {
-    type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
-    data
+export function updatePagePermissions (data, type) {
+  if (type) {
+    return {
+      type: ActionTypes.UPDATE_PAGE_PERMISSIONS_ERROR,
+      data
+    }
+  } else {
+    return {
+      type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
+      data
+    }
   }
 }
 export function loadPagePermissions (id) {
@@ -571,7 +578,11 @@ export function loadPagePermissions (id) {
     callApi(`backdoor/getPagePermissions/${id}`)
       .then(res => {
         console.log('response from loadPagePermissions', res)
-        dispatch(updatePagePermissions(res.payload))
+        if (res.status === 'success') {
+          dispatch(updatePagePermissions(res.payload))
+        } else {
+          dispatch(updatePagePermissions(res.payload, 'error'))
+        }
       })
   }
 }
