@@ -35,8 +35,8 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.UPDATE_PAGE_ADMINS:
         return Object.assign({}, state, {
           pageAdmins: action.data
-        }) 
-    case ActionTypes.LOAD_SUBSCRIBERS_WITH_TAGS: 
+        })
+    case ActionTypes.LOAD_SUBSCRIBERS_WITH_TAGS:
       return Object.assign({}, state, {
         subscribersWithTags: action.data
       })
@@ -210,7 +210,12 @@ export function backdoorInfo (state = initialState, action) {
       })
     case ActionTypes.UPDATE_PAGE_PERMISSIONS:
       return Object.assign({}, state, {
-        pagePermissions: action.data
+        pagePermissions: action.data,
+        error: ''
+      })
+    case ActionTypes.UPDATE_PAGE_PERMISSIONS_ERROR:
+      return Object.assign({}, state, {
+        error: action.data
       })
     default:
       return state
