@@ -58,7 +58,8 @@ class CreateConvo extends React.Component {
       showInvalidSession: false,
       invalidSessionMessage: '',
       pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
-      loadScript: true
+      loadScript: true,
+      messageType: ''
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -115,7 +116,8 @@ class CreateConvo extends React.Component {
       pageValue: targeting.pageValue,
       genderValue: targeting.genderValue,
       localeValue: targeting.localeValue,
-      tagValue: targeting.tagValue
+      tagValue: targeting.tagValue,
+      messageType: targeting.messageTypeSelectedRadio
     })
     let data = {}
     console.log(this.props.location.state.pages)
@@ -301,7 +303,8 @@ class CreateConvo extends React.Component {
         segmentationList: this.state.listSelected,
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        subscribersCount: this.props.subscribersCount
+        subscribersCount: this.props.subscribersCount,
+        messageType: this.state.messageType
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -375,8 +378,8 @@ class CreateConvo extends React.Component {
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue,
-        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
-
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
+        messageType: this.state.messageType
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
