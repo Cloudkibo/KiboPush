@@ -11,6 +11,7 @@ import Top10pages from './top10pages'
 import UniquePages from './uniquePages'
 import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
+import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -595,6 +596,7 @@ class OperationalDashboard extends React.Component {
               </div>
             </div>
           </div>
+          <CompanyInfo />
           <BroadcastsByDays />
           <SurveysByDays />
           <PollsByDays />
