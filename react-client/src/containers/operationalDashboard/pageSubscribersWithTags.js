@@ -189,7 +189,7 @@ class PageSubscribersWithTags extends React.Component {
         this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers, pageSubscribersDataSorted })
     }
     if (nextProps.pageUsers) {
-        let pageOwners = nextProps.pageUsers
+        let pageOwners = nextProps.pageUsers.map(pageUser => pageUser.user)
         this.setState({pageOwners})
     }
   }
