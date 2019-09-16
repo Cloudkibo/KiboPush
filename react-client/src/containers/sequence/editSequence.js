@@ -954,7 +954,7 @@ class CreateSequence extends React.Component {
 
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px'}} className='btn pull-right'> Cancel </button>
-                    <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Remove Trigger </button>
                 </ModalDialog>
               </ModalContainer>
             }
