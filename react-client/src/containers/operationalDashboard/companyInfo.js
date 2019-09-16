@@ -39,7 +39,7 @@ class CompanyInfo extends React.Component {
 
   loadMore () {
     this.setState({pageNumber: this.state.pageNumber+1}, () => {
-        this.props.loadCompanyInfo({pageNumber: this.state.pageNumber+1})
+        this.props.loadCompanyInfo({pageNumber: this.state.pageNumber})
     })
   }
 
