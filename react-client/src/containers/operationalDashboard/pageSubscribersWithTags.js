@@ -182,6 +182,7 @@ class PageSubscribersWithTags extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers) {
+        this.dataLoaded = true
         let currentPageOwner = nextProps.pageSubscribers.user._id
         let pageSubscribersDataSorted = {}
         pageSubscribersDataSorted[currentPageOwner] = nextProps.pageSubscribers.subscriberData
