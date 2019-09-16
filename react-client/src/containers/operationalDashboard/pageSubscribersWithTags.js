@@ -16,6 +16,7 @@ class PageSubscribersWithTags extends React.Component {
     this.state = {
       pageSubscribersData: [],
       pageSubscribersDataSorted: {},
+      totalSubscribers: 0,
       totalLength: 0,
       pageNumber: 0,
       searchValue: '',
@@ -58,6 +59,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   onPageOwnerSelect (event) {
+      console.log('changing pageOwner', event.target.value)
       this.setState({currentPageOwner: event.target.value, pageNumber: 0}, () => {
         this.applyNecessaryFilters()
       })
@@ -196,12 +198,14 @@ class PageSubscribersWithTags extends React.Component {
         console.log('recieved page users', nextProps.pageUsers)
 
         let pageSubscribersDataSorted = this.state.pageSubscribersDataSorted
+        let totalSubscribers = 0
         for (let i = 0; i < nextProps.pageUsers.length; i++) {
             let pageUser = nextProps.pageUsers[i]
+            totalSubscribers += pageUser.subscribers.length
             pageSubscribersDataSorted[pageUser.user._id] = pageUser.subscribers
         }
         let pageOwners = nextProps.pageUsers.map(pageUser => pageUser.user)
-        this.setState({pageOwners, pageSubscribersDataSorted})
+        this.setState({totalSubscribers, pageOwners, pageSubscribersDataSorted})
     }
   }
 
@@ -244,7 +248,7 @@ class PageSubscribersWithTags extends React.Component {
                                     </div> 
                                     <p style={{marginTop: '20px', fontSize: '1em'}}>Total: 
                                         <span className="m-badge m-badge--brand m-badge--wide" style={{fontSize: '1em', marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
-                                            {this.props.pageSubscribers && this.props.pageSubscribers.length} subscribers
+                                            {this.state.totalSubscribers} subscribers
                                         </span>
                                     </p>
                                 </div>
