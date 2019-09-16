@@ -56,15 +56,8 @@ class CompanyInfo extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.companyInfo) {
-        let companyInfo = this.state.companyInfo
-        if (this.newSearch) {
-            companyInfo = nextProps.companyInfo
-            this.newSearch = false
-        } else {
-            companyInfo = companyInfo.concat(nextProps.companyInfo)
-        }
-        console.log('new companyInfo', companyInfo)
-        this.setState({companyInfo})
+        console.log('new companyInfo', nextProps.companyInfo)
+        this.setState({companyInfo: nextProps.companyInfo})
     }
   }
 
