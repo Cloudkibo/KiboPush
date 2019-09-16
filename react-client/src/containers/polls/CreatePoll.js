@@ -19,6 +19,8 @@ import { loadTags } from '../../redux/actions/tags.actions'
 import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
+import SequencePopover from '../../components/Sequence/sequencePopover'
+import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
@@ -27,14 +29,15 @@ class CreatePoll extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
+    props.fetchAllSequence()
     this.state = {
       stayOpen: false,
       disabled: false,
       alert: false,
       statement: this.props.currentPoll ? this.props.currentPoll.statement: '',
-      option1: this.props.currentPoll ? this.props.currentPoll.options[0]: '',
-      option2: this.props.currentPoll ? this.props.currentPoll.options[1]: '',
-      option3: this.props.currentPoll ? this.props.currentPoll.options[2]: '',
+      option1: {option: this.props.currentPoll ? this.props.currentPoll.options[0].option: '', sequenceId: this.props.currentPoll ? this.props.currentPoll.options[0].sequenceId:'', action: this.props.currentPoll ? this.props.currentPoll.options[0].action:''},
+      option2: {option: this.props.currentPoll ? this.props.currentPoll.options[1].option: '', sequenceId: this.props.currentPoll ? this.props.currentPoll.options[1].sequenceId:'', action: this.props.currentPoll ? this.props.currentPoll.options[1].action:''},
+      option3: {option: this.props.currentPoll ? this.props.currentPoll.options[2].option: '', sequenceId: this.props.currentPoll ? this.props.currentPoll.options[2].sequenceId:'', action: this.props.currentPoll ? this.props.currentPoll.options[2].action:''},
       listSelected: '',
       isList: false,
       isShowingModal: false,
@@ -64,6 +67,7 @@ class CreatePoll extends React.Component {
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
+    this.updateOptionsActions = this.updateOptionsActions.bind(this)
   }
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
@@ -167,8 +171,8 @@ class CreatePoll extends React.Component {
   }
 
   checkValidation () {
-    if (this.state.option1 === '' || this.state.option2 === '' ||
-      this.state.option3 === '' || this.state.statement === '') {
+    if (this.state.option1.option === '' || this.state.option2.option === '' ||
+      this.state.option3.option === '' || this.state.statement === '') {
       console.log('vald' + this.state.option1 + ' ' + this.state.option2 + ' ' + this.state.option3 + ' ' + this.state.statement)
       this.setState({alert: true})
     } else {
@@ -186,17 +190,17 @@ class CreatePoll extends React.Component {
       isListValue = true
     }
     var options = []
-    if (this.state.option1 === '' || this.state.option2 === '' ||
-      this.state.option3 === '' || this.state.statement === '') {
+    if (this.state.option1.option === '' || this.state.option2.option === '' ||
+      this.state.option3.option === '' || this.state.statement === '') {
       this.setState({alert: true})
     } else {
-      if (this.state.option1 !== '') {
+      if (this.state.option1.option !== '') {
         options.push(this.state.option1)
       }
-      if (this.state.option2 !== '') {
+      if (this.state.option2.option !== '') {
         options.push(this.state.option2)
       }
-      if (this.state.option3 !== '') {
+      if (this.state.option3.option !== '') {
         options.push(this.state.option3)
       }
       var isSegmentedValue = false
@@ -240,13 +244,45 @@ class CreatePoll extends React.Component {
   updateOptions (e, opt) {
     switch (opt) {
       case 1:
-        this.setState({option1: e.target.value, alert: false})
+      let optionTmp = this.state.option1
+      optionTmp.option = e.target.value
+        this.setState({option1: optionTmp, alert: false})
         break
       case 2:
-        this.setState({option2: e.target.value, alert: false})
+      let optionTmp2 = this.state.option2
+      optionTmp2.option = e.target.value
+        this.setState({option2: optionTmp2, alert: false})
         break
       case 3:
-        this.setState({option3: e.target.value, alert: false})
+      let optionTmp3 = this.state.option3
+      optionTmp3.option = e.target.value
+        this.setState({option3: optionTmp3, alert: false})
+        break
+
+      default:
+        break
+    }
+  }
+
+  updateOptionsActions (sequenceId, action, opt) {
+    switch (opt) {
+      case 1:
+      let optionTmp = this.state.option1
+      optionTmp.sequenceId = sequenceId
+      optionTmp.action = action
+        this.setState({option1: optionTmp, alert: false})
+        break
+      case 2:
+      let optionTmp2 = this.state.option2
+      optionTmp2.sequenceId = sequenceId
+      optionTmp2.action = action
+        this.setState({option2: optionTmp2, alert: false})
+        break
+      case 3:
+      let optionTmp3 = this.state.option3
+      optionTmp3.sequenceId = sequenceId
+      optionTmp3.action = action
+        this.setState({option3: optionTmp3, alert: false})
         break
 
       default:
@@ -260,8 +296,8 @@ class CreatePoll extends React.Component {
       isListValue = true
     }
     var options = []
-    if (this.state.option1 === '' || this.state.option2 === '' ||
-      this.state.option3 === '' || this.state.statement === '') {
+    if (this.state.option1.option === '' || this.state.option2.option === '' ||
+      this.state.option3.option === '' || this.state.statement === '') {
       this.setState({alert: true})
     } else {
       if (this.state.option1 !== '') {
@@ -441,7 +477,7 @@ class CreatePoll extends React.Component {
                           <div className='pull-right'>
                             <button className='btn btn-primary'
                               style={{marginRight: '10px'}}
-                              disabled={(this.state.option1 === '' || this.state.option2 === '' || this.state.option3 === '' || this.state.statement === '')}
+                              disabled={(this.state.option1.option === '' || this.state.option2.option === '' || this.state.option3.option === '' || this.state.statement === '')}
                               onClick={this.onNext}>
                             Next
                             </button>
@@ -515,26 +551,53 @@ class CreatePoll extends React.Component {
                             <div style={{top: '10px'}}>
                               <label className='control-label'> Add 3 responses</label>
                               <fieldset className='input-group-vertical'>
-                                <div id='responses' className='form-group m-form__group'>
+                              <div className='row'>
+                                <div id='responses' className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response1</label>
                                   <input type='text' className='form-control'
-                                    value={this.state.option1}
+                                    value={this.state.option1.option}
                                     onChange={(e) => this.updateOptions(e, 1)}
-                                    placeholder='Response 1' maxLength='20' />
+                                    placeholder='Response 1' maxLength='20'/>
                                 </div>
-                                <div className='form-group m-form__group'>
+                                <div className='col-xl-2'>
+                                  <SequencePopover 
+                                  optionNumber={1}
+                                  sequences={this.props.sequences}
+                                  onSave={this.updateOptionsActions}
+                                  />
+                                </div>
+                                </div>
+                                <div className='row'>
+                                <div className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response2</label>
                                   <input type='text' className='form-control'
-                                    value={this.state.option2}
+                                    value={this.state.option2.option}
                                     onChange={(e) => this.updateOptions(e, 2)}
                                     placeholder='Response 2' maxLength='20' />
                                 </div>
-                                <div className='form-group m-form__group'>
+                                <div className='col-xl-2'>
+                                  <SequencePopover
+                                   optionNumber={2}
+                                   sequences={this.props.sequences}
+                                   onSave={this.updateOptionsActions}
+                                   />
+                                </div>
+                                </div>
+                                <div className='row'>
+                                <div className='form-group m-form__group col-xl-10'>
                                   <label className='sr-only'>Response3</label>
                                   <input type='text' className='form-control'
-                                    value={this.state.option3}
+                                    value={this.state.option3.option}
                                     onChange={(e) => this.updateOptions(e, 3)}
                                     placeholder='Response 3' maxLength='20' />
+                                </div>
+                                <div className='col-xl-2'>
+                                   <SequencePopover
+                                   optionNumber={3}
+                                   sequences={this.props.sequences}
+                                   onSave={this.updateOptionsActions}
+                                   />
+                                </div>
                                 </div>
                               </fieldset>
                             </div>
@@ -577,7 +640,8 @@ function mapStateToProps (state) {
     polls: (state.pollsInfo.polls),
     pollDetails: (state.templatesInfo.pollDetails),
     currentPoll: (state.backdoorInfo.currentPoll),
-    allResponses: (state.pollsInfo.allResponses)
+    allResponses: (state.pollsInfo.allResponses),
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
@@ -591,7 +655,8 @@ function mapDispatchToProps (dispatch) {
     sendPollDirectly: sendPollDirectly,
     loadTags: loadTags,
     loadPollDetails: loadPollDetails,
-    saveCurrentPoll:saveCurrentPoll
+    saveCurrentPoll:saveCurrentPoll,
+    fetchAllSequence:fetchAllSequence
   },
     dispatch)
 }

@@ -209,9 +209,10 @@ export function loadUniquePages (data) {
   }
 }
 
-export function loadSubscribersWithTags (id) {
+export function loadSubscribersWithTags (data) {
+  console.log('loading subscribers with tags', data)
   return (dispatch) => {
-    callApi(`backdoor/fetchSubscribersWithTags/${id}`)
+    callApi(`backdoor/fetchSubscribersWithTags`, 'post', data)
       .then(res => {
         console.log('response from fetchSubscribersWithTags', res)
         dispatch(updateSubscribersWithTags(res))
@@ -390,7 +391,7 @@ export function fetchOnePageStatsDateWise (startDate, pageId) {
 // Fetch Top Pages
 export function fetchTopPages (limit) {
   return (dispatch) => {
-    callApi(`operational/pagewise/topPages`, 'post', {limit: limit})
+    callApi(`backdoor/topPages`, 'post', {limit: limit})
       .then(res => {
         console.log('response from fetchTopPages', res)
         dispatch(handleAction(ActionTypes.UPDATE_TOP_PAGES_KIBODASH, res.payload))
