@@ -391,7 +391,7 @@ export function fetchOnePageStatsDateWise (startDate, pageId) {
 // Fetch Top Pages
 export function fetchTopPages (limit) {
   return (dispatch) => {
-    callApi(`operational/pagewise/topPages`, 'post', {limit: limit})
+    callApi(`backdoor/topPages`, 'post', {limit: limit})
       .then(res => {
         console.log('response from fetchTopPages', res)
         dispatch(handleAction(ActionTypes.UPDATE_TOP_PAGES_KIBODASH, res.payload))
