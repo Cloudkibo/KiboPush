@@ -248,9 +248,9 @@ class AutopostingSummary extends React.Component {
                 <CartesianGrid strokeDasharray='3 3' />
                 <Tooltip />
                 <Legend />
-                  <Line type='monotone' dataKey='twitterCount' name='Tweets Sent' stroke='#8884d8' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='facebookCount' name='Facbook Posts Sent' stroke='#82ca9d' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='wordpressCount' name='Wordpress Posts Sent' stroke='#FF7F50' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='twitterCount' name='Subscriber reach through Tweets Sent' stroke='#8884d8' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='facebookCount' name='Subscriber reach through Facbook Posts Sent' stroke='#82ca9d' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='wordpressCount' name='Subscriber reach through Wordpress Posts Sent' stroke='#FF7F50' activeDot={{r: 8}} />
               </LineChart>
               : <span>No reports to show for the applied filters</span>
             }
