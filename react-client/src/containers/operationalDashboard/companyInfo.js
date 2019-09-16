@@ -26,20 +26,21 @@ class CompanyInfo extends React.Component {
     this.handleDate = this.handleDate.bind(this)
     this.dataLoaded = false
     this.loadMore = this.loadMore.bind(this)
-    this.newSearch = false
+    this.loadedMore = false
   }
 
   searchCompanies(event) {
-      this.newSearch = true
       console.log('searching companies', event.target.value)
-      this.setState({searchValue: event.target.value}, () => {
+      this.setState({searchValue: event.target.value, reachedLimit: false}, () => {
+        this.loadedMore = false
         this.props.loadCompanyInfo({pageNumber: 1, companyName: this.state.searchValue})
       })
   }
 
   loadMore () {
     this.setState({pageNumber: this.state.pageNumber+1}, () => {
-        this.props.loadCompanyInfo({pageNumber: this.state.pageNumber})
+        this.loadedMore = true
+        this.props.loadCompanyInfo({pageNumber: this.state.pageNumber, companyName: this.state.searchValue})
     })
   }
 
@@ -56,6 +57,10 @@ class CompanyInfo extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.companyInfo) {
+        if (this.loadedMore && nextProps.companyInfo.length === this.props.companyInfo.length) {
+            this.setState({reachedLimit: true})
+            this.loadedMore = false
+        } 
         console.log('new companyInfo', nextProps.companyInfo)
         this.setState({companyInfo: nextProps.companyInfo})
     }
@@ -156,7 +161,7 @@ class CompanyInfo extends React.Component {
                                 </div>
                                 : <div>No Data to display</div>
                                 }
-                            {this.state.companyInfo.length < this.props.numOfCompanies &&
+                            {!this.state.reachedLimit &&
                             <center>
                                 <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
                                 <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
@@ -180,8 +185,7 @@ function mapStateToProps (state) {
   console.log(state)
   //console.log(state.backdoorInfo.subscribersWithTags)
   return {
-    companyInfo: (state.backdoorInfo.companyInfo),
-    numOfCompanies: (state.backdoorInfo.numOfCompanies)
+    companyInfo: (state.backdoorInfo.companyInfo)
   }
 }
 
