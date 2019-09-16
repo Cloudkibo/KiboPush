@@ -29,8 +29,7 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.LOAD_COMPANY_INFO:
         //console.log('LOAD_COMPANY_INFO action', action)
         return Object.assign({}, state, {
-          companyInfo: action.data.data,
-          numOfCompanies: action.data.count
+          companyInfo: action.data.data
         })
     case ActionTypes.UPDATE_PAGE_ADMINS:
         return Object.assign({}, state, {
