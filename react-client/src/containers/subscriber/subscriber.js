@@ -1247,6 +1247,7 @@ class Subscriber extends React.Component {
   }
 
   render() {
+    console.log('sequence options in subscriberss,', this.state.sequenceOptions)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
