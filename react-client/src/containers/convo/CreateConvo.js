@@ -34,7 +34,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: ['open website', 'open webview', 'add share', 'unsubscribe sequence', 'subscribe sequence'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
