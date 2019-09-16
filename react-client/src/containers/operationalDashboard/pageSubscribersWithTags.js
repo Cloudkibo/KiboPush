@@ -91,6 +91,7 @@ class PageSubscribersWithTags extends React.Component {
     //debugger;
     props.loadSubscribersWithTags({
         pageId: this.props.location.state.pageId,
+        pageOwner: this.state.currentPageOwner,
         subscriberName: this.state.searchValue,
         unassignedTag: this.state.unassignedTagsValue,
         assignedTag: this.state.assignedTagsValue,
