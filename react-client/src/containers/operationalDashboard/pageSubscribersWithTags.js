@@ -34,6 +34,13 @@ class PageSubscribersWithTags extends React.Component {
         status: this.state.statusValue,
         pageNumber: 1
     })
+    props.loadPageUsers({
+        pageId: this.props.location.state.pageId,
+        search_value: '',
+        connected_filter: '',
+        type_filter: '',
+        admin_filter: ''
+      })
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.onUserNameSearch = this.onUserNameSearch.bind(this)
@@ -179,8 +186,11 @@ class PageSubscribersWithTags extends React.Component {
         let pageSubscribersDataSorted = {}
         pageSubscribersDataSorted[currentPageOwner] = nextProps.pageSubscribers.subscriberData
         console.log('pageSubscribersDataSorted', pageSubscribersDataSorted)
-        let pageOwners = [nextProps.pageSubscribers.user]
-        this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, pageOwners, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers, pageSubscribersDataSorted })
+        this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers, pageSubscribersDataSorted })
+    }
+    if (nextProps.pageUsers) {
+        let pageOwners = nextProps.pageUsers
+        this.setState({pageOwners})
     }
   }
 
@@ -373,13 +383,15 @@ function mapStateToProps (state) {
   console.log(state)
   //console.log(state.backdoorInfo.subscribersWithTags)
   return {
-    pageSubscribers: (state.backdoorInfo.subscribersWithTags)
+    pageSubscribers: (state.backdoorInfo.subscribersWithTags),
+    pageUsers: (state.backdoorInfo.pageUsers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadSubscribersWithTags
+    loadSubscribersWithTags,
+    loadPageUsers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PageSubscribersWithTags)
