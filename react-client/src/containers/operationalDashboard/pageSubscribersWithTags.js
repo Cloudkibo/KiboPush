@@ -185,8 +185,12 @@ class PageSubscribersWithTags extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers) {
         this.dataLoaded = true
-        let currentPageOwner = nextProps.pageSubscribers.user._id
-        this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers })
+        if (nextProps.pageSubscribers.length === 0) {
+            this.setState({ pageSubscribersData: [], totalLength: 0 })
+        } else {
+            let currentPageOwner = nextProps.pageSubscribers.user._id
+            this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers })
+        }
     }
     if (nextProps.pageUsers) {
         console.log('recieved page users', nextProps.pageUsers)
