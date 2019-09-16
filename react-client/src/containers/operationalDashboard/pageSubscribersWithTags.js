@@ -89,7 +89,7 @@ class PageSubscribersWithTags extends React.Component {
 
   applyNecessaryFilters() {
     //debugger;
-    props.loadSubscribersWithTags({
+    this.props.loadSubscribersWithTags({
         pageId: this.props.location.state.pageId,
         pageOwner: this.state.currentPageOwner,
         subscriberName: this.state.searchValue,
