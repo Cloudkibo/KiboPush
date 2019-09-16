@@ -24,7 +24,8 @@ import {
   updateUniquePagesDetails,
   updateCurrentPageTags,
   updateSubscribersWithTags,
-  updatePageAdmins
+  updatePageAdmins,
+  updateCompanyInfo
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -527,6 +528,17 @@ export function updatePageUsers (data) {
   }
 }
 
+export function loadCompanyInfo (data) {
+  console.log('loading companyInfo', data)
+  return (dispatch) => {
+    callApi(`backdoor/fetchCompanyInfo`, 'post', data)
+    .then(res => {
+      console.log('response from loadCompanyInfo', res)
+      dispatch(updateCompanyInfo(res.payload))
+    })
+  }
+}
+
 export function loadPageUsers (data) {
   console.log('data for loadPageUsers', data)
   return (dispatch) => {
@@ -548,10 +560,17 @@ export function loadPageAdmins (pageId) {
   }
 }
 
-export function updatePagePermissions (data) {
-  return {
-    type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
-    data
+export function updatePagePermissions (data, type) {
+  if (type) {
+    return {
+      type: ActionTypes.UPDATE_PAGE_PERMISSIONS_ERROR,
+      data
+    }
+  } else {
+    return {
+      type: ActionTypes.UPDATE_PAGE_PERMISSIONS,
+      data
+    }
   }
 }
 export function loadPagePermissions (id) {
@@ -559,7 +578,11 @@ export function loadPagePermissions (id) {
     callApi(`backdoor/getPagePermissions/${id}`)
       .then(res => {
         console.log('response from loadPagePermissions', res)
-        dispatch(updatePagePermissions(res.payload))
+        if (res.status === 'success') {
+          dispatch(updatePagePermissions(res.payload))
+        } else {
+          dispatch(updatePagePermissions(res.payload, 'error'))
+        }
       })
   }
 }

@@ -110,7 +110,7 @@ class top10pages extends React.Component {
                   User:
                 </span>
                 <br />
-                { this.props.pagesData[i].userName &&
+                { this.props.pagesData[i + 1].userName &&
                 <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
                   {this.props.pagesData[i + 1].userName.name}
                 </span>

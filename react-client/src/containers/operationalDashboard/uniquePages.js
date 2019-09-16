@@ -23,7 +23,7 @@ class UniquePages extends React.Component {
     this.goToPermissions = this.goToPermissions.bind(this)
     this.goToPageTags = this.goToPageTags.bind(this)
     this.goToPageAdmins = this.goToPageAdmins.bind(this)
-    this.props.loadUniquePages({pageNumber: 1, connectedFacebook: '', pageName: ''})
+    //this.props.loadUniquePages({pageNumber: 1, connectedFacebook: '', pageName: ''})
   }
 
   goToUsers (pageId, pageName) {
