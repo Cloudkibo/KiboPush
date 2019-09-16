@@ -209,9 +209,10 @@ export function loadUniquePages (data) {
   }
 }
 
-export function loadSubscribersWithTags (id) {
+export function loadSubscribersWithTags (data) {
+  console.log('loading subscribers with tags', data)
   return (dispatch) => {
-    callApi(`backdoor/fetchSubscribersWithTags/${id}`)
+    callApi(`backdoor/fetchSubscribersWithTags`, 'post', data)
       .then(res => {
         console.log('response from fetchSubscribersWithTags', res)
         dispatch(updateSubscribersWithTags(res))
