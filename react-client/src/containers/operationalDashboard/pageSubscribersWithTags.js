@@ -15,6 +15,7 @@ class PageSubscribersWithTags extends React.Component {
     super(props, context)
     this.state = {
       pageSubscribersData: [],
+      pageSubscribersDataSorted: {},
       totalLength: 0,
       pageNumber: 0,
       searchValue: '',
@@ -184,14 +185,18 @@ class PageSubscribersWithTags extends React.Component {
     if (nextProps.pageSubscribers) {
         this.dataLoaded = true
         let currentPageOwner = nextProps.pageSubscribers.user._id
-        let pageSubscribersDataSorted = {}
-        pageSubscribersDataSorted[currentPageOwner] = nextProps.pageSubscribers.subscriberData
-        console.log('pageSubscribersDataSorted', pageSubscribersDataSorted)
-        this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers, pageSubscribersDataSorted })
+        this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, currentPageOwner, totalLength: nextProps.pageSubscribers.totalSubscribers })
     }
     if (nextProps.pageUsers) {
+        console.log('recieved page users', nextProps.pageUsers)
+
+        let pageSubscribersDataSorted = this.state.pageSubscribersDataSorted
+        for (let i = 0; i < nextProps.pageUsers.length; i++) {
+            let pageUser = nextProps.pageUsers[i]
+            pageSubscribersDataSorted[pageUser.user._id] = pageUser.subscribers
+        }
         let pageOwners = nextProps.pageUsers.map(pageUser => pageUser.user)
-        this.setState({pageOwners})
+        this.setState({pageOwners, pageSubscribersDataSorted})
     }
   }
 
@@ -223,7 +228,7 @@ class PageSubscribersWithTags extends React.Component {
                                 <div className="panel-body">
                                     <div style={{maxHeight: '200px', width: '400px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
                                         {
-                                            this.state.pageOwners && this.state.pageOwners.map(pageOwner => {
+                                            this.state.pageOwners.length > 0 && this.state.pageOwners.map(pageOwner => {
                                                 return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>: 
                                                             <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
                                                                 {this.state.pageSubscribersDataSorted && this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
