@@ -10,6 +10,8 @@ class PageTags extends React.Component {
     this.state = {
         filteredData: [],
         pageTagsData: [],
+        kiboPageTags: [],
+        fbPageTags: [],
         searchValue: '',
         defaultValue: '',
         fbValue: '',
@@ -254,7 +256,7 @@ class PageTags extends React.Component {
         let correctRecords = pageTagsData.filter(pageTag => pageTag.facebook === pageTag.kibopush)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords, correctRecords})
+        this.setState({ kiboPageTags: nextProps.pageTags.kiboPageTags, fbPageTags: nextProps.pageTags.fbPageTags, totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords, correctRecords})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -310,7 +312,7 @@ class PageTags extends React.Component {
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
                                         <div className='m-widget26__number'>
-                                            {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
+                                            {this.state.kiboPageTags.length}
                                             <small>
                                                 KiboPush Tags
                                             </small>
@@ -325,7 +327,7 @@ class PageTags extends React.Component {
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
                                         <div className='m-widget26__number'>
-                                            {this.props.pageTags && this.props.pageTags.fbPageTags.length}
+                                            {this.state.fbPageTags.length}
                                             <small>
                                                 Facebook Tags
                                             </small>
