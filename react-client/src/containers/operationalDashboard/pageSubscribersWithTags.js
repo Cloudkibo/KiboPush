@@ -59,12 +59,13 @@ class PageSubscribersWithTags extends React.Component {
     this.getDataMessage = this.getDataMessage.bind(this)
     this.requestSent = false
     this.dataLoaded = false
-    this.usersLoaded = false
+    this.currentUserLoaded = false
+    this.pageUsersLoaded = false
   }
 
   onPageOwnerSelect (event) {
       console.log('changing pageOwner', event.target.value)
-      this.usersLoaded = true
+      this.currentUserLoaded = true
       this.setState({currentPageOwner: event.target.value, pageNumber: 0}, () => {
         this.applyNecessaryFilters()
       })
@@ -204,6 +205,7 @@ class PageSubscribersWithTags extends React.Component {
     }
     if (nextProps.pageUsers) {
         console.log('recieved page users', nextProps.pageUsers)
+        this.pageUser = true
         let pageSubscribersDataSorted = this.state.pageSubscribersDataSorted
         let totalSubscribers = 0
         let connectedUser = this.state.connectedUser
@@ -221,7 +223,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   getDataMessage () {
-      if (this.usersLoaded) {
+      if (this.currentUserLoaded) {
           if (!this.dataLoaded) {
             return 'Loading subscribers'
           } else {
@@ -261,14 +263,16 @@ class PageSubscribersWithTags extends React.Component {
                               <div id={`collapse`} className={"panel-collapse collapse"}>
                                 <div className="panel-body">
                                     <div style={{maxHeight: '200px', width: '400px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
+                                        
+                                        
                                         {
-                                            this.state.pageOwners.length > 0 && this.state.pageOwners.map(pageOwner => {
+                                            this.state.pageOwners.length > 0 ? this.state.pageOwners.map(pageOwner => {
                                                 return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>: 
                                                             <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
                                                                 {this.state.pageSubscribersDataSorted && this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
                                                             </span>
                                                         </p>)
-                                            })
+                                            }) : <h4 style={{textAlign: 'center'}}>Loading Summary...</h4>
                                         }
                                     </div> 
                                     <p style={{marginTop: '20px', fontSize: '1em'}}>Total: 
