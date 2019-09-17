@@ -176,7 +176,7 @@ class PageSubscribersWithTags extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected}, () => {
-        props.loadSubscribersWithTags({pageId: this.props.location.state.pageId, pageNumber: this.state.pageNumber+1})
+        this.applyNecessaryFilters()
     })
   }
 
@@ -224,7 +224,7 @@ class PageSubscribersWithTags extends React.Component {
                     <div style={{marginTop: '30px'}} className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
-                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersData.length} Subscribers</span>
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersDataSorted[this.state.currentPageOwner] && this.state.pageSubscribersDataSorted[this.state.currentPageOwner].length} Subscribers</span>
                         
                         <div style={{marginTop: '20px', width: '440px'}} className="panel-group" id="accordion">
                             <div className="panel panel-default">
