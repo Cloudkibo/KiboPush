@@ -26,7 +26,7 @@ class Button extends React.Component {
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: false,
-      showSequenceMessage: false,
+      showSequenceMessage: true,
       buttonDisabled: this.props.edit ? false : true,
       errorMsg:''
     }
@@ -328,7 +328,8 @@ class Button extends React.Component {
           type: 'postback',
           title: this.state.title, // User defined label
           sequenceId: this.state.sequenceValue,
-          action: 'subscribe'
+          action: 'subscribe',
+          module: {type: 'sequenceMessaging'}
         }
         this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
@@ -336,7 +337,8 @@ class Button extends React.Component {
           type: 'postback',
           title: this.state.title, // User defined label
           sequenceId: this.state.sequenceValue,
-          action: 'unsubscribe'
+          action: 'unsubscribe',
+          module: {type: 'sequenceMessaging'}
         }
         this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
       }
