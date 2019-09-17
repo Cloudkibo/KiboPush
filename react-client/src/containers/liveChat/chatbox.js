@@ -25,7 +25,6 @@ import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
-import 'react-giphy-select/lib/styles.css'
 import {
   isEmoji,
   getmetaurl,
@@ -86,7 +85,8 @@ class ChatBox extends React.Component {
       buttonState: 'start',
       recording: false,
       scrolling: true,
-      isShowingModalPending: false
+      isShowingModalPending: false,
+      pendingResponseValue: ''
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -161,12 +161,12 @@ class ChatBox extends React.Component {
     this.setState({isShowingModal: false})
   }
 
-  showDialogPending () {
-    this.setState({isShowingModalPending: true})
+  showDialogPending (value) {
+    this.setState({isShowingModalPending: true, pendingResponseValue: value })
   }
 
   closeDialogPending () {
-    this.setState({isShowingModalPending: false})
+    this.setState({isShowingModalPending: false, pendingResponseValue: ''})
   }
 
   shouldLoad () {
@@ -855,12 +855,12 @@ class ChatBox extends React.Component {
             onClose={this.closeDialogPending}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogPending}>
-              <h3>Remove Pending Response</h3>
-              <p>Are you sure you want to remove this session as pending response?</p>
+              <h3>{this.state.pendingResponseValue ? 'Add ' : 'Remove '}Pending Response</h3>
+              <p>{this.state.pendingResponseValue ? 'Are you sure you want to mark this session as pending response?' : 'Are you sure you want to remove this session as pending response?'}</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-primary' onClick={(e) => {
-                    this.props.removePending(this.props.currentSession)
+                    this.props.removePending(this.props.currentSession, this.state.pendingResponseValue)
                     this.closeDialogPending()
                   }}>
                     Yes
@@ -975,7 +975,7 @@ class ChatBox extends React.Component {
         <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
             <GiphySelect
-              onEntrySelect={(gif) => { this.sendGif(gif) }}
+              onEntrySelect={gif => this.sendGif(gif)}
             />
           </PopoverBody>
         </Popover>
@@ -1056,12 +1056,18 @@ class ChatBox extends React.Component {
             {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
-                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
+                {this.props.currentSession.pendingResponse
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+              : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                }
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
-                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
+                {this.props.currentSession.pendingResponse
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+                : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                }
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)

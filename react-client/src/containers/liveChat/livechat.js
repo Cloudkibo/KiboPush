@@ -140,31 +140,31 @@ class LiveChat extends React.Component {
     }
   }
 
-  updatePendingSession(session) {
+  updatePendingSession(session, value) {
     console.log('in updatePendingSession', session)
-    session.pendingResponse = false
+    session.pendingResponse = value
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
-          if (temp[i]._id === session._id && temp[i].pendingResponse) {
-            temp[i].pendingResponse = false
+          if (temp[i]._id === session._id) {
+            temp[i].pendingResponse = value
           }
         }
       } else {
         var tempClose = this.props.closeSessions
         for (var j = 0; j < tempClose.length; j++) {
-          if (tempClose[j]._id === session._id && tempClose[j].pendingResponse) {
-            tempClose[j].pendingResponse = false
+          if (tempClose[j]._id === session._id) {
+            tempClose[j].pendingResponse = value
           }
         }
       }
     }
   }
 
-  removePending (session) {
-    this.props.updatePendingResponse({id: session._id, pendingResponse: false})
-    this.updatePendingSession(session)
+  removePending (session, value) {
+    this.props.updatePendingResponse({id: session._id, pendingResponse: value})
+    this.updatePendingSession(session, value)
   }
 
   fetchSessions(data, type) {
