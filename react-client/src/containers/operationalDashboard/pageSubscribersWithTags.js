@@ -57,6 +57,7 @@ class PageSubscribersWithTags extends React.Component {
     this.applyStatusFilter = this.applyStatusFilter.bind(this)
     this.onPageOwnerSelect = this.onPageOwnerSelect.bind(this)
     this.getDataMessage = this.getDataMessage.bind(this)
+    this.requestSent = false
     this.dataLoaded = false
     this.usersLoaded = false
   }
@@ -95,6 +96,8 @@ class PageSubscribersWithTags extends React.Component {
 
   applyNecessaryFilters() {
     //debugger;
+    console.log('sending loadSubscribersWithTags request')
+    this.requestSent = true
     this.props.loadSubscribersWithTags({
         pageId: this.props.location.state.pageId,
         pageOwner: this.state.currentPageOwner,
@@ -190,11 +193,13 @@ class PageSubscribersWithTags extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers) {
-        this.dataLoaded = true
-        if (nextProps.pageSubscribers.length === 0) {
-            this.setState({ pageSubscribersData: [], totalLength: 0 })
-        } else {
-            this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, totalLength: nextProps.pageSubscribers.totalSubscribers })
+        if (this.requestSent) {
+            if (nextProps.pageSubscribers.length === 0) {
+                this.setState({ pageSubscribersData: [], totalLength: 0 })
+            } else {
+                this.setState({ pageSubscribersData: nextProps.pageSubscribers.subscriberData, totalLength: nextProps.pageSubscribers.totalSubscribers })
+            }
+            this.dataLoaded = true
         }
     }
     if (nextProps.pageUsers) {
