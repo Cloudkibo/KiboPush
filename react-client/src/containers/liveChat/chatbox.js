@@ -25,7 +25,6 @@ import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
-import 'react-giphy-select/lib/styles.css'
 import {
   isEmoji,
   getmetaurl,
@@ -975,7 +974,7 @@ class ChatBox extends React.Component {
         <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
             <GiphySelect
-              onEntrySelect={(gif) => { this.sendGif(gif) }}
+              onEntrySelect={gif => this.sendGif(gif)}
             />
           </PopoverBody>
         </Popover>
