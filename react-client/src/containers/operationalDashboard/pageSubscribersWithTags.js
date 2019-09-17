@@ -97,7 +97,7 @@ class PageSubscribersWithTags extends React.Component {
         subscriberName: this.state.searchValue,
         unassignedTag: this.state.unassignedTagsValue,
         assignedTag: this.state.assignedTagsValue,
-        status: this.state.statusValue,
+        status: this.state.statusValue !== 'all' ? this.state.statusValue : '',
         pageNumber: this.state.pageNumber+1
     })
   }   
