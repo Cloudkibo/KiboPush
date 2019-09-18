@@ -26,10 +26,10 @@ class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
+    props.fetchAllSequence()
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
-    props.fetchAllSequence()
     this.state = {
       stayOpen: false,
       disabled: false,
@@ -559,13 +559,16 @@ class CreatePoll extends React.Component {
                                     onChange={(e) => this.updateOptions(e, 1)}
                                     placeholder='Response 1' maxLength='20'/>
                                 </div>
-                                <div className='col-xl-2'>
-                                  <SequencePopover 
-                                  optionNumber={1}
-                                  sequences={this.props.sequences}
-                                  onSave={this.updateOptionsActions}
-                                  />
-                                </div>
+                                {
+                                  this.props.sequences &&
+                                  <div className='col-xl-2'>
+                                    <SequencePopover
+                                    optionNumber={1}
+                                    sequences={this.props.sequences}
+                                    onSave={this.updateOptionsActions}
+                                    />
+                                  </div>
+                                }
                                 </div>
                                 <div className='row'>
                                 <div className='form-group m-form__group col-xl-10'>
@@ -575,13 +578,16 @@ class CreatePoll extends React.Component {
                                     onChange={(e) => this.updateOptions(e, 2)}
                                     placeholder='Response 2' maxLength='20' />
                                 </div>
-                                <div className='col-xl-2'>
-                                  <SequencePopover
-                                   optionNumber={2}
-                                   sequences={this.props.sequences}
-                                   onSave={this.updateOptionsActions}
-                                   />
-                                </div>
+                                {
+                                  this.props.sequences &&
+                                  <div className='col-xl-2'>
+                                    <SequencePopover
+                                     optionNumber={2}
+                                     sequences={this.props.sequences}
+                                     onSave={this.updateOptionsActions}
+                                     />
+                                  </div>
+                                }
                                 </div>
                                 <div className='row'>
                                 <div className='form-group m-form__group col-xl-10'>
@@ -591,13 +597,16 @@ class CreatePoll extends React.Component {
                                     onChange={(e) => this.updateOptions(e, 3)}
                                     placeholder='Response 3' maxLength='20' />
                                 </div>
-                                <div className='col-xl-2'>
-                                   <SequencePopover
-                                   optionNumber={3}
-                                   sequences={this.props.sequences}
-                                   onSave={this.updateOptionsActions}
-                                   />
-                                </div>
+                                {
+                                  this.props.sequences &&
+                                  <div className='col-xl-2'>
+                                     <SequencePopover
+                                     optionNumber={3}
+                                     sequences={this.props.sequences}
+                                     onSave={this.updateOptionsActions}
+                                     />
+                                  </div>
+                                }
                                 </div>
                               </fieldset>
                             </div>

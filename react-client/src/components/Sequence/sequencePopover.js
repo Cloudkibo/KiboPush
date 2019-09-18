@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import Select from 'react-select'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
@@ -18,7 +19,7 @@ class SequencePopover extends React.Component {
             mappedSequenceUnsub: false,
             actionButtonSize: this.props.questionNumber == undefined ? ' btn-sm' : ' btn-xs',
             isActionSaved:false
-        }   
+        }
 
         this.toggleSequenceModal = this.toggleSequenceModal.bind(this)
         this.openSequenceModel = this.openSequenceModel.bind(this)
@@ -29,15 +30,13 @@ class SequencePopover extends React.Component {
         this.resetAction = this.resetAction.bind(this)
 }
 
-componentWillReceiveProps(nextProps){
-    if (nextProps.sequences) {
-        let sequenceOptions = []
-        let unsubSequenceOptions = []
-        for (let a = 0; a < nextProps.sequences.length; a++) {
-            sequenceOptions.push({ 'value': nextProps.sequences[a].sequence._id, 'label': nextProps.sequences[a].sequence.name })
-        }
-        this.setState({ sequenceOptions: sequenceOptions})
-      }
+componentDidMount() {
+    let sequenceOptions = []
+    let unsubSequenceOptions = []
+    for (let a = 0; a < this.props.sequences.length; a++) {
+        sequenceOptions.push({ 'value': this.props.sequences[a].sequence._id, 'label': this.props.sequences[a].sequence.name })
+    }
+    this.setState({ sequenceOptions: sequenceOptions})
 }
 
  toggleSequenceModal(){
@@ -55,7 +54,7 @@ componentWillReceiveProps(nextProps){
  handleSubscribeSequence(obj){
      this.setState({sequenceValue: obj.value, sequenceValueUnsub:'' })
  }
- 
+
  handleUnsubscribeSequence(obj){
     this.setState({sequenceValueUnsub: obj.value, sequenceValue:''})
  }
@@ -99,7 +98,7 @@ componentWillReceiveProps(nextProps){
                 <div className='col-12'>
                     When subscriber selects this option
                     <br/>
-                    
+
                 <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
                 <div style={{overflow: 'visible'}} className='m-accordion__item'>
                     {
@@ -170,7 +169,7 @@ componentWillReceiveProps(nextProps){
                     className='btn btn-primary btn-sm'
                     onClick={() => {
                         if(this.props.questionNumber != undefined){ //survey
-                            if(this.state.isSubscribe){ 
+                            if(this.state.isSubscribe){
                                 if(this.state.sequenceValue !== ''){
                                     this.props.onSave(this.state.sequenceValue,'subscribe',this.props.questionNumber, this.state.optionNumber)
                                     this.setState({showModal:false, isActionSaved:true})
@@ -182,7 +181,7 @@ componentWillReceiveProps(nextProps){
                                 }
                             }
                         }else{                   //polls
-                        if(this.state.isSubscribe){ 
+                        if(this.state.isSubscribe){
                             if(this.state.sequenceValue !== ''){
                                 this.props.onSave(this.state.sequenceValue,'subscribe', this.state.optionNumber)
                                 this.setState({showModal:false, isActionSaved:true})
@@ -193,7 +192,7 @@ componentWillReceiveProps(nextProps){
                                 this.setState({showModal:false, isActionSaved:true})
                             }
                         }
-                    }    
+                    }
                     }}
                     >Save
                     </button>
@@ -213,4 +212,11 @@ componentWillReceiveProps(nextProps){
   }
 }
 
-export default SequencePopover 
+SequencePopover.propTypes = {
+  'sequences': PropTypes.array.isRequired,
+  'optionNumber': PropTypes.number.isRequired,
+  'questionNumber': PropTypes.number,
+  'onSave': PropTypes.func.isRequired
+}
+
+export default SequencePopover
