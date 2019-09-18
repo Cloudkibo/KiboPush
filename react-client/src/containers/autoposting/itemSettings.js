@@ -141,14 +141,16 @@ class ItemSettings extends React.Component {
     this.props.loadTags()
     let options = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.location.state.item.segmentationPageIds !== '') {
+      if (this.props.location.state.item.segmentationPageIds.length > 0) {
         if (this.props.location.state.item.segmentationPageIds.indexOf(this.props.pages[i].pageId) !== -1) {
-          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true}
+          options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true})
         } else {
-          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+          options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
         }
       } else {
-        options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+        if (this.props.pages[i].gotPageSubscriptionPermission) {
+          options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
+        }
       }
     }
     this.setState({page: {options: options}})
