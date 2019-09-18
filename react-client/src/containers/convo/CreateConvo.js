@@ -126,10 +126,10 @@ class CreateConvo extends React.Component {
       data['genderValue'] = targeting.genderValue
     }
     if (targeting.localeValue.length > 0) {
-      data['localeValue'] = targeting.localeValue[0]
+      data['localeValue'] = targeting.localeValue
     }
     if (targeting.tagValue.length > 0) {
-      data['tagValue'] = targeting.tagValue[0]
+      data['tagValue'] = targeting.tagValue
     }
     this.props.loadSubscribersCount(data)
   }
