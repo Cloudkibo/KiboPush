@@ -944,6 +944,16 @@ class Menu extends React.Component {
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
+          <div
+            className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+            role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              Due to upcoming Facebook's update, submenus will be rendered as a flat list on the top level. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank'>Learn More</a>.
+            </div>
+          </div>
           <div className='m-portlet m-portlet--full-height '>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption' style={{width: '400px'}}>

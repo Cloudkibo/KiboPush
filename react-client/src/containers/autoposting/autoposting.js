@@ -23,7 +23,8 @@ class Autoposting extends React.Component {
       isShowingModalDelete: false,
       showListItems: true,
       deleteid: '',
-      showWordPressGuide: false
+      showWordPressGuide: false,
+      newsPageIndex: props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })
     }
     props.loadAutopostingList()
     this.showDialog = this.showDialog.bind(this)
@@ -222,6 +223,7 @@ class Autoposting extends React.Component {
           </div>
         </div>
         <div className='m-content'>
+      { this.state.newsPageIndex.length > 0 &&
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
@@ -231,6 +233,8 @@ class Autoposting extends React.Component {
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
+        }
+        { this.state.newsPageIndex.length > 0 &&
           <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
             role='alert'>
@@ -242,6 +246,20 @@ class Autoposting extends React.Component {
               updates to your subscribers
             </div>
           </div>
+        }
+        { this.state.newsPageIndex.length === 0 &&
+          <div
+            className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+            role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              Autoposting is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank'>Register to News Page Index</a>.
+              Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank'>Facebook's Subcription Messaging Policy</a>
+            </div>
+          </div>
+        }
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
@@ -254,7 +272,7 @@ class Autoposting extends React.Component {
               <div className='m-portlet__head-tools'>
                 <Link onClick={this.showDialog}>
                   <button
-                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={(this.state.newsPageIndex.length === 0)}>
                     <span>
                       <i className='la la-plus' />
                       <span>
@@ -328,7 +346,8 @@ class Autoposting extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    autopostingData: (state.autopostingInfo.autopostingData)
+    autopostingData: (state.autopostingInfo.autopostingData),
+    pages: (state.pagesInfo.pages)
   }
 }
 
