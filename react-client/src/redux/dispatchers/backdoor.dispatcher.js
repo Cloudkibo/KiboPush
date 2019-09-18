@@ -200,6 +200,13 @@ export function updateSubscribersWithTags (data) {
   }
 }
 
+export function updateCurrentPageOwners (data) {
+  return {
+    type: ActionTypes.LOAD_PAGE_OWNERS,
+    data: data.payload
+  }
+}
+
 export function updateCurrentPageTags (data) {
   return {
     type: ActionTypes.LOAD_PAGE_TAGS,
