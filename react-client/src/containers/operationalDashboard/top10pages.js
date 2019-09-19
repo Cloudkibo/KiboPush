@@ -90,11 +90,10 @@ class top10pages extends React.Component {
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
+
               <br />
               <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                  Subscribers
                </Link>
               </span>
@@ -144,14 +143,14 @@ class top10pages extends React.Component {
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
-              <br />
-              <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 Subscribers
-               </Link>
-              </span>
+
+                <br />
+                <span className='m-widget5__votes'>
+                  <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                  Subscribers
+                </Link>
+                </span>
+
             </div>
           </div>
         </div>
