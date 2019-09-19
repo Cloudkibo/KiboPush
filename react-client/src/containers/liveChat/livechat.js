@@ -52,7 +52,8 @@ class LiveChat extends React.Component {
       scroll: true,
       tagOptions: [],
       showSearch: false,
-      customFieldOptions: {}
+      customFieldOptions: {},
+      tabValue: 'open'
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
@@ -141,13 +142,14 @@ class LiveChat extends React.Component {
   }
 
   updatePendingSession(session, value) {
-    console.log('in updatePendingSession', session)
     session.pendingResponse = value
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
+          console.log('loop', temp[i])
           if (temp[i]._id === session._id) {
+            console.log('inside if')
             temp[i].pendingResponse = value
           }
         }
