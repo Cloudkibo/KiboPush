@@ -118,7 +118,7 @@ export function updatePicture (subscriberData, fetchData, callback) {
           })
         }
         if (callback) {
-          callback()
+          callback(res.payload)
         }
       }
     })
