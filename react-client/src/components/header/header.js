@@ -47,6 +47,12 @@ class Header extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
     this.updatePlatformValue = this.updatePlatformValue.bind(this)
+    this.removeActingAsUser = this.removeActingAsUser.bind(this)
+  }
+
+  removeActingAsUser () {
+    auth.removeActingAsUser()
+    window.location.reload()
   }
 
   updatePlatformValue (e, value) {
@@ -438,6 +444,24 @@ class Header extends React.Component {
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
+                      {this.props.user.isSuperUser && auth.getActingAsUser() !== undefined &&
+                        <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                          <a href='#' className='m-nav__link m-dropdown__toggle'>
+                            <span className='m-topbar__userpic'>
+                              <div style={{ display: 'inline-block', height: '41px' }}>
+                                <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
+                                  <button onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                   My view
+                                 </button>
+                                </span>
+                              </div>
+                            </span>
+                          </a>
+                          {/*<button onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                           My view
+                         </button>*/}
+                        </li>
+                      }
                       <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                         <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -536,7 +560,7 @@ class Header extends React.Component {
                                 <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
                                   <div className='m-nav-grid m-nav-grid--skin-light'>
                                     <div className='m-nav-grid__row'>
-                                      { 
+                                      {
                                         (window.location.hostname.toLowerCase().includes('kiboengage') &&
                                         this.props.subscribers &&
                                           this.props.subscribers.length === 0)
@@ -551,7 +575,7 @@ class Header extends React.Component {
                                           : null
                                       }
 
-                                      { 
+                                      {
                                         (window.location.hostname.toLowerCase().includes('kiboengage') &&
                                         this.props.subscribers &&
                                           this.props.subscribers.length === 0)
@@ -570,7 +594,7 @@ class Header extends React.Component {
                                     </div>
                                     <div className='m-nav-grid__row'>
 
-                                      { 
+                                      {
                                         (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
                                           this.props.subscribers.length === 0)
                                           ? <Link to='/surveys' className='m-nav-grid__item'>
@@ -583,7 +607,7 @@ class Header extends React.Component {
                                           </Link>
                                            : null
                                       }
-                                      { 
+                                      {
                                         !window.location.hostname.toLowerCase().includes('kiboengage') &&
                                       <Link to='/bots' className='m-nav-grid__item'>
                                         <i className='m-nav-grid__icon flaticon-clipboard' />
