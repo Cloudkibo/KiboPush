@@ -21,6 +21,18 @@ const auth = {
     cookie.save('userid', val)
   },
 
+  putActingAsUser (val) {
+    cookie.save('actingAsUser', val)
+  },
+
+  removeActingAsUser () {
+    cookie.remove('actingAsUser')
+  },
+
+  getActingAsUser () {
+    return cookie.load('actingAsUser')
+  },
+
   getNext () {
     return cookie.load('next')
   },
@@ -32,6 +44,7 @@ const auth = {
   logout (cb) {
     cookie.remove('userid')
     cookie.remove('token')
+    cookie.remove('actingAsUser')
     console.log('THE LOGOUT IS BEING CALLED')
     redirectToLogoutAccounts()
     if (cb) cb()

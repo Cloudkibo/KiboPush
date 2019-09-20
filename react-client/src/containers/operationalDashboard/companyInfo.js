@@ -57,12 +57,21 @@ class CompanyInfo extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.companyInfo) {
-        if (this.loadedMore && nextProps.companyInfo.length === this.props.companyInfo.length) {
-            this.setState({reachedLimit: true})
-            this.loadedMore = false
-        } 
-        console.log('new companyInfo', nextProps.companyInfo)
-        this.setState({companyInfo: nextProps.companyInfo})
+        if (this.loadedMore) {
+            if (nextProps.companyInfo.length < 10) {
+                this.setState({reachedLimit: true})
+                this.loadedMore = false
+            }
+            let companyInfo = this.state.companyInfo
+            // console.log('this.state.companyInfo', this.state.companyInfo)
+            // console.log('nextProps.companyInfo', nextProps.companyInfo)
+            companyInfo = companyInfo.concat(nextProps.companyInfo)
+            console.log('new companyInfo (loadedMore=true)', companyInfo)
+            this.setState({companyInfo: companyInfo})
+        } else {
+            console.log('new companyInfo (loadedMore=false)', nextProps.companyInfo)
+            this.setState({companyInfo: nextProps.companyInfo})
+        }
     }
   }
 
@@ -104,20 +113,20 @@ class CompanyInfo extends React.Component {
                                 { this.state.companyInfo.map((company, i) => (
                                     <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
                                     <div className='m-widget5__pic'>
-                                        <img className='m-widget7__img' alt='pic' src={(company.owner.facebookInfo) ? company.owner.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
+                                        <img className='m-widget7__img' alt='pic' src={(company.owner && company.owner.facebookInfo) ? company.owner.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
                                     </div>
                                     <div className='m-widget5__content'>
                                         <h4 className='m-widget5__title'>
                                         {company.companyName}
                                         </h4>
-                                        {company.owner.email &&
+
                                         <span className='m-widget5__desc'>
-                                        <b>Email:</b> {company.owner.email}
+                                        <b>Email:</b> {company.owner ? company.owner.email : 'Unknown'}
                                         </span>
-                                        }
+
                                         <br />
                                         <span className='m-widget5__desc'>
-                                        <b>Created At:</b> {this.handleDate(company.owner.createdAt)}
+                                        <b>Created At:</b> {company.owner ? this.handleDate(company.owner.createdAt) : 'Unknown'}
                                         </span>
                                     </div>
                                     <div className='m-widget5__stats1'>

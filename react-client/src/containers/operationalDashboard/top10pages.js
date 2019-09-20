@@ -5,6 +5,8 @@ import { savePageInformation, saveUserInformation } from '../../redux/dispatcher
 import { fetchTopPages } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { handleDate } from '../../utility/utils'
+
 class top10pages extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -68,6 +70,17 @@ class top10pages extends React.Component {
                   </span>
                 }
               </div>
+              <div className='m-widget5__info'>
+                <span className='m-widget5__author'>
+                  Last Login:
+                </span>
+                <br />
+                { this.props.pagesData[i].user &&
+                <span style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
+                  {this.props.pagesData[i].user.lastLogin ? handleDate(this.props.pagesData[i].user.lastLogin) : 'Unknown'}
+                </span>
+                }
+              </div>
             </div>
             <div className='m-widget5__stats1'>
               <span className='m-widget5__number'>
@@ -77,11 +90,10 @@ class top10pages extends React.Component {
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
+
               <br />
               <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                  Subscribers
                </Link>
               </span>
@@ -111,6 +123,17 @@ class top10pages extends React.Component {
                 </span>
                 }
               </div>
+              <div className='m-widget5__info'>
+                <span className='m-widget5__author'>
+                  Last Login:
+                </span>
+                <br />
+                { this.props.pagesData[i + 1].user &&
+                <span style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
+                  {this.props.pagesData[i + 1].user.lastLogin ? handleDate(this.props.pagesData[i + 1].user.lastLogin) : 'Unknown'}
+                </span>
+                }
+              </div>
             </div>
             <div className='m-widget5__stats1'>
               <span className='m-widget5__number'>
@@ -120,14 +143,14 @@ class top10pages extends React.Component {
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
-              <br />
-              <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 Subscribers
-               </Link>
-              </span>
+
+                <br />
+                <span className='m-widget5__votes'>
+                  <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                  Subscribers
+                </Link>
+                </span>
+
             </div>
           </div>
         </div>

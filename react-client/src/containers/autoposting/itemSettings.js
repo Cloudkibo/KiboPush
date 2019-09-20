@@ -58,7 +58,8 @@ class ItemSettings extends React.Component {
       showMessengerModal: false,
       fbAppId:this.props.fbAppId,
       showSubscribeButton: false,
-      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledInterval : '24 hours'
+      rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledInterval : '24 hours',
+      defaultPages: []
     }
     props.getFbAppId()
     props.getuserdetails()
@@ -140,18 +141,27 @@ class ItemSettings extends React.Component {
     console.log(this.props.location)
     this.props.loadTags()
     let options = []
+    let selectedPageIds = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.location.state.item.segmentationPageIds !== '') {
+      if (this.props.location.state.item.segmentationPageIds.length > 0) {
         if (this.props.location.state.item.segmentationPageIds.indexOf(this.props.pages[i].pageId) !== -1) {
-          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true}
+          options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true})
+          selectedPageIds.push(this.props.pages[i].pageId)
         } else {
-          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+          if (this.props.pages[i].gotPageSubscriptionPermission) {
+            options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
+            selectedPageIds.push(this.props.pages[i].pageId)
+          }
         }
       } else {
-        options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+        if (this.props.pages[i].gotPageSubscriptionPermission) {
+          options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
+          selectedPageIds.push(this.props.pages[i].pageId)
+        }
       }
     }
     this.setState({page: {options: options}})
+    this.setState({defaultPages: selectedPageIds})
 
     let optionsGender = []
     for (let i = 0; i < this.state.Gender.options.length; i++) {
@@ -381,11 +391,11 @@ class ItemSettings extends React.Component {
     if (this.accountTitleValue.value === '') {
       return this.msg.error('Please add Account Title')
     }
-    var isSegmented = false
+    var isSegmented = true //pages will be segmented
     var isActive = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+    /* if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmented = true
-    }
+    }*/
     if (this.state.isActive === 'Active') {
       isActive = true
     } else {
@@ -403,7 +413,7 @@ class ItemSettings extends React.Component {
       _id: this.props.location.state.item._id,
       accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.location.state.title,
       isSegmented: isSegmented,
-      segmentationPageIds: this.state.pageValue,
+      segmentationPageIds: this.state.pageValue.length > 0 ? this.state.pageValue: this.state.defaultPages  ,
       segmentationGender: this.state.genderValue,
       segmentationLocale: this.state.localeValue,
       segmentationTags: tagIDs,

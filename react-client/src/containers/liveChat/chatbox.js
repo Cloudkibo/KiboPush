@@ -533,7 +533,7 @@ class ChatBox extends React.Component {
         }
         this.newMessage = true
         this.setState({scrolling: true})
-        this.props.updatePendingSession(this.props.currentSession)
+        this.props.updatePendingSession(this.props.currentSession, false)
       }
     }
   }
