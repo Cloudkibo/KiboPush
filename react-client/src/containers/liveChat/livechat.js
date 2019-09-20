@@ -371,13 +371,14 @@ class LiveChat extends React.Component {
   }
 
   profilePicError(e, subscriber) {
+    e.persist()
     console.log('profile picture error', subscriber)
-    setDefaultPicture(e, subscriber)
-    this.props.updatePicture({ subscriber }, null, (newProfilePic) => {
+    this.setDefaultPicture(e, subscriber)
+    this.props.updatePicture({ subscriber }, (newProfilePic) => {
       if (newProfilePic) {
         e.target.src = newProfilePic
       } else {
-        setDefaultPicture(e, subscriber)
+        this.setDefaultPicture(e, subscriber)
       }
     })
   }

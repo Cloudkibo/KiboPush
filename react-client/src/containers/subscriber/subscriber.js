@@ -160,6 +160,7 @@ class Subscriber extends React.Component {
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
     this.updateOption = this.updateOption.bind(this)
     this.loadsubscriberData = this.loadsubscriberData.bind(this)
+    this.setDefaultPicture = this.setDefaultPicture.bind(this)
   }
 
   saveSetCustomField() {
@@ -321,29 +322,25 @@ class Subscriber extends React.Component {
   }
 
   profilePicError(e, subscriber) {
+    e.persist()
     console.log('profile picture error', subscriber)
+    console.log('event object', e.target)
+    this.setDefaultPicture(e, subscriber)
+    this.props.updatePicture({ subscriber }, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e, subscriber)
+      }
+    })
+  }
+
+  setDefaultPicture (e, subscriber) {
     if (subscriber.gender === 'female') {
       e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
     } else {
       e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     }
-    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
-    let fetchData = {
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      current_page: this.state.pageSelected,
-      filter: this.state.filter,
-      filter_criteria: {
-        search_value: this.state.searchValue,
-        gender_value: this.state.filterByGender,
-        page_value: this.state.filterByPage,
-        locale_value: this.state.filterByLocale,
-        tag_value: this.state.filterByTag,
-        status_value: this.state.status_value
-      }
-    }
-    this.props.updatePicture({ subscriber }, fetchData)
   }
 
   getDate(datetime) {
