@@ -1068,7 +1068,7 @@ class Menu extends React.Component {
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                     <i className='flaticon-exclamation m--font-brand' />
                     <span style={{marginLeft: '5px'}}>
-                      Only two more main menus can be added. Submenus are limited to 5.
+                      Only two more main menus can be added.
                     </span>
                   </div>
                 </div>
