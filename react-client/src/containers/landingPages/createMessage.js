@@ -38,7 +38,7 @@
       } else if (hostname.includes('kibochat.cloudkibo.com')) {
         title = 'KiboChat'
       }
-      if (this.props.location.state.module === 'edit') {
+      if (this.props.location.state && this.props.location.state.module === 'edit') {
         document.title = `${title} | Edit Message`
       } else {
         document.title = `${title} | Create Message`

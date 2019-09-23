@@ -39,9 +39,9 @@ class Convo extends React.Component {
       pageNumber: 0,
       isShowingModalPro: false,
       pageValue: '',
-      MessageType:''
+      messageType:''
     }
-    props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0', MessageType:''}})
+    props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0', messageType:''}})
     props.loadSubscribersCount({})
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -85,10 +85,10 @@ class Convo extends React.Component {
         })
       }
       this.setState({filter: true, pageNumber: 0})
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value, MessageType: this.state.MessageType}})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value, messageType: this.state.messageType}})
     } else if (value === '') {
       this.setState({selectedDays: '0', filter: false})
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0', MessageType: this.state.MessageType}})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0', messageType: this.state.messageType}})
     }
   }
   scrollToTop () {
@@ -150,7 +150,7 @@ class Convo extends React.Component {
         filter: this.state.filter,
         filter_criteria: {
           search_value: this.state.searchValue,
-          MessageType: this.state.MessageType,
+          messageType: this.state.messageType,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
         }})
@@ -164,7 +164,7 @@ class Convo extends React.Component {
         filter: this.state.filter,
         filter_criteria: {
           search_value: this.state.searchValue,
-          MessageType: this.state.MessageType,
+          messageType: this.state.messageType,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
         }}
@@ -179,7 +179,7 @@ class Convo extends React.Component {
         filter: this.state.filter,
         filter_criteria: {
           search_value: this.state.searchValue,
-          MessageType: this.state.MessageType,
+          messageType: this.state.messageType,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
         }
@@ -284,9 +284,9 @@ class Convo extends React.Component {
     })
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays, MessageType:this.state.MessageType}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays, messageType:this.state.messageType}})
     } else {
-      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays, MessageType:this.state.MessageType}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays, messageType:this.state.messageType}})
     }
   }
 
@@ -294,22 +294,22 @@ class Convo extends React.Component {
     this.setState({filterValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, pageNumber: 0})
-      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays, MessageType:this.state.MessageType}})
+      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays, messageType:this.state.messageType}})
     } else {
       this.setState({filter: false, pageNumber: 0})
-      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays, MessageType:this.state.MessageType}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays, messageType:this.state.messageType}})
     }
   }
 
   onMessageTypeFilter(e) {
     console.log('e.targetMessageType', e.target.value)
-    this.setState({MessageType: e.target.value})
+    this.setState({messageType: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, pageNumber: 0})
-      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays, MessageType: e.target.value}})
+      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays, messageType: e.target.value}})
     } else {
       this.setState({filter: false, pageNumber: 0})
-      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays, MessageType:''}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays, messageType:''}})
     }
 
   }
@@ -329,6 +329,7 @@ class Convo extends React.Component {
   }
 
   render () {
+    console.log('this.state.broadcastsData in convo.js method', this.state.broadcastsData)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
@@ -491,10 +492,10 @@ class Convo extends React.Component {
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                     </div> */}
                       <div style={{display: 'inline-block'}} className='form-group col-md-3'>
-                      <select className='custom-select' style={{width: '100%'}} value= {this.state.MessageType} onChange={this.onMessageTypeFilter}>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.messageType} onChange={this.onMessageTypeFilter}>
                         <option value='' disabled>Filter by Message type...</option>
-                        <option value='Promotional'>Promotional</option>
-                        <option value='Non Promotional'>Non Promotional</option>
+                        <option value='promotional'>Promotional</option>
+                        <option value='non promotional'>Non Promotional</option>
                         <option value='all'>all</option>
                       </select>
                     </div>
@@ -592,8 +593,7 @@ class Convo extends React.Component {
                             <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
                             <td data-field='clicks' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.clicks ? broadcast.clicks : 0}</span></td>
-                           <td data-field='MessageType' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.MessageType ? broadcast.MessageType:'Non Promotional'}</span></td>
-
+                           <td data-field='MessageType' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.messageType ? broadcast.messageType === 'promotional'? 'Promotional' : 'Non Promotional'  :'Non Promotional'}</span></td>
                           </tr>
                         ))
                       }

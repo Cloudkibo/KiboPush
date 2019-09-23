@@ -52,7 +52,8 @@ class LiveChat extends React.Component {
       scroll: true,
       tagOptions: [],
       showSearch: false,
-      customFieldOptions: {}
+      customFieldOptions: {},
+      tabValue: 'open'
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
@@ -71,6 +72,7 @@ class LiveChat extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.getAgents = this.getAgents.bind(this)
     this.removePending = this.removePending.bind(this)
+    this.setDefaultPicture = this.setDefaultPicture.bind(this)
   }
 
   getAgents (members) {
@@ -141,7 +143,6 @@ class LiveChat extends React.Component {
   }
 
   updatePendingSession(session, value) {
-    console.log('in updatePendingSession', session)
     session.pendingResponse = value
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
@@ -369,16 +370,25 @@ class LiveChat extends React.Component {
     }
   }
 
-  profilePicError(e, subscriber, sessionType) {
+  profilePicError(e, subscriber) {
+    e.persist()
     console.log('profile picture error', subscriber)
+    this.setDefaultPicture(e, subscriber)
+    this.props.updatePicture({ subscriber }, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e, subscriber)
+      }
+    })
+  }
+
+  setDefaultPicture (e, subscriber) {
     if (subscriber.gender === 'female') {
       e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
     } else {
       e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     }
-    this.props.updatePicture({ subscriber }, null, () => {
-      this.fetchSessions({ first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } })
-    })
   }
 
   render() {

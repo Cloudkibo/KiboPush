@@ -270,7 +270,20 @@ class Autoposting extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
+              {
+                this.state.newsPageIndex.length > 0?
                 <Link onClick={this.showDialog}>
+                  <button
+                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <span>
+                      <i className='la la-plus' />
+                      <span>
+                        Add Feed
+                      </span>
+                    </span>
+                  </button>
+                </Link>
+                : <Link>
                   <button
                     className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={(this.state.newsPageIndex.length === 0)}>
                     <span>
@@ -281,6 +294,7 @@ class Autoposting extends React.Component {
                     </span>
                   </button>
                 </Link>
+              }
               </div>
             </div>
             <div className='m-portlet__body'>

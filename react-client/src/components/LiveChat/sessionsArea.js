@@ -39,16 +39,16 @@ class SessionsArea extends React.Component {
 
   loadMore (type) {
     this.props.fetchSessions({
-      first_page: this.state.first_page,
+      first_page: false,
       last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none',
       number_of_records: this.state.number_of_records,
       filter: this.state.filter,
       filter_criteria: {
-        sort_value: this.state.sort_value,
-        page_value: this.state.page_value,
-        search_value: this.state.search_value,
-        pendingResponse: this.state.pendingResponse,
-        unreadMessages: this.state.unreadMessages
+        sort_value: this.state.filter_criteria.sort_value,
+        page_value: this.state.filter_criteria.page_value,
+        search_value: this.state.filter_criteria.search_value,
+        pendingResponse: this.state.filter_criteria.pendingResponse,
+        unreadMessages: this.state.filter_criteria.unreadMessages
       }
     }, type)
   }
