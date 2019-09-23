@@ -67,7 +67,6 @@ class CreateLandingPage extends React.Component {
       pageId: this.props.location.state._id,
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
-    console.log('hello ji!')
     browserHistory.push({
       pathname: `/landingPages`
     })
@@ -105,7 +104,7 @@ class CreateLandingPage extends React.Component {
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       {
-                          this.props.location.state.module === 'edit' ?
+                          this.props.location.state && this.props.location.state.module === 'edit' ?
                           <Tabs module={this.props.location.state.module}
                             landing_page_id={this.props.location.state.landingPage._id}
                             isActive={this.state.isActive}
