@@ -37,7 +37,8 @@ class Menu extends React.Component {
       openWebView: false,
       openWebsite: false,
       webviewsize: 'FULL',
-      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
+      subMenuEnable: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -99,7 +100,7 @@ class Menu extends React.Component {
         if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
         } else {
-          compProp.getIndexBypage(this.state.selectPage.pageId, self.handleIndexByPage)
+          compProp.getIndexBypage(self.state.selectPage.pageId, self.handleIndexByPage)
         }
       }
     })
@@ -818,7 +819,7 @@ class Menu extends React.Component {
             <h6>Choose an action for the menu item:</h6>
             <div className='radio-buttons' style={{marginLeft: '37px'}}>
               {
-                this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
+                this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' && this.state.subMenuEnable &&
                   <div className='radio'>
                     <input id='openSubMenu'
                       type='radio'
@@ -1047,7 +1048,7 @@ class Menu extends React.Component {
                             )
                           })
                         }
-                          { item.submenu.length < 5 &&
+                          { item.submenu.length < 5 && this.state.subMenuEnable &&
                             <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
                               <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
                             </div>
