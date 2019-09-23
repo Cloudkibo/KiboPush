@@ -69,7 +69,7 @@ class ViewSurveyDetail extends React.Component {
                           ref={question._id}>
                           <div className='container'>
                             {question.options.map((option, i) => (
-                              <li>{option}</li>
+                              <li>{option.option}</li>
                         ))
 
                         }
