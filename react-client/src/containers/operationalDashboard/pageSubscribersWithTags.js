@@ -81,7 +81,7 @@ class PageSubscribersWithTags extends React.Component {
           totalSubscribers += pageUser.subscribers.length
           pageSubscribersDataSorted[pageUser.user._id] = pageUser.subscribers
       }
-      this.setState({connectedUser, totalSubscribers, pageSubscribersDataSorted})
+      this.setState({connectedUser, totalSubscribers, pageSubscribersDataSorted, totalLength: pageSubscribersDataSorted[this.state.currentPageOwner] ? pageSubscribersDataSorted[this.state.currentPageOwner].length : 0})
   }
 
   onDataLoad (data) {
@@ -89,7 +89,7 @@ class PageSubscribersWithTags extends React.Component {
     if (data.length === 0) {
         this.setState({ pageSubscribersData: [], totalLength: 0 })
     } else {
-        this.setState({ pageSubscribersData: data.subscriberData, totalLength: data.totalSubscribers })
+        this.setState({ pageSubscribersData: data.subscriberData })
     }
     this.dataLoaded = true
   }
@@ -97,7 +97,7 @@ class PageSubscribersWithTags extends React.Component {
   onPageOwnerSelect (event) {
       console.log('changing pageOwner', event.target.value)
       this.currentUserLoaded = true
-      this.setState({currentPageOwner: event.target.value, pageNumber: 0}, () => {
+      this.setState({currentPageOwner: event.target.value, pageNumber: 0, totalLength: this.state.pageSubscribersDataSorted ? this.state.pageSubscribersDataSorted[event.target.value].length : 0}, () => {
         this.applyNecessaryFilters()
       })
   }
