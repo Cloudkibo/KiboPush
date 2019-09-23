@@ -81,7 +81,7 @@ class PageSubscribersWithTags extends React.Component {
           totalSubscribers += pageUser.subscribers.length
           pageSubscribersDataSorted[pageUser.user._id] = pageUser.subscribers
       }
-      this.setState({connectedUser, totalSubscribers, pageSubscribersDataSorted})
+      this.setState({connectedUser, totalSubscribers, pageSubscribersDataSorted, totalLength: pageSubscribersDataSorted[connectedUser].length})
   }
 
   onDataLoad (data) {
@@ -89,7 +89,7 @@ class PageSubscribersWithTags extends React.Component {
     if (data.length === 0) {
         this.setState({ pageSubscribersData: [], totalLength: 0 })
     } else {
-        this.setState({ pageSubscribersData: data.subscriberData, totalLength: data.totalSubscribers })
+        this.setState({ pageSubscribersData: data.subscriberData })
     }
     this.dataLoaded = true
   }
