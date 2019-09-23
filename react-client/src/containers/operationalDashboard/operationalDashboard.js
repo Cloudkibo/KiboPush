@@ -113,7 +113,7 @@ class OperationalDashboard extends React.Component {
   }
 
   setUsersView (user) {
-    auth.putActingAsUser(user.email)
+    auth.putActingAsUser(user.domain_email)
     browserHistory.push({
       pathname: `/dashboard`
     })

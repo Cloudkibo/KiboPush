@@ -32,6 +32,7 @@ class FacebookPosts extends React.Component {
     super(props, context)
     this.state = {
       postText: '',
+      postOriginalText:'',
       attachments: [],
       selectedPage: {},
       showEmojiPicker: false,
@@ -120,7 +121,8 @@ class FacebookPosts extends React.Component {
           for (let i = 0; i < payload.length; i++) {
             if (payload[i].componentType === 'text') {
               this.setState({
-                postText: payload[i].text
+                postText: payload[i].text,
+                postOriginalText: payload[i].text
               })
             }
             if (payload[i].componentType === 'video') {
@@ -256,8 +258,13 @@ class FacebookPosts extends React.Component {
     }
     var payload = {
       postId: this.props.currentPost._id,
+      pagePostId: this.props.currentPost.post_id,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
+    }
+    if(this.state.postText !== this.state.postOriginalText){
+      payload.postText = this.state.postText
+      payload.pageAccessToken = this.props.currentPost.pageId.accessToken
     }
     this.props.editFacebookPost(payload, this.msg)
     this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
@@ -628,7 +635,8 @@ class FacebookPosts extends React.Component {
                             id='postTextArea' rows='3'
                             style={{height: '150px', resize: 'none'}}
                             value={this.state.postText}
-                            disabled />
+                            onChange={this.onFacebookPostChange}
+                             />
                           { this.state.attachments.length > 0 && this.state.videoPost &&
                             <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                               <span>

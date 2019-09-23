@@ -350,6 +350,7 @@ class ProfileArea extends React.Component {
       background: 'white'
     }
     console.log('props in profile Area:', this.props)
+    console.log('this.state.popoverAddTagOpen', this.state.popoverAddTagOpen)
     return (
       <div className='col-xl-3'>
         <CustomFields />
@@ -531,6 +532,9 @@ class ProfileArea extends React.Component {
               }
               <Popover placement='left' className='liveChatPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                 <PopoverHeader>Add Tags</PopoverHeader>
+                {console.log('this.state.tagOptions', this.state.tagOptions)}
+                {console.log('this.state.addTag', this.state.addTag)}
+                {console.log('this.state.saveEnable', this.state.saveEnable)}
                 <PopoverBody>
                   <div className='row' style={{ minWidth: '250px' }}>
                     <div className='col-12'>
@@ -583,7 +587,7 @@ class ProfileArea extends React.Component {
                 </span>
                 </div>
               </div>
-              
+
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
@@ -626,7 +630,7 @@ class ProfileArea extends React.Component {
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
                   </div>}
-                  
+
             </div>
           </div>
         </div>
