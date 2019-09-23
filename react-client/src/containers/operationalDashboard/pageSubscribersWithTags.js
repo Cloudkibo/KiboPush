@@ -86,7 +86,7 @@ class PageSubscribersWithTags extends React.Component {
 
   onDataLoad (data) {
     console.log('recieved subscriber data', data)
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         this.setState({ pageSubscribersData: [], totalLength: 0 })
     } else {
         this.setState({ pageSubscribersData: data.subscriberData })
