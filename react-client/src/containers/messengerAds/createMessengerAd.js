@@ -145,10 +145,7 @@ class CreateMessengerAd extends React.Component {
                   </div>
                   <div className='row'>
                     <Tabs setupState={this.state.setupState} switchSetupState={this.switchSetupState} jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
-                    {
-                      this.props.location.state.module === 'create' && <Preview />
-                    }
-                    { (this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) && <Preview previewOptInMessage={this.state.previewOptInMessage} />
+                    {(this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) && <Preview previewOptInMessage={this.state.previewOptInMessage} />
                     }
                   </div>
                 </div>
