@@ -27,7 +27,8 @@ class PageSubscribersWithTags extends React.Component {
       filteredData: [],
       pageOwners: [],
       currentPageOwner: '',
-      connectedUser: null
+      connectedUser: null,
+      dataLoaded: false
     }
     // props.loadSubscribersWithTags({
     //     pageId: this.props.location.state.pageId,
@@ -53,8 +54,6 @@ class PageSubscribersWithTags extends React.Component {
     this.getDataMessage = this.getDataMessage.bind(this)
     this.onPageUsersLoaded = this.onPageUsersLoaded.bind(this)
     this.onDataLoad = this.onDataLoad.bind(this)
-    this.requestSent = false
-    this.dataLoaded = false
     this.currentUserLoaded = false
     this.pageUsersLoaded = false
     
@@ -86,12 +85,12 @@ class PageSubscribersWithTags extends React.Component {
 
   onDataLoad (data) {
     console.log('recieved subscriber data', data)
-    if (!data || data.length === 0) {
+    if (!data || !data.subscriberData || data.subscriberData.length === 0) {
         this.setState({ pageSubscribersData: [], totalLength: 0 })
     } else {
         this.setState({ pageSubscribersData: data.subscriberData })
     }
-    this.dataLoaded = true
+    this.setState({dataLoaded: true})
   }
 
   onPageOwnerSelect (event) {
@@ -231,7 +230,7 @@ class PageSubscribersWithTags extends React.Component {
 
   getDataMessage () {
       if (this.currentUserLoaded) {
-          if (!this.dataLoaded) {
+          if (!this.state.dataLoaded) {
             return 'Loading subscribers'
           } else {
               if (this.state.pageSubscribersData.length === 0) {
