@@ -96,7 +96,7 @@ class PageSubscribersWithTags extends React.Component {
   onPageOwnerSelect (event) {
       console.log('changing pageOwner', event.target.value)
       this.currentUserLoaded = true
-      this.setState({currentPageOwner: event.target.value, pageNumber: 0, totalLength: this.state.pageSubscribersDataSorted[event.target.value] ? this.state.pageSubscribersDataSorted[event.target.value].length : 0}, () => {
+      this.setState({dataLoaded: false, currentPageOwner: event.target.value, pageNumber: 0, totalLength: this.state.pageSubscribersDataSorted[event.target.value] ? this.state.pageSubscribersDataSorted[event.target.value].length : 0}, () => {
         this.applyNecessaryFilters()
       })
   }
