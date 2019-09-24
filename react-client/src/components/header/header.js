@@ -450,6 +450,11 @@ class Header extends React.Component {
                             <span className='m-topbar__userpic'>
                               <div style={{ display: 'inline-block', height: '41px' }}>
                                 <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
+                                  <span>
+                                   Viewing As: {auth.getActingAsUserName()}&nbsp;&nbsp;&nbsp;
+                                 </span>
+                               </span>
+                                <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
                                   <button onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                    My view
                                  </button>
