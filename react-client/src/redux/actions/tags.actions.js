@@ -32,6 +32,7 @@ export function assignTags (data, handleResponse, msg) {
   return (dispatch) => {
     callApi('tags/assign', 'post', data)
     .then(res => {
+      console.log('response from assignTags', res)
       if (res.status === 'success') {
         msg.success(`${res.description}`)
       } else {

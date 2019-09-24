@@ -512,10 +512,9 @@ class ProfileArea extends React.Component {
                   </div>
                 }
                 <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
-                  {/*<div style={{overflow: 'visible'}} className='m-accordion__item'>*/}
                 {
                   this.state.popoverAddTagOpen
-                      ? <div className='m-accordion__item'>
+                      ? <div className='m-accordion__item' style={{overflow: 'visible'}}>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-tags' />
@@ -532,16 +531,13 @@ class ProfileArea extends React.Component {
                             onChange={this.handleAdd}
                             value={this.state.addTag}
                             placeholder='Add User Tags'
-                            width='fit-content'
+                            menuShouldScrollIntoView={true}
                           />
                           {this.state.saveEnable
                             ? <div className='col-12'>
                               <button style={{marginTop: '10px'}}
                                 className='btn btn-primary btn-sm'
-                                onClick={() => {
-                                  this.addTags()
-                                  this.toggleAdd()
-                                }}>Save
+                                onClick={() => {this.addTags()}}>Save
                             </button>
                             </div>
                             : <div className='col-12'>
@@ -555,7 +551,7 @@ class ProfileArea extends React.Component {
                         </div>
                       </div>
                     </div>
-                      : <div className='m-accordion__item'>
+                      : <div className='m-accordion__item' style={{overflow: 'visible'}}>
                       <div className='m-accordion__item-head collapsed'>
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-tags' />
@@ -567,38 +563,6 @@ class ProfileArea extends React.Component {
                         </div>
                       </div>
                 }
-                {/*
-                  this.state.popoverAddTagOpen &&
-                  <div className='m-accordion__item-body'>
-                    <div className='m-accordion__item-content'>
-                      <Select.Creatable
-                        options={this.state.tagOptions}
-                        onChange={this.handleAdd}
-                        value={this.state.addTag}
-                        placeholder='Add User Tags'
-                        width='fit-content'
-                      />
-                      {this.state.saveEnable
-                        ? <div className='col-12'>
-                          <button style={{marginTop: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.addTags()
-                              this.toggleAdd()
-                            }}>Save
-                        </button>
-                        </div>
-                        : <div className='col-12'>
-                          <button style={{marginTop: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            disabled>
-                            Save
-                        </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                */}
               </div>
               </div>
               {this.props.subscriberTags && this.props.subscriberTags.length > 0 &&
@@ -615,40 +579,6 @@ class ProfileArea extends React.Component {
                 }
               </div>
               }
-              {/*<Popover placement='left' className='liveChatPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
-                <PopoverHeader>Add Tags</PopoverHeader>
-                <PopoverBody>
-                  <div className='row' style={{ minWidth: '250px' }}>
-                    <div className='col-12'>
-                      <label>Select Tags</label>
-                      <Select.Creatable
-                        options={this.state.tagOptions}
-                        onChange={this.handleAdd}
-                        value={this.state.addTag}
-                        placeholder='Add User Tags'
-                      />
-                    </div>
-                    {this.state.saveEnable
-                      ? <div className='col-12'>
-                        <button style={{ float: 'right', margin: '15px' }}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.addTags()
-                            this.toggleAdd()
-                          }}>Save
-                      </button>
-                      </div>
-                      : <div className='col-12'>
-                        <button style={{ float: 'right', margin: '15px' }}
-                          className='btn btn-primary btn-sm'
-                          disabled>
-                          Save
-                      </button>
-                      </div>
-                    }
-                  </div>
-                </PopoverBody>
-              </Popover>*/}
               <div className='row'>
               <div className='col-12'>
                 <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
