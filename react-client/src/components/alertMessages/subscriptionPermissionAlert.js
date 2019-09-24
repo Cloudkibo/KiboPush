@@ -25,12 +25,30 @@ class SubscriptionPermissionAlert extends React.Component {
   }
   componentDidMount () {
     let pages = []
+    if (this.props.pages) {
     for (let i = 0; i < this.props.pages.length; i++) {
       if (!this.props.pages[i].gotPageSubscriptionPermission) {
         pages.push(this.props.pages[i])
       }
     }
     this.setState({pages: pages})
+   }
+  }
+
+  componentWillReceiveProps (nextProps) {
+
+    if(nextProps.pages !== this.props.pages) {
+      let pages = []
+      if (this.props.pages) {
+        for (let i = 0; i < this.props.pages.length; i++) {
+          if (!this.props.pages[i].gotPageSubscriptionPermission) {
+            pages.push(this.props.pages[i])
+          }
+        }
+        this.setState({pages: pages})
+       }
+    }
+
   }
   render () {
     if(this.state.pages.length > 0) {
