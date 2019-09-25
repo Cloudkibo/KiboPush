@@ -583,12 +583,12 @@ class ProfileArea extends React.Component {
                 </span>
                 </div>
               </div>
-              
+
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
                       this.props.customFieldOptions.map((field, i) => (
-                        <div className='row'>
+                        <div key={i} className='row'>
                           <div className='col-sm-12'>
                             <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
                               onMouseEnter={() => { this.hoverOn(field._id) }}
@@ -626,7 +626,7 @@ class ProfileArea extends React.Component {
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
                   </div>}
-                  
+
             </div>
           </div>
         </div>
