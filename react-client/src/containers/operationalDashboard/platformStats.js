@@ -14,7 +14,7 @@ class PlatformStats extends React.Component {
     this.updateCurrentState = this.updateCurrentState.bind(this)
   }
 
-  aggregateStats (data) {
+  aggregateStats (data = []) {
     let aggregate = {
       totalBroadcasts: 0,
       totalUsers: 0,
