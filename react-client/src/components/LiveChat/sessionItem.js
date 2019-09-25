@@ -17,7 +17,13 @@ const styles = {
 class SessionItem extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null
+    }
+  }
+
+  componentWillReceiveProps () {
+    this.setState({unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null})
   }
 
   render () {
@@ -89,9 +95,9 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__ext'>
             {
-              this.props.session.unreadCount &&
+              this.state.unreadCount &&
               <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                {this.props.session.unreadCount}
+                {this.state.unreadCount}
               </a>
             }
           </div>

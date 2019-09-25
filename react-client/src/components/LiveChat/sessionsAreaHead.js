@@ -10,8 +10,8 @@ class SessionsAreaHead extends React.Component {
       searchValue: '',
       pageValue: '',
       sortValue: -1,
-      unreadMessages: '',
-      pendingResponse: ''
+      unreadMessages: false,
+      pendingResponse: false
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
@@ -27,7 +27,7 @@ class SessionsAreaHead extends React.Component {
   }
 
   hideDropDown () {
-    this.setState({showDropDown: false, pageValue: '', unreadMessages: '', pendingResponse: '', filter: false})
+    this.setState({showDropDown: false, pageValue: '', unreadMessages: false, pendingResponse: false, filter: false})
     let data = {
       first_page: true,
       last_id: 'none',
@@ -37,8 +37,8 @@ class SessionsAreaHead extends React.Component {
         sort_value: this.state.sortValue,
         page_value: '',
         search_value: this.state.searchValue,
-        pendingResponse: '',
-        unreadMessages: ''
+        pendingResponse: false,
+        unreadMessages: false
       }
     }
     this.props.fetchSessions(data)
