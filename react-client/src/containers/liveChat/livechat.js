@@ -117,21 +117,21 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession(session) {
-    delete session.unreadCount
+    session.unreadCount = 0
     this.setState({ activeSession: session, scroll: true })
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
           if (temp[i]._id === session._id && temp[i].unreadCount) {
-            delete temp[i].unreadCount
+            temp[i].unreadCount = 0
           }
         }
       } else {
         var tempClose = this.props.closeSessions
         for (var j = 0; j < tempClose.length; j++) {
           if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
-            delete tempClose[j].unreadCount
+            tempClose[j].unreadCount = 0
           }
         }
       }
@@ -340,9 +340,13 @@ class LiveChat extends React.Component {
         (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         var temp = nextProps.openSessions
+        console.log('unreadSession', nextProps.unreadSession)
         for (var z = 0; z < temp.length; z++) {
+          console.log('temp[z]', temp[z])
           if (temp[z]._id === nextProps.unreadSession) {
-            temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+            console.log('inside if')
+            temp[z].unreadCount = temp[z].unreadCount + 1
+            console.log('outside if', temp[z])
             if (nextProps.socketMessage && nextProps.socketMessage.format === 'facebook') {
               temp[z].pendingResponse = true
             }
