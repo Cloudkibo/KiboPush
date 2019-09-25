@@ -16,8 +16,8 @@ class SessionsArea extends React.Component {
         sort_value: -1,
         page_value: '',
         search_value: '',
-        pendingResponse: '',
-        unreadMessages: ''
+        pendingResponse: false,
+        unreadMessages: false
       }
     }
     this.changeTab = this.changeTab.bind(this)

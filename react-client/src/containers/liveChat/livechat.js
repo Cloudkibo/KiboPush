@@ -340,13 +340,9 @@ class LiveChat extends React.Component {
         (!nextProps.socketData.action === 'agent_replied')) || (!nextProps.socketData.action)
       ) {
         var temp = nextProps.openSessions
-        console.log('unreadSession', nextProps.unreadSession)
         for (var z = 0; z < temp.length; z++) {
-          console.log('temp[z]', temp[z])
           if (temp[z]._id === nextProps.unreadSession) {
-            console.log('inside if')
             temp[z].unreadCount = temp[z].unreadCount + 1
-            console.log('outside if', temp[z])
             if (nextProps.socketMessage && nextProps.socketMessage.format === 'facebook') {
               temp[z].pendingResponse = true
             }
