@@ -278,6 +278,7 @@ class ProfileArea extends React.Component {
     payload.subscribers = selectedIds
     payload.tag = this.state.addTag.label
     this.props.assignTags(payload, this.props.msg)
+    this.hideAddTag()
   }
 
   componentWillReceiveProps (nextProps) {
