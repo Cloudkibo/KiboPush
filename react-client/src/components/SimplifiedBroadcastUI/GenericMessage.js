@@ -1,6 +1,5 @@
 import React from 'react'
 import Image from './PreviewComponents/Image'
-import List from './PreviewComponents/List'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
 import Text from './PreviewComponents/Text'
@@ -15,7 +14,6 @@ import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
 import TextModal from './TextModal'
 import CardModal from './CardModal'
-import ListModal from './ListModal'
 import ImageModal from './ImageModal'
 import FileModal from './FileModal'
 import AudioModal from './AudioModal'
@@ -44,7 +42,6 @@ class GenericMessage extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
-    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -314,29 +311,6 @@ class GenericMessage extends React.Component {
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
-  handleList (obj) {
-    console.log('in create convo handleList', obj)
-    var temp = this.state.broadcast
-    var isPresent = false
-    // if (obj.listItems) {
-    //   obj.listItems.forEach((d) => {
-    //     delete d.id
-    //   })
-    // }
-    temp.map((data, i) => {
-      if (data.id === obj.id) {
-        temp[i].listItems = obj.listItems
-        temp[i].topElementStyle = obj.topElementStyle
-        temp[i].buttons = obj.buttons
-        isPresent = true
-      }
-    })
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
-  }
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
@@ -397,17 +371,6 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent}
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
-        buttons={[]}
-        edit={this.state.editData ? true : false}
-        {...this.state.editData}
-        pages={this.props.pages}
-        buttonActions={this.props.buttonActions}
-        replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
-        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal}
-        addComponent={this.addComponent} />),
-      'list': (<ListModal
         buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -630,31 +593,6 @@ class GenericMessage extends React.Component {
           this.handleFile({id: componentId,
             componentType: 'file',
             file: broadcast.file ? broadcast.file : ''
-          })
-        }
-      },
-      'list': {
-        component: (<List
-          id={componentId}
-          editComponent={this.showAddComponentModal}
-          pageId={this.state.pageId}
-          pages={this.props.pages}
-          key={componentId}
-          list={broadcast}
-          listItems={broadcast.listItems}
-          handleList={this.handleList}
-          onRemove={this.removeComponent}
-          buttonActions={this.props.buttonActions}
-          replyWithMessage={this.props.replyWithMessage}
-          default_action={broadcast.default_action} />),
-        handler: () => {
-          this.handleList({
-            id: componentId,
-            listItems: broadcast.listItems ? broadcast.listItems : [],
-            componentType: 'list',
-            topElementStyle: broadcast.topElementStyle ? broadcast.topElementStyle : 'compact',
-            buttons: broadcast.buttons ? broadcast.buttons : [],
-            default_action: broadcast.default_action
           })
         }
       },

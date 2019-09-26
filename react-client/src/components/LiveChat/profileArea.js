@@ -605,7 +605,7 @@ class ProfileArea extends React.Component {
                   ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
                       this.props.customFieldOptions.map((field, i) => (
-                        <div className='row'>
+                        <div key={i} className='row'>
                           <div className='col-sm-12'>
                             <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
                               onMouseEnter={() => { this.hoverOn(field._id) }}

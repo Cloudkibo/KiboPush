@@ -29,8 +29,8 @@ class SessionsAreaBody extends React.Component {
               <div className='m-widget4'>
                 {
                   this.props.openSessions && this.props.openSessions.length > 0
-                  ? (this.props.openSessions.map((session) => (
-                    <SESSIONITEM
+                  ? (this.props.openSessions.map((session,i) => (
+                    <SESSIONITEM key={i}
                       profilePicError={this.props.profilePicError}
                       session={session}
                       activeSession={this.props.activeSession}
@@ -53,8 +53,8 @@ class SessionsAreaBody extends React.Component {
               <div className='m-widget4'>
                 {
                   this.props.closeSessions && this.props.closeSessions.length > 0
-                  ? (this.props.closeSessions.map((session) => (
-                    <SESSIONITEM
+                  ? (this.props.closeSessions.map((session,i) => (
+                    <SESSIONITEM key={i}
                       session={session}
                       activeSession={this.props.activeSession}
                       changeActiveSession={this.props.changeActiveSession}
