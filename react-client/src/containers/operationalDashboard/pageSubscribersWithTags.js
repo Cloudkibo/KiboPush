@@ -224,7 +224,11 @@ class PageSubscribersWithTags extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageOwners) {
         console.log('recieved page owners', nextProps.pageOwners)
-        this.setState({pageOwners: nextProps.pageOwners})
+        if (nextProps.pageOwners.length === 1) {
+          this.setState({currentPageOwner: nextProps.pageOwners[0]._id, pageOwners: nextProps.pageOwners})
+        } else {
+          this.setState({pageOwners: nextProps.pageOwners})
+        }
     }
   }
 
