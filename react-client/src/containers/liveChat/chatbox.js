@@ -1035,7 +1035,7 @@ class ChatBox extends React.Component {
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
           height='390px'
-          target={this.recording}
+          target='recordingDiv'
           show={this.state.showRecorder}
           onHide={this.closeRecorder}
         >
@@ -1841,7 +1841,7 @@ class ChatBox extends React.Component {
                     </div>
                     {
                       this.props.user.isSuperUser &&
-                      <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
                         <i onClick={this.showDialogRecording} style={styles.iconclass}>
                           <i style={{
                             fontSize: '20px',
