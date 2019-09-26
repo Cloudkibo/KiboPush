@@ -24,7 +24,7 @@ class Autoposting extends React.Component {
       showListItems: true,
       deleteid: '',
       showWordPressGuide: false,
-      newsPageIndex: props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })
+      newsPageIndex: props.pages ? props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) }) : []
     }
     props.loadAutopostingList()
     this.showDialog = this.showDialog.bind(this)
@@ -69,7 +69,11 @@ class Autoposting extends React.Component {
       showWordPressGuide: false
     })
   }
-  componentWillReceiveProps (nextProps) {}
+  componentWillReceiveProps (nextProps) {
+    if(nextProps.pages !== this.props.pages) {
+      this.setState({newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
+    }
+  }
 
   updateDeleteID (id) {
     this.setState({deleteid: id})
@@ -107,6 +111,7 @@ class Autoposting extends React.Component {
   }
 
   render () {
+    console.log('this.state.newsPageIndex.length', this.state.newsPageIndex.length)
     var alertOptions = {
       offset: 75,
       position: 'top right',
