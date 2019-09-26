@@ -12,7 +12,7 @@ class PushMessage extends React.Component {
     super(props, context)
     this.state = {
       convoTitle: 'Push Message',
-      buttonActions: ['open website', 'open webview', 'add share']
+      buttonActions: ['open website', 'open webview']
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleNext = this.handleNext.bind(this)

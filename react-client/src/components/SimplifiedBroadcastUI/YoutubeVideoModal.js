@@ -12,7 +12,7 @@ class YoutubeVideoModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
+      buttons: props.buttons.map(button => {return {visible: true, title: button.title}}),
       numOfCurrentButtons: 0,
       disabled: props.edit ? false : true,
       buttonDisabled: false,

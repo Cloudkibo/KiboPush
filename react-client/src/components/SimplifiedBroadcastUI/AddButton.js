@@ -64,11 +64,8 @@ class AddButton extends React.Component {
     }
   }
 
-  updateButtonStatus (status, sharedIndex) {
+  updateButtonStatus (status) {
     status.buttons = this.state.buttons
-    if (sharedIndex >= 0) {
-      status.buttons[sharedIndex] = {title: 'Share', visible: true}
-    }
     this.props.updateButtonStatus(status)
   }
 

@@ -168,7 +168,7 @@ class Card extends React.Component {
               return (
                 <div>
                   <hr />
-                  <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
+                  <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                 </div>
               )
             })

@@ -119,7 +119,7 @@ class List extends React.Component {
                         card.buttons && card.buttons.map(button => {
                           return (
                             <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '3px', minHeight: '50%', minWidth: '25%', marginLeft: '10%'}} >
-                              <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.type === 'element_share' ? 'Share' : button.title}</h6>
+                              <h6 style={{color: '#0782FF', fontSize: '12px'}}>{button.title}</h6>
                             </div>
                           )
                         })
@@ -136,7 +136,7 @@ class List extends React.Component {
               return (
                 <div>
                   <hr />
-                  <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
+                  <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                 </div>
               )
             })
