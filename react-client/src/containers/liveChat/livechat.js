@@ -117,21 +117,21 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession(session) {
-    delete session.unreadCount
+    session.unreadCount = 0
     this.setState({ activeSession: session, scroll: true })
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
           if (temp[i]._id === session._id && temp[i].unreadCount) {
-            delete temp[i].unreadCount
+            temp[i].unreadCount = 0
           }
         }
       } else {
         var tempClose = this.props.closeSessions
         for (var j = 0; j < tempClose.length; j++) {
           if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
-            delete tempClose[j].unreadCount
+            tempClose[j].unreadCount = 0
           }
         }
       }
@@ -342,7 +342,7 @@ class LiveChat extends React.Component {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
           if (temp[z]._id === nextProps.unreadSession) {
-            temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
+            temp[z].unreadCount = temp[z].unreadCount + 1
             if (nextProps.socketMessage && nextProps.socketMessage.format === 'facebook') {
               temp[z].pendingResponse = true
             }
@@ -467,7 +467,7 @@ class LiveChat extends React.Component {
                         createTag={this.props.createTag}
                         assignTags={this.assignTags}
                         tagOptions={this.state.tagOptions}
-                        members={this.props.members}
+                        members={this.props.members ? this.props.members : []}
                         customFields={this.props.customFields}
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
