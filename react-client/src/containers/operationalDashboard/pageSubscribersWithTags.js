@@ -54,7 +54,6 @@ class PageSubscribersWithTags extends React.Component {
     this.getDataMessage = this.getDataMessage.bind(this)
     this.onPageUsersLoaded = this.onPageUsersLoaded.bind(this)
     this.onDataLoad = this.onDataLoad.bind(this)
-    this.currentUserLoaded = false
     this.pageUsersLoaded = false
     
     props.loadPageUsers({
@@ -95,7 +94,6 @@ class PageSubscribersWithTags extends React.Component {
 
   onPageOwnerSelect (event) {
       console.log('changing pageOwner', event.target.value)
-      this.currentUserLoaded = true
       this.setState({dataLoaded: false, currentPageOwner: event.target.value, pageNumber: 0, totalLength: this.state.pageSubscribersDataSorted[event.target.value] ? this.state.pageSubscribersDataSorted[event.target.value].length : 0}, () => {
         this.applyNecessaryFilters()
       })
@@ -224,8 +222,11 @@ class PageSubscribersWithTags extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.pageOwners) {
         console.log('recieved page owners', nextProps.pageOwners)
-        if (nextProps.pageOwners.length === 1) {
-          this.setState({currentPageOwner: nextProps.pageOwners[0]._id, pageOwners: nextProps.pageOwners})
+        if (nextProps.pageOwners.length === 1 && !this.state.currentPageOwner) {
+          let currentPageOwner = nextProps.pageOwners[0]._id
+          this.setState({pageOwners: nextProps.pageOwners, dataLoaded: false, currentPageOwner, pageNumber: 0, totalLength: this.state.pageSubscribersDataSorted[nextProps.pageOwners[0]._id] ? this.state.pageSubscribersDataSorted[nextProps.pageOwners[0]._id].length : 0}, () => {
+            this.applyNecessaryFilters()
+          })
         } else {
           this.setState({pageOwners: nextProps.pageOwners})
         }
@@ -233,7 +234,7 @@ class PageSubscribersWithTags extends React.Component {
   }
 
   getDataMessage () {
-      if (this.currentUserLoaded) {
+      if (this.state.currentPageOwner) {
           if (!this.state.dataLoaded) {
             return 'Loading subscribers'
           } else {
