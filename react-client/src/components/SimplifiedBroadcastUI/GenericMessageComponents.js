@@ -93,19 +93,6 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
-        <div className='col-12' hidden={this.props.hiddenComponents.indexOf('list') > -1 ? true : null}>
-          <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('list') }}>
-            <div className='row'>
-              <div className='col-2'>
-                <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: '40px', margin: '10px', marginLeft: '20px'}} />
-              </div>
-              <div className='col-8'>
-                <h5>List</h5>
-                <p>Create a list of images with up to 4 list elements</p>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className='col-12' hidden={this.props.hiddenComponents.indexOf('video') > -1 ? true : null}>
           <div className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('video') }}>
             <div className='row'>
