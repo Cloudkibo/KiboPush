@@ -900,8 +900,7 @@ class ChatBox extends React.Component {
               <h3>Voice Recording</h3>
               <div>
                 <ReactMic style={{width: '450px'}}
-                  height='100'
-                  width='450'
+                  width= '450'
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
@@ -1031,7 +1030,8 @@ class ChatBox extends React.Component {
           </Popover>
           */
         }
-        <Popover
+        /* {this.props.user.isSuperUser &&
+          <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
           height='390px'
@@ -1050,6 +1050,7 @@ class ChatBox extends React.Component {
             <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
+      } */
         <div className='m-portlet m-portlet--mobile'>
           <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
             <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
