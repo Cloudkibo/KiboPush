@@ -58,10 +58,10 @@ class SessionsArea extends React.Component {
       <div className='col-xl-4'>
         <div className='m-portlet m-portlet--full-height' >
           <HEADER
-            openSessions={this.props.openSessions}
-            closeSessions={this.props.closeSessions}
-            pages={this.props.pages}
-            fetchSessions={this.props.fetchSessions}
+            openSessions={this.props.openSessions ? this.props.openSessions: []}
+            closeSessions={this.props.closeSessions ? this.props.closeSessions: []}
+            pages={this.props.pages ? this.props.pages : []}
+            fetchSessions={this.props.fetchSessions ? this.props.fetchSessions : []}
             updateState={this.updateState}
           />
           <div style={{padding: '0rem 2.2rem'}}>
