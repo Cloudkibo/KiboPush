@@ -27,7 +27,16 @@ class templates extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
+
         <div className='m-subheader '>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding templates? Here is the <a href='http://kibopush.com/templates/' target='_blank'>documentation</a>.
+            </div>
+          </div>
           <Link to='/categories' className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right'>Category
           </Link>
           <div className='d-flex align-items-center'>
