@@ -24,7 +24,7 @@ class Autoposting extends React.Component {
       showListItems: true,
       deleteid: '',
       showWordPressGuide: false,
-      newsPageIndex: props.pages ? props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) }) : []
+      newsPageIndex: []
     }
     props.loadAutopostingList()
     this.showDialog = this.showDialog.bind(this)
@@ -58,6 +58,10 @@ class Autoposting extends React.Component {
         compProp.loadAutopostingList()
       }
     })
+    if(this.props.pages){
+      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission)}) 
+      this.setState({newsPageIndex: pagesIndex})
+    }
   }
   viewGuide () {
     this.setState({
