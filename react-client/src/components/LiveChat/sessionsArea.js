@@ -40,7 +40,7 @@ class SessionsArea extends React.Component {
   loadMore (type) {
     this.props.fetchSessions({
       first_page: false,
-      last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none',
+      last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1].last_activity_time : 'none',
       number_of_records: this.state.number_of_records,
       filter: this.state.filter,
       filter_criteria: {

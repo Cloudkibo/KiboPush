@@ -65,24 +65,42 @@ class SessionsAreaHead extends React.Component {
   }
 
   handleSort (value) {
-    let data = {sortValue: value, filter: true}
-    this.setState(data)
-    this.props.updateState(data)
-    if (value === -1) {
-      this.props.openSessions.sort(function (a, b) {
-        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-      })
-      this.props.closeSessions.sort(function (a, b) {
-        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-      })
-    } else if (value === 1) {
-      this.props.openSessions.sort(function (a, b) {
-        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
-      })
-      this.props.closeSessions.sort(function (a, b) {
-        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
-      })
+    // let data = {sortValue: value, filter: true}
+    // this.setState(data)
+    // this.props.updateState(data)
+    // if (value === -1) {
+    //   this.props.openSessions.sort(function (a, b) {
+    //     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    //   })
+    //   this.props.closeSessions.sort(function (a, b) {
+    //     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    //   })
+    // } else if (value === 1) {
+    //   this.props.openSessions.sort(function (a, b) {
+    //     return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+    //   })
+    //   this.props.closeSessions.sort(function (a, b) {
+    //     return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+    //   })
+    // }
+
+    this.setState({sortValue: value, filter: true})
+    let data = {
+      first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter: true,
+      filter_criteria: {
+        sort_value: value,
+        page_value: this.state.pageValue,
+        search_value: this.state.searchValue,
+        pendingResponse: this.state.pendingResponse,
+        unreadMessages: this.state.unreadMessages
+      }
     }
+    this.props.fetchSessions(data)
+    this.props.updateState(data)
+
   }
 
   handlePageFilter (value) {

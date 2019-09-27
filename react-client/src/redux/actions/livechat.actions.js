@@ -68,20 +68,19 @@ export function showOpenChatSessions (sessions, data) {
     s.lastName = name[1]
     return s
   })
-  var sorted = subscribers.sort(function (a, b) {
-    return new Date(b.lastDateTime) - new Date(a.lastDateTime)
-  })
-  console.log('sorted sessions', sorted)
+  // var sorted = subscribers.sort(function (a, b) {
+  //   return new Date(b.lastDateTime) - new Date(a.lastDateTime)
+  // })
   if (data.first_page && (data.page_value !== '' || data.search_value !== '')) {
     return {
       type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE,
-      openSessions: sorted,
+      openSessions: subscribers,
       count: sessions.count
     }
   } else {
     return {
       type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS,
-      openSessions: sorted,
+      openSessions: subscribers,
       count: sessions.count
     }
   }
@@ -94,20 +93,19 @@ export function showCloseChatSessions (sessions, firstPage) {
     s.lastName = name[1]
     return s
   })
-  var sorted = subscribers.sort(function (a, b) {
-    return new Date(b.lastDateTime) - new Date(a.lastDateTime)
-  })
-  console.log('sorted sessions', sorted)
+  // var sorted = subscribers.sort(function (a, b) {
+  //   return new Date(b.lastDateTime) - new Date(a.lastDateTime)
+  // })
   if (firstPage) {
     return {
       type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS_OVERWRITE,
-      closeSessions: sorted,
+      closeSessions: subscribers,
       count: sessions.count
     }
   }
   return {
     type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS,
-    closeSessions: sorted,
+    closeSessions: subscribers,
     count: sessions.count
   }
 }
