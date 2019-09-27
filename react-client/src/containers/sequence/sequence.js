@@ -598,13 +598,13 @@ class Sequence extends React.Component {
                                     </span>
                                   </span>
 
-                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%'}}>
+                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%', top: '35%'}}>
                                     <span className='sequence-number'>{sequence.subscribers.length}</span>
                                     <br />
                                     <span>Subscribers</span>
                                   </span>
 
-                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%'}}>
+                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%', top: '35%'}}>
                                     <span className='sequence-number'>{sequence.messages.length}</span>
                                     <br />
                                     <span>Messages</span>
