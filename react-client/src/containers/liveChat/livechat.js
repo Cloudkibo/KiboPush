@@ -342,9 +342,9 @@ class LiveChat extends React.Component {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
           if (temp[z]._id === nextProps.unreadSession) {
-            temp[z].unreadCount = temp[z].unreadCount + 1
             if (nextProps.socketMessage && nextProps.socketMessage.format === 'facebook') {
               temp[z].pendingResponse = true
+              temp[z].unreadCount = temp[z].unreadCount + 1
             }
           }
         }
