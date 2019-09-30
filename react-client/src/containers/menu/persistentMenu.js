@@ -850,13 +850,6 @@ class Menu extends React.Component {
               </div>
             </div>
             {
-              this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
-              <span style={{fontSize: '0.9rem'}}>
-                If you change the menu item action, all the underlying submenus and their
-                content will be lost
-              </span>
-           }
-            {
               this.state.selectedRadio === 'openWebsite' &&
               <div style={{marginTop: '20px'}}>
                 {
@@ -952,7 +945,7 @@ class Menu extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Due to upcoming Facebook's update, submenus will be rendered as a flat list on the top level. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank'>Learn More</a>.
+              Nested menus will no longer be supported by Facebook. Menus will display in a single layer format. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank'>Learn More</a>.
             </div>
           </div>
           <div className='m-portlet m-portlet--full-height '>
