@@ -141,8 +141,7 @@ class ChatBox extends React.Component {
   }
 
   removeUrlMeta () {
-    this.setState({urlmeta: {}})
-    this.props.urlMeta = {}
+    this.props.fetchUrlMeta('')
   }
 
   showDialogRecording () {
@@ -520,7 +519,8 @@ class ChatBox extends React.Component {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
           this.props.sendChatMessage(data, this.props.fetchOpenSessions)
-          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          this.setState({textAreaValue: '', displayUrlMeta: false})
+          this.removeUrlMeta()
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
