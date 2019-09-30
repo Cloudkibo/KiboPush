@@ -88,8 +88,8 @@ class SessionItem extends React.Component {
               {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i className='fa fa-calendar' />&nbsp;&nbsp;
               {
-                this.props.session.lastDateTime &&
-                moment(this.props.session.lastDateTime).fromNow()
+                this.props.session.last_activity_time &&
+                moment(this.props.session.last_activity_time).fromNow()
               }
             </span>
           </div>
