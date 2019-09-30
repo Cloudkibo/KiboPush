@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersWithTags, loadPageUsers, loadPageOwners } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -55,7 +55,7 @@ class PageSubscribersWithTags extends React.Component {
     this.onPageUsersLoaded = this.onPageUsersLoaded.bind(this)
     this.onDataLoad = this.onDataLoad.bind(this)
     this.pageUsersLoaded = false
-    
+
     props.loadPageUsers({
         pageId: this.props.location.state.pageId,
         search_value: '',
@@ -135,7 +135,7 @@ class PageSubscribersWithTags extends React.Component {
         status: this.state.statusValue !== 'all' ? this.state.statusValue : '',
         pageNumber: this.state.pageNumber+1
     }, this.onDataLoad)
-  }   
+  }
 
   applyUserFilter (data, search) {
     return data.filter(x => (x.subscriber.firstName).toLowerCase().includes(search.toLowerCase()) || (x.subscriber.lastName).toLowerCase().includes(search.toLowerCase()))
@@ -263,7 +263,7 @@ class PageSubscribersWithTags extends React.Component {
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
                         <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersDataSorted[this.state.currentPageOwner] && this.state.pageSubscribersDataSorted[this.state.currentPageOwner].length} Subscribers</span>
-                        
+
                         <div style={{marginTop: '20px', width: '440px'}} className="panel-group" id="accordion">
                             <div className="panel panel-default">
                               <div id={`panel-heading`} className="panel-heading">
@@ -274,19 +274,19 @@ class PageSubscribersWithTags extends React.Component {
                               <div id={`collapse`} className={"panel-collapse collapse"}>
                                 <div className="panel-body">
                                     <div style={{maxHeight: '200px', width: '400px', overflowY: 'scroll', fontSize: '0.8em', border: 'solid darkgray 1px', padding: '10px', marginBottom: '10px'}}>
-                                        
-                                        
+
+
                                         {
                                            this.state.pageOwners.length > 0 && Object.keys(this.state.pageSubscribersDataSorted).length > 0 ? this.state.pageOwners.map(pageOwner => {
-                                                 return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>: 
+                                                 return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>:
                                                             <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
                                                                 {this.state.pageSubscribersDataSorted[pageOwner._id] && this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
                                                             </span>
                                                         </p>)
                                             }) : <h4 style={{textAlign: 'center'}}>Loading Summary...</h4>
                                         }
-                                    </div> 
-                                    <p style={{marginTop: '20px', fontSize: '1em'}}>Total: 
+                                    </div>
+                                    <p style={{marginTop: '20px', fontSize: '1em'}}>Total:
                                         <span className="m-badge m-badge--brand m-badge--wide" style={{fontSize: '1em', marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
                                             {this.state.totalSubscribers} subscribers
                                         </span>
@@ -294,11 +294,11 @@ class PageSubscribersWithTags extends React.Component {
                                 </div>
                               </div>
                             </div>
-                          </div>  
+                          </div>
                       </h3>
-                    
 
-                        
+
+
                       <div style={{textAlign: 'right', marginBottom: '30px', marginTop: '30px', marginLeft: '150px'}}>
                         <h6 style={{marginRight: '140px'}}>Select Page Owner:</h6>
                         <select style={{width: '280px'}} className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.currentPageOwner} onChange={this.onPageOwnerSelect}>
@@ -315,9 +315,9 @@ class PageSubscribersWithTags extends React.Component {
                   <div>
                     <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      
 
-                    {this.state.currentPageOwner && 
+
+                    {this.state.currentPageOwner &&
                         <div>
                             <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                             <input type='text' placeholder='Search by user name' className='form-control' value={this.state.searchValue} onChange={this.onUserNameSearch} />
@@ -340,7 +340,7 @@ class PageSubscribersWithTags extends React.Component {
                             </div>
                         </div>
                     }
-                      
+
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
@@ -372,27 +372,27 @@ class PageSubscribersWithTags extends React.Component {
                             style={{height: '55px', border: 'solid #F4F3FB'}} key={i}>
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{pageSubscriber.subscriber.firstName + ' ' + pageSubscriber.subscriber.lastName}</span></td>
                             <td data-field='assignedTags' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}> 
+                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}>
                                     {
                                         pageSubscriber.assignedTags.map(tag => {
                                             return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
                                         })
-                                    } 
+                                    }
                                 </span>
                             </td>
                             <td data-field='unassignedTags' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}> 
+                                <span style={{maxHeight: '150px', width: '150px', overflowY: 'scroll'}}>
                                     {
                                         pageSubscriber.unassignedTags.map(tag => {
                                             return (<span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginRight: '10px'}}>{tag.tag}</span>)
                                         })
-                                    } 
+                                    }
                                 </span>
                             </td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                                 <span style={{width: '100px'}}>
                                     {
-                                        pageSubscriber.unassignedTags.length > 0 
+                                        pageSubscriber.unassignedTags.length > 0
                                         ? <span className="m-badge  m-badge--danger m-badge--wide" style={{marginBottom: '5px', display: 'block'}}>Incorrect</span>
                                         : <span className="m-badge  m-badge--success m-badge--wide" style={{marginBottom: '5px', display: 'block'}}>Correct</span>
                                     }
@@ -401,7 +401,7 @@ class PageSubscribersWithTags extends React.Component {
                           </tr>
                         ))
                       }
-                      </tbody>) : 
+                      </tbody>) :
                       <span>
                             <h4 style={{margin: '20px', textAlign: 'center'}}> {this.getDataMessage()} </h4>
                         </span>
@@ -423,7 +423,9 @@ class PageSubscribersWithTags extends React.Component {
                         activeClassName={'active'} />
                     </div>
                   </div>
-
+                  <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                      <Link to='/operationalDashboard' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
+                  </div>
                   </div>
                 </div>
               </div>
