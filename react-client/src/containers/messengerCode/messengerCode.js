@@ -7,7 +7,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
-import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
+import { requestMessengerCode, resetState } from '../../redux/actions/messengerCode.actions'
+import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -16,18 +17,38 @@ class MessengerCode extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedPage: {},
-      ref: '',
-      resoltion: '1000',
-      image: '',
-      showVideo: false
+      isShowingCreate: false,
+      pageSelected: {}
     }
     props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
+    this.showCreateDialog = this.showCreateDialog.bind(this)
+    this.closeCreateDialog = this.closeCreateDialog.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
+    this.changePage = this.changePage.bind(this)
+  
+  }
 
-    this.onPageChange = this.onPageChange.bind(this)
-    this.onResolutionChange = this.onResolutionChange.bind(this)
-    this.onRefChange = this.onRefChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+  showCreateDialog () {
+    this.setState({isShowingCreate: true})
+  }
+  closeCreateDialog () {
+    this.setState({isShowingCreate: false})
+  }
+
+  changePage (e) {
+    this.setState({pageSelected: e.target.value})
+  }
+
+  gotoCreate () {
+    this.props.resetState()
+    console.log(this.state.pageSelected)
+    console.log(this.props.pages)
+    let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected._id)[0].pageId
+    console.log('pageId', pageId)
+    browserHistory.push({
+      pathname: `/createMessengerCode`,
+      state: {_id: this.state.pageSelected, pageId: pageId, module: 'createMessage'}
+    })
   }
 
   componentDidMount () {
@@ -42,58 +63,11 @@ class MessengerCode extends React.Component {
     document.title = `${title} | Messenger Code`;
   }
 
-  onPageChange (event) {
-    console.log('event', event.target.value)
-    if (event.target.value !== -1) {
-      let page
-      for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i]._id === event.target.value) {
-          page = this.props.pages[i]
-          break
-        }
-      }
-      if (page) {
-        this.setState({
-          selectedPage: page
-        })
-      }
-    } else {
-      this.setState({
-        selectedPage: {}
-      })
-    }
-  }
-
-  onResolutionChange (event) {
-    this.setState({resoltion: event.target.value})
-  }
-
-  onRefChange (event) {
-    this.setState({ref: event.target.value})
-  }
-
-  onSubmit (event) {
-    if (parseInt(this.state.resoltion) < 100 || parseInt(this.state.resoltion) > 2000) {
-      this.msg.error('Resolution must be between 100 to 2000 px')
-      return
-    }
-    if (this.state.ref !== '') {
-      this.props.requestMessengerCode({
-        pageId: this.state.selectedPage.pageId,
-        image_size: parseInt(this.state.resoltion),
-        data: {ref: this.state.ref}
-      })
-    } else {
-      this.props.requestMessengerCode({pageId: this.state.selectedPage.pageId, image_size: parseInt(this.state.resoltion)})
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in pages', nextProps)
-    console.log('nextProps in image', nextProps.image)
     if (nextProps.pages) {
       this.setState({
-        selectedPage: nextProps.pages[0]
+        pageSelected: nextProps.pages[0]
       })
     }
     if (nextProps.image) {
@@ -102,13 +76,6 @@ class MessengerCode extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
@@ -132,7 +99,35 @@ class MessengerCode extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.isShowingCreate &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeCreateDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeCreateDialog}>
+              <h3>Create Messenger Code</h3>
+              <div className='m-form'>
+                <div className='form-group m-form__group'>
+                  <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
+                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
+                    {
+                      this.props.pages.map((page, i) => (
+                        <option key={i} value={page._id}>{page.pageName}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
+                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                    Create
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -153,69 +148,27 @@ class MessengerCode extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-                <div className='m-portlet__body'>
-                  <div className='form-row' style={{display: 'block'}}>
-                    <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Choose Page:
-                        </label>
-                      </div>
-                      <div className='col-6'>
-                        <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
-                          {
-                            this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                              <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                    </div>
-                    <br />
-                    <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Resolution (100 - 2000px):
-                        </label>
-                      </div>
-                      <div className='col-6'>
-                        <input type='number' min='100' max='2000' step='1' className='form-control' value={this.state.resoltion} onChange={this.onResolutionChange} />
-                      </div>
-                    </div>
-                    <br />
-                    <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Ref-paramter (optional):
-                        </label>
-                      </div>
-                      <div className='col-6'>
-                        <input type='text' className='form-control' value={this.state.ref} onChange={this.onRefChange} />
-                      </div>
-                    </div>
-                    <br />
-                    {this.state.image !== '' &&
-                      <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
-                        <div className='col-3' />
-                        <div className='col-6'>
-                          <img src={this.state.image} style={{display: 'block', width: '100%'}} />
-                          <br />
-                          <center>
-                            <a href={this.state.image} target='_blank' download className='btn btn-outline-success' style={{borderColor: '#34bfa3'}}>
-                              <i className='fa fa-download' />&nbsp;&nbsp;Download Image
-                            </a>
-                          </center>
-                        </div>
-                      </div>
-                      }
-                    <br />
-                  </div>
-                  <br /><br />
-                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                    <div className='col-12'>
-                      <div className='m-form__actions' style={{'float': 'right', marginTop: '20px'}}>
-                        <button className='btn btn-primary' onClick={this.onSubmit}> Request Messenger Code
-                        </button>
-                      </div>
+              <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Messenger Codes
+                      </h3>
                     </div>
                   </div>
+                  <div className='m-portlet__head-tools'>
+                    <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
+                          Create New
+                        </span>
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>    
+              
                 </div>
               </div>
             </div>
@@ -237,6 +190,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesListNew: loadMyPagesListNew,
+    resetState: resetState,
     requestMessengerCode: requestMessengerCode
   }, dispatch)
 }

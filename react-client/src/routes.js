@@ -102,6 +102,8 @@ import FacebookPost from './containers/commentCapture/newFacebookPost'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
 import MessengerCode from './containers/messengerCode/messengerCode'
+import createMessageForCode from './containers/messengerCode/createMessage'
+import createMessengerCode from './containers/messengerCode/create'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
 import Permissions from './containers/permissions/permissions'
@@ -296,6 +298,8 @@ const routes = (
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
+    <Route path='/createMessengerCode' component={createMessengerCode} onEnter={requireAuth} />
+    <Route path='/editMessageCodeMessage' component={createMessageForCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/editPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />

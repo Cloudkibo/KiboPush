@@ -8,10 +8,16 @@ export function imageResponse (data) {
   }
 }
 
-export function requestMessengerCode (data) {
-  console.log('data in requestMessengerCode', data)
+export function resetState () {
+  return {
+    type: ActionTypes.RESET_STATE_MSG_CODE
+  }
+}
+
+export function requestMessengerCode (pageId) {
+  console.log('data in requestMessengerCode', pageId)
   return (dispatch) => {
-    callApi('messenger_code', 'post', data)
+    callApi('messenger_code/getQRCode/'+pageId, 'get')
       .then(res => {
         console.log('response from requestMessengerCode', res)
         if (res.status === 'success') {

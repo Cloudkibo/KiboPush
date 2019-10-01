@@ -317,6 +317,7 @@ export const UPDATE_MONTHLY_PLATFORM_STATS = 'UPDATE_MONTHLY_PLATFORM_STATS'
 
 // constants for Messenger Code
 export const SHOW_IMAGE = 'SHOW_IMAGE'
+export const RESET_STATE_MSG_CODE = 'RESET_STATE_MSG_CODE'
 
 // constants for Landing Page
 export const SHOW_LANDING_PAGES = 'SHOW_LANDING_PAGES'
