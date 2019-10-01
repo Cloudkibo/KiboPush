@@ -316,7 +316,7 @@ export function sendChatMessage (data, fetchOpenSessions) {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)
       // dispatch(fetchSessions())
-      fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
+      //fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     })
   }
 }
