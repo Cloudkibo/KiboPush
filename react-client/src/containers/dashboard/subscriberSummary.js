@@ -76,13 +76,15 @@ class SubscriberSummary extends React.Component {
     }
   }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
-      var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
-      console.log('includeZeroCounts', data)
-      let dataChart = this.prepareChartData(data)
-      this.setState({data: dataChart})
-    } else {
-      this.setState({data: []})
+    if(nextprops.subscriberSummary !== this.props.subscriberSummary) {
+      if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
+        var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
+        console.log('includeZeroCounts', data)
+        let dataChart = this.prepareChartData(data)
+        this.setState({data: dataChart})
+      } else {
+        this.setState({data: []})
+      }
     }
   }
 
