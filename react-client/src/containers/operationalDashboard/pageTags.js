@@ -456,6 +456,8 @@ class PageTags extends React.Component {
                         </span>
                       }
                     </table>
+                    {
+                     this.state.pageTagsData && this.state.pageTagsData.length > 0 &&
                     <div className='pagination'>
                       <ReactPaginate
                         previousLabel={'previous'}
@@ -471,6 +473,7 @@ class PageTags extends React.Component {
                         subContainerClassName={'pages pagination'}
                         activeClassName={'active'} />
                     </div>
+                    }
                   </div>
                   <div className='m-form m-form--label-align-right m--margin-bottom-30'>
                       <Link to='/operationalDashboard' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
