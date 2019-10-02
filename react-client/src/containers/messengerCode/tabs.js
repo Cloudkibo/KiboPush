@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import Setup from './setup'
+import QRCode from './QRCode'
 import OptInActions from './optInActions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -36,7 +36,7 @@ class Tab extends React.Component {
           </li>
           <li className='nav-item m-tabs__item'>
             <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
-              Setup
+              QRCode
             </a>
           </li>
         </ul>
@@ -44,8 +44,8 @@ class Tab extends React.Component {
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
             {this.state.currentTab === 'setup'
-            ? <Setup />
-            : <OptInActions module={this.props.module} selectedMessengerCode={this.props.messengerCode} />
+            ? <QRCode />
+            : <OptInActions module={this.props.module} selectedPage={this.props.selectedPage} />
             }
           </div>
         </div>

@@ -14,36 +14,22 @@ class OptInActions extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sequenceValue: '',
-            sequenceOptions: []
+           
         }
         this.editMessage = this.editMessage.bind(this)
-        this.handleSequence = this.handleSequence.bind(this)
-    }
-    handleSequence(obj) {
-        this.setState({ sequenceValue: obj.value })
     }
     componentDidMount() {
-        if (this.props.sequences) {
-            let sequenceOptions = []
-            for (let a = 0; a < this.props.sequences.length; a++) {
-                if (this.props.sequences[a].sequence.trigger.event === 'subscribes_to_sequence') {
-                    sequenceOptions.push({ 'value': this.props.sequences[a].sequence._id, 'label': this.props.sequences[a].sequence.name })
-                }
-            }
-            this.setState({ sequenceOptions: sequenceOptions })
-        }
+       
     }
     editMessage() {
         browserHistory.push({
             pathname: `/editMessageCodeMessage`,
-            state: { module: this.props.module, messengerCode: this.props.messengerCode }
+            state: { module: this.props.module, selectedMessengerCode: this.props.messengerCode }
         })
     }
     render() {
         return (
             <div className= 'row'>
-                
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                         <div className='form-group m-form__group'>
                             <span>Opt-In Message: </span>
@@ -58,18 +44,6 @@ class OptInActions extends React.Component {
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                         <Preview />
                     </div>
-                    
-
-                {/* <div className='form-group m-form__group'>
-          <span>Add Subscriber to Sequence: </span>
-          <Select
-            options={this.state.sequenceOptions}
-            onChange={this.handleSequence}
-            value={this.state.sequenceValue}
-            placeholder='Select Sequence...'
-          />
-        </div>
-        */}
             </div>
         )
     }
@@ -77,8 +51,6 @@ class OptInActions extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        messengerCode: state.messengerCodeInfo.messengerCode,
-        sequences: (state.sequenceInfo.sequences)
     }
 }
 

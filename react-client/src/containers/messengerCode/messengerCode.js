@@ -41,13 +41,10 @@ class MessengerCode extends React.Component {
 
   gotoCreate () {
     this.props.resetState()
-    console.log(this.state.pageSelected)
-    console.log(this.props.pages)
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected._id)[0].pageId
-    console.log('pageId', pageId)
     browserHistory.push({
       pathname: `/createMessengerCode`,
-      state: {_id: this.state.pageSelected, pageId: pageId, module: 'createMessage'}
+      state: {page: this.state.pageSelected, module: 'createMessage'}
     })
   }
 
@@ -64,7 +61,6 @@ class MessengerCode extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps in pages', nextProps)
     if (nextProps.pages) {
       this.setState({
         pageSelected: nextProps.pages[0]

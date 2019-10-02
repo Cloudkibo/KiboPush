@@ -20,7 +20,7 @@ class Preview extends React.Component {
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
           {
-          this.props.messengerCode === undefined ? <ViewMessage payload={this.props.messengerCode.reply} /> : <ViewMessage payload={this.props.messengerCode.reply} />
+          this.props.messengerCode === undefined ? <ViewMessage payload={this.props.messengerCode.optInMessage} /> : <ViewMessage payload={this.props.messengerCode.optInMessage} />
         }
         </div>
       </div>

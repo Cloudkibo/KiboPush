@@ -7,30 +7,20 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { requestMessengerCode, resetState } from '../../redux/actions/messengerCode.actions'
-import crypto from 'crypto'
 import AlertContainer from 'react-alert'
 import Tabs from '../messengerCode/tabs'
-import { fetchAllSequence } from '../../redux/actions/sequence.action'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
     }
-
-    if (props.location.state.module === 'createMessage') {
-    //  props.resetState()
-      if (props.location.state && props.location.state.pageId) {
-        console.log('this.props.messengerCode in constructer function if', this.props.messengerCode)
-        // props.updateData(this.props.messengerCode, 'pageId', props.location.state.pageId)
-      }
-      props.fetchAllSequence()
-    }
   }
 
   componentDidMount () {
     console.log('this.props.location.state', this.props.location.state)
-    this.props.requestMessengerCode(this.props.location.state._id._id)
+    this.props.messengerCode.pageId = this.props.location.state.page._id
+    this.props.requestMessengerCode(this.props.messengerCode)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -72,7 +62,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs module={this.props.location.state.module} messengerCode={this.props.location.state} />
+                    <Tabs module={this.props.location.state.module} selectedPage={this.props.location.state.page} />
                   </div>
                 </div>
               </div>
@@ -87,7 +77,6 @@ class CreateURL extends React.Component {
 function mapStateToProps (state) {
   return {
     messengerCode: state.messengerCodeInfo.messengerCode,
-    sequences: (state.sequenceInfo.sequences)
   }
 }
 
@@ -95,7 +84,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     requestMessengerCode: requestMessengerCode,
     resetState: resetState,
-    fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateURL)
