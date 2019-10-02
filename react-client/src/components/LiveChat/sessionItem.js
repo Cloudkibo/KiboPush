@@ -35,10 +35,10 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__info'>
             <span className='m-widget4__title'>
-              {this.props.session.firstName + ' ' + this.props.session.lastName}
+              {this.props.session.firstName + ' ' + this.props.session.lastName + ' '}
 
 
-              <div style={{display: 'inline-block', marginLeft: '2px'}}>
+              <div style={{display: 'inline-block'}}>
                 {
                   this.state.unreadCount &&
                   <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
