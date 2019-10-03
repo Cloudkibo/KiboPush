@@ -76,14 +76,28 @@ class SubscriberSummary extends React.Component {
     }
   }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
-      var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
+    if(nextprops.subscriberSummary !== this.props.subscriberSummary) {
+      if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
+        var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
+        console.log('includeZeroCounts', data)
+        let dataChart = this.prepareChartData(data)
+        this.setState({data: dataChart})
+      } else {
+        this.setState({data: []})
+      }
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.subscriberSummary && this.props.subscriberSummary.graphdata.length > 0) {
+      var data = this.includeZeroCounts(this.props.subscriberSummary.graphdata)
       console.log('includeZeroCounts', data)
       let dataChart = this.prepareChartData(data)
       this.setState({data: dataChart})
     } else {
       this.setState({data: []})
     }
+
   }
   exists (array, value) {
     for (var i = 0; i < array.length; i++) {
@@ -314,7 +328,7 @@ class SubscriberSummary extends React.Component {
                         <h3 className='m-widget1__title'>Subscribes</h3>
                       </div>
                       <div className='col m--align-right'>
-                        <span className='m-widget1__number m--font-brand'>{this.props.subscriberSummary ? this.props.subscriberSummary.subscribes : 0}</span>
+                        <span className='m-widget1__number m--font-brand'>{this.props.subscriberSummary ? this.props.subscriberSummary.subscribes + this.props.subscriberSummary.unsubscribes : 0}</span>
                       </div>
                     </div>
                   </div>
@@ -334,7 +348,7 @@ class SubscriberSummary extends React.Component {
                         <h3 className='m-widget1__title'>Net Subscribes</h3>
                       </div>
                       <div className='col m--align-right'>
-                        <span className='m-widget1__number m--font-success'>{this.props.subscriberSummary ? this.props.subscriberSummary.subscribes - this.props.subscriberSummary.unsubscribes : 0}</span>
+                        <span className='m-widget1__number m--font-success'>{this.props.subscriberSummary ? this.props.subscriberSummary.subscribes: 0}</span>
                       </div>
                     </div>
                   </div>
@@ -365,7 +379,7 @@ class SubscriberSummary extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for pageSubscribers', state)
+  console.log('in mapStateToProps for pageSubscribers!!!', state)
   return {
     subscriberSummary: (state.dashboardInfo.subscriberSummary),
     pages: (state.pagesInfo.pages)

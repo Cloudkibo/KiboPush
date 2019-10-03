@@ -35,7 +35,24 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__info'>
             <span className='m-widget4__title'>
-              {this.props.session.firstName + ' ' + this.props.session.lastName}
+              {this.props.session.firstName + ' ' + this.props.session.lastName + ' '}
+
+
+              <div style={{display: 'inline-block'}}>
+                {
+                  this.state.unreadCount &&
+                  <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                    {this.state.unreadCount}
+                  </a>
+                }
+
+                { 
+                  this.props.session.pendingResponse &&
+                  <a style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                    pending
+                  </a>
+                }
+              </div>
             </span>
             <br />
             {
@@ -92,22 +109,6 @@ class SessionItem extends React.Component {
                 moment(this.props.session.last_activity_time).fromNow()
               }
             </span>
-          </div>
-          <div className='m-widget4__ext'>
-            {
-              this.state.unreadCount &&
-              <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                {this.state.unreadCount}
-              </a>
-            }
-          </div>
-          <div className='m-widget4__ext'>
-            {
-              this.props.session.pendingResponse &&
-              <a style={{backgroundColor: '#c4c5d6', color: '#000000'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                pending
-              </a>
-            }
           </div>
         </div>
       </div>

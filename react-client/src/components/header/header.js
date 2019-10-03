@@ -32,6 +32,7 @@ class Header extends React.Component {
       seenNotifications: [],
       unseenNotifications: [],
       showDropDown: false,
+      showViewingAsDropDown: false,
       mode: 'All',
       showModal: false
     }
@@ -48,6 +49,7 @@ class Header extends React.Component {
     this.profilePicError = this.profilePicError.bind(this)
     this.updatePlatformValue = this.updatePlatformValue.bind(this)
     this.removeActingAsUser = this.removeActingAsUser.bind(this)
+    this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
   }
 
   removeActingAsUser () {
@@ -102,6 +104,12 @@ class Header extends React.Component {
     this.setState({ showDropDown: true })
     // this.changeMode = this.changeMode.bind(this)
   }
+
+  showViewingAsDropDown () {
+    console.log('show viewing as dropdown')
+    this.setState({showViewingAsDropDown: true})
+  }
+
   changeMode (mode) {
     this.props.updateMode({ mode: mode }, this.props.user)
   }
@@ -445,29 +453,50 @@ class Header extends React.Component {
                   {this.props.user &&
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
                       {this.props.user.isSuperUser && auth.getActingAsUser() !== undefined &&
-                        <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                          <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                          <div style={{marginTop: '15px'}}>
                             <span className='m-topbar__userpic'>
                               <div style={{ display: 'inline-block', height: '41px' }}>
+
                                 <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
-                                  <span>
-                                   Viewing As: {auth.getActingAsUserName()}&nbsp;&nbsp;&nbsp;
-                                 </span>
+                                <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                  <a style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                                    Viewing As...
+                                  </a>
+                                  {
+                                    this.state.showViewingAsDropDown &&
+                                    <div className='m-dropdown__wrapper'>
+                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                      <div className='m-dropdown__inner'>
+                                        <div className='m-dropdown__body'>
+                                          <div className='m-dropdown__content'>
+                                            <ul className='m-nav'>
+                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
+                                                <span>
+                                                  Currently viewing as: <strong>{auth.getActingAsUserName()} </strong>
+                                                </span>
+                                              </li>
+                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
+                                                <a onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
+                                                  <span className='m-nav__link-text'>
+                                                    Switch back to my view
+                                                  </span>
+                                                </a>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
+                                </li>
                                </span>
-                                <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
-                                  <button onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                   My view
-                                 </button>
-                                </span>
                               </div>
                             </span>
-                          </a>
-                          {/*<button onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                           My view
-                         </button>*/}
+                          </div>
                         </li>
                       }
-                      <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
+                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                         <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                             <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
@@ -550,7 +579,7 @@ class Header extends React.Component {
                         </div>
                       </li>
                       {this.props.user && this.props.user.facebookInfo &&
-                      <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
@@ -629,7 +658,7 @@ class Header extends React.Component {
                       </li>
                       }
                       {/* APP CHOOSER */}
-                      <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                      <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
