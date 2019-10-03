@@ -141,8 +141,7 @@ class ChatBox extends React.Component {
   }
 
   removeUrlMeta () {
-    this.setState({urlmeta: {}})
-    this.props.urlMeta = {}
+    this.props.fetchUrlMeta('')
   }
 
   showDialogRecording () {
@@ -520,7 +519,8 @@ class ChatBox extends React.Component {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
           this.props.sendChatMessage(data, this.props.fetchOpenSessions)
-          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          this.setState({textAreaValue: '', displayUrlMeta: false})
+          this.removeUrlMeta()
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
@@ -1030,7 +1030,7 @@ class ChatBox extends React.Component {
           </Popover>
           */
         }
-        /* {this.props.user.isSuperUser &&
+         {/* {this.props.user.isSuperUser &&
           <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -1050,7 +1050,7 @@ class ChatBox extends React.Component {
             <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
-      } */
+      }  */}
         <div className='m-portlet m-portlet--mobile'>
           <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
             <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
