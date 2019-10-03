@@ -30,6 +30,10 @@ export function messengerCodeInfo (state = initialState, action) {
           QRCode: ''
         }
       })
+      case ActionTypes.SHOW_MESSENGER_CODES:
+          return Object.assign({}, state, {
+            messengerCodes: action.data
+          })
     default:
       return state
   }

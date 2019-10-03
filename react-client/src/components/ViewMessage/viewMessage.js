@@ -88,7 +88,7 @@ class ViewMessage extends React.Component {
                                       />
                                     </div>
                                     : b.componentType === 'audio'
-                                    ? <div style={{marginTop: '20px', marginBottom: '60px', marginLeft: '-15px'}}>
+                                    ? <div key={index} style={{marginTop: '20px', marginBottom: '60px', marginLeft: '-15px'}}>
                                       <ReactPlayer
                                         url={b.fileurl.url}
                                         controls
@@ -99,18 +99,18 @@ class ViewMessage extends React.Component {
                                       />
                                     </div>
                                     : b.componentType === 'image'
-                                    ? <a href={b.image_url} target='_blank'>
+                                    ? <a key={index} href={b.image_url} target='_blank'>
                                       <img
                                         src={b.image_url}
                                         style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
                                       />
                                     </a>
                                     : b.componentType === 'file'
-                                    ? <a href={b.fileurl.url} target='_blank'>
+                                    ? <a key={index} href={b.fileurl.url} target='_blank'>
                                       <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.fileName}</strong></h6>
                                     </a>
                                     : b.componentType === 'card'
-                                    ? <div>
+                                    ? <div key={index}>
                                       <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                           <a href={b.iamge_url} target='_blank'>
@@ -161,7 +161,7 @@ class ViewMessage extends React.Component {
                                       }
                                     </Slider>
                                     : b.componentType === 'text'
-                                    ? <div>
+                                    ? <div key={index}>
                                       <div className='m-messenger__message-text'>
                                         {b.text}
                                       </div>
@@ -175,7 +175,7 @@ class ViewMessage extends React.Component {
                                       }
                                     </div>
                                     : b.componentType === 'media'
-                                    ? <div>
+                                    ? <div key={index}>
                                       <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                           { b.mediaType === 'image' &&
@@ -204,7 +204,7 @@ class ViewMessage extends React.Component {
                                       }
                                     </div>
                                     : b.componentType === 'list' &&
-                                    <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+                                    <div key={index} className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
                                       {b.listItems.map((item, i) => (
                                         <a key={i} href={item.default_action && item.default_action !== '' ? '//' + item.default_action.url : null} target='_blank' style={{width: '-webkit-fill-available'}} className='btn btn-sm'>
                                           <div style={{padding: '10px', maxWidth: 400, marginBottom: '-19px', backgroundImage: b.topElementStyle === 'LARGE' && i === 0 ? 'url(' + b.listItems[0].image_url + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: b.componentType === 'LARGE' ? '350px' : ''}} className='ui-block hoverbordersolid'>

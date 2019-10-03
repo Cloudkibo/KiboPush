@@ -299,6 +299,7 @@ const routes = (
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createMessengerCode' component={createMessengerCode} onEnter={requireAuth} />
+    <Route path='/editMessengerCode' component={createMessengerCode} onEnter={requireAuth} />
     <Route path='/editMessageCodeMessage' component={createMessageForCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/editPost' component={FacebookPost} onEnter={requireAuth} />

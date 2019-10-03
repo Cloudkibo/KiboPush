@@ -10,19 +10,17 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { browserHistory } from 'react-router'
 import { validateFields } from '../../containers/convo/utility'
-import { updateData } from '../../redux/actions/messengerRefURL.actions'
+import { updateData } from '../../redux/actions/messengerCode.actions'
 
-class MessengerRefURLMessage extends React.Component {
+class messengerCodeMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('props.messengerCode.pageId in MessengerCodeMessage', props.messengerCode.pageId)
+    console.log('props.messengerCode.pageId in messengerCodeMessage', props.messengerCode.pageId)
     console.log('props.pages', props.pages)
-    console.log(this.props.location.state)
 
     this.state = {
       buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerCode.optInMessage ? props.messengerCode.optInMessage : [],
-      pageId: this.props.location.state.selectedMessengerCode.page._id,
       convoTitle: 'Opt-In Message'
     }
     this.saveMessage = this.saveMessage.bind(this)
@@ -51,40 +49,39 @@ class MessengerRefURLMessage extends React.Component {
 
   goBack () {
     if (this.props.location.state.module === 'edit') {
-      var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
-      newMessengerRefURL['optInMessage'] = this.props.messengerRefURL.optInMessage
+      var newmessengerCode = this.props.location.state.selectedMessengerCode
+      newmessengerCode['optInMessage'] = this.props.messengerCode.optInMessage
+      console.log('find me i m here ',newmessengerCode)
       browserHistory.push({
         pathname: `/editMessengerCode`,
-        state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL}
+        state: {module: 'edit', messengerCode: newmessengerCode}
       })
     } else {
+      console.log('go back page', this.props.messengerCode)
       browserHistory.push({
         pathname: `/createMessengerCode`,
-        state: {page: this.props.location.state.selectedMessengerCode.page, pageId: this.state.pageId, module: 'createMessage'}
+        state: {messengerCode: this.props.messengerCode, module: 'createMessage'}
       })
     }
   }
 
   saveMessage () {
     console.log('this.state.broadcast', this.state.broadcast)
+    console.log('create message messengercode', this.props.messengerCode)
 
     // console.log('In go saveMessage method messengerRefURL', this.props.messengerRefSelectedURL)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
-    }
-    if (this.props.location.state.module === 'edit') {
-      var edit = {
-        pageId: this.props.messengerRefURL.pageId,
-        ref_parameter: this.props.messengerRefURL.ref_parameter,
-        optInMessage: this.state.broadcast,
-        sequenceId: this.props.messengerRefURL.sequenceId
-      }
-      this.props.updateData(this.props.messengerRefURL, 'optInMessage', this.state.broadcast, edit)
     } else {
-      this.props.updateData(this.props.messengerRefURL, 'optInMessage', this.state.broadcast)
+    var edit = {
+      pageId: this.props.messengerCode.pageId,
+      optInMessage: this.state.broadcast,
+      QRCode: this.props.messengerCode.QRCode
     }
+    this.props.updateData(this.props.messengerCode, edit)
     this.msg.success('Message has been saved.')
   }
+}
 
   render () {
     var alertOptions = {
@@ -117,7 +114,7 @@ class MessengerRefURLMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
-          pageId={this.props.location.state.selectedMessengerCode.pageId}
+          pageId={this.props.messengerCode.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
@@ -141,4 +138,4 @@ function mapDispatchToProps (dispatch) {
     updateData: updateData
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(MessengerRefURLMessage)
+export default connect(mapStateToProps, mapDispatchToProps)(messengerCodeMessage)
