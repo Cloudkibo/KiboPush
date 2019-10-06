@@ -362,6 +362,7 @@ class GenericMessage extends React.Component {
         buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
+        noButtons={this.props.noButtons}
         pages={this.props.pages}
         buttonActions={this.props.buttonActions}
         replyWithMessage={this.props.replyWithMessage}
@@ -412,6 +413,7 @@ class GenericMessage extends React.Component {
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
+        noButtons={this.props.noButtons}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
         pageId={this.props.pageId}
