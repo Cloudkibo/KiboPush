@@ -75,7 +75,7 @@ export function requestMessengerCode (messengerCode) {
 export function updateData (messengerCodeData, edit) {
   return (dispatch) => {
       messengerCodeData = {
-        pageId: edit.pageId,
+        pageId: edit.page_id,
         optInMessage: edit.optInMessage,
         QRCode: edit.QRCode,
         _id: edit._id && edit._id

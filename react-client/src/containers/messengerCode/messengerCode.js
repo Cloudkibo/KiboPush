@@ -93,7 +93,8 @@ class MessengerCode extends React.Component {
     this.setState({ pageSelected: e.target.value })
     this.props.resetState()
     var edit = {
-      pageId: e.target.value._id,
+      page_id: e.target.value._id,
+      pageId: e.target.value.pageId,
       optInMessage: this.props.messengerCode.optInMessage,
       QRCode: this.props.messengerCode.QRCode
     }
@@ -130,7 +131,8 @@ class MessengerCode extends React.Component {
 
   componentWillMount() {
     var edit = {
-      pageId: this.props.pages[0]._id,
+      page_id: this.props.pages[0]._id,
+      pageId: this.props.pages[0].pageId,
       optInMessage: this.props.messengerCode.optInMessage,
       QRCode: this.props.messengerCode.QRCode
     }
