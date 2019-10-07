@@ -74,7 +74,7 @@ class EditBot extends React.Component {
             </div>
             <div className='panel-body'>
               <div className='row'>
-                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6'>
+                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{borderRight: '0.07rem solid #EBEDF2'}}>
                   <div className='form-group' id={'question' + i}>
                     <label style={{fontWeight: 'normal'}}>Enter several variations of same question to train the bot.</label>
                   </div>
@@ -83,15 +83,22 @@ class EditBot extends React.Component {
                     onClick={this.addMore.bind(this, i)}> Add More
                 </button>
                 </div>
-                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2'}}>
+                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{margin: 'auto'}}>
+                  {/* <br />
                   <br />
                   <br />
+                  <div className='m-input-icon m-input-icon--right'> */}
+                   <button type="button" style={{marginLeft: 'auto', marginRight: 'auto', display: 'block'}} className="btn btn-primary">
+                        Preview
+								  </button>
                   <br />
-                  <div className='m-input-icon m-input-icon--right'>
-                    <textarea className='form-control'
+                  <button type="button" style={{marginLeft: 'auto', marginRight: 'auto', display: 'block'}} className="btn btn-primary">
+                        Edit Answer
+								  </button>
+                    {/* <textarea className='form-control'
                       placeholder='Type the answer of your questions here...'
-                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
-                  </div>
+                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} /> */}
+                  {/* </div> */}
                 </div>
               </div>
             </div>
