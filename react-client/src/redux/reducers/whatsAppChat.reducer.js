@@ -14,8 +14,8 @@ export function whatsAppChatInfo (state = initialState, action) {
       })
     case ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS:
       return Object.assign({}, state, {
-        closeSessions: action.openSessions,
-        closeCount: action.count
+        closeSessions: action.closeSessions,
+        closeCount: action.closeSessions
       })
     case ActionTypes.FETCH_WHATSAPP_CHAT_OVERWRITE:
       return Object.assign({}, state, {

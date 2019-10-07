@@ -153,6 +153,7 @@ updateChat (chat, newChat) {
                   <ChatHead activeSession={this.props.activeSession}
                   showSearch={this.props.showSearch}
                   changeStatus={this.props.changeStatus}
+                  removePending={this.props.removePending}
                   />
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}

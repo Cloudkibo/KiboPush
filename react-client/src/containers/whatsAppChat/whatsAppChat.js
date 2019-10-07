@@ -7,7 +7,9 @@ import {
   fetchOpenSessions,
   fetchCloseSessions,
   fetchChat,
-  markRead
+  markRead,
+  changeStatus,
+  updatePendingResponse
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
@@ -38,7 +40,11 @@ class LiveChat extends React.Component {
     this.updateUnreadCount = this.updateUnreadCount.bind(this)
     this.showSearch = this.showSearch.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.resetActiveSession = this.resetActiveSession.bind(this)
+    this.removePending = this.removePending.bind(this)
+    this.resetSessions = this.resetSessions.bind(this)
   }
+
   componentWillMount () {
     this.fetchSessions({first_page: true,
       last_id: 'none',
@@ -46,11 +52,24 @@ class LiveChat extends React.Component {
       filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
     })
   }
+  resetSessions () {
+    this.fetchSessions({first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
+    })
+  }
+  resetActiveSession () {
+    this.setState({
+      activeSession: {}
+    })
+    this.resetSessions()
+  }
   showSearch () {
 
   }
-  changeStatus () {
-    this.setState({status: 'Resolved'})
+  changeStatus (e, status, id) {
+    this.props.changeStatus({_id: id, status: status}, this.resetActiveSession)
   }
   disableScroll () {
     this.setState({scroll: false})
@@ -61,6 +80,14 @@ class LiveChat extends React.Component {
     this.setState({activeSession: session, scroll: true})
     this.props.fetchChat(session._id, {page: 'first', number: 25})
     this.props.markRead(session._id, this.props.sessions)
+  }
+  removePending (session, value) {
+    var data={first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
+    }
+    this.props.updatePendingResponse({id: session._id, pendingResponse: value}, this.resetSessions)
   }
 
   fetchSessions (data, type) {
@@ -163,6 +190,7 @@ class LiveChat extends React.Component {
                       sessions={this.props.sessions ? this.props.sessions: []}
                       disableScroll={this.disableScroll}
                       updateUnreadCount={this.updateUnreadCount}
+                      removePending={this.removePending}
                     />
                   }
                   {
@@ -193,7 +221,7 @@ function mapStateToProps (state) {
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user),
-    contacts: (state.contactsInfo.contacts),
+    contacts: (state.contactsInfo.contacts)
   }
 }
 
@@ -202,7 +230,9 @@ function mapDispatchToProps (dispatch) {
     fetchOpenSessions,
     fetchChat,
     markRead,
-    fetchCloseSessions
+    fetchCloseSessions,
+    changeStatus,
+    updatePendingResponse
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

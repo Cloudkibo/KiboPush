@@ -107,3 +107,18 @@ export function sendAttachment (data, handleSendAttachment) {
     })
   }
 }
+export function changeStatus (data, handleStatus) {
+  return (dispatch) => {
+    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+      handleStatus(res)
+    })
+  }
+}
+
+export function updatePendingResponse (data, handlePendingResponse) {
+  return (dispatch) => {
+    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+      handlePendingResponse(res)
+    })
+  }
+}
