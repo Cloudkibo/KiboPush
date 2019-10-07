@@ -20,7 +20,7 @@ class CreateWhatsAppBroadcast extends React.Component {
       message: 'Your appointment is coming up on {{1}} at {{2}}',
       fileColumns: [{'value': 'name', 'label': 'name'}, {'value': 'number', 'label': 'number'}],
       segmentationErrors: [],
-      title: '',
+      title: 'Broadcast Title',
       tabActive: 'broadcast'
     }
     this.onTitleChange = this.onTitleChange.bind(this)
@@ -156,12 +156,15 @@ class CreateWhatsAppBroadcast extends React.Component {
 
   sendBroadcast () {
     console.log('this.props.location.state.number', this.props.location)
+    console.log('sending broadcast', {payload: this.state.broadcast,
+        platform: 'Twilio WhatsApp',
+        title: this.state.title,
+        segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
+      })
     if (this.state.title === '') {
       this.msg.error('Please enter the title of the broadcast')
-    } else if (this.state.message === '') {
-      this.msg.error('Please use one of the templates to send')
     } else if (this.validateSegmentation()) {
-      this.props.sendBroadcast({payload: [{componentType: 'text', text: this.state.message, id: 0}],
+      this.props.sendBroadcast({payload: this.state.broadcast,
         platform: 'Twilio WhatsApp',
         title: this.state.title,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
@@ -227,7 +230,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                               Previous
                             </button>
-                            <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
+                            <button id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
                               Send
                             </button>
                           </div>
@@ -259,7 +262,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                               titleEditable
                               noButtons
                               pageId={''}
-                              pages={[]}
+                              pages={undefined}
                               buttonActions={this.state.buttonActions} />
                           </div>
                           <div className='tab-pane' id='tab_2'>
