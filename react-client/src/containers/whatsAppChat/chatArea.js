@@ -15,6 +15,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ChatBox from './chatbox'
 import ChatItem from './chatItem'
+import ChatHead from './chatAreaHead'
 // import MediaCapturer from 'react-multimedia-capture'
 
 class ChatArea extends React.Component {
@@ -33,7 +34,6 @@ class ChatArea extends React.Component {
     this.onEnter = this.onEnter.bind(this)
     // this.updateScrollTop = this.updateScrollTop.bind(this)
   }
-
   onEnter (data, type, handleSendAttachment) {
     console.log('in onEnter')
     if (type === 'attachment') {
@@ -49,8 +49,7 @@ class ChatArea extends React.Component {
       this.forceUpdate()
     }
   }
-
-  updateChat (chat, newChat) {
+updateChat (chat, newChat) {
     console.log('in updateChat')
     this.props.updateChat(this.props.chat, newChat)
   }
@@ -151,6 +150,10 @@ class ChatArea extends React.Component {
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 {this.props.chat && this.props.chat.length > 0 &&
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                  <ChatHead activeSession={this.props.activeSession}
+                  showSearch={this.props.showSearch}
+                  changeStatus={this.props.changeStatus}
+                  />
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
                     updateUnreadCount={this.props.updateUnreadCount}

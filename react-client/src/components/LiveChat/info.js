@@ -101,10 +101,16 @@ class Info extends React.Component {
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
-            <div className='m-alert__text'>
+            { this.props.module === 'WHATSAPP' && <div className='m-alert__text'>
+              Need help in understanding this page? <a href='http://kibopush.com/twilio/' target='_blank'>Click Here. </a>
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
+            </div>
+            }
+            { this.props.module === 'KIBOCHAT' && <div className='m-alert__text'>
               Need help in understanding this page? <a href='http://kibopush.com/livechat/' target='_blank'>Click Here. </a>
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
             </div>
+            }
           </div>
         </div>
         <div className='col'>
