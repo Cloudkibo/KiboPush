@@ -227,9 +227,6 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                               Previous
                             </button>
-                            <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
-                              Test
-                            </button>
                             <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
                               Send
                             </button>
