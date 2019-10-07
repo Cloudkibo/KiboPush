@@ -8,7 +8,6 @@ import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import StickyDiv from 'react-stickydiv'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
@@ -652,8 +651,7 @@ class GenericMessage extends React.Component {
               <div className='col-12'>
                 <div className='row'>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    <StickyDiv zIndex={1}>
-                      <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px'}} className='ui-block'>
+                      <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px', zIndex: 1}} className='ui-block'>
                         <div style={{padding: '5px'}}>
                           {!this.props.titleEditable
                                 ? <h3> {this.state.convoTitle} </h3>
@@ -661,7 +659,6 @@ class GenericMessage extends React.Component {
                               }
                         </div>
                       </div>
-                    </StickyDiv>
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} />
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
