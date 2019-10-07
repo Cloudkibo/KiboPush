@@ -9,15 +9,19 @@ import { bindActionCreators } from 'redux'
 import TargetCustomers from '../businessGateway/targetCustomers'
 import AlertContainer from 'react-alert'
 import { updateCurrentCustomersInfo, setDefaultCustomersInfo } from '../../redux/actions/businessGateway.actions'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateWhatsAppBroadcast extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      broadcast: [],
+      convoTitle: 'Broadcast Title',
       message: 'Your appointment is coming up on {{1}} at {{2}}',
       fileColumns: [{'value': 'name', 'label': 'name'}, {'value': 'number', 'label': 'number'}],
       segmentationErrors: [],
-      title: ''
+      title: '',
+      tabActive: 'broadcast'
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -25,8 +29,67 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.clearFields = this.clearFields.bind(this)
     this.setInputValue = this.setInputValue.bind(this)
-
+    this.handleChange = this.handleChange.bind(this)
+    this.onNext = this.onNext.bind(this)
+    this.onPrevious = this.onPrevious.bind(this)
+    this.initTab = this.initTab.bind(this)
+    this.onTargetClick = this.onTargetClick.bind(this)
+    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     props.setDefaultCustomersInfo({filter: []})
+  }
+
+  onNext (e) {
+    console.log('in onNext', this.state.broadcast)
+    /* eslint-disable */
+    $('#tab_1').removeClass('active')
+    $('#tab_2').addClass('active')
+    $('#titleBroadcast').removeClass('active')
+    $('#titleTarget').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target'})
+  }
+
+  onPrevious () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'broadcast'})
+  }
+
+  initTab () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'broadcast'})
+  }
+  onBroadcastClick () {
+    /* eslint-disable */
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'broadcast'})
+  }
+  onTargetClick (e) {
+    /* eslint-disable */
+    $('#tab_1').removeClass('active')
+    $('#tab_2').addClass('active')
+    $('#titleBroadcast').removeClass('active')
+    $('#titleTarget').addClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target', resetTarget: false})
+  }
+
+
+  handleChange (state) {
+    this.setState(state)
   }
 
   setInputValue (value) {
@@ -131,16 +194,85 @@ class CreateWhatsAppBroadcast extends React.Component {
                         </h3>
                       </div>
                     </div>
-                    <div className='m-portlet__head-tools'>
+                    {/* <div className='m-portlet__head-tools'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.sendBroadcast}>
                         <span>
                           <i className='flaticon flaticon-paper-plane' />
                           <span>Send</span>
                         </span>
                       </button>
-                    </div>
+                    </div> */}
                   </div>
+
+                  <p style={{fontSize: '1.1em', marginTop: '30px', marginLeft: '30px'}}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours.</p>
+
+
                   <div className='m-portlet__body'>
+                    <div className='row'>
+                      <div className='col-12'>
+                        {
+                          this.state.tabActive === 'broadcast' &&
+                          <div className='pull-right'>
+                            <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
+                              Reset
+                            </button>
+                            <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
+                              Next
+                            </button>
+                          </div>
+                        }
+                        {
+                          this.state.tabActive === 'target' &&
+                          <div className='pull-right'>
+                            <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                              Previous
+                            </button>
+                            <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
+                              Send
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <div className='col-12'>
+                        <ul className='nav nav-tabs'>
+                          <li>
+                            <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
+                          </li>
+                          <li>
+                            {this.state.broadcast.length > 0
+                              ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              : <a>Targeting</a>
+                            }
+                          </li>
+
+                        </ul>
+                        <div className='tab-content'>
+                          <div className='tab-pane fade active in' id='tab_1'>
+                            <GenericMessage
+                              hiddenComponents={['link', 'video', 'card']}
+                              broadcast={this.state.broadcast}
+                              handleChange={this.handleChange}
+                              setReset={reset => { this.reset = reset }}
+                              convoTitle={this.state.convoTitle}
+                              titleEditable
+                              noButtons
+                              pageId={''}
+                              pages={[]}
+                              buttonActions={this.state.buttonActions} />
+                          </div>
+                          <div className='tab-pane' id='tab_2'>
+                            <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+
+
+                  {/* <div className='m-portlet__body'>
                     <div className='form-group m-form__group'>
                       <div className='col-3'>
                         <label className='col-form-label'>Push Message:</label>
@@ -185,7 +317,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                           <div><input className='form-control' /></div>
                         </div>
                         */}
-                        <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
+                        {/* <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
                           <textarea
                             className='form-control m-input'
                             id='postTextArea' rows='3'
@@ -201,7 +333,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                       </div>
                       <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
