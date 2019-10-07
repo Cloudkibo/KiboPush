@@ -74,6 +74,7 @@ class messengerCodeMessage extends React.Component {
       return
     } else {
     var edit = {
+      page_id: this.props.messengerCode.pageId,
       pageId: this.props.messengerCode.pageId,
       optInMessage: this.state.broadcast,
       QRCode: this.props.messengerCode.QRCode
