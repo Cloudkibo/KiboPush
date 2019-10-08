@@ -31,7 +31,11 @@ class MediaModal extends React.Component {
   }
 
   handleDone () {
-    this.AddButton.handleDone()
+    if (this.props.noButtons) {
+      this.addComponent([])
+    } else {
+      this.AddButton.handleDone()
+    }
   }
 
   addComponent (buttons) {
