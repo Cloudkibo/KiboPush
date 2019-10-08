@@ -32,3 +32,16 @@ export function sendBroadcast (data, clearFields) {
       })
   }
 }
+
+export function getCount (data, onGetCount) {
+  console.log('data for sendBroadcast', data)
+  return (dispatch) => {
+    callApi('whatsAppBroadcasts/getCount', 'post', {'segmentation': data})
+      .then(res => {
+        console.log('response from getCount', res.payload)
+        if (onGetCount) {
+          onGetCount(res.payload)
+        }
+      })
+  }
+}
