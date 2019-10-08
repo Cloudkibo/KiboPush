@@ -116,7 +116,7 @@ class messengerCodeMessage extends React.Component {
         </div>
         <GenericMessage
           pageId={this.props.messengerCode.pageId}
-          pages={[this.state.pageId]}
+          pages={[this.props.messengerCode.pageId]}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
