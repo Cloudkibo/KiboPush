@@ -27,7 +27,7 @@ export function sendBroadcast (data, clearFields) {
       .then(res => {
         console.log('response from sendBroadcast', res)
         if (res.status === 'success') {
-          dispatch(clearFields())
+          clearFields()
         }
       })
   }

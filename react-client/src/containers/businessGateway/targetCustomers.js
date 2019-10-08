@@ -82,7 +82,7 @@ class TargetCustomers extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={this.props.style}>
         <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
           <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
             <table className='m-datatable__table'
