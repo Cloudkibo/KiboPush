@@ -84,7 +84,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     $('#titleBroadcast').removeClass('active')
     $('#titleTarget').addClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'target', resetTarget: false})
+    this.setState({tabActive: 'target'})
   }
 
 
@@ -110,7 +110,8 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.msg.success('Broadcast sent successfully')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
-    this.setState({title: '', message: 'Your appointment is coming up on {{1}} at {{2}}', segmentationErrors: []})
+    this.initTab()
+    this.reset(false)
   }
 
   validateSegmentation () {
@@ -197,14 +198,6 @@ class CreateWhatsAppBroadcast extends React.Component {
                         </h3>
                       </div>
                     </div>
-                    {/* <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.sendBroadcast}>
-                        <span>
-                          <i className='flaticon flaticon-paper-plane' />
-                          <span>Send</span>
-                        </span>
-                      </button>
-                    </div> */}
                   </div>
 
                   <p style={{fontSize: '1.1em', marginTop: '30px', marginLeft: '30px'}}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours.</p>
@@ -266,77 +259,16 @@ class CreateWhatsAppBroadcast extends React.Component {
                               buttonActions={this.state.buttonActions} />
                           </div>
                           <div className='tab-pane' id='tab_2'>
-                            <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <span style={{marginLeft: '20px'}}>
+                              <i className='flaticon-exclamation m--font-brand' />
+                              <p style={{display: 'inline', fontSize: '1.1em'}}> This broadcast will be sent to n subscribers</p>
+                            </span>
+                            <TargetCustomers style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>
                     </div>
-                </div>
-
-
-
-                  {/* <div className='m-portlet__body'>
-                    <div className='form-group m-form__group'>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Push Message:</label>
-                      </div>
-                      <div className='col-12'>
-                        <input value={this.state.title} placeholder={'Enter the title of the broadcast here...'}
-                          className='form-control m-input' onChange={this.onTitleChange} />
-                        <br />
-                        <label>Use one of the templates below:</label>
-                        <div className='m-list-search'>
-                          <div className='m-list-search__results'>
-                            <a onClick={() => this.setInputValue('appointment')} className='m-list-search__result-item' style={{cursor: 'pointer'}}>
-                              <span className='m-list-search__result-item-icon'>
-                                <i className='flaticon flaticon-event-calendar-symbol m--font-warning' />
-                              </span>
-                              <span className='m-list-search__result-item-text'>
-                              Appointment Reminders
-                              </span>
-                            </a>
-                            <a onClick={() => this.setInputValue('order')} className='m-list-search__result-item' style={{cursor: 'pointer'}}>
-                              <span className='m-list-search__result-item-icon'>
-                                <i className='flaticon flaticon-truck m--font-success' />
-                              </span>
-                              <span className='m-list-search__result-item-text'>
-                                Order Notifications
-                              </span>
-                            </a>
-                            <a onClick={() => this.setInputValue('verification')} className='m-list-search__result-item' style={{cursor: 'pointer'}}>
-                              <span className='m-list-search__result-item-icon'>
-                                <i className='flaticon flaticon-chat m--font-info' />
-                              </span>
-                              <span className='m-list-search__result-item-text'>
-                                Verification Codes
-                              </span>
-                            </a>
-                          </div>
-                        </div>
-                        {/* <div className='form-group' style={{border: '1px solid rgb(204, 204, 204)', display: 'flex', borderRadius: '10px', padding: '20px'}}>
-                          <span for='example-text-input' className='col-form-label'>Your appointment is coming up on&nbsp;&nbsp;</span>
-                          <div><input className='form-control' /></div>
-                          <span for='example-text-input' className='col-form-label'>&nbsp;&nbsp;at&nbsp;&nbsp;</span>
-                          <div><input className='form-control' /></div>
-                        </div>
-                        */}
-                        {/* <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
-                          <textarea
-                            className='form-control m-input'
-                            id='postTextArea' rows='3'
-                            placeholder='Enter your message here...'
-                            value={this.state.message}
-                            onChange={this.onMessageChange} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className='form-group m-form__group'>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Targeting:</label>
-                      </div>
-                      <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
-                    </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </div>
