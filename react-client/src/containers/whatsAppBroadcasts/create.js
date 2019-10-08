@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, sendBroadcast } from '../../redux/actions/whatsAppBroadcasts.actions'
+import { loadBroadcastsList, sendBroadcast, getCount } from '../../redux/actions/whatsAppBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import TargetCustomers from '../businessGateway/targetCustomers'
 import AlertContainer from 'react-alert'
@@ -21,7 +21,8 @@ class CreateWhatsAppBroadcast extends React.Component {
       fileColumns: [{'value': 'name', 'label': 'name'}, {'value': 'number', 'label': 'number'}],
       segmentationErrors: [],
       title: 'Broadcast Title',
-      tabActive: 'broadcast'
+      tabActive: 'broadcast',
+      subscribersCount: 0
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -35,7 +36,22 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.initTab = this.initTab.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
+    this.onGetCount = this.onGetCount.bind(this)
+    this.updateConditions = this.updateConditions.bind(this)
     props.setDefaultCustomersInfo({filter: []})
+    props.getCount([], this.onGetCount)
+  }
+
+  updateConditions (conditions) {
+    if (conditions.length === 0) {
+      this.props.getCount([], this.onGetCount)
+    } else if (this.validateConditions(conditions)) {
+      this.props.getCount(conditions, this.onGetCount)
+    }
+  }
+
+  onGetCount (data) {
+    this.setState({subscribersCount: data.subscribersCount})
   }
 
   onNext (e) {
@@ -114,30 +130,40 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.reset(false)
   }
 
-  validateSegmentation () {
+  validateConditions (conditions) {
+    let invalid = false
+    for (let i = 0; i < conditions.length; i++) {
+      if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
+       invalid = true
+      }
+    }
+    return !invalid
+  }
+
+  validateSegmentation (customersInfo) {
     let errors = false
     let errorMessages = []
     let conditionErrors = []
     let conditionError = {}
     let isErrorInCondition = false
-    if (this.props.customersInfo.filter.length === 1 && this.props.customersInfo.filter[0].condition === '' && this.props.customersInfo.filter[0].criteria === '' && this.props.customersInfo.filter[0].text === '') {
-      this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', [])
+    if (customersInfo.filter.length === 1 && customersInfo.filter[0].condition === '' && customersInfo.filter[0].criteria === '' && customersInfo.filter[0].text === '') {
+      this.props.updateCurrentCustomersInfo(customersInfo, 'filter', [])
       return !errors
     }
-    for (let i = 0; i < this.props.customersInfo.filter.length; i++) {
-      if (this.props.customersInfo.filter[i].condition === '') {
+    for (let i = 0; i < customersInfo.filter.length; i++) {
+      if (customersInfo.filter[i].condition === '') {
         isErrorInCondition = true
         errors = true
         conditionError = {field: 'condition', index: i, message: 'Please choose a valid condition'}
         conditionErrors.push(conditionError)
       }
-      if (this.props.customersInfo.filter[i].criteria === '') {
+      if (customersInfo.filter[i].criteria === '') {
         isErrorInCondition = true
         errors = true
         conditionError = {field: 'criteria', index: i, message: 'Please choose a valid criteria'}
         conditionErrors.push(conditionError)
       }
-      if (this.props.customersInfo.filter[i].text === '') {
+      if (customersInfo.filter[i].text === '') {
         isErrorInCondition = true
         errors = true
         conditionError = {field: 'text', index: i, message: 'Please choose a valid value'}
@@ -164,7 +190,7 @@ class CreateWhatsAppBroadcast extends React.Component {
       })
     if (this.state.title === '') {
       this.msg.error('Please enter the title of the broadcast')
-    } else if (this.validateSegmentation()) {
+    } else if (this.validateSegmentation(this.props.customersInfo)) {
       this.props.sendBroadcast({payload: this.state.broadcast,
         platform: 'Twilio WhatsApp',
         title: this.state.title,
@@ -261,9 +287,9 @@ class CreateWhatsAppBroadcast extends React.Component {
                           <div className='tab-pane' id='tab_2'>
                             <span style={{marginLeft: '20px'}}>
                               <i className='flaticon-exclamation m--font-brand' />
-                              <p style={{display: 'inline', fontSize: '1.1em'}}> This broadcast will be sent to n subscribers</p>
+                              <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>
@@ -281,8 +307,6 @@ class CreateWhatsAppBroadcast extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: (state.smsBroadcastsInfo.broadcasts),
-    count: (state.smsBroadcastsInfo.count),
     customersInfo: (state.businessGatewayInfo.customersInfo)
   }
 }
@@ -292,7 +316,8 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsList,
     sendBroadcast,
     updateCurrentCustomersInfo,
-    setDefaultCustomersInfo
+    setDefaultCustomersInfo,
+    getCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWhatsAppBroadcast)
