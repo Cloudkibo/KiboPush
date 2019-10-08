@@ -41,6 +41,14 @@ class SessionsAreaHead extends React.Component {
         unreadMessages: false
       }
     }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: this.state.searchValue, pendingResponse: false, unreadCount: false}
+      }
+    }
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
@@ -57,6 +65,14 @@ class SessionsAreaHead extends React.Component {
         search_value: e.target.value.toLowerCase(),
         pendingResponse: this.state.pendingResponse,
         unreadMessages: this.state.unreadMessages
+      }
+    }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: e.target.value.toLowerCase(), pendingResponse: this.state.pendingResponse, unreadCount: this.state.unreadMessages}
       }
     }
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
@@ -96,6 +112,14 @@ class SessionsAreaHead extends React.Component {
         search_value: this.state.searchValue,
         pendingResponse: this.state.pendingResponse,
         unreadMessages: this.state.unreadMessages
+      }
+    }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: value, search_value: this.state.searchValue, pendingResponse: this.state.pendingResponse, unreadCount: this.state.unreadMessages}
       }
     }
     this.props.fetchSessions(data)
@@ -156,6 +180,14 @@ class SessionsAreaHead extends React.Component {
         unreadMessages: this.state.unreadMessages
       }
     }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: this.state.searchValue, pendingResponse: e, unreadCount: this.state.unreadMessages}
+      }
+    }
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
@@ -173,6 +205,14 @@ class SessionsAreaHead extends React.Component {
         search_value: this.state.searchValue,
         pendingResponse: this.state.pendingResponse,
         unreadMessages: e
+      }
+    }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: e}
       }
     }
     this.props.fetchSessions(data)

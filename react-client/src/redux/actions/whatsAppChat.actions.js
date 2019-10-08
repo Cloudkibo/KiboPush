@@ -36,21 +36,37 @@ export function updateChat (chat, newChat) {
   }
 }
 
-export function showSessions (data) {
+export function showOpenSessions (data) {
   return {
-    type: ActionTypes.FETCH_WHATSAPP_SESSIONS,
-    sessions: data.sessions,
-    count: data.count
+    type: ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS,
+    openSessions: data.openSessions,
+    openCount: data.count
   }
 }
-
-export function fetchSessions (data) {
-  console.log('data for fetchSessions', data)
+export function showCloseChatSessions (data) {
+  return {
+    type: ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS,
+    closeSessions: data.closedSessions,
+    closeCount: data.count
+  }
+}
+export function fetchOpenSessions (data) {
+  console.log('data for fetchOpenSessions', data)
   return (dispatch) => {
-    callApi('whatsAppChat/getSessions', 'post', data)
+    callApi('whatsAppChat/getOpenSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
-        dispatch(showSessions(res.payload))
+        dispatch(showOpenSessions(res.payload))
+      })
+  }
+}
+export function fetchCloseSessions (data) {
+  console.log('data for fetchCloseSessions', data)
+  return (dispatch) => {
+    callApi('whatsAppChat/getClosedSessions', 'post', data)
+      .then(res => {
+        console.log('response from fetchSessions', res)
+        dispatch(showCloseChatSessions(res.payload, data.first_page))
       })
   }
 }
@@ -88,6 +104,21 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('whatsAppChat', 'post', data).then(res => {
       handleSendAttachment(res)
+    })
+  }
+}
+export function changeStatus (data, handleStatus) {
+  return (dispatch) => {
+    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+      handleStatus(res)
+    })
+  }
+}
+
+export function updatePendingResponse (data, handlePendingResponse) {
+  return (dispatch) => {
+    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+      handlePendingResponse(res)
     })
   }
 }

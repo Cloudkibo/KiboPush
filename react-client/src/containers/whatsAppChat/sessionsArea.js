@@ -26,15 +26,19 @@ class SessionsArea extends React.Component {
   }
 
   loadMore (type) {
-    this.props.fetchSessions({
+    this.props.fetchOpenSessions({
       first_page: this.state.first_page,
       last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none',
       number_of_records: this.state.number_of_records,
       filter: this.state.filter,
+      pendingResponse: true,
+      unreadCount: true,
       filter_criteria: {
         sort_value: this.state.sort_value,
         page_value: this.state.page_value,
-        search_value: this.state.search_value
+        search_value: this.state.search_value,
+        pendingResponse: true,
+        unreadCount: true
       }
     }, type)
   }
@@ -48,6 +52,20 @@ class SessionsArea extends React.Component {
             updateState={this.updateState}
             fetchSessions={this.props.fetchSessions}
           />
+          <div style={{padding: '0rem 2.2rem'}}>
+            <ul className='nav nav-tabs m-tabs-line' role='tablist'>
+              <li className='nav-item m-tabs__item'>
+                <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                  Open
+                </a>
+              </li>
+              <li className='nav-item m-tabs__item'>
+                <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
+                  Closed
+                </a>
+              </li>
+            </ul>
+          </div>
           <BODY
             sessions={this.props.sessions}
             count={this.props.count}

@@ -10,6 +10,7 @@ import CardBoxesContainer from '../../components/smsWhatsAppDashboard/cardboxes'
 import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberSummary'
 import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
 import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp } from '../../redux/actions/whatsAppDashboard.actions'
+import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { joinRoom } from '../../utility/socketio'
@@ -29,6 +30,7 @@ class Dashboard extends React.Component {
 
   componentWillMount () {
     this.props.loadCardBoxesDataWhatsApp()
+    this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     this.props.loadSentSeenWhatsApp({days: 30})
     this.props.loadSubscriberSummaryWhatsApp({days: 'all'})
   }
@@ -172,7 +174,8 @@ function mapDispatchToProps (dispatch) {
     {
       loadCardBoxesDataWhatsApp,
       loadSubscriberSummaryWhatsApp,
-      loadSentSeenWhatsApp
+      loadSentSeenWhatsApp,
+      loadContactsList
     },
     dispatch)
 }

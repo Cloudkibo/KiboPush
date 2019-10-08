@@ -4,15 +4,24 @@ import { bindActionCreators } from 'redux'
 // import { Link } from 'react-router'
 // actions
 import {
-  fetchSessions,
+  fetchOpenSessions,
+  fetchCloseSessions,
   fetchChat,
-  markRead
+  markRead,
+  changeStatus,
+  updatePendingResponse
 } from '../../redux/actions/whatsAppChat.actions'
+import AlertContainer from 'react-alert'
+import INFO from '../../components/LiveChat/info.js'
+import Halogen from 'halogen'
 
 // Components
-import SESSIONSAREA from './sessionsArea.js'
+//import SESSIONSAREA from './sessionsArea.js'
+import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from './profileArea.js'
 import CHATAREA from './chatArea.js'
+
+const CHATMODULE= 'WHATSAPP'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -21,21 +30,47 @@ class LiveChat extends React.Component {
       loading: true,
       activeSession: {},
       scroll: true,
-      tagOptions: []
+      tagOptions: [],
+      loading: false,
+      status: 'Unresolved'
     }
-
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
     this.disableScroll = this.disableScroll.bind(this)
     this.updateUnreadCount = this.updateUnreadCount.bind(this)
-
-    props.fetchSessions({first_page: true,
-      last_id: 'none',
-      number_of_records: 10,
-      filter_criteria: {sort_value: -1, search_value: ''}
-    })
+    this.showSearch = this.showSearch.bind(this)
+    this.changeStatus = this.changeStatus.bind(this)
+    this.resetActiveSession = this.resetActiveSession.bind(this)
+    this.removePending = this.removePending.bind(this)
+    this.resetSessions = this.resetSessions.bind(this)
   }
 
+  componentWillMount () {
+    this.fetchSessions({first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
+    })
+  }
+  resetSessions () {
+    this.fetchSessions({first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
+    })
+  }
+  resetActiveSession () {
+    this.setState({
+      activeSession: {}
+    })
+    this.resetSessions()
+  }
+  showSearch () {
+
+  }
+  changeStatus (e, status, id) {
+    this.props.changeStatus({_id: id, status: status}, this.resetActiveSession)
+  }
   disableScroll () {
     this.setState({scroll: false})
   }
@@ -46,9 +81,24 @@ class LiveChat extends React.Component {
     this.props.fetchChat(session._id, {page: 'first', number: 25})
     this.props.markRead(session._id, this.props.sessions)
   }
+  removePending (session, value) {
+    var data={first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
+    }
+    this.props.updatePendingResponse({id: session._id, pendingResponse: value}, this.resetSessions)
+  }
 
   fetchSessions (data, type) {
-    this.props.fetchSessions(data)
+    if (type === 'open') {
+      this.props.fetchOpenSessions(data)
+    } else if (type === 'close') {
+      this.props.fetchCloseSessions(data)
+    } else {
+      this.props.fetchOpenSessions(data)
+      this.props.fetchCloseSessions(data)
+    }
   }
 
   componentDidMount () {
@@ -74,73 +124,88 @@ class LiveChat extends React.Component {
   }
 
   updateUnreadCount () {
-    console.log('out unread count mark', this.props.sessions)
+  /*  console.log('out unread count mark', this.props.sessions)
     this.props.sessions.filter(session => {
       if (session._id === this.state.activeSession._id) {
         delete session.unreadCount
         console.log('unread count mark', this.props.sessions)
         this.forceUpdate()
       }
-    })
+    })*/
   }
 
   render () {
-    console.log('State in live chat', this.state)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
+    console.log('State in WhatsApp chat', this.state)
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div className='m-content'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-technology m--font-accent' />
+    <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.loading
+            ? <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
             </div>
-            <div className='m-alert__text'>
-              Need help in understanding livechat? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
-            </div>
-          </div>
-          {
-            (this.props.sessions && this.props.sessions.length > 0) || (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object)
-            ? <div className='row'>
-              <SESSIONSAREA
-                sessions={this.props.sessions}
-                count={this.props.count}
-                activeSession={this.state.activeSession}
-                changeActiveSession={this.changeActiveSession}
-                fetchSessions={this.fetchSessions}
-                user={this.props.user}
-              />
+            : <div className='m-content'>
+              <INFO module={CHATMODULE} />
               {
-                Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
-                <div className='col-xl-8'>
-                  <div className='m-portlet m-portlet--full-height'>
-                    <div style={{textAlign: 'center'}} className='m-portlet__body'>
-                      <p>Please select a session to view its chat.</p>
+                (this.props.contacts && this.props.contacts.length > 0) /*|| (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object)*/
+                ? <div className='row'>
+                  <SESSIONSAREA
+                    openSessions={this.props.openSessions ? this.props.openSessions: []}
+                    closeSessions={this.props.closeSessions ? this.props.closeSessions: []}
+                    openCount={this.props.openCount ? this.props.openCount: 0}
+                    closeCount={this.props.closeCount ? this.props.closeCount: 0}
+                    pages={this.props.pages ? this.props.pages: []}
+                    fetchSessions={this.fetchSessions}
+                    user={this.props.user}
+                    activeSession={this.state.activeSession}
+                    changeActiveSession={this.changeActiveSession}
+                    module={CHATMODULE}
+                  />
+                  {
+                    Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
+                    <div className='col-xl-8'>
+                      <div className='m-portlet m-portlet--full-height'>
+                        <div style={{textAlign: 'center'}} className='m-portlet__body'>
+                          <p>Please select a session to view its chat.</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  }
+                  {
+                    Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                    <CHATAREA
+                      activeSession={this.state.activeSession}
+                      showSearch={this.showSearch}
+                      changeStatus={this.changeStatus}
+                      changeActiveSession={this.changeActiveSession}
+                      user={this.props.user}
+                      sessions={this.props.sessions ? this.props.sessions: []}
+                      disableScroll={this.disableScroll}
+                      updateUnreadCount={this.updateUnreadCount}
+                      removePending={this.removePending}
+                    />
+                  }
+                  {
+                    Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                    <PROFILEAREA
+                      activeSession={this.state.activeSession}
+                      changeActiveSession={this.changeActiveSession}
+                      user={this.props.user}
+                    />
+                }
                 </div>
+                : <p>No data to display</p>
               }
-              {
-                Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                <CHATAREA
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  user={this.props.user}
-                  sessions={this.props.sessions}
-                  disableScroll={this.disableScroll}
-                  updateUnreadCount={this.updateUnreadCount}
-                />
-              }
-              {
-                Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
-                <PROFILEAREA
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  user={this.props.user}
-                />
-            }
-            </div>
-            : <p>No data to display</p>
-          }
-        </div>
+              </div>
+        }
       </div>
     )
   }
@@ -149,19 +214,25 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log('props in live chat', state)
   return {
-    sessions: (state.whatsAppChatInfo.sessions),
-    count: (state.whatsAppChatInfo.count),
+    openSessions: (state.whatsAppChatInfo.openSessions),
+    openCount: (state.whatsAppChatInfo.openCount),
+    closeCount: (state.whatsAppChatInfo.closeCount),
+    closeSessions: (state.whatsAppChatInfo.closeSessions),
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    contacts: (state.contactsInfo.contacts)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSessions,
+    fetchOpenSessions,
     fetchChat,
-    markRead
+    markRead,
+    fetchCloseSessions,
+    changeStatus,
+    updatePendingResponse
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

@@ -17,13 +17,17 @@ class SessionsAreaHead extends React.Component {
       last_id: 'none',
       number_of_records: 10,
       filter: true,
+      pendingResponse: true,
+      unreadCount: true,
       filter_criteria: {
         search_value: e.target.value,
-        sort_value: -1
+        sort_value: -1,
+        unreadCount: true,
+        pendingResponse: true
       }
     }
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    this.props.fetchSessions(data)
+  this.props.fetchOpenSessions(data)
     this.props.updateState(data)
   }
 
