@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { searchWhatsAppChat } from '../../redux/actions/whatsAppChat.actions'
+import { searchWhatsAppChat, fetchChat } from '../../redux/actions/whatsAppChat.actions'
 import { scroller } from 'react-scroll'
 import SEARCH from '../../components/LiveChat/search.js'
 
@@ -23,17 +23,17 @@ class Search extends React.Component {
     console.log('scrollToMessage called')
     // check if message exists
     let counter = 0
-    for (let i = 0; i < this.props.userChat.length; i++) {
-      if (this.props.userChat[i]._id === messageId) {
+    for (let i = 0; i < this.props.chat.length; i++) {
+      if (this.props.chat[i]._id === messageId) {
         counter = 1
         break
       }
     }
 
     if (counter === 1) {
-      scroller.scrollTo(messageId, {delay: 3000, containerId: 'chat-container'})
+      scroller.scrollTo(messageId, {delay: 3000, containerId: 'whatsappchat-container'})
     } else {
-      // this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id, messageId: messageId}, this.scrollToMessage)
+      this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
     }
   }
 
@@ -49,7 +49,7 @@ class Search extends React.Component {
   render () {
     return (
       <div className='col-xl-3'>
-       <SEARCH clearSearchResult={this.props.clearSearchResult} searchChatMsgs={this.props.searchChatMsgs} hideSearch={this.props.hideSearch} searchChat={this.searchChat}/>
+       <SEARCH scrollToMessage={this.scrollToMessage} clearSearchResult={this.props.clearSearchResult} searchChatMsgs={this.props.searchChatMsgs} hideSearch={this.props.hideSearch} searchChat={this.searchChat}/>
       </div>
     )
   }
@@ -58,13 +58,15 @@ class Search extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    searchChatMsgs: (state.whatsAppChatInfo.searchChat)
+    searchChatMsgs: (state.whatsAppChatInfo.searchChat),
+    chat: (state.whatsAppChatInfo.chat),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    searchWhatsAppChat
+    searchWhatsAppChat,
+    fetchChat
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Search)

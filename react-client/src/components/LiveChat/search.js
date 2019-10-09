@@ -34,7 +34,7 @@ class Search extends React.Component {
             {
               this.props.searchChatMsgs && this.props.searchChatMsgs.length > 0
               ? this.props.searchChatMsgs.map((chat, index) => (
-                <div key={chat._id} onClick={() => { this.scrollToMessage(chat._id) }} style={{cursor: 'pointer'}} className='m-widget4__item'>
+                <div key={chat._id} onClick={() => { this.props.scrollToMessage(chat._id) }} style={{cursor: 'pointer'}} className='m-widget4__item'>
                   <div className='m-widget4__info'>
                     <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + new Date(chat.datetime).getMonth() + '/' + new Date(chat.datetime).getFullYear()}</span>
                     <br />
