@@ -22,7 +22,8 @@ class CreateWhatsAppBroadcast extends React.Component {
       segmentationErrors: [],
       title: 'Broadcast Title',
       tabActive: 'broadcast',
-      subscribersCount: 0
+      subscribersCount: 0,
+      conditions: []
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
