@@ -473,6 +473,7 @@ class LiveChat extends React.Component {
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}
+                        module={CHATMODULE}
                       />
                     }
                     {

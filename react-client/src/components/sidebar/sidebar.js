@@ -197,7 +197,7 @@ class Sidebar extends Component {
             </Link>
           </li>
         )
-      
+
     }
   }
 
@@ -357,7 +357,7 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems () {
-    if (this.props.user && this.props.user.platform === 'messenger' && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+    if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -377,7 +377,7 @@ class Sidebar extends Component {
               </li>
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.showTeams()}
+              {this.props.user.platform === 'messenger' && this.showTeams()}
             </ul>
           </div>
         </li>
