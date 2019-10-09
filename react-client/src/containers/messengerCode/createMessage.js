@@ -74,6 +74,7 @@ class messengerCodeMessage extends React.Component {
       return
     } else {
     var edit = {
+      page_id: this.props.messengerCode.pageId,
       pageId: this.props.messengerCode.pageId,
       optInMessage: this.state.broadcast,
       QRCode: this.props.messengerCode.QRCode
@@ -115,7 +116,7 @@ class messengerCodeMessage extends React.Component {
         </div>
         <GenericMessage
           pageId={this.props.messengerCode.pageId}
-          pages={[this.state.pageId]}
+          pages={[this.props.messengerCode.pageId]}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
