@@ -33,7 +33,7 @@ class TargetCustomers extends React.Component {
       conditions: conditions
     })
     if (this.props.updateConditions) {
-      this.props.updateConditions([])
+      this.props.updateConditions([], true)
     }
     this.props.resetErrors()
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
@@ -47,7 +47,7 @@ class TargetCustomers extends React.Component {
       }
     }
     if (this.props.updateConditions) {
-      this.props.updateConditions(conditions)
+      this.props.updateConditions(conditions, true)
     }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
@@ -60,12 +60,20 @@ class TargetCustomers extends React.Component {
       }
     }
     if (this.props.updateConditions) {
-      this.props.updateConditions(conditions)
+      this.props.updateConditions(conditions, true)
     }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
+    e.persist()
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    e.target.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.props.debounce, doneTypingInterval)
+    })
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -90,12 +98,12 @@ class TargetCustomers extends React.Component {
     if (this.props.updateConditions) {
       if (tempConditions.length === 1) {
         if (tempConditions[0].condition === '' || tempConditions[0].criteria === '' || tempConditions[0].text === '') {
-          this.props.updateConditions([])
+          this.props.updateConditions([], true)
          } else {
-          this.props.updateConditions(tempConditions)
+          this.props.updateConditions(tempConditions, true)
          }
       } else {
-        this.props.updateConditions(tempConditions)
+        this.props.updateConditions(tempConditions, true)
       }
     }
     this.setState({
