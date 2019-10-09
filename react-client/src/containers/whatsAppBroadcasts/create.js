@@ -38,16 +38,29 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.onGetCount = this.onGetCount.bind(this)
     this.updateConditions = this.updateConditions.bind(this)
+    this.debounce = this.debounce.bind(this)
     props.setDefaultCustomersInfo({filter: []})
     props.getCount([], this.onGetCount)
+    this.conditions = []
+  }
+
+  componentDidMount () {
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    let myInput = document.getElementById('targetingText')
+    myInput.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.debounce, doneTypingInterval)
+    })
+  }
+  
+  debounce () {
+    this.props.getCount(this.conditions, this.onGetCount)
   }
 
   updateConditions (conditions) {
-    if (conditions.length === 0) {
-      this.props.getCount([], this.onGetCount)
-    } else if (this.validateConditions(conditions)) {
-      this.props.getCount(conditions, this.onGetCount)
-    }
+    this.conditions = conditions
   }
 
   onGetCount (data) {
@@ -249,7 +262,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                               Previous
                             </button>
-                            <button id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
+                            <button disabled={this.state.subscribersCount === 0} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
                               Send
                             </button>
                           </div>
