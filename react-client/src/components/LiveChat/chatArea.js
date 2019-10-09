@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import HEADER from './chatAreaHead'
 import BODY from './chatAreaBody'
 
-
 class ChatArea extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -11,7 +10,7 @@ class ChatArea extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.setDataPayload = this.setDataPayload.bind(this)
   }
-
+  
   setMessageData (session, payload) {
     var data = ''
     data = {
@@ -33,7 +32,6 @@ class ChatArea extends React.Component {
     }
     return data
   }
-
   setDataPayload (component, state) {
     var payload = ''
     if (component === 'attachment') {
