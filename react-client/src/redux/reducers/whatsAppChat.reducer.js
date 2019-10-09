@@ -15,7 +15,7 @@ export function whatsAppChatInfo (state = initialState, action) {
     case ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS:
       return Object.assign({}, state, {
         closeSessions: action.closeSessions,
-        closeCount: action.closeSessions
+        closeCount: action.count
       })
     case ActionTypes.FETCH_WHATSAPP_CHAT_OVERWRITE:
       return Object.assign({}, state, {
@@ -59,6 +59,14 @@ export function whatsAppChatInfo (state = initialState, action) {
       }
       return Object.assign({}, state, {
         openSessions: sessions
+    })
+    case ActionTypes.SHOW_SEARCH_WHATSAPP:
+      return Object.assign({}, state, {
+        searchChat: action.data
+      })
+    case ActionTypes.CLEAR_SEARCH_WHATSAPP:
+      return Object.assign({}, state, {
+        searchChat: []
       })
     default:
       return state

@@ -15,17 +15,64 @@ class WhatsAppBroadcast extends React.Component {
     super(props)
     this.state = {
       broadcastsData: [],
+      filterValue: '',
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      searchValue: '',
+      selectedDays: '0',
+      filter:false
     }
 
     props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
-    props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
-
+    props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     this.displayData = this.displayData.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.onFilter = this.onFilter.bind(this)
+    this.searchBroadcast = this.searchBroadcast.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
   }
+onDaysChange (e) {
+  var value = e.target.value
+  this.setState({selectedDays: value})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: '0'
+        })
+      }
+      this.setState({filter: true, pageNumber: 0})
+      this.props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value}})
+    } else if (value === '') {
+      this.setState({selectedDays: '0', filter: false})
+      this.props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0'}})
+    }
+}
+
+searchBroadcast (event) {
+  this.setState({
+    searchValue: event.target.value, pageNumber:0
+  })
+  if (event.target.value !== '') {
+    this.setState({filter: true})
+    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
+  } else {
+    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
+  }
+}
+onFilter (e) {
+  this.setState({filterValue: e.target.value})
+  if (e.target.value !== '' && e.target.value !== 'all') {
+    this.setState({filter: true, pageNumber: 0})
+    this.props.loadBroadcastsList({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
+  } else {
+    this.setState({filter: false, pageNumber: 0})
+    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
+  }
+}
 
   gotoCreate (broadcast) {
     browserHistory.push({
@@ -52,23 +99,42 @@ class WhatsAppBroadcast extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+      this.props.loadBroadcastsList({
+        last_id: 'none',
+        number_of_records: 10, 
+        first_page: 'first',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }})
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadBroadcastsList({
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none',
         number_of_records: 10,
-        first_page: 'next'
-      })
+        first_page: 'next',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }})
     } else {
       this.props.loadBroadcastsList({
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none',
         number_of_records: 10,
-        first_page: 'previous'
-      })
+        first_page: 'previous',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
@@ -130,7 +196,7 @@ class WhatsAppBroadcast extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -157,19 +223,47 @@ class WhatsAppBroadcast extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__body'>
+                  <div className='form-row'>
+                  <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                    <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
+                  </div>
+                  <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
+                        <option value='' disabled>Filter by type...</option>
+                        <option value='text'>text</option>
+                        <option value='audio'>audio</option>
+                        <option value='file'>file</option>
+                        <option value='media'>media</option>
+                        <option value='miscellaneous'>miscellaneous</option>
+                        <option value='all'>all</option>
+                      </select>
+                    </div>
+                    <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                      <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                        Show records for last:&nbsp;&nbsp;
+                      </span>
+                      <div style={{width: '200px'}}>
+                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                      </div>
+                      <span htmlFor='example-text-input' className='col-form-label'>
+                      &nbsp;&nbsp;days
+                      </span>
+                    </div>
+                    
+                 </div>
                     { this.state.broadcastsData && this.state.broadcastsData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='platform'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Platform</span>
-                          </th>
                           <th data-field='title'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Title</span>
+                          </th>
+                          <th data-field='type'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Type</span>
                           </th>
                           <th data-field='createdAt'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -194,8 +288,8 @@ class WhatsAppBroadcast extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.platform}</span></td>
                             <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.automated_options.twilioWhatsApp.sandboxNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>

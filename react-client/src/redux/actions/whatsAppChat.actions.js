@@ -17,6 +17,17 @@ export function showChat (data, originalData) {
   }
 }
 
+export function showSearchChat (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_WHATSAPP,
+    data
+  }
+}
+export function clearSearchResult () {
+  return {
+    type: ActionTypes.CLEAR_SEARCH_WHATSAPP
+  }
+}
 export function socketUpdateWhatsApp (data) {
   return {
     type: ActionTypes.SOCKET_UPDATE_WHATSAPP,
@@ -156,6 +167,28 @@ export function assignToAgent (data) {
 export function sendNotifications (data) {
   return (dispatch) => {
     callApi('notifications/create', 'post', data).then(res => {})
+  }
+}
+
+export function assignToTeam (data) {
+  console.log('data for assigned to team', data)
+  return (dispatch) => {
+    callApi('whatsAppChat/assignTeam', 'post', data).then(res => {
+      console.log('assign to team response', res)
+      dispatch(updateSessions(data))
+    })
+  }
+}
+
+export function searchWhatsAppChat(data) {
+  return (dispatch) => {
+    callApi('whatsAppChat/search', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showSearchChat(res.payload))
+      } else {
+        console.log('response got from server', res.description)
+      }
+    })
   }
 }
 
