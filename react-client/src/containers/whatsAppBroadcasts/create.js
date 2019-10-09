@@ -41,19 +41,22 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.debounce = this.debounce.bind(this)
     props.setDefaultCustomersInfo({filter: []})
     props.getCount([], this.onGetCount)
-    this.conditions = []
   }
 
   
   debounce () {
-    this.props.getCount(this.conditions, this.onGetCount)
+    this.props.getCount(this.state.conditions, this.onGetCount)
   }
 
   updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
-    this.conditions = conditions
+    this.setState({conditions})
     if (update) {
-      this.props.getCount(this.conditions, this.onGetCount)
+      if (this.validateConditions(conditions)) {
+        this.props.getCount(conditions, this.onGetCount)
+      } else {
+        this.setState({subscribersCount: 0})
+      }
     }
   }
 
@@ -141,7 +144,9 @@ class CreateWhatsAppBroadcast extends React.Component {
   validateConditions (conditions) {
     let invalid = false
     for (let i = 0; i < conditions.length; i++) {
-      if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
+      if (conditions[i].condition === '' && conditions[i].criteria === '' && conditions[i].text === '') {
+        continue
+      } else if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
        invalid = true
       }
     }
@@ -257,7 +262,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                               Previous
                             </button>
-                            <button disabled={this.state.subscribersCount === 0} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
+                            <button disabled={this.state.subscribersCount === 0 || !this.validateConditions(this.state.conditions)} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
                               Send
                             </button>
                           </div>
