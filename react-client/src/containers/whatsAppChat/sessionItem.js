@@ -81,7 +81,7 @@ class SessionItem extends React.Component {
               {this.props.session.name}
             </span>
             <br />
-            {this.showLastMessage()}
+            {/*this.showLastMessage()*/}
             <br />
             <span className='m-widget4__sub'>
               <i className='fa fa-calendar' />&nbsp;&nbsp;

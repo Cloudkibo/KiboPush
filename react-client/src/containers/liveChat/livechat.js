@@ -43,6 +43,7 @@ import CHATAREA from './chatbox.js'
 import SEARCHAREA from './search'
 import customfields from '../../components/customFields/customfields';
 
+const CHATMODULE= 'KIBOCHAT'
 class LiveChat extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -410,7 +411,7 @@ class LiveChat extends React.Component {
               <center><Halogen.RingLoader color='#716aca' /></center>
             </div>
             : <div className='m-content'>
-              <INFO />
+              <INFO module={CHATMODULE} />
               {
                 this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='row'>

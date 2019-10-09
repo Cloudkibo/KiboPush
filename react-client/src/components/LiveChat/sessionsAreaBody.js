@@ -31,6 +31,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      subscriberName={session.name ? session.name : (session.firtName ? session.firstName+ ' '+session.lastName: '')}
                       profilePicError={this.props.profilePicError}
                       session={session}
                       activeSession={this.props.activeSession}
@@ -55,6 +56,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions && this.props.closeSessions.length > 0
                   ? (this.props.closeSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      subscriberName={session.name ? session.name : (session.firtName ? session.firstName+ ' '+session.lastName: '')}
                       session={session}
                       activeSession={this.props.activeSession}
                       changeActiveSession={this.props.changeActiveSession}
