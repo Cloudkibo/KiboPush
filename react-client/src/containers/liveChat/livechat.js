@@ -250,7 +250,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps called', nextProps)
+    console.log('componentWillReceiveProps called')
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
@@ -473,6 +473,7 @@ class LiveChat extends React.Component {
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}
+                        module={CHATMODULE}
                       />
                     }
                     {

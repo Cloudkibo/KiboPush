@@ -159,26 +159,6 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data) {
-  console.log('data for assigned to team', data)
-  return (dispatch) => {
-    callApi('whatsAppChat/assignTeam', 'post', data).then(res => {
-      console.log('assign to team response', res)
-      dispatch(updateSessions(data))
-    })
-  }
-}
-
-export function fetchTeamAgents (id, handleAgents) {
-  return (dispatch) => {
-    callApi(`teams/fetchAgents/${id}`)
-      .then(res => {
-        if (res.status === 'success') {
-          handleAgents(res.payload)
-        }
-      })
-  }
-}
 export function updateSessions (data) {
   return {
     type: ActionTypes.UPDATE_SESSIONS_WHATSAPP,

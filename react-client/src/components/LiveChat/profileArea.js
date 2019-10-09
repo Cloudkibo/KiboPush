@@ -367,7 +367,7 @@ class ProfileArea extends React.Component {
       marginBottom: '7px',
       background: 'white'
     }
-    console.log('props in profile Area:', this.props.activeSession)
+    console.log('props in profile Area:', this.props)
     return (
       <div className='col-xl-3'>
         <CustomFields />
