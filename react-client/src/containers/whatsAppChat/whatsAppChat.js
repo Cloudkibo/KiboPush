@@ -9,16 +9,22 @@ import {
   fetchChat,
   markRead,
   changeStatus,
-  updatePendingResponse
+  updatePendingResponse,
+  unSubscribe,
+  assignToAgent,
+  sendNotifications,
+  setCustomFieldValue
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
 import Halogen from 'halogen'
-
+import { loadCustomFields, getCustomFieldValue } from '../../redux/actions/customFields.actions'
+import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
 // Components
 //import SESSIONSAREA from './sessionsArea.js'
 import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
-import PROFILEAREA from './profileArea.js'
+import PROFILEAREA from '../../components/LiveChat/profileArea.js'
 import CHATAREA from './chatArea.js'
 
 const CHATMODULE= 'WHATSAPP'
@@ -32,7 +38,8 @@ class LiveChat extends React.Component {
       scroll: true,
       tagOptions: [],
       loading: false,
-      status: 'Unresolved'
+      status: 'Unresolved',
+      customFieldOptions: {}
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -43,6 +50,42 @@ class LiveChat extends React.Component {
     this.resetActiveSession = this.resetActiveSession.bind(this)
     this.removePending = this.removePending.bind(this)
     this.resetSessions = this.resetSessions.bind(this)
+    this.getAgents = this.getAgents.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+    this.saveCustomField= this.saveCustomField.bind(this)
+  }
+
+  saveCustomField (data) {
+    this.props.setCustomFieldValue(data, this.handleResponse)
+  }
+
+  handleResponse (res, body) {
+    console.log("res",res)
+    if (res.status === 'success') {
+      this.msg.success('Value set successfully')
+      let customFields = this.state.customFieldOptions
+      let temp = this.props.customFields.map((cf) => cf._id)
+      let index = temp.indexOf(body.customFieldId)
+      customFields[index].value = body.value
+      this.setState({customFieldOptions: customFields})
+      // this.state.subscriber.customFields.forEach((field, i) => {
+      //   if (this.state.selectedField._id === field._id) {
+      //     temp.customFields[i].value = this.state.selectedField.value
+      //     this.setState({subscriber: temp, setFieldIndex: false})
+      //   }
+      // })
+    } else {
+      if (res.status === 'failed') {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
+  getAgents (members) {
+    let agents = members.map(m => m.userId)
+    return agents
   }
 
   componentWillMount () {
@@ -51,6 +94,10 @@ class LiveChat extends React.Component {
       number_of_records: 10,
       filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
     })
+    this.props.loadCustomFields()
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadMembersList()
+    }
   }
   resetSessions () {
     this.fetchSessions({first_page: true,
@@ -80,6 +127,7 @@ class LiveChat extends React.Component {
     this.setState({activeSession: session, scroll: true})
     this.props.fetchChat(session._id, {page: 'first', number: 25})
     this.props.markRead(session._id, this.props.sessions)
+    this.props.getCustomFieldValue(session._id)
   }
   removePending (session, value) {
     var data={first_page: true,
@@ -120,6 +168,25 @@ class LiveChat extends React.Component {
     console.log('in componentWillReceiveProps of whatsAppChat', nextProps)
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
+    }
+    if (nextProps.customFields && nextProps.customFieldValues) {
+      var fieldOptions = []
+      for (let a = 0; a < nextProps.customFields.length; a++) {
+        if (nextProps.customFieldValues.length > 0) {
+          let assignedFields = nextProps.customFieldValues.map((cv) => cv.customFieldId._id)
+          let index = assignedFields.indexOf(nextProps.customFields[a]._id)
+          if (index !== -1) {
+            fieldOptions.push({ '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': nextProps.customFieldValues[index].value })
+          } else {
+            fieldOptions.push({ '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
+          }
+        } else {
+          fieldOptions.push({ '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
+        }
+      }
+      this.setState({
+        customFieldOptions: fieldOptions
+      })
     }
   }
 
@@ -196,9 +263,19 @@ class LiveChat extends React.Component {
                   {
                     Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
                     <PROFILEAREA
+                      agents={this.props.members ? this.getAgents(this.props.members) : []}
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
+                      unSubscribe={this.props.unSubscribe}
                       user={this.props.user}
+                      assignToAgent={this.props.assignToAgent}
+                      sendNotifications={this.props.sendNotifications}
+                      members={this.props.members ? this.props.members : []}
+                      customFields={this.props.customFields}
+                      customFieldOptions={this.state.customFieldOptions}
+                      setCustomFieldValue={this.saveCustomField}
+                      msg={this.msg}
+                      module={CHATMODULE}
                     />
                 }
                 </div>
@@ -221,7 +298,12 @@ function mapStateToProps (state) {
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user),
-    contacts: (state.contactsInfo.contacts)
+    contacts: (state.contactsInfo.contacts),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    teams: (state.teamsInfo.teams),
+    members: (state.membersInfo.members),
+    customFieldValues: (state.customFieldInfo.customFieldSubscriber),
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
@@ -232,7 +314,14 @@ function mapDispatchToProps (dispatch) {
     markRead,
     fetchCloseSessions,
     changeStatus,
-    updatePendingResponse
+    updatePendingResponse,
+    unSubscribe,
+    assignToAgent,
+    loadMembersList,
+    getCustomFieldValue,
+    loadCustomFields,
+    setCustomFieldValue,
+    sendNotifications
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

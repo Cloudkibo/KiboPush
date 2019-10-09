@@ -122,3 +122,74 @@ export function updatePendingResponse (data, handlePendingResponse) {
     })
   }
 }
+export function unSubscribe (id, data) {
+  return (dispatch) => {
+    callApi(`whatsAppContacts/update/${id}`, 'post', data).then(res => {
+      console.log('respo from unSubscribe', res)
+      if (res.status === 'success') {
+        let fetchData = {
+          filter_criteria: {
+            pendingResponse: false,
+            search_value: '',
+            sort_value: -1,
+            unreadCount: false,
+          },
+          first_page: true,
+          last_id: 'none',
+          number_of_records: 10,
+        }
+        dispatch(fetchOpenSessions(fetchData))
+        dispatch(fetchCloseSessions(fetchData))
+      }
+    })
+  }
+}
+export function assignToAgent (data) {
+  return (dispatch) => {
+    callApi('whatsAppChat/assignAgent', 'post', data).then(res => {
+      console.log('assign to agent response', res)
+      dispatch(updateSessions(data))
+    })
+  }
+}
+
+export function sendNotifications (data) {
+  return (dispatch) => {
+    callApi('notifications/create', 'post', data).then(res => {})
+  }
+}
+
+export function assignToTeam (data) {
+  console.log('data for assigned to team', data)
+  return (dispatch) => {
+    callApi('whatsAppChat/assignTeam', 'post', data).then(res => {
+      console.log('assign to team response', res)
+      dispatch(updateSessions(data))
+    })
+  }
+}
+
+export function fetchTeamAgents (id, handleAgents) {
+  return (dispatch) => {
+    callApi(`teams/fetchAgents/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          handleAgents(res.payload)
+        }
+      })
+  }
+}
+export function updateSessions (data) {
+  return {
+    type: ActionTypes.UPDATE_SESSIONS_WHATSAPP,
+    data
+  }
+}
+export function setCustomFieldValue (body, handleResponse) {
+  return () => {
+    callApi('whatsAppChat/set_custom_field_value', 'post', body)
+    .then(res => {
+      handleResponse(res, body)
+    })
+  }
+}
