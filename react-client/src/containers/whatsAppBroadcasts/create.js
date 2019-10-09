@@ -44,25 +44,15 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.conditions = []
   }
 
-  componentDidMount () {
-    var typingTimer
-    var doneTypingInterval = 300
-    var self = this
-    let myInput = document.getElementById('targetingText')
-    myInput.addEventListener('keyup', () => {
-      clearTimeout(typingTimer)
-      typingTimer = setTimeout(self.debounce, doneTypingInterval)
-    })
-  }
   
   debounce () {
     this.props.getCount(this.conditions, this.onGetCount)
   }
 
-  updateConditions (conditions, reset) {
+  updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
     this.conditions = conditions
-    if (reset) {
+    if (update) {
       this.props.getCount(this.conditions, this.onGetCount)
     }
   }
@@ -307,7 +297,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                               <i className='flaticon-exclamation m--font-brand' />
                               <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>
