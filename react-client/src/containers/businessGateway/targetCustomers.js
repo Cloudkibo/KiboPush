@@ -188,9 +188,9 @@ class TargetCustomers extends React.Component {
                      <td data-field='title'
                        className='m-datatable__cell' style={{width: '25%'}}>
                        <input className='form-control m-input'
+                         id = 'targetingText'
                          onChange={(e) => this.changeText(e, i)}
                          value={condition.text}
-                         id='text'
                          placeholder='Value' />
                        <span className='m-form__help'>
                          {
