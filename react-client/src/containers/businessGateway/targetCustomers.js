@@ -33,7 +33,7 @@ class TargetCustomers extends React.Component {
       conditions: conditions
     })
     if (this.props.updateConditions) {
-      this.props.updateConditions([])
+      this.props.updateConditions([], true)
     }
     this.props.resetErrors()
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
