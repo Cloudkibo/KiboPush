@@ -17,6 +17,8 @@ class TargetCustomers extends React.Component {
     this.changeCriteria = this.changeCriteria.bind(this)
     this.changeText = this.changeText.bind(this)
     this.resetCondition = this.resetCondition.bind(this)
+    this.typingTimer = null
+    this.doneTypingInterval = 300
   }
 
   addCondition () {
@@ -66,14 +68,8 @@ class TargetCustomers extends React.Component {
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
-    e.persist()
-    var typingTimer
-    var doneTypingInterval = 300
-    var self = this
-    e.target.addEventListener('keyup', () => {
-      clearTimeout(typingTimer)
-      typingTimer = setTimeout(self.props.debounce, doneTypingInterval)
-    })
+    clearTimeout(this.typingTimer)
+    this.typingTimer = setTimeout(this.props.debounce, this.doneTypingInterval)
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
