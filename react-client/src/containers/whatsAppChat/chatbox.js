@@ -71,6 +71,7 @@ class ChatBox extends React.Component {
     }
     return data
   }
+
   setDataPayload (component) {
     var payload = ''
     if (component === 'attachment') {
@@ -162,6 +163,7 @@ class ChatBox extends React.Component {
     }
     this.textInput.focus()
   }
+
   handleUpload (res) {
     if (res.status === 'failed') {
       this.setState({
@@ -226,9 +228,6 @@ class ChatBox extends React.Component {
         data = this.setMessageData(session, payload)
         this.props.onEnter(data, 'text')
         this.setState({textAreaValue: ''})
-        // data.format = 'kibopush'
-        // this.props.chat.push(data)
-        // this.props.updateChat(this.props.chat, data)
       }
       this.newMessage = true
     }
