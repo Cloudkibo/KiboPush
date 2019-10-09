@@ -68,7 +68,6 @@ class TargetCustomers extends React.Component {
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
-    e.persist()
     clearTimeout(this.typingTimer)
     this.typingTimer = setTimeout(this.props.debounce, this.doneTypingInterval)
     let conditions = this.state.conditions
