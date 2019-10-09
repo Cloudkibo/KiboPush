@@ -114,6 +114,7 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('whatsAppChat', 'post', data).then(res => {
       handleSendAttachment(res)
+      dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
     })
   }
 }

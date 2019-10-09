@@ -8,6 +8,10 @@ import { sendChatMessage, sendAttachment } from '../../redux/actions/whatsAppCha
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
+import { Popover, PopoverBody } from 'reactstrap'
+import { Picker } from 'emoji-mart'
+import StickerMenu from '../../components/StickerPicker/stickers'
+import GiphySelect from 'react-giphy-select'
 
 const styles = {
   iconclass: {
@@ -36,7 +40,10 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      showStickers: false,
+      scrolling: true,
+      showGifPicker: false
     }
 
     this.handleTextChange = this.handleTextChange.bind(this)
@@ -54,8 +61,82 @@ class ChatBox extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.handleSendAttachment = this.handleSendAttachment.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
+    this.showStickers = this.showStickers.bind(this)
+    this.toggleStickerPicker = this.toggleStickerPicker.bind(this)  
+    this.sendSticker = this.sendSticker.bind(this)
+    this.showGif = this.showGif.bind(this)
+    this.sendGif = this.sendGif.bind(this)
+    this.toggleGifPicker = this.toggleGifPicker.bind(this)
+    this.sendThumbsUp = this.sendThumbsUp.bind(this)
   }
 
+  showGif () {
+    this.setState({showGifPicker: true, scrolling: false})
+  }
+
+  toggleGifPicker () {
+    this.setState({showGifPicker: !this.state.showGifPicker})
+  }
+  showStickers () {
+    this.setState({showStickers: true, scrolling: false})
+  }
+  sendGif (gif) {
+    var payload = {
+      componentType: 'gif',
+      fileurl: {url: gif.images.downsized.url}
+    }
+    this.setState({
+      componentType: 'gif',
+      stickerUrl: gif.images.downsized.url,
+      scrolling: true
+    })
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    this.toggleGifPicker()
+    data.format = 'convos'
+    this.props.chat.push(data)
+    this.newMessage = true
+  }
+  sendThumbsUp () {
+    this.setState({
+      componentType: 'thumbsUp',
+      scrolling: true
+    })
+    var payload = {
+      componentType: 'thumbsUp',
+      fileurl: {url: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'}
+    }
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    data.format = 'convos'
+    this.props.chat.push(data)
+    this.newMessage = true
+    this.setState({textAreaValue: ''})
+  }
+
+  sendSticker (sticker) {
+    var payload = {
+      componentType: 'sticker',
+      fileurl: {url:sticker.image.hdpi}
+    }
+    this.setState({
+      componentType: 'sticker',
+      stickerUrl: sticker.image.hdpi,
+      scrolling: true
+    })
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    this.toggleStickerPicker()
+    data.format = 'convos'
+    this.props.chat.push(data)
+    this.newMessage = true
+  }
+  toggleStickerPicker () {
+    this.setState({showStickers: !this.state.showStickers})
+  }
   setMessageData (session, payload) {
     let data = {
       senderNumber: this.props.chat[0].recipientNumber,
@@ -91,7 +172,23 @@ class ChatBox extends React.Component {
         componentType: 'text',
         text: this.state.textAreaValue
       }
+    } else if (component === 'gif') {
+      payload = {
+        componentType: this.state.componentType,
+        fileurl: {url: this.state.gifUrl}
+      }
+    } else if (component === 'sticker') {
+      payload = {
+        componentType: this.state.componentType,
+        fileurl: {url: this.state.stickerUrl}
+      }
+    } else if (component === 'thumbsUp') {
+      payload = {
+        componentType: 'thumbsUp',
+        fileurl: {url: 'https://app.kibopush.com/img/thumbsup.png'}
+      }
     }
+    
     return payload
   }
 
@@ -244,9 +341,51 @@ class ChatBox extends React.Component {
     console.log('render in chatbox', this.props.chat)
     return (
       <div>
-        <div className='m-messenger__form' style={{width: '93%', margin: 0}}>
+        <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
+          <PopoverBody>
+            <div>
+              <Picker
+                style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                emojiSize={24}
+                perLine={6}
+                skin={1}
+                set='twilio'
+                showPreview={false}
+                showSkinTones={false}
+                custom={[]}
+                autoFocus={false}
+                showPreview={false}
+                onClick={(emoji, event) => this.setEmoji(emoji)}
+              />
+            </div>
+          </PopoverBody>
+        </Popover>
+        <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
+          <PopoverBody>
+            <div>
+              <StickerMenu
+                apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+                userId={'imran.shoukat@khi.iba.edu.pk'}
+                sendSticker={(sticker) => { this.sendSticker(sticker) }}
+              />
+            </div>
+          </PopoverBody>
+        </Popover>
+        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
+          <PopoverBody>
+            <GiphySelect
+              onEntrySelect={gif => this.sendGif(gif)}
+            />
+          </PopoverBody>
+        </Popover>
+        <div className='m-messenger__form'>
           <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
             <textarea autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' style={{resize: 'none'}} />
+          </div>
+          <div className='m-messenger__form-tools'>
+            <a className='m-messenger__form-attachment'>
+              <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
+            </a>
           </div>
         </div>
         { this.state.uploaded
@@ -312,6 +451,66 @@ class ChatBox extends React.Component {
             </i>
             <input type='file' accept='audio/*' onChange={this.onFileChange} onError={this.onFilesError}
               ref='selectAudio' style={styles.inputf} />
+          </div>
+          <div style={{display: 'inline-block'}} data-tip='emoticons'>
+            <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
+              <i style={{
+                fontSize: '20px',
+                position: 'absolute',
+                left: '0',
+                width: '100%',
+                height: '2em',
+                margin: '5px',
+                textAlign: 'center',
+                color: '#787878'
+              }} className='fa fa-smile-o' />
+            </i>
+          </div>
+          <div style={{display: 'inline-block'}} data-tip='GIF'>
+            <i id='gifPickerChat' onClick={this.showGif} style={styles.iconclass}>
+              <i style={{
+                fontSize: '20px',
+                position: 'absolute',
+                left: '0',
+                width: '100%',
+                height: '2em',
+                margin: '5px',
+                textAlign: 'center'
+              }} className='fa fa-file-o' />
+              <p style={{
+                position: 'absolute',
+                text: 'GIF',
+                left: '0',
+                width: '100%',
+                textAlign: 'center',
+                margin: '5px',
+                fontSize: '8px',
+                bottom: -5
+              }}>GIF</p>
+            </i>
+          </div>       
+          <div style={{display: 'inline-block'}} data-tip='stickers'>
+            <i id='stickerPickerChat' onClick={this.showStickers} style={styles.iconclass}>
+              <i style={{
+                fontSize: '20px',
+                position: 'absolute',
+                left: '0',
+                width: '100%',
+                height: '2em',
+                margin: '5px',
+                textAlign: 'center'
+              }} className='fa fa-file-o' />
+              <i style={{
+                position: 'absolute',
+                left: '0',
+                width: '100%',
+                textAlign: 'center',
+                margin: '5px',
+                fontSize: '12px',
+                bottom: -4
+              }}
+                className='center fa fa-smile-o' />
+            </i>
           </div>
         </div>
       </div>
