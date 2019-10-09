@@ -23,7 +23,17 @@ export function socketUpdateWhatsApp (data) {
     data
   }
 }
-
+export function clearSearchResult () {
+  return {
+    type: ActionTypes.CLEAR_SEARCH_WHATSAPP
+  }
+}
+export function showSearchChat (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_WHATSAPP,
+    data
+  }
+}
 export function updateChat (chat, newChat) {
   let chatData = []
   chatData = chat
@@ -119,6 +129,18 @@ export function updatePendingResponse (data, handlePendingResponse) {
   return (dispatch) => {
     callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
       handlePendingResponse(res)
+    })
+  }
+}
+
+export function searchWhatsAppChat(data) {
+  return (dispatch) => {
+    callApi('whatsAppChat/search', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showSearchChat(res.payload))
+      } else {
+        console.log('response got from server', res.description)
+      }
     })
   }
 }

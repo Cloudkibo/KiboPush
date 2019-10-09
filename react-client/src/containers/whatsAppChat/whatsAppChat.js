@@ -9,17 +9,16 @@ import {
   fetchChat,
   markRead,
   changeStatus,
-  updatePendingResponse
+  updatePendingResponse,
+  clearSearchResult
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
 import Halogen from 'halogen'
-
-// Components
-//import SESSIONSAREA from './sessionsArea.js'
 import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from './profileArea.js'
 import CHATAREA from './chatArea.js'
+import SEARCHAREA from './searchArea.js'
 
 const CHATMODULE= 'WHATSAPP'
 
@@ -32,17 +31,20 @@ class LiveChat extends React.Component {
       scroll: true,
       tagOptions: [],
       loading: false,
-      status: 'Unresolved'
+      status: 'Unresolved',
+      showSearch: false
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
     this.disableScroll = this.disableScroll.bind(this)
     this.updateUnreadCount = this.updateUnreadCount.bind(this)
     this.showSearch = this.showSearch.bind(this)
+    this.hideSearch = this.hideSearch.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.resetActiveSession = this.resetActiveSession.bind(this)
     this.removePending = this.removePending.bind(this)
     this.resetSessions = this.resetSessions.bind(this)
+    this.updatePendingSession = this.updatePendingSession.bind(this)
   }
 
   componentWillMount () {
@@ -52,12 +54,23 @@ class LiveChat extends React.Component {
       filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
     })
   }
+
+  showSearch() {
+    this.setState({ showSearch: true })
+  }
+
+  hideSearch() {
+    this.setState({ showSearch: false })
+    this.props.clearSearchResult()
+  }
+
   resetSessions () {
     this.fetchSessions({first_page: true,
       last_id: 'none',
       number_of_records: 10,
       filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
     })
+    this.changeActiveSession(this.state.activeSession)
   }
   resetActiveSession () {
     this.setState({
@@ -65,9 +78,16 @@ class LiveChat extends React.Component {
     })
     this.resetSessions()
   }
-  showSearch () {
 
+  showSearch () {
+    this.setState({ showSearch: true })
   }
+
+  hideSearch () {
+    this.setState({ showSearch: false })
+    this.props.clearSearchResult()
+  }
+
   changeStatus (e, status, id) {
     this.props.changeStatus({_id: id, status: status}, this.resetActiveSession)
   }
@@ -82,14 +102,24 @@ class LiveChat extends React.Component {
     this.props.markRead(session._id, this.props.sessions)
   }
   removePending (session, value) {
-    var data={first_page: true,
-      last_id: 'none',
-      number_of_records: 10,
-      filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}
-    }
     this.props.updatePendingResponse({id: session._id, pendingResponse: value}, this.resetSessions)
+    this.updatePendingSession(session, value)
   }
-
+  updatePendingSession(session, value) {
+    session.pendingResponse = value
+    var temp = this.props.openSessions
+    for (var i = 0; i < temp.length; i++) {
+      if (temp[i]._id === session._id) {
+        temp[i].pendingResponse = value
+      }
+    }
+    var tempClose = this.props.closeSessions
+    for (var j = 0; j < tempClose.length; j++) {
+      if (tempClose[j]._id === session._id) {
+        tempClose[j].pendingResponse = value
+      }
+    }
+  }
   fetchSessions (data, type) {
     if (type === 'open') {
       this.props.fetchOpenSessions(data)
@@ -183,23 +213,30 @@ class LiveChat extends React.Component {
                     Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
                     <CHATAREA
                       activeSession={this.state.activeSession}
-                      showSearch={this.showSearch}
-                      changeStatus={this.changeStatus}
-                      changeActiveSession={this.changeActiveSession}
                       user={this.props.user}
                       sessions={this.props.sessions ? this.props.sessions: []}
                       disableScroll={this.disableScroll}
+                      showSearch={this.showSearch}
+                      changeStatus={this.changeStatus}
+                      changeActiveSession={this.changeActiveSession}
                       updateUnreadCount={this.updateUnreadCount}
                       removePending={this.removePending}
                     />
                   }
                   {
-                    Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
+                    Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                     <PROFILEAREA
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
                       user={this.props.user}
                     />
+                }
+                {
+                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  <SEARCHAREA
+                    currentSession={this.state.activeSession}
+                    hideSearch={this.hideSearch}
+                  />
                 }
                 </div>
                 : <p>No data to display</p>
@@ -232,7 +269,8 @@ function mapDispatchToProps (dispatch) {
     markRead,
     fetchCloseSessions,
     changeStatus,
-    updatePendingResponse
+    updatePendingResponse,
+    clearSearchResult
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
