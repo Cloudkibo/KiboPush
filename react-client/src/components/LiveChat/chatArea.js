@@ -4,7 +4,7 @@ import HEADER from './chatAreaHead'
 import BODY from './chatAreaBody'
 
 
-class Search extends React.Component {
+class ChatArea extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
@@ -33,7 +33,7 @@ class Search extends React.Component {
     }
     return data
   }
-  
+
   setDataPayload (component, state) {
     var payload = ''
     if (component === 'attachment') {
