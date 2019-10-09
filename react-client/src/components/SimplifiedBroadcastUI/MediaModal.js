@@ -31,7 +31,11 @@ class MediaModal extends React.Component {
   }
 
   handleDone () {
-    this.AddButton.handleDone()
+    if (this.props.noButtons) {
+      this.addComponent([])
+    } else {
+      this.AddButton.handleDone()
+    }
   }
 
   addComponent (buttons) {
@@ -112,7 +116,7 @@ class MediaModal extends React.Component {
                 size={this.state.file ? this.state.file.size : ''}
                 type={this.state.file ? this.state.file.type : ''} />
               {
-                this.state.file &&
+                (!this.props.noButtons && this.state.file) &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}

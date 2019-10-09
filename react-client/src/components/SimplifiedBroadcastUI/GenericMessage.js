@@ -8,7 +8,6 @@ import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import StickyDiv from 'react-stickydiv'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
@@ -362,6 +361,7 @@ class GenericMessage extends React.Component {
         buttons={[]}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
+        noButtons={this.props.noButtons}
         pages={this.props.pages}
         buttonActions={this.props.buttonActions}
         replyWithMessage={this.props.replyWithMessage}
@@ -412,6 +412,7 @@ class GenericMessage extends React.Component {
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
+        noButtons={this.props.noButtons}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
         pageId={this.props.pageId}
@@ -650,16 +651,14 @@ class GenericMessage extends React.Component {
               <div className='col-12'>
                 <div className='row'>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    <StickyDiv zIndex={1}>
-                      <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px'}} className='ui-block'>
-                        <div style={{padding: '5px'}}>
-                          {!this.props.titleEditable
-                                ? <h3> {this.state.convoTitle} </h3>
-                                : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                              }
-                        </div>
+                    <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px', zIndex: 1}} className='ui-block'>
+                      <div style={{padding: '5px'}}>
+                        {!this.props.titleEditable
+                              ? <h3> {this.state.convoTitle} </h3>
+                              : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                            }
                       </div>
-                    </StickyDiv>
+                    </div>
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
