@@ -59,11 +59,16 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.props.getCount(this.conditions, this.onGetCount)
   }
 
-  updateConditions (conditions) {
+  updateConditions (conditions, reset) {
+    console.log('updating conditions', conditions)
     this.conditions = conditions
+    if (reset) {
+      this.props.getCount(this.conditions, this.onGetCount)
+    }
   }
 
   onGetCount (data) {
+    console.log('recieved count', data)
     this.setState({subscribersCount: data.subscribersCount})
   }
 
