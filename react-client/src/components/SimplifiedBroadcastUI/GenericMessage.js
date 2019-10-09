@@ -660,7 +660,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     </StickyDiv>
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} />
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     {
