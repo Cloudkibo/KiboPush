@@ -239,7 +239,7 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
-    console.log('updateScrollTop')
+    console.log('updateScrollTop', this.refs.chatScroll.scrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       console.log('this.refs.chatScroll.scrollTop', (this.refs.chatScroll.scrollHeight - this.previousScrollHeight))
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
