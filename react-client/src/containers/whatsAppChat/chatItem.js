@@ -34,6 +34,7 @@ class ChatItem extends React.Component {
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    
   }
 
   getRepliedByMsg (msg) {
@@ -72,6 +73,27 @@ class ChatItem extends React.Component {
         : msg.payload.componentType === 'file'
         ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
           <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName}</strong></h6>
+        </a>
+        : msg.payload.componentType === 'sticker'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
+        </a>
+        :msg.payload.componentType === 'gif'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
+        </a>
+        :msg.payload.componentType === 'thumbsUp'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
         </a>
       : msg.payload.componentType === 'audio' &&
       <div key={index}>
@@ -217,7 +239,7 @@ class ChatItem extends React.Component {
                     </Element>
                   </div>
                   : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                    <Element name={msg.datetime}>
+                    <Element name={msg._id}>
                       {
                         index === 0
                         ? <div className='m-messenger__datetime'>
