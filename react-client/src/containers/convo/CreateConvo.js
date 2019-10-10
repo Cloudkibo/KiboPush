@@ -9,7 +9,8 @@ import {
   loadBroadcastsList,
   updatefileuploadStatus,
   uploadBroadcastfile,
-  sendBroadcast
+  sendBroadcast,
+  getSubscriberCount
 } from '../../redux/actions/broadcast.actions'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
@@ -59,7 +60,8 @@ class CreateConvo extends React.Component {
       invalidSessionMessage: '',
       pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
       loadScript: true,
-      messageType: ''
+      messageType: '',
+      subscriberCount: 0
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -81,6 +83,7 @@ class CreateConvo extends React.Component {
     this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
+    this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
   }
 
   handleChange (state) {
@@ -97,7 +100,17 @@ class CreateConvo extends React.Component {
         $('#titleTarget').addClass('active')
         /* eslint-enable */
       this.setState({tabActive: 'target'})
+      const payload = {
+        pageId: this.state.pageId._id,
+        segmented: false,
+        isList: false,
+      }
+      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
     }
+  }
+
+  handleSubscriberCount(response) {
+    this.setState({subscriberCount: response.payload.count})
   }
 
   onPrevious () {
@@ -134,6 +147,16 @@ class CreateConvo extends React.Component {
       data['tagValue'] = targeting.tagValue
     }
     this.props.loadSubscribersCount(data)
+    var payload = {
+        pageId: this.props.location.state.pages[0],
+        segmented: true,
+        segmentationGender: targeting.genderValue,
+        segmentationLocale: targeting.localeValue,
+        segmentationTags: targeting.tagValue,
+        isList: targeting.isList ? true : false,
+        segmentationList: targeting.listSelected
+    }
+    this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
   initTab () {
     /* eslint-disable */
@@ -162,6 +185,13 @@ class CreateConvo extends React.Component {
         $('#titleTarget').addClass('active')
         /* eslint-enable */
       this.setState({tabActive: 'target', resetTarget: false})
+
+      const payload = {
+        pageId: this.state.pageId._id,
+        segmented: false,
+        isList: false,
+      }
+      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
     }
   }
 
@@ -593,7 +623,7 @@ class CreateConvo extends React.Component {
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} page={this.state.pageId} component='broadcast' />
+                          <Targeting handleTargetValue={this.handleTargetValue} subscriberCount={this.state.subscriberCount} resetTarget={this.state.resetTarget} page={this.state.pageId} component='broadcast' />
                         </div>
 
                       </div>
@@ -638,7 +668,8 @@ function mapDispatchToProps (dispatch) {
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions,
       loadTags: loadTags,
-      loadSubscribersCount: loadSubscribersCount
+      loadSubscribersCount: loadSubscribersCount,
+      getSubscriberCount: getSubscriberCount
     },
     dispatch)
 }

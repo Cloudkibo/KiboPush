@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 import { removeButtonOldurl } from './actions.utility'
+import responseMethods from '../../containers/wizard/responseMethods'
 export const API_URL = '/api'
 
 export function deleteFiles (data) {
@@ -280,6 +281,17 @@ export function checkWhitelistedDomains (data, handleFunction, url) {
   return (dispatch) => {
     callApi(`pages/isWhitelisted`, 'post', data).then(res => {
       handleFunction(res, url)
+    })
+  }
+}
+
+export function getSubscriberCount (data, callback) {
+  console.log('data in getSubscriberCount', data)
+  return(dispatch) => {
+    callApi('broadcasts/retrieveSubscribersCount', 'post', data)
+    .then(res => {
+      console.log(res)
+      callback(res)
     })
   }
 }
