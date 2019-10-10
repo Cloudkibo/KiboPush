@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
 import { socketUpdateSms } from './../redux/actions/smsChat.actions'
 import { socketUpdateWhatsApp } from './../redux/actions/whatsAppChat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
