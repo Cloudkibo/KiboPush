@@ -207,7 +207,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     } else if (this.validateSegmentation(this.props.customersInfo)) {
       this.props.sendBroadcast({payload: this.state.broadcast,
         platform: 'Twilio WhatsApp',
-        title: this.state.title,
+        title: this.state.convoTitle,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
       }, this.clearFields)
     }
