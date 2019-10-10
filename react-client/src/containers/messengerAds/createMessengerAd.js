@@ -148,7 +148,7 @@ class CreateMessengerAd extends React.Component {
                     {
                       this.props.location.state.module === 'create' && <Preview />
                     }
-                    { (this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) && <Preview previewOptInMessage={this.state.previewOptInMessage} />
+                    { (this.props.location.state.module === 'edit' && this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) && <Preview previewOptInMessage={this.state.previewOptInMessage} />
                     }
                   </div>
                 </div>

@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadPageUsers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -334,7 +334,9 @@ class PageUsers extends React.Component {
                     <p> No data to display </p>
                   </span>
                 }
-
+                <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                    <Link to='/operationalDashboard' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
+                </div>
                   </div>
                 </div>
               </div>

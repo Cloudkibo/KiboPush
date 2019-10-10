@@ -23,7 +23,8 @@ class Autoposting extends React.Component {
       isShowingModalDelete: false,
       showListItems: true,
       deleteid: '',
-      showWordPressGuide: false
+      showWordPressGuide: false,
+      newsPageIndex: []
     }
     props.loadAutopostingList()
     this.showDialog = this.showDialog.bind(this)
@@ -57,6 +58,10 @@ class Autoposting extends React.Component {
         compProp.loadAutopostingList()
       }
     })
+    if(this.props.pages){
+      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission)}) 
+      this.setState({newsPageIndex: pagesIndex})
+    }
   }
   viewGuide () {
     this.setState({
@@ -68,7 +73,11 @@ class Autoposting extends React.Component {
       showWordPressGuide: false
     })
   }
-  componentWillReceiveProps (nextProps) {}
+  componentWillReceiveProps (nextProps) {
+    if(nextProps.pages !== this.props.pages) {
+      this.setState({newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
+    }
+  }
 
   updateDeleteID (id) {
     this.setState({deleteid: id})
@@ -106,6 +115,7 @@ class Autoposting extends React.Component {
   }
 
   render () {
+    console.log('this.state.newsPageIndex.length', this.state.newsPageIndex.length)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -201,7 +211,7 @@ class Autoposting extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='vXN_lF7ivJY'
+                  videoId='Rt4uOwG9vQE'
                   opts={{
                     height: '390',
                     width: '640',
@@ -222,6 +232,7 @@ class Autoposting extends React.Component {
           </div>
         </div>
         <div className='m-content'>
+      { this.state.newsPageIndex.length > 0 &&
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
@@ -231,6 +242,8 @@ class Autoposting extends React.Component {
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
+        }
+        { this.state.newsPageIndex.length > 0 &&
           <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
             role='alert'>
@@ -242,6 +255,20 @@ class Autoposting extends React.Component {
               updates to your subscribers
             </div>
           </div>
+        }
+        { this.state.newsPageIndex.length === 0 &&
+          <div
+            className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+            role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              Autoposting is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank'>Register to News Page Index</a>.
+              Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank'>Facebook's Subcription Messaging Policy</a>
+            </div>
+          </div>
+        }
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
@@ -252,6 +279,8 @@ class Autoposting extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
+              {
+                this.state.newsPageIndex.length > 0?
                 <Link onClick={this.showDialog}>
                   <button
                     className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
@@ -263,6 +292,18 @@ class Autoposting extends React.Component {
                     </span>
                   </button>
                 </Link>
+                : <Link>
+                  <button
+                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={(this.state.newsPageIndex.length === 0)}>
+                    <span>
+                      <i className='la la-plus' />
+                      <span>
+                        Add Feed
+                      </span>
+                    </span>
+                  </button>
+                </Link>
+              }
               </div>
             </div>
             <div className='m-portlet__body'>
@@ -328,7 +369,8 @@ class Autoposting extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    autopostingData: (state.autopostingInfo.autopostingData)
+    autopostingData: (state.autopostingInfo.autopostingData),
+    pages: (state.pagesInfo.pages)
   }
 }
 

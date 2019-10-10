@@ -10,8 +10,8 @@ class SessionsAreaHead extends React.Component {
       searchValue: '',
       pageValue: '',
       sortValue: -1,
-      unreadMessages: '',
-      pendingResponse: ''
+      unreadMessages: false,
+      pendingResponse: false
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
@@ -27,7 +27,7 @@ class SessionsAreaHead extends React.Component {
   }
 
   hideDropDown () {
-    this.setState({showDropDown: false, pageValue: '', unreadMessages: '', pendingResponse: '', filter: false})
+    this.setState({showDropDown: false, pageValue: '', unreadMessages: false, pendingResponse: false, filter: false})
     let data = {
       first_page: true,
       last_id: 'none',
@@ -37,8 +37,16 @@ class SessionsAreaHead extends React.Component {
         sort_value: this.state.sortValue,
         page_value: '',
         search_value: this.state.searchValue,
-        pendingResponse: '',
-        unreadMessages: ''
+        pendingResponse: false,
+        unreadMessages: false
+      }
+    }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: this.state.searchValue, pendingResponse: false, unreadCount: false}
       }
     }
     this.props.fetchSessions(data)
@@ -59,30 +67,64 @@ class SessionsAreaHead extends React.Component {
         unreadMessages: this.state.unreadMessages
       }
     }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: e.target.value.toLowerCase(), pendingResponse: this.state.pendingResponse, unreadCount: this.state.unreadMessages}
+      }
+    }
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
 
   handleSort (value) {
-    let data = {sortValue: value, filter: true}
-    this.setState(data)
-    this.props.updateState(data)
-    if (value === -1) {
-      this.props.openSessions.sort(function (a, b) {
-        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-      })
-      this.props.closeSessions.sort(function (a, b) {
-        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-      })
-    } else if (value === 1) {
-      this.props.openSessions.sort(function (a, b) {
-        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
-      })
-      this.props.closeSessions.sort(function (a, b) {
-        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
-      })
+    // let data = {sortValue: value, filter: true}
+    // this.setState(data)
+    // this.props.updateState(data)
+    // if (value === -1) {
+    //   this.props.openSessions.sort(function (a, b) {
+    //     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    //   })
+    //   this.props.closeSessions.sort(function (a, b) {
+    //     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    //   })
+    // } else if (value === 1) {
+    //   this.props.openSessions.sort(function (a, b) {
+    //     return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+    //   })
+    //   this.props.closeSessions.sort(function (a, b) {
+    //     return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+    //   })
+    // }
+
+    this.setState({sortValue: value, filter: true})
+    let data = {
+      first_page: true,
+      last_id: 'none',
+      number_of_records: 10,
+      filter: true,
+      filter_criteria: {
+        sort_value: value,
+        page_value: this.state.pageValue,
+        search_value: this.state.searchValue,
+        pendingResponse: this.state.pendingResponse,
+        unreadMessages: this.state.unreadMessages
+      }
     }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: value, search_value: this.state.searchValue, pendingResponse: this.state.pendingResponse, unreadCount: this.state.unreadMessages}
+      }
+    }
+    this.props.fetchSessions(data)
+    this.props.updateState(data)
+
   }
 
   handlePageFilter (value) {
@@ -138,6 +180,14 @@ class SessionsAreaHead extends React.Component {
         unreadMessages: this.state.unreadMessages
       }
     }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: this.state.sortValue, search_value: this.state.searchValue, pendingResponse: e, unreadCount: this.state.unreadMessages}
+      }
+    }
     this.props.fetchSessions(data)
     this.props.updateState(data)
   }
@@ -155,6 +205,14 @@ class SessionsAreaHead extends React.Component {
         search_value: this.state.searchValue,
         pendingResponse: this.state.pendingResponse,
         unreadMessages: e
+      }
+    }
+    if (this.props.module === 'WHATSAPP') {
+      data = {first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter: true,
+        filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: e}
       }
     }
     this.props.fetchSessions(data)

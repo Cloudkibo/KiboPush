@@ -44,6 +44,7 @@ class ProfileArea extends React.Component {
     this.onAgentChange = this.onAgentChange.bind(this)
     this.assignToAgent = this.assignToAgent.bind(this)
     this.showAddTag = this.showAddTag.bind(this)
+    this.hideAddTag = this.hideAddTag.bind(this)
     this.removeTags = this.removeTags.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
@@ -55,6 +56,18 @@ class ProfileArea extends React.Component {
     this.saveCustomField = this.saveCustomField.bind(this)
     this.handleSetCustomField = this.handleSetCustomField.bind(this)
     this.showToggle = this.showToggle.bind(this)
+    this.unSubscribe = this.unSubscribe.bind(this)
+    this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
+  }
+
+  unSubscribe () {
+    this.props.changeActiveSession('none')
+    if (this.props.module === 'WHATSAPP' ) {
+      this.props.unSubscribe(this.props.activeSession._id, {isSubscribed: false, unSubscribedBy: 'agent'}, this.props.msg)
+    } else {
+      this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
+    }
+    this.closeDialog()
   }
 
   showToggle () {
@@ -169,6 +182,10 @@ class ProfileArea extends React.Component {
     this.setState({ showAssignAgent: !this.state.showAssignAgent })
   }
 
+  hideAddTag() {
+    this.setState({ popoverAddTagOpen: false })
+  }
+
   onAgentChange(e) {
     let agent = {}
     for (let i = 0; i < this.props.agents.length; i++) {
@@ -273,9 +290,11 @@ class ProfileArea extends React.Component {
     payload.subscribers = selectedIds
     payload.tag = this.state.addTag.label
     this.props.assignTags(payload, this.props.msg)
+    this.hideAddTag()
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps profileArea.js', nextProps)
     if (nextProps.activeSession.is_assigned) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
@@ -364,7 +383,9 @@ class ProfileArea extends React.Component {
               </div>
               <div className='m-card-profile__details'>
                 <span className='m-card-profile__name'>
-                  {this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName}
+                  {this.props.module === 'WHATSAPP'
+                    ? this.props.activeSession.name
+                    : this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName}
                 </span>
                 {
                   this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
@@ -374,7 +395,7 @@ class ProfileArea extends React.Component {
                 }
                 <br />
                 <a className='m-card-profile__email m-link'>
-                  {this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
+                  {this.props.module !== 'WHATSAPP' && this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
                 </a>
                 <br />
                 {
@@ -389,7 +410,7 @@ class ProfileArea extends React.Component {
                   </a>
                 }
                 {
-                  this.props.user.isSuperUser &&
+                  this.props.user.isSuperUser && this.props.module !== 'WHATSAPP' &&
                   <MAPCUSTOMER
                     currentSession={this.props.activeSession}
                     msg={this.props.msg}
@@ -401,9 +422,9 @@ class ProfileArea extends React.Component {
                     {
                       this.state.isAssigned &&
                       <div style={{ marginBottom: '20px' }}>
-                        <span className='m--font-bolder'>Team:</span>
-                        <span> {
-                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
+                        {this.props.module !== 'WHATSAPP' && <span className='m--font-bolder'>Team:</span>}
+                        {this.props.module !== 'WHATSAPP' &&<span> {
+                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>}
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
                         <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
@@ -426,7 +447,7 @@ class ProfileArea extends React.Component {
                       )
                     }
                     {
-                      this.props.user && this.props.user.role !== 'agent' &&
+                      this.props.user && this.props.user.role !== 'agent' && this.props.module !== 'WHATSAPP' &&
                       (
                         this.state.showAssignTeam
                             ? <div className='m-accordion__item'>
@@ -506,17 +527,64 @@ class ProfileArea extends React.Component {
                     }
                   </div>
                 }
+                {this.props.module !== 'WHATSAPP' &&
+                <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
+                {
+                  this.state.popoverAddTagOpen
+                      ? <div className='m-accordion__item' style={{overflow: 'visible'}}>
+                        <div className='m-accordion__item-head'>
+                          <span className='m-accordion__item-icon'>
+                            <i className='fa fa-tags' />
+                          </span>
+                          <span className='m-accordion__item-title'>Assign Tags</span>
+                          <span style={{ cursor: 'pointer' }} onClick={this.hideAddTag} className='m-accordion__item-icon'>
+                            <i className='la la-minus' />
+                          </span>
+                      </div>
+                      <div className='m-accordion__item-body'>
+                        <div className='m-accordion__item-content'>
+                          <Select.Creatable
+                            options={this.state.tagOptions}
+                            onChange={this.handleAdd}
+                            value={this.state.addTag}
+                            placeholder='Add User Tags'
+                            menuShouldScrollIntoView={true}
+                          />
+                          {this.state.saveEnable
+                            ? <div className='col-12'>
+                              <button style={{marginTop: '10px'}}
+                                className='btn btn-primary btn-sm'
+                                onClick={() => {this.addTags()}}>Save
+                            </button>
+                            </div>
+                            : <div className='col-12'>
+                              <button style={{marginTop: '10px'}}
+                                className='btn btn-primary btn-sm'
+                                disabled>
+                                Save
+                            </button>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                      : <div className='m-accordion__item' style={{overflow: 'visible'}}>
+                      <div className='m-accordion__item-head collapsed'>
+                          <span className='m-accordion__item-icon'>
+                            <i className='fa fa-tags' />
+                          </span>
+                          <span className='m-accordion__item-title'>Assign Tags</span>
+                          <span style={{ cursor: 'pointer' }} onClick={this.showAddTag} className='m-accordion__item-icon'>
+                            <i className='la la-plus' />
+                          </span>
+                        </div>
+                      </div>
+                }
               </div>
-              <div className='row' style={{ display: 'block' }}>
-                <div style={{ marginLeft: '50px', marginTop: '40px' }}>
-                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{ color: '#716aca', cursor: 'pointer', width: '110px' }}>
-                    <i className='la la-plus' /> Assign Tags
-                  </a>
-                </div>
-                {/* <span style={{fontSize: '0.8rem', color: '#5cb85c', marginLeft: '20px'}}>Tag limit for each subscriber is 10</span> */}
-                <hr></hr>
+            }
               </div>
-              {this.props.subscriberTags && this.props.subscriberTags.length > 0 && <div className='row' style={{ minWidth: '150px', padding: '10px' }}>
+              {this.props.subscriberTags && this.props.subscriberTags.length > 0 &&
+                <div className='row' style={{ minWidth: '150px', padding: '10px' }}>
                 {
                   this.props.subscriberTags.map((tag, i) => (
                     <span key={i} style={{ display: 'flex' }} className='tagLabel'>
@@ -529,40 +597,6 @@ class ProfileArea extends React.Component {
                 }
               </div>
               }
-              <Popover placement='left' className='liveChatPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
-                <PopoverHeader>Add Tags</PopoverHeader>
-                <PopoverBody>
-                  <div className='row' style={{ minWidth: '250px' }}>
-                    <div className='col-12'>
-                      <label>Select Tags</label>
-                      <Select.Creatable
-                        options={this.state.tagOptions}
-                        onChange={this.handleAdd}
-                        value={this.state.addTag}
-                        placeholder='Add User Tags'
-                      />
-                    </div>
-                    {this.state.saveEnable
-                      ? <div className='col-12'>
-                        <button style={{ float: 'right', margin: '15px' }}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.addTags()
-                            this.toggleAdd()
-                          }}>Save
-                      </button>
-                      </div>
-                      : <div className='col-12'>
-                        <button style={{ float: 'right', margin: '15px' }}
-                          className='btn btn-primary btn-sm'
-                          disabled>
-                          Save
-                      </button>
-                      </div>
-                    }
-                  </div>
-                </PopoverBody>
-              </Popover>
               <div className='row'>
               <div className='col-12'>
                 <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
@@ -583,12 +617,12 @@ class ProfileArea extends React.Component {
                 </span>
                 </div>
               </div>
-              
+
                 {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                   ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
                     {
                       this.props.customFieldOptions.map((field, i) => (
-                        <div className='row'>
+                        <div key={i} className='row'>
                           <div className='col-sm-12'>
                             <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
                               onMouseEnter={() => { this.hoverOn(field._id) }}
@@ -626,7 +660,7 @@ class ProfileArea extends React.Component {
                   : <div style={{ padding: '15px', maxHeight: '120px' }}>
                     <span>No Custom Field Found</span>
                   </div>}
-                  
+
             </div>
           </div>
         </div>
@@ -640,11 +674,7 @@ class ProfileArea extends React.Component {
               <p>Are you sure you want to Unsubscribe this Subscriber?</p>
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.props.changeActiveSession('none')
-                    this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
-                    this.closeDialog()
-                  }}>
+                  <button className='btn btn-primary' onClick={this.unSubscribe}>
                     Yes
                     </button>
                 </div>

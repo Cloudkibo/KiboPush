@@ -19,7 +19,7 @@ class MessengerRefURLMessage extends React.Component {
     console.log('props.pages', props.pages)
 
     this.state = {
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerRefURL.reply ? props.messengerRefURL.reply : [],
       pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
       convoTitle: 'Opt-In Message'

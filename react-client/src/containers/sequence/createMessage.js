@@ -17,7 +17,7 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'add share', 'send sequence message'],
+      buttonActions: ['open website', 'send sequence message'],
       broadcast: this.props.location.state ? this.props.location.state.payload : [],
       convoTitle: 'Broadcast Title',
       isShowingModalGuideLines: false

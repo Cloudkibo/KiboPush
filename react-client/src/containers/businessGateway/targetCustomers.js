@@ -17,6 +17,8 @@ class TargetCustomers extends React.Component {
     this.changeCriteria = this.changeCriteria.bind(this)
     this.changeText = this.changeText.bind(this)
     this.resetCondition = this.resetCondition.bind(this)
+    this.typingTimer = null
+    this.doneTypingInterval = 300
   }
 
   addCondition () {
@@ -32,6 +34,9 @@ class TargetCustomers extends React.Component {
     this.setState({
       conditions: conditions
     })
+    if (this.props.updateConditions) {
+      this.props.updateConditions([], true)
+    }
     this.props.resetErrors()
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
@@ -43,6 +48,9 @@ class TargetCustomers extends React.Component {
         conditions[i].text = ''
       }
     }
+    if (this.props.updateConditions) {
+      this.props.updateConditions(conditions, true)
+    }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
@@ -53,16 +61,24 @@ class TargetCustomers extends React.Component {
         conditions[i].criteria = e.target.value
       }
     }
+    if (this.props.updateConditions) {
+      this.props.updateConditions(conditions, true)
+    }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
+    clearTimeout(this.typingTimer)
+    this.typingTimer = setTimeout(this.props.debounce, this.doneTypingInterval)
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].text = (e.target.value).trim()
         console.log('text: ' + conditions[i].text)
       }
+    }
+    if (this.props.updateConditions) {
+      this.props.updateConditions(conditions)
     }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
@@ -74,6 +90,18 @@ class TargetCustomers extends React.Component {
         tempConditions.splice(i, 1)
       }
     }
+    console.log('removing condition', tempConditions)
+    if (this.props.updateConditions) {
+      if (tempConditions.length === 1) {
+        if (tempConditions[0].condition === '' || tempConditions[0].criteria === '' || tempConditions[0].text === '') {
+          this.props.updateConditions([], true)
+         } else {
+          this.props.updateConditions(tempConditions, true)
+         }
+      } else {
+        this.props.updateConditions(tempConditions, true)
+      }
+    }
     this.setState({
       conditions: tempConditions
     })
@@ -82,7 +110,7 @@ class TargetCustomers extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={this.props.style}>
         <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
           <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
             <table className='m-datatable__table'
@@ -164,9 +192,9 @@ class TargetCustomers extends React.Component {
                      <td data-field='title'
                        className='m-datatable__cell' style={{width: '25%'}}>
                        <input className='form-control m-input'
+                         id = 'targetingText'
                          onChange={(e) => this.changeText(e, i)}
                          value={condition.text}
-                         id='text'
                          placeholder='Value' />
                        <span className='m-form__help'>
                          {
@@ -211,6 +239,7 @@ class TargetCustomers extends React.Component {
     )
   }
 }
+
 function mapStateToProps (state) {
   return {
     pages: state.pagesInfo.pages,
@@ -223,4 +252,5 @@ function mapDispatchToProps (dispatch) {
     updateCurrentCustomersInfo: updateCurrentCustomersInfo
   }, dispatch)
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(TargetCustomers)

@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
 import { socketUpdateSms } from './../redux/actions/smsChat.actions'
 import { socketUpdateWhatsApp } from './../redux/actions/whatsAppChat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
@@ -109,6 +109,8 @@ socket.on('message', (data) => {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
+  } else if (data.action === 'session_assign') {
+    store.dispatch(updateSessions(data.payload.data))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))

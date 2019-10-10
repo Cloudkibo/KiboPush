@@ -17,7 +17,15 @@ const styles = {
 class SessionItem extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null
+    }
+  }
+
+  componentWillReceiveProps () {
+    this.setState({
+      unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
+    })
   }
 
   render () {
@@ -29,7 +37,24 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__info'>
             <span className='m-widget4__title'>
-              {this.props.session.firstName + ' ' + this.props.session.lastName}
+              {this.props.subscriberName}
+
+
+              <div style={{display: 'inline-block'}}>
+                {
+                  this.state.unreadCount &&
+                  <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                    {this.state.unreadCount}
+                  </a>
+                }
+
+                {
+                  this.props.session.pendingResponse &&
+                  <a style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                    pending
+                  </a>
+                }
+              </div>
             </span>
             <br />
             {
@@ -37,7 +62,7 @@ class SessionItem extends React.Component {
               ? <span className='m-widget4__sub'>
                 {
                   !this.props.session.lastRepliedBy
-                  ? <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.firstName + ': ' + this.props.session.lastPayload.text.slice(0, 30) + '...' : this.props.session.firstName + ': ' + this.props.session.lastPayload.text}</span>
+                  ? <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text.slice(0, 30) + '...' : this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You: {(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastPayload.text.slice(0, 25) + '...' : this.props.session.lastPayload.text }</span>
                   : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
@@ -47,7 +72,7 @@ class SessionItem extends React.Component {
               ? <span className='m-widget4__sub'>
                 {
                   (!this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null) && this.props.session.lastPayload
-                  ? <span>{this.props.session.firstName} sent {this.props.session.lastPayload.componentType}</span>
+                  ? <span>{this.props.subscriberName.split(' ')[0]} sent {this.props.session.lastPayload.componentType}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You sent {this.props.session.lastPayload.componentType}</span>
                   : <span>{this.props.session.lastRepliedBy.name} sent {this.props.session.lastPayload.componentType}</span>
@@ -57,7 +82,7 @@ class SessionItem extends React.Component {
               <span className='m-widget4__sub'>
                 {
                   (!this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null) && this.props.session.lastPayload
-                  ? <span>{this.props.session.firstName} sent {this.props.session.lastPayload.attachments[0].type}</span>
+                  ? <span>{this.props.subscriberName.split(' ')[0]} sent {this.props.session.lastPayload.attachments[0].type}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You sent {this.props.session.lastPayload.attachments[0].type}</span>
                   : <span>{this.props.session.lastRepliedBy.name} sent {this.props.session.lastPayload.attachments[0].type}</span>
@@ -69,7 +94,7 @@ class SessionItem extends React.Component {
               <span className='m-widget4__sub'>
                 {
                   !this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null
-                  ? <span>{this.props.session.firstName}: <i className='fa fa-thumbs-o-up' /></span>
+                  ? <span>{this.props.subscriberName.split(' ')[0]}: <i className='fa fa-thumbs-o-up' /></span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
                   ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
                   : <span>{this.props.session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
@@ -77,31 +102,23 @@ class SessionItem extends React.Component {
               </span>
             }
             <br />
-            <span className='m-widget4__sub'>
+            { this.props.session.pageId
+            ? <span className='m-widget4__sub'>
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
               {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i className='fa fa-calendar' />&nbsp;&nbsp;
               {
-                this.props.session.lastDateTime &&
-                moment(this.props.session.lastDateTime).fromNow()
+                this.props.session.last_activity_time &&
+                moment(this.props.session.last_activity_time).fromNow()
               }
             </span>
-          </div>
-          <div className='m-widget4__ext'>
+            : <span className='m-widget4__sub'>
             {
-              this.props.session.unreadCount &&
-              <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                {this.props.session.unreadCount}
-              </a>
+              this.props.session.last_activity_time &&
+              moment(this.props.session.last_activity_time).fromNow()
             }
-          </div>
-          <div className='m-widget4__ext'>
-            {
-              this.props.session.pendingResponse &&
-              <a style={{backgroundColor: '#c4c5d6', color: '#000000'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                pending
-              </a>
-            }
+            </span>
+          }
           </div>
         </div>
       </div>
@@ -111,6 +128,7 @@ class SessionItem extends React.Component {
 
 SessionItem.propTypes = {
   'session': PropTypes.object.isRequired,
+  'subscriberName': PropTypes.string.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired

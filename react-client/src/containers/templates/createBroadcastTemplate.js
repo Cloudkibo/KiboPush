@@ -17,7 +17,7 @@ class CreateBroadcastTemplate extends React.Component {
     super(props, context)
     props.loadCategoriesList()
     this.state = {
-      buttonActions: ['open website', 'add share'],
+      buttonActions: ['open website'],
       broadcast: this.props.template ? this.props.template.payload : [],
       isShowingModal: false,
       convoTitle: props.template ? props.template.title : 'Broadcast Title',

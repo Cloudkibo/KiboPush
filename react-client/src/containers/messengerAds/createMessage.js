@@ -18,7 +18,7 @@ class CreateMessage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      buttonActions: ['open website', 'create message', 'add share'],
+      buttonActions: ['open website', 'create message'],
       broadcast: [],
       convoTitle: this.props.title ? this.props.title : '',
       selectedIndex: 1,

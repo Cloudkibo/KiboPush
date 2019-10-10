@@ -341,7 +341,7 @@ class LinkCarouselModal extends React.Component {
                                         return (
                                         <div>
                                             <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                            <h5 style={{color: '#0782FF'}}>{button.type === 'element_share' || button.shareButton ? 'Share' : button.title}</h5>
+                                            <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                                         </div>
                                         )
                                     }

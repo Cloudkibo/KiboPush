@@ -16,7 +16,7 @@
     constructor (props, context) {
       super(props, context)
       this.state = {
-        buttonActions: ['open website', 'open webview', 'add share'],
+        buttonActions: ['open website', 'open webview'],
         broadcast: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
         pageId: this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id,
         convoTitle: 'Landing Page Opt-In Message'
@@ -38,7 +38,7 @@
       } else if (hostname.includes('kibochat.cloudkibo.com')) {
         title = 'KiboChat'
       }
-      if (this.props.location.state.module === 'edit') {
+      if (this.props.location.state && this.props.location.state.module === 'edit') {
         document.title = `${title} | Edit Message`
       } else {
         document.title = `${title} | Create Message`

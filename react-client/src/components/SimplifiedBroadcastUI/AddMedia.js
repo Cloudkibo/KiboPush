@@ -184,10 +184,9 @@ class Media extends React.Component {
     this.setState({loading: false})
   }
   updateImageUrl (data) {
-
     var image = data.type.match('image.*')
     if (image) {
-      console.log('image uploading template')
+      console.log('image uploading template', data)
       if (this.props.pages) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: data.fileurl.url,
@@ -200,6 +199,9 @@ class Media extends React.Component {
           image_url: '',
           size: data.size
         }, (newData) => this.updateFileUrl(data, newData), this.setLoading)
+      } else {
+        this.updateFileUrl(data, null)
+        this.setLoading()
       }
     }
   }
@@ -209,23 +211,30 @@ class Media extends React.Component {
     //this.props.updateFile(data)
     var video = data.type.match('video.*')
     if (video) {
-      console.log('video uploading template')
-      this.props.uploadTemplate({pages: this.props.pages,
-        url: data.fileurl.url,
-        componentType: 'video',
-        id: data.fileurl.id,
-        name: data.fileurl.name
-      }, { id: this.props.id,
-        componentType: 'video',
-        fileName: data.fileurl.name,
-        type: data.fileurl.type,
-        size: data.fileurl.size
-      }, (newData) => this.updateFileUrl(data, newData), this.setLoading)
+      console.log('video uploading template', data)
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: data.fileurl.url,
+          componentType: 'video',
+          id: data.fileurl.id,
+          name: data.fileurl.name
+        }, { id: this.props.id,
+          componentType: 'video',
+          fileName: data.fileurl.name,
+          type: data.fileurl.type,
+          size: data.fileurl.size
+        }, (newData) => this.updateFileUrl(data, newData), this.setLoading)
+      } else {
+        this.updateFileUrl(data, null)
+        this.setLoading()
+      }
     } 
   }
 
   updateFileUrl (data, newData) {
-    data.fileurl = newData.fileurl
+    if (newData) {
+      data.fileurl = newData.fileurl
+    }
     console.log('updating fileurl of Media', data)
     this.setState({ 
       fileurl: data.fileurl,

@@ -378,6 +378,7 @@ class GenericMessage extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('components length', this.state.list)
 
     return (<div className='m-grid__item m-grid__item--fluid m-wrapper'>
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -389,7 +390,7 @@ class GenericMessage extends React.Component {
             <div className='row'>
               <div className='col-12'>
                 <div className='row'>
-                  <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.addComponent} />
+                  <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.addComponent} addedComponents={this.state.list.length} />
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     <StickyDiv zIndex={1}>
                       <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>

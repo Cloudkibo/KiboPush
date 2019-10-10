@@ -34,7 +34,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
@@ -128,10 +128,10 @@ class CreateConvo extends React.Component {
       data['genderValue'] = targeting.genderValue
     }
     if (targeting.localeValue.length > 0) {
-      data['localeValue'] = targeting.localeValue[0]
+      data['localeValue'] = targeting.localeValue
     }
     if (targeting.tagValue.length > 0) {
-      data['tagValue'] = targeting.tagValue[0]
+      data['tagValue'] = targeting.tagValue
     }
     this.props.loadSubscribersCount(data)
   }

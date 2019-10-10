@@ -25,7 +25,6 @@ import { Picker } from 'emoji-mart'
 import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
-import 'react-giphy-select/lib/styles.css'
 import {
   isEmoji,
   getmetaurl,
@@ -86,7 +85,8 @@ class ChatBox extends React.Component {
       buttonState: 'start',
       recording: false,
       scrolling: true,
-      isShowingModalPending: false
+      isShowingModalPending: false,
+      pendingResponseValue: ''
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -141,8 +141,7 @@ class ChatBox extends React.Component {
   }
 
   removeUrlMeta () {
-    this.setState({urlmeta: {}})
-    this.props.urlMeta = {}
+    this.props.fetchUrlMeta('')
   }
 
   showDialogRecording () {
@@ -161,12 +160,12 @@ class ChatBox extends React.Component {
     this.setState({isShowingModal: false})
   }
 
-  showDialogPending () {
-    this.setState({isShowingModalPending: true})
+  showDialogPending (value) {
+    this.setState({isShowingModalPending: true, pendingResponseValue: value })
   }
 
   closeDialogPending () {
-    this.setState({isShowingModalPending: false})
+    this.setState({isShowingModalPending: false, pendingResponseValue: ''})
   }
 
   shouldLoad () {
@@ -240,7 +239,10 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
+    console.log('updateScrollTop refs.chatScroll.scrollHeight', this.refs.chatScroll.scrollHeight)
+    console.log('updateScrollTop previousScrollHeight', this.previousScrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
+      console.log('this.refs.chatScroll.scrollTop', (this.refs.chatScroll.scrollHeight - this.previousScrollHeight))
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
@@ -520,7 +522,8 @@ class ChatBox extends React.Component {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
           this.props.sendChatMessage(data, this.props.fetchOpenSessions)
-          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          this.setState({textAreaValue: '', displayUrlMeta: false})
+          this.removeUrlMeta()
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
@@ -533,7 +536,7 @@ class ChatBox extends React.Component {
         }
         this.newMessage = true
         this.setState({scrolling: true})
-        this.props.updatePendingSession(this.props.currentSession)
+        this.props.updatePendingSession(this.props.currentSession, false)
       }
     }
   }
@@ -630,6 +633,7 @@ class ChatBox extends React.Component {
   }
 
   scrollToTop () {
+    console.log('scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
@@ -659,10 +663,13 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     if (this.newMessage) {
+      console.log('componentDidUpdate newMessage')
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
+
+    console.log('this.previousScrollHeight', this.previousScrollHeight)
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by.id !== this.props.user._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       if (!this.state.scrolling) {
         this.updateScrollTop()
@@ -855,12 +862,12 @@ class ChatBox extends React.Component {
             onClose={this.closeDialogPending}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogPending}>
-              <h3>Remove Pending Response</h3>
-              <p>Are you sure you want to remove this session as pending response?</p>
+              <h3>{this.state.pendingResponseValue ? 'Add ' : 'Remove '}Pending Response</h3>
+              <p>{this.state.pendingResponseValue ? 'Are you sure you want to mark this session as pending response?' : 'Are you sure you want to remove this session as pending response?'}</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-primary' onClick={(e) => {
-                    this.props.removePending(this.props.currentSession)
+                    this.props.removePending(this.props.currentSession, this.state.pendingResponseValue)
                     this.closeDialogPending()
                   }}>
                     Yes
@@ -900,8 +907,7 @@ class ChatBox extends React.Component {
               <h3>Voice Recording</h3>
               <div>
                 <ReactMic style={{width: '450px'}}
-                  height='100'
-                  width='450'
+                  width= '450'
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
@@ -975,7 +981,7 @@ class ChatBox extends React.Component {
         <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
           <PopoverBody>
             <GiphySelect
-              onEntrySelect={(gif) => { this.sendGif(gif) }}
+              onEntrySelect={gif => this.sendGif(gif)}
             />
           </PopoverBody>
         </Popover>
@@ -1031,11 +1037,12 @@ class ChatBox extends React.Component {
           </Popover>
           */
         }
-        <Popover
+         {/* {this.props.user.isSuperUser &&
+          <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
           height='390px'
-          target={this.recording}
+          target='recordingDiv'
           show={this.state.showRecorder}
           onHide={this.closeRecorder}
         >
@@ -1050,18 +1057,25 @@ class ChatBox extends React.Component {
             <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
+      }  */}
         <div className='m-portlet m-portlet--mobile'>
           <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
             <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
             {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
-                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
+                {this.props.currentSession.pendingResponse
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+              : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                }
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
-                {this.props.currentSession.pendingResponse && <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showDialogPending} data-tip='Remove Pending Flag' className='la la-user-times' />}
+                {this.props.currentSession.pendingResponse
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+                : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                }
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
                 <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
@@ -1835,7 +1849,7 @@ class ChatBox extends React.Component {
                     </div>
                     {
                       this.props.user.isSuperUser &&
-                      <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
                         <i onClick={this.showDialogRecording} style={styles.iconclass}>
                           <i style={{
                             fontSize: '20px',

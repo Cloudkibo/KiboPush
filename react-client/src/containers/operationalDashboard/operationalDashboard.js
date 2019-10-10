@@ -14,7 +14,7 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import Popover from 'react-simple-popover'
 import {
   loadUsersList,
@@ -48,6 +48,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import AutopostingDetails from './autopostingDetails'
+import auth from '../../utility/auth.service'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -108,6 +109,14 @@ class OperationalDashboard extends React.Component {
     this.sendEmail = this.sendEmail.bind(this)
     this.loadMore = this.loadMore.bind(this)
     this.debounce = this.debounce.bind(this)
+    this.setUsersView = this.setUsersView.bind(this)
+  }
+
+  setUsersView (user) {
+    auth.putActingAsUser(user.domain_email, user.name)
+    browserHistory.push({
+      pathname: `/dashboard`
+    })
   }
 
   loadMore () {
@@ -571,6 +580,14 @@ class OperationalDashboard extends React.Component {
                                           <span className='m-widget5__votes'>
                                             <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                              See more
+                                           </button>
+                                          </span>
+                                        </div>
+                                        <div className='m-widget5__stats2'>
+                                          <br />
+                                          <span className='m-widget5__votes'>
+                                            <button onClick={() => this.setUsersView(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             User's View
                                            </button>
                                           </span>
                                         </div>

@@ -19,7 +19,7 @@ class EditTemplate extends React.Component {
       broadcast: [],
       selectedPage: [],
       convoTitle: 'Welcome Message',
-      buttonActions: ['open website', 'open webview', 'add share'],
+      buttonActions: ['open website', 'open webview'],
       pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     }
     this.goBack = this.goBack.bind(this)

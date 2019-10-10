@@ -105,20 +105,20 @@ export function loadAllSubscribersList () {
   }
 }
 
-export function updatePicture (subscriberData, fetchData, callback) {
+export function updatePicture (subscriberData, callback) {
   console.log('updatePicture data', subscriberData)
   return (dispatch) => {
     callApi('subscribers/updatePicture', 'post', subscriberData).then(res => {
       if (res.status === 'success') {
         console.log('succesfully updated profile picture for ', subscriberData)
-        if (fetchData) {
-          callApi('subscribers/getAll', 'post', fetchData).then(res => {
-            console.log('response from subscribers', res)
-            dispatch(updateAllSubscribersListNew(res.payload))
-          })
-        }
+        // if (fetchData) {
+        //   callApi('subscribers/getAll', 'post', fetchData).then(res => {
+        //     console.log('response from subscribers', res)
+        //     dispatch(updateAllSubscribersListNew(res.payload))
+        //   })
+        // }
         if (callback) {
-          callback()
+          callback(res.payload)
         }
       }
     })
