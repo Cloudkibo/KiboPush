@@ -29,7 +29,8 @@ export function liveChat (state = initialState, action) {
         name: action.data.teamName ? action.data.teamName : action.data.agentName
       }
       return Object.assign({}, state, {
-        openSessions: sessions
+        openSessions: sessions,
+        randomNum: Math.random()
       })
 
     case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:
