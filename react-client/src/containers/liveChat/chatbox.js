@@ -663,7 +663,7 @@ class ChatBox extends React.Component {
   componentDidUpdate (nextProps) {
     if (this.newMessage) {
       console.log('componentDidUpdate newMessage')
-      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      //this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
 
