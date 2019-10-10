@@ -9,7 +9,8 @@ import {
   sendChatMessage,
   markRead,
   updateChat,
-  sendAttachment
+  sendAttachment,
+  resetSocket
 } from '../../redux/actions/whatsAppChat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -116,14 +117,10 @@ updateChat (chat, newChat) {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of ChatArea', nextProps)
-    // // this.getDisabledValue()
-    // if (nextProps.urlMeta) {
-    //   if (!nextProps.urlMeta.type) {
-    //     this.setState({displayUrlMeta: false})
-    //   }
-    //   this.setState({urlmeta: nextProps.urlMeta})
-    // }
-    // this.props.markRead(this.props.activeSession._id, this.props.sessions)
+    if (nextProps.socketSession) {
+      nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
+      nextProps.resetSocket()
+    }
   }
 
   componentDidUpdate (nextProps) {
@@ -134,6 +131,7 @@ updateChat (chat, newChat) {
     //   this.previousScrollHeight = this.refs.chatScroll.scrollHeight
     //   this.newMessage = false
     // }
+
     if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
       this.props.markRead(this.props.activeSession._id, this.props.sessions)
     }
@@ -181,7 +179,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps of ChatArea', state)
   return {
     chat: (state.whatsAppChatInfo.chat),
-    chatCount: (state.whatsAppChatInfo.chatCount)
+    chatCount: (state.whatsAppChatInfo.chatCount),
+    socketSession: (state.whatsAppChatInfo.socketMessage)
   }
 }
 
@@ -191,7 +190,8 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage,
     markRead,
     updateChat,
-    sendAttachment
+    sendAttachment,
+    resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatArea)

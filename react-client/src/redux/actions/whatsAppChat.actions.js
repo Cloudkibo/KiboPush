@@ -34,7 +34,12 @@ export function socketUpdateWhatsApp (data) {
     data
   }
 }
-
+export function resetSocket (data) {
+  return {
+    type: ActionTypes.RESET_SOCKET_WHATSAPP,
+    data: null
+  }
+}
 export function updateChat (chat, newChat) {
   let chatData = []
   chatData = chat

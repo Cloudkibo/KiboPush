@@ -33,6 +33,7 @@ class ChatItem extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
     
   }
@@ -51,6 +52,13 @@ class ChatItem extends React.Component {
   onTestURLAudio (url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
+  }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
     }
@@ -88,6 +96,16 @@ class ChatItem extends React.Component {
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
         </a>
+        :msg.payload.componentType === 'video'
+        ? <div key={index}>
+          <ReactPlayer
+            url={msg.payload.fileurl.url}
+            controls
+            width='230px'
+            height='200px'
+            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+          />
+        </div>
         :msg.payload.componentType === 'thumbsUp'
         ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
             <img
