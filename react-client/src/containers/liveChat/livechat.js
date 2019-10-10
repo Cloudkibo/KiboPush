@@ -496,6 +496,7 @@ class LiveChat extends React.Component {
 function mapStateToProps(state) {
   console.log('props in live chat', state)
   return {
+    randomNum: (state.liveChat.randomNum),
     openSessions: (state.liveChat.openSessions),
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),
