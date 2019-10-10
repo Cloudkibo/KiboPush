@@ -632,6 +632,7 @@ class ChatBox extends React.Component {
   }
 
   scrollToTop () {
+    console.log('scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
