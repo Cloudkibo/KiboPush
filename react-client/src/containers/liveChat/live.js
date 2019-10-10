@@ -203,8 +203,8 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps in live.js')
     this.setState({ignore: true})
-
     if (nextProps.openSessions && nextProps.closeSessions) {
       console.log('open sessions', nextProps.openSessions)
       console.log('close sessions', nextProps.closeSessions)
@@ -213,6 +213,7 @@ class LiveChat extends React.Component {
         this.setState({loading: false})
       }
       if (this.props.location.state && this.state.activeSession === '') {
+        console.log('updating active session')
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
         this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : ''})
