@@ -294,6 +294,7 @@ class ProfileArea extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps profileArea.js', nextProps)
     if (nextProps.activeSession.is_assigned) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({

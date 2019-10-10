@@ -250,7 +250,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps called')
+    console.log('componentWillReceiveProps livechat.js', nextProps)
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
