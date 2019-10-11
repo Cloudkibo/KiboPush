@@ -88,8 +88,10 @@ class ChatAreaHead extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {(this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
         <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
-        {
+        }
+      {
           this.props.activeSession.status === 'new'
           ? <div style={{float: 'right'}}>
             {this.props.activeSession.pendingResponse
@@ -118,7 +120,8 @@ class ChatAreaHead extends React.Component {
 ChatAreaHead.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'showSearch': PropTypes.func.isRequired,
-  'changeStatus': PropTypes.func.isRequired
+  'changeStatus': PropTypes.func.isRequired,
+  'user': PropTypes.object.isRequired
 }
 
 export default ChatAreaHead

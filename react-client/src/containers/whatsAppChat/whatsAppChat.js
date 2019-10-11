@@ -58,12 +58,20 @@ class LiveChat extends React.Component {
     this.handleResponse = this.handleResponse.bind(this)
     this.saveCustomField= this.saveCustomField.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
+    this.assignToAgent = this.assignToAgent.bind(this)
   }
 
   saveCustomField (data) {
     this.props.setCustomFieldValue(data, this.handleResponse)
   }
- 
+
+  assignToAgent (data) {
+    let activeSession = this.state.activeSession
+    activeSession.is_assigned = data.isAssigned
+    this.setState({activeSession: activeSession})
+    this.props.assignToAgent(data)
+  }
+
   handleResponse (res, body) {
     console.log("res",res)
     if (res.status === 'success') {
@@ -309,7 +317,7 @@ class LiveChat extends React.Component {
                       changeActiveSession={this.changeActiveSession}
                       unSubscribe={this.props.unSubscribe}
                       user={this.props.user}
-                      assignToAgent={this.props.assignToAgent}
+                      assignToAgent={this.assignToAgent}
                       sendNotifications={this.props.sendNotifications}
                       members={this.props.members ? this.props.members : []}
                       customFields={this.props.customFields}
@@ -339,6 +347,7 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log('props in live chat', state)
   return {
+    updateSessionTimeStamp: (state.whatsAppChatInfo.updateSessionTimeStamp),
     openSessions: (state.whatsAppChatInfo.openSessions),
     openCount: (state.whatsAppChatInfo.openCount),
     closeCount: (state.whatsAppChatInfo.closeCount),
