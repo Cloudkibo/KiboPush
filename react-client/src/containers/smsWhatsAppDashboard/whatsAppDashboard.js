@@ -11,6 +11,7 @@ import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberS
 import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
 import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp } from '../../redux/actions/whatsAppDashboard.actions'
 import { loadWhatsAppContactsList, loadContactsList } from '../../redux/actions/uploadContacts.actions'
+import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { joinRoom } from '../../utility/socketio'

@@ -19,9 +19,11 @@ class ChatAreaHead extends React.Component {
   showDialog () {
     this.setState({isShowingModal: true})
   }
+
   showSearch () {
     this.props.showSearch()
   }
+
   closeDialog () {
     this.setState({isShowingModal: false})
   }
