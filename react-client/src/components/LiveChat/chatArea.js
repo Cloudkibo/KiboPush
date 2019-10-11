@@ -10,7 +10,7 @@ class ChatArea extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.setDataPayload = this.setDataPayload.bind(this)
   }
-
+  
   setMessageData (session, payload) {
     var data = ''
     data = {

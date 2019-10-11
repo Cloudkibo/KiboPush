@@ -11,12 +11,17 @@ class ChatAreaHead extends React.Component {
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showSearch = this.showSearch.bind(this)
     this.showDialogPending = this.showDialogPending.bind(this)
     this.closeDialogPending = this.closeDialogPending.bind(this)
   }
 
   showDialog () {
     this.setState({isShowingModal: true})
+  }
+
+  showSearch () {
+    this.props.showSearch()
   }
 
   closeDialog () {
@@ -85,15 +90,17 @@ class ChatAreaHead extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {(this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
         <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
-        {
+        }
+      {
           this.props.activeSession.status === 'new'
           ? <div style={{float: 'right'}}>
             {this.props.activeSession.pendingResponse
             ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
             : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
             }
-            <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+            <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showSearch} data-tip='Search' className='la la-search' />
             <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
           </div>
           : <div style={{float: 'right'}}>
@@ -101,7 +108,7 @@ class ChatAreaHead extends React.Component {
             ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
             : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
             }
-            <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+            <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.showSearch} data-tip='Search' className='la la-search' />
             <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
               this.props.changeStatus(e, 'new', this.props.activeSession._id)
             }} className='fa fa-envelope-open-o' />
@@ -115,7 +122,8 @@ class ChatAreaHead extends React.Component {
 ChatAreaHead.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'showSearch': PropTypes.func.isRequired,
-  'changeStatus': PropTypes.func.isRequired
+  'changeStatus': PropTypes.func.isRequired,
+  'user': PropTypes.object.isRequired
 }
 
 export default ChatAreaHead

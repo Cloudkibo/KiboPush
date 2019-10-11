@@ -15,7 +15,7 @@ export function whatsAppChatInfo (state = initialState, action) {
     case ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS:
       return Object.assign({}, state, {
         closeSessions: action.closeSessions,
-        closeCount: action.closeSessions
+        closeCount: action.count
       })
     case ActionTypes.FETCH_WHATSAPP_CHAT_OVERWRITE:
       return Object.assign({}, state, {
@@ -41,11 +41,34 @@ export function whatsAppChatInfo (state = initialState, action) {
         chat: action.chat
       })
     case ActionTypes.SOCKET_UPDATE_WHATSAPP:
-      let newchat = state.chat
-      newchat.push(action.data)
       return Object.assign({}, state, {
-        chat: newchat,
-        chatCount: state.chatCount + 1
+        socketMessage: action.data,
+      })
+    case ActionTypes.RESET_SOCKET_WHATSAPP:
+      return Object.assign({}, state, {
+        socketMessage: action.data,
+      })
+    case ActionTypes.UPDATE_SESSIONS_WHATSAPP:
+      let sessions = state.openSessions
+      let ids = sessions.map(s => s._id)
+      let index = ids.indexOf(action.data.subscriberId)
+      sessions[index].is_assigned = action.data.isAssigned
+      sessions[index].assigned_to = {
+        type: action.data.teamId ? 'team' : 'agent',
+        id: action.data.teamId ? action.data.teamId : action.data.agentId,
+        name: action.data.teamName ? action.data.teamName : action.data.agentName
+      }
+      return Object.assign({}, state, {
+        openSessions: sessions,
+        updateSessionTimeStamp: new Date().toString()
+    })
+    case ActionTypes.SHOW_SEARCH_WHATSAPP:
+      return Object.assign({}, state, {
+        searchChat: action.data
+      })
+    case ActionTypes.CLEAR_SEARCH_WHATSAPP:
+      return Object.assign({}, state, {
+        searchChat: []
       })
     default:
       return state

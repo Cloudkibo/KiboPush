@@ -557,7 +557,7 @@ class Profile extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('mapStateToProps profile', state)
   return {
     chat: (state.liveChat.chat),
     user: (state.basicInfo.user),

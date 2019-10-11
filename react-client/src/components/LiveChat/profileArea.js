@@ -56,6 +56,18 @@ class ProfileArea extends React.Component {
     this.saveCustomField = this.saveCustomField.bind(this)
     this.handleSetCustomField = this.handleSetCustomField.bind(this)
     this.showToggle = this.showToggle.bind(this)
+    this.unSubscribe = this.unSubscribe.bind(this)
+    this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
+  }
+
+  unSubscribe () {
+    this.props.changeActiveSession('none')
+    if (this.props.module === 'WHATSAPP' ) {
+      this.props.unSubscribe(this.props.activeSession._id, {isSubscribed: false, unSubscribedBy: 'agent'}, this.props.msg)
+    } else {
+      this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
+    }
+    this.closeDialog()
   }
 
   showToggle () {
@@ -282,6 +294,7 @@ class ProfileArea extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps profileArea.js', nextProps)
     if (nextProps.activeSession.is_assigned) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
@@ -336,7 +349,7 @@ class ProfileArea extends React.Component {
         type='datetime-local' />
     } else if (this.state.selectedField.type === 'true/false') {
       setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
-        <option key='' value='' selected disabled>...Select...</option>
+        <option key='' value='' disabled>...Select...</option>
         <option key='true' value='true'>True</option>
         <option key='false' value='false'>False</option>
       </select>
@@ -370,7 +383,9 @@ class ProfileArea extends React.Component {
               </div>
               <div className='m-card-profile__details'>
                 <span className='m-card-profile__name'>
-                  {this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName}
+                  {this.props.module === 'WHATSAPP'
+                    ? this.props.activeSession.name
+                    : this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName}
                 </span>
                 {
                   this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
@@ -380,7 +395,7 @@ class ProfileArea extends React.Component {
                 }
                 <br />
                 <a className='m-card-profile__email m-link'>
-                  {this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
+                  {this.props.module !== 'WHATSAPP' && this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
                 </a>
                 <br />
                 {
@@ -395,7 +410,7 @@ class ProfileArea extends React.Component {
                   </a>
                 }
                 {
-                  this.props.user.isSuperUser &&
+                  this.props.user.isSuperUser && this.props.module !== 'WHATSAPP' &&
                   <MAPCUSTOMER
                     currentSession={this.props.activeSession}
                     msg={this.props.msg}
@@ -407,9 +422,9 @@ class ProfileArea extends React.Component {
                     {
                       this.state.isAssigned &&
                       <div style={{ marginBottom: '20px' }}>
-                        <span className='m--font-bolder'>Team:</span>
-                        <span> {
-                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
+                        {this.props.module !== 'WHATSAPP' && <span className='m--font-bolder'>Team:</span>}
+                        {this.props.module !== 'WHATSAPP' &&<span> {
+                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>}
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
                         <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
@@ -432,7 +447,7 @@ class ProfileArea extends React.Component {
                       )
                     }
                     {
-                      this.props.user && this.props.user.role !== 'agent' &&
+                      this.props.user && this.props.user.role !== 'agent' && this.props.module !== 'WHATSAPP' &&
                       (
                         this.state.showAssignTeam
                             ? <div className='m-accordion__item'>
@@ -512,6 +527,7 @@ class ProfileArea extends React.Component {
                     }
                   </div>
                 }
+                {this.props.module !== 'WHATSAPP' &&
                 <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
                 {
                   this.state.popoverAddTagOpen
@@ -565,6 +581,7 @@ class ProfileArea extends React.Component {
                       </div>
                 }
               </div>
+            }
               </div>
               {this.props.subscriberTags && this.props.subscriberTags.length > 0 &&
                 <div className='row' style={{ minWidth: '150px', padding: '10px' }}>
@@ -657,11 +674,7 @@ class ProfileArea extends React.Component {
               <p>Are you sure you want to Unsubscribe this Subscriber?</p>
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.props.changeActiveSession('none')
-                    this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
-                    this.closeDialog()
-                  }}>
+                  <button className='btn btn-primary' onClick={this.unSubscribe}>
                     Yes
                     </button>
                 </div>
@@ -680,22 +693,22 @@ class ProfileArea extends React.Component {
 }
 
 ProfileArea.propTypes = {
-  'teams': PropTypes.array.isRequired,
+  'teams': PropTypes.array,
   'agents': PropTypes.array.isRequired,
-  'subscriberTags': PropTypes.array.isRequired,
+  'subscriberTags': PropTypes.array,
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'unSubscribe': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
-  'fetchTeamAgents': PropTypes.func.isRequired,
-  'assignToTeam': PropTypes.func.isRequired,
+  'fetchTeamAgents': PropTypes.func,
+  'assignToTeam': PropTypes.func,
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
-  'unassignTags': PropTypes.func.isRequired,
-  'tags': PropTypes.array.isRequired,
-  'createTag': PropTypes.func.isRequired,
-  'assignTags': PropTypes.func.isRequired,
-  'tagOptions': PropTypes.array.isRequired,
+  'unassignTags': PropTypes.func,
+  'tags': PropTypes.array,
+  'createTag': PropTypes.func,
+  'assignTags': PropTypes.func,
+  'tagOptions': PropTypes.array,
   'members': PropTypes.array.isRequired,
   'setCustomFieldValue': PropTypes.func.isRequired
 }

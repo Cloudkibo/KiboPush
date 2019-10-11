@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { browserHistory, Link } from 'react-router'
 import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
+import { handleDate } from '../../utility/utils'
 
 class WhatsAppBroadcast extends React.Component {
   constructor (props) {
@@ -196,7 +197,7 @@ onFilter (e) {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -290,7 +291,7 @@ onFilter (e) {
                             style={{height: '55px'}} key={i}>
                             <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                            <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
+                            <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.automated_options.twilioWhatsApp.sandboxNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
                             <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>

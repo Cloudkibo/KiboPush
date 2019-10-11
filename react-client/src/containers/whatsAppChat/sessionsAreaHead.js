@@ -27,7 +27,7 @@ class SessionsAreaHead extends React.Component {
       }
     }
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-  this.props.fetchOpenSessions(data)
+    this.props.fetchOpenSessions(data)
     this.props.updateState(data)
   }
 

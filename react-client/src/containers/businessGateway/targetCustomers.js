@@ -17,6 +17,8 @@ class TargetCustomers extends React.Component {
     this.changeCriteria = this.changeCriteria.bind(this)
     this.changeText = this.changeText.bind(this)
     this.resetCondition = this.resetCondition.bind(this)
+    this.typingTimer = null
+    this.doneTypingInterval = 300
   }
 
   addCondition () {
@@ -47,7 +49,7 @@ class TargetCustomers extends React.Component {
       }
     }
     if (this.props.updateConditions) {
-      this.props.updateConditions(conditions)
+      this.props.updateConditions(conditions, true)
     }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
@@ -60,12 +62,14 @@ class TargetCustomers extends React.Component {
       }
     }
     if (this.props.updateConditions) {
-      this.props.updateConditions(conditions)
+      this.props.updateConditions(conditions, true)
     }
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeText (e, index) {
+    clearTimeout(this.typingTimer)
+    this.typingTimer = setTimeout(this.props.debounce, this.doneTypingInterval)
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -90,12 +94,12 @@ class TargetCustomers extends React.Component {
     if (this.props.updateConditions) {
       if (tempConditions.length === 1) {
         if (tempConditions[0].condition === '' || tempConditions[0].criteria === '' || tempConditions[0].text === '') {
-          this.props.updateConditions([])
+          this.props.updateConditions([], true)
          } else {
-          this.props.updateConditions(tempConditions)
+          this.props.updateConditions(tempConditions, true)
          }
       } else {
-        this.props.updateConditions(tempConditions)
+        this.props.updateConditions(tempConditions, true)
       }
     }
     this.setState({

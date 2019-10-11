@@ -250,7 +250,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps called')
+    console.log('componentWillReceiveProps livechat.js', nextProps)
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
@@ -473,6 +473,7 @@ class LiveChat extends React.Component {
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}
+                        module={CHATMODULE}
                       />
                     }
                     {
@@ -495,6 +496,7 @@ class LiveChat extends React.Component {
 function mapStateToProps(state) {
   console.log('props in live chat', state)
   return {
+    updateSessionTimeStamp: (state.liveChat.updateSessionTimeStamp),
     openSessions: (state.liveChat.openSessions),
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),

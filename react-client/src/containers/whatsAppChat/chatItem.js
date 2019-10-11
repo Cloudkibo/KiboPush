@@ -33,7 +33,9 @@ class ChatItem extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    
   }
 
   getRepliedByMsg (msg) {
@@ -50,6 +52,13 @@ class ChatItem extends React.Component {
   onTestURLAudio (url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+    }
+  }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
     }
@@ -72,6 +81,37 @@ class ChatItem extends React.Component {
         : msg.payload.componentType === 'file'
         ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
           <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName}</strong></h6>
+        </a>
+        : msg.payload.componentType === 'sticker'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
+        </a>
+        :msg.payload.componentType === 'gif'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
+        </a>
+        :msg.payload.componentType === 'video'
+        ? <div key={index}>
+          <ReactPlayer
+            url={msg.payload.fileurl.url}
+            controls
+            width='230px'
+            height='200px'
+            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+          />
+        </div>
+        :msg.payload.componentType === 'thumbsUp'
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
         </a>
       : msg.payload.componentType === 'audio' &&
       <div key={index}>
@@ -140,7 +180,7 @@ class ChatItem extends React.Component {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else if (this.props.chat) {
       this.scrollToTop()
-      setTimeout(scroller.scrollTo(this.props.chat[this.props.chat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
+      setTimeout(scroller.scrollTo(this.props.chat[this.props.chat.length - 1].datetime, {delay: 300, containerId: 'whatsappchat-container'}), 3000)
       // this.props.disableScroll()
     }
   }
@@ -184,7 +224,7 @@ class ChatItem extends React.Component {
     console.log('render in chatitem', this.props.chat)
     return (
       <div style={{height: '420px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-        <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+        <div id='whatsappchat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
           <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
             {
               (this.props.chatCount && this.props.chat && this.props.chatCount > this.props.chat.length) &&
@@ -194,7 +234,7 @@ class ChatItem extends React.Component {
                 this.props.chat && this.props.chat.map((msg, index) => (
                   msg.format === 'twilio'
                   ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                    <Element name={msg.datetime}>
+                    <Element name={msg._id}>
                       {
                         index === 0
                         ? <div className='m-messenger__datetime'>
@@ -217,7 +257,7 @@ class ChatItem extends React.Component {
                     </Element>
                   </div>
                   : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                    <Element name={msg.datetime}>
+                    <Element name={msg._id}>
                       {
                         index === 0
                         ? <div className='m-messenger__datetime'>

@@ -22,7 +22,8 @@ class CreateWhatsAppBroadcast extends React.Component {
       segmentationErrors: [],
       title: 'Broadcast Title',
       tabActive: 'broadcast',
-      subscribersCount: 0
+      subscribersCount: 0,
+      conditions: []
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -41,29 +42,22 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.debounce = this.debounce.bind(this)
     props.setDefaultCustomersInfo({filter: []})
     props.getCount([], this.onGetCount)
-    this.conditions = []
   }
 
-  componentDidMount () {
-    var typingTimer
-    var doneTypingInterval = 300
-    var self = this
-    let myInput = document.getElementById('targetingText')
-    myInput.addEventListener('keyup', () => {
-      clearTimeout(typingTimer)
-      typingTimer = setTimeout(self.debounce, doneTypingInterval)
-    })
-  }
   
   debounce () {
-    this.props.getCount(this.conditions, this.onGetCount)
+    this.props.getCount(this.state.conditions, this.onGetCount)
   }
 
-  updateConditions (conditions, reset) {
+  updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
-    this.conditions = conditions
-    if (reset) {
-      this.props.getCount(this.conditions, this.onGetCount)
+    this.setState({conditions})
+    if (update) {
+      if (this.validateConditions(conditions)) {
+        this.props.getCount(conditions, this.onGetCount)
+      } else {
+        this.setState({subscribersCount: 0})
+      }
     }
   }
 
@@ -151,7 +145,9 @@ class CreateWhatsAppBroadcast extends React.Component {
   validateConditions (conditions) {
     let invalid = false
     for (let i = 0; i < conditions.length; i++) {
-      if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
+      if (conditions[i].condition === '' && conditions[i].criteria === '' && conditions[i].text === '') {
+        continue
+      } else if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
        invalid = true
       }
     }
@@ -211,7 +207,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     } else if (this.validateSegmentation(this.props.customersInfo)) {
       this.props.sendBroadcast({payload: this.state.broadcast,
         platform: 'Twilio WhatsApp',
-        title: this.state.title,
+        title: this.state.convoTitle,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
       }, this.clearFields)
     }
@@ -267,7 +263,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                               Previous
                             </button>
-                            <button disabled={this.state.subscribersCount === 0} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
+                            <button disabled={this.state.subscribersCount === 0 || !this.validateConditions(this.state.conditions)} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
                               Send
                             </button>
                           </div>
@@ -307,7 +303,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                               <i className='flaticon-exclamation m--font-brand' />
                               <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>
