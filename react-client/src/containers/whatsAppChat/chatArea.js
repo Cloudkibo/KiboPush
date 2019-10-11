@@ -41,7 +41,7 @@ class ChatArea extends React.Component {
       this.props.sendAttachment(data, handleSendAttachment)
       data.format = 'kibopush'
       this.props.chat.push(data)
-      
+
     } else {
       console.log('in else')
       this.props.sendChatMessage(data)
@@ -153,6 +153,7 @@ updateChat (chat, newChat) {
                   showSearch={this.props.showSearch}
                   changeStatus={this.props.changeStatus}
                   removePending={this.props.removePending}
+                  user={this.props.user}
                   />
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
