@@ -63,7 +63,7 @@ class LiveChat extends React.Component {
   saveCustomField (data) {
     this.props.setCustomFieldValue(data, this.handleResponse)
   }
-
+ 
   handleResponse (res, body) {
     console.log("res",res)
     if (res.status === 'success') {
@@ -199,6 +199,7 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of whatsAppChat', nextProps)
+
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
     }
@@ -220,6 +221,13 @@ class LiveChat extends React.Component {
       this.setState({
         customFieldOptions: fieldOptions
       })
+    }
+    if (nextProps.socketSession) {
+      console.log('Socket Message', nextProps.socketSession)
+      this.fetchSessions({first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}})
     }
   }
 
@@ -343,7 +351,8 @@ function mapStateToProps (state) {
     teams: (state.teamsInfo.teams),
     members: (state.membersInfo.members),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
-    customFields: (state.customFieldInfo.customFields)
+    customFields: (state.customFieldInfo.customFields),
+    socketSession: (state.whatsAppChatInfo.socketMessage)
   }
 }
 
