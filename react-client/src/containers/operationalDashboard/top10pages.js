@@ -5,6 +5,8 @@ import { savePageInformation, saveUserInformation } from '../../redux/dispatcher
 import { fetchTopPages } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { handleDate } from '../../utility/utils'
+
 class top10pages extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -24,10 +26,7 @@ class top10pages extends React.Component {
   }
   changeTopValue (e) {
     this.setState({topValue: parseInt(e.target.value)})
-    console.log('e.target.value', e.target.value)
-    console.log('e.target.value int', parseInt(e.target.value))
     if (parseInt(e.target.value) > 0) {
-      console.log('inside')
       this.props.fetchTopPages(parseInt(e.target.value))
     }
   }
@@ -48,20 +47,18 @@ class top10pages extends React.Component {
   }
   showData () {
     let table = []
-    console.log('this.props.pagesData.length', this.props.pagesData.length)
     for (let i = 0; i < this.props.pagesData.length; i += 2) {
-      console.log('this.props.pagesData[i]', this.props.pagesData[i])
       table.push(<div className='row' key={i}>
         <div className='col-md-6'>
           <div className='m-widget5__item' style={{borderBottom: '.07rem dashed #ebedf2'}}>
             <div className='m-widget5__pic' style={{verticalAlign: 'middle'}}>
-              <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].pagePic) ? this.props.pagesData[i].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
+              <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].page.pagePic) ? this.props.pagesData[i].page.pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
               <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
-                href={'http://m.me/' + this.props.pagesData[i].pageId}
+                href={'http://m.me/' + this.props.pagesData[i].page.pageId}
                 target='_blank'>
-                {this.props.pagesData[i].pageName}
+                {this.props.pagesData[i].page.pageName}
               </a>
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
@@ -69,24 +66,34 @@ class top10pages extends React.Component {
                 </span>
                 <br />
                 {
-                  this.props.pagesData[i].userName && <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}} > {this.props.pagesData[i].userName.name}
+                  this.props.pagesData[i].user && <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i].user)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}} > {this.props.pagesData[i].user.name}
                   </span>
+                }
+              </div>
+              <div className='m-widget5__info'>
+                <span className='m-widget5__author'>
+                  Last Login:
+                </span>
+                <br />
+                { this.props.pagesData[i].user &&
+                <span style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
+                  {this.props.pagesData[i].user.lastLogin ? handleDate(this.props.pagesData[i].user.lastLogin) : 'Unknown'}
+                </span>
                 }
               </div>
             </div>
             <div className='m-widget5__stats1'>
               <span className='m-widget5__number'>
-                {this.props.pagesData[i].subscribers}
+                {this.props.pagesData[i].count}
               </span>
               <br />
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
+
               <br />
               <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                  Subscribers
                </Link>
               </span>
@@ -97,42 +104,53 @@ class top10pages extends React.Component {
         <div className='col-md-6' style={{borderLeft: '.07rem dashed #ebedf2'}}>
           <div className='m-widget5__item' key={i + 1} style={{borderBottom: '.07rem dashed #ebedf2'}}>
             <div className='m-widget5__pic' style={{verticalAlign: 'middle'}}>
-              <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].pagePic) ? this.props.pagesData[i + 1].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
+              <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].page.pagePic) ? this.props.pagesData[i + 1].page.pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
               <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
-                href={'http://m.me/' + this.props.pagesData[i + 1].pageId}
+                href={'http://m.me/' + this.props.pagesData[i + 1].page.pageId}
                 target='_blank'>
-                {this.props.pagesData[i + 1].pageName}
+                {this.props.pagesData[i + 1].page.pageName}
               </a>
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
                   User:
                 </span>
                 <br />
-                { this.props.pagesData[i + 1].userName &&
-                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
-                  {this.props.pagesData[i + 1].userName.name}
+                { this.props.pagesData[i + 1].user &&
+                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].user)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
+                  {this.props.pagesData[i + 1].user.name}
+                </span>
+                }
+              </div>
+              <div className='m-widget5__info'>
+                <span className='m-widget5__author'>
+                  Last Login:
+                </span>
+                <br />
+                { this.props.pagesData[i + 1].user &&
+                <span style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
+                  {this.props.pagesData[i + 1].user.lastLogin ? handleDate(this.props.pagesData[i + 1].user.lastLogin) : 'Unknown'}
                 </span>
                 }
               </div>
             </div>
             <div className='m-widget5__stats1'>
               <span className='m-widget5__number'>
-                {this.props.pagesData[i + 1].subscribers}
+                {this.props.pagesData[i + 1].count}
               </span>
               <br />
               <span className='m-widget5__sales'>
                 Subscribers
               </span>
-            </div>
-            <div className='m-widget5__stats2'>
-              <br />
-              <span className='m-widget5__votes'>
-                <Link onClick={(e) => { let pageSelected = this.props.pagesData[i + 1]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 Subscribers
-               </Link>
-              </span>
+
+                <br />
+                <span className='m-widget5__votes'>
+                  <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                  Subscribers
+                </Link>
+                </span>
+
             </div>
           </div>
         </div>
@@ -143,7 +161,6 @@ class top10pages extends React.Component {
     return table
   }
   render () {
-    console.log('pagesData', this.props.pagesData)
     return (
       <div className='col-xl-12'>
         <div className='m-portlet m-portlet--full-height '>

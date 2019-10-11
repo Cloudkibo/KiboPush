@@ -37,7 +37,8 @@ class Menu extends React.Component {
       openWebView: false,
       openWebsite: false,
       webviewsize: 'FULL',
-      webviewsizes: ['COMPACT', 'TALL', 'FULL']
+      webviewsizes: ['COMPACT', 'TALL', 'FULL'],
+      subMenuEnable: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -99,7 +100,7 @@ class Menu extends React.Component {
         if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
         } else {
-          compProp.getIndexBypage(this.state.selectPage.pageId, self.handleIndexByPage)
+          compProp.getIndexBypage(self.state.selectPage.pageId, self.handleIndexByPage)
         }
       }
     })
@@ -818,7 +819,7 @@ class Menu extends React.Component {
             <h6>Choose an action for the menu item:</h6>
             <div className='radio-buttons' style={{marginLeft: '37px'}}>
               {
-                this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
+                this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' && this.state.subMenuEnable &&
                   <div className='radio'>
                     <input id='openSubMenu'
                       type='radio'
@@ -848,13 +849,6 @@ class Menu extends React.Component {
                 <label>Open website </label>
               </div>
             </div>
-            {
-              this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
-              <span style={{fontSize: '0.9rem'}}>
-                If you change the menu item action, all the underlying submenus and their
-                content will be lost
-              </span>
-           }
             {
               this.state.selectedRadio === 'openWebsite' &&
               <div style={{marginTop: '20px'}}>
@@ -942,6 +936,16 @@ class Menu extends React.Component {
             <div className='m-alert__text'>
               Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
+          <div
+            className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+            role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              Nested menus will no longer be supported by Facebook. Menus will display in a single layer format. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank'>Learn More</a>.
             </div>
           </div>
           <div className='m-portlet m-portlet--full-height '>
@@ -1037,7 +1041,7 @@ class Menu extends React.Component {
                             )
                           })
                         }
-                          { item.submenu.length < 5 &&
+                          { item.submenu.length < 5 && this.state.subMenuEnable &&
                             <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
                               <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
                             </div>
@@ -1057,7 +1061,7 @@ class Menu extends React.Component {
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                     <i className='flaticon-exclamation m--font-brand' />
                     <span style={{marginLeft: '5px'}}>
-                      Only two more main menus can be added. Submenus are limited to 5.
+                      Only two more main menus can be added.
                     </span>
                   </div>
                 </div>

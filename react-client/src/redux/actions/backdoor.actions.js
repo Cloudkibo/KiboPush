@@ -25,7 +25,8 @@ import {
   updateCurrentPageTags,
   updateSubscribersWithTags,
   updatePageAdmins,
-  updateCompanyInfo
+  updateCompanyInfo,
+  updateCurrentPageOwners
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 export const API_URL = '/api'
@@ -209,15 +210,32 @@ export function loadUniquePages (data) {
   }
 }
 
-export function loadSubscribersWithTags (id) {
+export function loadSubscribersWithTags (data, dataLoaded) {
+  console.log('loading subscribers with tags', data)
   return (dispatch) => {
-    callApi(`backdoor/fetchSubscribersWithTags/${id}`)
+    callApi(`backdoor/fetchSubscribersWithTags`, 'post', data)
       .then(res => {
         console.log('response from fetchSubscribersWithTags', res)
         dispatch(updateSubscribersWithTags(res))
+        if (dataLoaded) {
+          dataLoaded(res.payload)
+        }
       })
   }
 }
+
+
+export function loadPageOwners (pageId) {
+  return (dispatch) => {
+    callApi(`backdoor/fetchPageOwners/${pageId}`, 'get')
+      .then(res => {
+        console.log('response from fetchPageOwners', res)
+        dispatch(updateCurrentPageOwners(res))
+      })
+  }
+}
+
+
 
 export function loadPageTags (pageId) {
   return (dispatch) => {
@@ -390,7 +408,7 @@ export function fetchOnePageStatsDateWise (startDate, pageId) {
 // Fetch Top Pages
 export function fetchTopPages (limit) {
   return (dispatch) => {
-    callApi(`operational/pagewise/topPages`, 'post', {limit: limit})
+    callApi(`backdoor/topPages`, 'post', {limit: limit})
       .then(res => {
         console.log('response from fetchTopPages', res)
         dispatch(handleAction(ActionTypes.UPDATE_TOP_PAGES_KIBODASH, res.payload))
@@ -539,13 +557,16 @@ export function loadCompanyInfo (data) {
   }
 }
 
-export function loadPageUsers (data) {
+export function loadPageUsers (data, dataLoaded) {
   console.log('data for loadPageUsers', data)
   return (dispatch) => {
     callApi(`backdoor/fetchPageUsers`, 'post', data)
       .then(res => {
         console.log('response from loadPageUsers', res)
         dispatch(updatePageUsers(res.payload))
+        if (dataLoaded) {
+          dataLoaded(res.payload)
+        }
       })
   }
 }

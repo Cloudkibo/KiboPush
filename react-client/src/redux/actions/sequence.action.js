@@ -182,7 +182,7 @@ export function subscribeToSequence (data, msg, handleSeqResponse) {
           msg.success('Subscriber(s) have been subscribed successfully!')
         } else {
           console.log(res.description)
-          msg.error('Failed to subscribe to sequence!')
+          msg.error(res.description)
         }
         if (handleSeqResponse) {
           handleSeqResponse(res)

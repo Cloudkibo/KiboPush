@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadPageUsers, loadPageAdmins } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -59,11 +59,11 @@ class PageAdmins extends React.Component {
     })
 }
 
-  
+
   applyNameFilter (data, search) {
     return data.filter(x => (x.name).toLowerCase().includes(search.toLowerCase()))
   }
-  
+
   applyEmailFilter (data, search) {
     return data.filter(x => x.email && (x.email).toLowerCase().includes(search.toLowerCase()))
   }
@@ -98,7 +98,7 @@ class PageAdmins extends React.Component {
     console.log('after applying filters', filteredData)
     this.setState({filteredData, filter, totalLength: filteredData.length})
     this.displayData(0, filteredData)
-  }   
+  }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -190,7 +190,7 @@ class PageAdmins extends React.Component {
                   <div>
                     <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      
+
                     <div>
                         <div style={{display: 'inline-block'}} className='form-group col-md-4'>
                             <input type='text' placeholder='Search by facebook name' className='form-control' value={this.state.searchValue} onChange={this.onNameSearch} />
@@ -210,9 +210,9 @@ class PageAdmins extends React.Component {
                         </div>
 
                     </div>
-                      
-                      
-                      
+
+
+
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
@@ -233,7 +233,7 @@ class PageAdmins extends React.Component {
 
                       {
                           this.state.pageAdminData && this.state.pageAdminData.length > 0
-                            ?                      
+                            ?
                              (<tbody className='m-datatable__body'>
                             {
                             this.state.pageAdminData.map((pageAdmin, i) => (
@@ -252,7 +252,7 @@ class PageAdmins extends React.Component {
                           </tr>
                             ))
                           }
-                          </tbody>) : 
+                          </tbody>) :
                           <span>
                             <h4 style={{margin: '20px', textAlign: 'center'}}> No Admins Found </h4>
                           </span>
@@ -273,6 +273,9 @@ class PageAdmins extends React.Component {
                         subContainerClassName={'pages pagination'}
                         activeClassName={'active'} />
                     </div>
+                  </div>
+                  <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                      <Link to='/operationalDashboard' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
                   </div>
                   </div>
                 </div>

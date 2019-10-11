@@ -285,6 +285,7 @@ class Targeting extends React.Component {
         }
         self.setState({ listSelected: selected })
         self.props.handleTargetValue({
+          isList: self.state.isList,
           listSelected: selected,
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
@@ -568,6 +569,16 @@ class Targeting extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
+        { this.props.component === 'broadcast' &&
+          <span
+            className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
+            style={{marginLeft: '10px'}}
+          >
+            This broadcast will be sent to {this.props.subscriberCount} subscriber(s)
+          </span>
+        }
+        </div>
         <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
           <span class="m--font-bolder">
 					  Message Type
@@ -613,7 +624,7 @@ class Targeting extends React.Component {
 					  </span>
 				  </div>
         </div>
-        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px'}}>
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.

@@ -491,7 +491,7 @@ class Sequence extends React.Component {
                     }
                   </div>
                 </div>
-                <div className='col-sm-4 col-md-4 col-lg-4'>
+                {/*<div className='col-sm-4 col-md-4 col-lg-4'>
                   <div className='sequence-trigger-box' id='5' data-val='responds_to_poll' onClick={this.handleChange}
                     style={{backgroundColor: this.state.seqTriggerVal === 'responds_to_poll' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                      When subscriber responds to specific poll
@@ -507,7 +507,7 @@ class Sequence extends React.Component {
                       </select>
                     }
                   </div>
-                </div>
+                </div>*/}
               </div>
 
               <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
@@ -598,13 +598,13 @@ class Sequence extends React.Component {
                                     </span>
                                   </span>
 
-                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%'}}>
+                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%', top: '35%'}}>
                                     <span className='sequence-number'>{sequence.subscribers.length}</span>
                                     <br />
                                     <span>Subscribers</span>
                                   </span>
 
-                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%'}}>
+                                  <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%', top: '35%'}}>
                                     <span className='sequence-number'>{sequence.messages.length}</span>
                                     <br />
                                     <span>Messages</span>

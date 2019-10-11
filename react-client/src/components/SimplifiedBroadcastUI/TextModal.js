@@ -10,7 +10,7 @@ class TextModal extends React.Component {
     super(props)
     this.state = {
       text: props.text ? props.text : '',
-      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
+      buttons: props.buttons.map(button => {return {visible: true, title: button.title}} ),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonLimit: 3,
       buttonDisabled: false
@@ -43,7 +43,11 @@ class TextModal extends React.Component {
   }
 
   handleDone () {
-    this.AddButton.handleDone()
+    if (this.props.noButtons) {
+      this.addComponent([])
+    } else {
+      this.AddButton.handleDone()
+    }
   }
 
   addComponent (buttons) {
@@ -108,18 +112,21 @@ class TextModal extends React.Component {
           </Popover>
         }
               <div style={{marginBottom: '30px', color: 'red'}}>{this.state.text === '' ? '*Required' : ''}</div>
-              <AddButton
-                replyWithMessage={this.props.replyWithMessage}
-                buttons={this.state.buttons}
-                finalButtons={this.props.buttons}
-                buttonLimit={this.state.buttonLimit}
-                pageId={this.props.pageId}
-                buttonActions={this.state.buttonActions}
-                ref={(ref) => { this.AddButton = ref }}
-                updateButtonStatus={this.updateButtonStatus}
-                addComponent={(buttons) => this.addComponent(buttons)}
-                disabled = {!this.state.text}
-                 />
+              {
+                !this.props.noButtons &&
+                  <AddButton
+                  replyWithMessage={this.props.replyWithMessage}
+                  buttons={this.state.buttons}
+                  finalButtons={this.props.buttons}
+                  buttonLimit={this.state.buttonLimit}
+                  pageId={this.props.pageId}
+                  buttonActions={this.state.buttonActions}
+                  ref={(ref) => { this.AddButton = ref }}
+                  updateButtonStatus={this.updateButtonStatus}
+                  addComponent={(buttons) => this.addComponent(buttons)}
+                  disabled = {!this.state.text}
+                  />
+              }
             </div>
             <div className='col-1'>
               <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />

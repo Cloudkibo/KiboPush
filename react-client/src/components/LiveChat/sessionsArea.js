@@ -16,8 +16,8 @@ class SessionsArea extends React.Component {
         sort_value: -1,
         page_value: '',
         search_value: '',
-        pendingResponse: '',
-        unreadMessages: ''
+        pendingResponse: false,
+        unreadMessages: false
       }
     }
     this.changeTab = this.changeTab.bind(this)
@@ -39,16 +39,16 @@ class SessionsArea extends React.Component {
 
   loadMore (type) {
     this.props.fetchSessions({
-      first_page: this.state.first_page,
-      last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none',
+      first_page: false,
+      last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1].last_activity_time : 'none',
       number_of_records: this.state.number_of_records,
       filter: this.state.filter,
       filter_criteria: {
-        sort_value: this.state.sort_value,
-        page_value: this.state.page_value,
-        search_value: this.state.search_value,
-        pendingResponse: this.state.pendingResponse,
-        unreadMessages: this.state.unreadMessages
+        sort_value: this.state.filter_criteria.sort_value,
+        page_value: this.state.filter_criteria.page_value,
+        search_value: this.state.filter_criteria.search_value,
+        pendingResponse: this.state.filter_criteria.pendingResponse,
+        unreadMessages: this.state.filter_criteria.unreadMessages
       }
     }, type)
   }
@@ -58,11 +58,12 @@ class SessionsArea extends React.Component {
       <div className='col-xl-4'>
         <div className='m-portlet m-portlet--full-height' >
           <HEADER
-            openSessions={this.props.openSessions}
-            closeSessions={this.props.closeSessions}
-            pages={this.props.pages}
-            fetchSessions={this.props.fetchSessions}
+            openSessions={this.props.openSessions ? this.props.openSessions: []}
+            closeSessions={this.props.closeSessions ? this.props.closeSessions: []}
+            pages={this.props.pages ? this.props.pages : []}
+            fetchSessions={this.props.fetchSessions ? this.props.fetchSessions : []}
             updateState={this.updateState}
+            module={this.props.module}
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>

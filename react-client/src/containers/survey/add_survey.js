@@ -19,6 +19,8 @@ import {loadTags} from '../../redux/actions/tags.actions'
 import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
+import SequencePopover from '../../components/Sequence/sequencePopover'
+import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
@@ -26,6 +28,7 @@ class AddSurvey extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
+    props.fetchAllSequence()
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       props.loadSurveyDetails(id)
@@ -68,6 +71,7 @@ class AddSurvey extends React.Component {
     this.onSurveyClick = this.onSurveyClick.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
     this.checkSurveyErrors = this.checkSurveyErrors.bind(this)
+    this.updateChoiceActions = this.updateChoiceActions.bind(this)
   }
 
   onNext (e) {
@@ -138,7 +142,7 @@ class AddSurvey extends React.Component {
       if (this.state.surveyQuestions[j].options.length > 0) {
         for (let k = 0; k <
         this.state.surveyQuestions[j].options.length; k++) {
-          if (this.state.surveyQuestions[j].options[k] === '') {
+          if (this.state.surveyQuestions[j].options[k].option === '') {
             flag = true
           }
         }
@@ -257,7 +261,7 @@ class AddSurvey extends React.Component {
         if (this.state.surveyQuestions[j].options.length > 0) {
           for (let k = 0; k <
           this.state.surveyQuestions[j].options.length; k++) {
-            if (this.state.surveyQuestions[j].options[k] === '') {
+            if (this.state.surveyQuestions[j].options[k].option === '') {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
@@ -345,7 +349,7 @@ class AddSurvey extends React.Component {
     let choiceValues = []
     if (this.state.questionType === 'multichoice') {
       choiceCount = 3 // by default no. of options will be 3
-      choiceValues = ['', '', '']
+      choiceValues = [{option:'', sequenceId:'', action:''}, {option:'', sequenceId:'', action:''}, {option:'', sequenceId:'', action:''}]
     }
 
     surveyQuestions.push({
@@ -368,7 +372,7 @@ class AddSurvey extends React.Component {
     let choices = surveyQuestions[qindex].options.slice()
     surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount +
       1
-    choices.push('')
+    choices.push({option:'', sequenceId:'', action:''})
     surveyQuestions[qindex].options = choices
     if (surveyQuestions[qindex].choiceCount >= 2) {
       this.setState({
@@ -419,9 +423,21 @@ class AddSurvey extends React.Component {
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
     let surveyQuestions = this.state.surveyQuestions.slice()
-    surveyQuestions[qindex].options[choiceIndex] = event.target.value
+    let optionTmp = surveyQuestions[qindex].options[choiceIndex]
+    optionTmp.option = event.target.value
+    surveyQuestions[qindex].options[choiceIndex] = optionTmp
     this.setState({surveyQuestions: surveyQuestions, alertMessage: '', alertType: ''})
   }
+
+  updateChoiceActions (sequenceId, action, qindex, choiceIndex) {      
+        let surveyQuestions = this.state.surveyQuestions.slice()
+        let optionTmp = surveyQuestions[qindex].options[choiceIndex]
+        optionTmp.sequenceId = sequenceId
+        optionTmp.action = action
+
+        surveyQuestions[qindex].options[choiceIndex] = optionTmp
+        this.setState({surveyQuestions: surveyQuestions})
+    }
 
   /* handleQuestionType (e) {
    this.setState({
@@ -434,10 +450,12 @@ class AddSurvey extends React.Component {
     var choiceCount = this.state.surveyQuestions[qindex].options.length
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
+        <div className='row'>
+       <div className='col-sm-11' style={{marginRight:'0px'}}>
         <div className='input-group' id={'choice' + qindex + j}>
           <input type='text' maxLength={20} placeholder={'Choice ' + (j + 1)}
             className='form-control input-sm'
-            value={this.state.surveyQuestions[qindex].options[j]}
+            value={this.state.surveyQuestions[qindex].options[j].option}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
             <button className='btn btn-secondary' type='button' style={{background: '#e74c3c'}}
@@ -445,7 +463,17 @@ class AddSurvey extends React.Component {
               <span className='fa fa-times fa-inverse' />
             </button>
           </span>
+        </div>   
         </div>
+        <div className='col-sm-1'>
+        <SequencePopover 
+              optionNumber={j}
+              questionNumber={qindex}
+              sequences={this.props.sequences}
+              onSave={this.updateChoiceActions}
+            />
+        </div>
+      </div>
       )
     }
     return choiceItems || null
@@ -509,7 +537,7 @@ class AddSurvey extends React.Component {
                       Choices
                     </legend>
                     <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                      <div className='col-xs-10'>
+                      <div className='col-xs-12'>
                         <div className='form-group field field-string'>
                           {this.createOptionsList(i)}
                         </div>
@@ -915,7 +943,8 @@ function mapStateToProps (state) {
     tags: (state.tagsInfo.tags),
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
-    currentSurvey: (state.backdoorInfo.currentSurvey)
+    currentSurvey: (state.backdoorInfo.currentSurvey),
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
@@ -928,7 +957,7 @@ function mapDispatchToProps (dispatch) {
     sendSurveyDirectly: sendSurveyDirectly,
     loadTags: loadTags,
     loadSurveyDetails: loadSurveyDetails,
-
+    fetchAllSequence:fetchAllSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)

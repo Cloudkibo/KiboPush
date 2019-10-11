@@ -43,6 +43,7 @@ import CHATAREA from './chatbox.js'
 import SEARCHAREA from './search'
 import customfields from '../../components/customFields/customfields';
 
+const CHATMODULE= 'KIBOCHAT'
 class LiveChat extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -52,7 +53,8 @@ class LiveChat extends React.Component {
       scroll: true,
       tagOptions: [],
       showSearch: false,
-      customFieldOptions: {}
+      customFieldOptions: {},
+      tabValue: 'open'
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
@@ -71,6 +73,7 @@ class LiveChat extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.getAgents = this.getAgents.bind(this)
     this.removePending = this.removePending.bind(this)
+    this.setDefaultPicture = this.setDefaultPicture.bind(this)
   }
 
   getAgents (members) {
@@ -115,21 +118,21 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession(session) {
-    delete session.unreadCount
+    session.unreadCount = 0
     this.setState({ activeSession: session, scroll: true })
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
           if (temp[i]._id === session._id && temp[i].unreadCount) {
-            delete temp[i].unreadCount
+            temp[i].unreadCount = 0
           }
         }
       } else {
         var tempClose = this.props.closeSessions
         for (var j = 0; j < tempClose.length; j++) {
           if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
-            delete tempClose[j].unreadCount
+            tempClose[j].unreadCount = 0
           }
         }
       }
@@ -140,31 +143,30 @@ class LiveChat extends React.Component {
     }
   }
 
-  updatePendingSession(session) {
-    console.log('in updatePendingSession', session)
-    session.pendingResponse = false
+  updatePendingSession(session, value) {
+    session.pendingResponse = value
     if (Object.keys(session).length > 0 && session.constructor === Object) {
       if (this.state.tabValue === 'open') {
         var temp = this.props.openSessions
         for (var i = 0; i < temp.length; i++) {
-          if (temp[i]._id === session._id && temp[i].pendingResponse) {
-            temp[i].pendingResponse = false
+          if (temp[i]._id === session._id) {
+            temp[i].pendingResponse = value
           }
         }
       } else {
         var tempClose = this.props.closeSessions
         for (var j = 0; j < tempClose.length; j++) {
-          if (tempClose[j]._id === session._id && tempClose[j].pendingResponse) {
-            tempClose[j].pendingResponse = false
+          if (tempClose[j]._id === session._id) {
+            tempClose[j].pendingResponse = value
           }
         }
       }
     }
   }
 
-  removePending (session) {
-    this.props.updatePendingResponse({id: session._id, pendingResponse: false})
-    this.updatePendingSession(session)
+  removePending (session, value) {
+    this.props.updatePendingResponse({id: session._id, pendingResponse: value})
+    this.updatePendingSession(session, value)
   }
 
   fetchSessions(data, type) {
@@ -248,7 +250,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps called')
+    console.log('componentWillReceiveProps livechat.js', nextProps)
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
@@ -341,9 +343,9 @@ class LiveChat extends React.Component {
         var temp = nextProps.openSessions
         for (var z = 0; z < temp.length; z++) {
           if (temp[z]._id === nextProps.unreadSession) {
-            temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
             if (nextProps.socketMessage && nextProps.socketMessage.format === 'facebook') {
               temp[z].pendingResponse = true
+              temp[z].unreadCount = temp[z].unreadCount + 1
             }
           }
         }
@@ -369,16 +371,25 @@ class LiveChat extends React.Component {
     }
   }
 
-  profilePicError(e, subscriber, sessionType) {
+  profilePicError(e, subscriber) {
+    e.persist()
     console.log('profile picture error', subscriber)
+    this.setDefaultPicture(e, subscriber)
+    this.props.updatePicture({ subscriber }, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e, subscriber)
+      }
+    })
+  }
+
+  setDefaultPicture (e, subscriber) {
     if (subscriber.gender === 'female') {
       e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
     } else {
       e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     }
-    this.props.updatePicture({ subscriber }, null, () => {
-      this.fetchSessions({ first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } })
-    })
   }
 
   render() {
@@ -400,7 +411,7 @@ class LiveChat extends React.Component {
               <center><Halogen.RingLoader color='#716aca' /></center>
             </div>
             : <div className='m-content'>
-              <INFO />
+              <INFO module={CHATMODULE} />
               {
                 this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='row'>
@@ -457,11 +468,12 @@ class LiveChat extends React.Component {
                         createTag={this.props.createTag}
                         assignTags={this.assignTags}
                         tagOptions={this.state.tagOptions}
-                        members={this.props.members}
+                        members={this.props.members ? this.props.members : []}
                         customFields={this.props.customFields}
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}
+                        module={CHATMODULE}
                       />
                     }
                     {
@@ -484,6 +496,7 @@ class LiveChat extends React.Component {
 function mapStateToProps(state) {
   console.log('props in live chat', state)
   return {
+    randomNum: (state.liveChat.randomNum),
     openSessions: (state.liveChat.openSessions),
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),

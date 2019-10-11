@@ -18,11 +18,53 @@ class AddChannel extends React.Component {
       wordPressForeGroundColor: 'black',
       showWordPressGuide: false,
       errorMessage: '',
-      type: ''
+      type: '',
+      selectedPages: [],
+      defaultPages: []
     }
     this.onSelectItem = this.onSelectItem.bind(this)
     this.createAutoposting = this.createAutoposting.bind(this)
     this.handleCreateAutopostingResponse = this.handleCreateAutopostingResponse.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+  }
+  componentDidMount () {
+    let options = []
+    let selectedPageIds = []
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.pages[i].gotPageSubscriptionPermission) {
+        options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
+        selectedPageIds.push(this.props.pages[i].pageId)
+      }
+    }
+    this.setState({page: {options: options}})
+    this.setState({selectedPages: selectedPageIds, defaultPages: selectedPageIds})
+    this.initializePageSelect(options)
+  }
+  initializePageSelect (pageOptions) {
+    var self = this
+    /* eslint-disable */
+    $('#selectPage').select2({
+    /* eslint-enable */
+      data: pageOptions,
+      placeholder: 'Select Pages (Default: All)',
+      allowClear: true,
+      multiple: true,
+      tags: true
+    })
+    /* eslint-disable */
+    $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ selectedPages: selected })
+      }
+    })
   }
   createAutoposting (type) {
     var autopostingData = {}
@@ -89,8 +131,8 @@ class AddChannel extends React.Component {
           subscriptionUrl: this.facebookSubscriptionUrl.value,
           subscriptionType: type,
           accountTitle: 'Facebook Page',
-          isSegmented: false,
-          segmentationPageIds: [],
+          isSegmented: true,
+          segmentationPageIds: this.state.selectedPages.length > 0 ?  this.state.selectedPages: this.state.defaultPages,
           segmentationGender: '',
           segmentationLocale: ''
         }
@@ -100,8 +142,8 @@ class AddChannel extends React.Component {
           subscriptionUrl: this.twitterSubscriptionUrl.value,
           subscriptionType: type,
           accountTitle: 'Twitter Account',
-          isSegmented: false,
-          segmentationPageIds: [],
+          isSegmented: true,
+          segmentationPageIds: this.state.selectedPages.length > 0 ?  this.state.selectedPages: this.state.defaultPages,
           segmentationGender: '',
           segmentationLocale: ''
         }
@@ -111,8 +153,8 @@ class AddChannel extends React.Component {
           subscriptionUrl: this.rssSubscriptionUrl.value,
           subscriptionType: type,
           accountTitle: 'RSS Feed',
-          isSegmented: false,
-          segmentationPageIds: [],
+          isSegmented: true,
+          segmentationPageIds: this.state.selectedPages.length > 0 ?  this.state.selectedPages: this.state.defaultPages,
           segmentationGender: '',
           segmentationLocale: ''
         }
@@ -122,8 +164,8 @@ class AddChannel extends React.Component {
           subscriptionUrl: this.wordpressSubscriptionUrl.value,
           subscriptionType: type,
           accountTitle: 'WordPress Channel',
-          isSegmented: false,
-          segmentationPageIds: [],
+          isSegmented: true,
+          segmentationPageIds: this.state.selectedPages.length > 0 ?  this.state.selectedPages: this.state.defaultPages,
           segmentationGender: '',
           segmentationLocale: ''
         }
@@ -140,7 +182,7 @@ class AddChannel extends React.Component {
          errorMsg =  'Incorrect Url'
       }else{
          errorMsg =  'Incorrect Url. Please make sure it includes http(s)'
-      } 
+      }
       this.setState({
         errorMessage: errorMsg
       })
@@ -255,6 +297,12 @@ class AddChannel extends React.Component {
               <br />WordPress
             </button>
           </div>
+          <div style={{textAlign: 'left', marginTop: '15px', marginBottom: '10px'}}>
+            <label>Select Page</label>
+            <div>
+              <select id='selectPage' />
+            </div>
+          </div>
         </div>
         { facebookColor !== '' &&
           <div>
@@ -267,7 +315,7 @@ class AddChannel extends React.Component {
             </div>
             <button style={{float: 'right', margin: '10px'}}
               onClick={() => this.createAutoposting('facebook')}
-              className='btn btn-primary btn-sm'>Add Facebook Account
+              className='btn btn-primary btn-sm'>Add Facebook Feed
             </button>
           </div>
         }
@@ -282,7 +330,7 @@ class AddChannel extends React.Component {
             </div>
             <button style={{float: 'right', margin: '10px'}}
               onClick={() => this.createAutoposting('twitter')}
-              className='btn btn-primary btn-sm'>Add Twitter Account
+              className='btn btn-primary btn-sm'>Add Twitter Feed
             </button>
           </div>
         }
@@ -328,7 +376,8 @@ class AddChannel extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    autopostingData: (state.autopostingInfo.autopostingData)
+    autopostingData: (state.autopostingInfo.autopostingData),
+    pages: (state.pagesInfo.pages)
   }
 }
 

@@ -29,7 +29,8 @@ export function liveChat (state = initialState, action) {
         name: action.data.teamName ? action.data.teamName : action.data.agentName
       }
       return Object.assign({}, state, {
-        openSessions: sessions
+        openSessions: sessions,
+        randomNum: Math.random()
       })
 
     case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:
@@ -59,40 +60,43 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.UPDATE_CHAT_SESSIONS:
       let openSess = state.openSessions
       let closeSess = state.closeSessions
-      if (action.appendDeleteInfo.deleteFrom === 'open') {
-        for (let i = 0; i < openSess.length; i++) {
-          if (action.session._id === openSess[i]._id) {
-            openSess.splice(i, 1)
+      if (action.appendDeleteInfo) {
+        if (action.appendDeleteInfo.deleteFrom === 'open') {
+          for (let i = 0; i < openSess.length; i++) {
+            if (action.session._id === openSess[i]._id) {
+              openSess.splice(i, 1)
+            }
+          }
+        } else if (action.appendDeleteInfo.deleteFrom === 'close') {
+          for (let i = 0; i < closeSess.length; i++) {
+            if (action.session._id === closeSess[i]._id) {
+              closeSess.splice(i, 1)
+            }
           }
         }
-      } else if (action.appendDeleteInfo.deleteFrom === 'close') {
-        for (let i = 0; i < closeSess.length; i++) {
-          if (action.session._id === closeSess[i]._id) {
-            closeSess.splice(i, 1)
+        if (action.appendDeleteInfo.appendTo === 'open') {
+          let openCount = 0
+          for (let j = 0; j < openSess.length; j++) {
+            if (action.session._id === openSess[j]._id) {
+              openCount = 1
+            }
+          }
+          if (openCount === 0) {
+            openSess.push(action.session)
+          }
+        } else if (action.appendDeleteInfo.appendTo === 'close') {
+          let closeCount = 0
+          for (let j = 0; j < closeSess.length; j++) {
+            if (action.session._id === closeSess[j]._id) {
+              closeCount = 1
+            }
+          }
+          if (closeCount === 0) {
+            closeSess.push(action.session)
           }
         }
       }
-      if (action.appendDeleteInfo.appendTo === 'open') {
-        let openCount = 0
-        for (let j = 0; j < openSess.length; j++) {
-          if (action.session._id === openSess[j]._id) {
-            openCount = 1
-          }
-        }
-        if (openCount === 0) {
-          openSess.push(action.session)
-        }
-      } else if (action.appendDeleteInfo.appendTo === 'close') {
-        let closeCount = 0
-        for (let j = 0; j < closeSess.length; j++) {
-          if (action.session._id === closeSess[j]._id) {
-            closeCount = 1
-          }
-        }
-        if (closeCount === 0) {
-          closeSess.push(action.session)
-        }
-      }
+
       openSess = openSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
@@ -102,12 +106,12 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         openSessions: openSess,
         closeSessions: closeSess,
-        openCount: action.appendDeleteInfo.appendTo === 'open'
+        openCount: action.appendDeleteInfo ? (action.appendDeleteInfo.appendTo === 'open')
                     ? (state.openCount + 1) : action.appendDeleteInfo.deleteFrom === 'open'
-                    ? (state.openCount - 1) : state.openCount,
-        closeCount: action.appendDeleteInfo.appendTo === 'close'
+                    ? (state.openCount - 1) : state.openCount : state.openCount,
+        closeCount: action.appendDeleteInfo ? action.appendDeleteInfo.appendTo === 'close'
                     ? (state.closeCount + 1) : action.appendDeleteInfo.deleteFrom === 'close'
-                    ? (state.closeCount - 1) : state.closeCount
+                    ? (state.closeCount - 1) : state.closeCount : state.closeCount
       })
 
     case ActionTypes.SHOW_USER_CHAT_OVERWRITE:

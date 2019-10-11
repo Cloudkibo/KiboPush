@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadPageTags } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 
 class PageTags extends React.Component {
   constructor (props, context) {
@@ -10,6 +11,8 @@ class PageTags extends React.Component {
     this.state = {
         filteredData: [],
         pageTagsData: [],
+        kiboPageTags: [],
+        fbPageTags: [],
         searchValue: '',
         defaultValue: '',
         fbValue: '',
@@ -65,7 +68,7 @@ class PageTags extends React.Component {
       let filter = false
       if (this.state.selectedValue === 'incorrect') {
         filteredData = this.state.incorrectRecords
-      }   
+      }
       if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
         filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
         filter = true
@@ -135,8 +138,8 @@ class PageTags extends React.Component {
       if (this.state.selectedValue === 'incorrect') {
         filteredData = this.state.incorrectRecords
       } else if (this.state.selectedValue === 'correct') {
-        filteredData = this.state.correctRecords  
-      }   
+        filteredData = this.state.correctRecords
+      }
       if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
         filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
         filter = true
@@ -254,7 +257,7 @@ class PageTags extends React.Component {
         let correctRecords = pageTagsData.filter(pageTag => pageTag.facebook === pageTag.kibopush)
         console.log('pageTagsData', pageTagsData)
         this.displayData(0, pageTagsData)
-        this.setState({ totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords, correctRecords})
+        this.setState({ kiboPageTags: nextProps.pageTags.kiboPageTags, fbPageTags: nextProps.pageTags.fbPageTags, totalLength: pageTagsData.length , pageTags: pageTagsData, filteredData: pageTagsData, incorrectRecords, correctRecords})
     } else {
         this.setState({pageTagsData: [], totalLength: 0})
     }
@@ -294,7 +297,7 @@ class PageTags extends React.Component {
                     <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline', fontSize: '0.4em'}}>{this.state.filteredData.length} Tags</span>
                 </h1>
 
-                
+
                 <div style={{textAlign: 'right', marginBottom: '30px'}}>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onFilterChange}>
                         <option value='all'>Show all records</option>
@@ -310,7 +313,7 @@ class PageTags extends React.Component {
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
                                         <div className='m-widget26__number'>
-                                            {this.props.pageTags && this.props.pageTags.kiboPageTags.length}
+                                            {this.state.kiboPageTags.length}
                                             <small>
                                                 KiboPush Tags
                                             </small>
@@ -325,7 +328,7 @@ class PageTags extends React.Component {
                                 <div className='m-portlet__body'>
                                     <div className='m-widget26'>
                                         <div className='m-widget26__number'>
-                                            {this.props.pageTags && this.props.pageTags.fbPageTags.length}
+                                            {this.state.fbPageTags.length}
                                             <small>
                                                 Facebook Tags
                                             </small>
@@ -374,7 +377,7 @@ class PageTags extends React.Component {
                   <div>
                   <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                    
+
 
                     <div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
@@ -413,7 +416,7 @@ class PageTags extends React.Component {
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
                           <th data-field='tagName'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>  
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Tag Name</span>
                           </th>
                           <th data-field='default'
@@ -447,12 +450,14 @@ class PageTags extends React.Component {
                         ))
                       }
                       </tbody>
-                        : 
+                        :
                         <span>
                             <h4 style={{margin: '20px', textAlign: 'center'}}> {this.loadedTags ? 'No Tags Found' : 'Loading Tags...'} </h4>
                         </span>
                       }
                     </table>
+                    {
+                     this.state.pageTagsData && this.state.pageTagsData.length > 0 &&
                     <div className='pagination'>
                       <ReactPaginate
                         previousLabel={'previous'}
@@ -468,6 +473,10 @@ class PageTags extends React.Component {
                         subContainerClassName={'pages pagination'}
                         activeClassName={'active'} />
                     </div>
+                    }
+                  </div>
+                  <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                      <Link to='/operationalDashboard' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
                   </div>
                   {/* : <span>
                     <p> No data to display </p>

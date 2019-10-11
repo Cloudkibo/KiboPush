@@ -12,7 +12,7 @@ class MediaModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      buttons: props.buttons.map(button => button.type === 'element_share' ? {visible: true, title: 'Share'} : {visible: true, title: button.title}),
+      buttons: props.buttons.map(button => {return {visible: true, title: button.title} }),
       numOfCurrentButtons: 0,
       disabled: false,
       buttonDisabled: false,
@@ -31,7 +31,11 @@ class MediaModal extends React.Component {
   }
 
   handleDone () {
-    this.AddButton.handleDone()
+    if (this.props.noButtons) {
+      this.addComponent([])
+    } else {
+      this.AddButton.handleDone()
+    }
   }
 
   addComponent (buttons) {
@@ -112,7 +116,7 @@ class MediaModal extends React.Component {
                 size={this.state.file ? this.state.file.size : ''}
                 type={this.state.file ? this.state.file.type : ''} />
               {
-                this.state.file &&
+                (!this.props.noButtons && this.state.file) &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}
