@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import ChatBox from './chatbox'
 import ChatItem from './chatItem'
 import ChatHead from './chatAreaHead'
+import moment from 'moment'
 // import MediaCapturer from 'react-multimedia-capture'
 
 class ChatArea extends React.Component {
@@ -25,6 +26,7 @@ class ChatArea extends React.Component {
     this.previousScrollHeight = undefined
     this.newMessage = false
     this.state = {
+      sessionValid: true
     }
     props.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
     props.markRead(this.props.activeSession._id, this.props.sessions)
@@ -33,6 +35,7 @@ class ChatArea extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateChat = this.updateChat.bind(this)
     this.onEnter = this.onEnter.bind(this)
+    this.isUserSessionValid = this.isUserSessionValid.bind(this)
     // this.updateScrollTop = this.updateScrollTop.bind(this)
   }
   onEnter (data, type, handleSendAttachment) {
@@ -50,6 +53,21 @@ class ChatArea extends React.Component {
       this.props.chat.push(data)
       this.forceUpdate()
     }
+  }
+  isUserSessionValid (chats) {
+    var userMessages = []
+    var sessionValid = true
+    chats.map((msg, index) => {
+      if (msg.format === 'twilio') {
+        userMessages.push(msg)
+      }
+    })
+    var lastMessage = userMessages[userMessages.length -1]
+    sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
+    this.setState({
+      sessionValid: sessionValid
+    })
+    return sessionValid
   }
 updateChat (chat, newChat) {
     console.log('in updateChat')
@@ -121,20 +139,19 @@ updateChat (chat, newChat) {
       nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
       nextProps.resetSocket()
     }
+    if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
+      this.props.markRead(this.props.activeSession._id, this.props.sessions)
+      this.isUserSessionValid(nextProps.chat)
+    }
   }
 
   componentDidUpdate (nextProps) {
     console.log('in componentDidUpdate of ChatArea', nextProps)
-    // this.props.updateUnreadCount(this.props.activeSession)
     // this.updateScrollTop()
     // if (this.newMessage) {
     //   this.previousScrollHeight = this.refs.chatScroll.scrollHeight
     //   this.newMessage = false
     // }
-
-    if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
-      this.props.markRead(this.props.activeSession._id, this.props.sessions)
-    }
   }
 
   render () {
@@ -163,7 +180,9 @@ updateChat (chat, newChat) {
                     user={this.props.user}
                     updateChat={this.updateChat}
                     chat={this.props.chat}
-                    onEnter={this.onEnter} />
+                    onEnter={this.onEnter} 
+                    sessionValid={this.state.sessionValid}
+                    />
                 </div>
               }
               </div>

@@ -26,7 +26,8 @@ class ChatItem extends React.Component {
     this.previousScrollHeight = undefined
     this.newMessage = false
     this.state = {
-      changedActiveSession: true
+      changedActiveSession: true,
+      sessionExpired: false
     }
     this.showContent = this.showContent.bind(this)
     this.shouldLoad = this.shouldLoad.bind(this)
@@ -48,7 +49,7 @@ class ChatItem extends React.Component {
       return 'You replied'
     }
   }
-
+ 
   onTestURLAudio (url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
@@ -209,7 +210,7 @@ class ChatItem extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    this.props.updateUnreadCount(this.props.activeSession)
+  
     this.updateScrollTop()
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
@@ -217,6 +218,7 @@ class ChatItem extends React.Component {
     }
     if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
       this.props.markRead(this.props.activeSession._id, this.props.sessions)
+      this.props.updateUnreadCount(this.props.activeSession)
     }
   }
 
