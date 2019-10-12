@@ -239,7 +239,10 @@ class ChatBox extends React.Component {
   }
 
   updateScrollTop () {
+    console.log('updateScrollTop refs.chatScroll.scrollHeight', this.refs.chatScroll.scrollHeight)
+    console.log('updateScrollTop previousScrollHeight', this.previousScrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
+      console.log('this.refs.chatScroll.scrollTop', (this.refs.chatScroll.scrollHeight - this.previousScrollHeight))
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
@@ -630,6 +633,7 @@ class ChatBox extends React.Component {
   }
 
   scrollToTop () {
+    console.log('scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
@@ -659,10 +663,13 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     if (this.newMessage) {
+      console.log('componentDidUpdate newMessage')
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       this.newMessage = false
     }
-    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id) {
+
+    console.log('this.previousScrollHeight', this.previousScrollHeight)
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by.id !== this.props.user._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       if (!this.state.scrolling) {
         this.updateScrollTop()

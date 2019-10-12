@@ -124,21 +124,7 @@ export function sendAttachment (data, handleSendAttachment) {
     })
   }
 }
-export function changeStatus (data, handleStatus) {
-  return (dispatch) => {
-    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
-      handleStatus(res)
-    })
-  }
-}
 
-export function updatePendingResponse (data, handlePendingResponse) {
-  return (dispatch) => {
-    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
-      handlePendingResponse(res)
-    })
-  }
-}
 export function unSubscribe (id, data) {
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data).then(res => {
@@ -209,6 +195,21 @@ export function setCustomFieldValue (body, handleResponse) {
     callApi('whatsAppChat/set_custom_field_value', 'post', body)
     .then(res => {
       handleResponse(res, body)
+    })
+  }
+}
+export function changeStatus (data, handleStatus) {
+  return (dispatch) => {
+    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+      handleStatus(res)
+    })
+  }
+}
+
+export function updatePendingResponse (data, handlePendingResponse) {
+  return (dispatch) => {
+    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+      handlePendingResponse(res)
     })
   }
 }
