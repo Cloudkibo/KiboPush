@@ -200,7 +200,8 @@ function mapStateToProps (state) {
   return {
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
-    socketSession: (state.whatsAppChatInfo.socketMessage)
+    socketSession: (state.whatsAppChatInfo.socketMessage),
+    socketSeen: (state.whatsAppChatInfo.socketSeen)
   }
 }
 
