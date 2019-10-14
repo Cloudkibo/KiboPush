@@ -113,6 +113,7 @@ class Info extends React.Component {
             }
           </div>
         </div>
+        { this.props.module === 'KIBOCHAT' &&
         <div className='col'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -123,6 +124,7 @@ class Info extends React.Component {
             </div>
           </div>
         </div>
+        }
       </div>
     )
   }

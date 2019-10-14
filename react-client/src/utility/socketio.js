@@ -15,7 +15,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
-const whatsAppAtions = require('./../redux/actions/whatsAppChat.actions')
+const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
 const socket = io('')
 let store
@@ -80,7 +80,9 @@ socket.on('message', (data) => {
     store.dispatch(socketUpdateSms(data.payload))
   } if (data.action === 'new_chat_whatsapp') {
     console.log('new message received from customer whatsApp')
-    store.dispatch(whatsAppAtions.socketUpdateWhatsApp(data.payload))
+    store.dispatch(whatsAppActions.socketUpdateWhatsApp(data.payload))
+  } else if (data.action === 'whatsapp_message_seen') {
+    store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen') {
     store.dispatch(socketUpdateSeen(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
@@ -112,7 +114,7 @@ socket.on('message', (data) => {
   } else if (data.action === 'session_assign') {
     store.dispatch(updateSessions(data.payload.data))
   } else if (data.action === 'session_assign_whatsapp') {
-    store.dispatch(whatsAppAtions.updateSessions(data.payload.data))
+    store.dispatch(whatsAppActions.updateSessions(data.payload.data))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))

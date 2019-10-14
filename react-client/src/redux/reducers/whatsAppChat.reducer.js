@@ -44,9 +44,14 @@ export function whatsAppChatInfo (state = initialState, action) {
       return Object.assign({}, state, {
         socketMessage: action.data,
       })
+    case ActionTypes.SOCKET_UPDATE_WHATSAPP_SEEN:
+      return Object.assign({}, state, {
+        socketSeen: action.data,
+      })
     case ActionTypes.RESET_SOCKET_WHATSAPP:
       return Object.assign({}, state, {
         socketMessage: action.data,
+        socketSeen: action.data
       })
     case ActionTypes.UPDATE_SESSIONS_WHATSAPP:
       let sessions = state.openSessions

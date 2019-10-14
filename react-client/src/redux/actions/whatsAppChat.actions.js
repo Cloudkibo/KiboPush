@@ -28,6 +28,12 @@ export function clearSearchResult () {
     type: ActionTypes.CLEAR_SEARCH_WHATSAPP
   }
 }
+export function socketUpdateWhatsAppSeen (data) {
+  return {
+    type: ActionTypes.SOCKET_UPDATE_WHATSAPP_SEEN,
+    data
+  }
+}
 export function socketUpdateWhatsApp (data) {
   return {
     type: ActionTypes.SOCKET_UPDATE_WHATSAPP,
