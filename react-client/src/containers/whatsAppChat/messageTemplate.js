@@ -6,29 +6,65 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { UncontrolledTooltip } from 'reactstrap'
+import PropTypes from 'prop-types'
 
 class MessageTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       templateMessage: 'Your {{1}} appointment is coming up on {{2}}',
-      selectedRadio: 'appointmentReminders'
+      selectedRadio: 'appointmentReminders', 
+      isTemplateValid: true
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.validateTemplate = this.validateTemplate.bind(this)
   }
 
   resetTemplate () {
     this.setState({
       templateMessage: 'Your {{1}} appointment is coming up on {{2}}',
-      selectedRadio: 'appointmentReminders'
+      selectedRadio: 'appointmentReminders',
+      isTemplateValid: true
     })
+     /* eslint-disable */
+     $('#templateText').removeClass('border border-danger') 
+     /* eslint-enable */
+  }
+  validateTemplate(msg) {
+    var isValid= false
+    var regex1 = new RegExp(/your .* code is .*/, 'i')
+    var regex2 = new RegExp(/your .* appointment is coming up on .*/, 'i')
+    var regex3 = new RegExp(/your .* order of .* has shipped and should be delivered on .*. Details : .*/, 'i')
+    if (this.state.selectedRadio === 'appointmentReminders') {
+      isValid = regex2.test(msg)
+    }
+    if (this.state.selectedRadio === 'orderNotification') {
+      isValid = regex3.test(msg)
+    }
+    if (this.state.selectedRadio === 'verificationCodes') {
+      isValid = regex1.test(msg)
+    }
+    if (!isValid) {
+      /* eslint-disable */
+      $('#templateText').addClass('border border-danger')  
+      /* eslint-enable */
+    } else {
+      /* eslint-disable */
+      $('#templateText').removeClass('border border-danger')
+      /* eslint-enable */ 
+    }
+    this.setState({
+      isTemplateValid: isValid
+    }) 
   }
   onTextChange (e) {
     this.setState({
-      templateMessage: e.value
+      templateMessage: e.currentTarget.value
     })
+    this.validateTemplate(e.currentTarget.value)
   }
   handleRadioButton (e) {
     var textValue = ''
@@ -43,8 +79,12 @@ class MessageTemplate extends React.Component {
       textValue = 'Your {{1}} code is {{2}}'
     }
     this.setState({
-      templateMessage: textValue
+      templateMessage: textValue,
+      isTemplateValid: true
     })
+    /* eslint-disable */
+    $('#templateText').removeClass('border border-danger') 
+    /* eslint-enable */
   }
 
   render () {
@@ -83,7 +123,18 @@ class MessageTemplate extends React.Component {
               <span><i style={{marginRight: '5px', color: '#5867ddb5'}} className='fa fa-times fa-commenting' />Verification Codes</span>
             </div>
           </div>
-          <textarea onChange={this.onTextChange} value={this.state.templateMessage} className='form-control'  className='m-messenger__form-input' style={{resize: 'none', width: '100%', marginTop: '25px', borderRadius: '5px'}} rows='5' maxLength='200' />
+          <div style={{textAlign: 'center', display: 'flex'}}>
+            <textarea id='templateText' onChange={this.onTextChange} value={this.state.templateMessage} className='form-control'  className='m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} rows='5' maxLength='200' />
+            { !this.state.isTemplateValid && 
+            <div style={{marginTop: '25px', marginLeft: '5px'}}>
+              <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
+                <span>Message template format cannot be changed</span>
+              </UncontrolledTooltip>
+              <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+            </div>
+            }
+            
+          </div>
           <p>Each variable 'x' can be replaced with the text that contains letters, digits, special characters or spaces</p>
         </div>
         <div style={{ width: '100%', textAlign: 'right' }}>
@@ -98,7 +149,7 @@ class MessageTemplate extends React.Component {
               </button>
           </div>
           <div style={{ display: 'inline-block', padding: '5px' }}>
-            <button className='btn btn-primary' onClick={() => { this.props.sendTemplate(this.state.templateMessage)}}>
+            <button className='btn btn-primary' disabled={!this.state.isTemplateValid} onClick={() => { this.props.sendTemplate(this.state.templateMessage)}}>
               Send
             </button>
           </div>
@@ -108,5 +159,9 @@ class MessageTemplate extends React.Component {
   }
 }
 
+MessageTemplate.propTypes = {
+  'sendTemplate': PropTypes.func.isRequired,
+  'closeTemplates': PropTypes.func.isRequired
+}
 export default MessageTemplate
 

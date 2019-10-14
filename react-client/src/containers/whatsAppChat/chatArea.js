@@ -135,7 +135,7 @@ updateChat (chat, newChat) {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of ChatArea', nextProps)
-    if (nextProps.socketSession) {
+    if (nextProps.socketSession || nextProps.socketSeen) {
       nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
       nextProps.resetSocket()
     }
