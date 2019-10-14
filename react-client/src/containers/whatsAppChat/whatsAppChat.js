@@ -240,14 +240,14 @@ class LiveChat extends React.Component {
   }
 
   updateUnreadCount () {
-  /*  console.log('out unread count mark', this.props.sessions)
-    this.props.sessions.filter(session => {
+     console.log('out unread count mark', this.props.sessions)
+    this.props.openSessions.filter(session => {
       if (session._id === this.state.activeSession._id) {
         delete session.unreadCount
         console.log('unread count mark', this.props.sessions)
         this.forceUpdate()
       }
-    })*/
+    })
   }
 
   render () {
@@ -323,6 +323,8 @@ class LiveChat extends React.Component {
                       customFields={this.props.customFields}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
+                      teams={this.props.teams? this.props.teams: []}
+                      subscriberTags={this.props.subscriberTags? this.props.subscriberTags: []}
                       msg={this.msg}
                       module={CHATMODULE}
                     />
