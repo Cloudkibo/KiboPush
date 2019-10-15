@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Dotdotdot from 'react-dotdotdot'
 import Highlighter from 'react-highlight-words'
 
+
 class Search extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -62,4 +63,12 @@ class Search extends React.Component {
   }
 }
 
+Search.propTypes = {
+  'scrollToMessage': PropTypes.func.isRequired,
+  'clearSearchResult': PropTypes.func.isRequired,
+  'searchChatMsgs': PropTypes.func.isRequired,
+  'hideSearch': PropTypes.func.isRequired,
+  'searchChat': PropTypes.func.isRequired,
+  'subscriberName': PropTypes.string.isRequired
+}
 export default Search

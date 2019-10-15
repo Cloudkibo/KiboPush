@@ -75,6 +75,12 @@ class ChatBox extends React.Component {
     this.openTemplates = this.openTemplates.bind(this)
     this.closeTemplates = this.closeTemplates.bind(this)
     this.sendTemplate = this.sendTemplate.bind(this)
+    this.handlePendingResponse = this.handlePendingResponse.bind(this)
+  }
+  handlePendingResponse () {
+    if (this.props.activeSession && this.props.activeSession.pendingResponse) {
+      this.props.removePending(this.props.activeSession, this.props.activeSession.pendingResponse)
+    }
   }
   showGif () {
     this.setState({showGifPicker: true, scrolling: false})
@@ -94,8 +100,8 @@ class ChatBox extends React.Component {
       componentType: 'text',
       text:msg
     }
-    var data = this.setMessageData(this.props.currentSession, payload)
-    this.props.sendChatMessage(data)
+    var data = this.setMessageData(this.props.activeSession, payload)
+    this.props.sendChatMessage(data, this.props.removePending)
     this.closeTemplates()
     data.format = 'kibopush'
     this.props.chat.push(data)
@@ -118,9 +124,9 @@ class ChatBox extends React.Component {
       stickerUrl: gif.images.downsized.url,
       scrolling: true
     })
-    var session = this.props.currentSession
+    var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    this.props.sendChatMessage(data, this.props.removePending)
     this.toggleGifPicker()
     data.format = 'kibopush'
     this.props.chat.push(data)
@@ -135,9 +141,9 @@ class ChatBox extends React.Component {
       componentType: 'thumbsUp',
       fileurl: {url: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'}
     }
-    var session = this.props.currentSession
+    var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    this.props.sendChatMessage(data, this.props.removePending)
     data.format = 'kibopush'
     this.props.chat.push(data)
     this.newMessage = true
@@ -154,9 +160,9 @@ class ChatBox extends React.Component {
       stickerUrl: sticker.image.hdpi,
       scrolling: true
     })
-    var session = this.props.currentSession
+    var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.fetchOpenSessions)
+    this.props.sendChatMessage(data, this.props.removePending)
     this.toggleStickerPicker()
     data.format = 'kibopush'
     this.props.chat.push(data)
@@ -169,7 +175,7 @@ class ChatBox extends React.Component {
     let data = {
       senderNumber: this.props.chat[0].recipientNumber,
       recipientNumber: this.props.chat[0].senderNumber,
-      contactId: this.props.activeSession._id,
+      contactId: session._id,
       payload: payload,
       datetime: new Date().toString(),
       repliedBy: {
@@ -342,7 +348,7 @@ class ChatBox extends React.Component {
     if (e.which === 13) {
       e.preventDefault()
       var payload = {}
-      var session = this.props.currentSession
+      var session = this.props.activeSession
       var data = {}
       if (this.state.uploadedId !== '' && this.state.attachment) {
         payload = this.setDataPayload('attachment')
