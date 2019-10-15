@@ -47,7 +47,7 @@ class ChatArea extends React.Component {
 
     } else {
       console.log('in else')
-      this.props.sendChatMessage(data, this.props.removePending)
+      this.props.sendChatMessage(data)
       data.format = 'kibopush'
       // this.props.updateChat(this.props.chat, data)
       this.props.chat.push(data)
@@ -183,7 +183,6 @@ updateChat (chat, newChat) {
                     chat={this.props.chat}
                     onEnter={this.onEnter} 
                     sessionValid={this.state.sessionValid}
-                    removePending={this.props.removePending}
                     />
                 </div>
               }

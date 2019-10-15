@@ -75,13 +75,8 @@ class ChatBox extends React.Component {
     this.openTemplates = this.openTemplates.bind(this)
     this.closeTemplates = this.closeTemplates.bind(this)
     this.sendTemplate = this.sendTemplate.bind(this)
-    this.handlePendingResponse = this.handlePendingResponse.bind(this)
   }
-  handlePendingResponse () {
-    if (this.props.activeSession && this.props.activeSession.pendingResponse) {
-      this.props.removePending(this.props.activeSession, this.props.activeSession.pendingResponse)
-    }
-  }
+  
   showGif () {
     this.setState({showGifPicker: true, scrolling: false})
   }
@@ -101,7 +96,7 @@ class ChatBox extends React.Component {
       text:msg
     }
     var data = this.setMessageData(this.props.activeSession, payload)
-    this.props.sendChatMessage(data, this.props.removePending)
+    this.props.sendChatMessage(data)
     this.closeTemplates()
     data.format = 'kibopush'
     this.props.chat.push(data)
@@ -126,7 +121,7 @@ class ChatBox extends React.Component {
     })
     var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.removePending)
+    this.props.sendChatMessage(data)
     this.toggleGifPicker()
     data.format = 'kibopush'
     this.props.chat.push(data)
@@ -143,7 +138,7 @@ class ChatBox extends React.Component {
     }
     var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.removePending)
+    this.props.sendChatMessage(data)
     data.format = 'kibopush'
     this.props.chat.push(data)
     this.newMessage = true
@@ -162,7 +157,7 @@ class ChatBox extends React.Component {
     })
     var session = this.props.activeSession
     var data = this.setMessageData(session, payload)
-    this.props.sendChatMessage(data, this.props.removePending)
+    this.props.sendChatMessage(data)
     this.toggleStickerPicker()
     data.format = 'kibopush'
     this.props.chat.push(data)
