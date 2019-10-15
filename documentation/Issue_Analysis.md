@@ -10,3 +10,5 @@ For any bug, please don’t rush to just fix it. I know most of them would be ei
 **Note:** I won’t accept the pull request if I don’t get answers to these questions before the fix.
 
 Let’s follow this procedure and we are going to make pull request review a bit tougher which means **the code file where you did bug fix will be your responsibility** that it should not break again. If you need to refactor some bits along your fix please do but make sure you don’t leave any chances of bug in that particular file.
+
+Unit testing will be part of the new code. So each new pull request must contain unit tests for the code written. We will be gradually going towards client side unit testing and api testing as well.

@@ -135,7 +135,7 @@ updateChat (chat, newChat) {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of ChatArea', nextProps)
-    if (nextProps.socketSession) {
+    if (nextProps.socketSession || nextProps.socketSeen) {
       nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
       nextProps.resetSocket()
     }
@@ -200,7 +200,8 @@ function mapStateToProps (state) {
   return {
     chat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
-    socketSession: (state.whatsAppChatInfo.socketMessage)
+    socketSession: (state.whatsAppChatInfo.socketMessage),
+    socketSeen: (state.whatsAppChatInfo.socketSeen)
   }
 }
 
