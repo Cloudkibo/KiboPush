@@ -15,6 +15,7 @@ import GiphySelect from 'react-giphy-select'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MessageTemplate from './messageTemplate'
+import AlertContainer from 'react-alert'
 
 const styles = {
   iconclass: {
@@ -66,7 +67,7 @@ class ChatBox extends React.Component {
     this.handleSendAttachment = this.handleSendAttachment.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
     this.showStickers = this.showStickers.bind(this)
-    this.toggleStickerPicker = this.toggleStickerPicker.bind(this)  
+    this.toggleStickerPicker = this.toggleStickerPicker.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
     this.showGif = this.showGif.bind(this)
     this.sendGif = this.sendGif.bind(this)
@@ -216,7 +217,7 @@ class ChatBox extends React.Component {
         fileurl: {url: 'https://app.kibopush.com/img/thumbsup.png'}
       }
     }
-    
+
     return payload
   }
 
@@ -272,8 +273,8 @@ class ChatBox extends React.Component {
       this.setComponentType(file)
       if (file.type === 'text/javascript' || file.type === 'text/exe') {
         this.msg.error('Cannot add js or exe files. Please select another file')
-      } else if (file.size > 25000000) {
-        this.msg.error('Files greater than 25MB not allowed')
+      } else if (file.size > 5000000) {
+        this.msg.error('Files greater than 5MB not allowed')
       } else {
         var fileData = new FormData()
         fileData.append('file', file)
@@ -366,9 +367,17 @@ class ChatBox extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     console.log('render in chatbox', this.props.chat)
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         { this.props.sessionValid
           ?<div>
           <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
@@ -401,13 +410,13 @@ class ChatBox extends React.Component {
               </div>
             </PopoverBody>
           </Popover>
-          <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
+          {/*<Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
             <PopoverBody>
               <GiphySelect
                 onEntrySelect={gif => this.sendGif(gif)}
               />
             </PopoverBody>
-          </Popover>
+          </Popover>*/}
           <div className='m-messenger__form'>
             <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
               <textarea autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' style={{resize: 'none'}} />
@@ -443,7 +452,7 @@ class ChatBox extends React.Component {
                   textAlign: 'center'
                 }} className='fa fa-file-image-o' />
               </i>
-              <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+              <input type='file' accept='image/* video/mp4' onChange={this.onFileChange} onError={this.onFilesError}
                 ref='selectImage' style={styles.inputf} />
             </div>
             <div style={{display: 'inline-block'}} data-tip='file'>
@@ -496,7 +505,7 @@ class ChatBox extends React.Component {
                 }} className='fa fa-smile-o' />
               </i>
             </div>
-            <div style={{display: 'inline-block'}} data-tip='GIF'>
+            {/*<div style={{display: 'inline-block'}} data-tip='GIF'>
               <i id='gifPickerChat' onClick={this.showGif} style={styles.iconclass}>
                 <i style={{
                   fontSize: '20px',
@@ -518,7 +527,7 @@ class ChatBox extends React.Component {
                   bottom: -5
                 }}>GIF</p>
               </i>
-            </div>       
+            </div>*/}
             <div style={{display: 'inline-block'}} data-tip='stickers'>
               <i id='stickerPickerChat' onClick={this.showStickers} style={styles.iconclass}>
                 <i style={{
