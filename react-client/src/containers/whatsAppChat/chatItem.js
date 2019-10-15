@@ -181,7 +181,7 @@ class ChatItem extends React.Component {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else if (this.props.chat) {
       this.scrollToTop()
-      setTimeout(scroller.scrollTo(this.props.chat[this.props.chat.length - 1].datetime, {delay: 300, containerId: 'whatsappchat-container'}), 3000)
+      setTimeout(scroller.scrollTo(this.props.chat[this.props.chat.length - 1]._id, {delay: 300, containerId: 'whatsappchat-container'}), 3000)
       // this.props.disableScroll()
     }
   }
