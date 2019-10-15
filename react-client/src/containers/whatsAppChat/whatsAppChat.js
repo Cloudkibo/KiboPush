@@ -334,6 +334,7 @@ class LiveChat extends React.Component {
                   <SEARCHAREA
                     currentSession={this.state.activeSession}
                     hideSearch={this.hideSearch}
+                    activeSession={this.state.activeSession}
                   />
                 }
                 </div>

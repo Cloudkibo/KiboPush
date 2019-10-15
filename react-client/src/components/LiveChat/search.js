@@ -40,7 +40,7 @@ class Search extends React.Component {
                     <br />
                     <Dotdotdot clamp={2}>
                       <span style={{fontWeight: 'normal'}} className='m-widget4__title'>
-                        <strong>{chat.format === 'facebook' ? (this.props.currentSession.firstName + ': ') : 'You: '}</strong>
+                        <strong>{chat.format !== 'kibopush' ? (this.props.subscriberName.split(' ')[0]  + ': ') : 'You: '}</strong>
                         <Highlighter
                           searchWords={this.state.searchValue.split(' ')}
                           highlightStyle={{backgroundColor: 'yellow'}}

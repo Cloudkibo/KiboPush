@@ -33,7 +33,7 @@ class Search extends React.Component {
     if (counter === 1) {
       scroller.scrollTo(messageId, {delay: 3000, containerId: 'whatsappchat-container'})
     } else {
-      this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
+      this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
     }
   }
 
@@ -49,7 +49,12 @@ class Search extends React.Component {
   render () {
     return (
       <div className='col-xl-3'>
-       <SEARCH scrollToMessage={this.scrollToMessage} clearSearchResult={this.props.clearSearchResult} searchChatMsgs={this.props.searchChatMsgs} hideSearch={this.props.hideSearch} searchChat={this.searchChat}/>
+       <SEARCH scrollToMessage={this.scrollToMessage} 
+        clearSearchResult={this.props.clearSearchResult} 
+        searchChatMsgs={this.props.searchChatMsgs} 
+        hideSearch={this.props.hideSearch} 
+        searchChat={this.searchChat}
+        subscriberName = {this.props.currentSession.name ? this.props.currentSession.name : (this.props.currentSession.firstName ? this.props.currentSession.firstName+ ' '+this.props.currentSession.lastName: '')}/>
       </div>
     )
   }

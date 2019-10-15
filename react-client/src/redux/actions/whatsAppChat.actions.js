@@ -72,6 +72,7 @@ export function showCloseChatSessions (data) {
     closeCount: data.count
   }
 }
+
 export function fetchOpenSessions (data) {
   console.log('data for fetchOpenSessions', data)
   return (dispatch) => {
@@ -93,13 +94,16 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchChat (id, data) {
+export function fetchChat (id, data,searchMessageId,handleScroll) {
   console.log('data for fetchChat', data)
   return (dispatch) => {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
       .then(res => {
         console.log('response from fetchChat', res)
         dispatch(showChat(res.payload, data))
+        if (handleScroll && searchMessageId) {
+          handleScroll(searchMessageId)
+        }
       })
   }
 }
