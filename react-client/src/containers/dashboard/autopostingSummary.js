@@ -196,7 +196,7 @@ class AutopostingSummary extends React.Component {
           {this.props.autopostingSummary &&
             <div className='tab-content'>
             <div className='row'>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-twitter'
@@ -210,7 +210,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-facebook-f'
@@ -224,7 +224,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-wordpress'
@@ -238,6 +238,20 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
+              <div className='col-sm-3'>
+                <IconStack
+                  path='/autoposting'
+                  icon='fa fa-feed fa-2x'
+                  title='RSS'
+                  connected={this.props.autopostingSummary.rssFeedAutoposting}
+                  received={this.props.autopostingSummary.rssFeedAutopostingCame}
+                  sent={this.props.autopostingSummary.rssFeedAutopostingSent}
+                  iconStyle='warning'
+                  connectedText='Feeds'
+                  otherText='Feeds'
+                />
+              <div className='m--space-30' ></div>
+              </div>
             </div>
             <br />
             <center>
@@ -248,10 +262,11 @@ class AutopostingSummary extends React.Component {
                 <CartesianGrid strokeDasharray='3 3' />
                 <Tooltip />
                 <Legend />
-                  <Line type='monotone' dataKey='twitterCount' name='Subscriber reach through Tweets Sent' stroke='#8884d8' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='facebookCount' name='Subscriber reach through Facbook Posts Sent' stroke='#82ca9d' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='wordpressCount' name='Subscriber reach through Wordpress Posts Sent' stroke='#FF7F50' activeDot={{r: 8}} />
-              </LineChart>
+                  <Line type='monotone' dataKey='twitterCount' name='Subscriber reach through Tweets Sent' stroke='#34bfa3' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='facebookCount' name='Subscriber reach through Facbook Posts Sent' stroke='#f4516c' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='wordpressCount' name='Subscriber reach through Wordpress Posts Sent' stroke='#5bc0de' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='RSSCount' name='Subscriber reach through RSS Feeds Sent' stroke='#ffb822' activeDot={{r: 8}} />
+                </LineChart>
               : <span>No reports to show for the applied filters</span>
             }
             </center>
