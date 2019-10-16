@@ -33,7 +33,7 @@ class Search extends React.Component {
     if (counter === 1) {
       scroller.scrollTo(messageId, {delay: 3000, containerId: 'whatsappchat-container'})
     } else {
-      this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
+      this.props.fetchChat(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
     }
   }
 
