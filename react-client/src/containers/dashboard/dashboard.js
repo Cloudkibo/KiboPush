@@ -639,7 +639,7 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
-            {//url.includes('kiboengage.cloudkibo.com') &&
+            {url.includes('kiboengage.cloudkibo.com') &&
               <div className='row'>
                 <AutopostingSummary />
               </div>
