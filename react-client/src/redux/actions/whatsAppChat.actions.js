@@ -99,7 +99,6 @@ export function fetchChat (id, data,searchMessageId,handleScroll) {
   return (dispatch) => {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
       .then(res => {
-        console.log('response from fetchChat', res)
         dispatch(showChat(res.payload, data))
         if (handleScroll && searchMessageId) {
           handleScroll(searchMessageId)
@@ -122,6 +121,19 @@ export function sendChatMessage (data) {
     callApi('whatsAppChat', 'post', data)
       .then(res => {
         console.log('response from sendChatMessage', res)
+        console.log('response from fetchChat', res)
+        let fetchData = {
+          filter_criteria: {
+            pendingResponse: false,
+            search_value: '',
+            sort_value: -1,
+            unreadCount: false,
+          },
+          first_page: true,
+          last_id: 'none',
+          number_of_records: 10,
+        }
+        dispatch(fetchOpenSessions(fetchData))
         dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
       })
   }
