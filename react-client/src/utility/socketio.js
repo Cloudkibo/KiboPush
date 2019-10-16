@@ -3,9 +3,8 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
 import { socketUpdateSms } from './../redux/actions/smsChat.actions'
-import { socketUpdateWhatsApp } from './../redux/actions/whatsAppChat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -16,6 +15,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
+const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
 const socket = io('')
 let store
@@ -80,7 +80,9 @@ socket.on('message', (data) => {
     store.dispatch(socketUpdateSms(data.payload))
   } if (data.action === 'new_chat_whatsapp') {
     console.log('new message received from customer whatsApp')
-    store.dispatch(socketUpdateWhatsApp(data.payload))
+    store.dispatch(whatsAppActions.socketUpdateWhatsApp(data.payload))
+  } else if (data.action === 'whatsapp_message_seen') {
+    store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen') {
     store.dispatch(socketUpdateSeen(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
@@ -110,7 +112,9 @@ socket.on('message', (data) => {
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_assign') {
-    store.dispatch(fetchSingleSession(data.payload.session_id))
+    store.dispatch(updateSessions(data.payload.data))
+  } else if (data.action === 'session_assign_whatsapp') {
+    store.dispatch(whatsAppActions.updateSessions(data.payload.data))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))

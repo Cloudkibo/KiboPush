@@ -58,10 +58,18 @@ class LiveChat extends React.Component {
     this.handleResponse = this.handleResponse.bind(this)
     this.saveCustomField= this.saveCustomField.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
+    this.assignToAgent = this.assignToAgent.bind(this)
   }
 
   saveCustomField (data) {
     this.props.setCustomFieldValue(data, this.handleResponse)
+  }
+
+  assignToAgent (data) {
+    let activeSession = this.state.activeSession
+    activeSession.is_assigned = data.isAssigned
+    this.setState({activeSession: activeSession})
+    this.props.assignToAgent(data)
   }
 
   handleResponse (res, body) {
@@ -199,6 +207,7 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of whatsAppChat', nextProps)
+
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
     }
@@ -221,17 +230,24 @@ class LiveChat extends React.Component {
         customFieldOptions: fieldOptions
       })
     }
+    if (nextProps.socketSession) {
+      console.log('Socket Message', nextProps.socketSession)
+      this.fetchSessions({first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+        filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}})
+    }
   }
 
   updateUnreadCount () {
-  /*  console.log('out unread count mark', this.props.sessions)
-    this.props.sessions.filter(session => {
+     console.log('out unread count mark', this.props.sessions)
+    this.props.openSessions.filter(session => {
       if (session._id === this.state.activeSession._id) {
         delete session.unreadCount
         console.log('unread count mark', this.props.sessions)
         this.forceUpdate()
       }
-    })*/
+    })
   }
 
   render () {
@@ -301,12 +317,14 @@ class LiveChat extends React.Component {
                       changeActiveSession={this.changeActiveSession}
                       unSubscribe={this.props.unSubscribe}
                       user={this.props.user}
-                      assignToAgent={this.props.assignToAgent}
+                      assignToAgent={this.assignToAgent}
                       sendNotifications={this.props.sendNotifications}
                       members={this.props.members ? this.props.members : []}
                       customFields={this.props.customFields}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
+                      teams={this.props.teams? this.props.teams: []}
+                      subscriberTags={this.props.subscriberTags? this.props.subscriberTags: []}
                       msg={this.msg}
                       module={CHATMODULE}
                     />
@@ -331,6 +349,7 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log('props in live chat', state)
   return {
+    updateSessionTimeStamp: (state.whatsAppChatInfo.updateSessionTimeStamp),
     openSessions: (state.whatsAppChatInfo.openSessions),
     openCount: (state.whatsAppChatInfo.openCount),
     closeCount: (state.whatsAppChatInfo.closeCount),
@@ -343,7 +362,8 @@ function mapStateToProps (state) {
     teams: (state.teamsInfo.teams),
     members: (state.membersInfo.members),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
-    customFields: (state.customFieldInfo.customFields)
+    customFields: (state.customFieldInfo.customFields),
+    socketSession: (state.whatsAppChatInfo.socketMessage)
   }
 }
 

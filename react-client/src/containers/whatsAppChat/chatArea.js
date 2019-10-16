@@ -9,13 +9,15 @@ import {
   sendChatMessage,
   markRead,
   updateChat,
-  sendAttachment
+  sendAttachment,
+  resetSocket
 } from '../../redux/actions/whatsAppChat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ChatBox from './chatbox'
 import ChatItem from './chatItem'
 import ChatHead from './chatAreaHead'
+import moment from 'moment'
 // import MediaCapturer from 'react-multimedia-capture'
 
 class ChatArea extends React.Component {
@@ -24,6 +26,7 @@ class ChatArea extends React.Component {
     this.previousScrollHeight = undefined
     this.newMessage = false
     this.state = {
+      sessionValid: true
     }
     props.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
     props.markRead(this.props.activeSession._id, this.props.sessions)
@@ -32,6 +35,7 @@ class ChatArea extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateChat = this.updateChat.bind(this)
     this.onEnter = this.onEnter.bind(this)
+    this.isUserSessionValid = this.isUserSessionValid.bind(this)
     // this.updateScrollTop = this.updateScrollTop.bind(this)
   }
   onEnter (data, type, handleSendAttachment) {
@@ -40,7 +44,7 @@ class ChatArea extends React.Component {
       this.props.sendAttachment(data, handleSendAttachment)
       data.format = 'kibopush'
       this.props.chat.push(data)
-      
+
     } else {
       console.log('in else')
       this.props.sendChatMessage(data)
@@ -49,6 +53,21 @@ class ChatArea extends React.Component {
       this.props.chat.push(data)
       this.forceUpdate()
     }
+  }
+  isUserSessionValid (chats) {
+    var userMessages = []
+    var sessionValid = true
+    chats.map((msg, index) => {
+      if (msg.format === 'twilio') {
+        userMessages.push(msg)
+      }
+    })
+    var lastMessage = userMessages[userMessages.length -1]
+    sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
+    this.setState({
+      sessionValid: sessionValid
+    })
+    return sessionValid
   }
 updateChat (chat, newChat) {
     console.log('in updateChat')
@@ -116,27 +135,23 @@ updateChat (chat, newChat) {
 
   componentWillReceiveProps (nextProps) {
     console.log('in componentWillReceiveProps of ChatArea', nextProps)
-    // // this.getDisabledValue()
-    // if (nextProps.urlMeta) {
-    //   if (!nextProps.urlMeta.type) {
-    //     this.setState({displayUrlMeta: false})
-    //   }
-    //   this.setState({urlmeta: nextProps.urlMeta})
-    // }
-    // this.props.markRead(this.props.activeSession._id, this.props.sessions)
+    if (nextProps.socketSession || nextProps.socketSeen) {
+      nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
+      nextProps.resetSocket()
+    }
+    if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
+      this.props.markRead(this.props.activeSession._id, this.props.sessions)
+      this.isUserSessionValid(nextProps.chat)
+    }
   }
 
   componentDidUpdate (nextProps) {
     console.log('in componentDidUpdate of ChatArea', nextProps)
-    // this.props.updateUnreadCount(this.props.activeSession)
     // this.updateScrollTop()
     // if (this.newMessage) {
     //   this.previousScrollHeight = this.refs.chatScroll.scrollHeight
     //   this.newMessage = false
     // }
-    if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
-      this.props.markRead(this.props.activeSession._id, this.props.sessions)
-    }
   }
 
   render () {
@@ -155,6 +170,7 @@ updateChat (chat, newChat) {
                   showSearch={this.props.showSearch}
                   changeStatus={this.props.changeStatus}
                   removePending={this.props.removePending}
+                  user={this.props.user}
                   />
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
@@ -165,7 +181,9 @@ updateChat (chat, newChat) {
                     user={this.props.user}
                     updateChat={this.updateChat}
                     chat={this.props.chat}
-                    onEnter={this.onEnter} />
+                    onEnter={this.onEnter} 
+                    sessionValid={this.state.sessionValid}
+                    />
                 </div>
               }
               </div>
@@ -181,7 +199,9 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps of ChatArea', state)
   return {
     chat: (state.whatsAppChatInfo.chat),
-    chatCount: (state.whatsAppChatInfo.chatCount)
+    chatCount: (state.whatsAppChatInfo.chatCount),
+    socketSession: (state.whatsAppChatInfo.socketMessage),
+    socketSeen: (state.whatsAppChatInfo.socketSeen)
   }
 }
 
@@ -191,7 +211,8 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage,
     markRead,
     updateChat,
-    sendAttachment
+    sendAttachment,
+    resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatArea)
