@@ -96,7 +96,7 @@ class SessionItem extends React.Component {
                   !this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null
                   ? <span>{this.props.subscriberName.split(' ')[0]}: <i className='fa fa-thumbs-o-up' /></span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
-                  ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
+                  ? <span> You: <i className='fa fa-thumbs-o-up' /></span>
                   : <span>{this.props.session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                 }
               </span>
