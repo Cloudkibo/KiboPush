@@ -74,6 +74,15 @@ class LiveChat extends React.Component {
     this.getAgents = this.getAgents.bind(this)
     this.removePending = this.removePending.bind(this)
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+  }
+
+  changeTab (value) {
+    if (value === 'open') {
+      this.setState({tabValue: 'open'})
+    } else {
+      this.setState({tabValue: 'closed'})
+    }
   }
 
   getAgents (members) {
@@ -359,7 +368,10 @@ class LiveChat extends React.Component {
       ) {
         let sessionIds = nextProps.openSessions.map((s) => s._id)
         if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
+          let activeSession = this.state.activeSession
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
+          activeSession.status = 'new'
+          this.setState({tabValue: 'open', activeSession: activeSession})
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
@@ -427,6 +439,8 @@ class LiveChat extends React.Component {
                       user={this.props.user}
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
+                      tabValue={this.state.tabValue}
+                      changeTab={this.changeTab}
                     />
                     {
                       Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
