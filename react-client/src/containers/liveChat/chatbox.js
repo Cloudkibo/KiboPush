@@ -2003,6 +2003,7 @@ class ChatBox extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    updateSessionTimeStamp: (state.liveChat.updateSessionTimeStamp),
     userChat: (state.liveChat.userChat),
     chatCount: (state.liveChat.chatCount),
     sessions: (state.liveChat.sessions),
