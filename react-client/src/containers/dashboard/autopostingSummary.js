@@ -39,7 +39,8 @@ class AutopostingSummary extends React.Component {
     if (nextprops.autopostingSummary &&
       (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
         nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||
-        nextprops.autopostingSummary.facebookAutopostingGraph.length > 0
+        nextprops.autopostingSummary.facebookAutopostingGraph.length > 0 ||
+        nextprops.autopostingSummary.rssFeedAutopostingGraph.length > 0
       )) {
         if (nextprops.autopostingSummary.twitterAutopostingGraph && nextprops.autopostingSummary.twitterAutopostingGraph.length > 0) {
           var twitterData = this.includeZeroCounts(nextprops.autopostingSummary.twitterAutopostingGraph)
@@ -50,10 +51,13 @@ class AutopostingSummary extends React.Component {
         if (nextprops.autopostingSummary.wordpressAutopostingGraph && nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0) {
           var wordpressData = this.includeZeroCounts(nextprops.autopostingSummary.wordpressAutopostingGraph)
         }
+        if (nextprops.autopostingSummary.rssFeedAutopostingGraph && nextprops.autopostingSummary.rssFeedAutopostingGraph.length > 0) {
+          var rssFeedData = this.includeZeroCounts(nextprops.autopostingSummary.rssFeedAutopostingGraph)
+        }
         console.log('twitterData', twitterData)
         console.log('facebookData', facebookData)
         console.log('wordpressData', wordpressData)
-        let dataChart = this.prepareLineChartData(twitterData, facebookData, wordpressData)
+        let dataChart = this.prepareLineChartData(twitterData, facebookData, wordpressData, rssFeedData)
         console.log('dataChart', dataChart)
         this.setState({data: dataChart})
       }
@@ -90,7 +94,7 @@ class AutopostingSummary extends React.Component {
     }
     return dataArray.reverse()
   }
-  prepareLineChartData (twitter, facebook, wordpress) {
+  prepareLineChartData (twitter, facebook, wordpress, rssFeed) {
     var dataChart = []
     if (twitter && twitter.length > 0) {
       for (var i = 0; i < twitter.length; i++) {
@@ -105,6 +109,11 @@ class AutopostingSummary extends React.Component {
           record.wordpressCount = wordpress[i].count
         } else {
           record.wordpressCount = 0
+        }
+        if (rssFeed && rssFeed.length > 0) {
+          record.rssFeedCount = rssFeed[i].count
+        } else {
+          record.rssFeedCount = 0
         }
         record.twitterCount = twitter[i].count
         dataChart.push(record)
@@ -123,6 +132,11 @@ class AutopostingSummary extends React.Component {
         } else {
           record1.wordpress = 0
         }
+        if (rssFeed && rssFeed.length > 0) {
+          record1.rssFeedCount = rssFeed[j].count
+        } else {
+          record1.rssFeedCount = 0
+        }
         record1.facebookCount = facebook[j].count
         dataChart.push(record1)
       }
@@ -140,10 +154,37 @@ class AutopostingSummary extends React.Component {
         } else {
           record2.twitterCount = 0
         }
+        if (rssFeed && rssFeed.length > 0) {
+          record2.rssFeedCount = rssFeed[k].count
+        } else {
+          record2.rssFeedCount = 0
+        }
         record2.wordpressCount = wordpress[k].count
         dataChart.push(record2)
       }
-    }
+    } else if (rssFeed && rssFeed.length > 0) {
+     for (var l = 0; l < rssFeed.length; l++) {
+       var record3 = {}
+       record3.date = rssFeed[l].date
+       if (facebook && facebook.length > 0) {
+         record3.facebookCount = facebook[l].count
+       } else {
+         record3.facebookCount = 0
+       }
+       if (twitter && twitter.length > 0) {
+         record3.twitterCount = twitter[l].count
+       } else {
+         record3.twitterCount = 0
+       }
+       if (wordpress && wordpress.length > 0) {
+         record3.wordpressCount = wordpress[l].count
+       } else {
+         record3.wordpressCount = 0
+       }
+       record3.rssFeedCount = rssFeed[l].count
+       dataChart.push(record3)
+     }
+   }
     return dataChart
   }
   onKeyDown (e) {
@@ -196,7 +237,7 @@ class AutopostingSummary extends React.Component {
           {this.props.autopostingSummary &&
             <div className='tab-content'>
             <div className='row'>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-twitter'
@@ -210,7 +251,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-facebook-f'
@@ -224,7 +265,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-4'>
+              <div className='col-3'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-wordpress'
@@ -238,6 +279,20 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
+              <div className='col-sm-3'>
+                <IconStack
+                  path='/autoposting'
+                  icon='fa fa-feed fa-2x'
+                  title='RSS'
+                  connected={this.props.autopostingSummary.rssFeedAutoposting}
+                  received={this.props.autopostingSummary.rssFeedAutopostingCame}
+                  sent={this.props.autopostingSummary.rssFeedAutopostingSent}
+                  iconStyle='warning'
+                  connectedText='Feeds'
+                  otherText='Feeds'
+                />
+              <div className='m--space-30' ></div>
+              </div>
             </div>
             <br />
             <center>
@@ -248,10 +303,11 @@ class AutopostingSummary extends React.Component {
                 <CartesianGrid strokeDasharray='3 3' />
                 <Tooltip />
                 <Legend />
-                  <Line type='monotone' dataKey='twitterCount' name='Subscriber reach through Tweets Sent' stroke='#8884d8' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='facebookCount' name='Subscriber reach through Facbook Posts Sent' stroke='#82ca9d' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='wordpressCount' name='Subscriber reach through Wordpress Posts Sent' stroke='#FF7F50' activeDot={{r: 8}} />
-              </LineChart>
+                  <Line type='monotone' dataKey='twitterCount' name='Subscriber reach through Tweets Sent' stroke='#34bfa3' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='facebookCount' name='Subscriber reach through Facbook Posts Sent' stroke='#f4516c' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='wordpressCount' name='Subscriber reach through Wordpress Posts Sent' stroke='#5bc0de' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='rssFeedCount' name='Subscriber reach through RSS Feeds Sent' stroke='#ffb822' activeDot={{r: 8}} />
+                </LineChart>
               : <span>No reports to show for the applied filters</span>
             }
             </center>

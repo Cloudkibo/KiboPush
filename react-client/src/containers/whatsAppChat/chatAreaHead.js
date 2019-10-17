@@ -19,9 +19,11 @@ class ChatAreaHead extends React.Component {
   showDialog () {
     this.setState({isShowingModal: true})
   }
+
   showSearch () {
     this.props.showSearch()
   }
+
   closeDialog () {
     this.setState({isShowingModal: false})
   }
@@ -88,8 +90,9 @@ class ChatAreaHead extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        {(this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
-        <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
+        {(this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')
+        ? <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
+        : <button style={{backgroundColor: 'white'}} className='btn'></button>
         }
       {
           this.props.activeSession.status === 'new'

@@ -99,7 +99,7 @@ class PageSubscribers extends React.Component {
     }
   }
   searchSubscribers (event) {
-    this.setState({searchValue: event.target.value.toLowerCase()})
+    this.setState({searchValue: event.target.value.toLowerCase(), pageNumber: 0})
     if (this.props.currentPage) {
       this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
@@ -115,7 +115,7 @@ class PageSubscribers extends React.Component {
 
   onFilterByGender (data) {
     if (data) {
-      this.setState({genderValue: data.value})
+      this.setState({genderValue: data.value, pageNumber: 0})
       if (this.props.currentPage) {
         this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue}})
       }
@@ -158,7 +158,7 @@ class PageSubscribers extends React.Component {
   onFilterByLocale (data) {
     console.log('data', data)
     if (data) {
-      this.setState({localeValue: data.value})
+      this.setState({localeValue: data.value, pageNumber: 0})
       if (this.props.currentPage) {
         this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
       }

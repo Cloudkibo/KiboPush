@@ -59,7 +59,7 @@ class Autoposting extends React.Component {
       }
     })
     if(this.props.pages){
-      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission)}) 
+      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission)})
       this.setState({newsPageIndex: pagesIndex})
     }
   }
