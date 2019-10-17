@@ -638,6 +638,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps chatbox.js')
     if (nextProps.userChat.length > 0 && this.props.userChat.length > 0) {
       if (nextProps.userChat[0].subscriber_id !== this.props.userChat[0].subscriber_id) {
         this.newMessage = true
@@ -669,7 +670,7 @@ class ChatBox extends React.Component {
     }
 
     console.log('this.previousScrollHeight', this.previousScrollHeight)
-    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by.id !== this.props.user._id) {
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by && this.props.socketData.message.replied_by.id !== this.props.user._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       if (!this.state.scrolling) {
         this.updateScrollTop()
@@ -2003,6 +2004,7 @@ class ChatBox extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    updateSessionTimeStamp: (state.liveChat.updateSessionTimeStamp),
     userChat: (state.liveChat.userChat),
     chatCount: (state.liveChat.chatCount),
     sessions: (state.liveChat.sessions),

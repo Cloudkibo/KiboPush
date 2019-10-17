@@ -68,7 +68,7 @@ class SessionItem extends React.Component {
                   : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
                 }
               </span>
-              : this.props.session.lastPayload && this.props.session.lastPayload.componentType
+              : this.props.session.lastPayload && this.props.session.lastPayload.componentType && this.props.session.lastPayload.componentType !== 'thumbsUp'
               ? <span className='m-widget4__sub'>
                 {
                   (!this.props.session.lastRepliedBy || this.props.session.lastRepliedBy === null) && this.props.session.lastPayload

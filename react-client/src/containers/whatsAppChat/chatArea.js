@@ -63,7 +63,9 @@ class ChatArea extends React.Component {
       }
     })
     var lastMessage = userMessages[userMessages.length -1]
-    sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
+    if (lastMessage) {
+      sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
+    }
     this.setState({
       sessionValid: sessionValid
     })

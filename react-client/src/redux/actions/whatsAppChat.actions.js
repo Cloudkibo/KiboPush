@@ -142,6 +142,18 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('whatsAppChat', 'post', data).then(res => {
       handleSendAttachment(res)
+      let fetchData = {
+        filter_criteria: {
+          pendingResponse: false,
+          search_value: '',
+          sort_value: -1,
+          unreadCount: false,
+        },
+        first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+      }
+      dispatch(fetchOpenSessions(fetchData))
       dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
     })
   }
