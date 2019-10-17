@@ -856,9 +856,9 @@ class CreateSequence extends React.Component {
 
             {
               this.state.ShowTrigger && this.state.triggerEvent === 'none' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px'}}
+              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                 onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px'}}
+                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                   onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
@@ -901,9 +901,9 @@ class CreateSequence extends React.Component {
             }
             {
               this.state.ShowTrigger && this.state.triggerEvent !== 'none' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px'}}
+              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                 onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px'}}
+                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                   onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
