@@ -254,6 +254,8 @@ class ChatBox extends React.Component {
       this.setState({componentType: 'image'})
     } else if (file.type.match('audio.*')) {
       this.setState({componentType: 'audio'})
+    } else if (file.type.match('video.*')) {
+      this.setState({componentType: 'video'})
     } else if (file.type.match('application.*')) {
       this.setState({componentType: 'file'})
     } else {
@@ -453,7 +455,7 @@ class ChatBox extends React.Component {
                   textAlign: 'center'
                 }} className='fa fa-file-image-o' />
               </i>
-              <input type='file' accept='image/* video/mp4' onChange={this.onFileChange} onError={this.onFilesError}
+              <input type='file' accept='image/* video/mp4' onClick={(e)=>{e.target.value= ''}} onChange={this.onFileChange} onError={this.onFilesError}
                 ref='selectImage' style={styles.inputf} />
             </div>
             <div style={{display: 'inline-block'}} data-tip='file'>
@@ -471,7 +473,7 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-file-pdf-o' />
                 </i>
-                <input type='file' accept='application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                <input type='file' accept='application/pdf' onClick={(e)=>{e.target.value= ''}} onChange={this.onFileChange} onError={this.onFilesError}
                   ref='selectFile' style={styles.inputf} />
               </div>
             </div>
@@ -489,7 +491,7 @@ class ChatBox extends React.Component {
                   textAlign: 'center'
                 }} className='fa fa-file-audio-o' />
               </i>
-              <input type='file' accept='audio/*' onChange={this.onFileChange} onError={this.onFilesError}
+              <input type='file' accept='audio/*' onClick={(e)=>{e.target.value= ''}} onChange={this.onFileChange} onError={this.onFilesError}
                 ref='selectAudio' style={styles.inputf} />
             </div>
             <div style={{display: 'inline-block'}} data-tip='emoticons'>
