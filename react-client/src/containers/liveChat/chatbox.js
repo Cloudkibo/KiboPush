@@ -669,7 +669,7 @@ class ChatBox extends React.Component {
     }
 
     console.log('this.previousScrollHeight', this.previousScrollHeight)
-    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by.id !== this.props.user._id) {
+    if (this.props.socketData && this.props.socketData.subscriber_id === this.props.currentSession._id && this.props.socketData.message.replied_by && this.props.socketData.message.replied_by.id !== this.props.user._id) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
       if (!this.state.scrolling) {
         this.updateScrollTop()
