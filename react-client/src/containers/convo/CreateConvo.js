@@ -589,7 +589,7 @@ class CreateConvo extends React.Component {
                           <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
                             Test
                           </button>
-                          <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
+                          <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
                             Send
                           </button>
                         </div>

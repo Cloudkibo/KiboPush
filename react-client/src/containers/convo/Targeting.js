@@ -579,7 +579,7 @@ class Targeting extends React.Component {
           </span>
         }
         </div>
-        <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
+        {/* <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
           <span class="m--font-bolder">
 					  Message Type
 				  </span>
@@ -623,7 +623,7 @@ class Targeting extends React.Component {
               <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank'> Learn more here</a>
 					  </span>
 				  </div>
-        </div>
+        </div> */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px'}}>
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
