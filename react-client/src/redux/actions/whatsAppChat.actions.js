@@ -28,13 +28,24 @@ export function clearSearchResult () {
     type: ActionTypes.CLEAR_SEARCH_WHATSAPP
   }
 }
+export function socketUpdateWhatsAppSeen (data) {
+  return {
+    type: ActionTypes.SOCKET_UPDATE_WHATSAPP_SEEN,
+    data
+  }
+}
 export function socketUpdateWhatsApp (data) {
   return {
     type: ActionTypes.SOCKET_UPDATE_WHATSAPP,
     data
   }
 }
-
+export function resetSocket (data) {
+  return {
+    type: ActionTypes.RESET_SOCKET_WHATSAPP,
+    data: null
+  }
+}
 export function updateChat (chat, newChat) {
   let chatData = []
   chatData = chat
@@ -61,6 +72,7 @@ export function showCloseChatSessions (data) {
     closeCount: data.count
   }
 }
+
 export function fetchOpenSessions (data) {
   console.log('data for fetchOpenSessions', data)
   return (dispatch) => {
@@ -82,13 +94,15 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchChat (id, data) {
+export function fetchChat (id, data,searchMessageId,handleScroll) {
   console.log('data for fetchChat', data)
   return (dispatch) => {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
       .then(res => {
-        console.log('response from fetchChat', res)
         dispatch(showChat(res.payload, data))
+        if (handleScroll && searchMessageId) {
+          handleScroll(searchMessageId)
+        }
       })
   }
 }
@@ -107,6 +121,19 @@ export function sendChatMessage (data) {
     callApi('whatsAppChat', 'post', data)
       .then(res => {
         console.log('response from sendChatMessage', res)
+        console.log('response from fetchChat', res)
+        let fetchData = {
+          filter_criteria: {
+            pendingResponse: false,
+            search_value: '',
+            sort_value: -1,
+            unreadCount: false,
+          },
+          first_page: true,
+          last_id: 'none',
+          number_of_records: 10,
+        }
+        dispatch(fetchOpenSessions(fetchData))
         dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
       })
   }
@@ -115,25 +142,23 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('whatsAppChat', 'post', data).then(res => {
       handleSendAttachment(res)
+      let fetchData = {
+        filter_criteria: {
+          pendingResponse: false,
+          search_value: '',
+          sort_value: -1,
+          unreadCount: false,
+        },
+        first_page: true,
+        last_id: 'none',
+        number_of_records: 10,
+      }
+      dispatch(fetchOpenSessions(fetchData))
       dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
     })
   }
 }
-export function changeStatus (data, handleStatus) {
-  return (dispatch) => {
-    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
-      handleStatus(res)
-    })
-  }
-}
 
-export function updatePendingResponse (data, handlePendingResponse) {
-  return (dispatch) => {
-    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
-      handlePendingResponse(res)
-    })
-  }
-}
 export function unSubscribe (id, data) {
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data).then(res => {
@@ -204,6 +229,21 @@ export function setCustomFieldValue (body, handleResponse) {
     callApi('whatsAppChat/set_custom_field_value', 'post', body)
     .then(res => {
       handleResponse(res, body)
+    })
+  }
+}
+export function changeStatus (data, handleStatus) {
+  return (dispatch) => {
+    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+      handleStatus(res)
+    })
+  }
+}
+
+export function updatePendingResponse (data, handlePendingResponse) {
+  return (dispatch) => {
+    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+      handlePendingResponse(res)
     })
   }
 }

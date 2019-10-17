@@ -359,6 +359,7 @@ class LiveChat extends React.Component {
       ) {
         let sessionIds = nextProps.openSessions.map((s) => s._id)
         if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
+          this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
@@ -496,7 +497,7 @@ class LiveChat extends React.Component {
 function mapStateToProps(state) {
   console.log('props in live chat', state)
   return {
-    randomNum: (state.liveChat.randomNum),
+    updateSessionTimeStamp: (state.liveChat.updateSessionTimeStamp),
     openSessions: (state.liveChat.openSessions),
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),

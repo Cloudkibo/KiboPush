@@ -30,7 +30,7 @@ export function liveChat (state = initialState, action) {
       }
       return Object.assign({}, state, {
         openSessions: sessions,
-        randomNum: Math.random()
+        updateSessionTimeStamp: new Date().toString()
       })
 
     case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:

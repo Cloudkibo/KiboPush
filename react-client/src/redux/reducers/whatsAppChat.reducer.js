@@ -41,11 +41,17 @@ export function whatsAppChatInfo (state = initialState, action) {
         chat: action.chat
       })
     case ActionTypes.SOCKET_UPDATE_WHATSAPP:
-      let newchat = state.chat
-      newchat.push(action.data)
       return Object.assign({}, state, {
-        chat: newchat,
-        chatCount: state.chatCount + 1
+        socketMessage: action.data,
+      })
+    case ActionTypes.SOCKET_UPDATE_WHATSAPP_SEEN:
+      return Object.assign({}, state, {
+        socketSeen: action.data,
+      })
+    case ActionTypes.RESET_SOCKET_WHATSAPP:
+      return Object.assign({}, state, {
+        socketMessage: action.data,
+        socketSeen: action.data
       })
     case ActionTypes.UPDATE_SESSIONS_WHATSAPP:
       let sessions = state.openSessions
@@ -58,7 +64,8 @@ export function whatsAppChatInfo (state = initialState, action) {
         name: action.data.teamName ? action.data.teamName : action.data.agentName
       }
       return Object.assign({}, state, {
-        openSessions: sessions
+        openSessions: sessions,
+        updateSessionTimeStamp: new Date().toString()
     })
     case ActionTypes.SHOW_SEARCH_WHATSAPP:
       return Object.assign({}, state, {

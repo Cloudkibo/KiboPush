@@ -349,7 +349,7 @@ class ProfileArea extends React.Component {
         type='datetime-local' />
     } else if (this.state.selectedField.type === 'true/false') {
       setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
-        <option key='' value='' selected disabled>...Select...</option>
+        <option key='' value='' disabled>...Select...</option>
         <option key='true' value='true'>True</option>
         <option key='false' value='false'>False</option>
       </select>
@@ -693,22 +693,22 @@ class ProfileArea extends React.Component {
 }
 
 ProfileArea.propTypes = {
-  'teams': PropTypes.array.isRequired,
+  'teams': PropTypes.array,
   'agents': PropTypes.array.isRequired,
-  'subscriberTags': PropTypes.array.isRequired,
+  'subscriberTags': PropTypes.array,
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'unSubscribe': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
-  'fetchTeamAgents': PropTypes.func.isRequired,
-  'assignToTeam': PropTypes.func.isRequired,
+  'fetchTeamAgents': PropTypes.func,
+  'assignToTeam': PropTypes.func,
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
-  'unassignTags': PropTypes.func.isRequired,
-  'tags': PropTypes.array.isRequired,
-  'createTag': PropTypes.func.isRequired,
-  'assignTags': PropTypes.func.isRequired,
-  'tagOptions': PropTypes.array.isRequired,
+  'unassignTags': PropTypes.func,
+  'tags': PropTypes.array,
+  'createTag': PropTypes.func,
+  'assignTags': PropTypes.func,
+  'tagOptions': PropTypes.array,
   'members': PropTypes.array.isRequired,
   'setCustomFieldValue': PropTypes.func.isRequired
 }
