@@ -656,12 +656,12 @@ class Targeting extends React.Component {
           </div>
           }
           </div> */}
-          <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+          {/* <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
             <span class="m--font-bolder">
 					    Targeting
 				    </span>
-          </div>
-          <div className='col-10' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+          </div> */}
+          <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
             {
               this.props.component !== 'broadcast' &&
               <div>
