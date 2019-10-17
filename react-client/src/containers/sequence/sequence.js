@@ -432,9 +432,9 @@ class Sequence extends React.Component {
         }
         {
           this.state.isShowModalTrigger &&
-          <ModalContainer style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px' }}
+          <ModalContainer style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw' }}
             onClose={this.closeDialogTrigger}>
-            <ModalDialog style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px' }}
+            <ModalDialog style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw' }}
               onClose={this.closeDialogTrigger}>
               <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
               <div className='row'>
