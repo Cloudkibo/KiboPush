@@ -638,6 +638,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps chatbox.js')
     if (nextProps.userChat.length > 0 && this.props.userChat.length > 0) {
       if (nextProps.userChat[0].subscriber_id !== this.props.userChat[0].subscriber_id) {
         this.newMessage = true
