@@ -76,9 +76,9 @@ class CreateMessengerAd extends React.Component {
       title = 'KiboChat'
     }
     if (this.props.location.state && this.props.location.state.module === 'edit') {
-      document.title = `${title} | Edit Messenger Ad`
+      document.title = `${title} | Edit JSON Ad`
     } else {
-      document.title = `${title} | Create Messenger Ad`
+      document.title = `${title} | Create JSON Ad`
     }
     this.updatePreview()
   }
@@ -119,8 +119,8 @@ class CreateMessengerAd extends React.Component {
                       <h3 className='m-portlet__head-text'>
                         {
                         this.props.location.state.module === 'edit'
-                        ? 'Edit Messenger Ad'
-                        : 'Create Messenger Ad'
+                        ? 'Edit JSON Ad'
+                        : 'Create JSON Ad'
                       }
                       </h3>
                     </div>
