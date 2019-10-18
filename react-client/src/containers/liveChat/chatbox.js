@@ -40,6 +40,8 @@ import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactTooltip from 'react-tooltip'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
+import moment from 'moment'
+
 // import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
@@ -86,7 +88,8 @@ class ChatBox extends React.Component {
       recording: false,
       scrolling: true,
       isShowingModalPending: false,
-      pendingResponseValue: ''
+      pendingResponseValue: '',
+      sessionValid: false
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -138,6 +141,28 @@ class ChatBox extends React.Component {
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
+    this.isUserSessionValid = this.isUserSessionValid.bind(this)
+  }
+
+  isUserSessionValid (chats) {
+    var userMessages = []
+    var sessionValid = false
+    chats.map((msg, index) => {
+      if (msg.format === 'facebook') {
+        userMessages.push(msg)
+      }
+    })
+    console.log('userMessages', userMessages)
+    var lastMessage = userMessages[userMessages.length -1]
+    console.log('lastMessage', lastMessage)
+    if (lastMessage) {
+      sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
+    }
+    this.setState({
+      sessionValid: sessionValid
+    })
+    console.log('sessionValid', sessionValid)
+    return sessionValid
   }
 
   removeUrlMeta () {
@@ -638,7 +663,11 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps chatbox.js')
+    console.log('componentWillReceiveProps chatbox.js', nextProps.userChat)
+    console.log('this.props.currentSession', this.props.currentSession)
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
+      this.isUserSessionValid(nextProps.userChat)
+    }
     if (nextProps.userChat.length > 0 && this.props.userChat.length > 0) {
       if (nextProps.userChat[0].subscriber_id !== this.props.userChat[0].subscriber_id) {
         this.newMessage = true
@@ -949,43 +978,6 @@ class ChatBox extends React.Component {
         />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
-          <PopoverBody>
-            <div>
-              <Picker
-                style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
-                emojiSize={24}
-                perLine={6}
-                skin={1}
-                set='facebook'
-                showPreview={false}
-                showSkinTones={false}
-                custom={[]}
-                autoFocus={false}
-                showPreview={false}
-                onClick={(emoji, event) => this.setEmoji(emoji)}
-              />
-            </div>
-          </PopoverBody>
-        </Popover>
-        <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
-          <PopoverBody>
-            <div>
-              <StickerMenu
-                apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
-                userId={'imran.shoukat@khi.iba.edu.pk'}
-                sendSticker={(sticker) => { this.sendSticker(sticker) }}
-              />
-            </div>
-          </PopoverBody>
-        </Popover>
-        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
-          <PopoverBody>
-            <GiphySelect
-              onEntrySelect={gif => this.sendGif(gif)}
-            />
-          </PopoverBody>
-        </Popover>
         {
           /*
           <Popover
@@ -1772,7 +1764,46 @@ class ChatBox extends React.Component {
                     </div>
                   </div>
                   <div className='m-messenger__seperator' />
-                  <div className='m-messenger__form'>
+                  {this.state.sessionValid
+                ? <div>
+                <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
+                    <PopoverBody>
+                      <div>
+                        <Picker
+                          style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                          emojiSize={24}
+                          perLine={6}
+                          skin={1}
+                          set='facebook'
+                          showPreview={false}
+                          showSkinTones={false}
+                          custom={[]}
+                          autoFocus={false}
+                          showPreview={false}
+                          onClick={(emoji, event) => this.setEmoji(emoji)}
+                        />
+                      </div>
+                    </PopoverBody>
+                  </Popover>
+                  <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
+                    <PopoverBody>
+                      <div>
+                        <StickerMenu
+                          apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+                          userId={'imran.shoukat@khi.iba.edu.pk'}
+                          sendSticker={(sticker) => { this.sendSticker(sticker) }}
+                        />
+                      </div>
+                    </PopoverBody>
+                  </Popover>
+                  <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
+                    <PopoverBody>
+                      <GiphySelect
+                        onEntrySelect={gif => this.sendGif(gif)}
+                      />
+                    </PopoverBody>
+                  </Popover>
+                <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
                       <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
@@ -1991,6 +2022,10 @@ class ChatBox extends React.Component {
                        </div>
                      </div>
                   }
+                </div>
+                : <span><p>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</p>
+                </span>
+              }
                 </div>
               </div>
             </div>

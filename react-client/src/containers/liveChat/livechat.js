@@ -259,7 +259,7 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps livechat.js', nextProps)
+    console.log('componentWillReceiveProps livechat.js')
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
@@ -378,8 +378,11 @@ class LiveChat extends React.Component {
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           this.props.resetSocket()
         } else {
+          this.props.fetchSingleSession(nextProps.socketSession)
           this.props.resetSocket()
         }
+      } else if (nextProps.socketData.action === 'agent_replied') {
+        this.props.fetchSingleSession(nextProps.socketSession)
       }
     }
   }
