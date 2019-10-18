@@ -661,7 +661,6 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps chatbox.js')
-    console.log('this.props.currentSession', this.props.currentSession)
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
     }
