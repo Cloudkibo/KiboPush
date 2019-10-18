@@ -152,16 +152,13 @@ class ChatBox extends React.Component {
         userMessages.push(msg)
       }
     })
-    console.log('userMessages', userMessages)
     var lastMessage = userMessages[userMessages.length -1]
-    console.log('lastMessage', lastMessage)
     if (lastMessage) {
       sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
     }
     this.setState({
       sessionValid: sessionValid
     })
-    console.log('sessionValid', sessionValid)
     return sessionValid
   }
 
@@ -663,7 +660,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps chatbox.js', nextProps.userChat)
+    console.log('componentWillReceiveProps chatbox.js')
     console.log('this.props.currentSession', this.props.currentSession)
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
