@@ -13,7 +13,8 @@ class TextModal extends React.Component {
       buttons: props.buttons.map(button => {return {visible: true, title: button.title}} ),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonLimit: 3,
-      buttonDisabled: false
+      buttonDisabled: false,
+      messengerAdPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -52,11 +53,28 @@ class TextModal extends React.Component {
 
   addComponent (buttons) {
     console.log('addComponent in TextModal', this.props)
+    let deletePayload = []
+    if (this.state.messengerAdPayloads.length > 0) {
+      for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
+        let foundPayload = false
+        for (let j = 0; j < buttons.length; j++) {
+          if (this.state.messengerAdPayloads[j] === buttons[j].payload) {
+            foundPayload = true
+          }
+        }
+        if (!foundPayload) {
+          deletePayload.push(this.state.messengerAdPayloads[i]) 
+        } else {
+          foundPayload = false
+        }
+      }
+    }
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'text',
       text: this.state.text,
-      buttons}, this.props.edit)
+      buttons,
+      deletePayload: deletePayload.length > 0 ? deletePayload : null}, this.props.edit)
   }
 
   closeModal () {
