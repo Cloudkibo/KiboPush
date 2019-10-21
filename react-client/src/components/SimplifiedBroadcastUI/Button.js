@@ -223,6 +223,13 @@ class Button extends React.Component {
         messageId: 'messageId'
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
+    } else if (this.state.openCreateMessage) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: this.props.button.payload ? this.props.button.payload : null
+      }
+      this.props.onAdd(data, this.props.index)
     } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
