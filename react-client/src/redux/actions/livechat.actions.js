@@ -110,7 +110,6 @@ export function showCloseChatSessions (sessions, firstPage) {
   }
 }
 export function updateChatSessions (session, appendDeleteInfo) {
-  console.log('session in updateChatSessions', session)
   // let name = session.name.split(' ')
   // session.firstName = name[0]
   // session.lastName = name[1]
@@ -248,7 +247,10 @@ export function fetchCloseSessions (data) {
 export function fetchSingleSession (sessionid, appendDeleteInfo) {
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)
-      .then(res => dispatch(updateChatSessions(res.payload, appendDeleteInfo)))
+      .then(res => {
+        console.log('response from fetchSingleSession', res)
+        dispatch(updateChatSessions(res.payload, appendDeleteInfo))
+      })
   }
 }
 

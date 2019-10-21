@@ -378,8 +378,11 @@ class LiveChat extends React.Component {
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           this.props.resetSocket()
         } else {
+          this.props.fetchSingleSession(nextProps.socketSession)
           this.props.resetSocket()
         }
+      } else if (nextProps.socketData.action === 'agent_replied') {
+        this.props.fetchSingleSession(nextProps.socketSession)
       }
     }
   }
