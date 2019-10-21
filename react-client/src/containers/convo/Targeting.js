@@ -46,7 +46,8 @@ class Targeting extends React.Component {
       pollValue: [],
       surveyValue: [],
       isShowingModalPro: false,
-      showSubscriptionMsg: false
+      showSubscriptionMsg: false,
+      isShowingLearnMore: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
@@ -63,6 +64,7 @@ class Targeting extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
+    this.isShowingLearnMore = this.isShowingLearnMore.bind(this)
     // this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
     // this.initializeSubscribers = this.initializeSubscribers.bind(this)
     props.loadTags()
@@ -72,6 +74,10 @@ class Targeting extends React.Component {
   // subscriberReachEstimation () {
   //   this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
   // }
+
+  isShowingLearnMore () {
+    this.setState({isShowingLearnMore: !this.state.isShowingLearnMore})
+  }
 
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -513,7 +519,7 @@ class Targeting extends React.Component {
     if (nextProps.resetTarget) {
       this.resetTargeting()
     }
-    if (nextProps.customerLists) {
+    if (nextProps.customerLists && this.state.lists.length === 0) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
         if (!(nextProps.customerLists[j].initialList)) {
@@ -551,6 +557,24 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
+         {
+          this.state.isShowingLearnMore &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.isShowingLearnMore}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.isShowingLearnMore}>
+              <span>you can not send messages to any of your subscribers if :</span>
+              <ol>
+                <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
+                <li>No subscriber match the selected criteria</li>
+              </ol>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
@@ -575,7 +599,12 @@ class Targeting extends React.Component {
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}
           >
-            This broadcast will be sent to {this.props.subscriberCount} subscriber(s)
+            This broadcast will be sent to {this.props.subscriberCount} subscriber(s). 
+            { this.props.subscriberCount === 0 &&
+              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}>
+                Learn More
+            </a>
+            }
           </span>
         }
         </div>
