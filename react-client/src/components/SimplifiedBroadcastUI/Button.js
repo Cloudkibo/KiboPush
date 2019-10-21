@@ -324,7 +324,7 @@ class Button extends React.Component {
     this.setState({
       openCreateMessage: true
     }, () => {
-      if (this.props.updateButtonStatus) {
+      if (this.props.updateButtonStatus && this.state.title) {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     })
@@ -347,6 +347,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.sendSequenceMessageButton && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.openCreateMessage && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
