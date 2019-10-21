@@ -19,7 +19,7 @@ class Button extends React.Component {
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
-      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' : false,
+      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
