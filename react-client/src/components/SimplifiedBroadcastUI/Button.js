@@ -306,7 +306,7 @@ class Button extends React.Component {
         title: this.state.title,
         payload: null
       }
-      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+      this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
         type: 'web_url',
