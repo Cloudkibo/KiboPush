@@ -42,7 +42,8 @@ class LiveChat extends React.Component {
       loading: false,
       status: 'Unresolved',
       customFieldOptions: {},
-      showSearch: false
+      showSearch: false,
+      tabValue: 'open'
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -59,6 +60,15 @@ class LiveChat extends React.Component {
     this.saveCustomField= this.saveCustomField.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
     this.assignToAgent = this.assignToAgent.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+  }
+
+  changeTab (value) {
+    if (value === 'open') {
+      this.setState({tabValue: 'open'})
+    } else {
+      this.setState({tabValue: 'closed'})
+    }
   }
 
   saveCustomField (data) {
@@ -284,6 +294,8 @@ class LiveChat extends React.Component {
                     activeSession={this.state.activeSession}
                     changeActiveSession={this.changeActiveSession}
                     module={CHATMODULE}
+                    tabValue={this.state.tabValue}
+                    changeTab={this.changeTab}
                   />
                   {
                     Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
