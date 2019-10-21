@@ -1607,7 +1607,9 @@ class ChatBox extends React.Component {
                                                     type='button'
                                                     className='btn btn-secondary btn-block'
                                                   >
-                                                    {b.title}
+                                                    {typeof b.title === 'string' &&
+                                                      b.title
+                                                    }
                                                   </button>
                                                 ))
                                               }
