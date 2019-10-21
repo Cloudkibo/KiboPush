@@ -19,7 +19,7 @@ class Button extends React.Component {
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
-      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' : false,
+      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
@@ -306,7 +306,7 @@ class Button extends React.Component {
         title: this.state.title,
         payload: null
       }
-      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+      this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
         type: 'web_url',
@@ -324,7 +324,7 @@ class Button extends React.Component {
     this.setState({
       openCreateMessage: true
     }, () => {
-      if (this.props.updateButtonStatus) {
+      if (this.props.updateButtonStatus && this.state.title) {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     })
@@ -347,6 +347,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.sendSequenceMessageButton && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.openCreateMessage && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})

@@ -468,7 +468,8 @@ class GenericMessage extends React.Component {
           this.handleText({
             id: componentId,
             text: broadcast.text,
-            buttons: broadcast.buttons ? broadcast.buttons : []
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            deletePayload: broadcast.deletePayload
           })
         }
       },
