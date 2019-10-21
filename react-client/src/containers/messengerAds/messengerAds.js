@@ -41,7 +41,7 @@ class MessengerAds extends React.Component {
       title = 'KiboChat'
     }
 
-    document.title = `${title} | Messenger Ads`
+    document.title = `${title} | JSON Ads`
   }
 
   gotoCreate () {
@@ -149,7 +149,7 @@ class MessengerAds extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Manage Messenger Ads</h3>
+              <h3 className='m-subheader__title'>Manage JSON Ads</h3>
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@ class MessengerAds extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenger Ads? Here is the <a href='http://kibopush.com/messengerAds' target='_blank'>documentation</a>.
+              Need help in understanding JSON Ads? Here is the <a href='http://kibopush.com/jsonAds' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
@@ -170,7 +170,7 @@ class MessengerAds extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Messenger Ads
+                        JSON Ads
                       </h3>
                     </div>
                   </div>

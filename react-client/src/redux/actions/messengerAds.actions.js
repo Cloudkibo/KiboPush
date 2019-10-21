@@ -76,7 +76,7 @@ export function deleteMessengerAd (id, msg) {
         msg.success('JSON ad has been deleted')
         dispatch(fetchMessengerAds())
       } else {
-        msg.error('Failed to delete Messenger Ad')
+        msg.error('Failed to delete JSON Ad')
       }
     })
   }
@@ -97,10 +97,10 @@ export function saveJsonAd (data, msg, handleSave) {
             jsonAdMessages: data.jsonAdMessages
           }
           dispatch(saveCurrentJsonAd(payload))
-          msg.success('Json Ad saved successfully')
+          msg.success('JSON Ad saved successfully')
           handleSave()
         } else {
-          msg.error('Unable to save Json Ad')
+          msg.error('Unable to save JSON Ad')
         }
       })
   }
