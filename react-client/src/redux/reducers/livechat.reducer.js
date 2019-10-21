@@ -103,6 +103,30 @@ export function liveChat (state = initialState, action) {
       closeSess = closeSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
+      let open = openSess.map(sess => sess._id)
+      let indexOpen = open.indexOf(action.session._id)
+      if (indexOpen !== -1) {
+        openSess[indexOpen].lastPayload = action.session.lastPayload
+        openSess[indexOpen].lastDateTime = action.session.lastDateTime
+        openSess[indexOpen].last_activity_time = action.session.last_activity_time
+        if (action.session.lastRepliedBy) {
+          openSess[indexOpen].lastRepliedBy = action.session.lastRepliedBy
+        } else if (openSess[indexOpen].lastRepliedBy) {
+          openSess[indexOpen].lastRepliedBy = null
+        }
+      }
+      let close = closeSess.map(sess => sess._id)
+      let indexClose = close.indexOf(action.session._id)
+      if (indexClose !== -1) {
+        closeSess[indexClose].lastPayload = action.session.lastPayload
+        closeSess[indexClose].lastDateTime = action.session.lastDateTime
+        closeSess[indexClose].last_activity_time = action.session.last_activity_time
+        if (action.session.lastRepliedBy) {
+          openSess[indexClose].lastRepliedBy = action.session.lastRepliedBy
+        } else if (closeSess[indexClose].lastRepliedBy) {
+          openSess[indexClose].lastRepliedBy = null
+        }
+      }
       return Object.assign({}, state, {
         openSessions: openSess,
         closeSessions: closeSess,
@@ -111,7 +135,8 @@ export function liveChat (state = initialState, action) {
                     ? (state.openCount - 1) : state.openCount : state.openCount,
         closeCount: action.appendDeleteInfo ? action.appendDeleteInfo.appendTo === 'close'
                     ? (state.closeCount + 1) : action.appendDeleteInfo.deleteFrom === 'close'
-                    ? (state.closeCount - 1) : state.closeCount : state.closeCount
+                    ? (state.closeCount - 1) : state.closeCount : state.closeCount,
+        updateSessionTimeStamp: new Date().toString()
       })
 
     case ActionTypes.SHOW_USER_CHAT_OVERWRITE:

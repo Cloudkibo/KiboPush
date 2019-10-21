@@ -282,19 +282,23 @@ class FacebookPosts extends React.Component {
                         this.state.postsData.map((post, i) => (
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px', whiteSpace: 'nowrap'}} key={i}>
+                            style={{height: '55px'}} key={i}>
                             <td data-field='post' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.getPostText(post.payload)}</span></td>
                             <td data-field='keywords' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.reply}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
+                                <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
+                                    View on FB
+                                </a>
+                                <br />
                                 <Link to='/editPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>
                                     Delete
-                                  </button>
+                                </button>
                               </span>
                             </td>
                           </tr>

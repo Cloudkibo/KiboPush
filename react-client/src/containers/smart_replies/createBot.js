@@ -10,6 +10,8 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import auth from '../../utility/auth.service'
+import { autoScroll } from '@interactjs/interact'
 
 class CreateBot extends React.Component {
   constructor (props) {
@@ -88,7 +90,7 @@ class CreateBot extends React.Component {
             </div>
             <div className='panel-body'>
               <div className='row'>
-                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6'>
+                <div className='col-xl-8 col-md-8 col-lg-8 col-sm-8' style={{borderRight: '0.07rem solid #EBEDF2'}}>
                   <div className='form-group' id={'question' + i}>
                     <label style={{fontWeight: 'normal'}}>Enter several variations of same question to train the bot.</label>
                   </div>
@@ -97,15 +99,18 @@ class CreateBot extends React.Component {
                     onClick={this.addMore.bind(this, i)}> Add More
                 </button>
                 </div>
-                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2'}}>
+                <div className='col-xl-4 col-md-4 col-lg-4 col-sm-4' style={{margin: 'auto'}}>
+                  {/* <br />
                   <br />
                   <br />
-                  <br />
-                  <div className='m-input-icon m-input-icon--right'>
-                    <textarea className='form-control'
+                  <div className='m-input-icon m-input-icon--right'> */}
+                  <button type="button" style={{marginLeft: 'auto', marginRight: 'auto', display: 'block'}} className="btn btn-primary">
+                        Set Answer
+								  </button>
+                    {/* <textarea className='form-control'
                       placeholder='Type the answer of your questions here...'
-                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
-                  </div>
+                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} /> */}
+                  {/* </div> */}
                 </div>
               </div>
             </div>
