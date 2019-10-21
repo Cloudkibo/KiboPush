@@ -519,7 +519,7 @@ class Targeting extends React.Component {
     if (nextProps.resetTarget) {
       this.resetTargeting()
     }
-    if (nextProps.customerLists && this.state.lists.length === 0) {
+    if (nextProps.customerLists && this.state.lists.length === 0 && nextProps.customerLists.length > 0) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
         if (!(nextProps.customerLists[j].initialList)) {
