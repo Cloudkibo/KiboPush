@@ -16,6 +16,7 @@ class TextModal extends React.Component {
       buttonDisabled: false,
       messengerAdPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
+    console.log('TextModal initial state', this.state)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
