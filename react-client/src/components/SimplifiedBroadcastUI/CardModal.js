@@ -140,8 +140,6 @@ class CardModal extends React.Component {
     console.log('addComponent CardModal finalCards', this.finalCards)
     console.log('addComponent this.state.cards', this.state.cards)
     let deletePayload = []
-    console.log('deletePayload', deletePayload)
-    let deletePayload = []
     if (this.state.cards.length === 1) {
       let card = this.state.cards[0].component
       deletePayload = this.getDeletePayload(this.finalCards[0] ? this.finalCards[0].buttons : card.buttons)
