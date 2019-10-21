@@ -26,6 +26,16 @@ class CardModal extends React.Component {
         }
       }
     }
+    let messengerAdPayloads = []
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i].component.buttons && cards[i].component.buttons.length > 0) {
+        for (let j = 0; j < cards[i].component.buttons.length; j++) {
+          if (cards[i].component.buttons[j].payload) {
+            messengerAdPayloads.push(cards[i].component.buttons[j].payload)
+          }
+        }
+      }
+    }
     this.cardComponents = new Array(10)
     this.state = {
       cards,
@@ -36,7 +46,8 @@ class CardModal extends React.Component {
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
-      closeAdditionalCardsModal: true
+      closeAdditionalCardsModal: true,
+      messengerAdPayloads
     }
 
     this.carouselIndicatorStyle = {
@@ -128,8 +139,13 @@ class CardModal extends React.Component {
     console.log('addComponent CardModal', this.state.cards)
     console.log('addComponent CardModal finalCards', this.finalCards)
     console.log('addComponent this.state.cards', this.state.cards)
+    let deletePayload = []
+    console.log('deletePayload', deletePayload)
+    let deletePayload = []
     if (this.state.cards.length === 1) {
       let card = this.state.cards[0].component
+      deletePayload = this.getDeletePayload(this.finalCards[0] ? this.finalCards[0].buttons : card.buttons)
+      console.log('deletePayload for card', deletePayload)
       this.props.addComponent({
         id: this.props.id,
         componentType: 'card',
@@ -144,10 +160,13 @@ class CardModal extends React.Component {
         elementUrl: card.elementUrl,
         webviewsize: card.webviewsize,
         default_action: card.default_action,
+        deletePayload,
         buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons}, this.props.edit)
     } else if (this.state.cards.length > 1) {
       let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
+        deletePayload.concat(this.getDeletePayload(finalCard ? finalCard.buttons : card.component.buttons))
+        console.log('deletePayload for gallery', deletePayload)
         console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
           id: card.id ? card.id : '',
@@ -168,9 +187,30 @@ class CardModal extends React.Component {
       this.props.addComponent({
         id: this.props.id,
         componentType: 'gallery',
-        cards
+        cards,
+        deletePayload: deletePayload.length > 0 ? deletePayload : null
         }, this.props.edit)
     }
+  }
+
+  getDeletePayload (buttons) {
+    let deletePayload = []
+    if (this.state.messengerAdPayloads.length > 0) {
+      for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
+        let foundPayload = false
+        for (let j = 0; j < buttons.length; j++) {
+          if (this.state.messengerAdPayloads[j] === buttons[j].payload) {
+            foundPayload = true
+          }
+        }
+        if (!foundPayload) {
+          deletePayload.push(this.state.messengerAdPayloads[i]) 
+        } else {
+          foundPayload = false
+        }
+      }
+    }
+    return deletePayload
   }
 
   updateCardStatus (status, id) {

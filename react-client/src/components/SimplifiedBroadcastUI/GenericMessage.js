@@ -535,7 +535,8 @@ class GenericMessage extends React.Component {
             webviewurl: broadcast.webviewurl,
             elementUrl: broadcast.elementUrl,
             webviewsize: broadcast.webviewsize,
-            default_action: broadcast.default_action
+            default_action: broadcast.default_action,
+            deletePayload: broadcast.deletePayload
           })
         }
       },
@@ -557,7 +558,8 @@ class GenericMessage extends React.Component {
             id: componentId,
             links: broadcast.links,
             componentType: 'gallery',
-            cards: broadcast.cards
+            cards: broadcast.cards,
+            deletePayload: broadcast.deletePayload
           })
         }
       },
