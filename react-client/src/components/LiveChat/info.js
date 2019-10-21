@@ -102,7 +102,7 @@ class Info extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             { this.props.module === 'WHATSAPP' && <div className='m-alert__text'>
-              Need help in understanding this page? <a href='http://kibopush.com/twilio/' target='_blank'>Click Here. </a>
+              Need help in understanding this page? <a href='https://kibopush.com/whatsapp-twilio/' target='_blank'>Click Here. </a>
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
             </div>
             }

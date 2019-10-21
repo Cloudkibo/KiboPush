@@ -37,6 +37,7 @@ class Targeting extends React.Component {
       localeValue: [],
       tagValue: [],
       selectedRadio: '',
+      messageTypeSelectedRadio: 'non promotional',
       listSelected: '',
       isList: false,
       lists: [],
@@ -45,7 +46,8 @@ class Targeting extends React.Component {
       pollValue: [],
       surveyValue: [],
       isShowingModalPro: false,
-      showSubscriptionMsg: false
+      showSubscriptionMsg: false,
+      isShowingLearnMore: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
@@ -54,6 +56,7 @@ class Targeting extends React.Component {
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.initializePollSelect = this.initializePollSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.messageTypeRadioButton = this.messageTypeRadioButton.bind(this)
     this.resetTargeting = this.resetTargeting.bind(this)
     this.showDropDownSurvey = this.showDropDownSurvey.bind(this)
     this.showDropDownPoll = this.showDropDownPoll.bind(this)
@@ -61,6 +64,7 @@ class Targeting extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
+    this.isShowingLearnMore = this.isShowingLearnMore.bind(this)
     // this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
     // this.initializeSubscribers = this.initializeSubscribers.bind(this)
     props.loadTags()
@@ -70,6 +74,10 @@ class Targeting extends React.Component {
   // subscriberReachEstimation () {
   //   this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
   // }
+
+  isShowingLearnMore () {
+    this.setState({isShowingLearnMore: !this.state.isShowingLearnMore})
+  }
 
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -168,7 +176,8 @@ class Targeting extends React.Component {
       lists: [],
       tagValue: [],
       pollValue: [],
-      surveyValue: []
+      surveyValue: [],
+      messageTypeSelectedRadio: 'non promotional'
     })
       /* eslint-disable */
     $('.selectSegmentation').addClass('hideSegmentation')
@@ -213,7 +222,8 @@ class Targeting extends React.Component {
           localeValue: self.state.localeValue,
           tagValue: self.state.tagValue,
           pollValue: self.state.pollValue,
-          surveyValue: selected
+          surveyValue: selected,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
     })
@@ -249,7 +259,8 @@ class Targeting extends React.Component {
            localeValue: self.state.localeValue,
            tagValue: self.state.tagValue,
            pollValue: selected,
-           surveyValue: self.state.surveyValue
+           surveyValue: self.state.surveyValue,
+           messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
          })
        }
      })
@@ -280,13 +291,15 @@ class Targeting extends React.Component {
         }
         self.setState({ listSelected: selected })
         self.props.handleTargetValue({
+          isList: self.state.isList,
           listSelected: selected,
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
           localeValue: self.state.localeValue,
           tagValue: self.state.tagValue,
           pollValue: self.state.pollValue,
-          surveyValue: self.state.surveyValue
+          surveyValue: self.state.surveyValue,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
     })
@@ -329,7 +342,8 @@ class Targeting extends React.Component {
           localeValue: self.state.localeValue,
           tagValue: self.state.tagValue,
           pollValue: self.state.pollValue,
-          surveyValue: self.state.surveyValue
+          surveyValue: self.state.surveyValue,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
       self.showSubscriptionMsg(selected)
@@ -366,7 +380,8 @@ class Targeting extends React.Component {
           localeValue: self.state.localeValue,
           tagValue: self.state.tagValue,
           pollValue: self.state.pollValue,
-          surveyValue: self.state.surveyValue
+          surveyValue: self.state.surveyValue,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
     })
@@ -401,7 +416,8 @@ class Targeting extends React.Component {
           localeValue: selected,
           tagValue: self.state.tagValue,
           pollValue: self.state.pollValue,
-          surveyValue: self.state.surveyValue
+          surveyValue: self.state.surveyValue,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
     })
@@ -447,7 +463,8 @@ class Targeting extends React.Component {
           localeValue: self.state.localeValue,
           tagValue: selected,
           pollValue: self.state.pollValue,
-          surveyValue: self.state.surveyValue
+          surveyValue: self.state.surveyValue,
+          messageTypeSelectedRadio: self.state.messageTypeSelectedRadio
         })
       }
     })
@@ -478,13 +495,31 @@ class Targeting extends React.Component {
       this.setState({listSelected: [], isList: false})
     }
   }
+  messageTypeRadioButton (e) {
+    this.setState({
+      messageTypeSelectedRadio: e.currentTarget.value
+    })
+    var self = this
+    self.props.handleTargetValue({
+      listSelected: self.state.listSelected,
+      pageValue: self.state.pageValue,
+      genderValue: self.state.genderValue,
+      localeValue: self.state.localeValue,
+      tagValue: self.state.tagValue,
+      pollValue: self.state.pollValue,
+      surveyValue: self.state.surveyValue,
+      messageTypeSelectedRadio: e.currentTarget.value
+    })
+
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps', nextProps)
     console.log('this.state.pageValue in component will receive', this.state.pageValue)
     if (nextProps.resetTarget) {
       this.resetTargeting()
     }
-    if (nextProps.customerLists) {
+    if (nextProps.customerLists && this.state.lists.length === 0 && nextProps.customerLists.length > 0) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
         if (!(nextProps.customerLists[j].initialList)) {
@@ -522,6 +557,24 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
+         {
+          this.state.isShowingLearnMore &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.isShowingLearnMore}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.isShowingLearnMore}>
+              <span>you can not send messages to any of your subscribers if :</span>
+              <ol>
+                <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
+                <li>No subscriber match the selected criteria</li>
+              </ol>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
@@ -540,6 +593,66 @@ class Targeting extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
+        { this.props.component === 'broadcast' &&
+          <span
+            className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
+            style={{marginLeft: '10px'}}
+          >
+            This broadcast will be sent to {this.props.subscriberCount} subscriber(s). 
+            { this.props.subscriberCount === 0 &&
+              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}>
+                Learn More
+            </a>
+            }
+          </span>
+        }
+        </div>
+        {/* <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
+          <span class="m--font-bolder">
+					  Message Type
+				  </span>
+        </div>
+        <div className='col-10' style={{paddingLeft: '20px', paddingBottom: '20px', paddingTop: '20px', borderBottom: '.07rem dashed #ebedf2'}}>
+          <div className="m-radio-list">
+					  <label className="m-radio m-radio--solid m-radio--brand">
+              <input
+                type="radio"
+                value="non promotional"
+                name='message_type'
+                onChange={this.messageTypeRadioButton}
+                checked={this.state.messageTypeSelectedRadio === 'non promotional'}
+              />
+						  Non-Promotional Content
+              <span></span>
+					  </label>
+            <span class="m-form__help">
+              These broadcasts cannot contain any promotions (no sales, coupons and discounts, etc.) and
+              should be within one of the 16 allowed use cases defined by
+              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank'> Facebook</a>.
+					  </span>
+            <div className="m-alert m-alert--outline m-alert--outline-2x alert alert-warning alert-dismissible fade show" role="alert">
+							<button type="button" style={{top: '-10px'}} className="close" data-dismiss="alert" aria-label="Close"></button>
+							<strong>Non-compliant! </strong> messages may result in your page being suspended by Facebook.
+						</div>
+					  <label className="m-radio m-radio--solid m-radio--brand">
+              <input
+                type="radio"
+                value="promotional"
+                name='message_type'
+                onChange={this.messageTypeRadioButton}
+                checked={this.state.messageTypeSelectedRadio === 'promotional'}
+              />
+						  Promotional Content
+              <span></span>
+					  </label>
+            <span class="m-form__help">
+              These broadcasts can contain promotions, but the target audience is limited to subscribers who
+              interacted with your bot in the last 24 hours.
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank'> Learn more here</a>
+					  </span>
+				  </div>
+        </div> */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px'}}>
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
@@ -561,29 +674,22 @@ class Targeting extends React.Component {
         { /*
           <h5 style={{paddingLeft: '20px', paddingBottom: '0px', marginBottom: '30px'}}>This {this.props.component} will be sent to <strong>{this.props.currentReachEstimation || this.props.currentReachEstimation === 0 ? this.props.currentReachEstimation : 'calculating...'}</strong> subscribers</h5>
         */ }
-        <div className='col-12' style={{paddingLeft: '20px'}}>
+        {/* <div className='col-12' style={{paddingLeft: '20px'}}>
           {this.state.showSubscriptionMsg &&
           <div style={{paddingBottom: '10px'}}>
             <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
-            { /*  this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
-              If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
-              <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
-            </span>
-            */}
-            { /*  this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-              If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
-            </span>
-            */}
-            { /*  this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-              If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
-            </span>
-            */}
             <span style={{fontSize: '0.9rem'}}>
               This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
               <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
             </span>
           </div>
           }
+          </div> */}
+          {/* <div className='col-2' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+            <span class="m--font-bolder">
+					    Targeting
+				    </span>
+          </div> */}
           <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
             {
               this.props.component !== 'broadcast' &&
@@ -789,7 +895,6 @@ class Targeting extends React.Component {
               </div>
             </div>
           </div>
-        </div>
       </div>
     )
   }

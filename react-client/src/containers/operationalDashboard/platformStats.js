@@ -156,10 +156,10 @@ class PlatformStats extends React.Component {
                       ? <div className='progress-bar bg-success' role='progressbar' style={{width: (this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100) + '%'}} aria-valuenow={(this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100)} aria-valuemin='0' aria-valuemax='100' />
                       : <div className='progress-bar bg-success' role='progressbar' style={{width: 0 + '%'}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
                     }
-
                     </div>
                   </div>
                 </div>
+                <a href="http://167.71.253.114:8080/dashbuilder/" target="_blank"><strong>Performance Dashboard</strong> (Username: root Password: root) </a>
               </div>
             </div>
           </div>

@@ -235,9 +235,10 @@ class AutopostingSummary extends React.Component {
           </div>
           <div className='m-portlet__body'>
           {this.props.autopostingSummary &&
-            <div className='tab-content'>
+            <div className='m-widget21'>
             <div className='row'>
-              <div className='col-3'>
+              <div className='col-1'></div>
+              <div className='col-5'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-twitter'
@@ -251,7 +252,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-3'>
+              <div className='col-5'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-facebook-f'
@@ -265,7 +266,11 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-3'>
+              <div className='col-1'></div>
+            </div>
+            <div className='row'>
+              <div className='col-1'></div>
+              <div className='col-5'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-wordpress'
@@ -279,7 +284,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-sm-3'>
+              <div className='col-5'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-feed fa-2x'
@@ -293,6 +298,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
+              <div className='col-1'></div>
             </div>
             <br />
             <center>

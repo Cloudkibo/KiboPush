@@ -650,12 +650,12 @@ class Sidebar extends Component {
       if (this.state.messengerAds) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerAds' className='m-menu__link'>
+            <Link to='/jsonAds' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Messenger Ads
+                JSON Ads
               </span>
             </Link>
           </li>

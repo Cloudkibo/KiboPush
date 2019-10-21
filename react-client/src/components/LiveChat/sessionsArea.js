@@ -26,11 +26,7 @@ class SessionsArea extends React.Component {
   }
 
   changeTab (value) {
-    if (value === 'open') {
-      this.setState({tabValue: 'open'})
-    } else {
-      this.setState({tabValue: 'closed'})
-    }
+    this.props.changeTab(value)
   }
 
   updateState (data) {
@@ -68,12 +64,12 @@ class SessionsArea extends React.Component {
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
               <li className='nav-item m-tabs__item'>
-                <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                <a className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
                   Open
                 </a>
               </li>
               <li className='nav-item m-tabs__item'>
-                <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
+                <a className={`nav-link m-tabs__link ${this.props.tabValue === 'closed' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
                   Closed
                 </a>
               </li>
@@ -86,7 +82,7 @@ class SessionsArea extends React.Component {
             openCount={this.props.openCount}
             closeCount={this.props.closeCount}
             activeSession={this.props.activeSession}
-            tabValue={this.state.tabValue}
+            tabValue={this.props.tabValue}
             changeActiveSession={this.props.changeActiveSession}
             user={this.props.user}
             loadMore={this.loadMore}

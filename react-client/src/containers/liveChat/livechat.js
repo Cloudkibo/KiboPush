@@ -74,6 +74,15 @@ class LiveChat extends React.Component {
     this.getAgents = this.getAgents.bind(this)
     this.removePending = this.removePending.bind(this)
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+  }
+
+  changeTab (value) {
+    if (value === 'open') {
+      this.setState({tabValue: 'open'})
+    } else {
+      this.setState({tabValue: 'closed'})
+    }
   }
 
   getAgents (members) {
@@ -359,14 +368,21 @@ class LiveChat extends React.Component {
       ) {
         let sessionIds = nextProps.openSessions.map((s) => s._id)
         if (Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.activeSession._id === nextProps.socketSession) {
+          let activeSession = this.state.activeSession
+          this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
+          activeSession.status = 'new'
+          this.setState({tabValue: 'open', activeSession: activeSession})
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           this.props.resetSocket()
         } else {
+          this.props.fetchSingleSession(nextProps.socketSession)
           this.props.resetSocket()
         }
+      } else if (nextProps.socketData.action === 'agent_replied') {
+        this.props.fetchSingleSession(nextProps.socketSession)
       }
     }
   }
@@ -426,6 +442,8 @@ class LiveChat extends React.Component {
                       user={this.props.user}
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
+                      tabValue={this.state.tabValue}
+                      changeTab={this.changeTab}
                     />
                     {
                       Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
@@ -464,12 +482,12 @@ class LiveChat extends React.Component {
                         assignToAgent={this.props.assignToAgent}
                         sendNotifications={this.props.sendNotifications}
                         unassignTags={this.unassignTags}
-                        tags={this.props.tags}
+                        tags={this.props.tags ? this.props.tags: []}
                         createTag={this.props.createTag}
                         assignTags={this.assignTags}
-                        tagOptions={this.state.tagOptions}
+                        tagOptions={this.state.tagOptions ? this.props.tagOptions : []}
                         members={this.props.members ? this.props.members : []}
-                        customFields={this.props.customFields}
+                        customFields={this.props.customFields? this.props.customeFields : []}
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}
