@@ -54,16 +54,16 @@ class TextModal extends React.Component {
   addComponent (buttons) {
     console.log('addComponent in TextModal', this.props)
     let deletePayload = []
-    if (this.messengerAdPayloads.length > 0) {
-      for (let i = 0; i < messengerAdPayloads.length; i++) {
+    if (this.state.messengerAdPayloads.length > 0) {
+      for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (messengerAdPayloads[j] === buttons[j].payload) {
+          if (this.state.messengerAdPayloads[j] === buttons[j].payload) {
             foundPayload = true
           }
         }
         if (!foundPayload) {
-          deletePayload.push(messengerAdPayloads[i]) 
+          deletePayload.push(this.state.messengerAdPayloads[i]) 
         } else {
           foundPayload = false
         }
