@@ -36,7 +36,7 @@ class ChatItem extends React.Component {
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
-    
+
   }
 
   getRepliedByMsg (msg) {
@@ -49,7 +49,7 @@ class ChatItem extends React.Component {
       return 'You replied'
     }
   }
- 
+
   onTestURLAudio (url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
@@ -80,8 +80,8 @@ class ChatItem extends React.Component {
             />
           </a>
         : msg.payload.componentType === 'file'
-        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
-          <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName}</strong></h6>
+        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank'>
+          <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName ? msg.payload.fileName : msg.payload.file.fileName}</strong></h6>
         </a>
         : msg.payload.componentType === 'sticker'
         ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
@@ -149,7 +149,7 @@ class ChatItem extends React.Component {
               src={msg.payload.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
-          </a> 
+          </a>
       }
       </div>)
     } else {
@@ -236,7 +236,7 @@ class ChatItem extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-  
+
     this.updateScrollTop()
     if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
