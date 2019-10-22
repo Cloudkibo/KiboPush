@@ -30,6 +30,7 @@ class TargetCustomers extends React.Component {
     })
   }
   resetCondition () {
+    console.log('resetting condition')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.setState({
       conditions: conditions

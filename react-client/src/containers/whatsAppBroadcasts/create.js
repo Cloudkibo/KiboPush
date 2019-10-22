@@ -136,8 +136,6 @@ class CreateWhatsAppBroadcast extends React.Component {
 
   clearFields () {
     this.msg.success('Broadcast sent successfully')
-    var conditions = [{condition: '', criteria: '', text: ''}]
-    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
     this.initTab()
     this.reset(false)
     this.targeting.resetCondition()
