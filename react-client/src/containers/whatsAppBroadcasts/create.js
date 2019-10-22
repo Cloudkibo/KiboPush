@@ -138,7 +138,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.msg.success('Broadcast sent successfully')
     this.initTab()
     this.reset(false)
-    this.targeting.resetCondition()
+    this.targeting.getWrappedInstance().resetCondition()
   }
 
   validateConditions (conditions) {
