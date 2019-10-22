@@ -254,4 +254,4 @@ function mapDispatchToProps (dispatch) {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TargetCustomers)
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(TargetCustomers)
