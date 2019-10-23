@@ -139,8 +139,8 @@ class File extends React.Component {
                 className='files-dropzone'
                 onChange={this.onFilesChange}
                 onError={this.onFilesError}
-                accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-                maxFileSize={10000000}
+                accepts= {this.props.module && this.props.module == 'whatsapp' ? ['.pdf']: ['image/*', 'text/*', 'audio/*', 'video/*', 'application/*'] }
+                maxFileSize={this.props.module && this.props.module == 'whatsapp' ? 5000000 : 10000000}
                 minFileSize={0}
                 clickable>
               <div className='align-center' style={{padding: '5px'}}>
