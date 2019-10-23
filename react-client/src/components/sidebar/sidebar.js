@@ -377,7 +377,7 @@ class Sidebar extends Component {
               </li>
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.showTeams()}
+              {(this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp') && this.showTeams()}
             </ul>
           </div>
         </li>

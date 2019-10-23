@@ -14,7 +14,9 @@ import {
   assignToAgent,
   sendNotifications,
   setCustomFieldValue,
-  clearSearchResult
+  clearSearchResult,
+  fetchTeamAgents,
+  assignToTeam
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
@@ -60,7 +62,23 @@ class LiveChat extends React.Component {
     this.saveCustomField= this.saveCustomField.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
     this.assignToAgent = this.assignToAgent.bind(this)
+    this.assignToTeam = this.assignToTeam.bind(this)
     this.changeTab = this.changeTab.bind(this)
+    this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
+  }
+
+  handleAgents(teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+  }
+
+  fetchTeamAgents(id) {
+    this.props.fetchTeamAgents(id, this.handleAgents)
   }
 
   changeTab (value) {
@@ -80,6 +98,13 @@ class LiveChat extends React.Component {
     activeSession.is_assigned = data.isAssigned
     this.setState({activeSession: activeSession})
     this.props.assignToAgent(data)
+  }
+
+  assignToTeam (data) {
+    let activeSession = this.state.activeSession
+    activeSession.is_assigned = data.isAssigned
+    this.setState({activeSession: activeSession})
+    this.props.assignToTeam(data)
   }
 
   handleResponse (res, body) {
@@ -120,6 +145,7 @@ class LiveChat extends React.Component {
     this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadMembersList()
+      this.props.loadTeamsList()
     }
   }
 
@@ -324,11 +350,14 @@ class LiveChat extends React.Component {
                   {
                     Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                     <PROFILEAREA
+                      teams={this.props.teams ? this.props.teams : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
                       unSubscribe={this.props.unSubscribe}
                       user={this.props.user}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.assignToTeam}
                       assignToAgent={this.assignToAgent}
                       sendNotifications={this.props.sendNotifications}
                       members={this.props.members ? this.props.members : []}
@@ -375,7 +404,9 @@ function mapStateToProps (state) {
     members: (state.membersInfo.members),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    socketSession: (state.whatsAppChatInfo.socketMessage)
+    socketSession: (state.whatsAppChatInfo.socketMessage),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    teams: (state.teamsInfo.teams)
   }
 }
 
@@ -394,7 +425,10 @@ function mapDispatchToProps (dispatch) {
     loadCustomFields,
     setCustomFieldValue,
     sendNotifications,
-    clearSearchResult
+    clearSearchResult,
+    fetchTeamAgents,
+    assignToTeam,
+    loadTeamsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
