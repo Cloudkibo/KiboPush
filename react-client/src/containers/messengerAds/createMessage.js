@@ -296,6 +296,7 @@ class CreateMessage extends React.Component {
         </div>
         <GenericMessage
           hiddenComponents={['media']}
+          module="JSONADS"
           hideUserOptions
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
