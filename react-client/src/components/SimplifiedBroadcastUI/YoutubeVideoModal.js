@@ -71,7 +71,7 @@ class YoutubeVideoModal extends React.Component {
       return
     }
     console.log('updating YouTube file', file)
-    if (this.props.module !== 'JSONADS') {
+    if (this.props.module !== 'jsonads') {
       this.uploadTemplate(file)
     } else {
       this.setState({ 
