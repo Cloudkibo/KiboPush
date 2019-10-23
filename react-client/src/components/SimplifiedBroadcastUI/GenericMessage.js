@@ -392,6 +392,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -401,6 +402,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages} pageId={this.props.pageId}
@@ -409,6 +411,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -662,7 +665,7 @@ class GenericMessage extends React.Component {
                             }
                       </div>
                     </div>
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     {
