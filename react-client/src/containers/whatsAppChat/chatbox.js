@@ -18,7 +18,6 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MessageTemplate from './messageTemplate'
 import AlertContainer from 'react-alert'
 import Halogen from 'halogen'
-import ReactPlayer from 'react-player'
 import YouTube from 'react-youtube'
 import {getVideoId} from '../../utility/utils'
 
