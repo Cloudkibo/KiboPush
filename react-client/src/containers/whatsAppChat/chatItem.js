@@ -15,6 +15,7 @@ import {
   displayDate,
   showDate
 } from '../liveChat/utilities'
+import {getVideoId} from '../../utility/utils'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 import ReactPlayer from 'react-player'
 
@@ -80,7 +81,7 @@ class ChatItem extends React.Component {
             />
           </a>
         : msg.payload.componentType === 'file'
-        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank'>
+        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank' style={{color: type === 'kibopush' ? 'white' : '#5867dd'}}>
           <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName ? msg.payload.fileName : msg.payload.file.fileName}</strong></h6>
         </a>
         : msg.payload.componentType === 'sticker'

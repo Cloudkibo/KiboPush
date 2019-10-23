@@ -104,6 +104,12 @@ export function removeShopifyInstallRequest () {
 }
 
 export function setWebViewUrl(url){
-  let newUrl = isWebViewUrl(url) ? url : `http://${url}` 
+  let newUrl = isWebViewUrl(url) ? url : `http://${url}`
   return newUrl
+}
+
+export function getVideoId (url) {
+  let i, r, rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+  r = url.match(rx)
+  return r[1]
 }
