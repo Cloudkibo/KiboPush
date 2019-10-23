@@ -422,9 +422,9 @@ class ProfileArea extends React.Component {
                     {
                       this.state.isAssigned &&
                       <div style={{ marginBottom: '20px' }}>
-                        {this.props.module !== 'WHATSAPP' && <span className='m--font-bolder'>Team:</span>}
-                        {this.props.module !== 'WHATSAPP' &&<span> {
-                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>}
+                        <span className='m--font-bolder'>Team:</span>
+                        <span> {
+                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
                         <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
@@ -447,7 +447,7 @@ class ProfileArea extends React.Component {
                       )
                     }
                     {
-                      this.props.user && this.props.user.role !== 'agent' && this.props.module !== 'WHATSAPP' &&
+                      this.props.user && this.props.user.role !== 'agent' &&
                       (
                         this.state.showAssignTeam
                             ? <div className='m-accordion__item'>
@@ -693,15 +693,15 @@ class ProfileArea extends React.Component {
 }
 
 ProfileArea.propTypes = {
-  'teams': PropTypes.array,
+  'teams': PropTypes.array.isRequired,
   'agents': PropTypes.array.isRequired,
   'subscriberTags': PropTypes.array,
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'unSubscribe': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
-  'fetchTeamAgents': PropTypes.func,
-  'assignToTeam': PropTypes.func,
+  'fetchTeamAgents': PropTypes.func.isRequired,
+  'assignToTeam': PropTypes.func.isRequired,
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
   'unassignTags': PropTypes.func,
