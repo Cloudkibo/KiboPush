@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { searchWhatsAppChat, fetchChat } from '../../redux/actions/whatsAppChat.actions'
-import { scroller } from 'react-scroll'
+
 import SEARCH from '../../components/LiveChat/search.js'
 
 class Search extends React.Component {
@@ -20,21 +20,7 @@ class Search extends React.Component {
   }
 
   scrollToMessage (messageId) {
-    console.log('scrollToMessage called')
-    // check if message exists
-    let counter = 0
-    for (let i = 0; i < this.props.chat.length; i++) {
-      if (this.props.chat[i]._id === messageId) {
-        counter = 1
-        break
-      }
-    }
-
-    if (counter === 1) {
-      scroller.scrollTo(messageId, {delay: 3000, containerId: 'whatsappchat-container'})
-    } else {
-      this.props.fetchChat(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
-    }
+   this.props.scrollToMessage(messageId)
   }
 
   searchChat (searchValue) {
@@ -51,7 +37,7 @@ class Search extends React.Component {
       <div className='col-xl-3'>
        <SEARCH scrollToMessage={this.scrollToMessage} 
         clearSearchResult={this.props.clearSearchResult} 
-        searchChatMsgs={this.props.searchChatMsgs} 
+        searchChatMsgs={this.props.searchChatMsgs ? this.props.searchChatMsgs : []} 
         hideSearch={this.props.hideSearch} 
         searchChat={this.searchChat}
         subscriberName = {this.props.currentSession.name ? this.props.currentSession.name : (this.props.currentSession.firstName ? this.props.currentSession.firstName+ ' '+this.props.currentSession.lastName: '')}/>

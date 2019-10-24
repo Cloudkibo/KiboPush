@@ -30,7 +30,7 @@ class ChatArea extends React.Component {
     }
     props.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
     props.markRead(this.props.activeSession._id, this.props.sessions)
-
+    
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateChat = this.updateChat.bind(this)
@@ -87,7 +87,7 @@ updateChat (chat, newChat) {
   loadMoreMessage () {
     this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
   }
-
+  
   // componentDidMount () {
   //   console.log('in componentDidMount')
   //   var addScript = document.createElement('script')
@@ -142,7 +142,7 @@ updateChat (chat, newChat) {
       nextProps.resetSocket()
     }
     if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
-      this.props.markRead(this.props.activeSession._id, this.props.sessions)
+      // this.props.markRead(this.props.activeSession._id, this.props.sessions)
       this.isUserSessionValid(nextProps.chat)
     }
   }
@@ -177,7 +177,8 @@ updateChat (chat, newChat) {
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
                     updateUnreadCount={this.props.updateUnreadCount}
-                    chat={this.props.chat} />
+                    chat={this.props.chat} 
+                    scrollToMessage={this.props.scrollToMessage}/>
                   <div className='m-messenger__seperator' />
                   <ChatBox activeSession={this.props.activeSession}
                     user={this.props.user}
