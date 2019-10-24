@@ -76,9 +76,9 @@ class ChatItem extends React.Component {
           {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
         </div>
         {msg.payload.componentType === 'image'
-          ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+          ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
             <img
-              src={msg.payload.fileurl.url}
+              src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
           </a>
@@ -103,11 +103,11 @@ class ChatItem extends React.Component {
         :msg.payload.componentType === 'video'
         ? <div key={index}>
           <ReactPlayer
-            url={msg.payload.fileurl.url}
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
             controls
             width='230px'
             height='200px'
-            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+            onPlay={this.onTestURLVideo(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
           />
         </div>
         :msg.payload.componentType === 'thumbsUp'
@@ -120,36 +120,36 @@ class ChatItem extends React.Component {
       : msg.payload.componentType === 'audio'
       ? <div key={index}>
           <ReactPlayer
-            url={msg.payload.fileurl.url}
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
             controls
             width='230px'
             height='60px'
-            onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
+            onPlay={this.onTestURLAudio(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
           />
         </div>
       : msg.payload.componentType === 'media' && msg.payload.mediaType === 'audio'
       ? <div key={index}>
           <ReactPlayer
-          url={msg.payload.fileurl.url}
+          url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
           controls
           width='230px'
           height='60px'
-          onPlay={this.onTestURLAudio(msg.payload.fileurl.url)} />
+          onPlay={this.onTestURLAudio(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)} />
       </div>
       : msg.payload.componentType === 'media' && msg.payload.mediaType === 'video'
       ? <div key={index}>
           <ReactPlayer
-            url={msg.payload.fileurl.url}
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
             controls
             width='230px'
             height='200px'
-            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+            onPlay={this.onTestURLVideo(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
           />
         </div>
       : msg.payload.componentType === 'media' && msg.payload.mediaType === 'image' &&
-      <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+      <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
             <img
-              src={msg.payload.fileurl.url}
+              src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
           </a>
