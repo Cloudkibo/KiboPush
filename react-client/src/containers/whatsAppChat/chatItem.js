@@ -18,6 +18,8 @@ import {
 import {getVideoId} from '../../utility/utils'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 import ReactPlayer from 'react-player'
+import YouTube from 'react-youtube'
+import { getmetaurl } from '../liveChat/utilities'
 
 // import MediaCapturer from 'react-multimedia-capture'
 
@@ -152,6 +154,64 @@ class ChatItem extends React.Component {
             />
           </a>
       }
+      </div>)
+    } else if (msg.payload.componentType === 'text' && msg.url_meta){
+      let metaUrl = getmetaurl(msg.payload.text)
+      let text = msg.payload.text.replace(metaUrl, '')
+      content.push(<div className='m-messenger__message-content'>
+        <div className='m-messenger__message-username'>
+          {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg)}
+        </div>
+        <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+          {text}
+          {getVideoId(metaUrl)
+           ? <div>
+           <YouTube
+             videoId={getVideoId(metaUrl)}
+             opts={{
+               height: '150',
+               width: '200',
+               playerVars: { // https://developers.google.com/youtube/player_parameters
+                 autoplay: 1
+               }
+             }}/>
+           <a href={metaUrl} target='_blank'>
+               <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+             </a>
+             <br />
+             {
+               msg.url_meta.description &&
+                 <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+             }
+             </div>
+          : <table style={{maxWidth: '318px', margin: '10px'}}>
+           <tbody>
+               <tr>
+                 <td>
+                   <div style={{width: 45, height: 45}}>
+                     {
+                       msg.url_meta.image &&
+                         <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                     }
+                   </div>
+                 </td>
+                 <td>
+                   <div>
+                     <a href={metaUrl} target='_blank'>
+                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+                     </a>
+                     <br />
+                     {
+                       msg.url_meta.description &&
+                         <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                     }
+                   </div>
+                 </td>
+               </tr>
+             </tbody>
+          </table>
+        }
+        </div>
       </div>)
     } else {
       content.push(<div className='m-messenger__message-content'>
