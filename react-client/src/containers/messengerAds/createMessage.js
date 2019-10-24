@@ -35,6 +35,22 @@ class CreateMessage extends React.Component {
     this.removePayloadMessages = this.removePayloadMessages.bind(this)
     this.handleSaveMessage = this.handleSaveMessage.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.createJsonMessages = this.createJsonMessages.bind(this)
+  }
+
+  createJsonMessages (buttons, jsonMessages) {
+    for (let j = 0; j < buttons.length; j++) {
+      if (buttons[j].type === 'postback' && !buttons[j].payload) {
+        buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(buttons[j], jsonMessages)
+      } else {
+        let messageIndex = jsonMessages.findIndex(msg => msg.jsonAdMessageId === buttons[j].payload)
+        if (messageIndex > -1) {
+          jsonMessages[messageIndex].title = buttons[j].title
+        }
+      }
+    }
+    return jsonMessages
   }
 
   handleChange (broadcast, event) {
@@ -44,18 +60,13 @@ class CreateMessage extends React.Component {
     if (event) {
       let jsonMessages = this.state.jsonMessages
       console.log('jsonMessages0', jsonMessages)
-      if (event.buttons) {
-        for (let j = 0; j < event.buttons.length; j++) {
-          if (event.buttons[j].type === 'postback' && !event.buttons[j].payload) {
-            event.buttons[j].payload = this.state.jsonMessages.length + 1
-            jsonMessages = this.setNewJsonMessage(event.buttons[j], jsonMessages)
-          } else {
-            let messageIndex = jsonMessages.findIndex(msg => msg.jsonAdMessageId === event.buttons[j].payload)
-            if (messageIndex > -1) {
-              jsonMessages[messageIndex].title = event.buttons[j].title
-            }
-          }
+      if (event.cards) {
+        for (let i = 0; i < event.cards.length; i++) {
+          jsonMessages = this.createJsonMessages(event.cards[i].buttons, jsonMessages)
         }
+      }
+      if (event.buttons) {
+        jsonMessages = this.createJsonMessages(event.buttons, jsonMessages)
       }
       if (event.deletePayload) {
         console.log('deleting jsonMessage', event.deletePayload)
@@ -291,18 +302,18 @@ class CreateMessage extends React.Component {
                   </li>))
                 }
               </ul>
+              <GenericMessage
+                hiddenComponents={['media']}
+                module="jsonads"
+                hideUserOptions
+                broadcast={this.state.broadcast}
+                handleChange={this.handleChange}
+                convoTitle={this.state.convoTitle}
+                buttonActions={this.state.buttonActions}
+                replyWithMessage={this.replyWithMessage} />
             </div>
           </div>
         </div>
-        <GenericMessage
-          hiddenComponents={['media']}
-          module="jsonads"
-          hideUserOptions
-          broadcast={this.state.broadcast}
-          handleChange={this.handleChange}
-          convoTitle={this.state.convoTitle}
-          buttonActions={this.state.buttonActions}
-          replyWithMessage={this.replyWithMessage} />
       </div>
     )
   }
