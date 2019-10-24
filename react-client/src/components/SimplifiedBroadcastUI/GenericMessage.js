@@ -334,9 +334,17 @@ class GenericMessage extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      this.msg.info(`${componentDetails.componentType} component edited`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`youtube video component edited`)
+      } else {
+        this.msg.info(`${componentDetails.componentType} component edited`)
+      }
     } else {
-      this.msg.info(`New ${componentDetails.componentType} component added`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`New youtube video component added`)
+      } else {
+        this.msg.info(`New ${componentDetails.componentType} component added`)
+      }
     }
     this.updateList(component)
     component.handler()
