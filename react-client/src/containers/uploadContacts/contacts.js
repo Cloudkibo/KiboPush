@@ -11,8 +11,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Contact extends React.Component {
-  constructor (props) {
-    super(props)
+  constructor (props, context) {
+    super(props, context)
     this.state = {
       contactsData: [],
       totalLength: 0,
@@ -31,6 +31,8 @@ class Contact extends React.Component {
     this.showEdit = this.showEdit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
     this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
+
   }
 
   changeName (e) {
@@ -268,7 +270,7 @@ class Contact extends React.Component {
                         breakLabel={<a>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
+                        marginPagesDisplayed={1}
                         pageRangeDisplayed={3}
                         onPageChange={this.handlePageClick}
                         containerClassName={'pagination'}
