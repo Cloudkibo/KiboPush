@@ -424,6 +424,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
+        module={this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}

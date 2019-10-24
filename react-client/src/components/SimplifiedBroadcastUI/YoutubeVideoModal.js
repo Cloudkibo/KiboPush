@@ -71,7 +71,19 @@ class YoutubeVideoModal extends React.Component {
       return
     }
     console.log('updating YouTube file', file)
-    this.uploadTemplate(file)
+    if (this.props.module !== 'jsonads') {
+      this.uploadTemplate(file)
+    } else {
+      this.setState({ 
+        loading: false,
+        file: file,
+        videoLink: file.fileurl.url
+       }, () => {
+        this.refs.video.pause();
+        this.refs.video.load();
+        this.refs.video.play();
+      })
+    }
     // this.setState({file, videoLink: file.fileurl.url}, () => {
     //   this.refs.video.pause();
     //   this.refs.video.load();
