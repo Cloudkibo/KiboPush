@@ -165,7 +165,7 @@ class YoutubeVideoModal extends React.Component {
             console.log('setting videoId')
             let videoId = getVideoId(this.state.link)
             console.log('setting videoId', videoId)
-            this.setState({videoId, loading: false, disabled: false})
+            this.setState({videoId, loading: false})
             this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
           } else {
             this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => {this.updateFile(file)})
@@ -300,7 +300,7 @@ class YoutubeVideoModal extends React.Component {
                 <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
                     Cancel
                 </button>
-                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle)} onClick={() => this.handleDone()} className='btn btn-primary'>
                     {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
