@@ -44,7 +44,7 @@ class YoutubeVideoModal extends React.Component {
 
   handleLinkChange (e) {
     console.log('changing link', e.target.value)
-    this.setState({disabled: true, link: e.target.value, videoTitle: null, videoDescription: null}, () => {
+    this.setState({disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null}, () => {
       this.validateYoutubeUrl()
     })
   }

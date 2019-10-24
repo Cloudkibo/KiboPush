@@ -465,7 +465,8 @@ class GenericMessage extends React.Component {
       'text': {
         component: (<Text
           videoId={broadcast.videoId}
-          urlMetaData={broadcast.urlMetaData}
+          videoTitle={broadcast.videoTitle}
+          videoDescription={broadcast.videoDescription}
           id={componentId}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
@@ -482,7 +483,8 @@ class GenericMessage extends React.Component {
           this.handleText({
             id: componentId,
             videoId: broadcast.videoId,
-            urlMetaData: broadcast.urlMetaData,
+            videoTitle: broadcast.videoTitle,
+            videoDescription: broadcast.videoDescription,
             text: broadcast.text,
             buttons: broadcast.buttons ? broadcast.buttons : [],
             deletePayload: broadcast.deletePayload

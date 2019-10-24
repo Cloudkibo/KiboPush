@@ -88,11 +88,11 @@ class Text extends React.Component {
                 />
             </div>
             {
-              this.state.urlMetaData &&
+              this.state.videoTitle &&
               <div>
                 <div style={{textAlign: 'left', 'marginLeft': '10px'}}>
-                  <h6>{this.state.urlMetaData.title}</h6>
-                  <h7>{this.state.urlMetaData.description.length > 50 ? this.state.urlMetaData.description.substr(0, 47)+'...' : this.state.urlMetaData.description}</h7>
+                  <h6>{this.state.videoTitle}</h6>
+                  <h7>{this.state.videoDescription.length > 50 ? this.state.videoDescription.substr(0, 47)+'...' : this.state.videoDescription}</h7>
                   <p style={{fontSize: '0.7em', marginTop: '5px'}}>www.youtube.com</p>
                 </div>
                 <hr />
