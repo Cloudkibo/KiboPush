@@ -274,7 +274,7 @@ class Media extends React.Component {
               multiple='true'
               accept='image/*, video/*'
               title=' '
-              maxFileSize={10000000}
+              maxFileSize={this.props.module && this.props.module == 'whatsapp' ? 5000000 : 10000000}
               minFileSize={0}
               clickable
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />

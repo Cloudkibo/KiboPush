@@ -485,7 +485,7 @@ class LiveChat extends React.Component {
                         tags={this.props.tags ? this.props.tags: []}
                         createTag={this.props.createTag}
                         assignTags={this.assignTags}
-                        tagOptions={this.state.tagOptions ? this.props.tagOptions : []}
+                        tagOptions={this.state.tagOptions ? this.state.tagOptions : []}
                         members={this.props.members ? this.props.members : []}
                         customFields={this.props.customFields? this.props.customeFields : []}
                         customFieldOptions={this.state.customFieldOptions}

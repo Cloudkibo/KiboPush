@@ -150,7 +150,7 @@ class Audio extends React.Component {
               onChange={this.onFilesChange}
               onError={this.onFilesError}
               accepts={['audio/*']}
-              maxFileSize={10000000}
+              maxFileSize={this.props.module && this.props.module == 'whatsapp' ? 5000000 : 10000000}
               minFileSize={0}
               clickable
             >

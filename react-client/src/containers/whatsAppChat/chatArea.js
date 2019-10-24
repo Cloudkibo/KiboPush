@@ -53,6 +53,7 @@ class ChatArea extends React.Component {
       this.props.chat.push(data)
       this.forceUpdate()
     }
+    this.props.updateActiveSessionFromChatBox()
   }
   isUserSessionValid (chats) {
     var userMessages = []
@@ -184,7 +185,7 @@ updateChat (chat, newChat) {
                     user={this.props.user}
                     updateChat={this.updateChat}
                     chat={this.props.chat}
-                    onEnter={this.onEnter} 
+                    onEnter={this.onEnter}
                     sessionValid={this.state.sessionValid}
                     />
                 </div>

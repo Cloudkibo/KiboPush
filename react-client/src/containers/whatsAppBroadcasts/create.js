@@ -286,8 +286,9 @@ class CreateWhatsAppBroadcast extends React.Component {
                         <div className='tab-content'>
                           <div className='tab-pane fade active in' id='tab_1'>
                             <GenericMessage
-                              hiddenComponents={['link', 'video', 'card']}
-                              broadcast={this.state.broadcast}
+                              module = 'whatsapp'
+                              hideUserOptions
+                              hiddenComponents={['link', 'card']}
                               handleChange={this.handleChange}
                               setReset={reset => { this.reset = reset }}
                               convoTitle={this.state.convoTitle}
