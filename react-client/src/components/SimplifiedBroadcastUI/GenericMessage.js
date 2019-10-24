@@ -81,6 +81,7 @@ class GenericMessage extends React.Component {
   }
 
   initializeList (broadcast) {
+    console.log('initializeList')
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
       let component = this.getComponent(broadcast[i]).component
@@ -356,9 +357,12 @@ class GenericMessage extends React.Component {
   }
 
   openModal () {
+    console.log('openModal this.state.editData', this.state.editData)
+    console.log('{...this.state.editData}',{...this.state.editData})
     let modals = {
       'text': (<TextModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         noButtons={this.props.noButtons}
@@ -372,6 +376,7 @@ class GenericMessage extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -383,6 +388,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -424,7 +430,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
-        module={this.props.module}
+        noButtons={this.props.noButtons}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -436,6 +443,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -456,6 +464,9 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text
+          videoId={broadcast.videoId}
+          videoTitle={broadcast.videoTitle}
+          videoDescription={broadcast.videoDescription}
           id={componentId}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
@@ -471,6 +482,9 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleText({
             id: componentId,
+            videoId: broadcast.videoId,
+            videoTitle: broadcast.videoTitle,
+            videoDescription: broadcast.videoDescription,
             text: broadcast.text,
             buttons: broadcast.buttons ? broadcast.buttons : [],
             deletePayload: broadcast.deletePayload
