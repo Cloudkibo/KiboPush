@@ -182,6 +182,7 @@ class GenericMessage extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('handleCard', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -193,6 +194,7 @@ class GenericMessage extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         console.log('enter in function')
+        temp[i].componentType = obj.componentType
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
         temp[i].image_url = obj.image_url
@@ -210,12 +212,16 @@ class GenericMessage extends React.Component {
           console.log('delete default action')
           delete temp[i].default_action
         }
+        if (temp[i].cards) {
+          delete temp[i].cards
+        }
         isPresent = true
       }
     })
     if (!isPresent) {
       temp.push(obj)
     }
+    console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -257,6 +263,7 @@ class GenericMessage extends React.Component {
   }
 
   handleGallery (obj) {
+    console.log('handleGallery', obj)
     var temp = this.state.broadcast
     var isPresent = false
     if (obj.cards) {
@@ -266,6 +273,9 @@ class GenericMessage extends React.Component {
     }
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        if (temp[i].buttons) {
+          delete temp[i].buttons
+        }
         temp[i].cards = obj.cards
         isPresent = true
       }
