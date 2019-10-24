@@ -66,6 +66,8 @@ class LiveChat extends React.Component {
     this.changeTab = this.changeTab.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
+    this.updateActiveSessionFromChatBox = this.updateActiveSessionFromChatBox.bind(this)
+
   }
 
   handleAgents(teamAgents) {
@@ -226,6 +228,12 @@ class LiveChat extends React.Component {
     }
   }
 
+  updateActiveSessionFromChatBox () {
+    let activeSession = this.state.activeSession
+    activeSession.pendingResponse = false
+    this.setState({activeSession: activeSession})
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
@@ -272,6 +280,12 @@ class LiveChat extends React.Component {
         last_id: 'none',
         number_of_records: 10,
         filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}})
+        if (nextProps.socketSession && nextProps.socketSession.contactId === this.state.activeSession._id) {
+          let activeSession = this.state.activeSession
+          activeSession.pendingResponse = true
+          activeSession.status = 'new'
+          this.setState({activeSession: activeSession})
+        }
     }
   }
 
@@ -345,6 +359,7 @@ class LiveChat extends React.Component {
                       changeActiveSession={this.changeActiveSession}
                       updateUnreadCount={this.updateUnreadCount}
                       removePending={this.removePending}
+                      updateActiveSessionFromChatBox={this.updateActiveSessionFromChatBox}
                     />
                   }
                   {
