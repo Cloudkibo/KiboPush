@@ -111,5 +111,5 @@ export function setWebViewUrl(url){
 export function getVideoId (url) {
   let i, r, rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
   r = url.match(rx)
-  return r[1]
+  return r ? r[1] : false
 }
