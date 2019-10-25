@@ -14,7 +14,11 @@ class Search extends React.Component {
   }
   changeSearchValue (e) {
     this.setState({searchValue: e.target.value})
+    if (e.target.value.length < 1) {
+      this.props.clearSearchResult()
+    }
   }
+
   render () {
     return (
       <div className='m-portlet m-portlet--full-height'>
@@ -66,7 +70,7 @@ class Search extends React.Component {
 Search.propTypes = {
   'scrollToMessage': PropTypes.func.isRequired,
   'clearSearchResult': PropTypes.func.isRequired,
-  'searchChatMsgs': PropTypes.func.isRequired,
+  'searchChatMsgs': PropTypes.array.isRequired,
   'hideSearch': PropTypes.func.isRequired,
   'searchChat': PropTypes.func.isRequired,
   'subscriberName': PropTypes.string.isRequired

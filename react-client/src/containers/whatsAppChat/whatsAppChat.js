@@ -30,6 +30,7 @@ import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from '../../components/LiveChat/profileArea.js'
 import CHATAREA from './chatArea.js'
 import SEARCHAREA from './searchArea.js'
+import { scroller } from 'react-scroll'
 
 const CHATMODULE= 'WHATSAPP'
 
@@ -66,8 +67,8 @@ class LiveChat extends React.Component {
     this.changeTab = this.changeTab.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
+    this.scrollToMessage = this.scrollToMessage.bind(this)
     this.updateActiveSessionFromChatBox = this.updateActiveSessionFromChatBox.bind(this)
-
   }
 
   handleAgents(teamAgents) {
@@ -76,6 +77,24 @@ class LiveChat extends React.Component {
       if (teamAgents[i].agentId !== this.props.user._id) {
         agentIds.push(teamAgents[i].agentId)
       }
+    }
+  }
+  
+  scrollToMessage (messageId) {
+    console.log('scrollToMessage called')
+    // check if message exists
+    let counter = 0
+    for (let i = 0; i < this.props.chat.length; i++) {
+      if (this.props.chat[i]._id === messageId) {
+        counter = 1
+        break
+      }
+    }
+
+    if (counter === 1) {
+      scroller.scrollTo(messageId, {delay: 8000, containerId: 'whatsappchat-container'})
+    } else {
+      this.props.fetchChat(this.state.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
     }
   }
 
@@ -194,7 +213,7 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('in changeActiveSession', session)
     this.setState({activeSession: session, scroll: true})
-    this.props.fetchChat(session._id, {page: 'first', number: 25})
+    this.props.fetchChat(session._id, {page: 'first', number: 25}, null, this.scrollToMessage)
     this.props.markRead(session._id, this.props.sessions)
     this.props.getCustomFieldValue(session._id)
   }
@@ -359,6 +378,7 @@ class LiveChat extends React.Component {
                       changeActiveSession={this.changeActiveSession}
                       updateUnreadCount={this.updateUnreadCount}
                       removePending={this.removePending}
+                      scrollToMessage={this.scrollToMessage}
                       updateActiveSessionFromChatBox={this.updateActiveSessionFromChatBox}
                     />
                   }
@@ -388,8 +408,10 @@ class LiveChat extends React.Component {
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
+                    scrollToMessage = {this.scrollToMessage}
                     currentSession={this.state.activeSession}
                     hideSearch={this.hideSearch}
+                    clearSearchResult={this.props.clearSearchResult}
                   />
                 }
                 </div>

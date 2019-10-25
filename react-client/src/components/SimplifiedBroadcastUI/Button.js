@@ -26,7 +26,7 @@ class Button extends React.Component {
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload) : false,
       showSequenceMessage: true,
-      buttonDisabled: this.props.edit ? false : true,
+      buttonDisabled: this.props.button ? false : true,
       errorMsg:''
     }
 
