@@ -172,7 +172,7 @@ class ChatItem extends React.Component {
                height: '150',
                width: '200',
                playerVars: { // https://developers.google.com/youtube/player_parameters
-                 autoplay: 1
+                 autoplay: 0
                }
              }}/>
            <a href={metaUrl} target='_blank'>
