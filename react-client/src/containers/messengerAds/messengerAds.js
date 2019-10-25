@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../redux/actions/messengerAds.actions'
+import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage, clearMessengerAd} from '../../redux/actions/messengerAds.actions'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -24,6 +24,7 @@ class MessengerAds extends React.Component {
       showVideo: false
     }
     props.fetchMessengerAds()
+    props.clearMessengerAd()
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -298,7 +299,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchMessengerAds: fetchMessengerAds,
     deleteMessengerAd: deleteMessengerAd,
-    setDefaultAdMessage: setDefaultAdMessage
+    setDefaultAdMessage: setDefaultAdMessage,
+    clearMessengerAd: clearMessengerAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerAds)

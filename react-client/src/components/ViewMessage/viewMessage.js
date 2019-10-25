@@ -80,19 +80,19 @@ class ViewMessage extends React.Component {
                                     b.componentType === 'video'
                                     ? <div key={index}>
                                       <ReactPlayer
-                                        url={b.fileurl.url}
+                                        url={b.file? b.file.fileurl.url : b.fileurl.url}
                                         controls
                                         width='100%'
                                         height='140px'
-                                        onPlay={this.onTestURLVideo(b.fileurl.url)}
+                                        onPlay={this.onTestURLVideo(b.file ? b.file.fileurl.url : b.fileurl.url)}
                                       />
                                     </div>
                                     : b.componentType === 'audio'
                                     ? <div key={index} style={{marginTop: '20px', marginBottom: '60px', marginLeft: '-15px'}}>
                                       <ReactPlayer
-                                        url={b.fileurl.url}
+                                        url={b.file? b.file.fileurl.url : b.fileurl.url}
                                         controls
-                                        onPlay={this.onTestURLAudio(b.fileurl.url)}
+                                        onPlay={this.onTestURLAudio(b.file? b.file.fileurl.url : b.fileurl.url)}
                                         width='100%'
                                         height='50px'
                                         style={{width: '100%', height: 'auto'}}
@@ -106,7 +106,7 @@ class ViewMessage extends React.Component {
                                       />
                                     </a>
                                     : b.componentType === 'file'
-                                    ? <a key={index} href={b.fileurl.url} target='_blank'>
+                                    ? <a key={index} href={b.file? b.file.fileurl.url : b.fileurl.url} target='_blank'>
                                       <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.fileName}</strong></h6>
                                     </a>
                                     : b.componentType === 'card'
