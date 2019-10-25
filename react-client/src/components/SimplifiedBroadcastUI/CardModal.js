@@ -142,6 +142,7 @@ class CardModal extends React.Component {
     console.log('addComponent CardModal finalCards', this.finalCards)
     console.log('addComponent this.state.cards', this.state.cards)
     let deletePayload = []
+    let buttons = []
     if (this.state.cards.length === 1) {
       let card = this.state.cards[0].component
       deletePayload = this.getDeletePayload(this.finalCards[0] ? this.finalCards[0].buttons : card.buttons)
@@ -165,7 +166,7 @@ class CardModal extends React.Component {
     } else if (this.state.cards.length > 1) {
       let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
-        deletePayload.concat(this.getDeletePayload(finalCard ? finalCard.buttons : card.component.buttons))
+        buttons = buttons.concat(finalCard ? finalCard.buttons : card.component.buttons)
         console.log('deletePayload for gallery', deletePayload)
         console.log(`finalCard found for card ${card.id}`, finalCard)
         return { 
@@ -184,6 +185,9 @@ class CardModal extends React.Component {
           buttons: finalCard ? finalCard.buttons : card.component.buttons
         }
       })
+      console.log('final buttons for gallery', buttons)
+      deletePayload = this.getDeletePayload(buttons)
+      console.log('final deletePayload for gallery', deletePayload)
       this.props.addComponent({
         id: this.props.id,
         componentType: 'gallery',
