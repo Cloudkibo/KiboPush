@@ -321,7 +321,6 @@ class CreateMessage extends React.Component {
                 }
               </ul>
               <GenericMessage
-                hiddenComponents={['media']}
                 module="jsonads"
                 hideUserOptions
                 broadcast={this.state.broadcast}
