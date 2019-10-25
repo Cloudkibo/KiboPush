@@ -16,6 +16,7 @@ class CardModal extends React.Component {
       } else {
         if (i === 0) {
           cards.push({
+            buttonDisabled: true,
             disabled: true,
             id: i + 1,
             component: {
@@ -111,6 +112,7 @@ class CardModal extends React.Component {
       if (this.state.numOfElements < this.elementLimit) {
         let cards = this.state.cards
         cards.push({
+          buttonDisabled: true,
           disabled: true,
           id: this.state.cards.length+1,
           component: {
@@ -192,12 +194,14 @@ class CardModal extends React.Component {
   }
 
   getDeletePayload (buttons) {
+    console.log('getDeletePayload buttons', buttons)
+    console.log('getDeletePayload messengerAdPayloads', this.state.messengerAdPayloads)
     let deletePayload = []
     if (this.state.messengerAdPayloads.length > 0) {
       for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (this.state.messengerAdPayloads[j] === buttons[j].payload) {
+          if (this.state.messengerAdPayloads[i] === buttons[j].payload) {
             foundPayload = true
           }
         }
@@ -266,6 +270,7 @@ class CardModal extends React.Component {
           if (!card.state.file) {
             requirements.push('an image')
           }
+          console.log('card.props.card.component.buttons', card.props.card.component.buttons)
           if (card.props.card.buttonDisabled) {
             let visibleButtons = cardData.buttons.filter(button => button.visible)
             console.log('visibleButtons', visibleButtons)

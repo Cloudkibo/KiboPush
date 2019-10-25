@@ -168,6 +168,7 @@ class AddButton extends React.Component {
       console.log('third button disable case')
       this.props.updateButtonStatus({buttonDisabled: true})
     } else {
+      console.log('enabling button')
       this.props.updateButtonStatus({buttonDisabled: false})
     }
   }

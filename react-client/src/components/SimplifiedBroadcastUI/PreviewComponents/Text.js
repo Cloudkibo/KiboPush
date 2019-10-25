@@ -2,11 +2,15 @@
 
 import React from 'react'
 import TextModal from '../TextModal'
+import YouTube from 'react-youtube'
 
 class Text extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      videoId: props.videoId,
+      videoTitle: props.videoTitle,
+      videoDescription: props.videoDescription,
       buttons: props.buttons ? props.buttons : [],
       text: props.message ? props.message : '',
       showEmojiPicker: false,
@@ -18,6 +22,7 @@ class Text extends React.Component {
       },
       buttonActions: this.props.buttonActions
     }
+    console.log('Text state', this.state)
     this.edit = this.edit.bind(this)
   }
 
@@ -35,12 +40,24 @@ class Text extends React.Component {
   }
 
   edit () {
-    this.props.editComponent('text', {
-      id: this.props.id,
-      buttons: this.state.buttons,
-      text: this.state.text,
-      buttonActions: this.state.buttonActions
-    })
+    if (this.state.videoId) {
+      console.log('this.state.urlMetaData in edit', this.state.urlMetaData)
+      this.props.editComponent('video', {
+        edit: true,
+        youtubeLink:this.state.text, 
+        videoId:this.state.videoId,
+        videoTitle: this.state.videoTitle,
+        videoDescription: this.state.videoDescription,
+        id:this.props.id
+      })
+    } else {
+      this.props.editComponent('text', {
+        id: this.props.id,
+        buttons: this.state.buttons,
+        text: this.state.text,
+        buttonActions: this.state.buttonActions
+      })
+    }
   }
 
   render () {
@@ -53,7 +70,41 @@ class Text extends React.Component {
         </div>
         <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='discussion' style={{display: 'inline-block'}} >
-          <div style={{maxWidth: '100%', fontSize: '18px', textAlign: 'center'}} className='bubble recipient'>{this.state.text}</div>
+
+        {
+          this.state.videoId &&
+          <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', maxWidth: '80%', margin: 'auto'}} >
+          <div>
+            <div>
+              <YouTube
+                videoId={this.state.videoId}
+                opts={{
+                  height: '100',
+                  width: '200',
+                  playerVars: { 
+                    autoplay: 0
+                  }
+                }}
+                />
+            </div>
+            {
+              this.state.videoTitle &&
+              <div>
+                <div style={{textAlign: 'left', 'marginLeft': '10px'}}>
+                  <h6>{this.state.videoTitle}</h6>
+                  <h7>{this.state.videoDescription.length > 50 ? this.state.videoDescription.substr(0, 47)+'...' : this.state.videoDescription}</h7>
+                  <p style={{fontSize: '0.7em', marginTop: '5px'}}>www.youtube.com</p>
+                </div>
+                <hr />
+                <p style={{textAlign: 'left', color: '#0782FF', fontSize: '0.9em', marginLeft: '5px'}}>{this.state.text}</p>
+              </div>
+            }
+            </div>
+          </div>
+          }
+          {
+            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center'}} className='bubble recipient'>{this.state.text}</div>
+          }
           {
               this.state.buttons.map((button, index) => {
                 return (

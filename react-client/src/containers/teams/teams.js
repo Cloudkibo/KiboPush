@@ -280,7 +280,8 @@ class Teams extends React.Component {
                           </span>
                         </div>
                         <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                        <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                        {this.props.user && this.props.user.platform === 'messenger' &&
+                          <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
                           <div className='m-form__label'>
                             <label>Pages:&nbsp;&nbsp;</label>
                           </div>
@@ -295,6 +296,7 @@ class Teams extends React.Component {
                             <option value='all'>All</option>
                           </select>
                         </div>
+                      }
                       </div>
                       {
                         this.state.teamsData && this.state.teamsData.length > 0
@@ -303,65 +305,62 @@ class Teams extends React.Component {
                             <thead className='m-datatable__head'>
                               <tr className='m-datatable__row'
                                 style={{height: '53px'}}>
-                                <th data-field='name' style={{width: '100px'}}
+                                <th data-field='name'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Name</span>
+                                  <span style={{width: '100px'}}>Name</span>
                                 </th>
-                                <th data-field='description' style={{width: '100px'}}
+                                <th data-field='description'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Description</span>
+                                  <span style={{width: '100px'}}>Description</span>
                                 </th>
-                                <th data-field='pages' style={{width: '100px'}}
+                                {this.props.user && this.props.user.platform === 'messenger' &&
+                                  <th data-field='pages'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Pages</span>
+                                  <span style={{width: '100px'}}>Pages</span>
+                                  </th>
+                                }
+                                <th data-field='created_by'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px'}}>Created By</span>
                                 </th>
-                                <th data-field='created_by' style={{width: '125px'}}
+                                <th data-field='datetime'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Created By</span>
+                                  <span style={{width: '100px'}}>Created At</span>
                                 </th>
-                                <th data-field='datetime' style={{width: '100px'}}
+                                <th data-field='actions'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Created At</span>
-                                </th>
-                                <th data-field='actions' style={{width: '175px'}}
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Actions</span>
+                                  <span style={{width: '100px'}}>Actions</span>
                                 </th>
                               </tr>
                             </thead>
-                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                            <tbody className='m-datatable__body'>
                               {
-                                this.state.teamsData.map((team, i) => (
-                                  <tr key={i} data-row={i}
-                                    className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                    style={{height: '55px'}}>
-                                    <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{team.name}</span></td>
-                                    <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{team.description}</span></td>
-                                    <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{team.teamPages.join(', ')}</span></td>
-                                    <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{team.created_by.name}</span></td>
-                                    <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{handleDate(team.creation_date)}</span></td>
-                                    <td data-field='actions' className='m-datatable__cell'>
-                                      <span style={{width: '175px'}}>
-                                        <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(team)}>
-                                          View
-                                        </button>
-                                        {
-                                          this.props.user.role !== 'agent' &&
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(team)}>
-                                            Edit
-                                          </button>
-                                        }
-                                        {/* {
-                                          this.props.user.role !== 'agent' &&
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
-                                            Delete
-                                          </button>
-                                        } */}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                ))
-                              }
+                              this.state.teamsData.map((team, i) => (
+                                <tr data-row={i}
+                                  className='m-datatable__row m-datatable__row--even'
+                                  style={{height: '55px'}} key={i}>
+                                  <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.name}</span></td>
+                                  <td data-field='description' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.description}</span></td>
+                                  {this.props.user && this.props.user.platform === 'messenger' &&
+                                    <td data-field='pages' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.teamPages.join(', ')}</span></td>
+                                  }
+                                  <td data-field='created_by' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.created_by.name}</span></td>
+                                  <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(team.creation_date)}</span></td>
+                                 <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                   <span style={{width: '100px'}}>
+                                     <button className='btn btn-primary btn-sm' onClick={() => this.goToView(team)}>
+                                       View
+                                     </button>
+                                     {
+                                       this.props.user.role !== 'agent' &&
+                                       <button className='btn btn-primary btn-sm' style={{marginLeft: '3px'}} onClick={() => this.goToEdit(team)}>
+                                         Edit
+                                       </button>
+                                     }
+                                   </span></td>
+                                </tr>
+                              ))
+                            }
                             </tbody>
                           </table>
                           <div className='pagination'>

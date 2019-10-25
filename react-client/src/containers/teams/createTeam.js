@@ -74,7 +74,7 @@ class CreateTeam extends React.Component {
       this.msg.error('Please write a description')
     } else if (this.state.agentIds.length === 0) {
       this.msg.error('Please select one agent atleast')
-    } else if (this.state.pageIds.length === 0) {
+    } else if (this.props.user.platform === 'messenger' && this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
       var agents = []
@@ -87,7 +87,11 @@ class CreateTeam extends React.Component {
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
-      this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds})
+      if (this.props.user.platform === 'messenger') {
+        this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds, platform: 'messenger'})
+      } else if (this.props.user.platform === 'whatsApp') {
+        this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: 'whatsApp'})
+      }
       browserHistory.push({
         pathname: `/teams`
       })
@@ -297,6 +301,7 @@ class CreateTeam extends React.Component {
                           }
                       </div>
                     </div>
+                    {this.props.user && this.props.user.platform === 'messenger' &&
                     <div className='col-lg-4 col-md-4 col-sm-4'>
                       <label>Assigned to Pages:</label>
                       {this.state.pageIds && this.state.pageIds.length > 0 &&
@@ -368,6 +373,7 @@ class CreateTeam extends React.Component {
                           }
                       </div>
                     </div>
+                  }
                   </div>
                   <br /><br />
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>

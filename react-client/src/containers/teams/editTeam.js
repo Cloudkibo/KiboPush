@@ -102,34 +102,29 @@ class EditTeam extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
-    if (nextProps.teamAgents && nextProps.teamAgents.length > 0 && nextProps.teamPages && nextProps.teamPages.length > 0) {
+    console.log('this.props.location.state', this.props.location.state)
+    if (nextProps.teamAgents && nextProps.teamAgents.length > 0) {
       var agents = []
-      var pages = []
       for (var i = 0; i < nextProps.teamAgents.length; i++) {
-        console.log('nextProps.teamAgents[i].teamId_id', nextProps.teamAgents[i].teamId)
-        console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
           if (this.existsValue(nextProps.teamAgents[i].agentId._id, agents) === false) {
-            console.log('Push Agent')
             agents.push(nextProps.teamAgents[i].agentId)
           }
-          console.log('agents', nextProps.teamAgents[i].agentId)
         }
       }
+      this.setState({ agentIds: agents, name: this.props.location.state.name, description: this.props.location.state.description })
+    }
+    if (nextProps.teamPages && nextProps.teamPages.length > 0) {
+      var pages = []
       for (var a = 0; a < nextProps.teamPages.length; a++) {
-        console.log('nextProps.teamPages[a].teamId_id', nextProps.teamPages[a].teamId_id)
-        console.log('this.props.location.state._id', this.props.location.state._id)
         if (nextProps.teamPages[a].teamId._id === this.props.location.state._id) {
           if (this.existsValue(nextProps.teamPages[a].pageId._id, pages) === false) {
             console.log('Push Page')
             pages.push(nextProps.teamPages[a].pageId)
           }
-          console.log('nextProps.teamPages[a].pageId', nextProps.teamPages[a].pageId)
         }
       }
-      console.log('pageIds after', pages)
-      console.log('agentIds after', agents)
-      this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
+      this.setState({ pageIds: pages})
     }
   }
   cancel () {
@@ -219,7 +214,7 @@ class EditTeam extends React.Component {
       this.msg.error('Please write a description')
     } else if (this.state.agentIds.length === 0) {
       this.msg.error('Please select one agent atleast')
-    } else if (this.state.pageIds.length === 0) {
+    } else if (this.props.user.platform === 'messenger' && this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
       let pageIds = []
@@ -232,7 +227,12 @@ class EditTeam extends React.Component {
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
-      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
+      let updatePayload = {_id: this.props.location.state._id, name: this.state.name, description: this.state.description}
+      if (this.props.user.platform === 'messenger') {
+        updatePayload.teamPages = pageNames
+        updatePayload.teamPagesIds = pageIds
+      }
+      this.props.update(updatePayload)
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
@@ -474,7 +474,8 @@ class EditTeam extends React.Component {
                       </div>
                     }
                     </div>
-                    <div className='col-lg-4 col-md-4 col-sm-4'>
+                    {this.props.user && this.props.user.platform === 'messenger' &&
+                      <div className='col-lg-4 col-md-4 col-sm-4'>
                       <label>Assigned to Pages:</label>
                       {this.state.pageIds && this.state.pageIds.length > 0 &&
                         <div>
@@ -549,6 +550,7 @@ class EditTeam extends React.Component {
                       </div>
                     }
                     </div>
+                  }
                   </div>
                   <br /><br />
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>

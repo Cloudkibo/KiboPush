@@ -81,6 +81,7 @@ class GenericMessage extends React.Component {
   }
 
   initializeList (broadcast) {
+    console.log('initializeList')
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
       let component = this.getComponent(broadcast[i]).component
@@ -181,6 +182,7 @@ class GenericMessage extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('handleCard', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -192,6 +194,7 @@ class GenericMessage extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         console.log('enter in function')
+        temp[i].componentType = obj.componentType
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
         temp[i].image_url = obj.image_url
@@ -209,12 +212,16 @@ class GenericMessage extends React.Component {
           console.log('delete default action')
           delete temp[i].default_action
         }
+        if (temp[i].cards) {
+          delete temp[i].cards
+        }
         isPresent = true
       }
     })
     if (!isPresent) {
       temp.push(obj)
     }
+    console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -256,6 +263,7 @@ class GenericMessage extends React.Component {
   }
 
   handleGallery (obj) {
+    console.log('handleGallery', obj)
     var temp = this.state.broadcast
     var isPresent = false
     if (obj.cards) {
@@ -265,6 +273,9 @@ class GenericMessage extends React.Component {
     }
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        if (temp[i].buttons) {
+          delete temp[i].buttons
+        }
         temp[i].cards = obj.cards
         isPresent = true
       }
@@ -333,9 +344,17 @@ class GenericMessage extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      this.msg.info(`${componentDetails.componentType} component edited`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`youtube video component edited`)
+      } else {
+        this.msg.info(`${componentDetails.componentType} component edited`)
+      }
     } else {
-      this.msg.info(`New ${componentDetails.componentType} component added`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`New youtube video component added`)
+      } else {
+        this.msg.info(`New ${componentDetails.componentType} component added`)
+      }
     }
     this.updateList(component)
     component.handler()
@@ -356,9 +375,12 @@ class GenericMessage extends React.Component {
   }
 
   openModal () {
+    console.log('openModal this.state.editData', this.state.editData)
+    console.log('{...this.state.editData}',{...this.state.editData})
     let modals = {
       'text': (<TextModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         noButtons={this.props.noButtons}
@@ -372,6 +394,7 @@ class GenericMessage extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -383,6 +406,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -392,6 +416,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -401,6 +426,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages} pageId={this.props.pageId}
@@ -409,6 +435,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -421,6 +448,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
+        noButtons={this.props.noButtons}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -432,6 +461,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -452,6 +482,9 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text
+          videoId={broadcast.videoId}
+          videoTitle={broadcast.videoTitle}
+          videoDescription={broadcast.videoDescription}
           id={componentId}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
@@ -467,6 +500,9 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleText({
             id: componentId,
+            videoId: broadcast.videoId,
+            videoTitle: broadcast.videoTitle,
+            videoDescription: broadcast.videoDescription,
             text: broadcast.text,
             buttons: broadcast.buttons ? broadcast.buttons : [],
             deletePayload: broadcast.deletePayload
@@ -662,7 +698,7 @@ class GenericMessage extends React.Component {
                             }
                       </div>
                     </div>
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     {
