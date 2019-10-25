@@ -291,7 +291,7 @@ class Targeting extends React.Component {
         }
         self.setState({ listSelected: selected })
         self.props.handleTargetValue({
-          isList: self.state.isList,
+          isList: selected.length > 0 ? true : false,
           listSelected: selected,
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
@@ -478,9 +478,9 @@ class Targeting extends React.Component {
       this.setState({genderValue: [], localeValue: [], tagValue: [], isList: true, pollValue: [], surveyValue: []})
       /* eslint-disable */
       // $('#selectPage').val('').trigger('change')
-      // $('#selectGender').val('').trigger('change')
-      // $('#selectLocale').val('').trigger('change')
-      // $('#selectTags').val('').trigger('change')
+      $('#selectGender').val('').trigger('change')
+      $('#selectLocale').val('').trigger('change')
+      $('#selectTags').val('').trigger('change')
       // $('#selectPoll').val('').trigger('change')
       // $('#selectSurvey').val('').trigger('change')
       $('.selectSegmentation').addClass('hideSegmentation')
@@ -490,7 +490,7 @@ class Targeting extends React.Component {
       /* eslint-disable */
       $('.selectSegmentation').removeClass('hideSegmentation')
       $('.selectList').addClass('hideSegmentation')
-      // $('#selectLists').val('').trigger('change')
+      $('#selectLists').val('').trigger('change')
       /* eslint-enable */
       this.setState({listSelected: [], isList: false})
     }

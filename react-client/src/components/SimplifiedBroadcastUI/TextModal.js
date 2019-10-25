@@ -16,6 +16,7 @@ class TextModal extends React.Component {
       buttonDisabled: false,
       messengerAdPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
+    console.log('messengerAdPayloads', this.state.messengerAdPayloads)
     console.log('TextModal initial state', this.state)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -55,12 +56,13 @@ class TextModal extends React.Component {
   addComponent (buttons) {
     console.log('addComponent in TextModal', this.props)
     console.log('buttons in addComponent', buttons)
+    console.log('messengerAdPayloads in addComponent', this.state.messengerAdPayloads)
     let deletePayload = []
     if (this.state.messengerAdPayloads.length > 0) {
       for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (this.state.messengerAdPayloads[j] === buttons[j].payload) {
+          if (this.state.messengerAdPayloads[i] === buttons[j].payload) {
             foundPayload = true
           }
         }
