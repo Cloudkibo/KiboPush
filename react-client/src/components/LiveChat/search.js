@@ -13,10 +13,8 @@ class Search extends React.Component {
     this.changeSearchValue = this.changeSearchValue.bind(this)
   }
   changeSearchValue (e) {
+    this.props.clearSearchResult()
     this.setState({searchValue: e.target.value})
-    if (e.target.value.length < 1) {
-      this.props.clearSearchResult()
-    }
   }
 
   render () {

@@ -282,7 +282,7 @@ class FacebookPosts extends React.Component {
                         this.state.postsData.map((post, i) => (
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px'}} key={i}>
+                            style={{height: '55px', whiteSpace: 'nowrap'}} key={i}>
                             <td data-field='post' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.getPostText(post.payload)}</span></td>
                             <td data-field='keywords' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.reply}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>

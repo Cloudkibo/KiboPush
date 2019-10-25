@@ -1836,7 +1836,7 @@ class ChatBox extends React.Component {
                           textAlign: 'center'
                         }} className='fa fa-file-image-o' />
                       </i>
-                      <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
+                      <input type='file' accept='image/*' onClick={(e)=>{e.target.value= ''}} onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
                         ref='selectImage' style={styles.inputf} />
                     </div>
                     <div style={{display: 'inline-block'}} data-tip='Upload File'>
@@ -1856,7 +1856,7 @@ class ChatBox extends React.Component {
                               color: 'lightgrey'
                             }} className='fa fa-paperclip' />
                           </i>
-                          <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                          <input type='file' onClick={(e)=>{e.target.value= ''}} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                             ref='selectFile' style={styles.inputf} disabled />
                         </div>
                         : <div>
@@ -1873,7 +1873,7 @@ class ChatBox extends React.Component {
                               textAlign: 'center'
                             }} className='fa fa-paperclip' />
                           </i>
-                          <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                          <input type='file' onClick={(e)=>{e.target.value= ''}} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                             ref='selectFile' style={styles.inputf} />
                         </div>
                       }
