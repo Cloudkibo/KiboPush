@@ -40,16 +40,27 @@ class MediaModal extends React.Component {
 
   addComponent (buttons) {
     console.log('addComponent MediaModal', this.state)
-    this.props.addComponent({
-      id: this.props.id,
-      componentType: 'media',
-      fileurl: this.state.file.fileurl,
-      fileName: this.state.file.fileName,
-      image_url: this.state.file.image_url ? this.state.file.image_url : '',
-      size: this.state.file.size,
-      type: this.state.file.type,
-      mediaType: this.state.imgSrc ? 'image' : 'video',
-      buttons}, this.props.edit)
+    if (this.props.module === 'jsonads') {
+      this.props.addComponent({
+        id: this.props.id,
+        componentType:  this.state.imgSrc ? 'image' : 'video',
+        file: this.state.file,
+        fileurl: this.state.file ? this.state.file.fileurl : '',
+        fileName: this.state.file.fileName,
+        image_url: this.state.file ? this.state.file.image_url : ''},
+        this.props.edit)
+    } else {
+      this.props.addComponent({
+        id: this.props.id,
+        componentType: 'media',
+        fileurl: this.state.file.fileurl,
+        fileName: this.state.file.fileName,
+        image_url: this.state.file.image_url ? this.state.file.image_url : '',
+        size: this.state.file.size,
+        type: this.state.file.type,
+        mediaType: this.state.imgSrc ? 'image' : 'video',
+        buttons}, this.props.edit)
+    }
   }
 
   updateButtonStatus (status) {
