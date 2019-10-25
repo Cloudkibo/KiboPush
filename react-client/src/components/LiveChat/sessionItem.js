@@ -27,7 +27,6 @@ class SessionItem extends React.Component {
       unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
     })
   }
-
   render () {
     return (
       <div key={this.props.session._id}>
@@ -41,13 +40,18 @@ class SessionItem extends React.Component {
 
 
               <div style={{display: 'inline-block'}}>
-                {
+                {/*
                   this.state.unreadCount &&
                   <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                     {this.state.unreadCount}
                   </a>
-                }
-
+                */}
+                {this.props.session.unreadCount
+                  ? <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                  {this.props.session.unreadCount}
+                </a>
+                  : <div></div>
+              }
                 {
                   this.props.session.pendingResponse &&
                   <a style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>

@@ -374,7 +374,9 @@ class LiveChat extends React.Component {
           let activeSession = this.state.activeSession
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           activeSession.status = 'new'
+          activeSession.unreadCount = 0
           this.setState({tabValue: 'open', activeSession: activeSession})
+          this.props.markRead(this.state.activeSession._id)
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
