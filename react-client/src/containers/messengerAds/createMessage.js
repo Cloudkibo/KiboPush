@@ -302,7 +302,7 @@ class CreateMessage extends React.Component {
                 <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
                 Back
               </button>
-                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
+                <button className='btn btn-primary' disabled={!this.state.broadcast || this.state.broadcast.length === 0} onClick={this.saveMessage}>
                 Save
               </button>
               </div>
