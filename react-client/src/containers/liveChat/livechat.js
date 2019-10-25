@@ -149,6 +149,9 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
       this.props.getSubscriberTags(session._id, this.msg)
       this.props.getCustomFieldValue(session._id)
+      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.loadTeamsList({pageId: session.pageId._id})
+      }
     }
   }
 
@@ -238,7 +241,7 @@ class LiveChat extends React.Component {
     this.props.loadTags()
     this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-      this.props.loadTeamsList()
+      // this.props.loadTeamsList()
       this.props.loadMembersList()
     }
   }
