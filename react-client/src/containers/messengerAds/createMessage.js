@@ -119,6 +119,24 @@ class CreateMessage extends React.Component {
       let removePayload = false
       for (var m = 0; m < tempJsonPayloads.length; m++) {
         if (tempJsonPayloads[m] === jsonMessages[l].jsonAdMessageId) {
+          for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
+            let messageContent = jsonMessages[l].messageContent[i]
+            if (messageContent.cards) {
+              for (let j = 0; j < messageContent.cards.length; j++) {
+                for (let k = 0; k < messageContent.cards[j].buttons.length; k++) {
+                  if (messageContent.cards[j].buttons[k].payload) {
+                    tempJsonPayloads.push(messageContent.cards[j].buttons[k].payload)
+                  }
+                }
+              }
+            } else if (messageContent.buttons) {
+              for (let j = 0; j < messageContent.buttons.length; j++) {
+                if (messageContent.buttons[j].payload) {
+                  tempJsonPayloads.push(messageContent.buttons[j].payload)
+                }
+              }
+            }
+          }
           removePayload = true
         }
       }
