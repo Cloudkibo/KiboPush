@@ -153,7 +153,7 @@ class CreateConvo extends React.Component {
         segmentationGender: targeting.genderValue,
         segmentationLocale: targeting.localeValue,
         segmentationTags: targeting.tagValue,
-        isList: targeting.isList && targeting.listSelected.length > 0 ? true : false,
+        isList: targeting.isList ? true : false,
         segmentationList: targeting.listSelected
     }
     this.props.getSubscriberCount(payload, this.handleSubscriberCount)
