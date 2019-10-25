@@ -113,7 +113,7 @@ class CreateMessage extends React.Component {
     }
   }
   removePayloadMessages (tempJsonPayloads, jsonMessages, event) {
-    debugger;
+    //debugger;
     var tempMessages = []
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
