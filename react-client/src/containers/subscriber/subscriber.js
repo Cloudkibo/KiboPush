@@ -18,7 +18,6 @@ import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
@@ -62,14 +61,12 @@ class Subscriber extends React.Component {
       selectAllChecked: null,
       saveEnable: false,
       pageSelected: 0,
-      showEditModal: false,
       subscriber: {},
       filter: false,
       status_value: '',
       saveEnableIndividual: false,
       saveEnableSeq: false,
       saveEnableSeqInd: false,
-      showVideo: false,
       setFieldIndex: false,
       show: false,
       selectedField: {},
@@ -122,8 +119,6 @@ class Subscriber extends React.Component {
     this.createUnassignPayload = this.createUnassignPayload.bind(this)
     this.removeTags = this.removeTags.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
-    this.openEditModal = this.openEditModal.bind(this)
-    this.closeEditModal = this.closeEditModal.bind(this)
     this.showSubscribeToSequence = this.showSubscribeToSequence.bind(this)
     this.showUnsubscribeToSequence = this.showUnsubscribeToSequence.bind(this)
     this.handleSequence = this.handleSequence.bind(this)
@@ -335,7 +330,7 @@ class Subscriber extends React.Component {
     })
   }
 
-  setDefaultPicture (e, subscriber) {
+  setDefaultPicture(e, subscriber) {
     if (subscriber.gender === 'female') {
       e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
     } else {
@@ -382,21 +377,13 @@ class Subscriber extends React.Component {
       }
     }
   }
-  openEditModal() {
-    this.setState({ showEditModal: true })
-  }
   setSubscriber(s) {
     this.setState({ subscriber: s }, () => {
       console.log('find me', this.state.subscriber)
     })
     this.props.getSubscriberSequences(s._id)
   }
-  closeEditModal() {
-    this.setState({ showEditModal: false })
-    //this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
-  }
   loadsubscriberData(data) {
-    //this.setState({showEditModal: false})
     if (data.tag_value === false) {
       this.setState({ filterByTag: '' })
       this.props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '', status_value: this.state.status_value } })
@@ -1136,7 +1123,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByPage: '', pageSelected: 0})
+      this.setState({ filterByPage: '', pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1163,7 +1150,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByGender: e.target.value , pageSelected: 0})
+      this.setState({ filter: true, filterByGender: e.target.value, pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
@@ -1172,7 +1159,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ filterByGender: '', pageSelected: 0})
+      this.setState({ filterByGender: '', pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
     }
     // this.setState({filteredData: filteredData})
@@ -1217,7 +1204,7 @@ class Subscriber extends React.Component {
     // var filtered = []
     this.setState({ statusValue: e.target.value })
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true , pageSelected: 0})
+      this.setState({ filter: true, pageSelected: 0 })
       if (e.target.value === 'subscribed') {
         this.setState({ status_value: true })
         this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true } })
@@ -1234,7 +1221,7 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ status_value: '', pageSelected: 0})
+      this.setState({ status_value: '', pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: '' } })
     }
     // this.setState({filteredData: filteredData})
@@ -1346,16 +1333,25 @@ class Subscriber extends React.Component {
       <div>
         <CustomFields />
         <CreateCustomField />
+        <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} /> 
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <SubscriptionPermissionALert />
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          {
-            this.state.showVideo &&
-            <ModalContainer style={{ width: '680px', top: '100' }}
-              onClose={() => { this.setState({ showVideo: false }) }}>
-              <ModalDialog style={{ width: '680px', top: '100' }}
-                onClose={() => { this.setState({ showVideo: false }) }}>
-                <div>
+
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Subscriber Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{ color: 'black' }} className="modal-body">
                   <YouTube
                     videoId='lFosatdcCCE'
                     opts={{
@@ -1367,9 +1363,9 @@ class Subscriber extends React.Component {
                     }}
                   />
                 </div>
-              </ModalDialog>
-            </ModalContainer>
-          }
+              </div>
+            </div>
+          </div>
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -1388,7 +1384,7 @@ class Subscriber extends React.Component {
               </div>
               <div className='m-alert__text'>
                 Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={() => { this.setState({ showVideo: true }) }}>video tutorial</a>
+                Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
               </div>
             </div>
             <div className='row'>
@@ -1559,17 +1555,7 @@ class Subscriber extends React.Component {
                                     {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
                                   </div>
                                   {this.props.tags && this.props.tags.length > 0 &&
-                                    <div style={{ marginLeft: '10px', marginTop: '5px' }}><Link style={{ color: '#5867dd', cursor: 'pointer', fontSize: 'small' }} onClick={this.openEditModal}>Edit Tags</Link></div>
-                                  }
-                                  {
-                                    this.state.showEditModal &&
-                                    <ModalContainer style={{ width: '800px' }}
-                                      onClose={this.closeEditModal}>
-                                      <ModalDialog style={{ width: '800px' }}
-                                        onClose={this.closeEditModal}>
-                                        <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
-                                      </ModalDialog>
-                                    </ModalContainer>
+                                    <div style={{ marginLeft: '10px', marginTop: '5px' }}><Link style={{ color: '#5867dd', cursor: 'pointer', fontSize: 'small' }} data-toggle="modal" data-target="#editTag">Edit Tags</Link></div>
                                   }
                                   <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                                     <PopoverHeader>Add Tags</PopoverHeader>
@@ -1860,7 +1846,7 @@ class Subscriber extends React.Component {
                             </div>
                             <div className='col-sm-3' style={{ float: 'right' }}>
                               <span class="m-datatable__pager-detail" style={{ float: 'right', marginTop: '30px' }}>
-                                Displaying {(this.state.pageSelected * 10) + 1} - {this.props.subscribers.length < 10 ?this.props.count :(this.props.subscribers.length) * (this.state.pageSelected + 1)} of {this.props.count} records
+                                Displaying {(this.state.pageSelected * 10) + 1} - {this.props.subscribers.length < 10 ? this.props.count : (this.props.subscribers.length) * (this.state.pageSelected + 1)} of {this.props.count} records
                             </span>
                             </div>
                           </div>

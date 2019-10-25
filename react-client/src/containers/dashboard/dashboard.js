@@ -47,7 +47,6 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      isShowingModalPro: false,
       days: '30',
       pageId: 'all',
       selectedPage: {}
@@ -62,16 +61,10 @@ class Dashboard extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changePage = this.changePage.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
   }
   componentWillMount () {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
@@ -95,9 +88,6 @@ class Dashboard extends React.Component {
         state: { session_inavalidated: true }
       })
     }
-  }
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
   }
   goToSettings () {
     browserHistory.push({
@@ -521,45 +511,60 @@ class Dashboard extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.pages && this.props.pages.length > 0 && <SubscriptionPermissionALert />}
-        {
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
                     Upgrade to Pro
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
                   </button>
                 </div>
+                <div style={{color: 'black'}} className="modal-body">
+                  <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                  <div style={{width: '100%', textAlign: 'center'}}>
+                    <div style={{display: 'inline-block', padding: '5px'}}>
+                      <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                        Upgrade to Pro
+                      </button>
+                    </div>
+                  </div>                  
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: '100'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: '100'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='NhqPaGp3TF8'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                  <YouTube
+                    videoId='NhqPaGp3TF8'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 1
+                      }
+                    }}
+                    />                
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -590,7 +595,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           {
@@ -673,7 +678,7 @@ class Dashboard extends React.Component {
                   </span>
                 </span>
               </button>
-              : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+              : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
                 <span>
                   <i className='fa fa-download' />
                   <span>
