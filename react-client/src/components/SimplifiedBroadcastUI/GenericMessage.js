@@ -512,26 +512,26 @@ class GenericMessage extends React.Component {
           })
         }
       },
-      'image': {
-        component: (<Image
-          id={componentId}
-          editComponent={this.showAddComponentModal}
-          pages={this.props.pages}
-          file={broadcast.file}
-          image={broadcast.fileurl}
-          key={componentId}
-          handleImage={this.handleImage}
-          onRemove={this.removeComponent} />),
-        handler: () => {
-          this.handleImage({
-            id: componentId,
-            componentType: 'image',
-            image_url: broadcast.image_url ? broadcast.image_url : '',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
-            file: broadcast.file
-          })
-        }
-      },
+      // 'image': {
+      //   component: (<Image
+      //     id={componentId}
+      //     editComponent={this.showAddComponentModal}
+      //     pages={this.props.pages}
+      //     file={broadcast.file}
+      //     image={broadcast.fileurl}
+      //     key={componentId}
+      //     handleImage={this.handleImage}
+      //     onRemove={this.removeComponent} />),
+      //   handler: () => {
+      //     this.handleImage({
+      //       id: componentId,
+      //       componentType: 'image',
+      //       image_url: broadcast.image_url ? broadcast.image_url : '',
+      //       fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+      //       file: broadcast.file
+      //     })
+      //   }
+      // },
       'card': {
         component: (<Card
           id={componentId}
@@ -636,6 +636,28 @@ class GenericMessage extends React.Component {
           this.handleFile({id: componentId,
             componentType: 'file',
             file: broadcast.file ? broadcast.file : ''
+          })
+        }
+      },
+      'image': {
+        component: (<Media
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pages={this.props.pages}
+          file={broadcast.file}
+          image={broadcast.fileurl}
+          media={broadcast}
+          key={componentId}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent} />),
+        handler: () => {
+          this.handleImage({
+            id: componentId,
+            componentType: 'image',
+            image_url: broadcast.image_url ? broadcast.image_url : '',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            fileName: broadcast.fileName,
+            file: broadcast.file
           })
         }
       },
