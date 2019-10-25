@@ -39,9 +39,12 @@ class ChatItem extends React.Component {
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    this.scrollToMessage = this.scrollToMessage.bind(this)
 
   }
-
+  scrollToMessage (messageId) {
+    this.props.scrollToMessage(messageId)
+  }
   getRepliedByMsg (msg) {
     if (
       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
@@ -234,24 +237,25 @@ class ChatItem extends React.Component {
   }
 
   loadMoreMessage () {
-    this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
+    this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, this.props.chat[0]._id, this.scrollToMessage)
   }
 
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
-    this.refs.chatScroll.addEventListener('scroll', () => {
-      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      if (this.refs.chatScroll.scrollTop === 0) {
-        if (this.shouldLoad()) {
-          this.setState({changedActiveSession: true})
-          this.loadMoreMessage()
-          // this.updateScrollTop()
+    if (this.refs.chatScroll) {
+      this.refs.chatScroll.addEventListener('scroll', () => {
+        this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+        if (this.refs.chatScroll.scrollTop === 0) {
+          if (this.shouldLoad()) {
+            this.setState({changedActiveSession: true})
+            this.loadMoreMessage()
+            // this.updateScrollTop()
+          }
         }
-      }
-    })
-
+      })
+    }
     Events.scrollEvent.register('begin', function (to, element) {
       // console.log('begin', arguments)
     })
@@ -297,12 +301,6 @@ class ChatItem extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-
-    this.updateScrollTop()
-    if (this.newMessage) {
-      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      this.newMessage = false
-    }
     if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
       this.props.markRead(this.props.activeSession._id, this.props.sessions)
       this.props.updateUnreadCount(this.props.activeSession)
