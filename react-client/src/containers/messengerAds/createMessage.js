@@ -71,9 +71,9 @@ class CreateMessage extends React.Component {
       if (event.deletePayload) {
         console.log('deleting jsonMessage', event.deletePayload)
         if (typeof event.deletePayload[Symbol.iterator] === 'function') {
-          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages, event)
         } else {
-          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages, event)
         }
       }
       console.log('selectedIndex', this.state.selectedIndex)
@@ -112,7 +112,8 @@ class CreateMessage extends React.Component {
       }
     }
   }
-  removePayloadMessages (tempJsonPayloads, jsonMessages) {
+  removePayloadMessages (tempJsonPayloads, jsonMessages, event) {
+    debugger;
     var tempMessages = []
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
@@ -122,9 +123,26 @@ class CreateMessage extends React.Component {
         }
       }
       if (!removePayload) {
+        if (event.buttons) {
+          let buttonIndex = event.buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+          if (buttonIndex > -1) {
+             event.buttons[buttonIndex].payload = tempMessages.length + 1
+          }
+        } else if (event.cards) {
+          for (let i = 0; i < event.cards.length; i++) {
+              let buttonIndex = event.cards[i].buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+              if (buttonIndex > -1) {
+                  event.cards[i].buttons[buttonIndex].payload = tempMessages.length + 1
+              }
+          }
+        }
+        jsonMessages[l].jsonAdMessageId = tempMessages.length + 1
+        console.log('pushing to tempMessages', jsonMessages[l])
         tempMessages.push(jsonMessages[l])
       }
     }
+    console.log('event after removing', event)
+    console.log('removePayloadMessages', tempMessages)
     return tempMessages
   }
 
