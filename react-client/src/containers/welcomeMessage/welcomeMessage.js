@@ -25,11 +25,18 @@ class WelcomeMessage extends React.Component {
       isShowingZeroPageModal: props.pages && props.pages.length === 0
     }
     props.loadMyPagesList()
-    this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
     this.gotoView = this.gotoView.bind(this)
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
+    this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
+  }
+  handleEnableWelMessage (pageId, enable) {
+    if (enable === true) {
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true})
+    } else {
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false})
+    }
   }
   componentDidMount () {
     const hostname = window.location.hostname
@@ -45,26 +52,6 @@ class WelcomeMessage extends React.Component {
 
   closeZeroSubDialog () {
     this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
-  }
-  initializeSwitch (state, id) {
-    var self = this
-    var temp = '#' + id
-    /* eslint-disable */
-    $(temp).bootstrapSwitch({
-      /* eslint-enable */
-      onText: 'Yes',
-      offText: 'No',
-      offColor: 'danger',
-      state: state
-    })
-    /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
-      if (state === true) {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
-      } else {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
-      }
-    })
   }
 
   gotoCreate (page) {
@@ -188,12 +175,19 @@ class WelcomeMessage extends React.Component {
                                          </span>
                                          <br />
                                          <span className='m-widget4__sub'>
-                                           <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on'>
-                                             <div className='bootstrap-switch-container'>
-                                               <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
-                                             </div>
-                                           </div>
-                                           {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
+                                         {(page.isWelcomeMessageEnabled) &&
+
+                                            <a className='m-widget4__icon'>
+                                              <button onClick={() => {this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} type='button' className='btn m-btn--pill btn-success btn-sm m-btn m-btn--custom'>Enabled</button>
+                                            </a>
+                                          }
+                                          {(!page.isWelcomeMessageEnabled) &&
+
+                                            <a className='m-widget4__icon'>
+                                              <button type='button' onClick={() => { this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disabled</button>
+                                            </a>
+
+                                          }
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
