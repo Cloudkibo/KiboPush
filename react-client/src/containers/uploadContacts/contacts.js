@@ -19,7 +19,11 @@ class Contact extends React.Component {
       pageNumber: 0,
       contact: '',
       isShowingModalEdit: false,
-      name: ''
+      name: '',
+      subscriber_Lastid: 0,
+      lastButtonClick:'none',
+      current_page: 0,
+      requested_page: 0
     }
     if (props.user.platform === 'sms') {
       props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -27,6 +31,7 @@ class Contact extends React.Component {
       props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     }
     this.editSubscriber = this.editSubscriber.bind(this)
+    this.loadSubscribers = this.loadSubscribers.bind(this)
     this.changeName = this.changeName.bind(this)
     this.showEdit = this.showEdit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
@@ -43,9 +48,39 @@ class Contact extends React.Component {
     if (this.state.name === '') {
       this.msg.error('Subscriber name cannot be empty')
     } else {
-      this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.msg)
+      this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.loadSubscribers, this.msg)
       this.closeEdit()
     }
+  }
+
+  loadSubscribers () {
+
+    if(this.state.requested_page !== 0) {
+      if(this.state.lastButtonClick === 'next') {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.current_page,
+          requested_page: this.state.requested_page,
+          last_id: this.state.subscriber_Lastid,
+          number_of_records: 10,
+          first_page: 'next'
+        })
+      }
+      else if(this.state.lastButtonClick === 'previous') {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.current_page,
+          requested_page: this.state.requested_page,
+          last_id: this.state.subscriber_Lastid,
+          number_of_records: 10,
+          first_page: 'previous'
+        })
+      }
+
+    }
+    else {
+      this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    }
+
+
   }
 
   showEdit (contact) {
@@ -74,10 +109,12 @@ class Contact extends React.Component {
   }
 
   handlePageClick (data) {
+    console.log('data.selected', data.selected)
     if (data.selected === 0) {
       if (this.props.user.platform === 'sms') {
         this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
       } else {
+        this.setState({requested_page: data.selected})
         this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
       }
     } else if (this.state.pageNumber < data.selected) {
@@ -90,6 +127,7 @@ class Contact extends React.Component {
           first_page: 'next'
         })
       } else {
+        this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'next', subscriber_Lastid: this.props.contacts[this.props.contacts.length - 1]._id})
         this.props.loadWhatsAppContactsList({
           current_page: this.state.pageNumber,
           requested_page: data.selected,
@@ -108,6 +146,7 @@ class Contact extends React.Component {
           first_page: 'previous'
         })
       } else {
+        this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'previous', subscriber_Lastid: this.props.contacts[0]._id})
         this.props.loadWhatsAppContactsList({
           current_page: this.state.pageNumber,
           requested_page: data.selected,

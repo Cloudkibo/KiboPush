@@ -86,9 +86,9 @@ export function removeAgent (data) {
   }
 }
 
-export function loadTeamsList () {
+export function loadTeamsList (data) {
   return (dispatch) => {
-    callApi('teams')
+    callApi('teams', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           console.log('loadTeamsList', res.payload)

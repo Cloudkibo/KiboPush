@@ -65,7 +65,7 @@ export function loadWhatsAppContactsList (data) {
       })
   }
 }
-export function editSubscriber (id, data, msg) {
+export function editSubscriber (id, data, loadSubscribers,msg) {
   console.log('data for editSubscriber', data)
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data)
@@ -73,7 +73,8 @@ export function editSubscriber (id, data, msg) {
         console.log('response from editSubscriber', res)
         if (res.status === 'success') {
           msg.success('Subscriber updated successfully')
-          dispatch(loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
+          loadSubscribers()
+          //dispatch(loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         }
       })
   }
