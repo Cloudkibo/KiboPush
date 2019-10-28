@@ -33,7 +33,7 @@ import {
   validURL
 } from './utilities'
 import { ReactMic } from 'react-mic'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
@@ -1930,7 +1930,7 @@ class ChatBox extends React.Component {
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                     <div className='align-center'>
-                      {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
+                      <center><RingLoader color='#716aca' /></center>
                     </div>
                   }
                   {

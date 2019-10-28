@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getmetaurl, displayDate, showDate, isEmoji, validURL } from '../../utility/liveChatUtility'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { ReactMic } from 'react-mic'
 import ReactPlayer from 'react-player'
@@ -1214,12 +1214,12 @@ class ChatAreaBody extends React.Component {
                   </i>
                 </div>
               </div>
-              {/*
+              {
                 this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                 <div className='align-center'>
-                  <center><Halogen.RingLoader color='#716aca' /></center>
+                  <center><RingLoader color='#716aca' /></center>
                 </div>
-              */}
+              }
               {
                  JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                  <div style={{clear: 'both', display: 'block'}}>

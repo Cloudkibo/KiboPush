@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 
 // import { Link } from 'react-router-dom'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 
 // actions
 import {
@@ -421,7 +421,7 @@ class LiveChat extends React.Component {
           this.state.loading
             ? <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
-              {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
+              <center><RingLoader color='#716aca' /></center>
             </div>
             : <div className='m-content'>
               <INFO module={CHATMODULE} />

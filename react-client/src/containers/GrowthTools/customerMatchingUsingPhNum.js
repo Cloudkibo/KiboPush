@@ -1,7 +1,7 @@
 import React from 'react'
 import Files from 'react-files'
 import { bindActionCreators } from 'redux'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
@@ -808,7 +808,7 @@ class CustomerMatching extends React.Component {
                           ? <ModalContainer>
                             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
                               className='align-center'>
-                              <center><Halogen.RingLoader color='#716aca' /></center>
+                              <center><RingLoader color='#716aca' /></center>
                             </div>
                           </ModalContainer>
                           : <span />

@@ -12,7 +12,7 @@ import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 
@@ -808,7 +808,7 @@ class Menu extends React.Component {
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
               className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
+              <center><RingLoader color='#716aca' /></center>
             </div>
           </ModalContainer>
           : <span />

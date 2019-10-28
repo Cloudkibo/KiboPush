@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { downloadYouTubeVideo, uploadTemplate } from '../../redux/actions/convos.actions'
 
 class YoutubeVideoModal extends React.Component {
@@ -186,7 +186,7 @@ class YoutubeVideoModal extends React.Component {
               <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px'}} >
                 <div className='ui-block' style={{border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '70%', margin: 'auto', marginTop: '100px'}} >
                 {this.state.loading && <div className='align-center' style={{padding: '50px'}}>
-                  <center><Halogen.RingLoader color='#FF5E3A' /></center>
+                  <center><RingLoader color='#FF5E3A' /></center>
                   </div>
                 }
                   {

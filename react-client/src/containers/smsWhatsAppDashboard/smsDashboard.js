@@ -13,7 +13,7 @@ import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from 
 import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { Link } from 'react-router-dom'
 
 class Dashboard extends React.Component {
@@ -137,7 +137,7 @@ class Dashboard extends React.Component {
             </div>
           </div>
           {this.state.loading
-          ? {/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
+          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <div className='row'>
               <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='sms' />
