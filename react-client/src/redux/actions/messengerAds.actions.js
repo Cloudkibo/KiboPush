@@ -15,6 +15,12 @@ export function saveCurrentJsonAd (data) {
   }
 }
 
+export function clearMessengerAd () {
+  return {
+    type: ActionTypes.CLEAR_MESSENGER_AD,
+    data: null
+  }
+}
 export function setDefaultAdMessage (data) {
   return {
     type: ActionTypes.SET_DEFAULT_JSON_AD,
@@ -198,7 +204,7 @@ const prepareJsonPayload = (data, optinMessage) => {
       'attachment': {
         'type': body.componentType,
         'payload': {
-          'url': body.fileurl.url
+          'url': body.file.fileurl.url
         }
       }
     }
@@ -230,28 +236,38 @@ const prepareJsonPayload = (data, optinMessage) => {
       }
     }
   } else if (body.componentType === 'gallery') {
+    var cards = []
     if (body.cards && body.cards.length > 0) {
       for (var m = 0; m < body.cards.length; m++) {
+        var card = {}
+        card.title = body.cards[m].title
+        card.image_url = body.cards[m].image_url
+        card.subtitle = body.cards[m].subtitle
+        card.description = body.cards[m].description
         var cardButtons = body.cards[m].buttons
         if (cardButtons) {
           for (var c = 0; c < cardButtons.length; c++) {
             var cButtons = []
             var cbutton = cardButtons[c]
-            if (cbutton.type === 'web_url') {
+            var jsonAdMessageId
+            if (cbutton.payload && cbutton.type === 'postback') {
+              for (var j = 0; j < data.length; j++) {
+                if ((cbutton.payload).toString() === (data[j].jsonAdMessageId).toString()) {
+                  jsonAdMessageId = data[j]._id
+                  break
+                }
+              }
+            cbutton.payload = 'JSONAD-' + jsonAdMessageId
+            } else if (cbutton.type === 'web_url') {
               if (cbutton.newUrl) {
                 delete cbutton.newUrl
               }
             }
             cButtons.push(cbutton)
           }
-          body.cards[m].buttons = cButtons
         }
-        if (body.cards[m].fileurl) {
-          delete body.cards[m].fileurl
-        }
-        if (body.cards[m].id !== null) {
-          delete body.cards[m].id
-        }
+        card.buttons = cButtons
+        cards.push(card)
       }
     }
     payload = {
@@ -259,7 +275,7 @@ const prepareJsonPayload = (data, optinMessage) => {
         'type': 'template',
         'payload': {
           'template_type': 'generic',
-          'elements': body.cards
+          'elements': cards
         }
       }
     }

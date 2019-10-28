@@ -149,6 +149,9 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
       this.props.getSubscriberTags(session._id, this.msg)
       this.props.getCustomFieldValue(session._id)
+      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.loadTeamsList({pageId: session.pageId._id})
+      }
     }
   }
 
@@ -238,7 +241,7 @@ class LiveChat extends React.Component {
     this.props.loadTags()
     this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-      this.props.loadTeamsList()
+      // this.props.loadTeamsList()
       this.props.loadMembersList()
     }
   }
@@ -371,7 +374,9 @@ class LiveChat extends React.Component {
           let activeSession = this.state.activeSession
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           activeSession.status = 'new'
+          activeSession.unreadCount = 0
           this.setState({tabValue: 'open', activeSession: activeSession})
+          this.props.markRead(this.state.activeSession._id)
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {

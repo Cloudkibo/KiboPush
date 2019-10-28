@@ -245,6 +245,9 @@ class GenericMessage extends React.Component {
     var isPresent = false
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        if (obj.file) {
+          temp[i].file = obj.file
+        }
         temp[i].fileName = obj.fileName
         temp[i].mediaType = obj.mediaType
         temp[i].fileurl = obj.fileurl
@@ -509,26 +512,26 @@ class GenericMessage extends React.Component {
           })
         }
       },
-      'image': {
-        component: (<Image
-          id={componentId}
-          editComponent={this.showAddComponentModal}
-          pages={this.props.pages}
-          file={broadcast.file}
-          image={broadcast.fileurl}
-          key={componentId}
-          handleImage={this.handleImage}
-          onRemove={this.removeComponent} />),
-        handler: () => {
-          this.handleImage({
-            id: componentId,
-            componentType: 'image',
-            image_url: broadcast.image_url ? broadcast.image_url : '',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
-            file: broadcast.file
-          })
-        }
-      },
+      // 'image': {
+      //   component: (<Image
+      //     id={componentId}
+      //     editComponent={this.showAddComponentModal}
+      //     pages={this.props.pages}
+      //     file={broadcast.file}
+      //     image={broadcast.fileurl}
+      //     key={componentId}
+      //     handleImage={this.handleImage}
+      //     onRemove={this.removeComponent} />),
+      //   handler: () => {
+      //     this.handleImage({
+      //       id: componentId,
+      //       componentType: 'image',
+      //       image_url: broadcast.image_url ? broadcast.image_url : '',
+      //       fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+      //       file: broadcast.file
+      //     })
+      //   }
+      // },
       'card': {
         component: (<Card
           id={componentId}
@@ -634,6 +637,59 @@ class GenericMessage extends React.Component {
             componentType: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
+        }
+      },
+      'image': {
+        component: (<Media
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pages={this.props.pages}
+          file={broadcast.file}
+          image={broadcast.fileurl}
+          media={broadcast}
+          key={componentId}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent} />),
+        handler: () => {
+          this.handleImage({
+            id: componentId,
+            componentType: 'image',
+            image_url: broadcast.image_url ? broadcast.image_url : '',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            fileName: broadcast.fileName,
+            file: broadcast.file
+          })
+        }
+      },
+      'video': {
+        component: (<Media
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          buttons={broadcast.buttons}
+          youtubeLink={broadcast.youtubeLink && broadcast.youtubeLink}
+          videoLink={broadcast.videoLink && broadcast.videoLink}
+          media={broadcast}
+          mediaType={broadcast.mediaType}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleMedia({id: componentId,
+            youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
+            videoLink: broadcast.videoLink && broadcast.videoLink,
+            componentType: 'video',
+            file: broadcast.file,
+            fileurl: broadcast.fileurl,
+            fileName: broadcast.fileName,
+            image_url: broadcast.image_url,
+            size: broadcast.size,
+            type: broadcast.type,
+            mediaType: broadcast.mediaType,
+            buttons: broadcast.buttons ? broadcast.buttons : []})
         }
       },
       'media': {
