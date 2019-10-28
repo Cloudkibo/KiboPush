@@ -19,13 +19,14 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import YoutubeVideoModal from './YoutubeVideoModal'
 import LinkCarousel from './LinkCarousel';
+import QuickReplies from './QuickReplies'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     this.state = {
-      list: [],
+      list: [{content: <QuickReplies />}],
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
