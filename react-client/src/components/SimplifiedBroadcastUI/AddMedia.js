@@ -3,9 +3,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -228,7 +228,7 @@ class Media extends React.Component {
         this.updateFileUrl(data, null)
         this.setLoading()
       }
-    } 
+    }
   }
 
   updateFileUrl (data, newData) {
@@ -236,7 +236,7 @@ class Media extends React.Component {
       data.fileurl = newData.fileurl
     }
     console.log('updating fileurl of Media', data)
-    this.setState({ 
+    this.setState({
       fileurl: data.fileurl,
       fileName: data.fileName,
       image_url: data.image_url ? data.image_url : '',
@@ -248,7 +248,7 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        {
+        {/*
         this.state.showErrorDialogue &&
           <ModalContainer style={{width: '300px'}}
             onClose={this.closeDialog}>
@@ -258,11 +258,11 @@ class Media extends React.Component {
               <p>{this.state.errorMsg}</p>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
-          ? <div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? {/*<div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>

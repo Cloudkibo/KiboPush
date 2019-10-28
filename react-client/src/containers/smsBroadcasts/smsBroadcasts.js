@@ -7,8 +7,8 @@ import { connect } from 'react-redux'
 import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { browserHistory, Link } from 'react-router'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
 
 class SmsBroadcast extends React.Component {
@@ -39,7 +39,7 @@ class SmsBroadcast extends React.Component {
   }
 
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createsmsBroadcast`,
       state: {number: this.state.numberValue}
     })
@@ -138,7 +138,7 @@ class SmsBroadcast extends React.Component {
               </div>
             </div>
           }
-          {
+          {/*
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -163,7 +163,7 @@ class SmsBroadcast extends React.Component {
                 </div>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Broadcasts</h3>

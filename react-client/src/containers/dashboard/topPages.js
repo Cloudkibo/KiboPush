@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { savePageInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -15,7 +15,7 @@ class TopPages extends React.Component {
     this.props.savePageInformation(page)
   }
   goToSubscribers (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/subscribers`,
       state: {page: page}
     })

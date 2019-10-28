@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
@@ -18,7 +18,7 @@ import {
   deleteSequence,
   updateTrigger
 } from '../../redux/actions/sequence.action'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -249,7 +249,7 @@ class CreateSequence extends React.Component {
     if (this.props.messages.length === 0) {
       this.setState({showBackWarning: true})
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/sequenceMessaging`
       })
     }
@@ -269,12 +269,12 @@ class CreateSequence extends React.Component {
   gotoView (message) {
     //  this.props.createSequence({name: this.state.name})
     if (message.payload && message.payload.length > 0) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
         state: {title: message.title, name: this.props.location.state.name, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessageSeq`,
         state: {title: message.title, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
@@ -448,7 +448,7 @@ class CreateSequence extends React.Component {
       title: 'New Message',
       payload: []
     }
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessageSeq`,
       state: {
         data: payload,
@@ -638,7 +638,7 @@ class CreateSequence extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-            {
+            {/*
               this.state.isShowingModalDelete &&
               <ModalContainer style={{width: '500px'}}
                 onClose={this.closeDialogDelete}>
@@ -655,8 +655,8 @@ class CreateSequence extends React.Component {
                   </button>
                 </ModalDialog>
               </ModalContainer>
-            }
-            {
+            */}
+            {/*
               this.state.showBackWarning &&
               <ModalContainer style={{width: '500px'}}
                 onClose={this.closeBackWarning}>
@@ -668,7 +668,7 @@ class CreateSequence extends React.Component {
                     className='btn btn-primary btn-sm pull-right'
                     onClick={() => {
                       this.props.deleteSequence(this.state.sequenceId)
-                      browserHistory.push({pathname: '/sequenceMessaging'})
+                      this.props.history.push({pathname: '/sequenceMessaging'})
                     }}>Yes
                   </button>
                   <button
@@ -679,9 +679,9 @@ class CreateSequence extends React.Component {
                   </button>
                 </ModalDialog>
               </ModalContainer>
-            }
+            */}
 
-              {
+              {/*
               this.state.isShowingModalSegmentation &&
               <ModalContainer style={{width: '700px', left: '400px', paddingLeft: '33px', paddingRight: '33px'}}
                 onClose={this.closeDialogSegmentation}>
@@ -852,9 +852,9 @@ class CreateSequence extends React.Component {
 
                 </ModalDialog>
               </ModalContainer>
-            }
+            */}
 
-            {
+            {/*
               this.state.ShowTrigger && this.state.triggerEvent === 'none' &&
               <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                 onClose={this.CloseDialogTrigger}>
@@ -898,8 +898,8 @@ class CreateSequence extends React.Component {
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
-            }
-            {
+            */}
+            {/*
               this.state.ShowTrigger && this.state.triggerEvent !== 'none' &&
               <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
                 onClose={this.CloseDialogTrigger}>
@@ -957,8 +957,8 @@ class CreateSequence extends React.Component {
                     <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Remove Trigger </button>
                 </ModalDialog>
               </ModalContainer>
-            }
-        {this.state.isShowModalSchedule &&
+            */}
+        {/*this.state.isShowModalSchedule &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeDialogSchedule}>
             <ModalDialog style={{ width: '500px' }}
@@ -1000,7 +1000,7 @@ class CreateSequence extends React.Component {
               <button onClick={() => this.closeDialogSchedule()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Cancel </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
 
             <div className='m-content'>
               <div className='m-portlet  m-portlet--full-height '>

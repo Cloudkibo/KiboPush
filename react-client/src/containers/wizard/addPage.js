@@ -6,11 +6,11 @@ import React from 'react'
 import Header from './header'
 import Sidebar from './sidebar'
 import { connect } from 'react-redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { updateChecks } from '../../redux/actions/wizard.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   addPages,
   enablePage,
@@ -46,7 +46,7 @@ class AddPage extends React.Component {
       pathname: `/pages`
 
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
   showError () {
     this.msg.error('Please connect atleast one page')
@@ -91,7 +91,7 @@ class AddPage extends React.Component {
     if (this.props.pages && this.props.pages.length === 0) {
       this.msg.error('Please connect atleast one page')
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/inviteUsingLinkWizard`
       })
     }
@@ -112,7 +112,7 @@ class AddPage extends React.Component {
         <Header />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
-          {
+          {/*
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -134,7 +134,7 @@ class AddPage extends React.Component {
                 </div>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>

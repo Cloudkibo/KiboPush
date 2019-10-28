@@ -7,7 +7,7 @@ import {
 
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class CopyLink extends React.Component {
   constructor (props, context) {

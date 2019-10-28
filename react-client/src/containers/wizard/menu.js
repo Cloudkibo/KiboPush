@@ -7,11 +7,11 @@ import Sidebar from './sidebar'
 import Header from './header'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl } from '../menu/utility'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from '../menu/viewScreen'
 import { registerAction } from '../../utility/socketio'
 import swal from 'sweetalert2'
@@ -91,7 +91,7 @@ class Menu extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/dashboard`
       })
     })
@@ -479,7 +479,7 @@ class Menu extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -499,7 +499,7 @@ class Menu extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>

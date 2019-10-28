@@ -9,7 +9,7 @@ import { loadAutopostingMessages, loadAutopostingPosts } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import MESSAGES from '../../components/autoposting/autoposting_messages'
 import POSTS from '../../components/autoposting/autoposting_posts'
 

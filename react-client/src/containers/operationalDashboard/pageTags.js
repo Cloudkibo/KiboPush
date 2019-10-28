@@ -3,7 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadPageTags } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class PageTags extends React.Component {
   constructor (props, context) {

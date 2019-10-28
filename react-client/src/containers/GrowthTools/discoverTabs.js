@@ -1,7 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class DiscoverTabs extends React.Component {
   constructor (props, context) {
@@ -20,12 +20,12 @@ class DiscoverTabs extends React.Component {
     }
 
     document.title = `${title} | Discover Tabs`;
-  } 
+  }
 
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -45,7 +45,7 @@ class DiscoverTabs extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

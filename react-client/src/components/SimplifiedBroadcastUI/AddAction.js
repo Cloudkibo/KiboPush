@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { isWebURL } from '../../utility/utils'
 
 class AddAction extends React.Component {
@@ -65,7 +65,7 @@ class AddAction extends React.Component {
     console.log('AddAction newState', newState)
     this.setState(newState)
   }
-  
+
 
   getDefaultAction (url, webviewsize) {
     let default_action = this.state.default_action
@@ -78,7 +78,7 @@ class AddAction extends React.Component {
       }
     } else if (this.state.openWebsite) {
       default_action = {
-        type: 'web_url', 
+        type: 'web_url',
         url
       }
     }

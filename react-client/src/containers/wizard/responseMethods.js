@@ -6,7 +6,7 @@ import AlertContainer from 'react-alert'
 import { saveResponseMethod, findResponseMethod } from '../../redux/actions/settings.actions'
 import Sidebar from './sidebar'
 import Header from './header'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class AutomationControls extends React.Component {
   constructor (props, context) {

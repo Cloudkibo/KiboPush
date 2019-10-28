@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Notification from 'react-web-notification'
 
 class Header extends React.Component {
@@ -28,7 +28,7 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
     })

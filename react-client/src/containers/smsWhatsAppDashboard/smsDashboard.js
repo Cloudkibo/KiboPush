@@ -13,8 +13,8 @@ import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from 
 import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import Halogen from 'halogen'
-import { browserHistory, Link } from 'react-router'
+// import Halogen from 'halogen'
+import { Link } from 'react-router-dom'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio && nextprops.user.role === 'buyer') {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
         })
@@ -137,7 +137,7 @@ class Dashboard extends React.Component {
             </div>
           </div>
           {this.state.loading
-          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? {/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
           : <div>
             <div className='row'>
               <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='sms' />

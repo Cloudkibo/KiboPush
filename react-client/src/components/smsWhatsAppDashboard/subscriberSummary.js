@@ -5,7 +5,7 @@
 
 import React from 'react'
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class SubscriberSummary extends React.Component {
   constructor (props, context) {
@@ -71,7 +71,7 @@ class SubscriberSummary extends React.Component {
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -97,7 +97,7 @@ class SubscriberSummary extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>

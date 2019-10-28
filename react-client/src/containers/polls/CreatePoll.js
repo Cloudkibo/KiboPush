@@ -9,10 +9,10 @@ import { loadPollDetails } from '../../redux/actions/templates.actions'
 import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
@@ -373,7 +373,7 @@ class CreatePoll extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -422,7 +422,7 @@ class CreatePoll extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
 
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -510,7 +510,7 @@ class CreatePoll extends React.Component {
                           <div className='row align-items-center'>
                             <div className='col-xl-8 order-2 order-xl-1' />
                             <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                              {
+                              {/*
                                   this.state.isShowingModal &&
                                     <ModalContainer style={{width: '500px'}}
                                       onClose={this.closeDialog}>
@@ -537,7 +537,7 @@ class CreatePoll extends React.Component {
                                         </div>
                                       </ModalDialog>
                                     </ModalContainer>
-                                  }
+                                  */}
                             </div>
                           </div>
                           <div className='m-form'>

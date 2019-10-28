@@ -1,6 +1,5 @@
 import React from 'react'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import { browserHistory } from 'react-router'
 
 class ViewWelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -21,7 +20,7 @@ class ViewWelcomeMessage extends React.Component {
   }
 
   goBack () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/welcomeMessage`,
       state: { module: 'welcome' }
     })

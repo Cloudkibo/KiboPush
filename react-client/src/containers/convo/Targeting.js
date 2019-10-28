@@ -1,12 +1,12 @@
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {getSubscriberReachEstimation} from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -81,7 +81,7 @@ class Targeting extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -551,7 +551,7 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
-        {
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -568,7 +568,7 @@ class Targeting extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
         { this.props.component === 'broadcast' &&
           <span

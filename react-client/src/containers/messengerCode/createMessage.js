@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import AlertContainer from 'react-alert'
-import { browserHistory } from 'react-router'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerCode.actions'
 
@@ -52,13 +51,13 @@ class messengerCodeMessage extends React.Component {
       var newmessengerCode = this.props.location.state.selectedMessengerCode
       newmessengerCode['optInMessage'] = this.props.messengerCode.optInMessage
       console.log('find me i m here ',newmessengerCode)
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/editMessengerCode`,
         state: {module: 'edit', messengerCode: newmessengerCode}
       })
     } else {
       console.log('go back page', this.props.messengerCode)
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessengerCode`,
         state: {messengerCode: this.props.messengerCode, module: 'createMessage'}
       })

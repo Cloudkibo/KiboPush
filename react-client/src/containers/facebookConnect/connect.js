@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import auth from '../../utility/auth.service'
 import { skip } from '../../redux/actions/signup.actions'
 import $ from 'jquery'
@@ -25,11 +25,11 @@ class Connect extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     }

@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class InviteSubscribers extends React.Component {
@@ -97,7 +97,7 @@ class InviteSubscribers extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -117,7 +117,7 @@ class InviteSubscribers extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

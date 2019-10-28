@@ -12,9 +12,9 @@ import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
 import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp } from '../../redux/actions/whatsAppDashboard.actions'
 import { loadWhatsAppContactsList, loadContactsList } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import { joinRoom } from '../../utility/socketio'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -39,7 +39,7 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })
@@ -131,7 +131,7 @@ class Dashboard extends React.Component {
             </div>
           </div>
           {this.state.loading
-          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? {/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
           : <div>
             <div className='row'>
               <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='whatsApp' />

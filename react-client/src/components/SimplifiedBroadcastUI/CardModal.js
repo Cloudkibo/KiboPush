@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from 'react'
 
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddCard from './AddCard'
 
 class CardModal extends React.Component {
@@ -32,7 +32,7 @@ class CardModal extends React.Component {
       selectedIndex: 0,
       currentCollapsed: false,
       disabled: props.edit ? false : true,
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
@@ -149,7 +149,7 @@ class CardModal extends React.Component {
       let cards = this.state.cards.map((card,index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
         console.log(`finalCard found for card ${card.id}`, finalCard)
-        return { 
+        return {
           id: card.id ? card.id : '',
           fileurl: card.component.fileurl ? card.component.fileurl : '',
           image_url: card.component.image_url ? card.component.image_url : '',
@@ -213,7 +213,7 @@ class CardModal extends React.Component {
   getRequirements () {
     return this.cardComponents.map((card, index) => {
       console.log(`cardComponent ${index}`, card)
-      
+
       if (card && card.props) {
         let requirements = []
         if (card.props.card.disabled || card.props.card.buttonDisabled) {
@@ -325,7 +325,7 @@ class CardModal extends React.Component {
   componentWillUnmount() {
     this.props.closeModal()
   }
-  
+
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
     console.log('requirements', requirements)
@@ -333,6 +333,7 @@ class CardModal extends React.Component {
       slidesToShow: 1
     }
     return (
+      {/*
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -396,11 +397,11 @@ class CardModal extends React.Component {
                                     id={card.id}
                                     updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
                                     disabled={this.state.disabled || this.state.actionDisabled}
-                                    />                 
+                                    />
                                 </div>
                               </div>
                             </div>
-                          </div>  
+                          </div>
                         )
                     })
                 }
@@ -424,7 +425,7 @@ class CardModal extends React.Component {
                           id={card.id}
                           updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
                     })
-                } */}
+                } *}
                 {
                     (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
                       <div onClick={this.addElement} style={{paddingTop: '5px'}} className='align-center'>
@@ -440,19 +441,19 @@ class CardModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
-                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">  
+              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
+                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
                   {
-                    this.state.cards.length > 1 &&                   
+                    this.state.cards.length > 1 &&
                       <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
                         {
                           this.state.cards.map((card, index) => {
-                              return (<li 
-                                style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle} 
-                                onMouseEnter={() => this.toggleHover(index, true)} 
+                              return (<li
+                                style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle}
+                                onMouseEnter={() => this.toggleHover(index, true)}
                                 onMouseLeave={() => this.toggleHover(index, false)}
-                                data-target="#carouselExampleControls" 
-                                data-slide-to={index} 
+                                data-target="#carouselExampleControls"
+                                data-slide-to={index}
                                 onClick={() => this.updateSelectedIndex(index)}
                                 className={(index === this.state.selectedIndex ? "active" : "")}>
                                 {index+1}
@@ -488,22 +489,22 @@ class CardModal extends React.Component {
                             }
                         </div>
                       )
-                    })                   
+                    })
                   }
                   </div>
                   {
-                    this.state.cards.length > 1 && 
+                    this.state.cards.length > 1 &&
                       <div>
 
                         {
-                          this.state.selectedIndex > 0 &&                         
+                          this.state.selectedIndex > 0 &&
                           <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" style={{top: '125px'}} role="button">
                            <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                            <span className="sr-only">Previous</span>
                           </a>
                         }
                         {
-                          this.state.selectedIndex < this.state.cards.length-1 && 
+                          this.state.selectedIndex < this.state.cards.length-1 &&
                           <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" style={{top: '125px'}} role="button" >
                             <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                             <span className="sr-only">Next</span>
@@ -517,7 +518,7 @@ class CardModal extends React.Component {
 
                 <ul style={{marginTop: '65px'}}>
                   {
-                    requirements && requirements.length > 0 ? requirements :             
+                    requirements && requirements.length > 0 ? requirements :
                     (
                     <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
                       <ul>
@@ -545,7 +546,7 @@ class CardModal extends React.Component {
             </div>
         </ModalDialog>
       </ModalContainer>
-
+    */}
     )
   }
 }

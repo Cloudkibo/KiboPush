@@ -4,7 +4,7 @@ import { loadPageSubscribersList, allLocales } from '../../redux/actions/dashboa
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class ViewPageSubscribers extends React.Component {
   constructor (props, context) {

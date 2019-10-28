@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadPollsList, loadCategoriesList } from '../../redux/actions/templates.actions'
 import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'

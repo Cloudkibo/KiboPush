@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Popover from 'react-simple-popover'
 import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
@@ -210,7 +210,7 @@ class GreetingMessage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -230,8 +230,8 @@ class GreetingMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
@@ -255,7 +255,7 @@ class GreetingMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <Popover placement='left' isOpen={this.state.showEmojiPicker} className='greetingPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
           <PopoverBody>
             <div>
@@ -279,7 +279,7 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </PopoverBody>
         </Popover>
-        {
+        {/*
           this.state.showPreview &&
           <ModalContainer style={{top: '100px'}}
             onClose={this.closePreviewDialog}>
@@ -289,7 +289,7 @@ class GreetingMessage extends React.Component {
               <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -316,7 +316,7 @@ class GreetingMessage extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
                 <div>
-                  {
+                  {/*
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -334,7 +334,7 @@ class GreetingMessage extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                   <div className='m-portlet__body'>
                     <form className='m-form m-form--fit m-form--label-align-right'>
                       <div className='m-portlet__body'>

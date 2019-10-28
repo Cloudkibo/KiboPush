@@ -3,7 +3,6 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { urlMetaData } from '../../redux/actions/convos.actions'
 
 class LinkCarouselModal extends React.Component {
@@ -35,12 +34,12 @@ class LinkCarouselModal extends React.Component {
           selectedIndex: 0,
           currentCollapsed: false,
           disabled: props.edit ? false : true,
-          buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
+          buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
           buttonDisabled: false,
           actionDisabled: false,
           numOfElements: cards.length
         }
-    
+
         this.carouselIndicatorStyle = {
           textIndent: '0',
           margin: '0 2px',
@@ -106,13 +105,13 @@ class LinkCarouselModal extends React.Component {
         if (links.length < this.elementLimit) {
             links.push({url: '', valid: false, loading: false})
             this.setState({links})
-        } 
+        }
     }
-    
+
     toggleHover (index, hover) {
         this.setState({hover: hover ? index : -1})
     }
-    
+
     componentDidMount () {
         //Improve Later
         let that = this
@@ -140,7 +139,7 @@ class LinkCarouselModal extends React.Component {
             buttons: card.buttons}, this.props.edit)
         } else if (this.state.cards.length > 1) {
           let cards = this.state.cards.map((card,index) => {
-            return { 
+            return {
               id: card.id ? card.id : '',
               image_url: card.component.image_url ? card.component.image_url : '',
               title: card.component.title,
@@ -157,7 +156,7 @@ class LinkCarouselModal extends React.Component {
         }
     }
 
-    
+
     closeModal () {
         if (!this.state.edited) {
           this.props.closeModal()
@@ -165,11 +164,11 @@ class LinkCarouselModal extends React.Component {
           this.props.showCloseModalAlertDialog()
         }
     }
-    
+
     scrollToTop(elementId) {
         document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
     }
-    
+
     updateSelectedIndex (index) {
         this.setState({selectedIndex: index})
     }
@@ -252,6 +251,7 @@ class LinkCarouselModal extends React.Component {
         console.log('links in render', this.state.links)
         console.log('cards in render', this.state.cards)
         return (
+          {/*
         <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
             onClose={this.closeModal}>
             <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -272,7 +272,7 @@ class LinkCarouselModal extends React.Component {
                                         <div className='col-1'>
                                             <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}>❌</div>
                                         </div>
-                                        
+
                                     </div>
                                     <div style={{color: 'green'}}>{link.valid && !link.loading ? '*Link is valid.' : ''}</div>
                                     <div style={{color: 'red'}}>{!link.valid && !link.loading ? '*Please enter a valid article link.' : ''}</div>
@@ -282,12 +282,12 @@ class LinkCarouselModal extends React.Component {
                         })
                     }
                     {
-                        this.state.links.length < this.elementLimit &&                     
-                        <div className='ui-block hoverborder' 
-                            style={{minHeight: '30px', 
-                            width: '100%', 
-                            marginLeft: '0px', 
-                            borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}} 
+                        this.state.links.length < this.elementLimit &&
+                        <div className='ui-block hoverborder'
+                            style={{minHeight: '30px',
+                            width: '100%',
+                            marginLeft: '0px',
+                            borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}}
                             onClick={this.addLink}>
                             <div style={{paddingTop: '5px'}} className='align-center'>
                             <h6> + Add Link </h6>
@@ -300,20 +300,20 @@ class LinkCarouselModal extends React.Component {
                 </div>
                 <div className='col-5'>
                 <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-                <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
+                <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >
                     <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
-                    
+
                     {
-                        this.state.cards.length > 1 &&                   
+                        this.state.cards.length > 1 &&
                         <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
                             {
                             this.state.cards.map((card, index) => {
-                                return (<li 
-                                    style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle} 
-                                    onMouseEnter={() => this.toggleHover(index, true)} 
+                                return (<li
+                                    style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle}
+                                    onMouseEnter={() => this.toggleHover(index, true)}
                                     onMouseLeave={() => this.toggleHover(index, false)}
-                                    data-target="#carouselExampleControls" 
-                                    data-slide-to={index} 
+                                    data-target="#carouselExampleControls"
+                                    data-slide-to={index}
                                     onClick={() => this.updateSelectedIndex(index)}
                                     className={(index === this.state.selectedIndex ? "active" : "")}>
                                     {index+1}
@@ -349,21 +349,21 @@ class LinkCarouselModal extends React.Component {
                                 }
                             </div>
                         )
-                        })                   
+                        })
                     }
                     </div>
                     {
-                        this.state.cards.length > 1 && 
+                        this.state.cards.length > 1 &&
                         <div>
                         {
-                          this.state.selectedIndex > 0 &&                         
+                          this.state.selectedIndex > 0 &&
                           <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" style={{top: '125px'}} role="button">
                            <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                            <span className="sr-only">Previous</span>
                           </a>
                         }
                         {
-                          this.state.selectedIndex < this.state.cards.length-1 && 
+                          this.state.selectedIndex < this.state.cards.length-1 &&
                           <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" style={{top: '125px'}} role="button" >
                             <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                             <span className="sr-only">Next</span>
@@ -388,7 +388,7 @@ class LinkCarouselModal extends React.Component {
             </div>
             </ModalDialog>
         </ModalContainer>
-
+        */}
         )
     }
 }

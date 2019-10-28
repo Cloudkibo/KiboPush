@@ -3,7 +3,7 @@ import { deleteTag, renameTag, loadTags } from '../../redux/actions/tags.actions
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class EditTags extends React.Component {
   constructor (props, context) {
@@ -174,7 +174,7 @@ class EditTags extends React.Component {
         <p> No data to display </p>
       </div>
     }
-        {
+        {/*
           this.state.showDeleteConfirmation &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDeleteConfirmation}>
@@ -196,7 +196,7 @@ class EditTags extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

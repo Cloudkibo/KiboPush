@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../redux/actions/messengerAds.actions'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -46,13 +46,13 @@ class MessengerAds extends React.Component {
 
   gotoCreate () {
     this.props.setDefaultAdMessage(defaultAdMessage().messengerAd)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createAdMessage`,
       state: {module: 'create'}
     })
   }
   onEdit (adId) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editAdMessage`,
       state: {module: 'edit', jsonAdId: adId._id}
     })
@@ -107,7 +107,7 @@ class MessengerAds extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{ width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -127,8 +127,8 @@ class MessengerAds extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -145,7 +145,7 @@ class MessengerAds extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

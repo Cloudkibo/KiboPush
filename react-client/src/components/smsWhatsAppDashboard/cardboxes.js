@@ -5,7 +5,7 @@
 
 import React from 'react'
 import CardBox from '../Dashboard/CardBox'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { UncontrolledTooltip } from 'reactstrap'
 
 /* card box style must be any of these

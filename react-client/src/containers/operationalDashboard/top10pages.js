@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { savePageInformation, saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { fetchTopPages } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -32,18 +32,18 @@ class top10pages extends React.Component {
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/pageSubscribers`,
       state: {module: 'top10pages'}
     })
   }
   goToBroadcasts (user) {
     this.props.saveUserInformation(user)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/userDetails`,
       state: user
     })
-    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
+    // this.props.history.push(`/viewsurveydetail/${survey._id}`)
   }
   showData () {
     let table = []

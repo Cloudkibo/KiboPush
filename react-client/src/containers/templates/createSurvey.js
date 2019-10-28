@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { createsurvey, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class createSurvey extends React.Component {
@@ -411,7 +411,7 @@ class createSurvey extends React.Component {
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div
                   className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
+                  {/*
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -430,8 +430,8 @@ class createSurvey extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                  }
-                  {
+                  */}
+                  {/*
                     this.state.isShowingModalDelete &&
                     <ModalContainer style={{width: '500px', marginTop: '100px'}}
                       onClose={this.closeDialogDelete}>
@@ -452,7 +452,7 @@ class createSurvey extends React.Component {
               ))}
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                   <div
                     className='m-separator m-separator--dashed d-xl-none' />
                 </div>

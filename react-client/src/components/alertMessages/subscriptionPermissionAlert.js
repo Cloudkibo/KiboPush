@@ -5,7 +5,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class SubscriptionPermissionAlert extends React.Component {
   constructor (props, context) {
@@ -54,7 +54,7 @@ class SubscriptionPermissionAlert extends React.Component {
     if(this.state.pages.length > 0) {
       return (
         <div className='alert alert-danger alert-dismissible fade show' role='alert' style={{marginBottom: '-0.17rem'}}>
-          {this.state.isShowingModal &&
+          {/*this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeModal}>
               <ModalDialog style={{width: '500px'}}
@@ -79,7 +79,7 @@ class SubscriptionPermissionAlert extends React.Component {
                 <p>This means that outside of the 24 hour window, you will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/08/02/facebook-subscription-messaging-policy-change/' target='_blank' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
           <button type='button' className='close' data-dismiss='alert' aria-label='Close' style={{marginTop: '-0.5rem'}}></button>
           <strong style={{fontWeight: 'bold'}}>
             Attention!

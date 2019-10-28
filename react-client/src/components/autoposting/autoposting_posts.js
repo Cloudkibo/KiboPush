@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 class AutopostingPosts extends React.Component {

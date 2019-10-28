@@ -13,7 +13,7 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -21,7 +21,7 @@ import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -180,7 +180,7 @@ class EditTemplate extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        {
+        {/*
           this.state.showPreview &&
           <ModalContainer style={{top: '100px'}}
             onClose={this.closePreviewDialog}>
@@ -190,7 +190,7 @@ class EditTemplate extends React.Component {
               <ViewMessage user={this.props.user} payload={this.state.broadcast} />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { fetchAllUsage, updateUsage } from '../../redux/actions/usage.actions'
 import { fetchAllPlans } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import AddUsage from './addUsage'
 
@@ -166,7 +166,7 @@ class Usage extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -175,8 +175,8 @@ class Usage extends React.Component {
               <AddUsage msg={this.msg} closeDialog={this.closeDialog} selectedPlan={this.state.selectedPlan} />
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalUpdate &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogUpdate}>
@@ -185,7 +185,7 @@ class Usage extends React.Component {
               <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>

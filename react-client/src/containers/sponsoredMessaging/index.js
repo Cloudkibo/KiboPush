@@ -9,8 +9,8 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -73,7 +73,7 @@ class sponsoredMessaging extends React.Component {
 
   gotoCreate () {
     //let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createsponsoredMessage`,
       //state: {pageId: pageId, _id: this.state.pageSelected}
     })
@@ -91,7 +91,7 @@ class sponsoredMessaging extends React.Component {
 //     // console.log('Updating the allowed pages', temp)
 //     this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
 //   }
-  
+
   displayData (n, sponsoredMessages) {
     console.log('in displayData', sponsoredMessages)
     let offset = n * 10
@@ -128,8 +128,8 @@ class sponsoredMessaging extends React.Component {
     // }
   }
 
- 
- 
+
+
   closeDialogSetup () {
     this.setState({isSetupShow: false})
   }
@@ -144,7 +144,7 @@ class sponsoredMessaging extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-    {
+    {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -161,8 +161,8 @@ class sponsoredMessaging extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        
+        */}
+
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

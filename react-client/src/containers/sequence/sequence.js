@@ -4,13 +4,13 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, deleteSequence, updateTrigger } from '../../redux/actions/sequence.action'
 import { loadPollsList } from '../../redux/actions/poll.actions'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Sequence extends React.Component {
@@ -95,7 +95,7 @@ class Sequence extends React.Component {
       this.setState({ error: true })
     } else {
       this.props.createSequence({ name: this.state.name })
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/editSequence`,
         state: { name: this.state.name, module: 'create' }
       })
@@ -371,7 +371,7 @@ class Sequence extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editSequence`,
       state: { module: 'edit', name: sequence.name, _id: sequence._id, trigger: sequence.trigger.event }
     })
@@ -390,7 +390,7 @@ class Sequence extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeDialogDelete}>
@@ -407,8 +407,8 @@ class Sequence extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeDialog}>
@@ -429,8 +429,8 @@ class Sequence extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowModalTrigger &&
           <ModalContainer style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw' }}
             onClose={this.closeDialogTrigger}>
@@ -507,14 +507,14 @@ class Sequence extends React.Component {
                       </select>
                     }
                   </div>
-                </div>*/}
+                </div>*}
               </div>
 
               <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
               <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

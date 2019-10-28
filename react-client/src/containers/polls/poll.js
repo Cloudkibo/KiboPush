@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -17,7 +17,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
@@ -87,7 +87,7 @@ class Poll extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -211,7 +211,7 @@ class Poll extends React.Component {
       pathname: `/pollResult`,
       state: poll
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoViewPoll (poll) {
@@ -219,10 +219,10 @@ class Poll extends React.Component {
       pathname: `/pollView`,
       state: poll
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
   gotoCreate () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createpoll`
     })
   }
@@ -268,7 +268,7 @@ class Poll extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -288,8 +288,8 @@ class Poll extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -306,8 +306,8 @@ class Poll extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
@@ -331,7 +331,7 @@ class Poll extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -392,7 +392,7 @@ class Poll extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -407,7 +407,7 @@ class Poll extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' *}
                                 <Link to='/showTemplatePolls' className='btn btn-primary'>
                                   Use Template
                                 </Link>
@@ -418,13 +418,13 @@ class Poll extends React.Component {
                                     <span style={{color: '#34bfa3'}}>PRO</span>
                                   </span>
                                 </button>
-                              */}
+                              *}
                               </div>
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalDelete &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogDelete}>
@@ -444,7 +444,7 @@ class Poll extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   <div className='form-row'>

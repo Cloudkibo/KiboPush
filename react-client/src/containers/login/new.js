@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { logIn } from '../../redux/actions/login.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -64,7 +64,7 @@ class Login extends React.Component {
     }
     if (nextprops.successMessage) {
       this.setState({success: true, error: false})
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard',
         state: {loadScript: true}
       })
@@ -173,7 +173,7 @@ class Login extends React.Component {
                   <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
                 </div>
                 <br />
-                {(this.state.account_type === 'team') && 
+                {(this.state.account_type === 'team') &&
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Forgot Workspace Name ?</span>&nbsp;&nbsp;
                   <Link to='/forgotWorkspaceName' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>

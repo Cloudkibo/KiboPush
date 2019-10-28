@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { editSurvey, loadCategoriesList, addCategory, loadSurveyDetails } from '../../redux/actions/templates.actions'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class createSurvey extends React.Component {
@@ -408,7 +408,7 @@ class createSurvey extends React.Component {
     return (
       <div style={{width: '100%'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -427,7 +427,7 @@ class createSurvey extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

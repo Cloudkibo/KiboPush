@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MAPCUSTOMER from './mapCustomer'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
@@ -664,7 +664,7 @@ class ProfileArea extends React.Component {
             </div>
           </div>
         </div>
-        {
+        {/*
           this.state.showUnsubscribeModal &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeDialog}>
@@ -686,7 +686,7 @@ class ProfileArea extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

@@ -33,11 +33,11 @@ import {
   validURL
 } from './utilities'
 import { ReactMic } from 'react-mic'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactTooltip from 'react-tooltip'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 // import MediaCapturer from 'react-multimedia-capture'
@@ -831,7 +831,7 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -856,8 +856,8 @@ class ChatBox extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalPending &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogPending}>
@@ -882,8 +882,8 @@ class ChatBox extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalRecording &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogRecording}>
@@ -904,7 +904,7 @@ class ChatBox extends React.Component {
                 <button onClick={stop}>Stop</button>
                 </div>
                 } />
-                </div> */}
+                </div> *}
               <h3>Voice Recording</h3>
               <div>
                 <ReactMic style={{width: '450px'}}
@@ -940,7 +940,7 @@ class ChatBox extends React.Component {
             }
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <ReactTooltip
           place='bottom'
@@ -1930,7 +1930,7 @@ class ChatBox extends React.Component {
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                     <div className='align-center'>
-                      <center><Halogen.RingLoader color='#716aca' /></center>
+                      {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
                     </div>
                   }
                   {

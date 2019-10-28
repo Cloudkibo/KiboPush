@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadSurveysList, loadCategoriesList } from '../../redux/actions/templates.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'

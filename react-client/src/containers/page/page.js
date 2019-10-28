@@ -3,8 +3,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
   addPages,
@@ -184,7 +183,7 @@ class Page extends React.Component {
     // this.setState({ totalLength: filtered.length })
   }
   goToAddPages () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/addPages`,
       state: {module: 'page'}
     })
@@ -194,7 +193,7 @@ class Page extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -214,8 +213,8 @@ class Page extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingZeroModal && this.state.showingSearchResult && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
@@ -239,7 +238,7 @@ class Page extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -294,7 +293,7 @@ class Page extends React.Component {
                       </ul>
                     </div>
                   </div>
-                  {
+                  {/*
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -312,7 +311,7 @@ class Page extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                   <div className='m-portlet__body'>
                     <div className='row align-items-center'>
                       <div className='col-xl-4 col-lg-4 col-md-4'>

@@ -10,9 +10,9 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -429,7 +429,7 @@ class AddSurvey extends React.Component {
     this.setState({surveyQuestions: surveyQuestions, alertMessage: '', alertType: ''})
   }
 
-  updateChoiceActions (sequenceId, action, qindex, choiceIndex) {      
+  updateChoiceActions (sequenceId, action, qindex, choiceIndex) {
         let surveyQuestions = this.state.surveyQuestions.slice()
         let optionTmp = surveyQuestions[qindex].options[choiceIndex]
         optionTmp.sequenceId = sequenceId
@@ -463,10 +463,10 @@ class AddSurvey extends React.Component {
               <span className='fa fa-times fa-inverse' />
             </button>
           </span>
-        </div>   
+        </div>
         </div>
         <div className='col-sm-1'>
-        <SequencePopover 
+        <SequencePopover
               optionNumber={j}
               questionNumber={qindex}
               sequences={this.props.sequences}
@@ -691,7 +691,7 @@ class AddSurvey extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -740,7 +740,7 @@ class AddSurvey extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
 
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -831,7 +831,7 @@ class AddSurvey extends React.Component {
                               <div className='row align-items-center'>
                                 <div className='col-xl-8 order-2 order-xl-1' />
                                 <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                                  {
+                                  {/*
                                       this.state.isShowingModal &&
                                       <ModalContainer style={{width: '500px'}}
                                         onClose={this.closeDialog}>
@@ -864,7 +864,7 @@ class AddSurvey extends React.Component {
                                           </div>
                                         </ModalDialog>
                                       </ModalContainer>
-                                    }
+                                    */}
                                 </div>
                               </div>
                               <div className='col-xl-12'>

@@ -2,9 +2,9 @@ import React from 'react'
 import {loadCategoriesList, addCategory, deleteCategory, editCategory} from '../../redux/actions/templates.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Category extends React.Component {
   constructor (props, context) {
@@ -136,7 +136,7 @@ class Category extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModalCreate &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogCreate}>
@@ -155,8 +155,8 @@ class Category extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalEdit &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogEdit}>
@@ -175,8 +175,8 @@ class Category extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalDelete &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogDelete}>
@@ -193,7 +193,7 @@ class Category extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   { this.props.categories && this.props.categories.length > 0

@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   unSubscribe,
   assignToTeam,
@@ -315,7 +315,7 @@ class Profile extends React.Component {
     return (
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -341,7 +341,7 @@ class Profile extends React.Component {
                 </div>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
         <div className='m-portlet m-portlet--full-height'>
           <div style={{padding: '0rem 1.5rem'}} className='m-portlet__body'>
             <div className='m-card-profile'>

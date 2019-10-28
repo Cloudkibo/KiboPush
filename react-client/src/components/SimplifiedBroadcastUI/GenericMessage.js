@@ -7,7 +7,7 @@ import Card from './PreviewComponents/Card'
 import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
@@ -662,7 +662,7 @@ class GenericMessage extends React.Component {
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    {
+                    {/*
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -673,11 +673,11 @@ class GenericMessage extends React.Component {
                         <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
                       </ModalDialog>
                     </ModalContainer>
-                    }
+                    */}
                     {
                       this.state.isShowingAddComponentModal && this.openModal()
                     }
-                    {
+                    {/*
                       this.state.isShowingModalCloseAlert &&
                       <ModalContainer style={{width: '500px'}}
                         onClose={this.closeModalAlertDialog}>
@@ -699,8 +699,8 @@ class GenericMessage extends React.Component {
                           </button>
                         </ModalDialog>
                       </ModalContainer>
-                    }
-                    {
+                    */}
+                    {/*
                       this.state.isShowingModalResetAlert &&
                       <ModalContainer style={{width: '500px'}}
                         onClose={this.closeResetAlertDialog}>
@@ -722,7 +722,7 @@ class GenericMessage extends React.Component {
                           </button>
                         </ModalDialog>
                       </ModalContainer>
-                    }
+                    */}
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

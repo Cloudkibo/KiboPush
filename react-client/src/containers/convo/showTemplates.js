@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -83,7 +83,7 @@ class ShowTemplates extends React.Component {
     })
   }
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.props.location.state.pages}
     })

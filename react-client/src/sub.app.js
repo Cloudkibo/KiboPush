@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Header from './components/header/header'
 import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
-import { browserHistory } from 'react-router'
+import Home from "./containers/home"
 import $ from 'jquery'
 
 class App extends Component {
@@ -17,7 +18,8 @@ class App extends Component {
   }
 
   componentDidMount () {
-    this.unlisten = browserHistory.listen(location => {
+    console.log('browser history', this.props.history)
+    this.unlisten = this.props.history.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
         /* eslint-disable */
@@ -55,6 +57,7 @@ class App extends Component {
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
+    console.log('browser history', this.props.history)
     return (
       <div>
         {

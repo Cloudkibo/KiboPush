@@ -3,12 +3,11 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -230,7 +229,7 @@ class Bot extends React.Component {
       pathname: `/viewBot`,
       state: bot
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoEdit (bot) {
@@ -238,7 +237,7 @@ class Bot extends React.Component {
       pathname: `/editBot`,
       state: bot
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoWaitingReply (bot) {
@@ -246,7 +245,7 @@ class Bot extends React.Component {
       pathname: `/WaitingReplyList`,
       state: bot
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoUnansweredQueries (bot) {
@@ -255,7 +254,7 @@ class Bot extends React.Component {
       pathname: `/UnansweredQueries`,
       state: bot
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   showDropdown () {
@@ -273,7 +272,7 @@ class Bot extends React.Component {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
       this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createBot`
       })
     }
@@ -290,7 +289,7 @@ class Bot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -310,7 +309,7 @@ class Bot extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -429,7 +428,7 @@ class Bot extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -472,8 +471,8 @@ class Bot extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalDelete &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogDelete}>
@@ -490,7 +489,7 @@ class Bot extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                     <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
                       <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />

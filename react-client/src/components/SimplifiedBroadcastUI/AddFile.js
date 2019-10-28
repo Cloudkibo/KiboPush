@@ -12,8 +12,8 @@ import {
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Halogen from 'halogen'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import Halogen from 'halogen'
 import AlertContainer from 'react-alert'
 
 class File extends React.Component {
@@ -134,7 +134,9 @@ class File extends React.Component {
         <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
           {
             this.state.loading
-            ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+            ? {/*
+              <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+            */}
             : <Files
                 className='files-dropzone'
                 onChange={this.onFilesChange}
@@ -149,7 +151,7 @@ class File extends React.Component {
               </div>
             </Files>
           }
-          {
+          {/*
           this.state.showDialog &&
           <ModalContainer style={{width: '300px'}}
             onClose={this.closeDialog}>
@@ -159,7 +161,7 @@ class File extends React.Component {
               <p>{this.state.errorMsg}</p>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         </div>
         <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>

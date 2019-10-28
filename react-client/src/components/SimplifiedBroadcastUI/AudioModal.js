@@ -4,7 +4,7 @@
 
 import React from 'react'
 
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Audio from './Audio'
 
 class AudioModal extends React.Component {
@@ -53,6 +53,7 @@ class AudioModal extends React.Component {
 
   render () {
     return (
+      {/*
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -91,7 +92,7 @@ class AudioModal extends React.Component {
           </div>
         </ModalDialog>
       </ModalContainer>
-
+      */}
     )
   }
 }

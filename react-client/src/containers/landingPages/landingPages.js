@@ -9,8 +9,8 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -71,7 +71,7 @@ class LandingPage extends React.Component {
   }
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createLandingPage`,
       state: {pageId: pageId, _id: this.state.pageSelected}
     })
@@ -92,7 +92,7 @@ class LandingPage extends React.Component {
   onEdit (landingPage) {
     console.log('edit landing page called', landingPage)
     landingPage.currentTab= 'initialState'
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editLandingPage`,
       state: {module: 'edit', landingPage: landingPage}
     })
@@ -171,7 +171,7 @@ class LandingPage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -188,8 +188,8 @@ class LandingPage extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isSetupShow &&
           <ModalContainer style={{width: '600px'}}
             onClose={this.closeDialogSetup}>
@@ -230,8 +230,8 @@ class LandingPage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingCreate &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeCreateDialog}>
@@ -259,7 +259,7 @@ class LandingPage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

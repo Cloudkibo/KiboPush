@@ -9,14 +9,14 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import { updateChecks } from '../../redux/actions/wizard.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {getCurrentProduct} from '../../utility/utils'
 
 class InviteSubscribers extends React.Component {
@@ -198,7 +198,7 @@ class InviteSubscribers extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -220,7 +220,7 @@ class InviteSubscribers extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <Header />
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>

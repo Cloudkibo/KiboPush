@@ -10,8 +10,8 @@ import { Alert } from 'react-bs-notifier'
 import { loadPollDetails } from '../../redux/actions/templates.actions'
 import { addPoll, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { Link } from 'react-router'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
@@ -245,7 +245,7 @@ class EditPoll extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -294,7 +294,7 @@ class EditPoll extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -327,7 +327,7 @@ class EditPoll extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -356,7 +356,7 @@ class EditPoll extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   <div className='m-form'>

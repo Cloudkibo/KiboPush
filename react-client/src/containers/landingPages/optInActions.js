@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import Footer from './footer'
 
 class OptInActions extends React.Component {
@@ -14,12 +13,12 @@ class OptInActions extends React.Component {
   }
   editMessage () {
     if(this.props.module === 'edit'){
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createLandingPageMessage`,
         state: {module: 'edit'}
        })
     }else{
-      browserHistory.push({
+      this.props.history.push({
        pathname: `/createLandingPageMessage`
       })
     }

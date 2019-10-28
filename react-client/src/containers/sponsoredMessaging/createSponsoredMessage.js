@@ -6,7 +6,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory } from 'react-router'
 import { createLandingPage, updateLandingPageData, editLandingPage } from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
@@ -67,7 +66,7 @@ class CreateSponsoredMessage extends React.Component {
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
     console.log('hello ji!')
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/landingPages`
     })
   }

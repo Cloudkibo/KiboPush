@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchAllPlans, deletePlan, createPlan, updatePlan, migrate, makeDefault } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
 
@@ -223,7 +223,7 @@ class Plans extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -240,8 +240,8 @@ class Plans extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -299,8 +299,8 @@ class Plans extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalUpdate &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogUpdate}>
@@ -358,8 +358,8 @@ class Plans extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalMigrate &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogMigrate}>
@@ -398,7 +398,7 @@ class Plans extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>

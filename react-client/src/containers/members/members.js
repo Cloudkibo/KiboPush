@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
   loadMembersList,
@@ -12,7 +12,7 @@ import {
 } from '../../redux/actions/members.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -128,7 +128,7 @@ class Members extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -148,7 +148,7 @@ class Members extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-subheader '>
@@ -158,7 +158,7 @@ class Members extends React.Component {
             </div>
           </div>
         </div>
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -175,7 +175,7 @@ class Members extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'

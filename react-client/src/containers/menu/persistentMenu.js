@@ -5,14 +5,14 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { saveCurrentMenuItem, removeMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import { transformData, removeMenuPayload } from './utility'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 
@@ -781,7 +781,7 @@ class Menu extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -801,9 +801,9 @@ class Menu extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div id='menuPopover' />
-        {
+        {/*
           this.state.loading
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -812,7 +812,7 @@ class Menu extends React.Component {
             </div>
           </ModalContainer>
           : <span />
-        }
+        */}
         <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
@@ -934,8 +934,8 @@ class Menu extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <button onClick={() => { this.setState({showVideo: true}) }}>video tutorial</button>
             </div>
           </div>
           <div
@@ -945,7 +945,7 @@ class Menu extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Nested menus will no longer be supported by Facebook. Menus will display in a single layer format. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank'>Learn More</a>.
+              Nested menus will no longer be supported by Facebook. Menus will display in a single layer format. <a href='https://developers.facebook.com/docs/messenger-platform/changelog#20190610' target='_blank' rel='noopener noreferrer'>Learn More</a>.
             </div>
           </div>
           <div className='m-portlet m-portlet--full-height '>
@@ -961,7 +961,7 @@ class Menu extends React.Component {
               <div className='row align-items-center'>
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
+                  {/*
                     this.state.showPreview &&
                     <ModalContainer style={{top: '100px'}}
                       onClose={this.closeDialog}>
@@ -973,7 +973,7 @@ class Menu extends React.Component {
                         </div>
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                 </div>
               </div>
               <div className='row'>

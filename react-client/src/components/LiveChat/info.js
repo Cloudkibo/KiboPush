@@ -1,7 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Info extends React.Component {
   constructor (props, context) {
@@ -25,7 +25,7 @@ class Info extends React.Component {
   render () {
     return (
       <div className='row'>
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{ width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -45,8 +45,8 @@ class Info extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -95,7 +95,7 @@ class Info extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='col'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>

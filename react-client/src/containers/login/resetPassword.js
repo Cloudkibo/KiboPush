@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { log } from './../../utility/socketio'
 import { isWebURL } from './../../utility/utils'
 import { forgotPass } from '../../redux/actions/login.actions'

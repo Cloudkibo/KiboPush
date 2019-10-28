@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { update, addAgent, addPage, removePage, removeAgent, loadTeamsList, fetchPages, fetchAgents } from '../../redux/actions/teams.actions'
@@ -143,7 +143,7 @@ class EditTeam extends React.Component {
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.removedPages[j]._id })
       }
     }
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/teams`
     })
   }

@@ -4,7 +4,7 @@
  */
 
 import React, {Component} from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -1024,7 +1024,7 @@ class Sidebar extends Component {
     console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
-      browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
       <div id='sidebarDiv'>

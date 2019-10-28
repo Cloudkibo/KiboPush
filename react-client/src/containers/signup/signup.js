@@ -8,10 +8,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha'
 
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Progress from 'react-progressbar'
 import AlertContainer from 'react-alert'
 var taiPasswordStrength = require('tai-password-strength')
@@ -331,7 +331,7 @@ class Signup extends React.Component {
                         </center>
                       </div>
                     }
-                    {
+                    {/*
                           this.state.isShowingModal &&
                           <ModalContainer style={{width: '600px'}}
                             onClose={this.closeDialog}>
@@ -377,7 +377,7 @@ class Signup extends React.Component {
                               </center>
                             </ModalDialog>
                           </ModalContainer>
-                    }
+                    */}
                   </div>
                 </div>
               </div>

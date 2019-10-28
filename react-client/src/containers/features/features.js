@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { fetchAllFeatures, updateFeatures } from '../../redux/actions/features.actions'
 import { fetchAllPlans } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import AddFeature from './addFeature'
 
@@ -191,7 +191,7 @@ class Features extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -200,7 +200,7 @@ class Features extends React.Component {
               <AddFeature msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>

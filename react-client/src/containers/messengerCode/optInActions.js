@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 //  import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -14,15 +13,15 @@ class OptInActions extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-           
+
         }
         this.editMessage = this.editMessage.bind(this)
     }
     componentDidMount() {
-       
+
     }
     editMessage() {
-        browserHistory.push({
+        this.props.history.push({
             pathname: `/editMessageCodeMessage`,
             state: { module: this.props.module, selectedMessengerCode: this.props.messengerCode }
         })

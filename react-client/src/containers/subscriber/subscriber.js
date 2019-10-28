@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
@@ -18,7 +18,7 @@ import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
@@ -1349,7 +1349,7 @@ class Subscriber extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <SubscriptionPermissionALert />
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          {
+          {/*
             this.state.showVideo &&
             <ModalContainer style={{ width: '680px', top: '100' }}
               onClose={() => { this.setState({ showVideo: false }) }}>
@@ -1369,7 +1369,7 @@ class Subscriber extends React.Component {
                 </div>
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -1561,7 +1561,7 @@ class Subscriber extends React.Component {
                                   {this.props.tags && this.props.tags.length > 0 &&
                                     <div style={{ marginLeft: '10px', marginTop: '5px' }}><Link style={{ color: '#5867dd', cursor: 'pointer', fontSize: 'small' }} onClick={this.openEditModal}>Edit Tags</Link></div>
                                   }
-                                  {
+                                  {/*
                                     this.state.showEditModal &&
                                     <ModalContainer style={{ width: '800px' }}
                                       onClose={this.closeEditModal}>
@@ -1570,7 +1570,7 @@ class Subscriber extends React.Component {
                                         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
                                       </ModalDialog>
                                     </ModalContainer>
-                                  }
+                                  */}
                                   <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                                     <PopoverHeader>Add Tags</PopoverHeader>
                                     <PopoverBody>

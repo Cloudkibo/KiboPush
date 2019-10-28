@@ -7,9 +7,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Popover from 'react-simple-popover'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from '../settings/viewScreen'
@@ -60,7 +60,7 @@ class GreetingMessage extends React.Component {
     props.loadMyPagesList()
   }
   redirectToInviteSub () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/inviteUsingLinkWizard',
       state: 'history'
     })
@@ -252,7 +252,7 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </Popover>
-          {
+          {/*
             this.state.showPreview &&
             <ModalContainer style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
@@ -262,7 +262,7 @@ class GreetingMessage extends React.Component {
                 <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
               </ModalDialog>
             </ModalContainer>
-          }
+          */}
           <div className='m-content'>
             <div className='m-portlet m-portlet--full-height'>
               <div className='m-portlet__body m-portlet__body--no-padding'>

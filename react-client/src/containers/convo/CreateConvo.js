@@ -15,14 +15,14 @@ import {
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 import Targeting from './Targeting'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -442,7 +442,7 @@ class CreateConvo extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showInvalidSession &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeInvalidSession}>
@@ -460,8 +460,8 @@ class CreateConvo extends React.Component {
               </a>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -510,8 +510,8 @@ class CreateConvo extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isshowGuideLinesImageDialog &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesImageDialog}>
@@ -521,9 +521,9 @@ class CreateConvo extends React.Component {
 
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
 
-        {
+        {/*
           this.state.showMessengerModal && this.props.fbAppId && this.props.fbAppId !== '' &&
           <ModalContainer style={{width: '500px'}}
             onClick={() => { this.setState({showMessengerModal: false}) }}
@@ -540,7 +540,7 @@ class CreateConvo extends React.Component {
                 />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>

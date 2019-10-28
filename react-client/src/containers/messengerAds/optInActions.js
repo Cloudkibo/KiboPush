@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { updateCurrentJsonAd } from '../../redux/actions/messengerAds.actions'
@@ -21,7 +20,7 @@ class OptInActions extends React.Component {
   }
   editMessage () {
     this.props.switchSetupState('false')
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessengerAdMessage`,
       state: {jsonAdId: this.props.jsonAdId}
     })

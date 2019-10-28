@@ -10,9 +10,9 @@ import ReactPaginate from 'react-paginate'
 import {
   fetchAllPosts, deletePost, saveCurrentPost
 } from '../../redux/actions/commentCapture.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -166,7 +166,7 @@ class FacebookPosts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -186,8 +186,8 @@ class FacebookPosts extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -204,7 +204,7 @@ class FacebookPosts extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

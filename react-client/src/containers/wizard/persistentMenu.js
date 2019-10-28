@@ -6,14 +6,14 @@ import { saveCurrentMenuItem, saveMenu, getIndexBypage } from '../../redux/actio
 import Sidebar from './sidebar'
 import Header from './header'
 import { transformData, removeMenuPayload } from '../menu/utility'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from '../menu/viewScreen'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import {getCurrentProduct} from '../../utility/utils'
 
 class Menu extends React.Component {
@@ -532,7 +532,7 @@ class Menu extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopoverWizard' />
-        {
+        {/*
           this.state.loading
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -541,7 +541,7 @@ class Menu extends React.Component {
             </div>
           </ModalContainer>
           : <span />
-        }
+        */}
         <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
@@ -607,7 +607,7 @@ class Menu extends React.Component {
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
+                          {/*
                             this.state.showPreview &&
                             <ModalContainer style={{top: '100px'}}
                               onClose={this.closeDialog}>
@@ -619,14 +619,14 @@ class Menu extends React.Component {
                                 </div>
                               </ModalDialog>
                             </ModalContainer>
-                          }
+                          */}
                         </div>
                       </div>
                       <div className='m-portlet__body'>
                         <div className='row align-items-center'>
                           <div className='col-xl-8 order-2 order-xl-1' />
                           <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                            {
+                            {/*
                               this.state.showPreview &&
                               <ModalContainer style={{ top: '100px' }}
                                 onClose={this.closeDialog}>
@@ -638,7 +638,7 @@ class Menu extends React.Component {
                                   </div>
                                 </ModalDialog>
                               </ModalContainer>
-                            }
+                            */}
                           </div>
                         </div>
                         <div className='form-group m-form__group row'>

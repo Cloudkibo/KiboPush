@@ -17,12 +17,12 @@ import { fetchOpenSessions, fetchCloseSessions,
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { getSubscriberTags } from '../../redux/actions/tags.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ChatBox from './chatbox'
 import Profile from './profile'
 import Search from './search'
-import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import Halogen from 'halogen'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { timeSince } from './utilities'
 import { registerAction } from '../../utility/socketio'
@@ -318,7 +318,7 @@ class LiveChat extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{ width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -338,7 +338,7 @@ class LiveChat extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='row'>
             <div className='col'>
@@ -367,7 +367,7 @@ class LiveChat extends React.Component {
             this.state.loading
               ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
                 className='align-center'>
-                <center><Halogen.RingLoader color='#716aca' /></center>
+                {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
               </div>
               : <div className='row'>
                 <div className='col-xl-4'>
@@ -811,7 +811,7 @@ class LiveChat extends React.Component {
               </div>
           }
         </div>
-        {
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -861,7 +861,7 @@ class LiveChat extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

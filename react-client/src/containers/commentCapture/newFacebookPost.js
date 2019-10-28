@@ -10,9 +10,9 @@ import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
 import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../redux/actions/commentCapture.actions'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
-import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import Halogen from 'halogen'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 const styles = {
   iconclass: {
@@ -439,7 +439,7 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.loading
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -448,8 +448,8 @@ class FacebookPosts extends React.Component {
             </div>
           </ModalContainer>
           : <span />
-        }
-        {
+        */}
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '500px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -468,8 +468,8 @@ class FacebookPosts extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showImages &&
           <ModalContainer style={{width: '500px', top: '100px'}}
             onClose={() => { this.setState({showImages: false}) }}>
@@ -488,8 +488,8 @@ class FacebookPosts extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showSuccessMessage &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -500,7 +500,7 @@ class FacebookPosts extends React.Component {
               <p>The people who comment on this post will receive the reply that you set. </p>
           </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>

@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchAllPermissions, updatePermissions } from '../../redux/actions/permissions.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import AddPermission from './addPermission'
 
@@ -194,7 +194,7 @@ class Permissions extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -203,7 +203,7 @@ class Permissions extends React.Component {
               <AddPermission msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} permissionCheckboxes={this.state.permissionCheckboxes} />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>

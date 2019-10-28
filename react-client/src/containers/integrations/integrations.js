@@ -5,9 +5,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory } from 'react-router'
 // import auth from '../../utility/auth.service'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
@@ -38,7 +37,7 @@ class FacebookIntegration extends React.Component {
   }
 
   cancel () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -120,7 +119,7 @@ class FacebookIntegration extends React.Component {
   }
 
   goToNext () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -250,7 +249,7 @@ class FacebookIntegration extends React.Component {
             </div>
           </div>
         </div>
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -280,8 +279,8 @@ class FacebookIntegration extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalWhatsApp &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogWhatsApp}>
@@ -320,7 +319,7 @@ class FacebookIntegration extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

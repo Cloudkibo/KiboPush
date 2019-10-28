@@ -5,9 +5,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory } from 'react-router'
 // import auth from '../../utility/auth.service'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { updateShowIntegrations, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
 
 class FacebookIntegration extends React.Component {
@@ -22,7 +21,7 @@ class FacebookIntegration extends React.Component {
   }
 
   updateShowIntegrations () {
-    this.props.updateShowIntegrations({showIntegrations: false}, browserHistory)
+    this.props.updateShowIntegrations({showIntegrations: false}, this.props.history)
   }
 
   disconnectFacebook () {
@@ -146,7 +145,7 @@ class FacebookIntegration extends React.Component {
             */}
           </div>
         </div>
-        {
+        {/*
           this.state.showModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -163,7 +162,7 @@ class FacebookIntegration extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

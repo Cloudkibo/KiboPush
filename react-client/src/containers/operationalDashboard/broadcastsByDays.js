@@ -4,7 +4,6 @@ import { loadBroadcastsByDays } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { browserHistory } from 'react-router'
 
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
@@ -116,7 +115,7 @@ class BroadcastsInfo extends React.Component {
     // }
   }
   onBroadcastClick (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewBroadcastDetail`,
       state: {title: broadcast.title, payload: broadcast.payload, data: broadcast}
     })

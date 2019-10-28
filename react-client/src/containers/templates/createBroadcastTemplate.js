@@ -8,8 +8,8 @@ import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, delete
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateBroadcastTemplate extends React.Component {
@@ -194,7 +194,7 @@ class CreateBroadcastTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                {
+                {/*
                   this.state.showAddCategoryDialog &&
                   <ModalContainer style={{width: '500px'}}
                     onClose={this.closeAddCategoryDialog}>
@@ -213,7 +213,7 @@ class CreateBroadcastTemplate extends React.Component {
                       </button>
                     </ModalDialog>
                   </ModalContainer>
-                }
+                */}
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>

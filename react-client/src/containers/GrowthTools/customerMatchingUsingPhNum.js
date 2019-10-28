@@ -1,13 +1,13 @@
 import React from 'react'
 import Files from 'react-files'
 import { bindActionCreators } from 'redux'
-import Halogen from 'halogen'
-import { Link } from 'react-router'
+// import Halogen from 'halogen'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   loadCustomerListsNew, saveCurrentList
 } from '../../redux/actions/customerLists.actions'
@@ -487,7 +487,7 @@ class CustomerMatching extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -507,8 +507,8 @@ class CustomerMatching extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showFileColumns &&
           <ModalContainer style={{width: '680px'}}
             onClose={this.closeDialogFileColumns}>
@@ -571,8 +571,8 @@ class CustomerMatching extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalFileName &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogFileName}>
@@ -595,7 +595,7 @@ class CustomerMatching extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -803,7 +803,7 @@ class CustomerMatching extends React.Component {
                             </span>
                           </button>
                         </div>
-                        {
+                        {/*
                           this.state.loading
                           ? <ModalContainer>
                             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -812,7 +812,7 @@ class CustomerMatching extends React.Component {
                             </div>
                           </ModalContainer>
                           : <span />
-                        }
+                        */}
                         {
                           this.state.alertMessage !== '' &&
                           <div className='alert alert-success' role='alert'>

@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
@@ -22,7 +22,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
@@ -31,7 +31,7 @@ import { getuserdetails, validateUserAccessToken } from '../../redux/actions/bas
 // import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -90,7 +90,7 @@ class Dashboard extends React.Component {
     if (this.props.user && this.props.user.role === 'buyer' &&
         response.status === 'failed' && response.payload.error &&
         response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
       })
@@ -100,7 +100,7 @@ class Dashboard extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -199,40 +199,40 @@ class Dashboard extends React.Component {
     if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.emailVerified === false) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
       } else
       if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations'
         })
       }
       //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-      //   browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'messenger'}
       //   })
       // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-      //   browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'sms'}
       //   })
       // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-      //   browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'whatsApp'}
       //   })
       // }
       // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-      //   browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/connectFb',
       //     state: { account_type: 'individual' }
       //   })
       // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
       //   if (nextprops.pages && nextprops.pages.length === 0) {
       //     console.log('going to push')
-      //     browserHistory.push({
+      //     this.props.history.push({
       //       pathname: '/connectFb',
       //       state: { account_type: 'team' }
       //     })
@@ -240,16 +240,16 @@ class Dashboard extends React.Component {
       // }
       else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
         console.log('nextprops pages', nextprops)
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/addfbpages'
         })
       } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/inviteUsingLinkWizard'
         })
       } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/abandonedCarts'
         })
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
@@ -260,7 +260,7 @@ class Dashboard extends React.Component {
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-        // browserHistory.push({
+        // this.props.history.push({
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
@@ -521,7 +521,7 @@ class Dashboard extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.pages && this.props.pages.length > 0 && <SubscriptionPermissionALert />}
-        {
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -538,8 +538,8 @@ class Dashboard extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: '100'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -559,7 +559,7 @@ class Dashboard extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -603,7 +603,7 @@ class Dashboard extends React.Component {
             </div>
           }
           {this.state.loading
-          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? <div>{/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}</div>
           : <div>
             <div className='row'>
               {

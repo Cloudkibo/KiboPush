@@ -7,9 +7,9 @@ import {
   loadCustomerListsNew, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import ReactPaginate from 'react-paginate'
 
@@ -47,7 +47,7 @@ class CustomerLists extends React.Component {
     this.setState({editName: e.target.value})
   }
   saveCurrentList (list) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/customerListDetails`,
       state: {module: 'customerList'}
     })
@@ -141,7 +141,7 @@ class CustomerLists extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModalDelete &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogDelete}>
@@ -158,7 +158,7 @@ class CustomerLists extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   { this.props.customerLists && this.props.customerLists.length > 0

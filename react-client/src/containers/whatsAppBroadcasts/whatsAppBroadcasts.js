@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { loadBroadcastsList } from '../../redux/actions/whatsAppBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 import { handleDate } from '../../utility/utils'
 
@@ -76,7 +76,7 @@ onFilter (e) {
 }
 
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createWhatsAppBroadcast`
     })
   }
@@ -102,7 +102,7 @@ onFilter (e) {
     if (data.selected === 0) {
       this.props.loadBroadcastsList({
         last_id: 'none',
-        number_of_records: 10, 
+        number_of_records: 10,
         first_page: 'first',
         filter: this.state.filter,
         filter_criteria: {
@@ -250,7 +250,7 @@ onFilter (e) {
                       &nbsp;&nbsp;days
                       </span>
                     </div>
-                    
+
                  </div>
                     { this.state.broadcastsData && this.state.broadcastsData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>

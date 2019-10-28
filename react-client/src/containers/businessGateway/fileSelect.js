@@ -2,7 +2,7 @@ import React from 'react'
 import Files from 'react-files'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
@@ -338,7 +338,7 @@ class FileSelect extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showFileColumns &&
           <ModalContainer style={{width: '750px', top: '100px', overflow: 'hidden'}}
             onClose={this.closeDialogFileColumns}>
@@ -446,7 +446,7 @@ class FileSelect extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='form-group m-form__group row'>
           <label className='col-2 col-form-label'>
             Change Page

@@ -6,7 +6,7 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -92,7 +92,7 @@ class PaymentMethods extends React.Component {
                         </div>
                       }
                       </div>
-                      {this.state.change &&
+                      {/*this.state.change &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
                           <ModalDialog style={{width: '500px'}}
@@ -110,7 +110,7 @@ class PaymentMethods extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                    }
+                    */}
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadPageUsers, loadPageAdmins } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'

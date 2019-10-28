@@ -9,8 +9,7 @@ import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 import json2csv from 'json2csv'
 import fileDownload from 'js-file-download'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { browserHistory } from 'react-router'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 var responseData = []
 class SurveyResult extends React.Component {
@@ -37,7 +36,7 @@ class SurveyResult extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -155,7 +154,7 @@ class SurveyResult extends React.Component {
         }
         */
        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -172,7 +171,7 @@ class SurveyResult extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

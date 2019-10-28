@@ -3,11 +3,11 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class MessageUs extends React.Component {
@@ -98,7 +98,7 @@ class MessageUs extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px',  top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -118,7 +118,7 @@ class MessageUs extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           {this.state.showbutton !== true &&
             <div

@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Media from './AddMedia'
 import AddButton from './AddButton'
 
@@ -93,6 +91,7 @@ class MediaModal extends React.Component {
   render () {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
+      {/*
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -102,14 +101,14 @@ class MediaModal extends React.Component {
           <div className='row'>
             <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
               <h4>Media:</h4>
-              <Media 
-                required 
+              <Media
+                required
                 updateStatus={this.updateStatus}
                 mediaType={this.state.imgSrc ? 'image' : 'video'}
                 pages={this.props.pages}
                 file={this.state.file}
-                updateImage={this.updateImage} 
-                updateFile={this.updateFile} 
+                updateImage={this.updateImage}
+                updateFile={this.updateFile}
                 fileurl={this.state.file ? this.state.file.fileurl : ''}
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
@@ -175,7 +174,7 @@ class MediaModal extends React.Component {
           </div>
         </ModalDialog>
       </ModalContainer>
-
+    */}
     )
   }
 }

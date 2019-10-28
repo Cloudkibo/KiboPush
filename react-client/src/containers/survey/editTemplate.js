@@ -10,9 +10,9 @@ import { Alert } from 'react-bs-notifier'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -95,7 +95,7 @@ class EditTemplate extends React.Component {
   componentWillReceiveProps (nextprops) {
     if (nextprops.survey) {
       console.log('nextprops.survey.description', nextprops.survey.description)
-      console.log('nextprops.survey', nextprops.survey)     
+      console.log('nextprops.survey', nextprops.survey)
       this.setState({title: nextprops.survey.title, description: nextprops.survey.description, categoryValue: nextprops.survey.category[0]})
     }
 
@@ -526,7 +526,7 @@ class EditTemplate extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalGuideLines &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesDialog}>
@@ -575,7 +575,7 @@ class EditTemplate extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -600,7 +600,7 @@ class EditTemplate extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -626,7 +626,7 @@ class EditTemplate extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   <div className='col-xl-12'>

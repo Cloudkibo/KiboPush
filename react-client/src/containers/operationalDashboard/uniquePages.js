@@ -3,7 +3,6 @@ import ReactPaginate from 'react-paginate'
 import { loadUniquePages } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory } from 'react-router'
 
 class UniquePages extends React.Component {
   constructor (props, context) {
@@ -27,7 +26,7 @@ class UniquePages extends React.Component {
   }
 
   goToUsers (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageUsers',
         state: {
           pageId: pageId,
@@ -37,7 +36,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageAdmins (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageAdmins',
         state: {
           pageId: pageId,
@@ -47,7 +46,7 @@ class UniquePages extends React.Component {
   }
 
   goToPermissions (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPagePermissions',
         state: {
           pageId: pageId,
@@ -57,7 +56,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageTags (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageTags',
         state: {
             pageId: pageId,
@@ -67,7 +66,7 @@ class UniquePages extends React.Component {
   }
 
   goToSubscribersWithTags (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageSubscribersWithTags',
         state: {
             pageId: pageId,

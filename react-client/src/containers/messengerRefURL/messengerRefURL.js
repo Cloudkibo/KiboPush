@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {fetchURLs, deleteURL, resetState} from '../../redux/actions/messengerRefURL.actions'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -57,13 +57,13 @@ class MessengerRefURL extends React.Component {
     this.props.resetState()
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     console.log('pageId', pageId)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessengerRefURL`,
       state: {_id: this.state.pageSelected, pageId: pageId, module: 'createMessage'}
     })
   }
   onEdit (messengerRefURL) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editMessengerRefURL`,
       state: {module: 'edit', messengerRefURL: messengerRefURL}
     })
@@ -125,7 +125,7 @@ class MessengerRefURL extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -142,8 +142,8 @@ class MessengerRefURL extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingCreate &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeCreateDialog}>
@@ -171,7 +171,7 @@ class MessengerRefURL extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

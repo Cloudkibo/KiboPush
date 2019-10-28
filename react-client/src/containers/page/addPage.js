@@ -4,9 +4,9 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import {
   addPages,
@@ -40,7 +40,7 @@ class AddPage extends React.Component {
       pathname: `/pages`
 
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   showErrorDialog () {
@@ -81,7 +81,7 @@ class AddPage extends React.Component {
     }
   }
   gotoSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'addPages'}
     })
@@ -102,7 +102,7 @@ class AddPage extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
-        {
+        {/*
           this.state.showErrorDialog &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeErrorDialog}>
@@ -118,14 +118,14 @@ class AddPage extends React.Component {
               </a>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Pages</h3>
             </div>
           </div>
-          {
+          {/*
             this.state.showWarning &&
             <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
@@ -135,7 +135,7 @@ class AddPage extends React.Component {
                 <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
               </ModalDialog>
             </ModalContainer>
-        }
+        */}
         </div>
         <div className='m-content'>
           { this.props.user && !this.props.user.facebookInfo

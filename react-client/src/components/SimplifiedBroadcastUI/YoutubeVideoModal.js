@@ -3,9 +3,9 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
-import Halogen from 'halogen'
+// import Halogen from 'halogen'
 import { downloadYouTubeVideo, uploadTemplate } from '../../redux/actions/convos.actions'
 
 class YoutubeVideoModal extends React.Component {
@@ -100,13 +100,13 @@ class YoutubeVideoModal extends React.Component {
         type: data.fileurl.type,
         size: data.fileurl.size
       }, (newData) => this.updateFileUrl(data, newData))
-    } 
+    }
   }
 
   updateFileUrl (data, newData) {
     data.fileurl = newData.fileurl
     console.log('updating fileurl of YoutubeVideoModal', data)
-    this.setState({ 
+    this.setState({
       loading: false,
       file: data,
       videoLink: data.fileurl.url
@@ -150,6 +150,7 @@ class YoutubeVideoModal extends React.Component {
     console.log('video link', this.state.link)
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
+      {/*
       <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
         onClose={this.closeModal}>
         <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
@@ -228,7 +229,7 @@ class YoutubeVideoModal extends React.Component {
           </div>
         </ModalDialog>
       </ModalContainer>
-
+    */}
     )
   }
 }

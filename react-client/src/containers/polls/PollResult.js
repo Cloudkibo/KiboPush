@@ -3,8 +3,8 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import fileDownload from 'js-file-download'
 import { connect } from 'react-redux'
 import {
@@ -38,7 +38,7 @@ class PollResult extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -141,7 +141,7 @@ class PollResult extends React.Component {
     console.log('PollResult props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -158,7 +158,7 @@ class PollResult extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

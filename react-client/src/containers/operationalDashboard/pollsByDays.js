@@ -4,7 +4,6 @@ import { loadPollsByDays, saveCurrentPoll } from '../../redux/actions/backdoor.a
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { browserHistory } from 'react-router'
 
 class PollsInfo extends React.Component {
   constructor (props, context) {
@@ -135,7 +134,7 @@ class PollsInfo extends React.Component {
   }
   onPollClick (poll) {
     this.props.saveCurrentPoll(poll)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewPollDetail`,
       state: {_id: poll._id, data: poll}
     })

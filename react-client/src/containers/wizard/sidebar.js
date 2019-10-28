@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import {getCurrentProduct} from '../../utility/utils'
 import $ from 'jquery'
 
@@ -16,7 +16,7 @@ class Sidebar extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
   redirectFunction (redirectionLink) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: redirectionLink,
       state: 'history'
     })

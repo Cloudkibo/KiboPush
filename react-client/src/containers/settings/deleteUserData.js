@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { saveDeleteOption, authenticatePassword, cancelDeletion } from '../../redux/actions/settings.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import moment from 'moment'
 
 class DeleteUserData extends React.Component {
@@ -159,7 +159,7 @@ class DeleteUserData extends React.Component {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-        {
+        {/*
           this.state.showConfirmation &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeConfirmation}>
@@ -180,8 +180,8 @@ class DeleteUserData extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showAuthentication &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeAuthentication}>
@@ -202,7 +202,7 @@ class DeleteUserData extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>

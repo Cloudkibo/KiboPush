@@ -12,8 +12,8 @@ import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MessageTemplate from './messageTemplate'
 import AlertContainer from 'react-alert'
 
@@ -77,7 +77,7 @@ class ChatBox extends React.Component {
     this.closeTemplates = this.closeTemplates.bind(this)
     this.sendTemplate = this.sendTemplate.bind(this)
   }
-  
+
   showGif () {
     this.setState({showGifPicker: true, scrolling: false})
   }
@@ -564,7 +564,7 @@ class ChatBox extends React.Component {
         <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} onClick={this.openTemplates}>Use Templates</Link>
       </span>
       }
-       {
+       {/*
           this.state.showTemplates &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeTemplates}>
@@ -573,7 +573,7 @@ class ChatBox extends React.Component {
                 <MessageTemplate sendTemplate={this.sendTemplate} closeTemplates={this.closeTemplates}/>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </div>
     )
   }

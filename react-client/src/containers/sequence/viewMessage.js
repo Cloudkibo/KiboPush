@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
 import RightArrow from '../../containers/convo/RightArrow'
 import LeftArrow from '../../containers/convo/LeftArrow'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -42,7 +42,7 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   goBack () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editSequence`,
       state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.name}
     })
@@ -50,7 +50,7 @@ class ViewBroadcastTemplate extends React.Component {
 
   gotoEdit () {
     //  this.props.createSequence({name: this.state.name})
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessageSeq`,
       state: {
         title: this.props.location.state.title,

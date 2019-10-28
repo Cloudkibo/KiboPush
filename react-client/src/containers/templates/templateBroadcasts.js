@@ -4,8 +4,8 @@ import { loadBroadcastsListNew, loadCategoriesList, deleteBroadcast, saveBroadca
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import NotificationBadge, {Effect} from 'react-notification-badge'
 
@@ -49,14 +49,14 @@ class TemplateBroadcasts extends React.Component {
   }
 
   gotoEditBroadcast (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editBroadcastTemplate`,
       state: broadcast
     })
   }
 
   gotoViewBroadcast (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewBroadcastTemplate`,
       state: broadcast
     })
@@ -210,7 +210,7 @@ class TemplateBroadcasts extends React.Component {
               <div className='row align-items-center'>
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
+                  {/*
                     this.state.isShowingModalDelete &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialogDelete}>
@@ -227,7 +227,7 @@ class TemplateBroadcasts extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                 </div>
               </div>
               <div className='col-lg-12 col-md-12 order-2 order-xl-1'>

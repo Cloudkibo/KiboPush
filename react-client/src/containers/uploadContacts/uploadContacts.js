@@ -10,7 +10,7 @@ import { uploadNumbers, uploadFile } from '../../redux/actions/uploadContacts.ac
 import Files from 'react-files'
 import Papa from 'papaparse'
 import Select from 'react-select'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class UploadContacts extends React.Component {
@@ -338,7 +338,7 @@ class UploadContacts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showFileColumns &&
           <ModalContainer style={{width: '680px'}}>
             <ModalDialog style={{width: '680px'}}>
@@ -421,7 +421,7 @@ class UploadContacts extends React.Component {
               </center>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

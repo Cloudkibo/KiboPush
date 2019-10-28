@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {editBot, updateStatus, botDetails} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class EditBot extends React.Component {

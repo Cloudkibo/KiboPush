@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'

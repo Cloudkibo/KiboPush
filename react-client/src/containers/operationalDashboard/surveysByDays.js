@@ -4,7 +4,6 @@ import { loadSurveysByDays, saveSurveyInformation } from '../../redux/actions/ba
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { browserHistory } from 'react-router'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 const moment = extendMoment(Moment)
@@ -158,7 +157,7 @@ class SurveysInfo extends React.Component {
     this.setState({ totalLength: data.length })
   }
   onSurveyClick (survey) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/surveyDetails`,
       state: {_id: survey._id, data: survey}
     })

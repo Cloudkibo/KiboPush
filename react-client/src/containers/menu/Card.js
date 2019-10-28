@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import Halogen from 'halogen'
-import { ModalContainer } from 'react-modal-dialog'
+// import Halogen from 'halogen'
+// import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 
 class Card extends React.Component {
@@ -234,7 +234,7 @@ class Card extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
-        {
+        {/*
           this.state.loading
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -243,7 +243,7 @@ class Card extends React.Component {
             </div>
           </ModalContainer>
           : <span />
-        }
+        */}
       </div>
     )
   }

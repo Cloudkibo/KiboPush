@@ -1,11 +1,10 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { loadWebhook, createEndpoint, editEndpoint, enabled } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
@@ -295,7 +294,7 @@ class Webhook extends React.Component {
     this.props.enabled({_id: id, isEnabled: data}, this.msg)
   }
   gotoView (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -312,7 +311,7 @@ class Webhook extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -332,7 +331,7 @@ class Webhook extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -366,7 +365,7 @@ class Webhook extends React.Component {
                         Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
                         </div>
                       </div>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -432,8 +431,8 @@ class Webhook extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalEdit &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogEdit}>
@@ -496,7 +495,7 @@ class Webhook extends React.Component {
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>

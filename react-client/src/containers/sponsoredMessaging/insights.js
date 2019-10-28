@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class adInsights extends React.Component {
@@ -19,7 +19,7 @@ class adInsights extends React.Component {
 
   render () {
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>    
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -104,7 +104,7 @@ class adInsights extends React.Component {
                               <td data-field='end_date  `' className='m-datatable__cell'>
                               <span style={{width: '150px'}}>2016-03-12</span></td>
                             </tr>
-                            
+
                       </tbody>
                     </table>
                     <div className='pagination'>
@@ -127,7 +127,7 @@ class adInsights extends React.Component {
                     <p> No data to display </p>
                   </div> */}
                 </div>
-                  
+
                 </div>
               </div>
             </div>

@@ -6,9 +6,9 @@ import PollsInfo from './userPolls'
 import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -111,7 +111,7 @@ class UserDetails extends React.Component {
       this.setState({pagesData: [], totalLength: 0})
     }
     if (nextProps.response) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/operationalDashboard`
       })
     }

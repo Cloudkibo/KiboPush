@@ -14,7 +14,7 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import Popover from 'react-simple-popover'
 import {
   loadUsersList,
@@ -114,7 +114,7 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/dashboard`
     })
   }

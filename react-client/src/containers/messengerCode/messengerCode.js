@@ -8,10 +8,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import { requestMessengerCode, resetState, fetchCodes, deleteCode, updateData } from '../../redux/actions/messengerCode.actions'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPaginate from 'react-paginate'
 
 
@@ -103,14 +103,14 @@ class MessengerCode extends React.Component {
 
   gotoCreate() {
     console.log('this.props.messengerCode', this.props.messengerCode)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessengerCode`,
       state: { module: 'createMessage', messengerCode: this.props.messengerCode }
     })
   }
 
   onEdit(messengerCode) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editMessengerCode`,
       state: { module: 'edit', messengerCode }
     })
@@ -174,7 +174,7 @@ class MessengerCode extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeDialogDelete}>
@@ -191,8 +191,8 @@ class MessengerCode extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{ width: '680px', top: 100 }}
             onClose={() => { this.setState({ showVideo: false }) }}>
@@ -212,8 +212,8 @@ class MessengerCode extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingCreate &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closeCreateDialog}>
@@ -241,8 +241,8 @@ class MessengerCode extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowPreview &&
           <ModalContainer style={{ width: '500px' }}
             onClose={this.closePrviewDialog}>
@@ -260,7 +260,7 @@ class MessengerCode extends React.Component {
               </center>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

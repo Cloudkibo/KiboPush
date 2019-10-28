@@ -4,13 +4,13 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadTeamsList, deleteTeam } from '../../redux/actions/teams.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -150,7 +150,7 @@ class Teams extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editTeam`,
       state: {module: 'edit', name: team.name, description: team.description, _id: team._id}
     })
@@ -168,7 +168,7 @@ class Teams extends React.Component {
     //     pages.push(this.props.teamUniquePages[j])
     //   }
     // }
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editTeam`,
       state: {module: 'view', name: team.name, description: team.description, _id: team._id}
     })
@@ -186,7 +186,7 @@ class Teams extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false, top: 100}) }}>
@@ -206,8 +206,8 @@ class Teams extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -224,7 +224,7 @@ class Teams extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

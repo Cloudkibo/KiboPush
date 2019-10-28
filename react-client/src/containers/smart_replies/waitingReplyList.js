@@ -2,7 +2,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'

@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { createpoll, loadCategoriesList, addCategory } from '../../redux/actions/templates.actions'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class createPoll extends React.Component {
@@ -193,7 +193,7 @@ class createPoll extends React.Component {
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div
                   className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
+                  {/*
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -212,7 +212,7 @@ class createPoll extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                  }
+                  */}
                   <div
                     className='m-separator m-separator--dashed d-xl-none' />
                 </div>

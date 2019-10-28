@@ -4,9 +4,9 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   addPages,
   enablePage,
@@ -89,7 +89,7 @@ class AddPage extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
           this.state.showErrorDialog &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeErrorDialog}>
@@ -105,7 +105,7 @@ class AddPage extends React.Component {
               </a>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           {/*
             this.state.showWarning &&
@@ -132,12 +132,12 @@ class AddPage extends React.Component {
                   <div style={{paddingLeft:'50px'}}>
                     <span style={{fontSize: '16px', lineHeight: '70px'}}>Try:</span>
                     <ul>
-                      <li>Please make sure you are admin of atleast one facebook page from  <a href='https://www.facebook.com/bookmarks/pages/' target='_blank'>Facebook Pages</a>. 
-                      If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank'>Create A New Facebook Page</a> and then  
+                      <li>Please make sure you are admin of atleast one facebook page from  <a href='https://www.facebook.com/bookmarks/pages/' target='_blank'>Facebook Pages</a>.
+                      If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank'>Create A New Facebook Page</a> and then
                       <a href='/auth/facebook/' target='_blank'> ReConnect</a> kibopush app with your facebook account.</li>
                       <li>If you have facebook page, please make sure you have approved kibopush to manage atleast one of your facebook pages. Do check </li>
                       <a href='https://kibopush.com/allow_kibopush_manage_facebook_pages' target='_blank'> Documentation</a> for furthure assistance.
-                    </ul> 
+                    </ul>
                   </div>
                   </div>
                 </div>

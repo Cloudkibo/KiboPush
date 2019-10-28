@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
 import Analytics from './analytics'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 
 class AbandonedList extends React.Component {

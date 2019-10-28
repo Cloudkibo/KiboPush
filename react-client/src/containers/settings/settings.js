@@ -3,7 +3,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -21,7 +20,7 @@ import Webhook from './webhooks'
 import Configuration from './configuration'
 import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 
@@ -375,7 +374,7 @@ class Settings extends React.Component {
     this.props.reset({company_id: this.props.user._id})
   }
   saveNGPBtn (e) {
-    
+
     e.preventDefault()
     this.props.saveNGP({
       company_id: this.props.user.companyId,
@@ -387,7 +386,7 @@ class Settings extends React.Component {
     console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/resendVerificationEmail'
       })
     }
@@ -505,7 +504,7 @@ class Settings extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -525,8 +524,8 @@ class Settings extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -543,7 +542,7 @@ class Settings extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

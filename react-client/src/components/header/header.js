@@ -16,10 +16,10 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Notification from 'react-web-notification'
 import cookie from 'react-cookie'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -61,17 +61,17 @@ class Header extends React.Component {
     console.log('in updatePlatformValue', value)
     if (this.props.user && this.props.user.role === 'buyer') {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
         })
       } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })
       } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
         })
@@ -129,7 +129,7 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/live',
       state: { session_id: this.props.socketData.session_id }
     })
@@ -224,17 +224,17 @@ class Header extends React.Component {
   gotoView (id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'webhook' }
       })
     } else if (type === 'limit') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'pro' }
       })
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/liveChat`,
         state: { id: id }
       })
@@ -860,7 +860,7 @@ class Header extends React.Component {
             </div>
           </div>
         </div>
-        {
+        {/*
           this.state.showModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -878,7 +878,7 @@ class Header extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
       </header>
     )
   }

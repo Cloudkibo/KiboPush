@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadCategoriesList, addCategory, loadPollDetails, editPoll } from '../../redux/actions/templates.actions'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class EditPoll extends React.Component {
@@ -199,7 +199,7 @@ class EditPoll extends React.Component {
     }
     return (
       <div style={{width: '100%'}}>
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -218,7 +218,7 @@ class EditPoll extends React.Component {
               </button>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>

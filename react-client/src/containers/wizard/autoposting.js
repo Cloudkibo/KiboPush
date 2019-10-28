@@ -7,8 +7,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './header'
 import Sidebar from './sidebar'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from '../autoposting/addChannel'
 import ListItem from '../autoposting/ListItem'
@@ -119,7 +119,7 @@ class Autoposting extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
+        {/*
         this.state.showWordPressGuide &&
         <ModalContainer style={{width: '500px', top: '80px'}}
           onClose={this.closeGuide}>
@@ -192,12 +192,12 @@ class Autoposting extends React.Component {
             </div>
           </ModalDialog>
         </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -217,7 +217,7 @@ class Autoposting extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
 
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
@@ -244,7 +244,7 @@ class Autoposting extends React.Component {
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div
                           className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
+                          {/*
                             this.state.isShowingModal &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialog}>
@@ -253,8 +253,8 @@ class Autoposting extends React.Component {
                                 <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} msg={this.msg} />
                               </ModalDialog>
                             </ModalContainer>
-                          }
-                          {
+                          */}
+                          {/*
                             this.state.isShowingModalDelete &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialogDelete}>
@@ -271,7 +271,7 @@ class Autoposting extends React.Component {
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
-                          }
+                          */}
                         </div>
                       </div>
                       {this.props.autopostingData && this.props.autopostingData.length > 0 &&

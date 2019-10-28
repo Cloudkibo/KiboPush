@@ -5,7 +5,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import CopyLink from './copyLink'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class GrowthTools extends React.Component {
   constructor (props, context) {
@@ -42,7 +42,7 @@ class GrowthTools extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Growth Tools`;  
+    document.title = `${title} | Growth Tools`;
   }
 
   render () {

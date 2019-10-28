@@ -13,10 +13,10 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import { checkConditions } from '../polls/utility'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -103,7 +103,7 @@ class Survey extends React.Component {
   }
 
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -211,7 +211,7 @@ class Survey extends React.Component {
     this.setState({isShowingModalDelete: false, pageNumber: 0 })
   }
   gotoCreate () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/addsurvey`
     })
   }
@@ -246,7 +246,7 @@ class Survey extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -266,8 +266,8 @@ class Survey extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -284,8 +284,8 @@ class Survey extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
@@ -309,7 +309,7 @@ class Survey extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -375,7 +375,7 @@ class Survey extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -390,7 +390,7 @@ class Survey extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' *}
                                 <Link to='/showTemplateSurveys' className='btn btn-primary'>
                                   Use Template
                                 </Link>
@@ -400,13 +400,13 @@ class Survey extends React.Component {
                                       <span style={{color: '#34bfa3'}}>PRO</span>
                                     </span>
                                   </button>
-                                */}
+                                *}
                               </div>
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
-                      {
+                      */}
+                      {/*
                         this.state.isShowingModalDelete &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialogDelete}>
@@ -425,7 +425,7 @@ class Survey extends React.Component {
                             </button>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
                   <div className='form-row'>

@@ -6,7 +6,6 @@ import WhatsAppDashboard from './smsWhatsAppDashboard/whatsAppDashboard'
 import SmsDashboard from './smsWhatsAppDashboard/smsDashboard'
 
 import { getuserdetails } from '../redux/actions/basicinfo.actions'
-import { browserHistory } from 'react-router'
 
 class Home extends Component {
   constructor (props, context) {
@@ -22,7 +21,7 @@ class Home extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.user && nextProps.user.platform === 'messenger' && nextProps.user.role === 'buyer' && nextProps.user.showIntegrations) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/facebookIntegration'
       })
     }

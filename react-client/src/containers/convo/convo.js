@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
@@ -16,7 +15,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -67,7 +66,7 @@ class Convo extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -197,14 +196,14 @@ class Convo extends React.Component {
   }
 
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.state.pageValue}
     })
   }
 
   gotoTemplates () {
-    browserHistory.push(
+    this.props.history.push(
       {
         pathname: '/showTemplateBroadcasts',
         state: {pages: this.state.pageValue}
@@ -335,7 +334,7 @@ class Convo extends React.Component {
         <SubscriptionPermissionALert />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false, top: 100}) }}>
@@ -373,7 +372,7 @@ class Convo extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -424,7 +423,7 @@ class Convo extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
+                      {/*
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
                           onClose={this.closeDialog}>
@@ -443,7 +442,7 @@ class Convo extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' /}
                                 <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
                                   Use Template
                                 </button>
@@ -454,15 +453,15 @@ class Convo extends React.Component {
                                     <span style={{color: '#34bfa3'}}>PRO</span>
                                   </span>
                                 </button>
-                                */}
+                                *}
                               </div>
                             </div>
                           </ModalDialog>
                         </ModalContainer>
-                      }
+                      */}
                     </div>
                   </div>
-                  {
+                  {/*
                     this.state.isShowingZeroModal && ((this.props.subscribersCount === 0) || (this.props.pages && this.props.pages.length === 0)) &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeZeroSubDialog}>
@@ -486,7 +485,7 @@ class Convo extends React.Component {
                         </div>
                       </ModalDialog>
                     </ModalContainer>
-                    }
+                    */}
                   <div className='form-row'>
                     {/* <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
@@ -530,7 +529,7 @@ class Convo extends React.Component {
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                     </div>
-                    
+
                     </div> */}
 
                 <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>

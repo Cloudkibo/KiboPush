@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory } from 'react-router'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
@@ -9,7 +8,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class WelcomeMessage extends React.Component {
@@ -68,7 +67,7 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoCreate (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
@@ -79,7 +78,7 @@ class WelcomeMessage extends React.Component {
     //page.welcomeMessage[0].default_action=default_action
   //  console.log('pagein edit', default_action)
    console.log( 'page.welcomeMessage',  page.welcomeMessage)
-     browserHistory.push({
+     this.props.history.push({
        pathname: `/editWelcomeMessage`,
        state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
      })
@@ -87,7 +86,7 @@ class WelcomeMessage extends React.Component {
 
   gotoView (page) {
     console.log('page.welcomeMessage',page)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -104,7 +103,7 @@ class WelcomeMessage extends React.Component {
             </div>
           </div>
         </div>
-        {
+        {/*
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -124,8 +123,8 @@ class WelcomeMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
-        {
+        */}
+        {/*
           (this.state.isShowingZeroPageModal) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
@@ -146,7 +145,7 @@ class WelcomeMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&

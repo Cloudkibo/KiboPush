@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
@@ -7,8 +7,8 @@ import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { ModalBackground } from 'react-modal-dialog';
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalBackground } from 'react-modal-dialog';
 import MessengerSendToMessenger from 'react-messenger-send-to-messenger';
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -442,7 +442,7 @@ class ItemSettings extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/*
           this.state.showMessengerModal &&
           <ModalContainer style={{width: '500px'}} onClose={this.closeModal}>
             <ModalDialog style={{width: '500px'}} onClose={this.closeModal}>
@@ -455,7 +455,7 @@ class ItemSettings extends React.Component {
                 />
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <div className='m-subheader'>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Billing extends React.Component {
   constructor (props, context) {
@@ -152,7 +152,7 @@ class Billing extends React.Component {
                 </div>
               </div>
             </div>
-            {this.state.change &&
+            {/*this.state.change &&
               <ModalContainer style={{width: '500px'}}
                 onClose={this.closeDialog}>
                 <ModalDialog style={{width: '500px'}}
@@ -206,7 +206,7 @@ class Billing extends React.Component {
                   </button>
                 </ModalDialog>
               </ModalContainer>
-          }
+          */}
           </div>
         </div>
       </div>

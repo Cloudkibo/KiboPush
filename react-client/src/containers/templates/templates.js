@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import TemplateSurveys from './templateSurveys'
 import TemplatePolls from './templatePolls'
 import TemplateBroadcasts from './templateBroadcasts'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class templates extends React.Component {
   scrollToTop () {

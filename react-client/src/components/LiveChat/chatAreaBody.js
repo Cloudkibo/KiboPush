@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getmetaurl, displayDate, showDate, isEmoji, validURL } from '../../utility/liveChatUtility'
-import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import Halogen from 'halogen'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { ReactMic } from 'react-mic'
 import ReactPlayer from 'react-player'
 import AlertContainer from 'react-alert'
@@ -426,7 +426,7 @@ class ChatAreaBody extends React.Component {
     }
     return (
       <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>
-        {
+        {/*
           this.state.isShowingModalRecording &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogRecording}>
@@ -468,7 +468,7 @@ class ChatAreaBody extends React.Component {
             }
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <ReactTooltip
           place='bottom'
@@ -1214,12 +1214,12 @@ class ChatAreaBody extends React.Component {
                   </i>
                 </div>
               </div>
-              {
+              {/*
                 this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                 <div className='align-center'>
                   <center><Halogen.RingLoader color='#716aca' /></center>
                 </div>
-              }
+              */}
               {
                  JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                  <div style={{clear: 'both', display: 'block'}}>

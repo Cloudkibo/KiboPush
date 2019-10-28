@@ -1,5 +1,5 @@
 
-import { Route, IndexRoute } from 'react-router'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import React from 'react'
 import asyncComponent from "./components/AsyncComponent";
 
@@ -184,9 +184,9 @@ function redirectAuthUsers (nextState, replace) {
   }
 }
 
-const routes = (
-  <Route path='/' component={App}>
-    <IndexRoute component={Home} onEnter={redirectAuthUsers} />
+const Routes = () => (
+  <Switch>
+    <Route exact path='/' component={Home} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
     <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
@@ -347,8 +347,9 @@ const routes = (
     <Route path='/backdoorPageTags' component={BackdoorPageTags} onEnter={requireAuth} />
     <Route path='/backdoorPageSubscribersWithTags' component={BackdoorSubscribersWithTags} onEnter={requireAuth} />
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
-  </Route>
+    <Route path='*' render={() => <Redirect to='/' />} />
+  </Switch>
 
 )
 
-export default routes
+export default Routes

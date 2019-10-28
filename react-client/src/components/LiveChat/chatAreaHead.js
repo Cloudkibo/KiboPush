@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class ChatAreaHead extends React.Component {
   constructor (props, context) {
@@ -23,7 +23,7 @@ class ChatAreaHead extends React.Component {
   render () {
     return (
       <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
-        {
+        {/*
           this.state.isShowingModal &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialog}>
@@ -48,7 +48,7 @@ class ChatAreaHead extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        */}
         <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
         {
           this.props.activeSession.status === 'new'
