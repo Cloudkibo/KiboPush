@@ -13,7 +13,7 @@ import {
   sendbroadcast,
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
@@ -124,7 +124,7 @@ class Image extends React.Component {
         <div className='ui-block hoverborder' style={(this.state.imgWidth ? {minHeight: (this.state.imgHeight + 25) + 'px', minWidth: (this.state.imgWidth + 25) + 'px'} : {minHeight: 100, maxWidth: 400, padding: 25})}>
           {
           this.state.loading
-          ? {/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
+          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <input
               ref={el => { this.file = el }}

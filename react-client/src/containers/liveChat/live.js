@@ -21,7 +21,7 @@ import { Link } from 'react-router-dom'
 import ChatBox from './chatbox'
 import Profile from './profile'
 import Search from './search'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { timeSince } from './utilities'
@@ -367,7 +367,7 @@ class LiveChat extends React.Component {
             this.state.loading
               ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
                 className='align-center'>
-                {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
+                <center><RingLoader color='#716aca' /></center>
               </div>
               : <div className='row'>
                 <div className='col-xl-4'>

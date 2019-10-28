@@ -11,7 +11,7 @@ import { Picker } from 'emoji-mart'
 import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../redux/actions/commentCapture.actions'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 const styles = {
@@ -444,7 +444,7 @@ class FacebookPosts extends React.Component {
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
               className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
+              <center><RingLoader color='#716aca' /></center>
             </div>
           </ModalContainer>
           : <span />

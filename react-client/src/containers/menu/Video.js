@@ -16,7 +16,7 @@ import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import ReactPlayer from 'react-player'
 
 class Video extends React.Component {
@@ -116,7 +116,7 @@ class Video extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
-            ? {/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
+            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
             : <Files
               className='files-dropzone'
               onChange={this.onFilesChange}

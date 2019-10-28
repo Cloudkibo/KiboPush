@@ -22,7 +22,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
@@ -603,7 +603,7 @@ class Dashboard extends React.Component {
             </div>
           }
           {this.state.loading
-          ? <div>{/*<div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}</div>
+          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <div className='row'>
               {

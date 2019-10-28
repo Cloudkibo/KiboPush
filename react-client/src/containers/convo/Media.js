@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
@@ -293,7 +293,7 @@ class Media extends React.Component {
         <div style={{minHeight: 170, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
-          ? {/*<div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
+          ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>

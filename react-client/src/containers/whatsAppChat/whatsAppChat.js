@@ -18,7 +18,7 @@ import {
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { loadCustomFields, getCustomFieldValue } from '../../redux/actions/customFields.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -266,7 +266,7 @@ class LiveChat extends React.Component {
           this.state.loading
             ? <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
-              {/*<center><Halogen.RingLoader color='#716aca' /></center>*/}
+              <center><RingLoader color='#716aca' /></center>
             </div>
             : <div className='m-content'>
               <INFO module={CHATMODULE} />

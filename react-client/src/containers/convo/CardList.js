@@ -14,7 +14,7 @@ import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -647,7 +647,7 @@ class Card extends React.Component {
             <div style={{ display: 'inline-grid', backgroundColor: '#F2F3F8' }} className='cardimageblock col-md-4'>
               {
                 (this.state.loading)
-                  ? {/*<span style={{marginTop: '50px', marginLeft: '16px'}}><Halogen.RingLoader color='#FF5E3A' /></span>*/}
+                  ? <span style={{marginTop: '50px', marginLeft: '16px'}}><RingLoader color='#FF5E3A' /></span>
                   : <input
                     ref='file'
                     type='file'

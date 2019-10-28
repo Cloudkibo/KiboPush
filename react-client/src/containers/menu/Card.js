@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 // import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 
@@ -239,7 +239,7 @@ class Card extends React.Component {
           ? <ModalContainer>
             <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
               className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
+              <center><RingLoader color='#716aca' /></center>
             </div>
           </ModalContainer>
           : <span />

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-// import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
@@ -550,7 +550,7 @@ class Card extends React.Component {
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
-          ? {/*<div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>*/}
+          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
