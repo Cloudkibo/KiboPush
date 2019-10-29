@@ -175,19 +175,24 @@ class WelcomeMessage extends React.Component {
                                          </span>
                                          <br />
                                          <span className='m-widget4__sub'>
-                                         {(page.isWelcomeMessageEnabled) &&
-
-                                            <a className='m-widget4__icon'>
-                                              <button onClick={() => {this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} type='button' className='btn m-btn--pill btn-success btn-sm m-btn m-btn--custom'>Enabled</button>
-                                            </a>
-                                          }
-                                          {(!page.isWelcomeMessageEnabled) &&
-
-                                            <a className='m-widget4__icon'>
-                                              <button type='button' onClick={() => { this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disabled</button>
-                                            </a>
-
-                                          }
+                                           <div className= 'm-form__group form-group row'>
+                                             { page.isWelcomeMessageEnabled
+                                              ? <label className='col-1 col-form-label' style={{color: '#34bfa3', marginTop: '5px'}}>
+                                               Enabled
+                                               </label>
+                                              :<label className='col-1 col-form-label' style={{marginTop: '5px'}}>
+                                                Disabled
+                                              </label>
+                                             }
+                                            <div className='col-3'>
+                                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                                <label>
+                                                  <input type='checkbox' data-switch='true' checked={page.isWelcomeMessageEnabled} onChange={() => { this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} />
+                                                  <span></span>
+                                                </label>
+                                              </span>
+                                            </div>
+                                          </div>
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
