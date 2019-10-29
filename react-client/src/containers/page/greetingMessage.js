@@ -5,7 +5,6 @@ import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { Picker } from 'emoji-mart'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Popover from 'react-simple-popover'
 import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
@@ -28,7 +27,7 @@ const styles = {
   }
 }
 class GreetingMessage extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       greetingMessage: '',
@@ -36,9 +35,7 @@ class GreetingMessage extends React.Component {
       showUserOptions: false,
       selectPage: {},
       textCount: 160,
-      showPreview: false,
       previewMessage: '',
-      showVideo: false,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0
     }
     this.saveGreetingMessage = this.saveGreetingMessage.bind(this)
@@ -49,14 +46,12 @@ class GreetingMessage extends React.Component {
     this.showUserOptions = this.showUserOptions.bind(this)
     this.getName = this.getName.bind(this)
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
-    this.closePreviewDialog = this.closePreviewDialog.bind(this)
     this.selectPage = this.selectPage.bind(this)
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
     this.toggleUserOptions = this.toggleUserOptions.bind(this)
-    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     props.loadMyPagesList()
   }
-  showPreviewDialog () {
+  showPreviewDialog() {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
     var fullname = this.props.user.facebookInfo.name
@@ -65,16 +60,11 @@ class GreetingMessage extends React.Component {
     message = message.replace(/{{user_first_name}}/g, firstName)
     message = message.replace(/{{user_last_name}}/g, lastName)
     message = message.replace(/{{user_full_name}}/g, fullname)
-    this.setState({showPreview: true})
-    this.setState({previewMessage: message})
+    this.setState({ previewMessage: message })
     console.log('previewMessage', message)
   }
 
-  closePreviewDialog () {
-    this.setState({showPreview: false})
-  }
-
-  onChangeValue (event) {
+  onChangeValue(event) {
     if (event.target.value !== -1) {
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
@@ -97,7 +87,7 @@ class GreetingMessage extends React.Component {
     }
   }
 
-  getName (e, name) {
+  getName(e, name) {
     var message = this.state.greetingMessage + `{{${name}}}`
     var textCount = 160 - message.length
     if (textCount > 0) {
@@ -107,43 +97,43 @@ class GreetingMessage extends React.Component {
         showUserOptions: false
       })
     } else {
-      this.setState({showUserOptions: false})
+      this.setState({ showUserOptions: false })
     }
   }
-  saveGreetingMessage (e) {
+  saveGreetingMessage(e) {
     e.preventDefault()
     if (this.state.greetingMessage.length > 0) {
-      var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
+      var payload = { pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage }
       this.props.saveGreetingMessage(payload, this.msg)
       this.props.loadMyPagesList()
     }
   }
-  onGreetingMessageChange (e) {
+  onGreetingMessageChange(e) {
     if ((e.target.value).length > 160) {
       return
     }
     var messageLength = (e.target.value).length
     var textCount = 160 - messageLength
-    this.setState({textCount: textCount})
-    this.setState({greetingMessage: e.target.value})
+    this.setState({ textCount: textCount })
+    this.setState({ greetingMessage: e.target.value })
   }
-  viewGreetingMessage (e) {
+  viewGreetingMessage(e) {
     this.showPreviewDialog()
   }
-  showEmojiPicker () {
-    this.setState({showEmojiPicker: true})
+  showEmojiPicker() {
+    this.setState({ showEmojiPicker: true })
   }
-  toggleEmojiPicker () {
-    this.setState({showEmojiPicker: !this.state.showEmojiPicker})
+  toggleEmojiPicker() {
+    this.setState({ showEmojiPicker: !this.state.showEmojiPicker })
   }
-  toggleUserOptions () {
-    this.setState({showUserOptions: !this.state.showUserOptions})
+  toggleUserOptions() {
+    this.setState({ showUserOptions: !this.state.showUserOptions })
   }
-  showUserOptions () {
-    this.setState({showUserOptions: true})
+  showUserOptions() {
+    this.setState({ showUserOptions: true })
   }
 
-  setEmoji (emoji) {
+  setEmoji(emoji) {
     var message = this.state.greetingMessage + emoji.native
     var textCount = 160 - message.length
     if (textCount > 0) {
@@ -153,16 +143,16 @@ class GreetingMessage extends React.Component {
         showEmojiPicker: false
       })
     } else {
-      this.setState({showEmojiPicker: false})
+      this.setState({ showEmojiPicker: false })
     }
   }
-  componentWillMount () {
+  componentWillMount() {
   }
-  componentDidMount () {
+  componentDidMount() {
     this.selectPage()
-    const hostname =  window.location.hostname;
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -170,10 +160,7 @@ class GreetingMessage extends React.Component {
 
     document.title = `${title} | Greeting Message`;
   }
-  closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
-  }
-  selectPage () {
+  selectPage() {
     if (this.props.pages && this.props.pages.length > 0) {
       this.setState({
         selectPage: this.props.pages[0],
@@ -186,9 +173,9 @@ class GreetingMessage extends React.Component {
       })
     }
   }
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.greetingMessage) {
-      this.setState({greetingMessage: nextProps.greetingMessage.greetingText})
+      this.setState({ greetingMessage: nextProps.greetingMessage.greetingText })
       for (var i = 0; i < nextProps.pages.length; i++) {
         if (nextProps.pages[i].pageId === nextProps.greetingMessage.pageId) {
           this.setState({ selectPage: nextProps.pages[i] })
@@ -196,10 +183,11 @@ class GreetingMessage extends React.Component {
       }
     }
     if (nextProps.pages && nextProps.pages.length === 0) {
-      this.setState({isShowingZeroPageModal: true})
+      this.setState({ isShowingZeroPageModal: true })
+      this.refs.zeroModal.click()
     }
   }
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -210,13 +198,21 @@ class GreetingMessage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Greeting Text Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='LEN-grb6Rdc'
                   opts={{
@@ -228,34 +224,41 @@ class GreetingMessage extends React.Component {
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeZeroSubDialog}>
-            <ModalDialog style={{width: '700px', top: '75px'}}
-              onClose={this.closeZeroSubDialog}>
-              {this.state.isShowingZeroPageModal
-              ? <AlertMessageModal type='page' />
-            : <AlertMessageModal type='subscriber' />
-            }
-              <div>
-                <YouTube
-                  videoId='9kY3Fmj_tbM'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: {
-                      autoplay: 0
-                    }
-                  }}
-                />
+            </div>
+          </div>
+        </div>
+
+        <a href='#' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                {this.state.isShowingZeroPageModal &&
+                  <AlertMessageModal type='page' />
+                }
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  <YouTube
+                    videoId='9kY3Fmj_tbM'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <Popover placement='left' isOpen={this.state.showEmojiPicker} className='greetingPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
           <PopoverBody>
             <div>
@@ -279,17 +282,25 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </PopoverBody>
         </Popover>
-        {
-          this.state.showPreview &&
-          <ModalContainer style={{top: '100px'}}
-            onClose={this.closePreviewDialog}>
-            <ModalDialog style={{top: '100px'}}
-              onClose={this.closePreviewDialog}>
-              <h3>Greeting Message Preview</h3>
-              <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Greeting Message Preview
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -308,7 +319,7 @@ class GreetingMessage extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding greeting text? Here is the <a href='https://kibopush.com/greeting-text/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -316,25 +327,6 @@ class GreetingMessage extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
                 <div>
-                  {
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Remove Page</h3>
-                        <p>If you remove this page you will loose all of its
-                          subscribers and you will not be able to send messages,
-                          polls, and surveys to them. Are you sure to remove
-                          this page?</p>
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => this.removePage(
-                                  this.state.page)}>Remove
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
                   <div className='m-portlet__body'>
                     <form className='m-form m-form--fit m-form--label-align-right'>
                       <div className='m-portlet__body'>
@@ -344,7 +336,7 @@ class GreetingMessage extends React.Component {
                           <AlertMessage type='page' />
                         }
                         <div className='form-group m-form__group row'>
-                          <label className='col-3 col-form-label' style={{textAlign: 'left'}}>  Change Page</label>
+                          <label className='col-3 col-form-label' style={{ textAlign: 'left' }}>  Change Page</label>
                           <div className='col-8 input-group'>
                             <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
                               {
@@ -364,12 +356,12 @@ class GreetingMessage extends React.Component {
                                   className='form-control m-input m-input--solid'
                                   id='exampleTextarea' rows='3'
                                   placeholder='Enter Invitation Message'
-                                  style={{minHeight: '200px', resize: 'none', maxLength: '160'}}
+                                  style={{ minHeight: '200px', resize: 'none', maxLength: '160' }}
                                   value={this.state.greetingMessage}
                                   onChange={this.onGreetingMessageChange} />
                               </div>
                               <div className='m-messenger__form-tools pull-right messengerTools'>
-                                <div id='emogiPicker' ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                                <div id='emogiPicker' ref={(c) => { this.target = c }} style={{ display: 'inline-block' }} data-tip='emoticons'>
                                   <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                                     <i style={{
                                       fontSize: '20px',
@@ -383,7 +375,7 @@ class GreetingMessage extends React.Component {
                                     }} className='greetingMessage fa fa-smile-o' />
                                   </i>
                                 </div>
-                                <div id='userOptions' ref={(c) => { this.userOptions = c }} style={{display: 'inline-block'}} data-tip='options'>
+                                <div id='userOptions' ref={(c) => { this.userOptions = c }} style={{ display: 'inline-block' }} data-tip='options'>
                                   <i onClick={this.showUserOptions} style={styles.iconclass}>
                                     <i style={{
                                       fontSize: '20px',
@@ -397,8 +389,8 @@ class GreetingMessage extends React.Component {
                                     }} className='greetingMessage fa fa-user' />
                                   </i>
                                 </div>
-                                <div style={{display: 'inline-block', margin: '5px'}} data-tip='Text Count'>
-                                  <span style={{fontWeight: 'bold', color: 'blue'}}>{this.state.textCount}</span>
+                                <div style={{ display: 'inline-block', margin: '5px' }} data-tip='Text Count'>
+                                  <span style={{ fontWeight: 'bold', color: 'blue' }}>{this.state.textCount}</span>
                                 </div>
                               </div>
                             </div>
@@ -406,12 +398,12 @@ class GreetingMessage extends React.Component {
                           <br />
                           <div className='col-7' />
                           <div className='col-5 form-group m-form__group row'>
-                            <div style={{paddingLeft: '140px'}}>
-                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                            <div style={{ paddingLeft: '140px' }}>
+                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
                               {
                                 this.state.greetingMessage.length > 0
-                                ? <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                                : <button style={{display: 'inline-block'}} className='btn btn-primary' disabled>Save</button>
+                                  ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                                  : <button style={{ display: 'inline-block' }} className='btn btn-primary' disabled>Save</button>
                               }
                             </div>
                           </div>
@@ -431,7 +423,7 @@ class GreetingMessage extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
     greetingMessage: (state.settingsInfo.greetingMessage),
@@ -440,7 +432,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     saveGreetingMessage: saveGreetingMessage

@@ -7,25 +7,16 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
     this.state = {
       selectedRadio: props.pro === 'true' ? 'premium' : 'free',
-      change: props.pro ? props.pro : false
     }
-    this.change = this.change.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.save = this.save.bind(this)
     this.goToPayment = this.goToPayment.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-  }
-
-  closeDialog () {
-    this.setState({change: false})
   }
 
   componentDidMount () {
@@ -44,7 +35,6 @@ class Billing extends React.Component {
     }
     if (nextProps.error) {
       if (nextProps.error === 'success') {
-        this.setState({change: false})
       } else {
         this.msg.error(nextProps.error)
       }
@@ -56,11 +46,7 @@ class Billing extends React.Component {
       selectedRadio: e.currentTarget.value
     })
   }
-  change (value) {
-    this.setState({change: value})
-  }
   save () {
-    console.log('change', this.state.change)
     if (this.state.selectedRadio === 'free') {
       if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
@@ -137,7 +123,7 @@ class Billing extends React.Component {
                       <br /><br />
                     </div>
                     <center style={{marginTop: '15px', marginBottom: '15px'}}>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => this.change(true)} data-toggle='modal' data-target='#m_modal_1_2'>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#upgradePlan'>
                         {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')
                         ? <span>
                           Upgrade to Pro
@@ -152,14 +138,21 @@ class Billing extends React.Component {
                 </div>
               </div>
             </div>
-            {this.state.change &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <center><h3>Change Plan</h3></center>
-                  <br /><br />
-                  <div className='col-12'>
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgradePlan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Change Plan
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='col-12'>
                     <label>Billing Plan:</label>
                     <div className='radio-buttons' style={{marginLeft: '37px'}}>
                       <div className='radio'>
@@ -204,9 +197,10 @@ class Billing extends React.Component {
                   <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save.bind(this)} data-dismiss='modal' aria-label='Close'>
                     Change
                   </button>
-                </ModalDialog>
-              </ModalContainer>
-          }
+                </div>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       </div>

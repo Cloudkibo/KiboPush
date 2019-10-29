@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 import React from 'react'
-
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddCard from './AddCard'
 
 class CardModal extends React.Component {
@@ -304,9 +302,11 @@ class CardModal extends React.Component {
 
   showAdditionalCardsModal () {
     this.showingAdditionalCardsModal = true
+    this.ref.nextCard.click()
   }
 
   closeAdditionalCardsModal () {
+    this.refs.nextCard.click()
     this.setState({closeAdditionalCardsModal: true})
   }
 
@@ -372,6 +372,49 @@ class CardModal extends React.Component {
   componentWillUnmount() {
     this.props.closeModal()
   }
+
+  componentWillReceiveProps (nextProps) {
+    let cards = []
+    for (let i = 0; i < this.elementLimit; i++) {
+      if (nextProps.cards && nextProps.cards[i]) {
+        cards.push({component: nextProps.cards[i], disabled: false, id: i + 1})
+      } else {
+        if (i === 0) {
+          cards.push({
+            buttonDisabled: true,
+            disabled: true,
+            id: i + 1,
+            component: {
+              title: '',
+              subtitle: '',
+              buttons: []
+            }})
+        }
+      }
+    }
+    let messengerAdPayloads = []
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i].component.buttons && cards[i].component.buttons.length > 0) {
+        for (let j = 0; j < cards[i].component.buttons.length; j++) {
+          if (cards[i].component.buttons[j].payload) {
+            messengerAdPayloads.push(cards[i].component.buttons[j].payload)
+          }
+        }
+      }
+    }
+    this.setState({
+      cards,
+      selectedIndex: 0,
+      currentCollapsed: false,
+      disabled: nextProps.edit ? false : true,
+      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'], 
+      buttonDisabled: false,
+      actionDisabled: false,
+      numOfElements: cards.length,
+      closeAdditionalCardsModal: true,
+      messengerAdPayloads
+    })
+  }
   
   render () {
     let requirements = this.getRequirements().filter(req => !!req)
@@ -380,76 +423,101 @@ class CardModal extends React.Component {
       slidesToShow: 1
     }
     return (
-      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-        onClose={this.closeModal}>
-        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-          onClose={this.closeModal}>
-
-          {
-            (requirements && requirements.length === 0 && !this.state.closeAdditionalCardsModal) &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeAdditionalCardsModal}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeAdditionalCardsModal}>
+      <div className="modal-content">
+        <a href='#' style={{ display: 'none' }} ref='nextCard' data-toggle="modal" data-target="#cardComplete">error</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="cardComplete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Subscription Messaging Policy Change
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={()=> this.refs.nextCard.click()} aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <p>You just completed all requirements for a card. Do you want to add an additional card?</p>
-                <button style={{float: 'right', marginLeft: '10px'}}
+                <button style={{ float: 'right', marginLeft: '10px' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.closeAdditionalCardsModal()
                     this.addElement()
                   }}>Yes
                 </button>
-                <button style={{float: 'right'}}
+                <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.closeAdditionalCardsModal()
                   }}>Cancel
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+         {/* {
+            // (requirements && requirements.length === 0 && !this.state.closeAdditionalCardsModal) &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeAdditionalCardsModal}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeAdditionalCardsModal}>
+                
               </ModalDialog>
             </ModalContainer>
-          }
-          <h3>Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component</h3>
-          <hr />
+          } */}
+        <div style={{ display: 'block' }} className="modal-header">
+          <h5 className="modal-title" id="exampleModalLabel">
+            Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component
+					</h5>
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">
+              &times;
+						</span>
+          </button>
+        </div>
+        <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
-            <div className='col-6' style={{maxHeight: '65vh', overflowY: 'scroll'}}>
-            <h4>Cards:</h4>
-              <div className='ui-block' style={{position: 'relative', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px'}}>
+            <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
+              <h4>Cards:</h4>
+              <div className='ui-block' style={{ position: 'relative', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px' }}>
                 {
-                    this.state.cards.map((card, index) => {
-                        console.log(`AddCard ${index+1}`, card)
-                        return (
-                          <div className="panel-group" id="accordion">
-                            <div className="panel panel-default">
-                              <div id={`panel-heading${index+1}`} className="panel-heading">
-                                <h4 className="panel-title" style={{fontSize: '22px'}}>
-                                  <a onClick={() => this.updateSelectedIndex(index)} data-toggle="collapse" data-parent="#accordion" href={`#collapse${index+1}`}>Card #{index+1}</a>
-                                </h4>
-                              </div>
-                              <div id={`collapse${index+1}`} className={"panel-collapse " + (this.state.selectedIndex === index ? "show" : "collapse")}>
-                                <div className="panel-body">
-                                  <AddCard
-                                    edit={this.props.edit}
-                                    buttonActions={this.state.buttonActions}
-                                    buttonLimit={this.buttonLimit}
-                                    index={card.id-1}
-                                    onlyCard={this.state.cards.length}
-                                    cardComponent
-                                    errorMsg={'*At least one card is required'}
-                                    replyWithMessage={this.props.replyWithMessage}
-                                    card={card}
-                                    addCard={this.addCard}
-                                    ref={(ref) => { this.cardComponents[card.id-1] = ref }}
-                                    closeCard={() => { this.closeCard(card.id) }}
-                                    id={card.id}
-                                    updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
-                                    disabled={this.state.disabled || this.state.actionDisabled}
-                                    />                 
-                                </div>
-                              </div>
+                  this.state.cards.map((card, index) => {
+                    console.log(`AddCard ${index + 1}`, card)
+                    return (
+                      <div className="panel-group" id="accordion">
+                        <div className="panel panel-default">
+                          <div id={`panel-heading${index + 1}`} className="panel-heading">
+                            <h4 className="panel-title" style={{ fontSize: '22px' }}>
+                              <a onClick={() => this.updateSelectedIndex(index)} data-toggle="collapse" data-parent="#accordion" href={`#collapse${index + 1}`}>Card #{index + 1}</a>
+                            </h4>
+                          </div>
+                          <div id={`collapse${index + 1}`} className={"panel-collapse " + (this.state.selectedIndex === index ? "show" : "collapse")}>
+                            <div className="panel-body">
+                              <AddCard
+                                edit={this.props.edit}
+                                buttonActions={this.state.buttonActions}
+                                buttonLimit={this.buttonLimit}
+                                index={card.id - 1}
+                                onlyCard={this.state.cards.length}
+                                cardComponent
+                                errorMsg={'*At least one card is required'}
+                                replyWithMessage={this.props.replyWithMessage}
+                                card={card}
+                                addCard={this.addCard}
+                                ref={(ref) => { this.cardComponents[card.id - 1] = ref }}
+                                closeCard={() => { this.closeCard(card.id) }}
+                                id={card.id}
+                                updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
+                                disabled={this.state.disabled || this.state.actionDisabled}
+                              />
                             </div>
-                          </div>  
-                        )
-                    })
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
                 }
 
                 {/* {
@@ -473,126 +541,128 @@ class CardModal extends React.Component {
                     })
                 } */}
                 {
-                    (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} >
-                      <div onClick={this.addElement} style={{paddingTop: '5px'}} className='align-center'>
-                        <h6> + Add Card </h6>
-                      </div>
+                  (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{ minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
+                    <div onClick={this.addElement} style={{ paddingTop: '5px' }} className='align-center'>
+                      <h6> + Add Card </h6>
                     </div>
+                  </div>
                 }
               </div>
 
             </div>
             <div className='col-1'>
-              <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
+              <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
             </div>
             <div className='col-5'>
-              <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px'}} >        
-                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">  
+              <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
+              <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px' }} >
+                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
                   {
-                    this.state.cards.length > 1 &&                   
-                      <ol className="carousel-indicators carousel-indicators-numbers" style={{bottom: '-65px'}}>
-                        {
-                          this.state.cards.map((card, index) => {
-                              return (<li 
-                                style={(this.state.hover === index || this.state.selectedIndex === index) ? {...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle} : this.carouselIndicatorStyle} 
-                                onMouseEnter={() => this.toggleHover(index, true)} 
-                                onMouseLeave={() => this.toggleHover(index, false)}
-                                data-target="#carouselExampleControls" 
-                                data-slide-to={index} 
-                                onClick={() => this.updateSelectedIndex(index)}
-                                className={(index === this.state.selectedIndex ? "active" : "")}>
-                                {index+1}
-                              </li>)
-                          })
-                        }
-                      </ol>
+                    this.state.cards.length > 1 &&
+                    <ol className="carousel-indicators carousel-indicators-numbers" style={{ bottom: '-65px' }}>
+                      {
+                        this.state.cards.map((card, index) => {
+                          return (<li
+                            style={(this.state.hover === index || this.state.selectedIndex === index) ? { ...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle } : this.carouselIndicatorStyle}
+                            onMouseEnter={() => this.toggleHover(index, true)}
+                            onMouseLeave={() => this.toggleHover(index, false)}
+                            data-target="#carouselExampleControls"
+                            data-slide-to={index}
+                            onClick={() => this.updateSelectedIndex(index)}
+                            className={(index === this.state.selectedIndex ? "active" : "")}>
+                            {index + 1}
+                          </li>)
+                        })
+                      }
+                    </ol>
                   }
                   <div className="carousel-inner">
-                  {
-                    this.state.cards.map((card, index) => {
-                      return (
-                        <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px'}} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
+                    {
+                      this.state.cards.map((card, index) => {
+                        return (
+                          <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
                             {
-                                card.component.image_url &&
-                                <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
+                              card.component.image_url &&
+                              <img src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
                             }
-                            <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
-                            <h6 style={{textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
-                            <p style={{textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                            <p style={{textAlign: 'justify', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
+                            <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
+                            <h6 style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
+                            <p style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px' }}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                            <p style={{ textAlign: 'justify', marginLeft: '10px', fontSize: '13px' }}>{card.component.default_action && card.component.default_action.url}</p>
                             {
-                                card.component.buttons.map((button, index) => {
-                                  if (button.visible || button.type) {
-                                    return (
-                                      <div>
-                                        <hr style={{marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : ''}}/>
-                                        <h5 style={{color: '#0782FF'}}>{button.title}</h5>
-                                      </div>
-                                    )
-                                  }
-                                })
+                              card.component.buttons.map((button, index) => {
+                                if (button.visible || button.type) {
+                                  return (
+                                    <div>
+                                      <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
+                                      <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
+                                    </div>
+                                  )
+                                }
+                              })
                             }
-                        </div>
-                      )
-                    })                   
-                  }
+                          </div>
+                        )
+                      })
+                    }
                   </div>
                   {
-                    this.state.cards.length > 1 && 
-                      <div>
+                    this.state.cards.length > 1 &&
+                    <div>
 
-                        {
-                          this.state.selectedIndex > 0 &&                         
-                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" style={{top: '125px'}} role="button">
-                           <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                           <span className="sr-only">Previous</span>
-                          </a>
-                        }
-                        {
-                          this.state.selectedIndex < this.state.cards.length-1 && 
-                          <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" style={{top: '125px'}} role="button" >
-                            <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                            <span className="sr-only">Next</span>
-                          </a>
+                      {
+                        this.state.selectedIndex > 0 &&
+                        <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex - 1)} className="carousel-control-prev" style={{ top: '125px' }} role="button">
+                          <span className="carousel-control-prev-icon" style={{ cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")` }} aria-hidden="true"></span>
+                          <span className="sr-only">Previous</span>
+                        </a>
+                      }
+                      {
+                        this.state.selectedIndex < this.state.cards.length - 1 &&
+                        <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex + 1)} className="carousel-control-next" style={{ top: '125px' }} role="button" >
+                          <span className="carousel-control-next-icon" style={{ cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")` }} aria-hidden="true"></span>
+                          <span className="sr-only">Next</span>
+                        </a>
 
-                        }
-                      </div>
+                      }
+                    </div>
                   }
                 </div>
 
 
-                <ul style={{marginTop: '65px'}}>
+                <ul style={{ marginTop: '65px' }}>
                   {
-                    requirements && requirements.length > 0 ? requirements :             
-                    (
-                    <li style={{textAlign: 'left', color: 'green', marginLeft: '30px'}}>{'All requirments fulfilled'}
-                      <ul>
-                        <li>Scroll down to add additional cards</li>
-                        <li>Click the Next button to finish</li>
-                      </ul>
-                    </li>
-                    )
+                    requirements && requirements.length > 0 ? requirements :
+                      (
+                        <li style={{ textAlign: 'left', color: 'green', marginLeft: '30px' }}>{'All requirments fulfilled'}
+                          <ul>
+                            <li>Scroll down to add additional cards</li>
+                            <li>Click the Next button to finish</li>
+                          </ul>
+                        </li>
+                      )
                   }
                 </ul>
 
-                </div>
               </div>
             </div>
+          </div>
 
-            <div className='row' style={{marginTop: '-5vh'}}>
-              <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
-                    Cancel
+          <div className='row' style={{ marginTop: '-5vh' }}>
+            <div className='pull-right'>
+              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
+              data-dismiss='modal'
+              >
+                Cancel
                 </button>
-                <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Next'}
-                </button>
-              </div>
+              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'
+              data-dismiss='modal'>
+                {this.props.edit ? 'Edit' : 'Next'}
+              </button>
             </div>
-        </ModalDialog>
-      </ModalContainer>
-
+          </div>
+        </div>
+      </div>
     )
   }
 }

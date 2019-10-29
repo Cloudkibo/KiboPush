@@ -9,7 +9,6 @@ import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 import json2csv from 'json2csv'
 import fileDownload from 'js-file-download'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { browserHistory } from 'react-router'
 
 var responseData = []
@@ -20,21 +19,11 @@ class SurveyResult extends React.Component {
      // totalSent: this.props.location.state.sent,
       totalResponses: 0,
       show: false,
-      isShowingModalPro: false
     }
     this.getFile = this.getFile.bind(this)
     this.sortData = this.sortData.bind(this)
     this.exists = this.exists.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
-  }
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
-  }
-
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
   }
   goToSettings () {
     browserHistory.push({
@@ -155,14 +144,21 @@ class SurveyResult extends React.Component {
         }
         */
        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Upgrade to Pro
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-primary' onClick={() => this.goToSettings()}>
@@ -170,9 +166,10 @@ class SurveyResult extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -239,7 +236,7 @@ class SurveyResult extends React.Component {
                       </span>
                     </button>
                     : this.state.show &&
-                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
                       <span>
                         <i className='fa fa-download' />
                         <span>

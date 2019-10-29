@@ -13,7 +13,6 @@ import AlertContainer from 'react-alert'
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
 import ReactPlayer from 'react-player'
 
@@ -30,8 +29,6 @@ class Audio extends React.Component {
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.handleFile = this.handleFile.bind(this)
@@ -75,13 +72,6 @@ class Audio extends React.Component {
     if (truef === false) {
     }
   }
-  showDialog (page) {
-    this.setState({showDialog: true})
-  }
-
-  closeDialog () {
-    this.setState({showDialog: false})
-  }
 
   setLoading () {
     this.setState({loading: false})
@@ -119,7 +109,8 @@ class Audio extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.setState({errorMsg: error.message, showDialog: true})
+    this.setState({errorMsg: error.message})
+    this.refs.error.click()
   }
 
   render () {
@@ -160,17 +151,26 @@ class Audio extends React.Component {
               </div>
             </Files>
           }
-          {
-          this.state.showDialog &&
-            <ModalContainer style={{width: '300px'}}
-              onClose={this.closeDialog}>
-              <ModalDialog style={{width: '300px'}}
-                onClose={this.closeDialog}>
-                <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
-                <p>{this.state.errorMsg}</p>
-              </ModalDialog>
-            </ModalContainer>
-        }
+          <a href='#' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    <i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{ color: 'black' }} className="modal-body">
+                  <p>{this.state.errorMsg}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div style={{color: 'red'}}>{this.props.required && !this.state.file ? '*Required' : ''}</div>
       </div>

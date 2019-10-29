@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -17,14 +15,11 @@ class Media extends React.Component {
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.updateFile = this.updateFile.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
       errorMsg: '',
-      showErrorDialogue: false,
       imgSrc: props.img ? props.img : '',
       button: props.buttons ? props.buttons : [],
       fileurl: props.fileurl ? props.fileurl : '',
@@ -40,13 +35,6 @@ class Media extends React.Component {
       styling: {minHeight: 30, maxWidth: 400}
     }
   }
-  showDialog (page) {
-    this.setState({showErrorDialogue: true})
-  }
-
-  closeDialog () {
-    this.setState({showErrorDialogue: false})
-  }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)
@@ -56,7 +44,8 @@ class Media extends React.Component {
   }
   onFilesError (error, file) {
     console.log('error.message', error.message)
-    this.setState({errorMsg: error.message, showErrorDialogue: true})
+    this.setState({errorMsg: error.message})
+    this.refs.error.click()
   }
 
   _onChange () {
@@ -248,17 +237,26 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        {
-        this.state.showErrorDialogue &&
-          <ModalContainer style={{width: '300px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '300px'}}
-              onClose={this.closeDialog}>
-              <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
-              <p>{this.state.errorMsg}</p>
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <a href='#' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  <i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>{this.state.errorMsg}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
           {
           this.state.loading

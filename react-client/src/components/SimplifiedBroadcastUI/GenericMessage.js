@@ -19,6 +19,7 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import YoutubeVideoModal from './YoutubeVideoModal'
 import LinkCarousel from './LinkCarousel';
+import { spawn } from 'child_process'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -119,18 +120,20 @@ class GenericMessage extends React.Component {
 
   showCloseModalAlertDialog () {
     this.setState({isShowingModalCloseAlert: true})
+    this.refs.lossData.click()
   }
 
   showAddComponentModal (componentType, editData) {
     console.log('showAddComponentModal componentType', componentType)
     console.log('showAddComponentModal editData', editData)
     document.body.style.overflow = 'hidden'
-    this.setState({isShowingAddComponentModal: true, componentType, editData})
+    this.setState({componentType, editData})
+    this.refs.singleModal.click()
   }
 
   closeAddComponentModal () {
     document.body.style.overflow = 'auto'
-    this.setState({isShowingAddComponentModal: false, editData: null})
+    this.setState({editData: null})
   }
 
   showDialog () {
@@ -769,55 +772,45 @@ class GenericMessage extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                     }
-                    {
-                      this.state.isShowingAddComponentModal && this.openModal()
-                    }
-                    {
-                      this.state.isShowingModalCloseAlert &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeModalAlertDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeModalAlertDialog}>
-                          <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
-                          <button style={{float: 'right', marginLeft: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeModalAlertDialog()
-                              this.closeAddComponentModal()
-                            }}>Yes
+                    <a href='#' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+                        {this.openModal()}
+                      </div>
+                    </div>
+                    <a href='#' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Warning
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
+                            <button style={{ float: 'right', marginLeft: '10px' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeModalAlertDialog()
+                                this.closeAddComponentModal()
+                              }} data-dismiss='modal'>Yes
                           </button>
-                          <button style={{float: 'right'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeModalAlertDialog()
-                            }}>Cancel
+                            <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeModalAlertDialog()
+                              }} data-dismiss='modal'>Cancel
                           </button>
-                        </ModalDialog>
-                      </ModalContainer>
-                    }
-                    {
-                      this.state.isShowingModalResetAlert &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeResetAlertDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeResetAlertDialog}>
-                          <p>Are you sure you want to reset the message ?</p>
-                          <button style={{float: 'right', marginLeft: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.newConvo()
-                              this.closeResetAlertDialog()
-                            }}>Yes
-                          </button>
-                          <button style={{float: 'right'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeResetAlertDialog()
-                            }}>Cancel
-                          </button>
-                        </ModalDialog>
-                      </ModalContainer>
-                    }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

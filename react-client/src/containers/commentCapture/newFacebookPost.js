@@ -28,11 +28,11 @@ const styles = {
   }
 }
 class FacebookPosts extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       postText: '',
-      postOriginalText:'',
+      postOriginalText: '',
       attachments: [],
       selectedPage: {},
       showEmojiPicker: false,
@@ -46,8 +46,6 @@ class FacebookPosts extends React.Component {
       facebookPost: [],
       isVideo: false,
       videoPost: false,
-      showImages: false,
-      showVideo: false,
       showSuccessMessage: false,
       postId: ''
     }
@@ -67,18 +65,11 @@ class FacebookPosts extends React.Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.validateFile = this.validateFile.bind(this)
-    this.previewImages = this.previewImages.bind(this)
-    this.previewVideo = this.previewVideo.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
-  closeDialogDelete () {
-    this.setState({showSuccessMessage: false})
-  }
-
-  validationCommentCapture () {
+  validationCommentCapture() {
     if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
@@ -90,7 +81,7 @@ class FacebookPosts extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -155,27 +146,17 @@ class FacebookPosts extends React.Component {
       })
     }
   }
-  onTestURLVideo (url) {
+  onTestURLVideo(url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
     }
   }
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     console.log(' componentWillReceiveProps called')
   }
-  previewImages () {
-    this.setState({
-      showImages: true
-    })
-  }
-  previewVideo () {
-    this.setState({
-      showVideo: true
-    })
-  }
-  removeAttachment (attachment) {
+  removeAttachment(attachment) {
     var id = attachment.id
     var facebookPost = this.state.facebookPost
     var attachments = []
@@ -196,7 +177,7 @@ class FacebookPosts extends React.Component {
       this.validationCommentCapture()
     })
   }
-  handleUpload (res, fileData) {
+  handleUpload(res, fileData) {
     this.setState({
       loading: false
     })
@@ -206,12 +187,12 @@ class FacebookPosts extends React.Component {
       })
     }
     if (res.status === 'success') {
-      var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
+      var attachComponent = { componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url }
       var attachment = []
       attachment.push(attachComponent)
       var post = []
       if (this.state.postText !== '') {
-        post.push({componentType: 'text', text: this.state.postText})
+        post.push({ componentType: 'text', text: this.state.postText })
       }
       post.push(attachComponent)
       this.setState({
@@ -226,7 +207,7 @@ class FacebookPosts extends React.Component {
     }
     this.validationCommentCapture()
   }
-  validateKeywords () {
+  validateKeywords() {
     var errors = false
     if (this.state.includedKeywords !== '' && this.state.excludedKeywords !== '') {
       var errorMessages = this.state.keywordErrors
@@ -236,9 +217,9 @@ class FacebookPosts extends React.Component {
         for (let j = 0; j < excludedKeywords.length; j++) {
           if ((includedKeywords[i].trim()) === (excludedKeywords[j].trim())) {
             errors = true
-            var errorMessage = {error: 'keywords', message: 'Keywords cannot be same in both the fields'}
+            var errorMessage = { error: 'keywords', message: 'Keywords cannot be same in both the fields' }
             errorMessages.push(errorMessage)
-            this.setState({keywordErrors: errorMessages})
+            this.setState({ keywordErrors: errorMessages })
             break
           }
         }
@@ -249,7 +230,7 @@ class FacebookPosts extends React.Component {
     }
     return errors
   }
-  editPost () {
+  editPost() {
     if (this.state.keywordErrors.length > 0) {
       return
     }
@@ -262,14 +243,15 @@ class FacebookPosts extends React.Component {
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
-    if(this.state.postText !== this.state.postOriginalText){
+    if (this.state.postText !== this.state.postOriginalText) {
       payload.postText = this.state.postText
       payload.pageAccessToken = this.props.currentPost.pageId.accessToken
     }
     this.props.editFacebookPost(payload, this.msg)
-    this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
+    this.setState({ showSuccessMessage: true, postId: this.props.currentPost.post_id })
+    this.refs.viewPost.click()
   }
-  reset (postId, showSuccessMessage) {
+  reset(postId, showSuccessMessage) {
     this.setState({
       postText: '',
       showEmojiPicker: false,
@@ -282,8 +264,9 @@ class FacebookPosts extends React.Component {
       postId: postId || '',
       showSuccessMessage: showSuccessMessage || false
     })
+    if(this.state.showSuccessMessage === true) this.refs.viewPost.click()
   }
-  validateFile (files, componentType) {
+  validateFile(files, componentType) {
     var errors = false
     var file = files[files.length - 1]
     if (componentType === 'image' && this.state.attachments.length === 5) {
@@ -302,7 +285,7 @@ class FacebookPosts extends React.Component {
     return errors
   }
 
-  onFileChange (e, componentType) {
+  onFileChange(e, componentType) {
     console.log('e.target.files', e.target.files, componentType)
     if (!this.validateFile(e.target.files, componentType)) {
       var files = e.target.files
@@ -331,10 +314,10 @@ class FacebookPosts extends React.Component {
       }
     }
   }
-  onFilesError (e) {
+  onFilesError(e) {
     this.msg.error('Error', e.target.value)
   }
-  onFacebookPostChange (e) {
+  onFacebookPostChange(e) {
     if (((e.target.value && e.target.value !== '') || this.state.attachments.length > 0) && this.state.autoReply !== '') {
       this.setState({
         disabled: false
@@ -345,7 +328,7 @@ class FacebookPosts extends React.Component {
       })
     }
     var facebookPost = []
-    facebookPost.push({componentType: 'text', text: e.target.value})
+    facebookPost.push({ componentType: 'text', text: e.target.value })
     if (this.state.attachments.length > 0) {
       for (var i = 0; i < this.state.attachments.length; i++) {
         facebookPost.push(this.state.attachments[i])
@@ -356,7 +339,7 @@ class FacebookPosts extends React.Component {
       facebookPost: facebookPost
     })
   }
-  replyChange (e) {
+  replyChange(e) {
     if ((e.target.value && e.target.value !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
@@ -370,28 +353,28 @@ class FacebookPosts extends React.Component {
       autoReply: e.target.value
     })
   }
-  setEmoji (emoji) {
+  setEmoji(emoji) {
     this.setState({
       postText: this.state.postText + emoji.native,
       showEmojiPicker: false
     })
   }
-  includedKeywordsChange (e) {
+  includedKeywordsChange(e) {
     this.setState({
       keywordErrors: [],
       includedKeywords: e.target.value
     })
   }
-  excludedKeywordsChange (e) {
+  excludedKeywordsChange(e) {
     this.setState({
       keywordErrors: [],
       excludedKeywords: e.target.value
     })
   }
-  toggleEmojiPicker () {
-    this.setState({showEmojiPicker: !this.state.showEmojiPicker})
+  toggleEmojiPicker() {
+    this.setState({ showEmojiPicker: !this.state.showEmojiPicker })
   }
-  onPageChange (event) {
+  onPageChange(event) {
     console.log('event', event.target.value)
     if (event.target.value !== -1) {
       let page
@@ -412,7 +395,7 @@ class FacebookPosts extends React.Component {
       })
     }
   }
-  onPost () {
+  onPost() {
     if (this.state.keywordErrors.length > 0) {
       return
     }
@@ -429,7 +412,7 @@ class FacebookPosts extends React.Component {
     console.log('facebook post', payload)
     this.props.createFacebookPost(payload, this.msg, this.reset)
   }
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -439,68 +422,58 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                { this.state.attachments.length > 0 && this.state.videoPost &&
-                  <ReactPlayer
-                    url={this.state.attachments[0].url}
-                    controls
-                    width='100%'
-                    height='auto'
-                    onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
-                  />
-                }
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="previewImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Posted Image
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showImages &&
-          <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({showImages: false}) }}>
-            <ModalDialog style={{width: '500px', top: '100px'}}
-              onClose={() => { this.setState({showImages: false}) }}>
-              <div>
-                {
-              this.state.attachments.map((attachment, i) => (
-                <div className='col-12'>
-                  <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                    <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
-                  </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  {
+                    this.state.attachments.map((attachment, i) => (
+                      <div className='col-12'>
+                        <div className='ui-block' style={{ borderStyle: 'dotted', borderWidth: '2px' }}>
+                          <img src={attachment.url} alt='Image' style={{ maxWidth: '400px', maxHeight: '200px' }} />
+                        </div>
+                      </div>
+                    ))
+                  }
                 </div>
-              ))
-              }
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showSuccessMessage &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
-              <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{cursor: 'pointer'}}>Click Here</a> to view your Facebook Page Post.</p>
-              <p>The people who comment on this post will receive the reply that you set. </p>
-          </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        </div>
+        <a href='#' style={{ display: 'none' }} ref='viewPost' data-toggle="modal" data-target="#viewPost">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="viewPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  View Post on Facebook
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
+                <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{ cursor: 'pointer' }}>Click Here</a> to view your Facebook Page Post.</p>
+                <p>The people who comment on this post will receive the reply that you set. </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -525,29 +498,29 @@ class FacebookPosts extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
-                      { this.state.isEdit === 'true'
-                    ? <div className='form-group m-form__group' style={{display: 'flex'}}>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Page</label>
-                      </div>
-                      <div className='col-9'>
-                        <span>{this.state.selectedPage.pageName}</span>
-                      </div>
-                    </div>
-                    : <div className='form-group m-form__group' style={{display: 'flex'}}>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Choose your Facebook Page</label>
-                      </div>
-                      <div className='col-9'>
-                        <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
-                          {
-                            this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                              <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                    </div>
+                      {this.state.isEdit === 'true'
+                        ? <div className='form-group m-form__group' style={{ display: 'flex' }}>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Page</label>
+                          </div>
+                          <div className='col-9'>
+                            <span>{this.state.selectedPage.pageName}</span>
+                          </div>
+                        </div>
+                        : <div className='form-group m-form__group' style={{ display: 'flex' }}>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Choose your Facebook Page</label>
+                          </div>
+                          <div className='col-9'>
+                            <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
+                              {
+                                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                  <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
+                                ))
+                              }
+                            </select>
+                          </div>
+                        </div>
                       }
                     </div>
                     <br />
@@ -557,52 +530,55 @@ class FacebookPosts extends React.Component {
                           <label className='col-form-label'>Create a Facebook Post that will be published on your page</label>
                         </div>
                         <div className='col-12'>
-                          { this.state.isEdit === 'false'
-                        ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='postTextArea' rows='3'
-                            placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
-                            style={{height: '150px', resize: 'none'}}
-                            value={this.state.postText}
-                            onChange={this.onFacebookPostChange} />
-                          {
-                              this.state.attachments.length > 0 &&
-                              <div className='attachmentDiv' style={{display: 'flex'}}>
-                                {
-                                this.state.attachments.map((attachment, i) => (
-                                  <div className='col-2'>
-                                    <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
-                                    <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                                      { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                          {this.state.isEdit === 'false'
+                            ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{ backgroundColor: '#f4f5f8' }}>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='postTextArea' rows='3'
+                                placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
+                                style={{ height: '150px', resize: 'none' }}
+                                value={this.state.postText}
+                                onChange={this.onFacebookPostChange} />
+                              {
+                                this.state.attachments.length > 0 &&
+                                <div className='attachmentDiv' style={{ display: 'flex' }}>
+                                  {this.state.loading &&
+                                    <center><Halogen.RingLoader color='#716aca' /></center>
+                                  }
+                                  {
+                                    this.state.attachments.map((attachment, i) => (
+                                      <div className='col-2'>
+                                        <span className='fa-stack' style={{ cursor: 'pointer', float: 'right', padding: '7px' }} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                        <div className='ui-block' style={{ borderStyle: 'dotted', borderWidth: '2px' }}>
+                                          {attachment.componentType === 'image' && <div className='align-center' style={{ height: '60px' }}>
+                                            <img src={attachment.url} alt='Image' style={{ maxHeight: '40px', maxWidth: '120px' }} />
+                                          </div>
+                                          }
+                                          {attachment.componentType === 'video' && <div className='align-center' style={{ height: '60px' }}>
+                                            <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{ maxHeight: '50px', marginLeft: '15px' }} />
+                                          </div>
+                                          }
+                                        </div>
                                       </div>
-                                      }
-                                      { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
-                                      </div>
-                                      }
-                                    </div>
-                                  </div>
-                                ))
-                                }
-                              </div>
-                            }
-                          <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
-                            <span>
-                              <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
-                            </span>
-                          </span>
-                          <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
-                            <span>
-                              <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
-                                this.refs.selectImage.click()
-                              }} />
-                            </span>
-                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
-                              ref='selectImage' style={styles.inputf} />
-                          </span>
-                          {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                    ))
+                                  }
+                                </div>
+                              }
+                              <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                                <span>
+                                  <i className='fa fa-smile-o' style={{ cursor: 'pointer' }} onClick={this.toggleEmojiPicker} />
+                                </span>
+                              </span>
+                              <span id='uploadImage' className='pull-right' style={{ marginRight: '5px', marginTop: '5px' }}>
+                                <span>
+                                  <i className='fa fa-image postIcons' style={{ cursor: 'pointer' }} onClick={() => {
+                                    this.refs.selectImage.click()
+                                  }} />
+                                </span>
+                                <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
+                                  ref='selectImage' style={styles.inputf} />
+                              </span>
+                              {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                             <span>
                               <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                 this.refs.selectVideo.click()
@@ -612,47 +588,47 @@ class FacebookPosts extends React.Component {
                               ref='selectVideo' style={styles.inputf} />
                           </span>
                           */}
-                          <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
-                            <PopoverBody>
-                              <div>
-                                <Picker
-                                  emojiSize={24}
-                                  perLine={6}
-                                  skin={1}
-                                  set='facebook'
-                                  custom={[]}
-                                  autoFocus={false}
-                                  showPreview={false}
-                                  onClick={(emoji, event) => this.setEmoji(emoji)}
-                                />
-                              </div>
-                            </PopoverBody>
-                          </Popover>
-                        </div>
-                        : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='postTextArea' rows='3'
-                            style={{height: '150px', resize: 'none'}}
-                            value={this.state.postText}
-                            onChange={this.onFacebookPostChange}
-                             />
-                          { this.state.attachments.length > 0 && this.state.videoPost &&
-                            <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                              <span>
-                                <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
-                              </span>
-                            </span>
+                              <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
+                                <PopoverBody>
+                                  <div>
+                                    <Picker
+                                      emojiSize={24}
+                                      perLine={6}
+                                      skin={1}
+                                      set='facebook'
+                                      custom={[]}
+                                      autoFocus={false}
+                                      showPreview={false}
+                                      onClick={(emoji, event) => this.setEmoji(emoji)}
+                                    />
+                                  </div>
+                                </PopoverBody>
+                              </Popover>
+                            </div>
+                            : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='postTextArea' rows='3'
+                                style={{ height: '150px', resize: 'none' }}
+                                value={this.state.postText}
+                                onChange={this.onFacebookPostChange}
+                              />
+                              {this.state.attachments.length > 0 && this.state.videoPost &&
+                                <span id='showVideo' className='pull-right' style={{ marginRight: '10px', marginTop: '5px' }}>
+                                  <span>
+                                    <i className='fa fa-file-video-o postIcons' style={{ cursor: 'pointer' }} />
+                                  </span>
+                                </span>
+                              }
+                              {this.state.attachments.length > 0 && !this.state.videoPost &&
+                                <span id='showImage' className='pull-right' style={{ marginRight: '10px', marginTop: '5px' }}>
+                                  <span>
+                                    <i className='fa fa-image postIcons' style={{ cursor: 'pointer' }} data-target='#previewImage' data-toggle="modal" />
+                                  </span>
+                                </span>
+                              }
+                            </div>
                           }
-                          { this.state.attachments.length > 0 && !this.state.videoPost &&
-                            <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                              <span>
-                                <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
-                              </span>
-                            </span>
-                          }
-                        </div>
-                        }
                         </div>
                       </div>
                     </div>
@@ -666,26 +642,26 @@ class FacebookPosts extends React.Component {
                             Create a reply that will be sent to people who comment on your Facebook Page Post
                           </p>
                         </div>
-                        { this.state.isEdit === 'false'
-                        ? <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Your reply to the commentor goes here...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            onChange={this.replyChange} />
-                        </div>
-                        : <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Create a reply that will be sent to people who comment on your Facebook Page Post...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            disabled />
-                        </div>
-                      }
+                        {this.state.isEdit === 'false'
+                          ? <div className='col-12'>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='replyTextArea' rows='3'
+                              placeholder='Your reply to the commentor goes here...'
+                              style={{ height: '100px', resize: 'none' }}
+                              value={this.state.autoReply}
+                              onChange={this.replyChange} />
+                          </div>
+                          : <div className='col-12'>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='replyTextArea' rows='3'
+                              placeholder='Create a reply that will be sent to people who comment on your Facebook Page Post...'
+                              style={{ height: '100px', resize: 'none' }}
+                              value={this.state.autoReply}
+                              disabled />
+                          </div>
+                        }
                       </div>
                     </div>
                     <div className='col-12'>
@@ -701,7 +677,7 @@ class FacebookPosts extends React.Component {
                         <div className='col-12'>
                           <input type='text' className='form-control m-input m-input--square' value={this.state.includedKeywords} onChange={this.includedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
                         </div>
-                        <div className='col-12' style={{marginTop: '10px'}}>
+                        <div className='col-12' style={{ marginTop: '10px' }}>
                           <p>
                             Do not reply if these keywords are used in the comment. Example 'When, Where, How'
                           </p>
@@ -713,7 +689,7 @@ class FacebookPosts extends React.Component {
                           {
                             this.state.keywordErrors.map((m, i) => (
                               m.error === 'keywords' &&
-                                <span style={{color: 'red', marginLeft: '20px'}}>{m.message}</span>
+                              <span style={{ color: 'red', marginLeft: '20px' }}>{m.message}</span>
                             ))
                           }
                         </span>
@@ -722,32 +698,32 @@ class FacebookPosts extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit'>
-                  { this.state.isEdit === 'false'
-                 ? <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                   <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
-                    Back
+                  {this.state.isEdit === 'false'
+                    ? <div style={{ paddingTop: '30px', paddingBottom: '30px' }}>
+                      <Link style={{ marginRight: '10px', marginLeft: '30px' }} className='btn btn-primary' to='/commentCapture'>
+                        Back
                    </Link>
-                   <button className='btn btn-secondary' onClick={this.reset}>
-                    Reset
+                      <button className='btn btn-secondary' onClick={this.reset}>
+                        Reset
                    </button>
-                   { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
-                    ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
-                      <i className='fa fa-facebook' /> Post on Facebook
+                      {this.props.pages && this.props.pages.length > 0 && !this.state.disabled
+                        ? <button type='submit' style={{ marginRight: '10px' }} className='btn btn-primary pull-right' onClick={this.onPost}>
+                          <i className='fa fa-facebook' /> Post on Facebook
                     </button>
-                    : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
-                      <i className='fa fa-facebook' /> Post on Facebook
+                        : <button type='submit' style={{ marginRight: '10px' }} className='btn btn-primary pull-right' disabled>
+                          <i className='fa fa-facebook' /> Post on Facebook
                     </button>
-                    }
-                 </div>
-                : <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                  <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
-                     Back
+                      }
+                    </div>
+                    : <div style={{ paddingTop: '30px', paddingBottom: '30px' }}>
+                      <Link style={{ marginRight: '10px', marginLeft: '30px' }} className='btn btn-primary' to='/commentCapture'>
+                        Back
                   </Link>
-                  <button className='btn btn-primary' onClick={this.editPost}>
-                     Save
+                      <button className='btn btn-primary' onClick={this.editPost}>
+                        Save
                   </button>
-                </div>
-                }
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -758,7 +734,7 @@ class FacebookPosts extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
@@ -766,7 +742,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     createFacebookPost: createFacebookPost,
     editFacebookPost: editFacebookPost,

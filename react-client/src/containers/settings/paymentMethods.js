@@ -6,8 +6,6 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 class PaymentMethods extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -55,7 +53,7 @@ class PaymentMethods extends React.Component {
                   </span>
                 </li>
               </ul>
-              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.change} style={{marginTop: '15px'}} data-toggle='modal' data-target='#m_modal_1_2'>
+              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#paymentMethode" onClick={this.change} style={{marginTop: '15px'}}>
                 <span>
                   <i className='la la-plus' />
                   <span>
@@ -92,25 +90,33 @@ class PaymentMethods extends React.Component {
                         </div>
                       }
                       </div>
-                      {this.state.change &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <center><h4>Credit/Debit Card Details</h4></center>
-                            <br /><br />
-                            <div className='col-12'>
-                              {this.props.stripeKey && this.props.captchaKey &&
-                              <StripeProvider apiKey={this.props.stripeKey}>
-                                <Elements>
-                                  <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
-                                </Elements>
-                              </StripeProvider>
-                            }
+                      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="paymentMethode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                          <div className="modal-content">
+                            <div style={{ display: 'block' }} className="modal-header">
+                              <h5 className="modal-title" id="exampleModalLabel">
+                                Credit/Debit Card Details
+									            </h5>
+                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">
+                                  &times;
+											          </span>
+                              </button>
                             </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                    }
+                            <div style={{ color: 'black' }} className="modal-body">
+                              <div className='col-12'>
+                                {this.props.stripeKey && this.props.captchaKey &&
+                                  <StripeProvider apiKey={this.props.stripeKey}>
+                                    <Elements>
+                                      <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                                    </Elements>
+                                  </StripeProvider>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
