@@ -171,7 +171,7 @@ class QuickReplies extends React.Component {
                     {
                         this.props.sequences.map((sequence, index) => {
                             return (
-                                <option key={index} value={sequence._id}>{sequence.name}</option>
+                                <option key={index} value={sequence.sequence._id}>{sequence.sequence.name}</option>
                             )
                         })
                     }

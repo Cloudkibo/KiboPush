@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { loadBroadcastsListNew } from '../../redux/actions/templates.actions'
+import { loadBroadcastsList } from '../../redux/actions/templates.actions'
 
 import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -73,7 +73,7 @@ class GenericMessage extends React.Component {
       props.setReset(this.reset)
     }
 
-    this.props.loadBroadcastsListNew()
+    this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
