@@ -39,8 +39,21 @@ class QuickReplies extends React.Component {
     this.updateTemplate = this.updateTemplate.bind(this)
     this.saveQuickReply = this.saveQuickReply.bind(this)
     this.editQuickReply = this.editQuickReply.bind(this)
-
+    this.removeQuickReply = this.removeQuickReply.bind(this)
+    this.clickFile = this.clickFile.bind(this)
     console.log('quickReplies constructor')
+  }
+
+  clickFile () {
+      this.file.click()
+  }
+
+  removeQuickReply () {
+      let quickReplies = this.state.quickReplies
+      if (this.state.index > -1) {
+          quickReplies.splice(this.state.index, 1)
+      }
+      this.setState({addingQuickReply: false, index: -1, quickReplies})
   }
 
   editQuickReply (index) {
@@ -263,17 +276,21 @@ class QuickReplies extends React.Component {
                     }
                 </Slider>
             </div>
-                    
-            <button id='addQuickReply' onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
-                + Add Quick Reply
-            </button>
+
+            {
+                this.state.quickReplies.length < 10 &&
+                <button id='addQuickReply' onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                    + Add Quick Reply
+                </button>
+            }
 
             <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply' toggle={this.toggleAddQuickReply}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '400px', overflowY: 'scroll', overflowX: 'hidden'}}>
+                    <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}>❌</div>
                         <div style={{marginBottom: '20px', maxHeight: '100px'}} className='row'>
                             <div className='col-4'>
-                                <div className='ui-block hoverbordercomponent' style={{height: '75px', width: '75px', borderRadius: '50%', display: 'inline-block'}}>
+                                <div onClick={this.clickFile} className='ui-block hoverbordercomponent' style={{height: '75px', width: '75px', borderRadius: '50%', display: 'inline-block'}}>
                                     {
                                     this.state.loading
                                     ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
@@ -285,13 +302,13 @@ class QuickReplies extends React.Component {
                                         multiple='true'
                                         accept='image/*'
                                         title=' '
-                                        onChange={this._onChange} style={{opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer', padding: '10px'}} />
+                                        onChange={this._onChange} style={{display: 'none'}} />
                                         {
                                             (!this.state.image_url)
-                                            ? <div className='align-center' style={{padding: '10px'}}>
+                                            ? <div className='align-center' style={{padding: '7px'}}>
                                                 <h6 style={{pointerEvents: 'none', zIndex: -1, display: 'inline'}}>Upload Image </h6>
                                             </div>
-                                            : <div className='align-center' style={{padding: '10px'}}>
+                                            : <div className='align-center' style={{padding: '7px'}}>
                                                 <img src={this.state.image_url} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                                             </div>
                                         }
@@ -393,6 +410,7 @@ class QuickReplies extends React.Component {
                             <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary'>
                                 Save
                             </button>
+
                         </div>
                     
                     </div>
