@@ -89,10 +89,11 @@ class GenericMessage extends React.Component {
 
   appendQuickRepliesToEnd (broadcast, quickReplies) {
     let quickRepliesIndex = broadcast.findIndex(x => !!x.quickReplies)
+    console.log('quickRepliesIndex', quickRepliesIndex)
     if (quickRepliesIndex > -1) {
-      broadcast.splice(quickRepliesIndex,1)
+      delete broadcast[quickRepliesIndex].quickReplies
     }
-    broadcast.push({'quickReplies': quickReplies})
+    broadcast[broadcast.length-1].quickReplies = quickReplies
     console.log('appendQuickRepliesToEnd', broadcast)
     return broadcast
   }
@@ -115,13 +116,11 @@ class GenericMessage extends React.Component {
   }
 
   initializeList (broadcast) {
-    console.log('initializeList')
+    console.log('initializeList', broadcast)
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
-      if (!broadcast[i].quickReplies) {
-        let component = this.getComponent(broadcast[i]).component
-        temp.push({content: component})
-      }
+      let component = this.getComponent(broadcast[i]).component
+      temp.push({content: component})
     }
     this.setState({list: temp, broadcast})
     this.props.handleChange({broadcast})
@@ -214,6 +213,7 @@ class GenericMessage extends React.Component {
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     console.log('handleText temp', temp)
+    console.log('handleText state', this.state)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -417,6 +417,7 @@ class GenericMessage extends React.Component {
     let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
     if (componentIndex < 0) {
       console.log('adding new component')
+      console.log({list: [...temp, {content: component.component}]})
       this.setState({list: [...temp, {content: component.component}]})
     } else {
       console.log('editing exisiting component')
