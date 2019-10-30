@@ -1,4 +1,12 @@
 import React from 'react'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+import { loadTags } from '../../redux/actions/tags.actions'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { loadBroadcastsListNew } from '../../redux/actions/templates.actions'
+
 import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
@@ -19,6 +27,7 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import YoutubeVideoModal from './YoutubeVideoModal'
 import LinkCarousel from './LinkCarousel';
+import QuickReplies from './QuickReplies'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -26,6 +35,7 @@ class GenericMessage extends React.Component {
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     this.state = {
       list: [],
+      quickReplies: [],
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -56,11 +66,35 @@ class GenericMessage extends React.Component {
     this.updateList = this.updateList.bind(this)
     this.showCloseModalAlertDialog = this.showCloseModalAlertDialog.bind(this)
     this.closeModalAlertDialog = this.closeModalAlertDialog.bind(this)
+    this.updateQuickReplies = this.updateQuickReplies.bind(this)
+    this.appendQuickRepliesToEnd = this.appendQuickRepliesToEnd.bind(this)
+    this.getItems = this.getItems.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
 
+    this.props.loadBroadcastsListNew()
+    this.props.loadTags()
+    this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  updateQuickReplies (quickReplies) {
+    console.log('updateQuickReplies', quickReplies)
+    let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
+    console.log('broadcast after updating quick replies', broadcast)
+    this.setState({quickReplies, broadcast})
+    this.props.handleChange({broadcast})
+  }
+
+  appendQuickRepliesToEnd (broadcast, quickReplies) {
+    let quickRepliesIndex = broadcast.findIndex(x => !!x.quickReplies)
+    if (quickRepliesIndex > -1) {
+      broadcast.splice(quickRepliesIndex,1)
+    }
+    broadcast.push({'quickReplies': quickReplies})
+    console.log('appendQuickRepliesToEnd', broadcast)
+    return broadcast
   }
 
   componentDidMount () {
@@ -84,8 +118,10 @@ class GenericMessage extends React.Component {
     console.log('initializeList')
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
-      let component = this.getComponent(broadcast[i]).component
-      temp.push({content: component})
+      if (!broadcast[i].quickReplies) {
+        let component = this.getComponent(broadcast[i]).component
+        temp.push({content: component})
+      }
     }
     this.setState({list: temp, broadcast})
     this.props.handleChange({broadcast})
@@ -176,7 +212,8 @@ class GenericMessage extends React.Component {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
     }
-
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    console.log('handleText temp', temp)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -221,6 +258,8 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
@@ -261,6 +300,8 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -286,6 +327,8 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -303,6 +346,8 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+    
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -331,12 +376,15 @@ class GenericMessage extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
+    if (temp2.length === 1 && temp2[0].quickReplies) {
+      temp2 = []
+    }
     this.setState({list: temp, broadcast: temp2})
     this.props.handleChange({broadcast: temp2}, obj)
   }
 
   newConvo () {
-    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle})
+    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
     this.props.handleChange({broadcast: []})
   }
 
@@ -726,6 +774,14 @@ class GenericMessage extends React.Component {
     return components[broadcast.componentType]
   }
 
+  getItems () {
+    if (this.state.list.length > 0) {
+      return this.state.list.concat([{content: <QuickReplies sequences={this.props.sequences} broadcasts={this.props.broadcasts} tags={this.props.tags} quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
+    } else {
+      return this.state.list
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -820,7 +876,7 @@ class GenericMessage extends React.Component {
                     }
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.getItems()} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
                   </div>
                 </div>
@@ -856,4 +912,20 @@ GenericMessage.defaultProps = {
   'broadcast': []
 }
 
-export default GenericMessage
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
+    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
+    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+      fetchAllSequence: fetchAllSequence,
+      loadBroadcastsListNew: loadBroadcastsListNew,
+      loadTags: loadTags,
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)
