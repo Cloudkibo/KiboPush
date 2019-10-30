@@ -924,7 +924,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       fetchAllSequence: fetchAllSequence,
-      loadBroadcastsListNew: loadBroadcastsListNew,
+      loadBroadcastsList: loadBroadcastsList,
       loadTags: loadTags,
   }, dispatch)
 }
