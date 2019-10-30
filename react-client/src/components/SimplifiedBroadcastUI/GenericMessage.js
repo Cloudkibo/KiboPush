@@ -59,6 +59,7 @@ class GenericMessage extends React.Component {
     this.showCloseModalAlertDialog = this.showCloseModalAlertDialog.bind(this)
     this.closeModalAlertDialog = this.closeModalAlertDialog.bind(this)
     this.updateQuickReplies = this.updateQuickReplies.bind(this)
+    this.appendQuickRepliesToEnd = this.appendQuickRepliesToEnd.bind(this)
     this.getItems = this.getItems.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
@@ -69,7 +70,20 @@ class GenericMessage extends React.Component {
 
   updateQuickReplies (quickReplies) {
     console.log('updateQuickReplies', quickReplies)
-    this.setState({quickReplies})
+    let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
+    console.log('broadcast after updating quick replies', broadcast)
+    this.setState({quickReplies, broadcast})
+    this.props.handleChange({broadcast})
+  }
+
+  appendQuickRepliesToEnd (broadcast, quickReplies) {
+    let quickRepliesIndex = broadcast.findIndex(x => !!x.quickReplies)
+    if (quickRepliesIndex > -1) {
+      broadcast.splice(quickRepliesIndex,1)
+    }
+    broadcast.push({'quickReplies': quickReplies})
+    console.log('appendQuickRepliesToEnd', broadcast)
+    return broadcast
   }
 
   componentDidMount () {
@@ -187,10 +201,10 @@ class GenericMessage extends React.Component {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
     }
-
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     console.log('handleText temp', temp)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleCard (obj) {
@@ -233,9 +247,11 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleMedia (obj) {
@@ -273,8 +289,10 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleGallery (obj) {
@@ -298,8 +316,10 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleImage (obj) {
@@ -315,8 +335,10 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+    
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   handleFile (obj) {
@@ -334,7 +356,7 @@ class GenericMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp}, obj)
   }
 
   removeComponent (obj) {
@@ -343,12 +365,15 @@ class GenericMessage extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
+    if (temp2.length === 1 && temp2[0].quickReplies) {
+      temp2 = []
+    }
     this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2.concat([{quickReplies: this.state.quickReplies}])}, obj)
+    this.props.handleChange({broadcast: temp2}, obj)
   }
 
   newConvo () {
-    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle})
+    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
     this.props.handleChange({broadcast: []})
   }
 

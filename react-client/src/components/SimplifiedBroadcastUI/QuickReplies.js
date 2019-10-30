@@ -98,7 +98,7 @@ class QuickReplies extends React.Component {
         quickReplies.push(quickReply)
       }
 
-      this.setState({quickReplies, index: -1}, () => {
+      this.setState({quickReplies, index: -1, addingQuickReply: false}, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies)
         }
