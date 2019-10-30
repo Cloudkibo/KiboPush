@@ -1,4 +1,12 @@
 import React from 'react'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+import { loadTags } from '../../redux/actions/tags.actions'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { loadBroadcastsListNew } from '../../redux/actions/templates.actions'
+
 import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
@@ -65,6 +73,9 @@ class GenericMessage extends React.Component {
       props.setReset(this.reset)
     }
 
+    this.props.loadBroadcastsListNew()
+    this.props.loadTags()
+    this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
   }
 
@@ -765,7 +776,7 @@ class GenericMessage extends React.Component {
 
   getItems () {
     if (this.state.list.length > 0) {
-      return this.state.list.concat([{content: <QuickReplies quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
+      return this.state.list.concat([{content: <QuickReplies sequences={this.props.sequences} broadcasts={this.props.broadcasts} tags={this.props.tags} quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
     } else {
       return this.state.list
     }
@@ -901,4 +912,20 @@ GenericMessage.defaultProps = {
   'broadcast': []
 }
 
-export default GenericMessage
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
+    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
+    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+      fetchAllSequence: fetchAllSequence,
+      loadBroadcastsListNew: loadBroadcastsListNew,
+      loadTags: loadTags,
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

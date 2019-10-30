@@ -6,9 +6,6 @@ import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
-import { loadTags } from '../../redux/actions/tags.actions'
-import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { loadBroadcastsListNew } from '../../redux/actions/templates.actions'
 import { uploadImage } from '../../redux/actions/convos.actions'
 
 
@@ -43,9 +40,7 @@ class QuickReplies extends React.Component {
     this.saveQuickReply = this.saveQuickReply.bind(this)
     this.editQuickReply = this.editQuickReply.bind(this)
 
-    this.props.loadBroadcastsListNew()
-    this.props.loadTags()
-    this.props.fetchAllSequence()
+    console.log('quickReplies constructor')
   }
 
   editQuickReply (index) {
@@ -413,18 +408,12 @@ class QuickReplies extends React.Component {
 function mapStateToProps (state) {
     console.log(state)
     return {
-      sequences: state.sequenceInfo.sequences,
-      broadcasts: state.templatesInfo.broadcasts,
-      tags: state.tagsInfo.tags
     }
   }
   
   function mapDispatchToProps (dispatch) {
     return bindActionCreators({
-        uploadImage: uploadImage,
-        fetchAllSequence: fetchAllSequence,
-        loadBroadcastsListNew: loadBroadcastsListNew,
-        loadTags: loadTags,
+        uploadImage: uploadImage
     }, dispatch)
   }
   export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(QuickReplies)
