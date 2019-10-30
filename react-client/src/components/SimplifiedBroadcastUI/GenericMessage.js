@@ -26,7 +26,8 @@ class GenericMessage extends React.Component {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     this.state = {
-      list: [{content: <QuickReplies />}],
+      list: [],
+      quickReplies: [],
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -57,11 +58,18 @@ class GenericMessage extends React.Component {
     this.updateList = this.updateList.bind(this)
     this.showCloseModalAlertDialog = this.showCloseModalAlertDialog.bind(this)
     this.closeModalAlertDialog = this.closeModalAlertDialog.bind(this)
+    this.updateQuickReplies = this.updateQuickReplies.bind(this)
+    this.getItems = this.getItems.bind(this)
     if (props.setReset) {
       props.setReset(this.reset)
     }
 
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  updateQuickReplies (quickReplies) {
+    console.log('updateQuickReplies', quickReplies)
+    this.setState({quickReplies})
   }
 
   componentDidMount () {
@@ -85,8 +93,10 @@ class GenericMessage extends React.Component {
     console.log('initializeList')
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
-      let component = this.getComponent(broadcast[i]).component
-      temp.push({content: component})
+      if (!broadcast[i].quickReplies) {
+        let component = this.getComponent(broadcast[i]).component
+        temp.push({content: component})
+      }
     }
     this.setState({list: temp, broadcast})
     this.props.handleChange({broadcast})
@@ -178,8 +188,9 @@ class GenericMessage extends React.Component {
       }
     }
 
+    console.log('handleText temp', temp)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   handleCard (obj) {
@@ -224,7 +235,7 @@ class GenericMessage extends React.Component {
     }
     console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   handleMedia (obj) {
@@ -263,7 +274,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   handleGallery (obj) {
@@ -288,7 +299,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   handleImage (obj) {
@@ -305,7 +316,7 @@ class GenericMessage extends React.Component {
       temp.push(obj)
     }
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   handleFile (obj) {
@@ -323,7 +334,7 @@ class GenericMessage extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.props.handleChange({broadcast: temp.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   removeComponent (obj) {
@@ -333,7 +344,7 @@ class GenericMessage extends React.Component {
     console.log('temp', temp)
     console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2}, obj)
+    this.props.handleChange({broadcast: temp2.concat([{quickReplies: this.state.quickReplies}])}, obj)
   }
 
   newConvo () {
@@ -727,6 +738,14 @@ class GenericMessage extends React.Component {
     return components[broadcast.componentType]
   }
 
+  getItems () {
+    if (this.state.list.length > 0) {
+      return this.state.list.concat([{content: <QuickReplies quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
+    } else {
+      return this.state.list
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -821,7 +840,7 @@ class GenericMessage extends React.Component {
                     }
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                      <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.getItems()} dropBackTransitionDuration={0.3} type='vertical' />
                     </div>
                   </div>
                 </div>
