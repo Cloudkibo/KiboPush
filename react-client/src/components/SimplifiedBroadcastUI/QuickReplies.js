@@ -199,6 +199,7 @@ class QuickReplies extends React.Component {
                                 <option key={index} value={broadcast._id}>{broadcast.title}</option>
                             )
                         })
+                    }{
                     }
                     {/* <option value={'Message 1'}>{'Message 1'}</option>
                     <option value={'Message 2'}>{'Message 2'}</option>
@@ -282,7 +283,7 @@ class QuickReplies extends React.Component {
                                 return (
                                     <div className='btn-toolbar' style={{padding: '10px', visibility: this.state.currentSlideIndex !== index ? 'hidden': 'visible', display: 'flex', flexWrap: 'nowrap'}} key={index}>
                                         <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                            {reply.title}
+                                            {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
                                         </button>
     
                                         {
