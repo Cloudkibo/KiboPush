@@ -8,12 +8,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
-import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../redux/actions/commentCapture.actions'
+import { createCommentCapture, editCommentCapture, uploadAttachment } from '../../redux/actions/commentCapture.actions'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
+import { isFacebookPageUrl } from '../../utility/utils'
+
 const styles = {
   iconclass: {
     height: 24,
@@ -32,6 +34,7 @@ class FacebookPosts extends React.Component {
     super(props, context)
     this.state = {
       postText: '',
+      isCorrectUrl: true,
       postOriginalText:'',
       attachments: [],
       selectedPage: {},
@@ -49,7 +52,11 @@ class FacebookPosts extends React.Component {
       showImages: false,
       showVideo: false,
       showSuccessMessage: false,
-      postId: ''
+      postId: '',
+      selectedRadio: 'existing',
+      postUrl: '',
+      title: '',
+      titleLengthValid: true
     }
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
@@ -72,21 +79,101 @@ class FacebookPosts extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.handlePostUrlChange = this.handlePostUrlChange.bind(this)
+    this.handleTitleChange = this.handleTitleChange.bind(this)
+    this.isValidFacebookUrl = this.isValidFacebookUrl.bind(this)
   }
-
-  closeDialogDelete () {
-    this.setState({showSuccessMessage: false})
-  }
-
-  validationCommentCapture () {
-    if ((this.state.autoReply !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
+  isValidFacebookUrl (e) {
+    if (e.currentTarget.value !== '' && !isFacebookPageUrl(e.currentTarget.value)) {
       this.setState({
-        disabled: false
+        isCorrectUrl: false
       })
     } else {
       this.setState({
-        disabled: true
+        isCorrectUrl: true
       })
+    }
+  }
+  closeDialogDelete () {
+    this.setState({showSuccessMessage: false})
+  }
+  handleRadioButton (e) {
+    this.validationCommentCapture({
+      selectedRadio: e.currentTarget.value,
+      title: e.currentTarget.value,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: this.state.attachments
+    })
+    this.setState({
+      selectedRadio: e.currentTarget.value,
+    })
+  }
+  handleTitleChange (e) {
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: e.currentTarget.value,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: this.state.attachments
+    })
+    if (e.currentTarget.value.length < 1 || e.currentTarget.value.length > 2) {
+      this.setState({titleLengthValid: true})
+    }
+    this.setState({
+      title: e.currentTarget.value
+    })
+  }
+  handlePostUrlChange (e) {
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: this.state.autoReply,
+      postUrl:  e.currentTarget.value,
+      postText: this.state.postText,
+      attachments: this.state.attachments
+    })
+    if (e.currentTarget.value.length < 1 || (e.currentTarget.value.length > 1 && isFacebookPageUrl(e.currentTarget.value))) {
+      this.setState({isCorrectUrl: true})
+    }
+    this.setState({
+      postUrl: e.currentTarget.value
+    })
+  }
+  validationCommentCapture (data) {
+    if (data.selectedRadio === 'new') {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '') && (data.postText !== '' || data.attachments.length > 0)) {
+        this.setState({
+          disabled: false
+        })
+      } else {
+        this.setState({
+          disabled: true
+        })
+      } 
+    } else if(data.selectedRadio === 'existing') {
+      if (data.title !== ''&& data.title.length > 2 && data.autoReply !== '' && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
+        this.setState({
+          disabled: false
+        })
+      } else {
+        this.setState({
+          disabled: true
+        })
+      } 
+    } else {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '')) {
+        this.setState({
+          disabled: false
+        })
+      } else {
+        this.setState({
+          disabled: true
+        })
+      }
     }
   }
 
@@ -143,11 +230,20 @@ class FacebookPosts extends React.Component {
             })
           }
         }
+        if (this.props.currentPost.postUrl) {
+          this.setState({ selectedRadio: 'existing'})
+        } else if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
+          this.setState({ selectedRadio: 'new'})
+        } else {
+          this.setState({ selectedRadio: 'global'})
+        }
         this.setState({
           // postText: this.props.currentPost.payload,
           autoReply: this.props.currentPost.reply,
           includedKeywords: this.props.currentPost.includedKeywords.join(),
-          excludedKeywords: this.props.currentPost.excludedKeywords.join()
+          excludedKeywords: this.props.currentPost.excludedKeywords.join(),
+          postUrl: this.props.currentPost.postUrl ? this.props.currentPost.postUrl: '',
+          title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
         })
       }
       this.setState({
@@ -193,7 +289,14 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     }, () => {
-      this.validationCommentCapture()
+      this.validationCommentCapture({
+        selectedRadio: this.state.selectedRadio,
+        title: this.state.title,
+        autoReply: this.state.autoReply,
+        postUrl: this.state.postUrl,
+        postText: this.state.postText,
+        attachments: attachments
+      })
     })
   }
   handleUpload (res, fileData) {
@@ -224,7 +327,14 @@ class FacebookPosts extends React.Component {
         })
       }
     }
-    this.validationCommentCapture()
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: attachment
+    })
   }
   validateKeywords () {
     var errors = false
@@ -260,13 +370,17 @@ class FacebookPosts extends React.Component {
       postId: this.props.currentPost._id,
       pagePostId: this.props.currentPost.post_id,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
-      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
+      captureOption: this.state.selectedRadio,
+      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl : '',
+      title : this.state.title,
+      postText: ''
     }
-    if(this.state.postText !== this.state.postOriginalText){
+    if(this.state.selectedRadio === 'new' && this.state.postText !== this.state.postOriginalText){
       payload.postText = this.state.postText
       payload.pageAccessToken = this.props.currentPost.pageId.accessToken
     }
-    this.props.editFacebookPost(payload, this.msg)
+    this.props.editCommentCapture(payload, this.msg)
     this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
   }
   reset (postId, showSuccessMessage) {
@@ -280,7 +394,12 @@ class FacebookPosts extends React.Component {
       attachments: [],
       keywordErrors: [],
       postId: postId || '',
-      showSuccessMessage: showSuccessMessage || false
+      showSuccessMessage: showSuccessMessage || false,
+      postUrl: '',
+      selectedRadio: 'existing',
+      title: '',
+      isCorrectUrl: true,
+      titleLengthValid: true
     })
   }
   validateFile (files, componentType) {
@@ -335,15 +454,14 @@ class FacebookPosts extends React.Component {
     this.msg.error('Error', e.target.value)
   }
   onFacebookPostChange (e) {
-    if (((e.target.value && e.target.value !== '') || this.state.attachments.length > 0) && this.state.autoReply !== '') {
-      this.setState({
-        disabled: false
-      })
-    } else {
-      this.setState({
-        disabled: true
-      })
-    }
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText:  e.target.value,
+      attachments: this.state.attachments
+    })
     var facebookPost = []
     facebookPost.push({componentType: 'text', text: e.target.value})
     if (this.state.attachments.length > 0) {
@@ -357,20 +475,27 @@ class FacebookPosts extends React.Component {
     })
   }
   replyChange (e) {
-    if ((e.target.value && e.target.value !== '') && (this.state.postText !== '' || this.state.attachments.length > 0)) {
-      this.setState({
-        disabled: false
-      })
-    } else {
-      this.setState({
-        disabled: true
-      })
-    }
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: e.target.value,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: this.state.attachments
+    })
     this.setState({
       autoReply: e.target.value
     })
   }
   setEmoji (emoji) {
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText + emoji.native,
+      attachments: this.state.attachments
+    })
     this.setState({
       postText: this.state.postText + emoji.native,
       showEmojiPicker: false
@@ -421,13 +546,17 @@ class FacebookPosts extends React.Component {
     }
     var payload = {
       pageId: this.state.selectedPage._id,
-      payload: this.state.facebookPost,
+      payload: this.state.selectedRadio === 'new' ? this.state.facebookPost: {},
+      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
       reply: this.state.autoReply,
+      captureOption: this.state.selectedRadio,
+      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl : '',
+      title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     console.log('facebook post', payload)
-    this.props.createFacebookPost(payload, this.msg, this.reset)
+    this.props.createCommentCapture(payload, this.msg, this.reset)
   }
   render () {
     var alertOptions = {
@@ -525,6 +654,35 @@ class FacebookPosts extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
+                      <div className='form-group m-form__group' style={{display: 'flex'}}>
+                        <div className='col-3'>
+                          <label className='col-form-label'>Title</label>
+                        </div>
+                        <div className='col-9 form-group m-form__group has-danger'>
+                          <input
+                              className='form-control form-control-danger m-input'
+                              id='title'
+                              value={this.state.title}
+                              onChange={(e) => {this.handleTitleChange(e)}} onBlur={(e)=> {
+                                if (e.currentTarget.value.length > 0 && e.currentTarget.value.length < 3) {
+                                  this.setState({
+                                    titleLengthValid: false
+                                  })
+                                } else {
+                                  this.setState({
+                                    titleLengthValid: true
+                                  })
+                                }
+                              }} maxLength='25'/>
+                            { !this.state.titleLengthValid && 
+                            <label htmlFor='title' className='form-control-label'>Title should be atleast 3 characters long</label>
+                            }    
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12'>
                       { this.state.isEdit === 'true'
                     ? <div className='form-group m-form__group' style={{display: 'flex'}}>
                       <div className='col-3'>
@@ -550,7 +708,75 @@ class FacebookPosts extends React.Component {
                     </div>
                       }
                     </div>
+                    <div className='col-12'>
+                      <div className='form-group m-form__group'>
+                        <div className='col-12'>
+                          <label className='col-form-label'>Track Comments Under</label>
+                        </div>
+                        { this.state.isEdit === 'false'
+                        ? <div className='row' style={{marginLeft: '10px'}}>
+                          <div className='col-3'>
+                            <input id='global'
+                              type='radio'
+                              value='global'
+                              name='global'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'global'} />
+                            <span style={{marginLeft: '10px'}}>Any Post</span>
+                          </div>
+                          <div className='col-3'>
+                            <input id='existing'
+                              type='radio'
+                              value='existing'
+                              name='existing'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'existing'} />
+                            <span style={{marginLeft: '10px'}}>Link Existing Post</span>
+                          </div>
+                          <div className='col-3'>
+                            <input id='new'
+                              type='radio'
+                              value='new'
+                              name='new'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'new'} />
+                            <span style={{marginLeft: '10px'}}>Create New Post</span>
+                          </div>
+                        </div>
+                        : <div className='row' style={{marginLeft: '10px'}}>
+                        <div className='col-3'>
+                          <input id='global'
+                            type='radio'
+                            value='global'
+                            name='global'
+                            disabled
+                            checked={this.state.selectedRadio === 'global'} />
+                          <span style={{marginLeft: '10px'}}>Any Post</span>
+                        </div>
+                        <div className='col-3'>
+                          <input id='existing'
+                            type='radio'
+                            value='existing'
+                            name='existing'
+                            disabled
+                            checked={this.state.selectedRadio === 'existing'} />
+                          <span style={{marginLeft: '10px'}}>Link Existing Post</span>
+                        </div>
+                        <div className='col-3'>
+                          <input id='new'
+                            type='radio'
+                            value='new'
+                            name='new'
+                            disabled
+                            checked={this.state.selectedRadio === 'new'} />
+                          <span style={{marginLeft: '10px'}}>Create New Post</span>
+                        </div>
+                      </div>
+                      }
+                      </div>
+                    </div>
                     <br />
+                    { this.state.selectedRadio === 'new' &&
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-6'>
@@ -656,6 +882,41 @@ class FacebookPosts extends React.Component {
                         </div>
                       </div>
                     </div>
+                    }
+                    {this.state.selectedRadio === 'existing' && 
+                    <div className='col-12'>
+                      <div className='form-group m-form__group'>
+                        <div className='col-12'>
+                          <label className='col-form-label'>Post Url</label>
+                        </div>
+                        <div className='col-12'>
+                          <p>
+                            Copy paste the Post Url here. View <a href='https://kibopush.com/comment-capture/' target='_blank'>user guide</a> to know how to copy correct post url 
+                          </p>
+                        </div>
+                        { this.state.isEdit === 'false'
+                        ? <div className='col-12 form-group m-form__group has-danger'>
+                          <input
+                            className='form-control form-control-danger m-input'
+                            id='postUrl'
+                            value={this.state.postUrl}
+                            onChange={(e) => {this.handlePostUrlChange(e)}} 
+                            onBlur={(e) => {this.isValidFacebookUrl(e)}}/>
+                          { !this.state.isCorrectUrl &&
+                            <label className='form-control-label' htmlFor='postUrl'>Invalid Facebook Post Url</label>
+                          }
+                        </div>
+                        : <div className='col-12 form-group m-form__group '>
+                           <input
+                            className='form-control form-control-danger m-input'
+                            id='postUrl'
+                            value={this.state.postUrl}
+                            disabled />
+                        </div>
+                        }
+                      </div>
+                    </div>
+                    }
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
@@ -730,6 +991,8 @@ class FacebookPosts extends React.Component {
                    <button className='btn btn-secondary' onClick={this.reset}>
                     Reset
                    </button>
+                   { this.state.selectedRadio === 'new' &&
+                   <span>
                    { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
                     ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
                       <i className='fa fa-facebook' /> Post on Facebook
@@ -737,6 +1000,20 @@ class FacebookPosts extends React.Component {
                     : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
                       <i className='fa fa-facebook' /> Post on Facebook
                     </button>
+                    }
+                    </span>
+                    }
+                    { this.state.selectedRadio !== 'new' &&
+                   <span>
+                   { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
+                    ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
+                      Save
+                    </button>
+                    : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
+                      Save
+                    </button>
+                    }
+                    </span>
                     }
                  </div>
                 : <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
@@ -768,8 +1045,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createFacebookPost: createFacebookPost,
-    editFacebookPost: editFacebookPost,
+    createCommentCapture: createCommentCapture,
+    editCommentCapture: editCommentCapture,
     uploadAttachment: uploadAttachment
   }, dispatch)
 }

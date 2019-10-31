@@ -44,7 +44,7 @@ export function deletePost (id, msg) {
     })
   }
 }
-export function createFacebookPost (data, msg, handleCreate) {
+export function createCommentCapture (data, msg, handleCreate) {
   console.log('data', data)
   return (dispatch) => {
     callApi('post/create', 'post', data)
@@ -63,7 +63,7 @@ export function createFacebookPost (data, msg, handleCreate) {
       })
   }
 }
-export function editFacebookPost (data, msg) {
+export function editCommentCapture (data, msg) {
   console.log('edit Facebook Post', data)
   return (dispatch) => {
     callApi('post/edit', 'post', data)
