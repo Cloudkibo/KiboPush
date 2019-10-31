@@ -61,7 +61,7 @@ class QuickReplies extends React.Component {
       console.log('quickReplies', this.state.quickReplies)
       this.setState({
         addingQuickReply: true, 
-        currentActions: JSON.parse(JSON.stringify(this.state.quickReplies[index].payload)), 
+        currentActions: JSON.parse(this.state.quickReplies[index].payload), 
         currentTitle: this.state.quickReplies[index].title, 
         image_url: this.state.quickReplies[index].image_url,
         index: index
@@ -89,13 +89,13 @@ class QuickReplies extends React.Component {
       let quickReply = {
         content_type: 'text',
         title:  this.state.currentTitle,
-        payload: this.state.currentActions
+        payload: JSON.stringify(this.state.currentActions)
       }
       if (this.state.image_url) {
         quickReply = {
             content_type: 'text',
             title:  this.state.currentTitle,
-            payload: this.state.currentActions,
+            payload: JSON.stringify(this.state.currentActions),
             image_url: this.state.image_url
         }
       }
