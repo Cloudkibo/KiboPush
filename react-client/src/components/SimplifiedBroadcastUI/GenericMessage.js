@@ -376,8 +376,8 @@ class GenericMessage extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
-    if (temp2.length === 1 && temp2[0].quickReplies) {
-      temp2 = []
+    if (temp2.length === 0) {
+      this.setState({quickReplies: []})
     }
     this.setState({list: temp, broadcast: temp2})
     this.props.handleChange({broadcast: temp2}, obj)

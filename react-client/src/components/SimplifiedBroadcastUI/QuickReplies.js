@@ -20,7 +20,8 @@ class QuickReplies extends React.Component {
         addingAction: false,
         currentTitle: '',
         currentActions: [],
-        index: -1
+        index: -1,
+        currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
@@ -41,6 +42,7 @@ class QuickReplies extends React.Component {
     this.editQuickReply = this.editQuickReply.bind(this)
     this.removeQuickReply = this.removeQuickReply.bind(this)
     this.clickFile = this.clickFile.bind(this)
+    this.slideIndexChange = this.slideIndexChange.bind(this)
     console.log('quickReplies constructor')
   }
 
@@ -53,7 +55,11 @@ class QuickReplies extends React.Component {
       if (this.state.index > -1) {
           quickReplies.splice(this.state.index, 1)
       }
-      this.setState({addingQuickReply: false, index: -1, quickReplies})
+      this.setState({addingQuickReply: false, index: -1, quickReplies, title: '', image_url: '', currentActions: [], currentSlideIndex: 0}, () => {
+        if (this.props.updateQuickReplies) {
+            this.props.updateQuickReplies(this.state.quickReplies)
+        }
+      })
   }
 
   editQuickReply (index) {
@@ -105,7 +111,7 @@ class QuickReplies extends React.Component {
       } else {
         quickReplies.push(quickReply)
       }
-
+      
       this.setState({quickReplies, index: -1, addingQuickReply: false}, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies)
@@ -246,36 +252,61 @@ class QuickReplies extends React.Component {
       this.setState({addingQuickReply: true})
   }
 
+  slideIndexChange (newIndex) {
+      this.setState({currentSlideIndex: newIndex})
+  }
+
   render () {
     console.log('quickReplies props', this.props)
     console.log('quickReplies state', this.state)
+    console.log('currentSlideIndex', this.state.currentSlideIndex)
     let settings = {
         dots: false,
-        infinite: true,
-        speed: 500,
-        slidesToShow: this.state.quickReplies.length > 2 ? 3 : this.state.quickReplies.length > 1 ? 2 : 1,
+        infinite: false,
+        speed: 250,
+        slidesToShow: 1,
         slidesToScroll: 1,
-        arrows: this.state.quickReplies.length > 3 ? true : false,
-        initialSlide: this.state.quickReplies.length > 3 ? this.state.quickReplies.length-3 : 0
+        arrows: this.state.quickReplies.length > 1 ? true : false,
+        initialSlide: this.state.currentSlideIndex,
+        afterChange: this.slideIndexChange
     };
     return (
         <div>
 
-            <div style={{maxWidth: '80%'}}>
-                <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
-                    {
-                        this.state.quickReplies.map((reply, index) => {
-                            return (
-                                <div key={index}>
-                                    <button onClick={() => this.editQuickReply(index)} style={{maxWidth: '100px', margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                        {reply.title}
-                                    </button>
-                                </div>
-                            )
-                        })
-                    }
-                </Slider>
-            </div>
+            {this.state.quickReplies.length > 0 && 
+                <div style={{maxWidth: '80%'}}>
+                    <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
+                        {
+                            this.state.quickReplies.map((reply, index) => {
+                                console.log(`quickReplies index ${index}`, this.state.quickReplies)
+                                return (
+                                    <div className='btn-toolbar' style={{padding: '10px', visibility: this.state.currentSlideIndex !== index ? 'hidden': 'visible', display: 'flex', flexWrap: 'nowrap'}} key={index}>
+                                        <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                            {reply.title}
+                                        </button>
+    
+                                        {
+                                            (index+1) < this.state.quickReplies.length && 
+                                            <button onClick={() => this.editQuickReply(index+1)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                                {this.state.quickReplies[index+1].title}
+                                            </button>
+                                        }
+    
+                                        {
+                                            (index+2) < this.state.quickReplies.length && 
+                                            <button onClick={() => this.editQuickReply(index+2)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                                {this.state.quickReplies[index+2].title}
+                                            </button>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </Slider>
+                </div>
+            
+            
+            }
 
             {
                 this.state.quickReplies.length < 10 &&
