@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { loadContactsList, loadWhatsAppContactsList, editSubscriber } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Contact extends React.Component {
@@ -200,24 +199,31 @@ class Contact extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.isShowingModalEdit &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeEdit}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeEdit}>
-              <h3>Edit Subscriber</h3>
-              <br />
-              <p>Subscriber Name:</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="editSubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Subscriber
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Subscriber Name:</p>
               <input className='form-control m-input' onChange={this.changeName} value={this.state.name} />
               <br />
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={this.editSubscriber}>Save
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -291,7 +297,7 @@ class Contact extends React.Component {
                             {this.props.user.platform === 'whatsApp' &&
                               <td data-field='actions' className='m-datatable__cell'>
                                 <span style={{width: '100px'}}>
-                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} onClick={() => this.showEdit(contact)}>
+                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)}>
                                     Edit
                                   </button>
                                 </span>

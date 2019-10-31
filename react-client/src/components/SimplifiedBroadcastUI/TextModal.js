@@ -1,4 +1,3 @@
-
 import React from 'react'
 import AddButton from './AddButton'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -7,7 +6,6 @@ class TextModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      updateState: true,
       text: props.text ? props.text : '',
       buttons: props.buttons.map(button => { return { visible: true, title: button.title } }),
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
@@ -50,9 +48,6 @@ class TextModal extends React.Component {
     } else {
       this.AddButton.handleDone()
     }
-    this.refs.closeModal.click()
-    this.setState({ updateState: true })
-
   }
 
   addComponent(buttons) {
@@ -88,24 +83,8 @@ class TextModal extends React.Component {
   closeModal() {
     if (!this.state.edited || (this.state.text === '' && this.state.buttons.length === 0)) {
       this.props.closeModal()
-      this.refs.closeModal.click()
-      this.setState({ updateState: true })
     } else {
       this.props.showCloseModalAlertDialog()
-      this.setState({ updateState: false })
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.state.updateState) {
-      this.setState({
-        text: nextProps.text ? nextProps.text : '',
-        buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
-        buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'],
-        buttonLimit: 3,
-        buttonDisabled: false,
-        messengerAdPayloads: nextProps.buttons.map((button) => button.payload).filter(button => !!button)
-      })
     }
   }
 
@@ -114,14 +93,14 @@ class TextModal extends React.Component {
   }
 
   render() {
+    console.log('text state', this.state)
     return (
-
-      <div className="modal-content">
+      <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Add Text Component
 					</h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} onClick={this.closeModal} type="button" className="close" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" onClick={this.closeModal}>
             <span aria-hidden="true">
               &times;
 						</span>
@@ -201,22 +180,18 @@ class TextModal extends React.Component {
                 </div>
               </div>
             </div>
-
-            <div className='row' style={{ marginTop: '-5vh' }}>
+            <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
-                >
+                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px'}}>
                   Cancel
                 </button>
-                <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'
-                >
+                <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <button ref='closeModal' style={{ display: 'none' }} data-dismiss='modal'></button>
       </div>
     )
   }

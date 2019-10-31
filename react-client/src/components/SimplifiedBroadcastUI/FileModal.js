@@ -61,12 +61,12 @@ class FileModal extends React.Component {
   render() {
     return (
 
-      <div className="modal-content">
+      <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Add File Component
 									</h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.closeModal} className="close" aria-label="Close">
             <span aria-hidden="true">
               &times;
 											</span>
@@ -91,14 +91,14 @@ class FileModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row'>
+            <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
-                data-dismiss='modal'>
+              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}
+                >
                   Cancel
                 </button>
                 <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'
-                data-dismiss='modal'>
+                >
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>

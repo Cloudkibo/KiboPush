@@ -18,7 +18,6 @@ import {
   deleteSequence,
   updateTrigger
 } from '../../redux/actions/sequence.action'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -248,6 +247,7 @@ class CreateSequence extends React.Component {
   goBack () {
     if (this.props.messages.length === 0) {
       this.setState({showBackWarning: true})
+      this.refs.backWarning.click()
     } else {
       browserHistory.push({
         pathname: `/sequenceMessaging`
@@ -332,8 +332,10 @@ class CreateSequence extends React.Component {
     console.log('the  is', message._id)
     if (message.trigger.event === 'none') {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
+      this.refs.triggerIsNone.click()
     } else {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event, eventNameSelected: message.trigger.event, selectedTriggerMsgId: message.trigger.value, selectedMessageClickId: message.trigger.value, selectedTriggerBtnTitle: message.trigger.buttonTitle, selectedButton: message.trigger.buttonId})
+      this.refs.triggerIsNotNone.click()
     }
     if (message.trigger.event !== 'none' && message.trigger.event === 'clicks') {
       console.log('Display action set true')
@@ -636,371 +638,416 @@ class CreateSequence extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{float: 'left', clear: 'both'}}
+        <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-            {
-              this.state.isShowingModalDelete &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogDelete}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogDelete}>
-                  <h3>Delete Message</h3>
-                  <p>Are you sure you want to delete this Message?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.props.deleteMessage(this.state.deleteid, this.msg, this.state.sequenceId)
-                      this.closeDialogDelete()
-                    }}>Delete
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Message
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this Message?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteMessage(this.state.deleteid, this.msg, this.state.sequenceId)
+                    this.closeDialogDelete()
+                  }}>Delete
                   </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.showBackWarning &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeBackWarning}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeBackWarning}>
-                  <h3>Warning!</h3>
-                  <p>You have not added any messages in the sequence. Your changes will be discarded. Do you want to continue?</p>
-                  <button
-                    className='btn btn-primary btn-sm pull-right'
-                    onClick={() => {
-                      this.props.deleteSequence(this.state.sequenceId)
-                      browserHistory.push({pathname: '/sequenceMessaging'})
-                    }}>Yes
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#' style={{ display: 'none' }} ref='backWarning' data-toggle="modal" data-target="#backWarning">backWarning</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="backWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Warning!
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>You have not added any messages in the sequence. Your changes will be discarded. Do you want to continue?</p>
+                <button
+                  className='btn btn-primary btn-sm pull-right'
+                  onClick={() => {
+                    this.props.deleteSequence(this.state.sequenceId)
+                    browserHistory.push({ pathname: '/sequenceMessaging' })
+                  }}>Yes
                   </button>
-                  <button
-                    style={{marginRight: '5px'}}
-                    className='btn btn-secondary btn-sm pull-right'
-                    onClick={() => {this.closeBackWarning()}}
-                  >No
+                <button
+                  style={{ marginRight: '5px' }}
+                  className='btn btn-secondary btn-sm pull-right'
+                  onClick={() => { this.closeBackWarning() }}
+                >No
                   </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-
-              {
-              this.state.isShowingModalSegmentation &&
-              <ModalContainer style={{width: '700px', left: '400px', paddingLeft: '33px', paddingRight: '33px'}}
-                onClose={this.closeDialogSegmentation}>
-                <ModalDialog style={{width: '700px', left: '400px', paddingLeft: '33px', paddingRight: '33px'}}
-                  onClose={this.closeDialogSegmentation}>
-                      <div className='form-group m-form__group col-12' style={{marginBottom: '20px', color: '#337ab7', display: 'flex'}}>
-                        <Dropdown id='switchCondition' style={{marginLeft: '10px'}}isOpen={this.state.dropdownConditionOpen} toggle={this.toggleCondition}>
-                          <DropdownToggle caret>
-                             Change Joining Condition
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="segmentation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Segmentation
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='form-group m-form__group col-12' style={{ marginBottom: '20px', color: '#337ab7', display: 'flex' }}>
+                  <Dropdown id='switchCondition' style={{ marginLeft: '10px' }} isOpen={this.state.dropdownConditionOpen} toggle={this.toggleCondition}>
+                    <DropdownToggle caret>
+                      Change Joining Condition
                           </DropdownToggle>
-                          <DropdownMenu>
-                            <DropdownItem onClick={this.changeConditionToAnd}>all of the following conditions</DropdownItem>
-                            <DropdownItem onClick={this.changeConditionToOr}>any of the following conditions</DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      </div>
-                      <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                        <div style={{marginBottom: '10px'}}>Segment subscribers based on<span id='switchCondition' style={{fontWeight: 'bold', textDecoration: 'underline'}}>{this.state.joiningCondition === 'OR' ? ' any of the following conditions' : ' all of the following conditions'}:</span></div>
-                        <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                          <table className='m-datatable__table'
-                            id='m-datatable--27866229129' style={{
-                              display: 'block',
-                              height: 'auto',
-                              overflowX: 'auto'
-                            }}>
-                            <thead className='m-datatable__head'>
-                              <tr className='m-datatable__row'
-                                style={{height: '53px'}}>
-                                <th data-field='title'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
-                                  <span>Condition</span>
-                                </th>
-                                <th data-field='title'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
-                                  <span>Criteria</span>
-                                </th>
-                                <th data-field='text'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
-                                  <span>Value</span>
-                                </th>
-                                <th data-field='remove'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
-                                  <span />
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                              {
-                               this.state.conditions.map((condition, i) => (
-                                 <tr data-row={i}
-                                   className='m-datatable__row m-datatable__row--even'
-                                   style={{height: '55px'}} key={i}>
-                                   <td data-field='title'
-                                     className='m-datatable__cell' style={{width: '25%'}}>
-                                     <select className='form-control m-input' onChange={(e) => this.changeConditions(e, i)}
-                                       value={condition.condition} >
-                                       <option value=''>Select Condition</option>
-                                       <option value='first_name'>First Name</option>
-                                       <option value='last_name'>Last Name</option>
-                                       <option value='page'>Page</option>
-                                       <option value='gender'>Gender</option>
-                                       <option value='locale'>Locale</option>
-                                       <option value='tag'>Tag</option>
-                                       <option value='subscription_date'>Subscribed</option>
-                                     </select>
-                                     <span className='m-form__help'>
-                                       {
-                                         this.state.errorMessages.map((m) => (
-                                           m.error === 'conditions' && m.message.map((msg) => {
-                                             return (msg.field === 'condition' && msg.index === i &&
-                                             <span style={{color: 'red'}}>{msg.message}</span>
-                                             )
-                                           })
-                                         ))
-                                       }
-                                     </span>
-                                   </td>
-                                   <td data-field='title'
-                                     className='m-datatable__cell' style={{width: '25%'}}>
-                                     { this.state.conditions[i].condition === 'subscription_date' || this.state.conditions[i].condition === 'reply'
-                                       ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                         value={condition.criteria}>
-                                         <option value=''>Select Criteria</option>
-                                         <option value='on'>on</option>
-                                         <option value='before'>Before</option>
-                                         <option value='after'>After</option>
-                                       </select>
-                                       :
-                                       <div>
-                                        {
-                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'last_name' ?
-                                          <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                         value={condition.criteria}>
-                                            <option value=''>Select Criteria</option>
-                                            <option value='is'>is</option>
-                                            <option value='contains'>contains</option>
-                                            <option value='begins_with'>begins with</option>
-                                          </select>
-                                          :
-                                          <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                          value={condition.criteria}>
-                                             <option value=''>Select Criteria</option>
-                                             <option value='is'>is</option>
-                                           </select>
-                                        }
-                                        </div>
-                                      }
-
-                                     <span className='m-form__help'>
-                                       {
-                                         this.state.errorMessages.map((m) => (
-                                           m.error === 'conditions' && m.message.map((msg) => {
-                                             return (msg.field === 'criteria' && msg.index === i &&
-                                             <span style={{color: 'red'}}>{msg.message}</span>
-                                             )
-                                           })
-                                         ))
-                                       }
-                                     </span>
-                                   </td>
-                                   <td data-field='title'
-                                     className='m-datatable__cell' style={{width: '25%'}}>
-                                     {
-                                       this.updateTextBox(i, this.state.conditions[i])
-                                     }
-
-                                     <span className='m-form__help'>
-                                       {
-                                         this.state.errorMessages.map((m) => (
-                                           m.error === 'conditions' && m.message.map((msg) => {
-                                             return (msg.field === 'text' && msg.index === i &&
-                                             <span style={{color: 'red'}}>{msg.message}</span>
-                                             )
-                                           })
-                                         ))
-                                       }
-                                     </span>
-                                   </td>
-                                   <td data-field='title'
-                                     className='m-datatable__cell' style={{width: '25%'}}>
-                                     { (this.state.conditions.length > 1)
-                                       ? <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={(e) => this.removeCondition(e, i)} >
-                                        Remove
-                                      </button>
-                                      : <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' disabled >
-                                       Remove
-                                     </button>
-                                    }
-                                   </td>
-                                 </tr>
-                               ))
-                             }
-                            </tbody>
-                          </table>
-                          <button style={{margin: '15px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
-                           + Add Condition
-                         </button>
-                        </div>
-                      </div>
-                  <div style={{textAlign: 'center'}}>
-                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md' style={{marginLeft: '20px', marginTop: '20px'}}> Save </button>
-                   <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Cancel </button>
-                   {
-                     this.state.conditions.length > 0 && this.state.conditions[0].value !== '' &&
-                     <button onClick={() => this.removeSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Remove Segmentation </button>
-                   }
-                   </div>
-
-                </ModalDialog>
-              </ModalContainer>
-            }
-
-            {
-              this.state.ShowTrigger && this.state.triggerEvent === 'none' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
-                onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
-                  onClose={this.CloseDialogTrigger}>
-                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
-                  <div className='row'><p style={{marginLeft: '13px', marginTop: '7px'}}>Subscriber</p>
-                  <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
-                        <option disabled selected value>Select Event </option>
-                         <option value='sees'>sees</option>
-                          <option value='clicks'>clicks</option>
-                          <option value='receives'>receives</option>
-                      </select>
-                        <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
-                        <option disabled selected value>Select Message </option>
+                    <DropdownMenu>
+                      <DropdownItem onClick={this.changeConditionToAnd}>all of the following conditions</DropdownItem>
+                      <DropdownItem onClick={this.changeConditionToOr}>any of the following conditions</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+                <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                  <div style={{ marginBottom: '10px' }}>Segment subscribers based on<span id='switchCondition' style={{ fontWeight: 'bold', textDecoration: 'underline' }}>{this.state.joiningCondition === 'OR' ? ' any of the following conditions' : ' all of the following conditions'}:</span></div>
+                  <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                    <table className='m-datatable__table'
+                      id='m-datatable--27866229129' style={{
+                        display: 'block',
+                        height: 'auto',
+                        overflowX: 'auto'
+                      }}>
+                      <thead className='m-datatable__head'>
+                        <tr className='m-datatable__row'
+                          style={{ height: '53px' }}>
+                          <th data-field='title'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{ width: '25%' }}>
+                            <span>Condition</span>
+                          </th>
+                          <th data-field='title'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{ width: '25%' }}>
+                            <span>Criteria</span>
+                          </th>
+                          <th data-field='text'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{ width: '25%' }}>
+                            <span>Value</span>
+                          </th>
+                          <th data-field='remove'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{ width: '25%' }}>
+                            <span />
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
                         {
+                          this.state.conditions.map((condition, i) => (
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{ height: '55px' }} key={i}>
+                              <td data-field='title'
+                                className='m-datatable__cell' style={{ width: '25%' }}>
+                                <select className='form-control m-input' onChange={(e) => this.changeConditions(e, i)}
+                                  value={condition.condition} >
+                                  <option value=''>Select Condition</option>
+                                  <option value='first_name'>First Name</option>
+                                  <option value='last_name'>Last Name</option>
+                                  <option value='page'>Page</option>
+                                  <option value='gender'>Gender</option>
+                                  <option value='locale'>Locale</option>
+                                  <option value='tag'>Tag</option>
+                                  <option value='subscription_date'>Subscribed</option>
+                                </select>
+                                <span className='m-form__help'>
+                                  {
+                                    this.state.errorMessages.map((m) => (
+                                      m.error === 'conditions' && m.message.map((msg) => {
+                                        return (msg.field === 'condition' && msg.index === i &&
+                                          <span style={{ color: 'red' }}>{msg.message}</span>
+                                        )
+                                      })
+                                    ))
+                                  }
+                                </span>
+                              </td>
+                              <td data-field='title'
+                                className='m-datatable__cell' style={{ width: '25%' }}>
+                                {this.state.conditions[i].condition === 'subscription_date' || this.state.conditions[i].condition === 'reply'
+                                  ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                    value={condition.criteria}>
+                                    <option value=''>Select Criteria</option>
+                                    <option value='on'>on</option>
+                                    <option value='before'>Before</option>
+                                    <option value='after'>After</option>
+                                  </select>
+                                  :
+                                  <div>
+                                    {
+                                      this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'last_name' ?
+                                        <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                          value={condition.criteria}>
+                                          <option value=''>Select Criteria</option>
+                                          <option value='is'>is</option>
+                                          <option value='contains'>contains</option>
+                                          <option value='begins_with'>begins with</option>
+                                        </select>
+                                        :
+                                        <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                          value={condition.criteria}>
+                                          <option value=''>Select Criteria</option>
+                                          <option value='is'>is</option>
+                                        </select>
+                                    }
+                                  </div>
+                                }
 
-                          this.props.messages.map((message, i) => {
-                            if (this.state.selectedMessageId != message._id) {
+                                <span className='m-form__help'>
+                                  {
+                                    this.state.errorMessages.map((m) => (
+                                      m.error === 'conditions' && m.message.map((msg) => {
+                                        return (msg.field === 'criteria' && msg.index === i &&
+                                          <span style={{ color: 'red' }}>{msg.message}</span>
+                                        )
+                                      })
+                                    ))
+                                  }
+                                </span>
+                              </td>
+                              <td data-field='title'
+                                className='m-datatable__cell' style={{ width: '25%' }}>
+                                {
+                                  this.updateTextBox(i, this.state.conditions[i])
+                                }
+
+                                <span className='m-form__help'>
+                                  {
+                                    this.state.errorMessages.map((m) => (
+                                      m.error === 'conditions' && m.message.map((msg) => {
+                                        return (msg.field === 'text' && msg.index === i &&
+                                          <span style={{ color: 'red' }}>{msg.message}</span>
+                                        )
+                                      })
+                                    ))
+                                  }
+                                </span>
+                              </td>
+                              <td data-field='title'
+                                className='m-datatable__cell' style={{ width: '25%' }}>
+                                {(this.state.conditions.length > 1)
+                                  ? <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={(e) => this.removeCondition(e, i)} >
+                                    Remove
+                                      </button>
+                                  : <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' disabled >
+                                    Remove
+                                     </button>
+                                }
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                    <button style={{ margin: '15px' }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
+                      + Add Condition
+                         </button>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <button onClick={() => this.saveSegmentation()} data-dismiss='modal' className='btn btn-primary btn-md' style={{ marginLeft: '20px', marginTop: '20px' }}> Save </button>
+                  <button onClick={() => this.closeDialogSegmentation()} data-dismiss='modal' style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px' }} className='btn'> Cancel </button>
+                  {
+                    this.state.conditions.length > 0 && this.state.conditions[0].value !== '' &&
+                    <button onClick={() => this.removeSegmentation()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px' }} className='btn'> Remove Segmentation </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#' style={{ display: 'none' }} ref='triggerIsNone' data-toggle="modal" data-target="#triggerIsNone">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="triggerIsNone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Trigger Message
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div style={{ marginBottom: '20px' }}>  <p>This message will be triggerred when: </p>
+                  <div className='row'><p style={{ marginLeft: '13px', marginTop: '7px' }}>Subscriber</p>
+                    <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                      <option disabled selected value>Select Event </option>
+                      <option value='sees'>sees</option>
+                      <option value='clicks'>clicks</option>
+                      <option value='receives'>receives</option>
+                    </select>
+                    <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                      <option disabled selected value>Select Message </option>
+                      {
+                        this.props.messages.map((message, i) => {
+                          if (this.state.selectedMessageId != message._id) {
+                            return <option value={message._id}>{message.title}</option>
+                          }
+                        })}
+                    </select>
+                    {
+                      this.state.displayAction &&
+                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                        <option disabled selected value>Select Button </option>
+                        {
+                          this.state.buttonList.map((button, i) => {
+                            return <option value={button.buttonId}>{button.title}</option>
+                          })}
+                      </select>
+                    }
+                  </div>
+
+                </div>
+
+                <button onClick={() => this.saveTriggerMessage()} data-dismiss='modal' className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} disabled={!this.validateTrigger()}> Save </button>
+                <button onClick={() => this.CloseDialogTrigger()} data-dismiss='modal' style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Cancel </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#' style={{ display: 'none' }} ref='triggerIsNotNone' data-toggle="modal" data-target="#triggerIsNotNone">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="triggerIsNotNone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Trigger Message
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div style={{ marginBottom: '20px' }}>  <p>This message will be triggerred when: </p>
+                  <div className='row'>
+                    <p style={{ marginTop: '7px', marginLeft: '13px' }}>Subscriber</p>
+                    <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                      <option selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
+                      <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
+                      <option selected={this.state.triggerEvent === 'receives' ? true : null} value='receives'>receives</option>
+                    </select>
+                    <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                      {
+                        this.props.messages.map((message, i) => {
+                          if (this.state.selectedTriggerMsgId == message._id) {
+                            return <option selected value>{message.title} </option>
+                          }
+                        })
+                      }
+                      {
+                        this.props.messages.map((message, i) => {
+                          if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
                             return <option value={message._id}>{message.title}</option>
                           }
                         })}
 
-                       </select>
-                       {
-                         this.state.displayAction &&
-                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
-                        <option disabled selected value>Select Button </option>
-                       {
+                    </select>
+                    {
+                      this.state.displayAction &&
+                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
+                        {this.state.selectedTriggerBtnTitle !== '' ?
+                          <option selected value>{this.state.selectedTriggerBtnTitle} </option>
+                          :
+                          <option disabled selected value>Select Button </option>
+                        }
+                        {
                           this.state.buttonList.map((button, i) => {
-                            return <option value={button.buttonId}>{button.title}</option>
-                        })}
+                            if (button.title != this.state.selectedTriggerBtnTitle) {
+                              return <option value={button.title}>{button.title}</option>
+                            }
+                          })}
                       </select>
-                       }
-                       </div>
-
+                    }
                   </div>
+                </div>
 
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this. validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.ShowTrigger && this.state.triggerEvent !== 'none' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
-                onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px', left: '30vw'}}
-                  onClose={this.CloseDialogTrigger}>
-                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
-                        <div className='row'>
-                         <p style={{marginTop: '7px', marginLeft: '13px'}}>Subscriber</p>
-
-                         <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
-                        <option  selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
-                         <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
-
-                          <option selected={this.state.triggerEvent === 'receives' ? true : null} value='receives'>receives</option>
-                      </select>
-
-                      <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
-                      {
-
-                      this.props.messages.map((message, i) => {
-                        if (this.state.selectedTriggerMsgId == message._id) {
-                        return <option  selected value>{message.title} </option>
-                      }
-                      })
-                      }
-                      {
-                      this.props.messages.map((message, i) => {
-                      if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
-                      return <option value={message._id}>{message.title}</option>
-                      }
-                      })}
-
-                       </select>
-                       {
-                         this.state.displayAction &&
-                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
-                       { this.state.selectedTriggerBtnTitle !==''?
-                        <option  selected value>{this.state.selectedTriggerBtnTitle} </option>
-                        :
-                        <option disabled  selected value>Select Button </option>
-                       }
-                       {
-                          this.state.buttonList.map((button, i) => {
-                            if(button.title!=this.state.selectedTriggerBtnTitle) {
-                            return <option value={button.title}>{button.title}</option>
-                        } })}
-                      </select>
-                       }
-                     </div>
+                <button onClick={() => this.saveTriggerMessage()} data-dismiss='modal' className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} disabled={!this.validateTrigger()}> Save </button>
+                <button onClick={() => this.CloseDialogTrigger()} data-dismiss='modal' style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px' }} className='btn pull-right'> Cancel </button>
+                <button onClick={() => this.removeTrigger()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Remove Trigger </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="schedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Schedule Message
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='row'>
+                  <div className='col-lg-12 col-md-12 col-sm-12'>
+                    <p>Send this message:</p>
                   </div>
-
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px'}} className='btn pull-right'> Cancel </button>
-                    <button onClick={() => this.removeTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Remove Trigger </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-        {this.state.isShowModalSchedule &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeDialogSchedule}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeDialogSchedule}>
-              <h3>Schedule Message</h3>
-              <div className='row'>
-                <div className='col-lg-12 col-md-12 col-sm-12'>
-                  <p>Send this message:</p>
                 </div>
+                <div className='row'>
+                  {console.log('this.state.condition', this.state.condition)}
+                  <div className='col-lg-5 col-md-5 col-sm-5' style={{ marginBottom: '10px' }}>
+                    <select className='form-control m-input' onChange={(e, i) => this.changeTime(e, i)}
+                      value={this.state.time}>
+                      <option value='after'>After</option>
+                      <option value='immediately'>Immediately</option>
+                    </select>
+                  </div>
+                  <div className='col-lg-3 col-md-3 col-sm-3'>
+                    <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange}
+                      disabled={this.state.time === 'immediately'} />
+                  </div>
+                  <div className='col-lg-4 col-md-4 col-sm-4'>
+                    <select className='form-control m-input' disabled={this.state.time === 'immediately'}
+                      value={this.state.condition} onChange={(e, i) => this.changeCondition(e, i)} >
+                      <option value='minutes'>Minutes</option>
+                      <option value='hours'>Hours</option>
+                      <option value='day(s)'>Day(s)</option>
+                    </select>
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-lg-12 col-md-12 col-sm-12'><br></br>
+                    <p>after the user is subscribed to this sequence</p>
+                  </div>
+                </div>
+                <button onClick={this.handleDone} data-dismiss='modal' className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} > Save </button>
+                <button onClick={() => this.closeDialogSchedule()} data-dismiss='modal' style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Cancel </button>
               </div>
-              <div className='row'>
-                {console.log('this.state.condition', this.state.condition)}
-                <div className='col-lg-5 col-md-5 col-sm-5' style={{ marginBottom: '10px' }}>
-                  <select className='form-control m-input' onChange={(e, i) => this.changeTime(e, i)}
-                    value={this.state.time}>
-                    <option value='after'>After</option>
-                    <option value='immediately'>Immediately</option>
-                  </select>
-                </div>
-                <div className='col-lg-3 col-md-3 col-sm-3'>
-                  <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange}
-                    disabled={this.state.time === 'immediately'} />
-                </div>
-                <div className='col-lg-4 col-md-4 col-sm-4'>
-                  <select className='form-control m-input' disabled={this.state.time === 'immediately'}
-                    value={this.state.condition} onChange={(e, i) => this.changeCondition(e, i)} >
-                    <option value='minutes'>Minutes</option>
-                    <option value='hours'>Hours</option>
-                    <option value='day(s)'>Day(s)</option>
-                  </select>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-lg-12 col-md-12 col-sm-12'><br></br>
-                  <p>after the user is subscribed to this sequence</p>
-                </div>
-              </div>
-              <button onClick={this.handleDone} className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} > Save </button>
-              <button onClick={() => this.closeDialogSchedule()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Cancel </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        </div>
 
             <div className='m-content'>
               <div className='m-portlet  m-portlet--full-height '>
@@ -1082,7 +1129,7 @@ class CreateSequence extends React.Component {
                             <div key={i} className='m-list-timeline__item'>
                                     <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                                     <div className='sequence-box' style={{paddingBottom: 0}}>
-                                  <div className='sequence-close-icon' onClick={() => this.showDialogDelete(message._id)}/>
+                                  <div className='sequence-close-icon' data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(message._id)}/>
 
                                   <span>
                                     <span className='sequence-link sequence-name' style={{display: 'block'}} onClick={() => this.gotoView(message)}>
@@ -1115,7 +1162,7 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                         {message.schedule.condition === 'immediately' ? 'Immediately' : 'After ' + message.schedule.days + ' ' + message.schedule.condition   }
                                         </span>
-                                      <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
+                                      <span data-toggle="modal" data-target="#schedule" onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
                                     </span>
 
                                     <span style={{display: 'inlineblock'}}>
@@ -1123,7 +1170,7 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           {message.segmentation.length === 0 ? 'None' : 'Segmented'}
                                         </span>
-                                        <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
+                                        <span data-toggle="modal" data-target="#segmentation" onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
                                     </span>
                                   </span>
 

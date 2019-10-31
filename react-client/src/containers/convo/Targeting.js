@@ -6,8 +6,6 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {getSubscriberReachEstimation} from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 class Targeting extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -557,13 +555,21 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
-         {
-          this.state.isShowingLearnMore &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.isShowingLearnMore}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.isShowingLearnMore}>
-              <span>you can not send messages to any of your subscribers if :</span>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="learnMore" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                      Subscriber count is zero
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <span>you can not send messages to any of your subscribers if :</span>
               <ol>
                 <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
                 <li>No subscriber match the selected criteria</li>
@@ -572,10 +578,11 @@ class Targeting extends React.Component {
                 <div style={{display: 'inline-block', padding: '5px'}}>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
+                </div>
+              </div>
+            </div>
+          </div>
+        {/* {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -592,7 +599,7 @@ class Targeting extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
         { this.props.component === 'broadcast' &&
           <span
@@ -601,7 +608,8 @@ class Targeting extends React.Component {
           >
             This broadcast will be sent to {this.props.subscriberCount} subscriber(s). 
             { this.props.subscriberCount === 0 &&
-              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}>
+              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
+              data-toggle="modal" data-target="#learnMore">
                 Learn More
             </a>
             }

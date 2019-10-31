@@ -55,7 +55,6 @@ class Autoposting extends React.Component {
     }
   }
   viewGuide () {
-    this.refs.addFeed.click()
   }
   componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
@@ -94,8 +93,8 @@ class Autoposting extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='addFeed' data-toggle="modal" data-target="#addFeed">addFeed</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
@@ -221,7 +220,7 @@ class Autoposting extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel msg={this.msg} openGuidelines={this.viewGuide} />
+                <AddChannel msg={this.msg} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} />
               </div>
             </div>
           </div>

@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -39,7 +38,6 @@ class Bot extends React.Component {
       responded: 0,
       total: 0,
       notResponded: 0,
-      showVideo: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -290,13 +288,20 @@ class Bot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='dhLolxFQPkE'
                   opts={{
@@ -306,11 +311,91 @@ class Bot extends React.Component {
                       autoplay: 1
                     }
                   }}
-                  />
+                />              
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Create Bot
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='m-form'>
+                  <div id='question' className='form-group m-form__group'>
+                    <label className='control-label'>Bot Name:</label>
+                    {this.state.error &&
+                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
+                    }
+                    <input className='form-control' placeholder='Enter bot name here'
+                      value={this.state.name} onChange={(e) => this.updateName(e)} />
+                  </div>
+                  <div className='form-group m-form__group'>
+                    <label className='control-label'>Assigned to Page:&nbsp;&nbsp;&nbsp;</label>
+                    <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
+                      {
+                        this.state.pages.map((page, i) => (
+                          <option key={i} value={page._id}>{page.pageName}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className='form-group m-form__group'>
+                    <label className='control-label'>Status:&nbsp;&nbsp;&nbsp;</label>
+                    <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.isActive} onChange={this.changeStatus}>
+                      <option key='2' value='true'>Active</option>
+                      <option key='3' value='false'>Disabled</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
+                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}
+                    data-dismiss='modal'>
+                      Create
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Bot
+							  </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this bot?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteBot(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -329,7 +414,7 @@ class Bot extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding bots? Here is the <a href='http://kibopush.com/smart-replies/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#'  data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
 
@@ -401,7 +486,7 @@ class Bot extends React.Component {
                     {
                       this.props.pages && this.props.pages.length === 0
                       ? <div>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} >
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} >
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -412,7 +497,7 @@ class Bot extends React.Component {
                       </div>
                       : <div>
                         {this.props.user && this.props.user.role !== 'agent' &&
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog}>
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -429,68 +514,6 @@ class Bot extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Create Bot</h3>
-                            <div className='m-form'>
-                              <div id='question' className='form-group m-form__group'>
-                                <label className='control-label'>Bot Name:</label>
-                                {this.state.error &&
-                                  <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
-                                  }
-                                <input className='form-control' placeholder='Enter bot name here'
-                                  value={this.state.name} onChange={(e) => this.updateName(e)} />
-                              </div>
-                              <div className='form-group m-form__group'>
-                                <label className='control-label'>Assigned to Page:&nbsp;&nbsp;&nbsp;</label>
-                                <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
-                                  {
-                                    this.state.pages.map((page, i) => (
-                                      <option key={i} value={page._id}>{page.pageName}</option>
-                                    ))
-                                  }
-                                </select>
-                              </div>
-                              <div className='form-group m-form__group'>
-                                <label className='control-label'>Status:&nbsp;&nbsp;&nbsp;</label>
-                                <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.isActive} onChange={this.changeStatus}>
-                                  <option key='2' value='true'>Active</option>
-                                  <option key='3' value='false'>Disabled</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                                <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}>
-                                  Create
-                                </button>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <h3>Delete Bot</h3>
-                            <p>Are you sure you want to delete this bot?</p>
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.props.deleteBot(this.state.deleteid, this.msg)
-                                this.closeDialogDelete()
-                              }}>Delete
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
                     </div>
                     <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
                       <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
@@ -613,7 +636,7 @@ class Bot extends React.Component {
                                                       </a>
                                                     </li>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.showDialogDelete(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a onClick={() => this.showDialogDelete(bot._id)} data-toggle="modal" data-target="#delete" className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             Delete

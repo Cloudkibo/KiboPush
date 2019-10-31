@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class WelcomeMessage extends React.Component {
@@ -20,7 +19,6 @@ class WelcomeMessage extends React.Component {
       surveysData: [],
       totalLength: 0,
       filterValue: '',
-      showVideo: false,
       isShowingModal: false,
       isShowingZeroPageModal: props.pages && props.pages.length === 0
     }
@@ -93,6 +91,14 @@ class WelcomeMessage extends React.Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+    (nextProps.pages && nextProps.pages.length === 0))
+  ) {
+    this.refs.zeroModal.click()
+  }
+  }
+
   render () {
     console.log('this.props.pages',this.props.pages)
     return (
@@ -104,13 +110,20 @@ class WelcomeMessage extends React.Component {
             </div>
           </div>
         </div>
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Welcome Messages Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='7AEdAMXW6gE'
                   opts={{
@@ -120,33 +133,43 @@ class WelcomeMessage extends React.Component {
                       autoplay: 1
                     }
                   }}
-                />
+                />               
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          (this.state.isShowingZeroPageModal) &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeZeroSubDialog}>
-            <ModalDialog style={{width: '700px', top: '75px'}}
-              onClose={this.closeZeroSubDialog}>
-              <AlertMessageModal type='page' />
-              <div>
-                <YouTube
-                  videoId='9kY3Fmj_tbM'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: {
-                      autoplay: 0
-                    }
-                  }}
-                />
+            </div>
+          </div>
+        <a href='#' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                {(this.props.pages && this.props.pages.length === 0)
+                  ? <AlertMessageModal type='page' />
+                  : <AlertMessageModal type='subscriber' />
+                }
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  <YouTube
+                    videoId='9kY3Fmj_tbM'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&
@@ -158,7 +181,7 @@ class WelcomeMessage extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
-              Or Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+              Or Check out this <a href='#' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
             </div>
           </div>
           <div className='row'>

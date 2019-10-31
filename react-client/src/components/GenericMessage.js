@@ -13,7 +13,7 @@ import Card from '../containers/convo/Card'
 import Gallery from '../containers/convo/Gallery'
 import Media from '../containers/convo/Media'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
@@ -402,7 +402,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     </StickyDiv>
-                    {
+                    {/* {
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -436,7 +436,7 @@ class GenericMessage extends React.Component {
                         </button>
                       </ModalDialog>
                     </ModalContainer>
-                    }
+                    } */}
                     <div className='ui-block' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

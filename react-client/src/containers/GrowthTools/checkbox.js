@@ -6,8 +6,6 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import YouTube from 'react-youtube'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import { browserHistory } from 'react-router'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -218,27 +216,6 @@ class CheckBox extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px',  top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px',  top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='_E6gGHBEaEU'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
         <div className='m-content'>
           {this.props.pages && this.props.pages.length === 0 &&
             <div

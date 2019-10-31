@@ -31,7 +31,6 @@ import { getuserdetails, validateUserAccessToken } from '../../redux/actions/bas
 // import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')

@@ -16,7 +16,7 @@ import AlertContainer from 'react-alert'
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
 import ReactPlayer from 'react-player'
 
@@ -169,7 +169,7 @@ class Audio extends React.Component {
               />
             </div>
           }
-          {
+          {/* {
           this.state.showDialog &&
             <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
@@ -179,7 +179,7 @@ class Audio extends React.Component {
                 <p>{this.state.errorMsg}</p>
               </ModalDialog>
             </ModalContainer>
-        }
+        } */}
         </div>
       </div>
     )

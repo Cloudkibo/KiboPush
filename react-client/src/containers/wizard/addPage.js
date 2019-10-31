@@ -10,7 +10,7 @@ import { browserHistory, Link } from 'react-router'
 import { updateChecks } from '../../redux/actions/wizard.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   addPages,
   enablePage,
@@ -112,7 +112,7 @@ class AddPage extends React.Component {
         <Header />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
-          {
+          {/* {
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -134,7 +134,7 @@ class AddPage extends React.Component {
                 </div>
               </ModalDialog>
             </ModalContainer>
-          }
+          } */}
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>

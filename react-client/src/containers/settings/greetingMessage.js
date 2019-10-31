@@ -9,7 +9,7 @@ import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { Picker } from 'emoji-mart'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Popover from 'react-simple-popover'
 import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
@@ -196,7 +196,7 @@ class GreetingMessage extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/* {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -216,7 +216,7 @@ class GreetingMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <Popover placement='left' isOpen={this.state.showEmojiPicker} className='greetingPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
           <PopoverBody>
             <div>
@@ -240,7 +240,7 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </PopoverBody>
         </Popover>
-        {
+        {/* {
           this.state.showPreview &&
           <ModalContainer style={{top: '100px'}}
             onClose={this.closePreviewDialog}>
@@ -250,7 +250,7 @@ class GreetingMessage extends React.Component {
               <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>

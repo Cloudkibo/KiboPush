@@ -21,7 +21,6 @@ import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -180,17 +179,25 @@ class EditTemplate extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        {
-          this.state.showPreview &&
-          <ModalContainer style={{top: '100px'}}
-            onClose={this.closePreviewDialog}>
-            <ModalDialog style={{top: '100px'}}
-              onClose={this.closePreviewDialog}>
-              <h3>Welcome Message Preview</h3>
-              <ViewMessage user={this.props.user} payload={this.state.broadcast} />
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Welcome Message Preview
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                {  this.state.showPreview && <ViewMessage user={this.props.user} payload={this.state.broadcast} />}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
@@ -256,7 +263,7 @@ class EditTemplate extends React.Component {
                           }
                         </div>
                         <div className='col-lg-6 m--align-right'>
-                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
                           <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
                         </div>
                       </div>

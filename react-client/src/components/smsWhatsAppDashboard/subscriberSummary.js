@@ -5,7 +5,6 @@
 
 import React from 'react'
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class SubscriberSummary extends React.Component {
   constructor (props, context) {
@@ -55,6 +54,7 @@ class SubscriberSummary extends React.Component {
   changeDays (days) {
     if (days === 'other') {
       this.setState({isShowingModal: true})
+      this.refs.report.click()
     } else {
       this.setState({days: days})
       this.props.loadSubscriberSummary({days: days})
@@ -71,13 +71,22 @@ class SubscriberSummary extends React.Component {
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <div className='form-group m-form__group row' style={{padding: '30px'}}>
+                <a href='#' style={{ display: 'none' }} ref='report' data-toggle="modal" data-target="#report">report</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="report" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Summary
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='form-group m-form__group row' style={{padding: '30px'}}>
                 <span htmlFor='example-text-input' className='col-form-label'>
                   Show records for last:&nbsp;&nbsp;
                 </span>
@@ -95,9 +104,10 @@ class SubscriberSummary extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>

@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { createsurvey, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class createSurvey extends React.Component {
@@ -395,6 +394,64 @@ class createSurvey extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <input className='form-control'
+                  placeholder='Enter category' ref='newCategory' />
+                <br />
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeDialog()
+                    this.saveCategory()
+                  }}>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                {this.props.categories.map((d) => (
+                  <div className='form-group m-form__group'>
+                    <div className='m-input-icon m-input-icon--left m-input-icon--right'>
+                      <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
+                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
+                        <span>
+                          <i className='fa fa-times' />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -411,48 +468,6 @@ class createSurvey extends React.Component {
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div
                   className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Add Category</h3>
-                        <input className='form-control'
-                          placeholder='Enter category' ref='newCategory' />
-                        <br />
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.closeDialog()
-                            this.saveCategory()
-                          }}>Save
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-                  {
-                    this.state.isShowingModalDelete &&
-                    <ModalContainer style={{width: '500px', marginTop: '100px'}}
-                      onClose={this.closeDialogDelete}>
-                      <ModalDialog style={{width: '500px', marginTop: '100px'}}
-                        onClose={this.closeDialogDelete}>
-                        {this.props.categories.map((d) => (
-                          <div className='form-group m-form__group'>
-
-                            <div className='m-input-icon m-input-icon--left m-input-icon--right'>
-                              <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
-                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
-                                <span>
-                                  <i className='fa fa-times' />
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-              ))}
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
                   <div
                     className='m-separator m-separator--dashed d-xl-none' />
                 </div>
@@ -485,7 +500,7 @@ class createSurvey extends React.Component {
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
                           <select id='selectcategory' style={{width: '50px'}} />
-                          <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                          <button data-toggle="modal" data-target="#create" onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
                            Add category
                          </button>
                         </div>

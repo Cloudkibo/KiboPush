@@ -69,21 +69,6 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
-      numOfCurrentButtons: 0,
-      disabled: false,
-      buttonDisabled: false,
-      buttonLimit: 3,
-      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'],
-      imgSrc: nextProps.imgSrc ? nextProps.imgSrc : '',
-      file: nextProps.file ? nextProps.file : null,
-      edited: false
-    })
-  }
-
-
   componentWillUnmount() {
     this.props.closeModal()
   }
@@ -118,12 +103,12 @@ class MediaModal extends React.Component {
   render() {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
-      <div className="modal-content">
+      <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Add Media Component
 									</h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
               &times;
 											</span>
@@ -193,14 +178,12 @@ class MediaModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row' style={{ marginTop: '-5vh' }}>
+            <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
-                 data-dismiss='modal'>
+                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px'}}>
                   Cancel
                 </button>
-                <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'
-                data-dismiss='modal'>
+                <button disabled={!this.state.file || this.state.disabled || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
@@ -208,7 +191,6 @@ class MediaModal extends React.Component {
           </div>
         </div>
       </div>
-
     )
   }
 }

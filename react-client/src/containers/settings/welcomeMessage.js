@@ -7,7 +7,7 @@ import {
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 
@@ -85,7 +85,7 @@ class WelcomeMessage extends React.Component {
   render () {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-        {
+        {/* {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false }) }}>
@@ -105,7 +105,7 @@ class WelcomeMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>

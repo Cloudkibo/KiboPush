@@ -7,7 +7,6 @@ import Card from './PreviewComponents/Card'
 import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
@@ -19,7 +18,6 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import YoutubeVideoModal from './YoutubeVideoModal'
 import LinkCarousel from './LinkCarousel';
-import { spawn } from 'child_process'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -107,6 +105,7 @@ class GenericMessage extends React.Component {
   showResetAlertDialog () {
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
+      this.refs.resetModal.click()
     }
   }
 
@@ -127,17 +126,19 @@ class GenericMessage extends React.Component {
     console.log('showAddComponentModal componentType', componentType)
     console.log('showAddComponentModal editData', editData)
     document.body.style.overflow = 'hidden'
-    this.setState({componentType, editData})
+    this.setState({isShowingAddComponentModal: true, componentType, editData})
     this.refs.singleModal.click()
   }
 
   closeAddComponentModal () {
     document.body.style.overflow = 'auto'
-    this.setState({editData: null})
+    this.setState({isShowingAddComponentModal: false, editData: null})
+    this.refs.singleModal.click()
   }
 
   showDialog () {
     this.setState({isShowingModal: true})
+    this.refs.rename.click()
   }
 
   closeDialog () {
@@ -760,24 +761,37 @@ class GenericMessage extends React.Component {
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    {
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Rename:</h3>
-                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                      </ModalDialog>
-                    </ModalContainer>
-                    }
-                    <a href='#' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
-                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
-                        {this.openModal()}
+
+                    <a href='#' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Rename:
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <input style={{ maxWidth: '300px', float: 'left', margin: 2 }} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                            <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal'>Save</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    <a href='#' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
+
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
+                        {this.state.isShowingAddComponentModal && this.openModal()}
+                      </div>
+                    </div>
+
                     <a href='#' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -805,6 +819,39 @@ class GenericMessage extends React.Component {
                               className='btn btn-primary btn-sm'
                               onClick={() => {
                                 this.closeModalAlertDialog()
+                              }} data-dismiss='modal'>Cancel
+                          </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <a href='#' style={{ display: 'none' }} ref='resetModal' data-toggle="modal" data-target="#resetModal">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Warning
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <p>Are you sure you want to reset the message ?</p>
+                            <button style={{ float: 'right', marginLeft: '10px' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.newConvo()
+                                this.closeResetAlertDialog()
+                              }} data-dismiss='modal'>Yes
+                          </button>
+                            <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeResetAlertDialog()
                               }} data-dismiss='modal'>Cancel
                           </button>
                           </div>

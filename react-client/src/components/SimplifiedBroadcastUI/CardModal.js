@@ -3,14 +3,14 @@ import React from 'react'
 import AddCard from './AddCard'
 
 class CardModal extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.elementLimit = 10
     this.buttonLimit = 3
     let cards = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
-        cards.push({component: props.cards[i], disabled: false, id: i + 1})
+        cards.push({ component: props.cards[i], disabled: false, id: i + 1 })
       } else {
         if (i === 0) {
           cards.push({
@@ -21,7 +21,8 @@ class CardModal extends React.Component {
               title: '',
               subtitle: '',
               buttons: []
-            }})
+            }
+          })
         }
       }
     }
@@ -41,7 +42,7 @@ class CardModal extends React.Component {
       selectedIndex: 0,
       currentCollapsed: false,
       disabled: props.edit ? false : true,
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'], 
+      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
@@ -85,11 +86,11 @@ class CardModal extends React.Component {
     this.closeAdditionalCardsModal = this.closeAdditionalCardsModal.bind(this)
   }
 
-  toggleHover (index, hover) {
-    this.setState({hover: hover ? index : -1})
+  toggleHover(index, hover) {
+    this.setState({ hover: hover ? index : -1 })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     //Improve Later
     let that = this
     $('#carouselExampleControls').on('slide.bs.carousel', function (e) {
@@ -98,35 +99,36 @@ class CardModal extends React.Component {
       var next = $(e.relatedTarget);
       var to = next.index();
       console.log(from + ' => ' + to);
-      that.setState({selectedIndex: to})
+      that.setState({ selectedIndex: to })
     })
     if (!this.props.edit) {
-      this.setState({closeAdditionalCardsModal: false})
+      this.setState({ closeAdditionalCardsModal: false })
     }
   }
 
-  addElement () {
+  addElement() {
     console.log('addElement')
-      if (this.state.numOfElements < this.elementLimit) {
-        let cards = this.state.cards
-        cards.push({
-          buttonDisabled: true,
-          disabled: true,
-          id: this.state.cards.length+1,
-          component: {
-            title: '',
-            subtitle: '',
-            buttons: []
-          }})
-        this.setState({selectedIndex: (cards.length-1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true}, () => {
-          this.setState({closeAdditionalCardsModal: false})
-          this.scrollToTop(`panel-heading${this.state.cards.length}`)
-        })
-      }
+    if (this.state.numOfElements < this.elementLimit) {
+      let cards = this.state.cards
+      cards.push({
+        buttonDisabled: true,
+        disabled: true,
+        id: this.state.cards.length + 1,
+        component: {
+          title: '',
+          subtitle: '',
+          buttons: []
+        }
+      })
+      this.setState({ selectedIndex: (cards.length - 1), cards, numOfElements: ++this.state.numOfElements, disabled: true, edited: true }, () => {
+        this.setState({ closeAdditionalCardsModal: false })
+        this.scrollToTop(`panel-heading${this.state.cards.length}`)
+      })
+    }
   }
 
-  handleDone () {
-    this.setState({disabled: true})
+  handleDone() {
+    this.setState({ disabled: true })
     console.log('handleDone', this.cardComponents)
     for (let i = 0; i < this.cardComponents.length; i++) {
       if (this.cardComponents[i]) {
@@ -135,7 +137,7 @@ class CardModal extends React.Component {
     }
   }
 
-  addComponent () {
+  addComponent() {
     console.log('addComponent CardModal', this.state.cards)
     console.log('addComponent CardModal finalCards', this.finalCards)
     console.log('addComponent this.state.cards', this.state.cards)
@@ -160,14 +162,15 @@ class CardModal extends React.Component {
         webviewsize: card.webviewsize,
         default_action: card.default_action,
         deletePayload,
-        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons}, this.props.edit)
+        buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons
+      }, this.props.edit)
     } else if (this.state.cards.length > 1) {
-      let cards = this.state.cards.map((card,index) => {
+      let cards = this.state.cards.map((card, index) => {
         let finalCard = this.finalCards.find(x => card.id === x.id)
         buttons = buttons.concat(finalCard ? finalCard.buttons : card.component.buttons)
         console.log('deletePayload for gallery', deletePayload)
         console.log(`finalCard found for card ${card.id}`, finalCard)
-        return { 
+        return {
           id: card.id ? card.id : '',
           fileurl: card.component.fileurl ? card.component.fileurl : '',
           image_url: card.component.image_url ? card.component.image_url : '',
@@ -191,11 +194,11 @@ class CardModal extends React.Component {
         componentType: 'gallery',
         cards,
         deletePayload: deletePayload.length > 0 ? deletePayload : null
-        }, this.props.edit)
+      }, this.props.edit)
     }
   }
 
-  getDeletePayload (buttons) {
+  getDeletePayload(buttons) {
     console.log('getDeletePayload buttons', buttons)
     console.log('getDeletePayload messengerAdPayloads', this.state.messengerAdPayloads)
     let deletePayload = []
@@ -208,7 +211,7 @@ class CardModal extends React.Component {
           }
         }
         if (!foundPayload) {
-          deletePayload.push(this.state.messengerAdPayloads[i]) 
+          deletePayload.push(this.state.messengerAdPayloads[i])
         } else {
           foundPayload = false
         }
@@ -217,47 +220,47 @@ class CardModal extends React.Component {
     return deletePayload
   }
 
-  updateCardStatus (status, id) {
+  updateCardStatus(status, id) {
     console.log('CardModal updateCardStatus', status)
     console.log('CardModal updateCardStatus state', this.state)
     let cards = this.state.cards
     if (typeof status.disabled === 'boolean') {
-      cards[id-1].disabled = status.disabled
+      cards[id - 1].disabled = status.disabled
       let visibleDisabledCards = this.state.cards.filter(card => card.disabled)
-      this.setState({disabled: visibleDisabledCards.length > 0})
+      this.setState({ disabled: visibleDisabledCards.length > 0 })
       delete status.disabled
     }
     if (typeof status.buttonDisabled === 'boolean') {
-      this.setState({buttonDisabled: status.buttonDisabled})
-      cards[id-1].buttonDisabled = status.buttonDisabled
+      this.setState({ buttonDisabled: status.buttonDisabled })
+      cards[id - 1].buttonDisabled = status.buttonDisabled
       delete status.buttonDisabled
     }
     if (typeof status.actionDisabled === 'boolean') {
-      this.setState({actionDisabled: status.actionDisabled})
-      cards[id-1].actionDisabled = status.actionDisabled
+      this.setState({ actionDisabled: status.actionDisabled })
+      cards[id - 1].actionDisabled = status.actionDisabled
       delete status.actionDisabled
     }
-    if (cards[id-1]) {
+    if (cards[id - 1]) {
       cards[id - 1].component = Object.assign(cards[id - 1].component, status)
       if (status.buttonData) {
-        cards[id-1].component.buttons[status.buttonData.index] = status.buttonData
+        cards[id - 1].component.buttons[status.buttonData.index] = status.buttonData
       }
     }
     for (let i = 0; i < cards.length; i++) {
       delete cards[i].invalid
     }
     if (status.hasOwnProperty('edited')) {
-      this.setState({cards, selectedIndex: id-1, edited: status.edited})
+      this.setState({ cards, selectedIndex: id - 1, edited: status.edited })
       delete status.edited
     } else {
-      this.setState({cards, selectedIndex: id-1, edited: true})
+      this.setState({ cards, selectedIndex: id - 1, edited: true })
     }
   }
 
-  getRequirements () {
+  getRequirements() {
     return this.cardComponents.map((card, index) => {
       console.log(`cardComponent ${index}`, card)
-      
+
       if (card && card.props) {
         let requirements = []
         if (card.props.card.disabled || card.props.card.buttonDisabled) {
@@ -285,7 +288,7 @@ class CardModal extends React.Component {
           console.log('requirements', requirements)
           if (requirements.length > 0) {
             return (
-              <li style={{textAlign: 'left', marginLeft: '75px', color: 'red'}}>{msg}
+              <li style={{ textAlign: 'left', marginLeft: '75px', color: 'red' }}>{msg}
                 <ul>
                   {requirements.map(req => <li>{req}</li>)}
                 </ul>
@@ -295,37 +298,39 @@ class CardModal extends React.Component {
         }
         if (requirements.length === 0) {
           this.showAdditionalCardsModal()
+          if(!this.state.closeAdditionalCardsModal) {
+            this.refs.addCard.click()
+          }
         }
       }
     })
   }
 
-  showAdditionalCardsModal () {
+  showAdditionalCardsModal() {
     this.showingAdditionalCardsModal = true
-    this.ref.nextCard.click()
   }
 
-  closeAdditionalCardsModal () {
-    this.refs.nextCard.click()
-    this.setState({closeAdditionalCardsModal: true})
+  closeAdditionalCardsModal() {
+    this.setState({ closeAdditionalCardsModal: true })
+    this.refs.addCard.click()
   }
 
-  closeCard (id) {
+  closeCard(id) {
     console.log('closing card', id)
     let cards = this.state.cards
     if (this.state.numOfElements <= 1) {
       console.log('At least one card is required')
-      cards[id-1].invalid = true
-      this.setState({cards})
+      cards[id - 1].invalid = true
+      this.setState({ cards })
       return
     }
-    cards.splice(id-1, 1)
-    this.cardComponents.splice(id-1, 1)
+    cards.splice(id - 1, 1)
+    this.cardComponents.splice(id - 1, 1)
     let disabled = false
     let buttonDisabled = false
     let actionDisabled = false
     for (let i = 0; i < cards.length; i++) {
-      cards[i].id = i+1
+      cards[i].id = i + 1
       if (cards[i].disabled) {
         disabled = true
       }
@@ -337,11 +342,11 @@ class CardModal extends React.Component {
       }
     }
     console.log('remaining cards after closing card', cards)
-    let selectedIndex = cards.length-1
-    this.setState({closeAdditionalCardsModal: true, cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled})
+    let selectedIndex = cards.length - 1
+    this.setState({ closeAdditionalCardsModal: true, cards, numOfElements: --this.state.numOfElements, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled })
   }
 
-  addCard (card) {
+  addCard(card) {
     console.log('addCard card in CardModal', card)
     this.finalCards.push(card)
     if (this.finalCards.length === this.state.numOfElements) {
@@ -351,7 +356,7 @@ class CardModal extends React.Component {
     }
   }
 
-  closeModal () {
+  closeModal() {
     if (!this.state.edited) {
       this.props.closeModal()
     } else {
@@ -363,9 +368,9 @@ class CardModal extends React.Component {
     document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
   }
 
-  updateSelectedIndex (index) {
-    this.setState({selectedIndex: index}, () => {
-      this.scrollToTop(`panel-heading${index+1}`)
+  updateSelectedIndex(index) {
+    this.setState({ selectedIndex: index }, () => {
+      this.scrollToTop(`panel-heading${index + 1}`)
     })
   }
 
@@ -373,69 +378,27 @@ class CardModal extends React.Component {
     this.props.closeModal()
   }
 
-  componentWillReceiveProps (nextProps) {
-    let cards = []
-    for (let i = 0; i < this.elementLimit; i++) {
-      if (nextProps.cards && nextProps.cards[i]) {
-        cards.push({component: nextProps.cards[i], disabled: false, id: i + 1})
-      } else {
-        if (i === 0) {
-          cards.push({
-            buttonDisabled: true,
-            disabled: true,
-            id: i + 1,
-            component: {
-              title: '',
-              subtitle: '',
-              buttons: []
-            }})
-        }
-      }
-    }
-    let messengerAdPayloads = []
-    for (let i = 0; i < cards.length; i++) {
-      if (cards[i].component.buttons && cards[i].component.buttons.length > 0) {
-        for (let j = 0; j < cards[i].component.buttons.length; j++) {
-          if (cards[i].component.buttons[j].payload) {
-            messengerAdPayloads.push(cards[i].component.buttons[j].payload)
-          }
-        }
-      }
-    }
-    this.setState({
-      cards,
-      selectedIndex: 0,
-      currentCollapsed: false,
-      disabled: nextProps.edit ? false : true,
-      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'], 
-      buttonDisabled: false,
-      actionDisabled: false,
-      numOfElements: cards.length,
-      closeAdditionalCardsModal: true,
-      messengerAdPayloads
-    })
-  }
-  
-  render () {
+  render() {
     let requirements = this.getRequirements().filter(req => !!req)
     console.log('requirements', requirements)
     let settings = {
       slidesToShow: 1
     }
     return (
-      <div className="modal-content">
-        <a href='#' style={{ display: 'none' }} ref='nextCard' data-toggle="modal" data-target="#cardComplete">error</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="cardComplete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div className="modal-content" style={{ width: '72vw' }}>
+        <a href='#' style={{ display: 'none' }} ref='addCard' data-toggle="modal" data-target="#addCard">addCard</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className="modal fade" id="addCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Subscription Messaging Policy Change
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={()=> this.refs.nextCard.click()} aria-label="Close">
+                  Warning
+							  </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={() => {
+                    this.closeAdditionalCardsModal()}} aria-label="Close">
                   <span aria-hidden="true">
                     &times;
-											</span>
+									</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
@@ -457,21 +420,11 @@ class CardModal extends React.Component {
             </div>
           </div>
         </div>
-         {/* {
-            // (requirements && requirements.length === 0 && !this.state.closeAdditionalCardsModal) &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeAdditionalCardsModal}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeAdditionalCardsModal}>
-                
-              </ModalDialog>
-            </ModalContainer>
-          } */}
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Add {this.state.cards.length > 1 ? 'Gallery' : 'Card'} Component
 					</h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
               &times;
 						</span>
@@ -648,15 +601,12 @@ class CardModal extends React.Component {
             </div>
           </div>
 
-          <div className='row' style={{ marginTop: '-5vh' }}>
+          <div className='col-6' style={{ marginTop: '-5vh' }}>
             <div className='pull-right'>
-              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
-              data-dismiss='modal'
-              >
+              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}>
                 Cancel
                 </button>
-              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'
-              data-dismiss='modal'>
+              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
                 {this.props.edit ? 'Edit' : 'Next'}
               </button>
             </div>

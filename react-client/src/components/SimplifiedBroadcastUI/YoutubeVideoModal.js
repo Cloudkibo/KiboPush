@@ -3,7 +3,6 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddButton from './AddButton'
 import Halogen from 'halogen'
 import { downloadYouTubeVideo, uploadTemplate, urlMetaData } from '../../redux/actions/convos.actions'
@@ -221,12 +220,12 @@ class YoutubeVideoModal extends React.Component {
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
 
-      <div className="modal-content">
+      <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Add Video from YouTube
 									</h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
               &times;
 											</span>
@@ -324,14 +323,14 @@ class YoutubeVideoModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row' style={{ marginTop: '-5vh' }}>
+            <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '25px', marginLeft: '280px' }}
-                data-dismiss ='modal'>
+              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}
+              >
                   Cancel
                 </button>
                 <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle)} onClick={() => this.handleDone()} className='btn btn-primary'
-                 data-dismiss ='modal'>
+                 >
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>

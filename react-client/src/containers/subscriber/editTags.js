@@ -3,7 +3,6 @@ import { deleteTag, renameTag, loadTags } from '../../redux/actions/tags.actions
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 class EditTags extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -186,31 +185,6 @@ class EditTags extends React.Component {
                     : <div className='col-12 table-responsive'>
                       <p> No data to display </p>
                     </div>
-                  }
-
-
-                  {
-                    this.state.showDeleteConfirmation &&
-                    <ModalContainer style={{ width: '500px' }}
-                      onClose={this.closeDeleteConfirmation}>
-                      <ModalDialog style={{ width: '500px' }}
-                        onClose={this.closeDeleteConfirmation}>
-                        <p>Are you sure you want to delete? The tag will be removed and unassigned from all the subscribers.</p>
-                        <button style={{ float: 'right', marginLeft: '10px' }}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.deleteTag(this.state.deleteTag)
-                            this.closeDeleteConfirmation()
-                          }}>Yes
-                        </button>
-                        <button style={{ float: 'right' }}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.closeDeleteConfirmation()
-                          }}>Cancel
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
                   }
                 </div>
               </div>

@@ -10,7 +10,6 @@ import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
 import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -171,31 +170,47 @@ class LandingPage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Landing Page?</h3>
-              <p>Are you sure you want to delete this landing page?</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Landing Page?
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this landing page?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.props.deleteLandingPage(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isSetupShow &&
-          <ModalContainer style={{width: '600px'}}
-            onClose={this.closeDialogSetup}>
-            <ModalDialog style={{width: '600px'}}
-              onClose={this.closeDialogSetup}>
-              <div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="setup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    URL
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div>
                 <div className='form-group m-form__group m--margin-top-10'>
             Landing Page URL
             <input className='form-control m-input m-input--air' value={this.state.landing_Page_Url} />
@@ -228,17 +243,25 @@ class LandingPage extends React.Component {
           </button>
                 </CopyToClipboard>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingCreate &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeCreateDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeCreateDialog}>
-              <h3>Create Landing Page</h3>
-              <div className='m-form'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Create Landing Page
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <div className='form-group m-form__group'>
                   <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
                   <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
@@ -252,14 +275,15 @@ class LandingPage extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                  <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                     Create
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -289,7 +313,7 @@ class LandingPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <Link data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -335,7 +359,7 @@ class LandingPage extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(landingPage)}>
                                     Edit
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(landingPage._id)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(landingPage._id)}>
                                     Delete
                                 </button>
                                 {landingPage.isActive &&
@@ -344,7 +368,7 @@ class LandingPage extends React.Component {
                                 </button>
                                 }
                                 {landingPage.isActive &&
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.setupLandingPage(landingPage._id)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#setup" onClick={() => this.setupLandingPage(landingPage._id)}>
                                     Setup
                                 </button>
                                 }

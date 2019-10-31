@@ -12,7 +12,6 @@ import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../re
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 const styles = {
   iconclass: {

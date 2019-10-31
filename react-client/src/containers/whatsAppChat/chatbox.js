@@ -14,7 +14,6 @@ import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import { Link } from 'react-router'
 import { getmetaurl } from '../liveChat/utilities'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MessageTemplate from './messageTemplate'
 import AlertContainer from 'react-alert'
 import Halogen from 'halogen'
@@ -589,7 +588,7 @@ class ChatBox extends React.Component {
               </i>
             </div>
             <div style={{display: 'inline-block', width: '50%'}}>
-              <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} onClick={this.openTemplates}>Use Templates</Link>
+              <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
             </div>
           </div>
           {
@@ -655,19 +654,18 @@ class ChatBox extends React.Component {
         </div>
       :
       <span><p>Chat's 24 hours window session has been expired for this subscriber. You can only use templates to send a message</p>
-        <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} onClick={this.openTemplates}>Use Templates</Link>
+        <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
       </span>
       }
-       {
-          this.state.showTemplates &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeTemplates}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeTemplates}>
-                <MessageTemplate sendTemplate={this.sendTemplate} closeTemplates={this.closeTemplates}/>
-            </ModalDialog>
-          </ModalContainer>
-        }
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{color: 'black'}} className="modal-body">
+                  <MessageTemplate sendTemplate={this.sendTemplate} closeTemplates={this.closeTemplates}/>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     )
   }

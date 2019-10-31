@@ -9,7 +9,7 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import InjectedCheckoutForm from './checkout'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -168,7 +168,7 @@ class PaymentMethods extends React.Component {
                               Save
                             </button>
                           </div>
-                          {this.state.change &&
+                          {/* {this.state.change &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialog}>
                               <ModalDialog style={{width: '500px'}}
@@ -186,7 +186,7 @@ class PaymentMethods extends React.Component {
                                 </div>
                               </ModalDialog>
                             </ModalContainer>
-                        }
+                        } */}
                         </div>
                         <div className='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                           <div className='m-form__actions'>
