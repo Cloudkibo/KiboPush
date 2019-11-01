@@ -1878,23 +1878,20 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    {
-                      this.props.user.isSuperUser &&
-                      <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
-                        <i onClick={this.showDialogRecording} style={styles.iconclass}>
-                          <i style={{
-                            fontSize: '20px',
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            height: '2em',
-                            margin: '5px',
-                            textAlign: 'center',
-                            color: '#787878'
-                          }} className='fa fa-microphone' />
-                        </i>
-                      </div>
-                    }
+                    <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-microphone' />
+                      </i>
+                    </div>
                     <div style={{display: 'inline-block'}} data-tip='emoticons'>
                       <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
                         <i style={{
