@@ -862,7 +862,7 @@ class Settings extends React.Component {
             { this.state.openTab === 'connectFb' &&
               <ConnectFb />
             }
-            { this.state.openTab === 'uploadCustomerInformation' &&
+            { this.props.user.isSuperUser && this.state.openTab === 'uploadCustomerInformation' &&
               <UploadCustomerInformation />
             }
             { this.state.openTab === 'billing' &&
