@@ -71,9 +71,9 @@ class CreateMessage extends React.Component {
       if (event.deletePayload) {
         console.log('deleting jsonMessage', event.deletePayload)
         if (typeof event.deletePayload[Symbol.iterator] === 'function') {
-          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages, event)
         } else {
-          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages, event)
         }
       }
       console.log('selectedIndex', this.state.selectedIndex)
@@ -112,19 +112,55 @@ class CreateMessage extends React.Component {
       }
     }
   }
-  removePayloadMessages (tempJsonPayloads, jsonMessages) {
+  removePayloadMessages (tempJsonPayloads, jsonMessages, event) {
+    //debugger;
     var tempMessages = []
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
       for (var m = 0; m < tempJsonPayloads.length; m++) {
         if (tempJsonPayloads[m] === jsonMessages[l].jsonAdMessageId) {
+          for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
+            let messageContent = jsonMessages[l].messageContent[i]
+            if (messageContent.cards) {
+              for (let j = 0; j < messageContent.cards.length; j++) {
+                for (let k = 0; k < messageContent.cards[j].buttons.length; k++) {
+                  if (messageContent.cards[j].buttons[k].payload) {
+                    tempJsonPayloads.push(messageContent.cards[j].buttons[k].payload)
+                  }
+                }
+              }
+            } else if (messageContent.buttons) {
+              for (let j = 0; j < messageContent.buttons.length; j++) {
+                if (messageContent.buttons[j].payload) {
+                  tempJsonPayloads.push(messageContent.buttons[j].payload)
+                }
+              }
+            }
+          }
           removePayload = true
         }
       }
       if (!removePayload) {
+        if (event.buttons) {
+          let buttonIndex = event.buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+          if (buttonIndex > -1) {
+             event.buttons[buttonIndex].payload = tempMessages.length + 1
+          }
+        } else if (event.cards) {
+          for (let i = 0; i < event.cards.length; i++) {
+              let buttonIndex = event.cards[i].buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+              if (buttonIndex > -1) {
+                  event.cards[i].buttons[buttonIndex].payload = tempMessages.length + 1
+              }
+          }
+        }
+        jsonMessages[l].jsonAdMessageId = tempMessages.length + 1
+        console.log('pushing to tempMessages', jsonMessages[l])
         tempMessages.push(jsonMessages[l])
       }
     }
+    console.log('event after removing', event)
+    console.log('removePayloadMessages', tempMessages)
     return tempMessages
   }
 
@@ -266,7 +302,7 @@ class CreateMessage extends React.Component {
                 <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
                 Back
               </button>
-                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
+                <button className='btn btn-primary' disabled={!this.state.broadcast || this.state.broadcast.length === 0} onClick={this.saveMessage}>
                 Save
               </button>
               </div>
@@ -303,7 +339,7 @@ class CreateMessage extends React.Component {
                 }
               </ul>
               <GenericMessage
-                hiddenComponents={['media']}
+                hiddenComponents={['video']}
                 module="jsonads"
                 hideUserOptions
                 broadcast={this.state.broadcast}

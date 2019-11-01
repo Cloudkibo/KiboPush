@@ -131,13 +131,13 @@ class Card extends React.Component {
       this.props.editComponent('link', {
         links: this.props.links,
         id: this.props.id,
-        cards: cards,
+        cards: [].concat(cards),
         buttonActions: this.props.buttonActions,
       })
     } else {
       this.props.editComponent('card', {
         id: this.props.id,
-        cards: cards,
+        cards: [].concat(cards),
         buttonActions: this.props.buttonActions,
       })
     }
