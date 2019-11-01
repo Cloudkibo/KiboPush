@@ -21,7 +21,9 @@ import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
 import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
-
+import {
+  getSubscriberCount
+} from '../../redux/actions/broadcast.actions'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -55,7 +57,8 @@ class AddSurvey extends React.Component {
       lists: [],
       resetTarget: false,
       isShowingModalGuideLines: false,
-      pageId: this.props.pages[0]
+      pageId: this.props.pages[0],
+      subscriberCount: 0
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -72,6 +75,10 @@ class AddSurvey extends React.Component {
     this.onTargetClick = this.onTargetClick.bind(this)
     this.checkSurveyErrors = this.checkSurveyErrors.bind(this)
     this.updateChoiceActions = this.updateChoiceActions.bind(this)
+    this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
+  }
+  handleSubscriberCount(response) {
+    this.setState({subscriberCount: response.payload.count})
   }
 
   onNext (e) {
@@ -82,6 +89,12 @@ class AddSurvey extends React.Component {
       $('#titleTarget').addClass('active')
       /* eslint-enable */
     this.setState({tabActive: 'target'})
+    const payload = {
+      pageId: this.state.pageId._id,
+      segmented: false,
+      isList: false,
+    }
+    this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
 
   onPrevious () {
@@ -199,15 +212,27 @@ class AddSurvey extends React.Component {
     this.setState({isShowingModal: false})
   }
   handleTargetValue (targeting) {
+    console.log('target pages', this.props.pages.find(page => page.pageId === targeting.pageValue[0]))
+    let pageId = this.props.pages.find(page => page.pageId === targeting.pageValue[0])
     this.setState({
       listSelected: targeting.listSelected,
       pageValue: targeting.pageValue,
-      pageId: this.props.pages.find(page => page.pageId === targeting.pageValue[0]),
+      pageId: pageId,
       genderValue: targeting.genderValue,
       localeValue: targeting.localeValue,
       tagValue: targeting.tagValue,
       surveyValue: targeting.surveyValue
     })
+    var payload = {
+      pageId:  pageId._id,
+      segmented: true,
+      segmentationGender: targeting.genderValue,
+      segmentationLocale: targeting.localeValue,
+      segmentationTags: targeting.tagValue,
+      isList: targeting.isList ? true : false,
+      segmentationList: targeting.listSelected
+  }
+  this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
   componentDidMount () {
     const hostname = window.location.hostname
@@ -217,7 +242,7 @@ class AddSurvey extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
+    
     document.title = `${title} | Add Survey`
     this.initTab()
   }
@@ -685,6 +710,7 @@ class AddSurvey extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    //console.log('this.state.subscriberCount',((!doesPageHaveSubscribers(this.props.pages, this.state.pageValue)) && (this.state.subscriberCount)))
     let surveyErrors = this.checkSurveyErrors()
     // const { disabled, stayOpen } = this.state
     return (
@@ -841,7 +867,7 @@ class AddSurvey extends React.Component {
                                           <div style={{width: '100%', textAlign: 'center'}}>
                                             <div style={{display: 'inline-block', padding: '5px'}}>
                                               <button className='btn btn-primary'
-                                                disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                                disabled={this.state.subscriberCount === 0 ? true : null}
                                                 onClick={() => {
                                                   this.closeDialog()
                                                   this.goToSend()
@@ -918,7 +944,7 @@ class AddSurvey extends React.Component {
                             </div>
                           </div>
                           <div className='tab-pane' id='tab_2'>
-                            <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='survey' />
+                            <Targeting handleTargetValue={this.handleTargetValue} subscriberCount = {this.state.subscriberCount} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='survey' />
                           </div>
                         </div>
                       </div>
@@ -944,7 +970,8 @@ function mapStateToProps (state) {
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
     currentSurvey: (state.backdoorInfo.currentSurvey),
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    subscribersCount: (state.subscribersInfo.subscribersCount),
   }
 }
 
@@ -957,7 +984,8 @@ function mapDispatchToProps (dispatch) {
     sendSurveyDirectly: sendSurveyDirectly,
     loadTags: loadTags,
     loadSurveyDetails: loadSurveyDetails,
-    fetchAllSequence:fetchAllSequence
+    fetchAllSequence:fetchAllSequence,
+    getSubscriberCount: getSubscriberCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
