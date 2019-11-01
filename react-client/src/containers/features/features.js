@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { fetchAllFeatures, updateFeatures } from '../../redux/actions/features.actions'
 import { fetchAllPlans } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import AddFeature from './addFeature'
 
@@ -191,16 +190,15 @@ class Features extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <AddFeature msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} />
-            </ModalDialog>
-          </ModalContainer>
-        */}
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="feature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{color: 'black'}} className="modal-body">
+                <AddFeature msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} />
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -214,7 +212,7 @@ class Features extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#feature" onClick={this.showDialog}>
                       <span>
                         <i className='la la-plus' />
                         <span>

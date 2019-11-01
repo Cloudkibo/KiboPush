@@ -18,8 +18,12 @@ class App extends Component {
   }
 
   componentDidMount () {
-    console.log('browser history', this.props.history)
-    this.unlisten = this.props.history.listen(location => {
+    this.props.browserHistory.push({
+      pathname: '/',
+      state: {obj: {_id: 1}}
+    })
+    console.log('browser history', this.props.browserHistory)
+    this.unlisten = this.props.browserHistory.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
         /* eslint-disable */
@@ -57,7 +61,7 @@ class App extends Component {
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
-    console.log('browser history', this.props.history)
+    console.log('browser history', this.props.browserHistory)
     return (
       <div>
         {

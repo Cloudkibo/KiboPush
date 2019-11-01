@@ -7,11 +7,10 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class MessageUs extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.onChange = this.onChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -25,11 +24,10 @@ class MessageUs extends React.Component {
       'showbutton': true,
       'fblink': 'https://m.me/',
       'copied': false,
-      showVideo: false
     }
   }
 
-  componentWillReceiveProps (nextprops) {
+  componentWillReceiveProps(nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -50,7 +48,7 @@ class MessageUs extends React.Component {
     }
   }
 
-  onChangeValue (event) {
+  onChangeValue(event) {
     let page
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageId === event.target.value) {
@@ -71,23 +69,23 @@ class MessageUs extends React.Component {
     }
   }
 
-  onChange (event) {
+  onChange(event) {
     this.setState({
       'buttonText': event.target.value
     })
   }
 
-  handleChange (e) {
+  handleChange(e) {
     this.setState({
       'buttonColor': e.target.value,
       'fontColor': e.target.value === 'blue' ? 'white' : 'black'
     })
   }
 
-  componentDidMount () {
-    const hostname =  window.location.hostname;
+  componentDidMount() {
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -95,16 +93,23 @@ class MessageUs extends React.Component {
 
     document.title = `${title} | Message Us`;
   }
-  render () {
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px',  top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px',  top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Message Us Widget Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='_E6gGHBEaEU'
                   opts={{
@@ -114,11 +119,11 @@ class MessageUs extends React.Component {
                       autoplay: 1
                     }
                   }}
-                  />
+                />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           {this.state.showbutton !== true &&
             <div
@@ -129,7 +134,7 @@ class MessageUs extends React.Component {
               </div>
               <div className='m-alert__text'>
                 You do nott have any connected pages. Please click
-                <Link to='/addpages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect Facebook pages to get the widget code.
+                <Link to='/addpages' style={{ color: 'blue', cursor: 'pointer' }}> here </Link> to connect Facebook pages to get the widget code.
               </div>
             </div>
           }
@@ -139,7 +144,7 @@ class MessageUs extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Message Us Widget? Here is the <a href='http://kibopush.com/messageus/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
@@ -167,7 +172,7 @@ class MessageUs extends React.Component {
                       </h5>
                       <br />
                     </div>
-                    { this.props.pages &&
+                    {this.props.pages &&
                       <div>
                         <label>
                           Choose Page
@@ -177,7 +182,7 @@ class MessageUs extends React.Component {
                             className='form-control'
                             onChange={this.onChangeValue}
                           >
-                            { this.props.pages.map((page, i) => (
+                            {this.props.pages.map((page, i) => (
                               (
                                 page.connected &&
                                 <option value={page.pageId} key={page.pageId}>{page.pageName}</option>
@@ -200,8 +205,8 @@ class MessageUs extends React.Component {
                           &lt;a class='btn'
                           href="https://m.me/{this.state.pageid}"
                           style='{'background:' + this.state.buttonColor +
-                          ';color: ' + this.state.fontColor +
-                          '; border-color: white;'}' &gt;&lt;i class="fa
+                            ';color: ' + this.state.fontColor +
+                            '; border-color: white;'}' &gt;&lt;i class="fa
                           fa-facebook
                           fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;
                           /a&gt;
@@ -217,7 +222,7 @@ class MessageUs extends React.Component {
                       <div className='tab-pane active' id='home-1'
                         role='tabpanel'
                         aria-expanded='true'
-                        style={{display: 'flex', flexDirection: 'row'}}
+                        style={{ display: 'flex', flexDirection: 'row' }}
                       >
                         <br />
                         <div className='col-xl-6'>
@@ -271,13 +276,13 @@ class MessageUs extends React.Component {
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages)
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList}, dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loadMyPagesList: loadMyPagesList }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessageUs)

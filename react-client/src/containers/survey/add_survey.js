@@ -12,7 +12,6 @@ import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -51,20 +50,14 @@ class AddSurvey extends React.Component {
       showDropDown: false,
       listSelected: '',
       isList: false,
-      isShowingModal: false,
       lists: [],
       resetTarget: false,
-      isShowingModalGuideLines: false,
       pageId: this.props.pages[0]
     }
     this.createSurvey = this.createSurvey.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
-    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
-    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
@@ -121,14 +114,6 @@ class AddSurvey extends React.Component {
       $('#titleTarget').addClass('active')
       /* eslint-enable */
     this.setState({tabActive: 'target', resetTarget: false})
-  }
-
-  showGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: true})
-  }
-
-  closeGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: false})
   }
 
   checkSurveyErrors () {
@@ -188,15 +173,8 @@ class AddSurvey extends React.Component {
         alertMessage: '',
         alertType: ''
       })
-      this.showDialog()
+      this.refs.sendSurvey.click()
     }
-  }
-
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-  closeDialog () {
-    this.setState({isShowingModal: false})
   }
   handleTargetValue (targeting) {
     this.setState({
@@ -224,7 +202,7 @@ class AddSurvey extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.createwarning) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/surveys'
 
       })
@@ -691,64 +669,115 @@ class AddSurvey extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.isShowingModalGuideLines &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeGuideLinesDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeGuideLinesDialog}>
-              <h4>Message Types</h4>
-              <p> Following are the types of messages that can be sent to facebook messenger.</p>
-              <div className='panel-group accordion' id='accordion1'>
-                <div className='panel panel-default'>
-                  <div className='panel-heading guidelines-heading'>
-                    <h4 className='panel-title'>
-                      <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
-                    </h4>
-                  </div>
-                  <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                    <div className='panel-body'>
-                      <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTypes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Message Types
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p> Following are the types of messages that can be sent to facebook messenger.</p>
+                <div className='panel-group accordion' id='accordion1'>
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
+                      <div className='panel-body'>
+                        <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
                       <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className='panel panel-default'>
-                  <div className='panel-heading guidelines-heading'>
-                    <h4 className='panel-title'>
-                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
-                    </h4>
-                  </div>
-                  <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                    <div className='panel-body'>
-                      Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
+                      <div className='panel-body'>
+                        Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                    </div>
                     </div>
                   </div>
-                </div>
-                <div className='panel panel-default'>
-                  <div className='panel-heading guidelines-heading'>
-                    <h4 className='panel-title'>
-                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
-                    </h4>
-                  </div>
-                  <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                    <div className='panel-body'>
-                      After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
+                      <div className='panel-body'>
+                        After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                    </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-
+            </div>
+          </div>
+        </div>
+        <a href='#' style={{ display: 'none' }} ref='sendSurvey' data-toggle="modal" data-target="#sendSurvey">sendSurvey</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="sendSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Send Survey
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Do you want to send this survey right away or save it for later use? </p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary'
+                      disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                      onClick={() => {
+                        this.goToSend()
+                      }}
+                      data-dismiss='modal'>
+                      Send
+                                              </button>
+                  </div>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary'
+                      disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                      onClick={() => {
+                        this.createSurvey()
+                        this.props.browserHistory.push({
+                          pathname: '/surveys'
+                        })
+                      }} data-dismiss='modal'>
+                      Save
+                                              </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} data-toggle="modal" data-target="#messageTypes">Message Types</Link>
             </div>
           </div>
 
@@ -831,40 +860,6 @@ class AddSurvey extends React.Component {
                               <div className='row align-items-center'>
                                 <div className='col-xl-8 order-2 order-xl-1' />
                                 <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                                  {/*
-                                      this.state.isShowingModal &&
-                                      <ModalContainer style={{width: '500px'}}
-                                        onClose={this.closeDialog}>
-                                        <ModalDialog style={{width: '500px'}}
-                                          onClose={this.closeDialog}>
-                                          <p>Do you want to send this survey right away or save it for later use? </p>
-                                          <div style={{width: '100%', textAlign: 'center'}}>
-                                            <div style={{display: 'inline-block', padding: '5px'}}>
-                                              <button className='btn btn-primary'
-                                                disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                                                onClick={() => {
-                                                  this.closeDialog()
-                                                  this.goToSend()
-                                                }}>
-                                                Send
-                                              </button>
-                                            </div>
-                                            <div style={{display: 'inline-block', padding: '5px'}}>
-                                              <button className='btn btn-primary'
-                                                disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
-                                                onClick={() => {
-                                                  this.createSurvey()
-                                                  this.props.history.push({
-                                                    pathname: '/surveys'
-                                                  })
-                                                }}>
-                                                Save
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </ModalDialog>
-                                      </ModalContainer>
-                                    */}
                                 </div>
                               </div>
                               <div className='col-xl-12'>

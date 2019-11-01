@@ -140,12 +140,12 @@ class ViewPollDetail extends React.Component {
   }
   backToUserDetails () {
     if (this.props.location.state) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/operationalDashboard`
       })
     } else {
       const user = this.props.currentUser
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/userDetails`,
         state: user
       })

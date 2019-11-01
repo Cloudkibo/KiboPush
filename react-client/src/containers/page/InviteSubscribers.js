@@ -8,11 +8,10 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 
 class InviteSubscribers extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.getlink = this.getlink.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -20,18 +19,17 @@ class InviteSubscribers extends React.Component {
       fblink: '',
       copied: false,
       selectPage: {},
-      showVideo: false
     }
   }
 
-  getlink () {
+  getlink() {
     let linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' +
       this.state.selectPage.pageName + '-' +
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.location.state && this.props.location.state.pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageUserName}`,
@@ -55,9 +53,9 @@ class InviteSubscribers extends React.Component {
         })
       }
     }
-    const hostname =  window.location.hostname;
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -66,7 +64,7 @@ class InviteSubscribers extends React.Component {
     document.title = `${title} | Invite Subscribers`;
   }
 
-  onChangeValue (event) {
+  onChangeValue(event) {
     if (event.target.value !== -1) {
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
@@ -94,16 +92,23 @@ class InviteSubscribers extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Invite Subscribers Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='e89WqM7SjQA'
                   opts={{
@@ -115,9 +120,9 @@ class InviteSubscribers extends React.Component {
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -132,7 +137,7 @@ class InviteSubscribers extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a>
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -183,8 +188,8 @@ class InviteSubscribers extends React.Component {
                           </div>
                         </div>
                         <div className='m--space-30' />
-                        <a style={{marginLeft: '30px'}} className='btn btn-primary' target='_blank' href={this.getlink()}>
-                          <i className='fa fa-facebook' style={{marginRight: '10px'}} />
+                        <a style={{ marginLeft: '30px' }} className='btn btn-primary' target='_blank' href={this.getlink()}>
+                          <i className='fa fa-facebook' style={{ marginRight: '10px' }} />
                           <span>Share Page</span>
                         </a>
                       </div>
@@ -216,7 +221,7 @@ class InviteSubscribers extends React.Component {
                         <div className='m--space-30' />
                         <CopyToClipboard text={this.state.fblink}
                           onCopy={() => {
-                            this.setState({copied: true})
+                            this.setState({ copied: true })
                             toastr.options = {
                               'closeButton': true,
                               'debug': false,
@@ -236,8 +241,8 @@ class InviteSubscribers extends React.Component {
 
                             toastr.success('Link Copied Successfully', 'Copied!')
                           }
-                        }>
-                          <button style={{marginLeft: '30px'}} type='button' className='btn btn-success'>
+                          }>
+                          <button style={{ marginLeft: '30px' }} type='button' className='btn btn-success'>
                             Copy Link
                           </button>
                         </CopyToClipboard>
@@ -254,14 +259,14 @@ class InviteSubscribers extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages)
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList}, dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loadMyPagesList: loadMyPagesList }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteSubscribers)

@@ -42,7 +42,7 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   goBack () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editSequence`,
       state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.name}
     })
@@ -50,7 +50,7 @@ class ViewBroadcastTemplate extends React.Component {
 
   gotoEdit () {
     //  this.props.createSequence({name: this.state.name})
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createMessageSeq`,
       state: {
         title: this.props.location.state.title,

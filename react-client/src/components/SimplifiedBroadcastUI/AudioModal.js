@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Audio from './Audio'
 
 class AudioModal extends React.Component {
@@ -17,6 +15,13 @@ class AudioModal extends React.Component {
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.closeModal = this.closeModal.bind(this)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      disabled: false,
+      file: nextProps.file ? nextProps.file : null
+    })
   }
 
   handleDone () {
@@ -53,46 +58,52 @@ class AudioModal extends React.Component {
 
   render () {
     return (
-      {/*
-      <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-        onClose={this.closeModal}>
-        <ModalDialog style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
-          onClose={this.closeModal}>
-          <h3>Add Audio Component</h3>
-          <hr />
-          <div className='row'>
-            <div className='col-6'>
-              <h4>Audio:</h4>
-              <Audio required file={this.state.file} updateFile={this.updateFile} />
+          <div className="modal-content" style={{width: '72vw'}}>
+            <div style={{ display: 'block' }} className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Add Audio Component
+							</h5>
+              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
+                <span aria-hidden="true">
+                  &times;
+											</span>
+              </button>
             </div>
-            <div className='col-1'>
-              <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
-            </div>
-            <div className='col-5'>
-              <h4 style={{marginLeft: '-50px'}}>Preview:</h4>
-              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px'}} >
-                <div style={{marginTop: '25%'}}>
-                    <audio controls name='media' ref="audio">
-                      <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
-                    </audio>
+            <div style={{ color: 'black' }} className="modal-body">
+              <div className='row'>
+                <div className='col-6'>
+                  <h4>Audio:</h4>
+                  <Audio required file={this.state.file} updateFile={this.updateFile} />
+                </div>
+                <div className='col-1'>
+                  <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
+                </div>
+                <div className='col-5'>
+                  <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
+                  <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px' }} >
+                    <div style={{ marginTop: '25%' }}>
+                      <audio controls name='media' ref="audio">
+                        <source src={this.state.file ? this.state.file.fileurl.url : ''} type='audio/mpeg' />
+                      </audio>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='col-6' style={{ marginTop: '-5vh' }}>
+                  <div className='pull-right'>
+                    <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}
+                   >
+                      Cancel
+                </button>
+                    <button disabled={!this.state.file}  onClick={() => this.handleDone()} className='btn btn-primary'
+                    >
+                      {this.props.edit ? 'Edit' : 'Next'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className='row'>
-              <div className='pull-right'>
-                <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
-                    Cancel
-                </button>
-                <button disabled={!this.state.file} onClick={() => this.handleDone()} className='btn btn-primary'>
-                  {this.props.edit ? 'Edit' : 'Next'}
-                </button>
-              </div>
-            </div>
           </div>
-        </ModalDialog>
-      </ModalContainer>
-      */}
     )
   }
 }

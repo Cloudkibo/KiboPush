@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio && nextprops.user.role === 'buyer') {
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/integrations',
           state: 'sms'
         })

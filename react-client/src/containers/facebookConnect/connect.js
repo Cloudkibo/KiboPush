@@ -25,11 +25,11 @@ class Connect extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer') {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/dashboard'
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/dashboard'
       })
     }

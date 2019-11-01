@@ -9,7 +9,6 @@ import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Popover from 'react-simple-popover'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from '../settings/viewScreen'
@@ -60,7 +59,7 @@ class GreetingMessage extends React.Component {
     props.loadMyPagesList()
   }
   redirectToInviteSub () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: '/inviteUsingLinkWizard',
       state: 'history'
     })
@@ -252,17 +251,25 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </Popover>
-          {/*
-            this.state.showPreview &&
-            <ModalContainer style={{top: '100px'}}
-              onClose={this.closePreviewDialog}>
-              <ModalDialog style={{top: '100px'}}
-                onClose={this.closePreviewDialog}>
-                <h3>Greeting Message Preview</h3>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Greeting Text Preview
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
-              </ModalDialog>
-            </ModalContainer>
-          */}
+                </div>
+              </div>
+            </div>
+          </div>
           <div className='m-content'>
             <div className='m-portlet m-portlet--full-height'>
               <div className='m-portlet__body m-portlet__body--no-padding'>
@@ -349,7 +356,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-9' />
                           <div className='col-3 form-group m-form__group row' style={{ marginLeft: '-45px' }}>
                             <div>
-                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
                               {
                                 this.state.greetingMessage.length > 0
                                   ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>

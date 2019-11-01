@@ -31,7 +31,6 @@ import { getuserdetails, validateUserAccessToken } from '../../redux/actions/bas
 // import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -47,7 +46,6 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      isShowingModalPro: false,
       days: '30',
       pageId: 'all',
       selectedPage: {}
@@ -62,16 +60,10 @@ class Dashboard extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changePage = this.changePage.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
   }
   componentWillMount () {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
@@ -90,17 +82,14 @@ class Dashboard extends React.Component {
     if (this.props.user && this.props.user.role === 'buyer' &&
         response.status === 'failed' && response.payload.error &&
         response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
       })
     }
   }
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
-  }
   goToSettings () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -199,40 +188,40 @@ class Dashboard extends React.Component {
     if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.emailVerified === false) {
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/resendVerificationEmail'
         })
       } else
       if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/integrations'
         })
       }
       //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-      //   this.props.history.push({
+      //   this.props.browserHistory.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'messenger'}
       //   })
       // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-      //   this.props.history.push({
+      //   this.props.browserHistory.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'sms'}
       //   })
       // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-      //   this.props.history.push({
+      //   this.props.browserHistory.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'whatsApp'}
       //   })
       // }
       // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-      //   this.props.history.push({
+      //   this.props.browserHistory.push({
       //     pathname: '/connectFb',
       //     state: { account_type: 'individual' }
       //   })
       // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
       //   if (nextprops.pages && nextprops.pages.length === 0) {
       //     console.log('going to push')
-      //     this.props.history.push({
+      //     this.props.browserHistory.push({
       //       pathname: '/connectFb',
       //       state: { account_type: 'team' }
       //     })
@@ -240,16 +229,16 @@ class Dashboard extends React.Component {
       // }
       else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
         console.log('nextprops pages', nextprops)
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/addfbpages'
         })
       } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/inviteUsingLinkWizard'
         })
       } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/abandonedCarts'
         })
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
@@ -260,7 +249,7 @@ class Dashboard extends React.Component {
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-        // this.props.history.push({
+        // this.props.browserHistory.push({
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
@@ -521,45 +510,60 @@ class Dashboard extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.pages && this.props.pages.length > 0 && <SubscriptionPermissionALert />}
-        {/*
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
                     Upgrade to Pro
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
                   </button>
                 </div>
+                <div style={{color: 'black'}} className="modal-body">
+                  <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                  <div style={{width: '100%', textAlign: 'center'}}>
+                    <div style={{display: 'inline-block', padding: '5px'}}>
+                      <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                        Upgrade to Pro
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: '100'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: '100'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='NhqPaGp3TF8'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                  <YouTube
+                    videoId='NhqPaGp3TF8'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 1
+                      }
+                    }}
+                    />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -590,7 +594,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           {
@@ -673,7 +677,7 @@ class Dashboard extends React.Component {
                   </span>
                 </span>
               </button>
-              : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+              : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
                 <span>
                   <i className='fa fa-download' />
                   <span>

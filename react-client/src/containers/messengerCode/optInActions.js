@@ -21,7 +21,7 @@ class OptInActions extends React.Component {
 
     }
     editMessage() {
-        this.props.history.push({
+        this.props.browserHistory.push({
             pathname: `/editMessageCodeMessage`,
             state: { module: this.props.module, selectedMessengerCode: this.props.messengerCode }
         })

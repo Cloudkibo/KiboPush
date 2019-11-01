@@ -11,7 +11,6 @@ import { requestMessengerCode, resetState, fetchCodes, deleteCode, updateData } 
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPaginate from 'react-paginate'
 
 
@@ -103,14 +102,14 @@ class MessengerCode extends React.Component {
 
   gotoCreate() {
     console.log('this.props.messengerCode', this.props.messengerCode)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createMessengerCode`,
       state: { module: 'createMessage', messengerCode: this.props.messengerCode }
     })
   }
 
   onEdit(messengerCode) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editMessengerCode`,
       state: { module: 'edit', messengerCode }
     })
@@ -174,31 +173,46 @@ class MessengerCode extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Messenger Code?</h3>
-              <p>Are you sure you want to delete this messenger Code?</p>
-              <button style={{ float: 'right' }}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.props.deleteCode(this.state.codetoDelete, this.msg)
-                  this.closeDialogDelete()
-                }}>Delete
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Messenger Code?
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this messenger Code?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteCode(this.state.codetoDelete, this.msg)
+                    this.closeDialogDelete()
+                  }} data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{ width: '680px', top: 100 }}
-            onClose={() => { this.setState({ showVideo: false }) }}>
-            <ModalDialog style={{ width: '680px', top: 100 }}
-              onClose={() => { this.setState({ showVideo: false }) }}>
-              <div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Messenger Code Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='xpVyOxXvZPE'
                   opts={{
@@ -209,18 +223,25 @@ class MessengerCode extends React.Component {
                     }
                   }}
                 />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingCreate &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeCreateDialog}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeCreateDialog}>
-              <h3>Create Messenger Code</h3>
-              <div className='m-form'>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Create Messenger Code
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <div className='form-group m-form__group'>
                   <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
                   <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
@@ -234,22 +255,30 @@ class MessengerCode extends React.Component {
               </div>
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
-                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                  <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                     Create
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowPreview &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closePrviewDialog}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closePrviewDialog}>
-              <h3>QRCode</h3>
-              <center>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    QRCode
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <center>
                 <img src={this.state.QRCodeToPreview.QRCode} style={{ display: 'block', width: '50%' }} />
               </center>
               <br />
@@ -258,9 +287,10 @@ class MessengerCode extends React.Component {
                   <i className='fa fa-download' />&nbsp;&nbsp;Download Image
                 </a>
               </center>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -275,7 +305,7 @@ class MessengerCode extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Messenger Code? Here is the <a href='http://kibopush.com/messenger-codes' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({ showVideo: true }) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -291,7 +321,7 @@ class MessengerCode extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     {this.state.pagesToShow.length > 0
-                      ? <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      ? <Link data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
                           <span>
@@ -337,13 +367,13 @@ class MessengerCode extends React.Component {
                                   <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '250px' }}>{messengerCode.pageId.pageName}</span></td>
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '250px' }}>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} onClick={() => this.showPreviewDialog(messengerCode)}>
+                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} data-toggle="modal" data-target="#preview" onClick={() => this.showPreviewDialog(messengerCode)}>
                                         QRCode
                                       </button>
                                       <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} onClick={() => this.onEdit(messengerCode)}>
                                         Edit
                                       </button>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} onClick={() => this.showDialogDelete(messengerCode._id)}>
+                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerCode._id)}>
                                         Delete
                                       </button>
                                     </span>

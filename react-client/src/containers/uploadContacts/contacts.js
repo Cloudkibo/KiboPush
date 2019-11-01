@@ -7,19 +7,22 @@ import { connect } from 'react-redux'
 import { loadContactsList, loadWhatsAppContactsList, editSubscriber } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Contact extends React.Component {
-  constructor (props) {
-    super(props)
+  constructor (props, context) {
+    super(props, context)
     this.state = {
       contactsData: [],
       totalLength: 0,
       pageNumber: 0,
       contact: '',
       isShowingModalEdit: false,
-      name: ''
+      name: '',
+      subscriber_Lastid: 0,
+      lastButtonClick:'none',
+      current_page: 0,
+      requested_page: 0
     }
     if (props.user.platform === 'sms') {
       props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -27,10 +30,13 @@ class Contact extends React.Component {
       props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     }
     this.editSubscriber = this.editSubscriber.bind(this)
+    this.loadSubscribers = this.loadSubscribers.bind(this)
     this.changeName = this.changeName.bind(this)
     this.showEdit = this.showEdit.bind(this)
     this.closeEdit = this.closeEdit.bind(this)
     this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
+
   }
 
   changeName (e) {
@@ -41,9 +47,39 @@ class Contact extends React.Component {
     if (this.state.name === '') {
       this.msg.error('Subscriber name cannot be empty')
     } else {
-      this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.msg)
+      this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.loadSubscribers, this.msg)
       this.closeEdit()
     }
+  }
+
+  loadSubscribers () {
+
+    if(this.state.requested_page !== 0) {
+      if(this.state.lastButtonClick === 'next') {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.current_page,
+          requested_page: this.state.requested_page,
+          last_id: this.state.subscriber_Lastid,
+          number_of_records: 10,
+          first_page: 'next'
+        })
+      }
+      else if(this.state.lastButtonClick === 'previous') {
+        this.props.loadWhatsAppContactsList({
+          current_page: this.state.current_page,
+          requested_page: this.state.requested_page,
+          last_id: this.state.subscriber_Lastid,
+          number_of_records: 10,
+          first_page: 'previous'
+        })
+      }
+
+    }
+    else {
+      this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    }
+
+
   }
 
   showEdit (contact) {
@@ -72,10 +108,12 @@ class Contact extends React.Component {
   }
 
   handlePageClick (data) {
+    console.log('data.selected', data.selected)
     if (data.selected === 0) {
       if (this.props.user.platform === 'sms') {
         this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
       } else {
+        this.setState({requested_page: data.selected})
         this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
       }
     } else if (this.state.pageNumber < data.selected) {
@@ -88,6 +126,7 @@ class Contact extends React.Component {
           first_page: 'next'
         })
       } else {
+        this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'next', subscriber_Lastid: this.props.contacts[this.props.contacts.length - 1]._id})
         this.props.loadWhatsAppContactsList({
           current_page: this.state.pageNumber,
           requested_page: data.selected,
@@ -106,6 +145,7 @@ class Contact extends React.Component {
           first_page: 'previous'
         })
       } else {
+        this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'previous', subscriber_Lastid: this.props.contacts[0]._id})
         this.props.loadWhatsAppContactsList({
           current_page: this.state.pageNumber,
           requested_page: data.selected,
@@ -159,24 +199,31 @@ class Contact extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.isShowingModalEdit &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeEdit}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeEdit}>
-              <h3>Edit Subscriber</h3>
-              <br />
-              <p>Subscriber Name:</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="editSubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Subscriber
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Subscriber Name:</p>
               <input className='form-control m-input' onChange={this.changeName} value={this.state.name} />
               <br />
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={this.editSubscriber}>Save
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -250,7 +297,7 @@ class Contact extends React.Component {
                             {this.props.user.platform === 'whatsApp' &&
                               <td data-field='actions' className='m-datatable__cell'>
                                 <span style={{width: '100px'}}>
-                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} onClick={() => this.showEdit(contact)}>
+                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)}>
                                     Edit
                                   </button>
                                 </span>
@@ -268,7 +315,7 @@ class Contact extends React.Component {
                         breakLabel={<a>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
+                        marginPagesDisplayed={1}
                         pageRangeDisplayed={3}
                         onPageChange={this.handlePageClick}
                         containerClassName={'pagination'}

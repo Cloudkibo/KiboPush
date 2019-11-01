@@ -15,8 +15,11 @@ import {
   displayDate,
   showDate
 } from '../liveChat/utilities'
+import {getVideoId} from '../../utility/utils'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 import ReactPlayer from 'react-player'
+import YouTube from 'react-youtube'
+import { getmetaurl } from '../liveChat/utilities'
 
 // import MediaCapturer from 'react-multimedia-capture'
 
@@ -36,9 +39,12 @@ class ChatItem extends React.Component {
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
-    
-  }
+    this.scrollToMessage = this.scrollToMessage.bind(this)
 
+  }
+  scrollToMessage (messageId) {
+    this.props.scrollToMessage(messageId)
+  }
   getRepliedByMsg (msg) {
     if (
       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
@@ -49,7 +55,7 @@ class ChatItem extends React.Component {
       return 'You replied'
     }
   }
- 
+
   onTestURLAudio (url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
@@ -73,15 +79,15 @@ class ChatItem extends React.Component {
           {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
         </div>
         {msg.payload.componentType === 'image'
-          ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+          ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
             <img
-              src={msg.payload.fileurl.url}
+              src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
           </a>
         : msg.payload.componentType === 'file'
-        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
-          <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName}</strong></h6>
+        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank' style={{color: type === 'kibopush' ? 'white' : '#5867dd'}}>
+          <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName ? msg.payload.fileName : msg.payload.file && msg.payload.file.fileName}</strong></h6>
         </a>
         : msg.payload.componentType === 'sticker'
         ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
@@ -100,11 +106,11 @@ class ChatItem extends React.Component {
         :msg.payload.componentType === 'video'
         ? <div key={index}>
           <ReactPlayer
-            url={msg.payload.fileurl.url}
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
             controls
             width='230px'
             height='200px'
-            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+            onPlay={this.onTestURLVideo(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
           />
         </div>
         :msg.payload.componentType === 'thumbsUp'
@@ -114,17 +120,101 @@ class ChatItem extends React.Component {
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
         </a>
-      : msg.payload.componentType === 'audio' &&
-      <div key={index}>
-        <ReactPlayer
-          url={msg.payload.fileurl.url}
+      : msg.payload.componentType === 'audio'
+      ? <div key={index}>
+          <ReactPlayer
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
+            controls
+            width='230px'
+            height='60px'
+            onPlay={this.onTestURLAudio(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
+          />
+        </div>
+      : msg.payload.componentType === 'media' && msg.payload.mediaType === 'audio'
+      ? <div key={index}>
+          <ReactPlayer
+          url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
           controls
           width='230px'
           height='60px'
-          onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
-        />
+          onPlay={this.onTestURLAudio(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)} />
       </div>
+      : msg.payload.componentType === 'media' && msg.payload.mediaType === 'video'
+      ? <div key={index}>
+          <ReactPlayer
+            url={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
+            controls
+            width='230px'
+            height='200px'
+            onPlay={this.onTestURLVideo(msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url)}
+          />
+        </div>
+      : msg.payload.componentType === 'media' && msg.payload.mediaType === 'image' &&
+      <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
+            <img
+              src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
+              style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+            />
+          </a>
       }
+      </div>)
+    } else if (msg.payload.componentType === 'text' && msg.url_meta){
+      let metaUrl = getmetaurl(msg.payload.text)
+      let text = msg.payload.text.replace(metaUrl, '')
+      content.push(<div className='m-messenger__message-content'>
+        <div className='m-messenger__message-username'>
+          {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg)}
+        </div>
+        <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+          {text}
+          {getVideoId(metaUrl)
+           ? <div>
+           <YouTube
+             videoId={getVideoId(metaUrl)}
+             opts={{
+               height: '150',
+               width: '200',
+               playerVars: { // https://developers.google.com/youtube/player_parameters
+                 autoplay: 0
+               }
+             }}/>
+           <a href={metaUrl} target='_blank'>
+               <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+             </a>
+             <br />
+             {
+               msg.url_meta.description &&
+                 <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+             }
+             </div>
+          : <table style={{maxWidth: '318px', margin: '10px'}}>
+           <tbody>
+               <tr>
+                 <td>
+                   <div style={{width: 45, height: 45}}>
+                     {
+                       msg.url_meta.image &&
+                         <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                     }
+                   </div>
+                 </td>
+                 <td>
+                   <div>
+                     <a href={metaUrl} target='_blank'>
+                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+                     </a>
+                     <br />
+                     {
+                       msg.url_meta.description &&
+                         <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                     }
+                   </div>
+                 </td>
+               </tr>
+             </tbody>
+          </table>
+        }
+        </div>
       </div>)
     } else {
       content.push(<div className='m-messenger__message-content'>
@@ -147,24 +237,25 @@ class ChatItem extends React.Component {
   }
 
   loadMoreMessage () {
-    this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
+    this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, this.props.chat[0]._id, this.scrollToMessage)
   }
 
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
-    this.refs.chatScroll.addEventListener('scroll', () => {
-      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      if (this.refs.chatScroll.scrollTop === 0) {
-        if (this.shouldLoad()) {
-          this.setState({changedActiveSession: true})
-          this.loadMoreMessage()
-          // this.updateScrollTop()
+    if (this.refs.chatScroll) {
+      this.refs.chatScroll.addEventListener('scroll', () => {
+        this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+        if (this.refs.chatScroll.scrollTop === 0) {
+          if (this.shouldLoad()) {
+            this.setState({changedActiveSession: true})
+            this.loadMoreMessage()
+            // this.updateScrollTop()
+          }
         }
-      }
-    })
-
+      })
+    }
     Events.scrollEvent.register('begin', function (to, element) {
       // console.log('begin', arguments)
     })
@@ -210,12 +301,6 @@ class ChatItem extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-  
-    this.updateScrollTop()
-    if (this.newMessage) {
-      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      this.newMessage = false
-    }
     if (nextProps.chat && nextProps.chat.length > 0 && nextProps.chat[0].contactId === this.props.activeSession._id) {
       this.props.markRead(this.props.activeSession._id, this.props.sessions)
       this.props.updateUnreadCount(this.props.activeSession)

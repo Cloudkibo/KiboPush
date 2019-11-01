@@ -94,7 +94,7 @@ class GettingStarted extends React.Component {
   }
 /* eslint-enable */
   gotopage () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/addPageWizard`,
       state: {showMsg: true}
     })

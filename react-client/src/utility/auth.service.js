@@ -6,7 +6,7 @@ import cookie from 'react-cookie'
 // If login was successful, set the token in local storage
 // cookie.save('token', user.token.token, {path: '/'});
 // printlogs('log', cookie.load('token'));
-// this.props.history.push('/dashboard')
+// this.props.browserHistory.push('/dashboard')
 
 const auth = {
   getToken () {

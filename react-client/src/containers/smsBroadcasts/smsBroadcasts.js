@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { Link } from 'react-router-dom'
 import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
 
@@ -39,7 +38,7 @@ class SmsBroadcast extends React.Component {
   }
 
   gotoCreate (broadcast) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createsmsBroadcast`,
       state: {number: this.state.numberValue}
     })
@@ -138,13 +137,20 @@ class SmsBroadcast extends React.Component {
               </div>
             </div>
           }
-          {/*
-            this.state.isShowingModal &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <h3>Create Broadcast</h3>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Create Broadcast
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <p>Select your Twilio Number to send broadcast from:</p>
                 <div style={{width: '100%', textAlign: 'center'}}>
                   <div className='form-group m-form__group'>
@@ -161,9 +167,10 @@ class SmsBroadcast extends React.Component {
                     </button>
                   </div>
                 </div>
-              </ModalDialog>
-            </ModalContainer>
-          */}
+                </div>
+              </div>
+            </div>
+          </div>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Manage Broadcasts</h3>
@@ -193,7 +200,7 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
                         <span>
                           <i className='la la-plus' />
                           <span>Create New</span>

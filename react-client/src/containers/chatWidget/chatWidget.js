@@ -19,7 +19,7 @@ class ChatWidget extends React.Component {
   }
 
   goToWhitelistDomain () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/settings`,
       state: {module: 'whitelistDomains'}
     })

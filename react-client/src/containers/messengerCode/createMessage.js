@@ -51,13 +51,13 @@ class messengerCodeMessage extends React.Component {
       var newmessengerCode = this.props.location.state.selectedMessengerCode
       newmessengerCode['optInMessage'] = this.props.messengerCode.optInMessage
       console.log('find me i m here ',newmessengerCode)
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/editMessengerCode`,
         state: {module: 'edit', messengerCode: newmessengerCode}
       })
     } else {
       console.log('go back page', this.props.messengerCode)
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/createMessengerCode`,
         state: {messengerCode: this.props.messengerCode, module: 'createMessage'}
       })

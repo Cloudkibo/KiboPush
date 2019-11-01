@@ -179,7 +179,7 @@ class ViewBot extends React.Component {
     }
     this.props.editBot({botId: this.state.id, payload: this.state.payload})
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/bots`
     })
   }

@@ -35,6 +35,22 @@ class CreateMessage extends React.Component {
     this.removePayloadMessages = this.removePayloadMessages.bind(this)
     this.handleSaveMessage = this.handleSaveMessage.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.createJsonMessages = this.createJsonMessages.bind(this)
+  }
+
+  createJsonMessages (buttons, jsonMessages) {
+    for (let j = 0; j < buttons.length; j++) {
+      if (buttons[j].type === 'postback' && !buttons[j].payload) {
+        buttons[j].payload = this.state.jsonMessages.length + 1
+        jsonMessages = this.setNewJsonMessage(buttons[j], jsonMessages)
+      } else {
+        let messageIndex = jsonMessages.findIndex(msg => msg.jsonAdMessageId === buttons[j].payload)
+        if (messageIndex > -1) {
+          jsonMessages[messageIndex].title = buttons[j].title
+        }
+      }
+    }
+    return jsonMessages
   }
 
   handleChange (broadcast, event) {
@@ -44,31 +60,20 @@ class CreateMessage extends React.Component {
     if (event) {
       let jsonMessages = this.state.jsonMessages
       console.log('jsonMessages0', jsonMessages)
-      if (event.buttons) {
-        for (let j = 0; j < event.buttons.length; j++) {
-          if (event.buttons[j].type === 'postback' && !event.buttons[j].payload) {
-            event.buttons[j].payload = this.state.jsonMessages.length + 1
-            jsonMessages = this.setNewJsonMessage(event.buttons[j], jsonMessages)
-          }
+      if (event.cards) {
+        for (let i = 0; i < event.cards.length; i++) {
+          jsonMessages = this.createJsonMessages(event.cards[i].buttons, jsonMessages)
         }
       }
-      if (event.listItems) {
-        for (let i = 0; i < event.listItems.length; i++) {
-          for (let j = 0; j < event.listItems[i].buttons.length; j++) {
-            if (event.listItems[i].buttons[j].type === 'postback' && event.listItems[i].buttons[j] && !event.listItems[i].buttons[j].payload) {
-              console.log(`creating new json message ${i},${j}`, event.listItems[i].buttons[j].payload)
-              event.listItems[i].buttons[j].payload = this.state.jsonMessages.length + 1
-              jsonMessages = this.setNewJsonMessage(event.listItems[i].buttons[j], jsonMessages)
-            }
-          }
-        }
+      if (event.buttons) {
+        jsonMessages = this.createJsonMessages(event.buttons, jsonMessages)
       }
       if (event.deletePayload) {
         console.log('deleting jsonMessage', event.deletePayload)
         if (typeof event.deletePayload[Symbol.iterator] === 'function') {
-          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([...event.deletePayload], jsonMessages, event)
         } else {
-          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages)
+          jsonMessages = this.removePayloadMessages([event.deletePayload], jsonMessages, event)
         }
       }
       console.log('selectedIndex', this.state.selectedIndex)
@@ -107,19 +112,55 @@ class CreateMessage extends React.Component {
       }
     }
   }
-  removePayloadMessages (tempJsonPayloads, jsonMessages) {
+  removePayloadMessages (tempJsonPayloads, jsonMessages, event) {
+    //debugger;
     var tempMessages = []
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
       for (var m = 0; m < tempJsonPayloads.length; m++) {
         if (tempJsonPayloads[m] === jsonMessages[l].jsonAdMessageId) {
+          for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
+            let messageContent = jsonMessages[l].messageContent[i]
+            if (messageContent.cards) {
+              for (let j = 0; j < messageContent.cards.length; j++) {
+                for (let k = 0; k < messageContent.cards[j].buttons.length; k++) {
+                  if (messageContent.cards[j].buttons[k].payload) {
+                    tempJsonPayloads.push(messageContent.cards[j].buttons[k].payload)
+                  }
+                }
+              }
+            } else if (messageContent.buttons) {
+              for (let j = 0; j < messageContent.buttons.length; j++) {
+                if (messageContent.buttons[j].payload) {
+                  tempJsonPayloads.push(messageContent.buttons[j].payload)
+                }
+              }
+            }
+          }
           removePayload = true
         }
       }
       if (!removePayload) {
+        if (event.buttons) {
+          let buttonIndex = event.buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+          if (buttonIndex > -1) {
+             event.buttons[buttonIndex].payload = tempMessages.length + 1
+          }
+        } else if (event.cards) {
+          for (let i = 0; i < event.cards.length; i++) {
+              let buttonIndex = event.cards[i].buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+              if (buttonIndex > -1) {
+                  event.cards[i].buttons[buttonIndex].payload = tempMessages.length + 1
+              }
+          }
+        }
+        jsonMessages[l].jsonAdMessageId = tempMessages.length + 1
+        console.log('pushing to tempMessages', jsonMessages[l])
         tempMessages.push(jsonMessages[l])
       }
     }
+    console.log('event after removing', event)
+    console.log('removePayloadMessages', tempMessages)
     return tempMessages
   }
 
@@ -192,12 +233,12 @@ class CreateMessage extends React.Component {
   }
   goBack () {
     if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/editAdMessage`,
         state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
       })
     } else {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/createAdMessage`,
         state: {module: 'create'}
       })
@@ -261,7 +302,7 @@ class CreateMessage extends React.Component {
                 <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
                 Back
               </button>
-                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
+                <button className='btn btn-primary' disabled={!this.state.broadcast || this.state.broadcast.length === 0} onClick={this.saveMessage}>
                 Save
               </button>
               </div>
@@ -297,17 +338,18 @@ class CreateMessage extends React.Component {
                   </li>))
                 }
               </ul>
+              <GenericMessage
+                hiddenComponents={['video']}
+                module="jsonads"
+                hideUserOptions
+                broadcast={this.state.broadcast}
+                handleChange={this.handleChange}
+                convoTitle={this.state.convoTitle}
+                buttonActions={this.state.buttonActions}
+                replyWithMessage={this.replyWithMessage} />
             </div>
           </div>
         </div>
-        <GenericMessage
-          hiddenComponents={['media']}
-          hideUserOptions
-          broadcast={this.state.broadcast}
-          handleChange={this.handleChange}
-          convoTitle={this.state.convoTitle}
-          buttonActions={this.state.buttonActions}
-          replyWithMessage={this.replyWithMessage} />
       </div>
     )
   }

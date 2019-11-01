@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { fetchAllUsage, updateUsage } from '../../redux/actions/usage.actions'
 import { fetchAllPlans } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import AddUsage from './addUsage'
 
@@ -94,7 +93,7 @@ class Usage extends React.Component {
                 </div>
                 <div className='m-widget5__stats2'>
                   <center style={{cursor: 'pointer'}}>
-                    <span className='m-widget5__number' style={{fontSize: '1rem', fontWeight: 'normal'}} onClick={() => this.showDialogUpdate(keys[i], this.props.usage[keys[i]])}>
+                    <span className='m-widget5__number' style={{fontSize: '1rem', fontWeight: 'normal'}} data-toggle="modal" data-target="#update" onClick={() => this.showDialogUpdate(keys[i], this.props.usage[keys[i]])}>
                       <i className='fa fa-edit' />
                       Edit
                     </span>
@@ -166,26 +165,24 @@ class Usage extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <AddUsage msg={this.msg} closeDialog={this.closeDialog} selectedPlan={this.state.selectedPlan} />
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalUpdate &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogUpdate}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogUpdate}>
-              <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
-            </ModalDialog>
-          </ModalContainer>
-        */}
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="usage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{color: 'black'}} className="modal-body">
+                  <AddUsage msg={this.msg} closeDialog={this.closeDialog} selectedPlan={this.state.selectedPlan} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{color: 'black'}} className="modal-body">
+                <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -199,7 +196,7 @@ class Usage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#usage" onClick={this.showDialog}>
                       <span>
                         <i className='la la-plus' />
                         <span>

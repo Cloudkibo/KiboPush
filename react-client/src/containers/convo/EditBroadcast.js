@@ -35,7 +35,7 @@ class EditBroadcast extends React.Component {
       type: 'message',
       text: this.refs.message.value
     })
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: '/broadcasts'
     })
   }

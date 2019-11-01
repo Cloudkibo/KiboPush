@@ -95,7 +95,7 @@ class InviteMembers extends React.Component {
       email: this.state.email,
       role: this.state.role
     }, this.msg)
-    // this.props.history.push({
+    // this.props.browserHistory.push({
     //   pathname: '/workflows'
     // })
   }

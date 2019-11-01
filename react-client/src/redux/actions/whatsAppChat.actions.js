@@ -100,8 +100,15 @@ export function fetchChat (id, data,searchMessageId,handleScroll) {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
       .then(res => {
         dispatch(showChat(res.payload, data))
-        if (handleScroll && searchMessageId) {
-          handleScroll(searchMessageId)
+        if (handleScroll) {
+          if (searchMessageId) {
+            handleScroll(searchMessageId)
+          } else {
+            var chats = res.payload.chat
+            if (chats.length > 0) {
+              handleScroll(chats[chats.length - 1]._id)
+            }
+          }
         }
       })
   }
@@ -190,12 +197,6 @@ export function assignToAgent (data) {
   }
 }
 
-export function sendNotifications (data) {
-  return (dispatch) => {
-    callApi('notifications/create', 'post', data).then(res => {})
-  }
-}
-
 export function assignToTeam (data) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
@@ -203,6 +204,23 @@ export function assignToTeam (data) {
       console.log('assign to team response', res)
       dispatch(updateSessions(data))
     })
+  }
+}
+
+export function fetchTeamAgents (id, handleAgents) {
+  return (dispatch) => {
+    callApi(`teams/fetchAgents/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          handleAgents(res.payload)
+        }
+      })
+  }
+}
+
+export function sendNotifications (data) {
+  return (dispatch) => {
+    callApi('notifications/create', 'post', data).then(res => {})
   }
 }
 

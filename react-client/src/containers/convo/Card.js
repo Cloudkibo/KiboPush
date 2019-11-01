@@ -462,7 +462,7 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
+        {/* {
           this.state.isshowGuideLinesImageDialog &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesImageDialog}>
@@ -480,7 +480,7 @@ class Card extends React.Component {
               </ul>
             </ModalDialog>
           </ModalContainer>
-        */}
+        } */}
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>

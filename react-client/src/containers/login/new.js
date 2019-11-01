@@ -64,7 +64,7 @@ class Login extends React.Component {
     }
     if (nextprops.successMessage) {
       this.setState({success: true, error: false})
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/dashboard',
         state: {loadScript: true}
       })

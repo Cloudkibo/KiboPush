@@ -114,7 +114,7 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/dashboard`
     })
   }
@@ -361,7 +361,7 @@ class OperationalDashboard extends React.Component {
 
   goToBroadcasts (user) {
     this.props.saveUserInformation(user)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/userDetails`,
       state: user
     })

@@ -20,7 +20,6 @@ import Webhook from './webhooks'
 import Configuration from './configuration'
 import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 
@@ -52,7 +51,6 @@ class Settings extends React.Component {
       show: true,
       openTab: 'configuration',
       pro: false,
-      isShowingModal: false,
       isDisableInput: false,
       isDisableButton: false,
       isKiboChat: false,
@@ -79,8 +77,6 @@ class Settings extends React.Component {
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
     this.setResponseMethods = this.setResponseMethods.bind(this)
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -121,15 +117,9 @@ class Settings extends React.Component {
     this.props.getAPI({company_id: this.props.user._id})
     this.props.getNGP({company_id: this.props.user.companyId})
   }
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
   goToSettings () {
     this.setState({
-      isShowingModal: false, openTab: 'billing', show: false, pro: true
+      openTab: 'billing', show: false, pro: true
     })
   }
   handleNGPKeyChange (event) {
@@ -386,7 +376,7 @@ class Settings extends React.Component {
     console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
@@ -504,45 +494,32 @@ class Settings extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='6hmz4lkUAqM'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Upgrade to Pro
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
-                    Upgrade to Pro
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
                   </button>
+                  </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

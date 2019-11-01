@@ -39,7 +39,7 @@ class viewSurvey extends React.Component {
   }
 
   backToUserDetails () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/showTemplateSurveys`
     })
   }

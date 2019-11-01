@@ -6,7 +6,7 @@ import React from 'react'
 import Header from './header'
 import Sidebar from './sidebar'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import { updateChecks } from '../../redux/actions/wizard.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
@@ -42,11 +42,11 @@ class AddPage extends React.Component {
   }
 
   gotoView () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/pages`
 
     })
-    // this.props.history.push(`/pollResult/${poll._id}`)
+    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
   }
   showError () {
     this.msg.error('Please connect atleast one page')
@@ -91,7 +91,7 @@ class AddPage extends React.Component {
     if (this.props.pages && this.props.pages.length === 0) {
       this.msg.error('Please connect atleast one page')
     } else {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/inviteUsingLinkWizard`
       })
     }
@@ -185,13 +185,13 @@ class AddPage extends React.Component {
                                             <div className='m-widget4__ext'>
                                               {(page.connected) &&
 
-                                              <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                                              <a href='#/' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
                                                 <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                                               </a>
                                                     }
                                               {(!page.connected) &&
 
-                                              <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                                              <a href='#/' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
                                                 <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                                               </a>
 

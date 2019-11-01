@@ -10,7 +10,6 @@ import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
 import { Link } from 'react-router-dom'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -20,7 +19,6 @@ class sponsoredMessaging extends React.Component {
     this.state = {
       sponsoredMessages: [],
       totalLength: 0,
-      isShowingModalDelete: false,
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
@@ -33,7 +31,6 @@ class sponsoredMessaging extends React.Component {
     // props.setInitialState()
      this.displayData = this.displayData.bind(this)
     // this.handlePageClick = this.handlePageClick.bind(this)
-      this.closeDialogDelete = this.closeDialogDelete.bind(this)
       this.showDialogDelete = this.showDialogDelete.bind(this)
     // this.closeCreateDialog = this.closeCreateDialog.bind(this)
       // this.showCreateDialog = this.showCreateDialog.bind(this)
@@ -63,17 +60,12 @@ class sponsoredMessaging extends React.Component {
   }
 
   showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})
-  }
-
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
   }
 
   gotoCreate () {
     //let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createsponsoredMessage`,
       //state: {pageId: pageId, _id: this.state.pageSelected}
     })
@@ -144,25 +136,31 @@ class sponsoredMessaging extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-    {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Sponsored Message?</h3>
-              <p>Are you sure you want to delete this sponsored message?</p>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.props.deleteSponsoredMessage(this.state.deleteid, this.msg)
-                  this.closeDialogDelete()
-                }}>Delete
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Sponsored Message?
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this sponsored message?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteSponsoredMessage(this.state.deleteid, this.msg)
+                  }} data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -241,7 +239,7 @@ class sponsoredMessaging extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(landingPage)}>
                                     Edit
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                     Delete
                                 </button>
                               </span>

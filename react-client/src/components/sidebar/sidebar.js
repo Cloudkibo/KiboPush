@@ -377,7 +377,7 @@ class Sidebar extends Component {
               </li>
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.props.user.platform === 'messenger' && this.showTeams()}
+              {(this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp') && this.showTeams()}
             </ul>
           </div>
         </li>
@@ -650,12 +650,12 @@ class Sidebar extends Component {
       if (this.state.messengerAds) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerAds' className='m-menu__link'>
+            <Link to='/jsonAds' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
-                Messenger Ads
+                JSON Ads
               </span>
             </Link>
           </li>
@@ -1024,7 +1024,7 @@ class Sidebar extends Component {
     console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
-      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+      this.props.browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
       <div id='sidebarDiv'>

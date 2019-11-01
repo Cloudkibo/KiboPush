@@ -26,7 +26,7 @@ class UniquePages extends React.Component {
   }
 
   goToUsers (pageId, pageName) {
-    this.props.history.push({
+    this.props.browserHistory.push({
         pathname: '/backdoorPageUsers',
         state: {
           pageId: pageId,
@@ -36,7 +36,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageAdmins (pageId, pageName) {
-    this.props.history.push({
+    this.props.browserHistory.push({
         pathname: '/backdoorPageAdmins',
         state: {
           pageId: pageId,
@@ -46,7 +46,7 @@ class UniquePages extends React.Component {
   }
 
   goToPermissions (pageId, pageName) {
-    this.props.history.push({
+    this.props.browserHistory.push({
         pathname: '/backdoorPagePermissions',
         state: {
           pageId: pageId,
@@ -56,7 +56,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageTags (pageId, pageName) {
-    this.props.history.push({
+    this.props.browserHistory.push({
         pathname: '/backdoorPageTags',
         state: {
             pageId: pageId,
@@ -66,7 +66,7 @@ class UniquePages extends React.Component {
   }
 
   goToSubscribersWithTags (pageId, pageName) {
-    this.props.history.push({
+    this.props.browserHistory.push({
         pathname: '/backdoorPageSubscribersWithTags',
         state: {
             pageId: pageId,

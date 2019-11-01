@@ -48,7 +48,7 @@ class Finish extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/dashboard`
       })
     })

@@ -7,9 +7,6 @@ import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-// import { ModalBackground } from 'react-modal-dialog';
-import MessengerSendToMessenger from 'react-messenger-send-to-messenger';
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 var MessengerPlugin = require('react-messenger-plugin').default
 
@@ -55,7 +52,6 @@ class ItemSettings extends React.Component {
       selectedPage: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageId) ? this.props.location.state.item.approvalChannel.pageId : '',
       selectedPageFbId: '',
       selectedPageAccessToken: (this.props.location.state.item.approvalChannel && this.props.location.state.item.approvalChannel.pageAccessToken) ? this.props.location.state.item.approvalChannel.pageAccessToken : '',
-      showMessengerModal: false,
       fbAppId:this.props.fbAppId,
       showSubscribeButton: false,
       rssTime: this.props.location.state.item.subscriptionType === 'rss' ? this.props.location.state.item.scheduledInterval : '24 hours',
@@ -78,7 +74,6 @@ class ItemSettings extends React.Component {
     this.handleTweetsModerate = this.handleTweetsModerate.bind(this)
     this.handleTagsInput = this.handleTagsInput.bind(this)
     this.handlePageSelect = this.handlePageSelect.bind(this)
-    this.closeModal = this.closeModal.bind(this)
     this.checkAdminSubscriber = this.checkAdminSubscriber.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.saveCallback = this.saveCallback.bind(this)
@@ -122,11 +117,6 @@ class ItemSettings extends React.Component {
   this.props.fetchAdminSubscriptions({pageId: e.target.value}, this.checkAdminSubscriber)
 
     }
-  }
-
-  closeModal (e) {
-    console.log('close modal called')
-    this.setState({showMessengerModal: false})
   }
 
   checkAdminSubscriber (payload) {
@@ -442,20 +432,30 @@ class ItemSettings extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.showMessengerModal &&
-          <ModalContainer style={{width: '500px'}} onClose={this.closeModal}>
-            <ModalDialog style={{width: '500px'}} onClose={this.closeModal}>
-              <h3>Connect to Messenger:</h3>
-              <MessengerPlugin
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Connect to Messenger:
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <MessengerPlugin
                 appId={this.props.fbAppId}
                 pageId={this.state.selectedPageFbId}
                 size='large'
                 passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
                 />
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader'>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -699,7 +699,7 @@ class ItemSettings extends React.Component {
                       <label>You are not subscribed to selected page. In order to receive approval messages you need to become a subscriber. </label>
                       <br/>
                       <center>
-                      <button className='btn btn-success btn-sm' type='button' onClick={() => this.setState({showMessengerModal:true})} >
+                      <button className='btn btn-success btn-sm' type='button' data-toggle="modal" data-target="#messengerModal" onClick={() => this.setState({showMessengerModal:true})} >
                       Subscribe
                       </button>
                       </center>

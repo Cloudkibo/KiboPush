@@ -45,13 +45,13 @@ class Gallery extends React.Component {
     if (this.props.links) {
       this.props.editComponent('link', {
         links: this.props.links,
-        cards: cards,
+        cards: [].concat(cards),
         buttonActions: this.props.buttonActions,
         id: this.props.id
       })
     } else {
       this.props.editComponent('card', {
-        cards: cards,
+        cards: [].concat([].concat(cards)),
         buttonActions: this.props.buttonActions,
         id: this.props.id
       })

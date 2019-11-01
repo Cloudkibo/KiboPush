@@ -6,7 +6,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   unSubscribe,
   assignToTeam,
@@ -24,10 +23,9 @@ import MapCustomer from './mapCustomer'
 //  import ChatBox from './chatbox'
 
 class Profile extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
-      isShowingModal: false,
       subscriber: '',
       page: '',
       teamValue: '',
@@ -58,7 +56,6 @@ class Profile extends React.Component {
     this.removeTags = this.removeTags.bind(this)
     this.handleSaveTags = this.handleSaveTags.bind(this)
     this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.onTeamChange = this.onTeamChange.bind(this)
     this.onAgentChange = this.onAgentChange.bind(this)
     this.assignToTeam = this.assignToTeam.bind(this)
@@ -71,7 +68,7 @@ class Profile extends React.Component {
     this.updateCustomerId = this.updateCustomerId.bind(this)
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent') {
         this.setState({
@@ -89,22 +86,22 @@ class Profile extends React.Component {
     }
   }
 
-  updateCustomerId (id) {
-    this.setState({customerId: id})
+  updateCustomerId(id) {
+    this.setState({ customerId: id })
   }
 
-  showAddTag () {
+  showAddTag() {
     this.setState({
       addTag: null,
       popoverAddTagOpen: true
     })
   }
-  toggleAdd () {
+  toggleAdd() {
     this.setState({
       popoverAddTagOpen: !this.state.popoverAddTagOpen
     })
   }
-  handleAdd (value) {
+  handleAdd(value) {
     var index = 0
     if (value) {
       for (var i = 0; i < this.props.tags.length; i++) {
@@ -127,13 +124,13 @@ class Profile extends React.Component {
       })
     }
   }
-  handleCreateTag () {
+  handleCreateTag() {
     this.setState({
       saveEnable: false
     })
   }
 
-  addTags () {
+  addTags() {
     var payload = {}
     var selectedIds = []
     var index = 0
@@ -152,7 +149,7 @@ class Profile extends React.Component {
     payload.tagId = this.state.addTag.value
     this.props.assignTags(payload, this.handleSaveTags, this.msg)
   }
-  removeTags (value) {
+  removeTags(value) {
     var payload = {}
     var selectedIds = []
     selectedIds.push(this.props.currentSession._id)
@@ -163,19 +160,15 @@ class Profile extends React.Component {
     payload.tagId = value
     this.props.unassignTags(payload, this.handleSaveTags, this.msg)
   }
-  handleSaveTags () {
+  handleSaveTags() {
     var subscriberId = this.props.currentSession._id
     this.props.getSubscriberTags(subscriberId, this.msg)
   }
-  showDialog (subscriber, page) {
-    this.setState({isShowingModal: true, subscriber: subscriber, page: page})
+  showDialog(subscriber, page) {
+    this.setState({subscriber: subscriber, page: page })
   }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  onTeamChange (e) {
+  onTeamChange(e) {
     let team = {}
 
     for (let i = 0; i < this.props.teams.length; i++) {
@@ -186,10 +179,10 @@ class Profile extends React.Component {
     }
     console.log('The team name  is', team.name)
     // this.setState({assignedTeam: team.name})
-    this.setState({teamValue: e.target.value, teamObject: team, assignedTeam: team.name})
+    this.setState({ teamValue: e.target.value, teamObject: team, assignedTeam: team.name })
   }
 
-  onAgentChange (e) {
+  onAgentChange(e) {
     let agent = {}
 
     for (let i = 0; i < this.props.agents.length; i++) {
@@ -198,11 +191,11 @@ class Profile extends React.Component {
         break
       }
     }
-    this.setState({agentValue: e.target.value, agentObject: agent, assignedAgent: agent.name})
+    this.setState({ agentValue: e.target.value, agentObject: agent, assignedAgent: agent.name })
   }
 
-  assignToAgent () {
-    this.setState({showAssignAgent: !this.state.showAssignAgent, Role: 'agent', assignAgent: false, isAssigned: true})
+  assignToAgent() {
+    this.setState({ showAssignAgent: !this.state.showAssignAgent, Role: 'agent', assignAgent: false, isAssigned: true })
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
@@ -213,7 +206,7 @@ class Profile extends React.Component {
     if (this.state.agentObject._id !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to you.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
+        category: { type: 'chat_session', id: this.props.currentSession._id },
         agentIds: [this.state.agentObject._id],
         companyId: this.props.currentSession.companyId
       }
@@ -221,7 +214,7 @@ class Profile extends React.Component {
     }
   }
 
-  handleAgents (teamAgents) {
+  handleAgents(teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId !== this.props.user._id) {
@@ -231,7 +224,7 @@ class Profile extends React.Component {
     if (agentIds.length > 0) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to your team ${this.state.teamObject.name}.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
+        category: { type: 'chat_session', id: this.props.currentSession._id },
         agentIds: agentIds,
         companyId: this.props.currentSession.companyId
       }
@@ -239,7 +232,7 @@ class Profile extends React.Component {
     }
   }
 
-  assignToTeam () {
+  assignToTeam() {
     this.setState({ showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
     let data = {
       teamId: this.state.teamObject._id,
@@ -251,15 +244,15 @@ class Profile extends React.Component {
     this.props.assignToTeam(data)
   }
 
-  toggleAssignTeam () {
-    this.setState({showAssignTeam: !this.state.showAssignTeam})
+  toggleAssignTeam() {
+    this.setState({ showAssignTeam: !this.state.showAssignTeam })
   }
-  toggleAssignAgent () {
-    this.setState({showAssignAgent: !this.state.showAssignAgent})
+  toggleAssignAgent() {
+    this.setState({ showAssignAgent: !this.state.showAssignAgent })
   }
 
-  unassignTeam () {
-    this.setState({isAssigned: false})
+  unassignTeam() {
+    this.setState({ isAssigned: false })
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
@@ -271,8 +264,8 @@ class Profile extends React.Component {
 
     console.log('The value of unassigned is ', this.state.isAssigned)
   }
-  unassignAgent () {
-    this.setState({isAssigned: false})
+  unassignAgent() {
+    this.setState({ isAssigned: false })
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
@@ -283,7 +276,7 @@ class Profile extends React.Component {
     if (this.state.agentObject._id !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been assigned to you.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
+        category: { type: 'chat_session', id: this.props.currentSession._id },
         agentIds: [this.state.agentObject._id],
         companyId: this.props.currentSession.companyId
       }
@@ -291,11 +284,11 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.tags) {
       var tagOptions = []
       for (var i = 0; i < nextProps.tags.length; i++) {
-        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
+        tagOptions.push({ 'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag })
       }
       this.setState({
         tagOptions: tagOptions
@@ -303,7 +296,7 @@ class Profile extends React.Component {
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -315,39 +308,46 @@ class Profile extends React.Component {
     return (
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-            this.state.isShowingModal &&
-            <ModalContainer style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <ModalDialog style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <h3>Unsubscribe</h3>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Unsubscribe
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <p>Are you sure you want to Unsubscribe this Subscriber?</p>
-                <div style={{width: '100%', textAlign: 'center'}}>
-                  <div style={{display: 'inline-block', padding: '5px'}}>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary' onClick={(e) => {
                       this.props.changeActiveSessionFromChatbox()
-                      this.props.unSubscribe({subscriber_id: this.state.subscriber, page_id: this.state.page})
-                      this.closeDialog()
-                    }}>
+                      this.props.unSubscribe({ subscriber_id: this.state.subscriber, page_id: this.state.page })
+                    }} data-dismiss='modal'>
                       Yes
                     </button>
                   </div>
-                  <div style={{display: 'inline-block', padding: '5px'}}>
-                    <button className='btn btn-primary' onClick={this.closeDialog}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' data-dismiss='modal'>
                       No
                     </button>
                   </div>
                 </div>
-              </ModalDialog>
-            </ModalContainer>
-          */}
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-portlet m-portlet--full-height'>
-          <div style={{padding: '0rem 1.5rem'}} className='m-portlet__body'>
+          <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
             <div className='m-card-profile'>
               <div className='m-card-profile__pic'>
                 <div className='m-card-profile__pic-wrapper'>
-                  <img style={{width: '80px', height: '80px'}} src={this.props.currentSession.profilePic} alt='' />
+                  <img style={{ width: '80px', height: '80px' }} src={this.props.currentSession.profilePic} alt='' />
                 </div>
               </div>
               <div className='m-card-profile__details'>
@@ -355,10 +355,10 @@ class Profile extends React.Component {
                   {this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName}
                 </span>
                 {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession._id, this.props.currentSession.pageId._id)} style={{color: '#716aca', cursor: 'pointer'}}>
-                      (Unsubscribe)
+                  <a className='m-card-profile__email m-link' data-toggle="modal" data-target="#unsubscribe" onClick={() => this.showDialog(this.props.currentSession._id, this.props.currentSession.pageId._id)} style={{ color: '#716aca', cursor: 'pointer' }}>
+                    (Unsubscribe)
                     </a>
-                  }
+                }
                 <br />
                 <a className='m-card-profile__email m-link'>
                   {this.props.currentSession.gender + ', ' + this.props.currentSession.locale}
@@ -366,7 +366,7 @@ class Profile extends React.Component {
                 <br />
                 {
                   this.state.customerId !== '' &&
-                  <a style={{color: 'white'}}
+                  <a style={{ color: 'white' }}
                     onClick={() => {
                       window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
                     }}
@@ -378,10 +378,10 @@ class Profile extends React.Component {
                 <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
                 {
                   (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
-                  <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
+                  <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
                     {
                       this.state.isAssigned &&
-                      <div style={{marginBottom: '20px'}}>
+                      <div style={{ marginBottom: '20px' }}>
                         <span className='m--font-bolder'>Team:</span>
                         <span> {
                           this.state.Role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
@@ -392,132 +392,132 @@ class Profile extends React.Component {
                     }
                     {
                       (this.state.assignAdmin || this.state.isAssigned) && this.state.Role === 'team'
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Unassign team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                      </div>
-                      : this.state.showAssignTeam
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                        <div className='m-accordion__item-body'>
-                          <div className='m-accordion__item-content'>
-                            <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
-                              <option value='' disabled>Select team</option>
-                              {
-                                this.props.teams.map((team, i) => (
-                                  <option key={i} value={team._id}>{team.name}</option>
-                                ))
-                              }
-                            </select>
-                            <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
+                        ? <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-users' />
+                            </span>
+                            <span className='m-accordion__item-title'>Unassign team</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.unassignTeam} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
                           </div>
                         </div>
-                      </div>
-                      : <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head collapsed'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-users' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                            <i className='la la-plus' />
-                          </span>
-                        </div>
-                      </div>
+                        : this.state.showAssignTeam
+                          ? <div className='m-accordion__item'>
+                            <div className='m-accordion__item-head'>
+                              <span className='m-accordion__item-icon'>
+                                <i className='fa fa-users' />
+                              </span>
+                              <span className='m-accordion__item-title'>Assign to team</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
+                                <i className='la la-minus' />
+                              </span>
+                            </div>
+                            <div className='m-accordion__item-body'>
+                              <div className='m-accordion__item-content'>
+                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
+                                  <option value='' disabled>Select team</option>
+                                  {
+                                    this.props.teams.map((team, i) => (
+                                      <option key={i} value={team._id}>{team.name}</option>
+                                    ))
+                                  }
+                                </select>
+                                <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
+                              </div>
+                            </div>
+                          </div>
+                          : <div className='m-accordion__item'>
+                            <div className='m-accordion__item-head collapsed'>
+                              <span className='m-accordion__item-icon'>
+                                <i className='fa fa-users' />
+                              </span>
+                              <span className='m-accordion__item-title'>Assign to team</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
+                                <i className='la la-plus' />
+                              </span>
+                            </div>
+                          </div>
                     }
                     {
                       (this.state.assignAgent || this.state.isAssigned) && this.state.Role === 'agent'
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-user' />
-                          </span>
-                          <span className='m-accordion__item-title'>Unassign Agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.unassignAgent} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                      </div>
-                      : this.state.showAssignAgent
-                      ? <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-user' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                        </div>
-                        <div className='m-accordion__item-body'>
-                          <div className='m-accordion__item-content'>
-                            <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.agentValue} onChange={this.onAgentChange}>
-                              <option value='' disabled>Select agent</option>
-                              {
-                                this.props.agents.map((agent, i) => (
-                                  <option key={i} value={agent._id}>{agent.name}</option>
-                                ))
-                              }
-                            </select>
-                            <button style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.assignToAgent}>Assign</button>
+                        ? <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-user' />
+                            </span>
+                            <span className='m-accordion__item-title'>Unassign Agent</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.unassignAgent} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
                           </div>
                         </div>
-                      </div>
-                      : <div className='m-accordion__item'>
-                        <div className='m-accordion__item-head collapsed'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-user' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign to agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
-                            <i className='la la-plus' />
-                          </span>
-                        </div>
-                      </div>
+                        : this.state.showAssignAgent
+                          ? <div className='m-accordion__item'>
+                            <div className='m-accordion__item-head'>
+                              <span className='m-accordion__item-icon'>
+                                <i className='fa fa-user' />
+                              </span>
+                              <span className='m-accordion__item-title'>Assign to agent</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                                <i className='la la-minus' />
+                              </span>
+                            </div>
+                            <div className='m-accordion__item-body'>
+                              <div className='m-accordion__item-content'>
+                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.agentValue} onChange={this.onAgentChange}>
+                                  <option value='' disabled>Select agent</option>
+                                  {
+                                    this.props.agents.map((agent, i) => (
+                                      <option key={i} value={agent._id}>{agent.name}</option>
+                                    ))
+                                  }
+                                </select>
+                                <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToAgent}>Assign</button>
+                              </div>
+                            </div>
+                          </div>
+                          : <div className='m-accordion__item'>
+                            <div className='m-accordion__item-head collapsed'>
+                              <span className='m-accordion__item-icon'>
+                                <i className='fa fa-user' />
+                              </span>
+                              <span className='m-accordion__item-title'>Assign to agent</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                                <i className='la la-plus' />
+                              </span>
+                            </div>
+                          </div>
                     }
                   </div>
                 }
               </div>
-              <div className='row' style={{display: 'block'}}>
-                <div style={{marginLeft: '50px', marginTop: '40px'}}>
-                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
+              <div className='row' style={{ display: 'block' }}>
+                <div style={{ marginLeft: '50px', marginTop: '40px' }}>
+                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{ color: '#716aca', cursor: 'pointer', width: '110px' }}>
                     <i className='la la-plus' /> Assign Tags
                   </a>
                 </div>
                 {/* <span style={{fontSize: '0.8rem', color: '#5cb85c', marginLeft: '20px'}}>Tag limit for each subscriber is 10</span> */}
               </div>
-              {this.props.subscriberTags && this.props.subscriberTags.length > 0 && <div className='row' style={{minWidth: '150px', padding: '10px'}}>
+              {this.props.subscriberTags && this.props.subscriberTags.length > 0 && <div className='row' style={{ minWidth: '150px', padding: '10px' }}>
                 {
                   this.props.subscriberTags.map((tag, i) => (
-                    <span key={i} style={{display: 'flex'}} className='tagLabel'>
+                    <span key={i} style={{ display: 'flex' }} className='tagLabel'>
                       <label className='tagName'>{tag.tag}</label>
-                      <div className='deleteTag' style={{marginLeft: '10px'}}>
-                        <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeTags(tag._id)} />
+                      <div className='deleteTag' style={{ marginLeft: '10px' }}>
+                        <i className='fa fa-times fa-stack' style={{ marginRight: '-8px', cursor: 'pointer' }} onClick={() => this.removeTags(tag._id)} />
                       </div>
                     </span>
                   ))
                 }
               </div>
-            }
+              }
               <Popover placement='left' className='liveChatPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                 <PopoverHeader>Add Tags</PopoverHeader>
                 <PopoverBody>
-                  <div className='row' style={{minWidth: '250px'}}>
+                  <div className='row' style={{ minWidth: '250px' }}>
                     <div className='col-12'>
                       <label>Select Tags</label>
                       <Select.Creatable
@@ -528,23 +528,23 @@ class Profile extends React.Component {
                       />
                     </div>
                     {this.state.saveEnable
-                    ? <div className='col-12'>
-                      <button style={{float: 'right', margin: '15px'}}
-                        className='btn btn-primary btn-sm'
-                        onClick={() => {
-                          this.addTags()
-                          this.toggleAdd()
-                        }}>Save
+                      ? <div className='col-12'>
+                        <button style={{ float: 'right', margin: '15px' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.addTags()
+                            this.toggleAdd()
+                          }}>Save
                       </button>
-                    </div>
-                    : <div className='col-12'>
-                      <button style={{float: 'right', margin: '15px'}}
-                        className='btn btn-primary btn-sm'
-                        disabled>
-                         Save
+                      </div>
+                      : <div className='col-12'>
+                        <button style={{ float: 'right', margin: '15px' }}
+                          className='btn btn-primary btn-sm'
+                          disabled>
+                          Save
                       </button>
-                    </div>
-                  }
+                      </div>
+                    }
                   </div>
                 </PopoverBody>
               </Popover>
@@ -556,7 +556,7 @@ class Profile extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('mapStateToProps profile', state)
   return {
     chat: (state.liveChat.chat),
@@ -566,7 +566,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     unSubscribe: unSubscribe,
     assignToAgent: assignToAgent,

@@ -35,7 +35,7 @@ class viewPoll extends React.Component {
   }
 
   backToUserDetails () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/templates`
     })
   }

@@ -7,7 +7,6 @@ import Card from './PreviewComponents/Card'
 import Gallery from './PreviewComponents/Gallery'
 import Media from './PreviewComponents/Media'
 import AlertContainer from 'react-alert'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
@@ -81,6 +80,7 @@ class GenericMessage extends React.Component {
   }
 
   initializeList (broadcast) {
+    console.log('initializeList')
     let temp = []
     for (var i = 0; i < broadcast.length; i++) {
       let component = this.getComponent(broadcast[i]).component
@@ -105,6 +105,7 @@ class GenericMessage extends React.Component {
   showResetAlertDialog () {
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
+      this.refs.resetModal.click()
     }
   }
 
@@ -118,6 +119,7 @@ class GenericMessage extends React.Component {
 
   showCloseModalAlertDialog () {
     this.setState({isShowingModalCloseAlert: true})
+    this.refs.lossData.click()
   }
 
   showAddComponentModal (componentType, editData) {
@@ -125,15 +127,18 @@ class GenericMessage extends React.Component {
     console.log('showAddComponentModal editData', editData)
     document.body.style.overflow = 'hidden'
     this.setState({isShowingAddComponentModal: true, componentType, editData})
+    this.refs.singleModal.click()
   }
 
   closeAddComponentModal () {
     document.body.style.overflow = 'auto'
     this.setState({isShowingAddComponentModal: false, editData: null})
+    this.refs.singleModal.click()
   }
 
   showDialog () {
     this.setState({isShowingModal: true})
+    this.refs.rename.click()
   }
 
   closeDialog () {
@@ -181,6 +186,7 @@ class GenericMessage extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('handleCard', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -192,6 +198,7 @@ class GenericMessage extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         console.log('enter in function')
+        temp[i].componentType = obj.componentType
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
         temp[i].image_url = obj.image_url
@@ -209,12 +216,16 @@ class GenericMessage extends React.Component {
           console.log('delete default action')
           delete temp[i].default_action
         }
+        if (temp[i].cards) {
+          delete temp[i].cards
+        }
         isPresent = true
       }
     })
     if (!isPresent) {
       temp.push(obj)
     }
+    console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
     this.props.handleChange({broadcast: temp}, obj)
   }
@@ -238,6 +249,9 @@ class GenericMessage extends React.Component {
     var isPresent = false
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        if (obj.file) {
+          temp[i].file = obj.file
+        }
         temp[i].fileName = obj.fileName
         temp[i].mediaType = obj.mediaType
         temp[i].fileurl = obj.fileurl
@@ -256,6 +270,7 @@ class GenericMessage extends React.Component {
   }
 
   handleGallery (obj) {
+    console.log('handleGallery', obj)
     var temp = this.state.broadcast
     var isPresent = false
     if (obj.cards) {
@@ -265,6 +280,9 @@ class GenericMessage extends React.Component {
     }
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        if (temp[i].buttons) {
+          delete temp[i].buttons
+        }
         temp[i].cards = obj.cards
         isPresent = true
       }
@@ -333,9 +351,17 @@ class GenericMessage extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      this.msg.info(`${componentDetails.componentType} component edited`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`youtube video component edited`)
+      } else {
+        this.msg.info(`${componentDetails.componentType} component edited`)
+      }
     } else {
-      this.msg.info(`New ${componentDetails.componentType} component added`)
+      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+        this.msg.info(`New youtube video component added`)
+      } else {
+        this.msg.info(`New ${componentDetails.componentType} component added`)
+      }
     }
     this.updateList(component)
     component.handler()
@@ -356,9 +382,12 @@ class GenericMessage extends React.Component {
   }
 
   openModal () {
+    console.log('openModal this.state.editData', this.state.editData)
+    console.log('{...this.state.editData}',{...this.state.editData})
     let modals = {
       'text': (<TextModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         noButtons={this.props.noButtons}
@@ -372,6 +401,7 @@ class GenericMessage extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -383,6 +413,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -392,6 +423,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
@@ -401,6 +433,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages} pageId={this.props.pageId}
@@ -409,6 +442,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -421,6 +455,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
+        noButtons={this.props.noButtons}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -432,6 +468,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
+        module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -452,6 +489,9 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text
+          videoId={broadcast.videoId}
+          videoTitle={broadcast.videoTitle}
+          videoDescription={broadcast.videoDescription}
           id={componentId}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
@@ -467,31 +507,35 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleText({
             id: componentId,
+            videoId: broadcast.videoId,
+            videoTitle: broadcast.videoTitle,
+            videoDescription: broadcast.videoDescription,
             text: broadcast.text,
-            buttons: broadcast.buttons ? broadcast.buttons : []
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            deletePayload: broadcast.deletePayload
           })
         }
       },
-      'image': {
-        component: (<Image
-          id={componentId}
-          editComponent={this.showAddComponentModal}
-          pages={this.props.pages}
-          file={broadcast.file}
-          image={broadcast.fileurl}
-          key={componentId}
-          handleImage={this.handleImage}
-          onRemove={this.removeComponent} />),
-        handler: () => {
-          this.handleImage({
-            id: componentId,
-            componentType: 'image',
-            image_url: broadcast.image_url ? broadcast.image_url : '',
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
-            file: broadcast.file
-          })
-        }
-      },
+      // 'image': {
+      //   component: (<Image
+      //     id={componentId}
+      //     editComponent={this.showAddComponentModal}
+      //     pages={this.props.pages}
+      //     file={broadcast.file}
+      //     image={broadcast.fileurl}
+      //     key={componentId}
+      //     handleImage={this.handleImage}
+      //     onRemove={this.removeComponent} />),
+      //   handler: () => {
+      //     this.handleImage({
+      //       id: componentId,
+      //       componentType: 'image',
+      //       image_url: broadcast.image_url ? broadcast.image_url : '',
+      //       fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+      //       file: broadcast.file
+      //     })
+      //   }
+      // },
       'card': {
         component: (<Card
           id={componentId}
@@ -534,7 +578,8 @@ class GenericMessage extends React.Component {
             webviewurl: broadcast.webviewurl,
             elementUrl: broadcast.elementUrl,
             webviewsize: broadcast.webviewsize,
-            default_action: broadcast.default_action
+            default_action: broadcast.default_action,
+            deletePayload: broadcast.deletePayload
           })
         }
       },
@@ -556,7 +601,8 @@ class GenericMessage extends React.Component {
             id: componentId,
             links: broadcast.links,
             componentType: 'gallery',
-            cards: broadcast.cards
+            cards: broadcast.cards,
+            deletePayload: broadcast.deletePayload
           })
         }
       },
@@ -595,6 +641,59 @@ class GenericMessage extends React.Component {
             componentType: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
+        }
+      },
+      'image': {
+        component: (<Media
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pages={this.props.pages}
+          file={broadcast.file}
+          image={broadcast.fileurl}
+          media={broadcast}
+          key={componentId}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent} />),
+        handler: () => {
+          this.handleImage({
+            id: componentId,
+            componentType: 'image',
+            image_url: broadcast.image_url ? broadcast.image_url : '',
+            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            fileName: broadcast.fileName,
+            file: broadcast.file
+          })
+        }
+      },
+      'video': {
+        component: (<Media
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pageId={this.state.pageId}
+          pages={this.props.pages}
+          key={componentId}
+          buttons={broadcast.buttons}
+          youtubeLink={broadcast.youtubeLink && broadcast.youtubeLink}
+          videoLink={broadcast.videoLink && broadcast.videoLink}
+          media={broadcast}
+          mediaType={broadcast.mediaType}
+          handleMedia={this.handleMedia}
+          onRemove={this.removeComponent}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage} />),
+        handler: () => {
+          this.handleMedia({id: componentId,
+            youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
+            videoLink: broadcast.videoLink && broadcast.videoLink,
+            componentType: 'video',
+            file: broadcast.file,
+            fileurl: broadcast.fileurl,
+            fileName: broadcast.fileName,
+            image_url: broadcast.image_url,
+            size: broadcast.size,
+            type: broadcast.type,
+            mediaType: broadcast.mediaType,
+            buttons: broadcast.buttons ? broadcast.buttons : []})
         }
       },
       'media': {
@@ -659,70 +758,105 @@ class GenericMessage extends React.Component {
                             }
                       </div>
                     </div>
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} />
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    {/*
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Rename:</h3>
-                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                      </ModalDialog>
-                    </ModalContainer>
-                    */}
-                    {
-                      this.state.isShowingAddComponentModal && this.openModal()
-                    }
-                    {/*
-                      this.state.isShowingModalCloseAlert &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeModalAlertDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeModalAlertDialog}>
-                          <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
-                          <button style={{float: 'right', marginLeft: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeModalAlertDialog()
-                              this.closeAddComponentModal()
-                            }}>Yes
+                    <a href='#' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Rename:
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <input style={{ maxWidth: '300px', float: 'left', margin: 2 }} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                            <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal'>Save</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <a href='#' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
+
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
+                        {this.state.isShowingAddComponentModal && this.openModal()}
+                      </div>
+                    </div>
+
+                    <a href='#' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Warning
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
+                            <button style={{ float: 'right', marginLeft: '10px' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeModalAlertDialog()
+                                this.closeAddComponentModal()
+                              }} data-dismiss='modal'>Yes
                           </button>
-                          <button style={{float: 'right'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeModalAlertDialog()
-                            }}>Cancel
+                            <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeModalAlertDialog()
+                              }} data-dismiss='modal'>Cancel
                           </button>
-                        </ModalDialog>
-                      </ModalContainer>
-                    */}
-                    {/*
-                      this.state.isShowingModalResetAlert &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeResetAlertDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeResetAlertDialog}>
-                          <p>Are you sure you want to reset the message ?</p>
-                          <button style={{float: 'right', marginLeft: '10px'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.newConvo()
-                              this.closeResetAlertDialog()
-                            }}>Yes
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <a href='#' style={{ display: 'none' }} ref='resetModal' data-toggle="modal" data-target="#resetModal">lossData</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                              Warning
+									          </h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">
+                                &times;
+											        </span>
+                            </button>
+                          </div>
+                          <div style={{ color: 'black' }} className="modal-body">
+                            <p>Are you sure you want to reset the message ?</p>
+                            <button style={{ float: 'right', marginLeft: '10px' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.newConvo()
+                                this.closeResetAlertDialog()
+                              }} data-dismiss='modal'>Yes
                           </button>
-                          <button style={{float: 'right'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.closeResetAlertDialog()
-                            }}>Cancel
+                            <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.closeResetAlertDialog()
+                              }} data-dismiss='modal'>Cancel
                           </button>
-                        </ModalDialog>
-                      </ModalContainer>
-                    */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
                       {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                       <DragSortableList style={{overflowY: 'scroll', height: '75vh'}} items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

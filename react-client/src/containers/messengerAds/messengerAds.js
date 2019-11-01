@@ -7,9 +7,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage} from '../../redux/actions/messengerAds.actions'
 import { Link } from 'react-router-dom'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage, clearMessengerAd} from '../../redux/actions/messengerAds.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -24,6 +23,7 @@ class MessengerAds extends React.Component {
       showVideo: false
     }
     props.fetchMessengerAds()
+    props.clearMessengerAd()
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -41,18 +41,18 @@ class MessengerAds extends React.Component {
       title = 'KiboChat'
     }
 
-    document.title = `${title} | Messenger Ads`
+    document.title = `${title} | JSON Ads`
   }
 
   gotoCreate () {
     this.props.setDefaultAdMessage(defaultAdMessage().messengerAd)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createAdMessage`,
       state: {module: 'create'}
     })
   }
   onEdit (adId) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editAdMessage`,
       state: {module: 'edit', jsonAdId: adId._id}
     })
@@ -107,13 +107,21 @@ class MessengerAds extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{ width: '680px', top: 100 }}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='MmneT96VVqI'
                   opts={{
@@ -124,32 +132,40 @@ class MessengerAds extends React.Component {
                     }
                   }}
                   />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Ad?</h3>
-              <p>Are you sure you want to delete this Ad?</p>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Ad?
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this Ad?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.props.deleteMessengerAd(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Manage Messenger Ads</h3>
+              <h3 className='m-subheader__title'>Manage JSON Ads</h3>
             </div>
           </div>
         </div>
@@ -159,8 +175,8 @@ class MessengerAds extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenger Ads? Here is the <a href='http://kibopush.com/messengerAds' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding JSON Ads? Here is the <a href='http://kibopush.com/jsonAds' target='_blank'>documentation</a>.
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -170,7 +186,7 @@ class MessengerAds extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Messenger Ads
+                        JSON Ads
                       </h3>
                     </div>
                   </div>
@@ -216,7 +232,7 @@ class MessengerAds extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(messengerAd)}>
                                     Edit
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(messengerAd._id)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerAd._id)}>
                                     Delete
                                 </button>
                               </span>
@@ -298,7 +314,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchMessengerAds: fetchMessengerAds,
     deleteMessengerAd: deleteMessengerAd,
-    setDefaultAdMessage: setDefaultAdMessage
+    setDefaultAdMessage: setDefaultAdMessage,
+    clearMessengerAd: clearMessengerAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerAds)

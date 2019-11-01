@@ -15,7 +15,7 @@ class TopPages extends React.Component {
     this.props.savePageInformation(page)
   }
   goToSubscribers (page) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/subscribers`,
       state: {page: page}
     })

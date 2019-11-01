@@ -1,19 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import YouTube from 'react-youtube'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class DiscoverTabs extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
-      showVideo: false
     }
   }
-  componentDidMount () {
-    const hostname =  window.location.hostname;
+  componentDidMount() {
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -22,16 +20,23 @@ class DiscoverTabs extends React.Component {
     document.title = `${title} | Discover Tabs`;
   }
 
-  render () {
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Discover Tabs Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='RsIFfj7gWjI'
                   opts={{
@@ -43,9 +48,9 @@ class DiscoverTabs extends React.Component {
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -60,7 +65,7 @@ class DiscoverTabs extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Discover Tabs? Here is the <a href='http://kibopush.com/discoverTabs' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -76,7 +81,7 @@ class DiscoverTabs extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div className='form-row' style={{display: 'block'}}>
+                  <div className='form-row' style={{ display: 'block' }}>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <p> To apply to have your bot included in the Messenger's Discover Tab, click on “Discover Submission Form” below and select the page to which your bot is attached. Go to 'Discover Settings' section and fill out the form.</p>
                       <br />
@@ -84,9 +89,9 @@ class DiscoverTabs extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                   <div className='col-12'>
-                    <div className='m-form__actions' style={{'float': 'right', marginTop: '20px', marginBottom: '20px'}}>
+                    <div className='m-form__actions' style={{ 'float': 'right', marginTop: '20px', marginBottom: '20px' }}>
                       <Link to={'https://www.facebook.com/page_tabs/?redirection=settings%2F%3Ftab%3Dmessenger_platformm'} target='_blank' className='btn btn-primary' >Discover Submission Form
                       </Link>
                     </div>

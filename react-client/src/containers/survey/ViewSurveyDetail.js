@@ -30,7 +30,7 @@ class ViewSurveyDetail extends React.Component {
   }
 
   gotoView () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/surveys`
     })
   }

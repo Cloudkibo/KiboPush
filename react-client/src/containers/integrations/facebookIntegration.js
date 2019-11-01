@@ -6,7 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import auth from '../../utility/auth.service'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { updateShowIntegrations, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
 
 class FacebookIntegration extends React.Component {
@@ -21,7 +20,7 @@ class FacebookIntegration extends React.Component {
   }
 
   updateShowIntegrations () {
-    this.props.updateShowIntegrations({showIntegrations: false}, this.props.history)
+    this.props.updateShowIntegrations({showIntegrations: false}, this.props.browserHistory)
   }
 
   disconnectFacebook () {
@@ -109,7 +108,7 @@ class FacebookIntegration extends React.Component {
                   </a>
                   <br />
                   <br />
-                  <a href='#' onClick={this.disconnectFacebook} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                  <a href='#' data-toggle="modal" data-target="#disconnect" onClick={this.disconnectFacebook} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                     <span>
                       <i className='la la-unlink' />
                       <span>Disconnect My Facebook Account</span>
@@ -145,14 +144,21 @@ class FacebookIntegration extends React.Component {
             */}
           </div>
         </div>
-        {/*
-          this.state.showModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Disconnet Facebook Account</h3>
-              <p>Are you sure you want to disconnect your Facebook account?</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Disconnet Facebook Account
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to disconnect your Facebook account?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
@@ -160,9 +166,10 @@ class FacebookIntegration extends React.Component {
                   this.closeDialog()
                 }}>Yes
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     )
   }

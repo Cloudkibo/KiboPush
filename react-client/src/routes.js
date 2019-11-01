@@ -316,7 +316,7 @@ const Routes = () => (
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
     <Route path='/chatWidget' component={ChatWidget} onEnter={requireAuth} />
     <Route path='/checkbox' component={Checkbox} onEnter={requireAuth} />
-    <Route path='/messengerAds' component={MessengerAds} onEnter={requireAuth} />
+    <Route path='/jsonAds' component={MessengerAds} onEnter={requireAuth} />
     <Route path='/createMessengerAdMessage' component={CreateMessengerAdMessage} onEnter={requireAuth} />
     <Route path='/createAdMessage' component={CreateAdMessage} onEnter={requireAuth} />
     <Route path='/editAdMessage' component={CreateAdMessage} onEnter={requireAuth} />

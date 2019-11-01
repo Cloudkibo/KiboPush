@@ -52,7 +52,7 @@ class ShowTemplates extends React.Component {
     }
   }
   gotoView () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/poll`
     })
   }

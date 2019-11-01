@@ -20,7 +20,7 @@ class ViewWelcomeMessage extends React.Component {
   }
 
   goBack () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/welcomeMessage`,
       state: { module: 'welcome' }
     })

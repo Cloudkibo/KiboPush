@@ -32,18 +32,18 @@ class top10pages extends React.Component {
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/pageSubscribers`,
       state: {module: 'top10pages'}
     })
   }
   goToBroadcasts (user) {
     this.props.saveUserInformation(user)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/userDetails`,
       state: user
     })
-    // this.props.history.push(`/viewsurveydetail/${survey._id}`)
+    // this.props.browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
   showData () {
     let table = []

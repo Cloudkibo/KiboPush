@@ -16,7 +16,6 @@ import {
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import { updateChecks } from '../../redux/actions/wizard.actions'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {getCurrentProduct} from '../../utility/utils'
 
 class InviteSubscribers extends React.Component {
@@ -128,6 +127,9 @@ class InviteSubscribers extends React.Component {
         })
       }
     }
+    if(this.props.location && !this.props.location.state) {
+      this.refs.welcome.click()
+    }
   }
 
   onChangeValue (event) {
@@ -198,17 +200,26 @@ class InviteSubscribers extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Welcome to KiboPush</h3>
-              <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
+        <a href='#' style={{ display: 'none' }} ref='welcome' data-toggle="modal" data-target="#welcome">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Welcome to KiboPush
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
+                  <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'
+                  data-dismiss='modal'>
                     Continue
                   </Link>
                 </div>
@@ -218,9 +229,10 @@ class InviteSubscribers extends React.Component {
                   </Link>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <Header />
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>

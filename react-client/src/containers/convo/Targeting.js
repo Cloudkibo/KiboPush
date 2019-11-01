@@ -6,7 +6,6 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {getSubscriberReachEstimation} from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -46,7 +45,8 @@ class Targeting extends React.Component {
       pollValue: [],
       surveyValue: [],
       isShowingModalPro: false,
-      showSubscriptionMsg: false
+      showSubscriptionMsg: false,
+      isShowingLearnMore: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
@@ -63,6 +63,7 @@ class Targeting extends React.Component {
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
+    this.isShowingLearnMore = this.isShowingLearnMore.bind(this)
     // this.subscriberReachEstimation = this.subscriberReachEstimation.bind(this)
     // this.initializeSubscribers = this.initializeSubscribers.bind(this)
     props.loadTags()
@@ -73,6 +74,10 @@ class Targeting extends React.Component {
   //   this.props.getSubscriberReachEstimation(this.props.page, this.state.subscribers)
   // }
 
+  isShowingLearnMore () {
+    this.setState({isShowingLearnMore: !this.state.isShowingLearnMore})
+  }
+
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
@@ -81,7 +86,7 @@ class Targeting extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -285,7 +290,7 @@ class Targeting extends React.Component {
         }
         self.setState({ listSelected: selected })
         self.props.handleTargetValue({
-          isList: self.state.isList,
+          isList: selected.length > 0 ? true : false,
           listSelected: selected,
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
@@ -472,9 +477,9 @@ class Targeting extends React.Component {
       this.setState({genderValue: [], localeValue: [], tagValue: [], isList: true, pollValue: [], surveyValue: []})
       /* eslint-disable */
       // $('#selectPage').val('').trigger('change')
-      // $('#selectGender').val('').trigger('change')
-      // $('#selectLocale').val('').trigger('change')
-      // $('#selectTags').val('').trigger('change')
+      $('#selectGender').val('').trigger('change')
+      $('#selectLocale').val('').trigger('change')
+      $('#selectTags').val('').trigger('change')
       // $('#selectPoll').val('').trigger('change')
       // $('#selectSurvey').val('').trigger('change')
       $('.selectSegmentation').addClass('hideSegmentation')
@@ -484,7 +489,7 @@ class Targeting extends React.Component {
       /* eslint-disable */
       $('.selectSegmentation').removeClass('hideSegmentation')
       $('.selectList').addClass('hideSegmentation')
-      // $('#selectLists').val('').trigger('change')
+      $('#selectLists').val('').trigger('change')
       /* eslint-enable */
       this.setState({listSelected: [], isList: false})
     }
@@ -513,7 +518,7 @@ class Targeting extends React.Component {
     if (nextProps.resetTarget) {
       this.resetTargeting()
     }
-    if (nextProps.customerLists) {
+    if (nextProps.customerLists && this.state.lists.length === 0 && nextProps.customerLists.length > 0) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
         if (!(nextProps.customerLists[j].initialList)) {
@@ -551,7 +556,34 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
-        {/*
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="learnMore" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                      Subscriber count is zero
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <span>you can not send messages to any of your subscribers if :</span>
+              <ol>
+                <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
+                <li>No subscriber match the selected criteria</li>
+              </ol>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                </div>
+              </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {/* {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -568,14 +600,20 @@ class Targeting extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        */}
+        } */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
         { this.props.component === 'broadcast' &&
           <span
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}
           >
-            This broadcast will be sent to {this.props.subscriberCount} subscriber(s)
+            This broadcast will be sent to {this.props.subscriberCount} subscriber(s).
+            { this.props.subscriberCount === 0 &&
+              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
+              data-toggle="modal" data-target="#learnMore">
+                Learn More
+            </a>
+            }
           </span>
         }
         </div>

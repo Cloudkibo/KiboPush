@@ -28,7 +28,7 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
     })

@@ -32,11 +32,11 @@ class CreateMessage extends React.Component {
   }
 
   gotoMenu () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/menu`,
       state: {action: 'replyWithMessage'}
     })
-    // this.props.history.push(`/pollResult/${poll._id}`)
+    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
   }
   getPayloadByIndex (index) {
     var payload = []

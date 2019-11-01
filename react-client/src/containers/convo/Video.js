@@ -181,7 +181,7 @@ class Video extends React.Component {
               />
             </div>
           }
-          {/*
+          {/* {
           this.state.showDialog &&
             <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
@@ -191,7 +191,7 @@ class Video extends React.Component {
                 <p>{this.state.errorMsg}</p>
               </ModalDialog>
             </ModalContainer>
-        */}
+        } */}
         </div>
       </div>
     )

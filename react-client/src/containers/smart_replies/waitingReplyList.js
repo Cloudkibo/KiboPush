@@ -81,7 +81,7 @@ class WaitingReplyList extends React.Component {
 
   openChat (subscriber, id) {
     this.props.removeWaitingSubscribers(id)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/liveChat`,
       state: {subscriberToRespond: subscriber}
     })

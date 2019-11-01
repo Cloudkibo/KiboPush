@@ -8,7 +8,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -111,7 +110,7 @@ class UserDetails extends React.Component {
       this.setState({pagesData: [], totalLength: 0})
     }
     if (nextProps.response) {
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/operationalDashboard`
       })
     }

@@ -7,7 +7,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchAllPlans, deletePlan, createPlan, updatePlan, migrate, makeDefault } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
 
@@ -150,6 +149,7 @@ class Plans extends React.Component {
       this.msg.error('Please migrate all companies of this plan before deleting')
     } else {
       this.showDialogDelete(id)
+      this.refs.delete.click()
     }
   }
 
@@ -223,14 +223,22 @@ class Plans extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Plan</h3>
-              <p>Are you sure you want to delete this plan?</p>
+          <a href='#' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Plan
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this plan?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
@@ -238,17 +246,25 @@ class Plans extends React.Component {
                   this.closeDialogDelete()
                 }}>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <center><h3>Add Plan</h3></center>
-              <div className='m-form'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addPlan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Add Plan
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label'>Plan Name:</label>
                   <input className='form-control' placeholder='Enter name here...'
@@ -287,27 +303,37 @@ class Plans extends React.Component {
               <br /><br />
               <div style={{width: '100%', textAlign: 'right'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-secondary' onClick={this.goToCancel}>
+                  <button className='btn btn-secondary' onClick={this.goToCancel}
+                  data-modal='modal'>
                     Cancel
                   </button>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button style={{color: 'white'}} onClick={this.goToCreate} className='btn btn-primary'>
+                  <button style={{color: 'white'}} onClick={this.goToCreate} className='btn btn-primary'
+                  data-modal='modal'>
                     Create
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalUpdate &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogUpdate}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogUpdate}>
-              <center><h3>Edit Plan</h3></center>
-              <div className='m-form'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Plan
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label'>Plan Name:</label>
                   <input className='form-control' placeholder='Enter name here...'
@@ -356,18 +382,25 @@ class Plans extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalMigrate &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogMigrate}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogMigrate}>
-              <center><h3>Migrate Companies</h3></center>
-              <br />
-              <div className='m-form'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="migrate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Migrate Companies
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <label className='control-label' style={{fontWeight: 'normal'}}>Migrate Companies From:</label><br />
                 <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.migrateFrom} onChange={(e) => this.choosePlan(e, 'from')}>
                   {
@@ -396,9 +429,10 @@ class Plans extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -412,14 +446,14 @@ class Plans extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialogMigrate}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#migrate"  onClick={this.showDialogMigrate}>
                       <span>
                         <span>
                           Migrate Companies
                         </span>
                       </span>
                     </button>&nbsp;&nbsp;
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#addPlan" onClick={this.showDialog}>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -476,7 +510,7 @@ class Plans extends React.Component {
                                         </center>
                                       </div>
                                       <div className='m-widget5__stats1'>
-                                        <center style={{cursor: 'pointer'}} onClick={() => this.showDialogUpdate(plan.unique_ID, plan.name, plan.interval ? plan.interval : 'month', plan.trial_period, plan.amount)}>
+                                        <center style={{cursor: 'pointer'}} data-toggle="modal" data-target="#update" onClick={() => this.showDialogUpdate(plan.unique_ID, plan.name, plan.interval ? plan.interval : 'month', plan.trial_period, plan.amount)}>
                                           <span className='m-widget5__number'>
                                             <i className='fa fa-edit' style={{fontSize: '1.5rem'}} />
                                           </span>

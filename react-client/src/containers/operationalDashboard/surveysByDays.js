@@ -157,7 +157,7 @@ class SurveysInfo extends React.Component {
     this.setState({ totalLength: data.length })
   }
   onSurveyClick (survey) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/surveyDetails`,
       state: {_id: survey._id, data: survey}
     })

@@ -149,6 +149,9 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
       this.props.getSubscriberTags(session._id, this.msg)
       this.props.getCustomFieldValue(session._id)
+      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.loadTeamsList({pageId: session.pageId._id})
+      }
     }
   }
 
@@ -238,7 +241,7 @@ class LiveChat extends React.Component {
     this.props.loadTags()
     this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-      this.props.loadTeamsList()
+      // this.props.loadTeamsList()
       this.props.loadMembersList()
     }
   }
@@ -371,15 +374,20 @@ class LiveChat extends React.Component {
           let activeSession = this.state.activeSession
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           activeSession.status = 'new'
+          activeSession.unreadCount = 0
           this.setState({tabValue: 'open', activeSession: activeSession})
+          this.props.markRead(this.state.activeSession._id)
           this.props.updateUserChat(nextProps.socketMessage)
           this.props.resetSocket()
         } else if (sessionIds.indexOf(nextProps.socketSession) === -1) {
           this.props.fetchSingleSession(nextProps.socketSession, { appendTo: 'open', deleteFrom: 'close' })
           this.props.resetSocket()
         } else {
+          this.props.fetchSingleSession(nextProps.socketSession)
           this.props.resetSocket()
         }
+      } else if (nextProps.socketData.action === 'agent_replied') {
+        this.props.fetchSingleSession(nextProps.socketSession)
       }
     }
   }
@@ -479,12 +487,12 @@ class LiveChat extends React.Component {
                         assignToAgent={this.props.assignToAgent}
                         sendNotifications={this.props.sendNotifications}
                         unassignTags={this.unassignTags}
-                        tags={this.props.tags}
+                        tags={this.props.tags ? this.props.tags: []}
                         createTag={this.props.createTag}
                         assignTags={this.assignTags}
-                        tagOptions={this.state.tagOptions}
+                        tagOptions={this.state.tagOptions ? this.state.tagOptions : []}
                         members={this.props.members ? this.props.members : []}
-                        customFields={this.props.customFields}
+                        customFields={this.props.customFields? this.props.customeFields : []}
                         customFieldOptions={this.state.customFieldOptions}
                         setCustomFieldValue={this.saveCustomField}
                         msg={this.msg}

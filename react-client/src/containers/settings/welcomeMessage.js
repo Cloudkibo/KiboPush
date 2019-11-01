@@ -62,21 +62,21 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoCreate (page) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
   }
 
   gotoEdit (page) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editWelcomeMessage`,
       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
     })
   }
 
   gotoView (page) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -85,7 +85,7 @@ class WelcomeMessage extends React.Component {
   render () {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-        {/*
+        {/* {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false }) }}>
@@ -105,7 +105,7 @@ class WelcomeMessage extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        */}
+        } */}
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>

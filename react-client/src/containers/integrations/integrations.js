@@ -6,7 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import auth from '../../utility/auth.service'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
@@ -37,7 +36,7 @@ class FacebookIntegration extends React.Component {
   }
 
   cancel () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -119,7 +118,7 @@ class FacebookIntegration extends React.Component {
   }
 
   goToNext () {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -199,7 +198,7 @@ class FacebookIntegration extends React.Component {
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
-                      : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3'}} onClick={this.showDialog}>
+                      : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3'}} data-toggle="modal" data-target="#connect" onClick={this.showDialog}>
                         Connect
                       </button>
                     }
@@ -220,7 +219,7 @@ class FacebookIntegration extends React.Component {
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
-                      : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3'}} onClick={this.showDialogWhatsApp}>
+                      : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3'}} data-toggle="modal" data-target="#whatsapp" onClick={this.showDialogWhatsApp}>
                         Connect
                       </button>
                     }
@@ -249,14 +248,21 @@ class FacebookIntegration extends React.Component {
             </div>
           </div>
         </div>
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Connect with Twilio</h3>
-              <div className='m-form'>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Connect with Twilio
+                  </h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <span>Please enter your Twilio credentials here:</span>
                 <div className='form-group m-form__group'>
 
@@ -277,17 +283,25 @@ class FacebookIntegration extends React.Component {
                   </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalWhatsApp &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogWhatsApp}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogWhatsApp}>
-              <h3>Connect with Twilio WhatsApp</h3>
-              <div className='m-form'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="whatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Connect with Twilio WhatsApp
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='m-form'>
                 <span>Please enter your Twilio credentials here:</span>
                 <div className='form-group m-form__group'>
 
@@ -317,9 +331,10 @@ class FacebookIntegration extends React.Component {
                   </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     )
   }

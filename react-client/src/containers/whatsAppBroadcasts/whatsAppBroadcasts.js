@@ -76,7 +76,7 @@ onFilter (e) {
 }
 
   gotoCreate (broadcast) {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/createWhatsAppBroadcast`
     })
   }

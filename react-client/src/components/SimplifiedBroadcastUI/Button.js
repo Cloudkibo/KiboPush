@@ -19,14 +19,14 @@ class Button extends React.Component {
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
-      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' : false,
+      sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      openCreateMessage: false,
+      openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload) : false,
       showSequenceMessage: true,
-      buttonDisabled: this.props.edit ? false : true,
+      buttonDisabled: this.props.button ? false : true,
       errorMsg:''
     }
 
@@ -52,6 +52,7 @@ class Button extends React.Component {
     this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
+    this.removeReplyWithMessage = this.removeReplyWithMessage.bind(this)
     this.resetButton = this.resetButton.bind(this)
     this.handleFetch = this.handleFetch.bind(this)
 
@@ -98,27 +99,6 @@ class Button extends React.Component {
       this.setState({webviewsize: event.target.value})
       this.props.updateButtonStatus({buttonData})
     }
-  }
-  replyWithMessage () {
-    let data = {
-      type: 'postback',
-      title: this.state.title,
-      payload: null
-    }
-    this.setState({
-      openPopover: false,
-      title: '',
-      url: '',
-      webviewurl: '',
-      sequenceValue: '',
-      openWebsite: false,
-      openWebView: false,
-      openSubscribe: false,
-      openUnsubscribe: false,
-      openCreateMessage: false,
-      sendSequenceMessageButton: false
-    })
-    this.props.onAdd(data, this.props.index)
   }
 
   sendSequenceMessageButton () {
@@ -243,6 +223,13 @@ class Button extends React.Component {
         messageId: 'messageId'
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
+    } else if (this.state.openCreateMessage) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: this.props.button.payload ? this.props.button.payload : null
+      }
+      this.props.onAdd(data, this.props.index)
     } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
@@ -320,6 +307,13 @@ class Button extends React.Component {
         messageId: 'messageId'
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.openCreateMessage) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: null
+      }
+      this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
         type: 'web_url',
@@ -333,6 +327,26 @@ class Button extends React.Component {
     }
   }
 
+  replyWithMessage () {
+    this.setState({
+      openCreateMessage: true
+    }, () => {
+      if (this.props.updateButtonStatus && this.state.title) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    })
+  }
+
+  removeReplyWithMessage () {
+    this.setState({
+      openCreateMessage: false
+    }, () => {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: true})
+      }
+    })
+  }
+
   changeTitle (event) {
     if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) && event.target.value !== '') {
       this.setState({buttonDisabled: false})
@@ -340,6 +354,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.sendSequenceMessageButton && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.openCreateMessage && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -439,11 +458,7 @@ class Button extends React.Component {
                     </div>
                     }
                     {(this.props.buttonActions.indexOf('create message') > -1) && !(this.props.isGalleryCard === 'true') &&
-                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px'}} onClick={() => {
-                      this.setState({
-                        openCreateMessage: true
-                      })
-                    }}>
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px'}} onClick={this.replyWithMessage}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Reply with a message</h7>
                     </div>
                     }
@@ -479,15 +494,13 @@ class Button extends React.Component {
           {
                   this.state.openCreateMessage &&
                   <div className='card'>
-                    <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={() => {
-                      this.setState({openCreateMessage: false})
-                    }} />
+                    <h7 className='card-header'>Create Message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.removeReplyWithMessage} />
                     </h7>
-                    <div style={{padding: '10px'}} className='card-block'>
+                    {/* <div style={{padding: '10px'}} className='card-block'>
                       <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
                        Create Message
                        </button>
-                    </div>
+                    </div> */}
                   </div>
                 }
           {

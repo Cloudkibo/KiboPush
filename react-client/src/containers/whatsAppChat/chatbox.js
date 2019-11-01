@@ -7,15 +7,18 @@ import React from 'react'
 import { sendChatMessage, sendAttachment } from '../../redux/actions/whatsAppChat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
+import { uploadAttachment, deletefile, fetchUrlMeta } from '../../redux/actions/livechat.actions'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import { Link } from 'react-router-dom'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { getmetaurl } from '../liveChat/utilities'
 import MessageTemplate from './messageTemplate'
 import AlertContainer from 'react-alert'
+import { RingLoader } from 'halogenium'
+import YouTube from 'react-youtube'
+import {getVideoId} from '../../utility/utils'
 
 const styles = {
   iconclass: {
@@ -48,7 +51,10 @@ class ChatBox extends React.Component {
       showStickers: false,
       scrolling: true,
       showGifPicker: false,
-      showTemplates: false
+      showTemplates: false,
+      urlmeta: '',
+      prevURL: '',
+      displayUrlMeta: false
     }
 
     this.handleTextChange = this.handleTextChange.bind(this)
@@ -179,6 +185,9 @@ class ChatBox extends React.Component {
         name: this.props.user.name,
         type: 'agent'
       }
+    }
+    if (this.state.urlmeta !== '') {
+      data.url_meta = this.state.urlmeta
     }
     return data
   }
@@ -331,6 +340,20 @@ class ChatBox extends React.Component {
   }
 
   handleTextChange (e) {
+    var isUrl = getmetaurl(e.target.value)
+    if (isUrl !== null && isUrl !== '') {
+      this.props.fetchUrlMeta(isUrl)
+      this.setState({
+        prevURL: isUrl,
+        displayUrlMeta: true
+      })
+    } else {
+      this.setState({
+        urlmeta: {},
+        prevURL: '',
+        displayUrlMeta: false
+      })
+    }
     this.setState({
       textAreaValue: e.target.value
     })
@@ -339,6 +362,15 @@ class ChatBox extends React.Component {
   handleSendAttachment (res) {
     if (res.status === 'success') {
       this.resetFileComponent()
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.urlMeta) {
+      if (!nextProps.urlMeta.type) {
+        this.setState({displayUrlMeta: false})
+      }
+      this.setState({urlmeta: nextProps.urlMeta})
     }
   }
 
@@ -357,6 +389,7 @@ class ChatBox extends React.Component {
         data = this.setMessageData(session, payload)
         this.props.onEnter(data, 'text')
         this.setState({textAreaValue: ''})
+        this.setState({prevURL: ''})
       }
       this.newMessage = true
     }
@@ -555,25 +588,84 @@ class ChatBox extends React.Component {
               </i>
             </div>
             <div style={{display: 'inline-block', width: '50%'}}>
-              <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} onClick={this.openTemplates}>Use Templates</Link>
+              <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
             </div>
           </div>
+          {
+            this.state.prevURL && this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
+            <div className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          }
+          {
+             this.state.prevURL && JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
+             <div style={{clear: 'both', display: 'block', overflow: 'hidden', width: '350px'}}>
+               <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block', padding: '5px'}}>
+                 {getVideoId(this.state.prevURL)
+                  ? <div>
+                  <YouTube
+                    videoId={getVideoId(this.state.prevURL)}
+                    opts={{
+                      height: '150',
+                      width: '300',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 0
+                      }
+                    }}/>
+                  <a href={this.state.prevURL} target='_blank'>
+                      <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                    </a>
+                    <br />
+                    {
+                      this.state.urlmeta.description &&
+                        <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                    }
+                    </div>
+                 : <table style={{maxWidth: '318px', margin: '10px'}}>
+                  <tbody>
+                      <tr>
+                        <td>
+                          <div style={{width: 45, height: 45}}>
+                            {
+                              this.state.urlmeta.image &&
+                                <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
+                            }
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                            <a href={this.state.urlmeta.url} target='_blank'>
+                              <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                            </a>
+                            <br />
+                            {
+                              this.state.urlmeta.description &&
+                                <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                 </table>
+               }
+               </div>
+             </div>
+          }
         </div>
       :
       <span><p>Chat's 24 hours window session has been expired for this subscriber. You can only use templates to send a message</p>
-        <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} onClick={this.openTemplates}>Use Templates</Link>
+        <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
       </span>
       }
-       {/*
-          this.state.showTemplates &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeTemplates}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeTemplates}>
-                <MessageTemplate sendTemplate={this.sendTemplate} closeTemplates={this.closeTemplates}/>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{color: 'black'}} className="modal-body">
+                  <MessageTemplate sendTemplate={this.sendTemplate} closeTemplates={this.closeTemplates}/>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     )
   }
@@ -582,7 +674,10 @@ class ChatBox extends React.Component {
 function mapStateToProps (state) {
   console.log('state in ChatBox', state)
   return {
-    chatCount: (state.whatsAppChatInfo.chatCount)
+    chatCount: (state.whatsAppChatInfo.chatCount),
+    urlMeta: (state.liveChat.urlMeta),
+    urlValue: (state.liveChat.urlValue),
+    loadingUrl: (state.liveChat.loadingUrl)
   }
 }
 
@@ -591,7 +686,8 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage,
     uploadAttachment,
     deletefile,
-    sendAttachment
+    sendAttachment,
+    fetchUrlMeta
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

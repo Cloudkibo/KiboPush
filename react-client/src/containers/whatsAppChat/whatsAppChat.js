@@ -14,7 +14,9 @@ import {
   assignToAgent,
   sendNotifications,
   setCustomFieldValue,
-  clearSearchResult
+  clearSearchResult,
+  fetchTeamAgents,
+  assignToTeam
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
@@ -28,6 +30,7 @@ import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from '../../components/LiveChat/profileArea.js'
 import CHATAREA from './chatArea.js'
 import SEARCHAREA from './searchArea.js'
+import { scroller } from 'react-scroll'
 
 const CHATMODULE= 'WHATSAPP'
 
@@ -42,7 +45,8 @@ class LiveChat extends React.Component {
       loading: false,
       status: 'Unresolved',
       customFieldOptions: {},
-      showSearch: false
+      showSearch: false,
+      tabValue: 'open'
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -59,6 +63,51 @@ class LiveChat extends React.Component {
     this.saveCustomField= this.saveCustomField.bind(this)
     this.updatePendingSession = this.updatePendingSession.bind(this)
     this.assignToAgent = this.assignToAgent.bind(this)
+    this.assignToTeam = this.assignToTeam.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+    this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
+    this.scrollToMessage = this.scrollToMessage.bind(this)
+    this.updateActiveSessionFromChatBox = this.updateActiveSessionFromChatBox.bind(this)
+  }
+
+  handleAgents(teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+  }
+  
+  scrollToMessage (messageId) {
+    console.log('scrollToMessage called')
+    // check if message exists
+    let counter = 0
+    for (let i = 0; i < this.props.chat.length; i++) {
+      if (this.props.chat[i]._id === messageId) {
+        counter = 1
+        break
+      }
+    }
+
+    if (counter === 1) {
+      scroller.scrollTo(messageId, {delay: 8000, containerId: 'whatsappchat-container'})
+    } else {
+      this.props.fetchChat(this.state.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id}, messageId,this.scrollToMessage)
+    }
+  }
+
+  fetchTeamAgents(id) {
+    this.props.fetchTeamAgents(id, this.handleAgents)
+  }
+
+  changeTab (value) {
+    if (value === 'open') {
+      this.setState({tabValue: 'open'})
+    } else {
+      this.setState({tabValue: 'closed'})
+    }
   }
 
   saveCustomField (data) {
@@ -70,6 +119,13 @@ class LiveChat extends React.Component {
     activeSession.is_assigned = data.isAssigned
     this.setState({activeSession: activeSession})
     this.props.assignToAgent(data)
+  }
+
+  assignToTeam (data) {
+    let activeSession = this.state.activeSession
+    activeSession.is_assigned = data.isAssigned
+    this.setState({activeSession: activeSession})
+    this.props.assignToTeam(data)
   }
 
   handleResponse (res, body) {
@@ -110,6 +166,7 @@ class LiveChat extends React.Component {
     this.props.loadCustomFields()
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadMembersList()
+      this.props.loadTeamsList()
     }
   }
 
@@ -156,7 +213,7 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('in changeActiveSession', session)
     this.setState({activeSession: session, scroll: true})
-    this.props.fetchChat(session._id, {page: 'first', number: 25})
+    this.props.fetchChat(session._id, {page: 'first', number: 25}, null, this.scrollToMessage)
     this.props.markRead(session._id, this.props.sessions)
     this.props.getCustomFieldValue(session._id)
   }
@@ -188,6 +245,12 @@ class LiveChat extends React.Component {
       this.props.fetchOpenSessions(data)
       this.props.fetchCloseSessions(data)
     }
+  }
+
+  updateActiveSessionFromChatBox () {
+    let activeSession = this.state.activeSession
+    activeSession.pendingResponse = false
+    this.setState({activeSession: activeSession})
   }
 
   componentDidMount () {
@@ -236,6 +299,12 @@ class LiveChat extends React.Component {
         last_id: 'none',
         number_of_records: 10,
         filter_criteria: {sort_value: -1, search_value: '', pendingResponse: false, unreadCount: false}})
+        if (nextProps.socketSession && nextProps.socketSession.contactId === this.state.activeSession._id) {
+          let activeSession = this.state.activeSession
+          activeSession.pendingResponse = true
+          activeSession.status = 'new'
+          this.setState({activeSession: activeSession})
+        }
     }
   }
 
@@ -284,6 +353,8 @@ class LiveChat extends React.Component {
                     activeSession={this.state.activeSession}
                     changeActiveSession={this.changeActiveSession}
                     module={CHATMODULE}
+                    tabValue={this.state.tabValue}
+                    changeTab={this.changeTab}
                   />
                   {
                     Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
@@ -307,16 +378,21 @@ class LiveChat extends React.Component {
                       changeActiveSession={this.changeActiveSession}
                       updateUnreadCount={this.updateUnreadCount}
                       removePending={this.removePending}
+                      scrollToMessage={this.scrollToMessage}
+                      updateActiveSessionFromChatBox={this.updateActiveSessionFromChatBox}
                     />
                   }
                   {
                     Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && !this.state.showSearch &&
                     <PROFILEAREA
+                      teams={this.props.teams ? this.props.teams : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
                       activeSession={this.state.activeSession}
                       changeActiveSession={this.changeActiveSession}
                       unSubscribe={this.props.unSubscribe}
                       user={this.props.user}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.assignToTeam}
                       assignToAgent={this.assignToAgent}
                       sendNotifications={this.props.sendNotifications}
                       members={this.props.members ? this.props.members : []}
@@ -332,8 +408,10 @@ class LiveChat extends React.Component {
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
+                    scrollToMessage = {this.scrollToMessage}
                     currentSession={this.state.activeSession}
                     hideSearch={this.hideSearch}
+                    clearSearchResult={this.props.clearSearchResult}
                   />
                 }
                 </div>
@@ -363,7 +441,9 @@ function mapStateToProps (state) {
     members: (state.membersInfo.members),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    socketSession: (state.whatsAppChatInfo.socketMessage)
+    socketSession: (state.whatsAppChatInfo.socketMessage),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    teams: (state.teamsInfo.teams)
   }
 }
 
@@ -382,7 +462,10 @@ function mapDispatchToProps (dispatch) {
     loadCustomFields,
     setCustomFieldValue,
     sendNotifications,
-    clearSearchResult
+    clearSearchResult,
+    fetchTeamAgents,
+    assignToTeam,
+    loadTeamsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

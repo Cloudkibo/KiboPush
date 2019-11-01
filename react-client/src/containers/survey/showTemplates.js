@@ -79,7 +79,7 @@ class ShowTemplates extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   gotoView() {
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/surveys`
     })
   }

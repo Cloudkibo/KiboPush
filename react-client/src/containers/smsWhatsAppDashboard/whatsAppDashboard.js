@@ -39,7 +39,7 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        this.props.history.push({
+        this.props.browserHistory.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })

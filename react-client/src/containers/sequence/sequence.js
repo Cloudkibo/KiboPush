@@ -10,7 +10,6 @@ import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, deleteSequence, updateTrigger } from '../../redux/actions/sequence.action'
 import { loadPollsList } from '../../redux/actions/poll.actions'
 import ReactPaginate from 'react-paginate'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Sequence extends React.Component {
@@ -21,8 +20,6 @@ class Sequence extends React.Component {
       totalLength: 0,
       filterValue: '',
       searchValue: '',
-      isShowingModalDelete: false,
-      isShowingModal: false,
       deleteid: '',
       name: '',
       error: false,
@@ -51,9 +48,6 @@ class Sequence extends React.Component {
     this.scrollToTop = this.scrollToTop.bind(this)
     this.goToEdit = this.goToEdit.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.updateName = this.updateName.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.getSequenceStatus = this.getSequenceStatus.bind(this)
@@ -95,27 +89,14 @@ class Sequence extends React.Component {
       this.setState({ error: true })
     } else {
       this.props.createSequence({ name: this.state.name })
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/editSequence`,
         state: { name: this.state.name, module: 'create' }
       })
     }
   }
   showDialogDelete (id) {
-    this.setState({ isShowingModalDelete: true })
     this.setState({ deleteid: id })
-  }
-
-  closeDialogDelete () {
-    this.setState({ isShowingModalDelete: false })
-  }
-
-  showDialog () {
-    this.setState({ isShowingModal: true })
-  }
-
-  closeDialog () {
-    this.setState({ isShowingModal: false })
   }
 
   componentDidMount () {
@@ -371,7 +352,7 @@ class Sequence extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editSequence`,
       state: { module: 'edit', name: sequence.name, _id: sequence._id, trigger: sequence.trigger.event }
     })
@@ -390,14 +371,21 @@ class Sequence extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Sequence</h3>
-              <p>Are you sure you want to delete this Sequence?</p>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Sequence
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this Sequence?</p>
               <button style={{ float: 'right' }}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
@@ -405,39 +393,56 @@ class Sequence extends React.Component {
                   this.closeDialogDelete()
                 }}>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModal &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeDialog}>
-              <h3>Create Sequence</h3>
-              <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>Sequence Name:</label>
-                {this.state.error &&
-                  <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
-                }
-                <input className='form-control' placeholder='Enter sequence name here'
-                  value={this.state.name} onChange={(e) => this.updateName(e)} />
+                </div>
               </div>
-              <button style={{ float: 'right' }}
-                className='btn btn-primary btn-sm'
-                onClick={() => this.gotoCreate()}>Create
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Create Sequence
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div id='question' className='form-group m-form__group'>
+                  <label className='control-label'>Sequence Name:</label>
+                  {this.state.error &&
+                    <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
+                  }
+                  <input className='form-control' placeholder='Enter sequence name here'
+                    value={this.state.name} onChange={(e) => this.updateName(e)} />
+                </div>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => this.gotoCreate()}>Create
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowModalTrigger &&
-          <ModalContainer style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw' }}
-            onClose={this.closeDialogTrigger}>
-            <ModalDialog style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px', left: '30vw' }}
-              onClose={this.closeDialogTrigger}>
-              <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
-              <div className='row'>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="trigger" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Update Sequence Trigger
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='row'>
                 <div className='col-sm-4 col-md-4 col-lg-4'>
                   <div style={{backgroundColor: this.state.seqTriggerVal === 'subscribes_to_sequence' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}
                     id='1' data-val='subscribes_to_sequence' className='sequence-trigger-box' onClick={this.handleChange}>
@@ -507,14 +512,15 @@ class Sequence extends React.Component {
                       </select>
                     }
                   </div>
-                </div>*}
+                </div>*/}
               </div>
 
               <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
               <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -543,7 +549,7 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={this.showDialog}>
+                    <Link data-toggle="modal" data-target="#create">
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
@@ -573,7 +579,7 @@ class Sequence extends React.Component {
                             ? <div>{
                               this.state.sequencesData.map((sequence, i) => (
                                 <div key={i} className='sequence-box' style={{height: '10em'}}>
-                                  <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+                                  <div className='sequence-close-icon' data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sequence.sequence._id)} />
 
                                   <span>
                                     <span className='sequence-name'>
@@ -592,7 +598,7 @@ class Sequence extends React.Component {
 
                                         }
                                     </span>
-                                      <span className='sequence-link' onClick={() => this.showDialogTrigger(sequence)}>
+                                      <span className='sequence-link' data-toggle="modal" data-target="#trigger" onClick={() => this.showDialogTrigger(sequence)}>
                                         -- Edit
                                   </span>
                                     </span>

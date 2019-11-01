@@ -13,12 +13,12 @@ class OptInActions extends React.Component {
   }
   editMessage () {
     if(this.props.module === 'edit'){
-      this.props.history.push({
+      this.props.browserHistory.push({
         pathname: `/createLandingPageMessage`,
         state: {module: 'edit'}
        })
     }else{
-      this.props.history.push({
+      this.props.browserHistory.push({
        pathname: `/createLandingPageMessage`
       })
     }

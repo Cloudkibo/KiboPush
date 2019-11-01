@@ -40,7 +40,7 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
   }).then(response => {
     if (response.statusText === 'Unauthorized') {
       auth.logout()
-      this.props.history.push('/')
+      this.props.browserHistory.push('/')
       return Promise.reject(response.statusText)
     }
     return response

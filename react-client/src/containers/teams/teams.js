@@ -10,7 +10,6 @@ import { loadTeamsList, deleteTeam } from '../../redux/actions/teams.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -150,7 +149,7 @@ class Teams extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editTeam`,
       state: {module: 'edit', name: team.name, description: team.description, _id: team._id}
     })
@@ -168,7 +167,7 @@ class Teams extends React.Component {
     //     pages.push(this.props.teamUniquePages[j])
     //   }
     // }
-    this.props.history.push({
+    this.props.browserHistory.push({
       pathname: `/editTeam`,
       state: {module: 'view', name: team.name, description: team.description, _id: team._id}
     })
@@ -186,13 +185,20 @@ class Teams extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {/*
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false, top: 100}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false, top: 100}) }}>
-              <div>
+                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='U4x9QA8zNhQ'
                   opts={{
@@ -203,18 +209,25 @@ class Teams extends React.Component {
                     }
                   }}
               />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        */}
-        {/*
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Team</h3>
-              <p>Are you sure you want to delete this team?</p>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Team
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this team?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
@@ -222,9 +235,10 @@ class Teams extends React.Component {
                   this.closeDialogDelete()
                 }}>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        */}
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -238,7 +252,7 @@ class Teams extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>. Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>. Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -280,7 +294,8 @@ class Teams extends React.Component {
                           </span>
                         </div>
                         <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                        <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                        {this.props.user && this.props.user.platform === 'messenger' &&
+                          <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
                           <div className='m-form__label'>
                             <label>Pages:&nbsp;&nbsp;</label>
                           </div>
@@ -295,6 +310,7 @@ class Teams extends React.Component {
                             <option value='all'>All</option>
                           </select>
                         </div>
+                      }
                       </div>
                       {
                         this.state.teamsData && this.state.teamsData.length > 0
@@ -303,65 +319,62 @@ class Teams extends React.Component {
                             <thead className='m-datatable__head'>
                               <tr className='m-datatable__row'
                                 style={{height: '53px'}}>
-                                <th data-field='name' style={{width: '100px'}}
+                                <th data-field='name'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Name</span>
+                                  <span style={{width: '100px'}}>Name</span>
                                 </th>
-                                <th data-field='description' style={{width: '100px'}}
+                                <th data-field='description'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Description</span>
+                                  <span style={{width: '100px'}}>Description</span>
                                 </th>
-                                <th data-field='pages' style={{width: '100px'}}
+                                {this.props.user && this.props.user.platform === 'messenger' &&
+                                  <th data-field='pages'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Pages</span>
+                                  <span style={{width: '100px'}}>Pages</span>
+                                  </th>
+                                }
+                                <th data-field='created_by'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px'}}>Created By</span>
                                 </th>
-                                <th data-field='created_by' style={{width: '125px'}}
+                                <th data-field='datetime'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Created By</span>
+                                  <span style={{width: '100px'}}>Created At</span>
                                 </th>
-                                <th data-field='datetime' style={{width: '100px'}}
+                                <th data-field='actions'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Created At</span>
-                                </th>
-                                <th data-field='actions' style={{width: '175px'}}
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Actions</span>
+                                  <span style={{width: '100px'}}>Actions</span>
                                 </th>
                               </tr>
                             </thead>
-                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                            <tbody className='m-datatable__body'>
                               {
-                                this.state.teamsData.map((team, i) => (
-                                  <tr key={i} data-row={i}
-                                    className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                    style={{height: '55px'}}>
-                                    <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{team.name}</span></td>
-                                    <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{team.description}</span></td>
-                                    <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{team.teamPages.join(', ')}</span></td>
-                                    <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{team.created_by.name}</span></td>
-                                    <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{handleDate(team.creation_date)}</span></td>
-                                    <td data-field='actions' className='m-datatable__cell'>
-                                      <span style={{width: '175px'}}>
-                                        <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(team)}>
-                                          View
-                                        </button>
-                                        {
-                                          this.props.user.role !== 'agent' &&
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(team)}>
-                                            Edit
-                                          </button>
-                                        }
-                                        {/* {
-                                          this.props.user.role !== 'agent' &&
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
-                                            Delete
-                                          </button>
-                                        } */}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                ))
-                              }
+                              this.state.teamsData.map((team, i) => (
+                                <tr data-row={i}
+                                  className='m-datatable__row m-datatable__row--even'
+                                  style={{height: '55px'}} key={i}>
+                                  <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.name}</span></td>
+                                  <td data-field='description' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.description}</span></td>
+                                  {this.props.user && this.props.user.platform === 'messenger' &&
+                                    <td data-field='pages' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.teamPages.join(', ')}</span></td>
+                                  }
+                                  <td data-field='created_by' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{team.created_by.name}</span></td>
+                                  <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(team.creation_date)}</span></td>
+                                 <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                   <span style={{width: '100px'}}>
+                                     <button className='btn btn-primary btn-sm' onClick={() => this.goToView(team)}>
+                                       View
+                                     </button>
+                                     {
+                                       this.props.user.role !== 'agent' &&
+                                       <button className='btn btn-primary btn-sm' style={{marginLeft: '3px'}} onClick={() => this.goToEdit(team)}>
+                                         Edit
+                                       </button>
+                                     }
+                                   </span></td>
+                                </tr>
+                              ))
+                            }
                             </tbody>
                           </table>
                           <div className='pagination'>
