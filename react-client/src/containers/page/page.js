@@ -15,7 +15,6 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
-import AlertMessage from '../../components/alertMessages/alertMessage'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class Page extends React.Component {
@@ -107,11 +106,12 @@ class Page extends React.Component {
     console.log('nextProps in pages', nextProps)
     if (nextProps.pages && nextProps.count) {
       var connectedPages = []
-      nextProps.pages.map((page, i) => {
+      for(let a = 0; a < nextProps.pages.length; a++) {
+        let page = nextProps.pages[0]
         if (page.connected) {
           connectedPages.push(page)
         }
-      })
+      }
       this.displayData(0, connectedPages)
       this.setState({ totalLength: nextProps.count, connectedPages: true })
     } else {
@@ -212,7 +212,7 @@ class Page extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -263,8 +263,8 @@ class Page extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -374,7 +374,7 @@ class Page extends React.Component {
                                 (page.connected) ? <tr data-row={i}
                                   className='m-datatable__row m-datatable__row--even'
                                   style={{ height: '55px' }} key={i}>
-                                  <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}><img src={page.pagePic} /></span></td>
+                                  <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}><img src={page.pagePic} alt='' /></span></td>
                                   <td data-field='statement' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{page.pageName}</span></td>
                                   <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{page.likes}</span></td>
                                   <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{page.subscribers}</span></td>
@@ -404,7 +404,7 @@ class Page extends React.Component {
                           <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
-                            breakLabel={<a>...</a>}
+                            breakLabel={<a href='#/'>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}

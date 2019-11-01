@@ -97,7 +97,10 @@ class PagesInfo extends React.Component {
                                <a
                                  style={{width: '150px', display: 'block'}}
                                  href={'http://m.me/' + page.pageId}
-                                 target='_blank'>{page.pageName}</a>
+                                 target='_blank' 
+                                 rel='noopener noreferrer'>
+                                 {page.pageName}
+                                 </a>
                              </td>
                              <td data-field='likes'
                                className='m-datatable__cell'>
@@ -130,7 +133,7 @@ class PagesInfo extends React.Component {
                      </table>
                      <ReactPaginate previousLabel={'previous'}
                        nextLabel={'next'}
-                       breakLabel={<a>...</a>}
+                       breakLabel={<a href='#/'>...</a>}
                        breakClassName={'break-me'}
                        pageCount={Math.ceil(this.props.length / 10)}
                        marginPagesDisplayed={1}

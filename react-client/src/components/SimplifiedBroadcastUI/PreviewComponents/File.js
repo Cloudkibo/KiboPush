@@ -59,7 +59,9 @@ class File extends React.Component {
         <i onClick={this.edit} style={{cursor: 'pointer', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='discussion' style={{display: 'inline-block'}}>
           <div className='bubble recipient' style={{maxWidth: '100%', cursor: 'pointer', fontSize: '18px'}}>
-            📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+            {/* eslint-disable */}
+            📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+            {/* eslint-enable */}
           </div>
         </div>
       </div>

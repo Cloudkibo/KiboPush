@@ -15,6 +15,7 @@
     "global": "^4.4.0",
     "halogenium": "^2.3.0",
     "history": "^4.10.1",
+    "http-proxy": "^1.18.0",
     "jquery": "^3.4.0",
     "js-file-download": "^0.4.8",
     "jscodeshift": "^0.6.4",

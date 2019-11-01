@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 
 import React from 'react'
-import TextModal from '../TextModal'
 import YouTube from 'react-youtube'
 
 class Text extends React.Component {

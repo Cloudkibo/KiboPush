@@ -11,7 +11,7 @@ import { uploadAttachment, deletefile, fetchUrlMeta } from '../../redux/actions/
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import GiphySelect from 'react-giphy-select'
+// import GiphySelect from 'react-giphy-select'
 import { Link } from 'react-router-dom'
 import { getmetaurl } from '../liveChat/utilities'
 import MessageTemplate from './messageTemplate'
@@ -429,7 +429,7 @@ class ChatBox extends React.Component {
                   showSkinTones={false}
                   custom={[]}
                   autoFocus={false}
-                  showPreview={false}
+                  // showPreview={false}
                   onClick={(emoji, event) => this.setEmoji(emoji)}
                 />
               </div>
@@ -458,7 +458,7 @@ class ChatBox extends React.Component {
               <textarea autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' style={{resize: 'none'}} />
             </div>
             <div className='m-messenger__form-tools'>
-              <a className='m-messenger__form-attachment'>
+              <a href='#/' className='m-messenger__form-attachment'>
                 <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
               </a>
             </div>
@@ -612,7 +612,7 @@ class ChatBox extends React.Component {
                         autoplay: 0
                       }
                     }}/>
-                  <a href={this.state.prevURL} target='_blank'>
+                  <a href={this.state.prevURL} target='_blank' rel='noopener noreferrer'>
                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
                     </a>
                     <br />
@@ -628,13 +628,13 @@ class ChatBox extends React.Component {
                           <div style={{width: 45, height: 45}}>
                             {
                               this.state.urlmeta.image &&
-                                <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
+                                <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} alt='' />
                             }
                           </div>
                         </td>
                         <td>
                           <div>
-                            <a href={this.state.urlmeta.url} target='_blank'>
+                            <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                               <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
                             </a>
                             <br />

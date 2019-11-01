@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
@@ -111,11 +110,12 @@ class CreateSequence extends React.Component {
   updateMessageTitle (message) {
     console.log('Trigger event is ', this.triggerEvent)
     let trigMsg = ''
-    this.props.messages.map((msg, k) => {
+    for(let a = 0; a < this.props.messages.length; a++) {
+      let msg = this.props.messages[a]
       if (msg._id === message.trigger.value) {
         trigMsg = msg.title
       }
-    })
+    }
    // this.setState({triggerMessage: 'When subscriber ' + message.trigger[0].event + ' this ' + trigMsg})
     return 'When subscriber ' + message.trigger.event + ' this ' + trigMsg
   }
@@ -352,19 +352,22 @@ class CreateSequence extends React.Component {
   onSelectedMessage (Message) {
     console.log('Selected Message id is:', Message)
     let buttonList = []
-    this.props.messages.map((message, i) => {
+    for(let a = 0; a < this.props.messages.length; a++) {
+      let message = this.props.messages[a]
       if (message._id === Message) {
         console.log('Selected Message name is:', message.title)
-        message.payload.map((payload, j) => {
+        for(let b = 0; b < message.payload.length; b++) {
+          let payload = message.payload[b]
           if (payload.buttons) {
-            payload.buttons.map((button, k) => {
+            for(let c = 0; c < payload.buttons.length; c++) {
+              let button = payload.buttons[c]
               if (button.type === 'postback')
               buttonList.push(button)
-            })
+            }
           }
-        })
+        }
       }
-    })
+    }
     console.log('The buttonList is  ', buttonList)
     this.setState({buttonList: buttonList, selectedMessageClickId: Message})
   }
@@ -374,18 +377,21 @@ class CreateSequence extends React.Component {
       this.setState({displayAction: true, eventNameSelected: menu})
       console.log('Display action set true')
       let buttonList = []
-      this.props.messages.map((message, i) => {
+      for(let a = 0; a < this.props.messages.length; a++) {
+        let message = this.props.messages[a]
         if (message._id === this.state.selectedMessageClickId) {
           console.log('Selected Message name is:', message.title)
-          message.payload.map((payload, j) => {
+          for(let b = 0; b < message.payload.length; b++) {
+            let payload = message.payload[b]
             if (payload.buttons) {
-              payload.buttons.map((button, k) => {
+              for(let c = 0; c < payload.buttons.length; c++) {
+                let button = payload.buttons[c]
                 buttonList.push(button)
-              })
+              }
             }
-          })
+          }
         }
-      })
+      }
       console.log('The buttonList is  ', buttonList)
       this.setState({buttonList: buttonList})
     } else {

@@ -147,12 +147,12 @@ class MessengerCode extends React.Component {
       if (nextProps.messengerCodes) {
         var tempPages = []
         var codeIds = []
-        nextProps.messengerCodes.map(code => {
-          codeIds.push(code.pageId._id)
-        })
-        nextProps.pages.map(page => {
-          if (!codeIds.includes(page._id)) tempPages.push(page)
-        })
+        for(let a=0; a<nextProps.messengerCode.length; a++){
+          let code = nextProps.messengerCode[a]
+          codeIds.push(code.pageId._id)}
+        for(let a=0; a<nextProps.pages.length; a++){
+          let page = nextProps.pages[0]
+          if (!codeIds.includes(page._id)) tempPages.push(page)}
         this.setState({ pagesToShow: tempPages })
       }
     }
@@ -279,11 +279,11 @@ class MessengerCode extends React.Component {
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
                 <center>
-                <img src={this.state.QRCodeToPreview.QRCode} style={{ display: 'block', width: '50%' }} />
+                <img src={this.state.QRCodeToPreview.QRCode} style={{ display: 'block', width: '50%' }} alt='' />
               </center>
               <br />
               <center>
-                <a href={this.state.QRCodeToPreview.QRCode} target='_blank' download className='btn btn-outline-success' style={{ borderColor: '#34bfa3' }}>
+                <a href={this.state.QRCodeToPreview.QRCode} target='_blank' rel="noopener noreferrer" download className='btn btn-outline-success' style={{ borderColor: '#34bfa3' }}>
                   <i className='fa fa-download' />&nbsp;&nbsp;Download Image
                 </a>
               </center>
@@ -304,8 +304,8 @@ class MessengerCode extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenger Code? Here is the <a href='http://kibopush.com/messenger-codes' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding Messenger Code? Here is the <a href='http://kibopush.com/messenger-codes' target='_blank' rel="noopener noreferrer">documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -387,7 +387,7 @@ class MessengerCode extends React.Component {
                           <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
-                            breakLabel={<a>...</a>}
+                            breakLabel={<a href='#/'>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}

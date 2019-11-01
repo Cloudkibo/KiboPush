@@ -136,8 +136,8 @@ class InviteSubscribers extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a>
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer'>Click Here </a>
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -188,7 +188,7 @@ class InviteSubscribers extends React.Component {
                           </div>
                         </div>
                         <div className='m--space-30' />
-                        <a style={{ marginLeft: '30px' }} className='btn btn-primary' target='_blank' href={this.getlink()}>
+                        <a style={{ marginLeft: '30px' }} rel='noopener noreferrer' className='btn btn-primary' target='_blank' href={this.getlink()}>
                           <i className='fa fa-facebook' style={{ marginRight: '10px' }} />
                           <span>Share Page</span>
                         </a>

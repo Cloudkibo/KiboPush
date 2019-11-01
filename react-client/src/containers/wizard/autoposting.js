@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from '../autoposting/addChannel'
 import ListItem from '../autoposting/ListItem'
-import YouTube from 'react-youtube'
+// import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import {getCurrentProduct} from '../../utility/utils'
@@ -119,7 +119,7 @@ class Autoposting extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <a href='#' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
+        <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -226,7 +226,7 @@ class Autoposting extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
+        <a href='#/' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
