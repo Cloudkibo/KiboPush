@@ -51,19 +51,23 @@ export function createCommentCapture (data, msg, handleCreate) {
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success' && res.payload) {
-          msg.success('Posted on Facebook successfully')
-          handleCreate(res.payload.post_id, true)
-        } else {
-          if (res.status === 'failed' && res.description) {
-            msg.error(`Failed to post on facebook. ${res.description}`)
+          msg.success('Comment Capture saved successfully')
+          if (res.payload.post_id) {
+            handleCreate(res.payload.post_id, true)
           } else {
-            msg.error('Failed to post on facebook')
+            handleCreate(res.payload.post_id, false)
+          }
+        } else {
+          if (res.status === 'failed' && res.payload) {
+            msg.error(res.payload)
+          } else {
+            msg.error('Failed to create Comment Capture record')
           }
         }
       })
   }
 }
-export function editCommentCapture (data, msg) {
+export function editCommentCapture (data, msg, handleEdit) {
   console.log('edit Facebook Post', data)
   return (dispatch) => {
     callApi('post/edit', 'post', data)
@@ -71,6 +75,9 @@ export function editCommentCapture (data, msg) {
         console.log('response from server', res)
         if (res.status === 'success') {
           msg.success('Changes saved successfully')
+          if (handleEdit) {
+            handleEdit()
+          }
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to save changes. ${res.description}`)

@@ -83,6 +83,7 @@ class FacebookPosts extends React.Component {
     this.handlePostUrlChange = this.handlePostUrlChange.bind(this)
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.isValidFacebookUrl = this.isValidFacebookUrl.bind(this)
+    this.handleEdit = this.handleEdit.bind(this)
   }
   isValidFacebookUrl (e) {
     if (e.currentTarget.value !== '' && !isFacebookPageUrl(e.currentTarget.value)) {
@@ -97,6 +98,13 @@ class FacebookPosts extends React.Component {
   }
   closeDialogDelete () {
     this.setState({showSuccessMessage: false})
+  }
+  handleEdit () {
+    if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
+      this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
+    } else {
+      this.setState({showSuccessMessage: false, postId: this.props.currentPost.post_id})
+    }
   }
   handleRadioButton (e) {
     this.validationCommentCapture({
@@ -230,7 +238,7 @@ class FacebookPosts extends React.Component {
             })
           }
         }
-        if (this.props.currentPost.postUrl) {
+        if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
           this.setState({ selectedRadio: 'existing'})
         } else if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
           this.setState({ selectedRadio: 'new'})
@@ -242,7 +250,7 @@ class FacebookPosts extends React.Component {
           autoReply: this.props.currentPost.reply,
           includedKeywords: this.props.currentPost.includedKeywords.join(),
           excludedKeywords: this.props.currentPost.excludedKeywords.join(),
-          postUrl: this.props.currentPost.postUrl ? this.props.currentPost.postUrl: '',
+          postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
           title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
         })
       }
@@ -380,9 +388,9 @@ class FacebookPosts extends React.Component {
       payload.postText = this.state.postText
       payload.pageAccessToken = this.props.currentPost.pageId.accessToken
     }
-    this.props.editCommentCapture(payload, this.msg)
-    this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
+    this.props.editCommentCapture(payload, this.msg, this.handleEdit)
   }
+  
   reset (postId, showSuccessMessage) {
     this.setState({
       postText: '',
@@ -496,8 +504,16 @@ class FacebookPosts extends React.Component {
       postText: this.state.postText + emoji.native,
       attachments: this.state.attachments
     })
+    var facebookPost = []
+    facebookPost.push({componentType: 'text', text: this.state.postText + emoji.native})
+    if (this.state.attachments.length > 0) {
+      for (var i = 0; i < this.state.attachments.length; i++) {
+        facebookPost.push(this.state.attachments[i])
+      }
+    }
     this.setState({
       postText: this.state.postText + emoji.native,
+      facebookPost: facebookPost,
       showEmojiPicker: false
     })
   }
@@ -546,11 +562,10 @@ class FacebookPosts extends React.Component {
     }
     var payload = {
       pageId: this.state.selectedPage._id,
-      payload: this.state.selectedRadio === 'new' ? this.state.facebookPost: {},
+      payload: this.state.selectedRadio === 'new' ? this.state.facebookPost: [],
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
       reply: this.state.autoReply,
       captureOption: this.state.selectedRadio,
-      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl : '',
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
