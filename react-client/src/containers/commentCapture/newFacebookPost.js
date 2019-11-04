@@ -8,7 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
-import { createCommentCapture, editCommentCapture, uploadAttachment } from '../../redux/actions/commentCapture.actions'
+import { createCommentCapture, editCommentCapture, uploadAttachment, saveSecondReply } from '../../redux/actions/commentCapture.actions'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
@@ -56,8 +57,12 @@ class FacebookPosts extends React.Component {
       selectedRadio: 'existing',
       postUrl: '',
       title: '',
-      titleLengthValid: true
+      titleLengthValid: true,
+      secondReplyOption: 'reply',
+      sequenceValue: '',
+      sequences: []
     }
+    props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
@@ -84,7 +89,22 @@ class FacebookPosts extends React.Component {
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.isValidFacebookUrl = this.isValidFacebookUrl.bind(this)
     this.handleEdit = this.handleEdit.bind(this)
+    this.handleSecondReplyOption = this.handleSecondReplyOption.bind(this)
+    this.openMessageBuilder = this.openMessageBuilder.bind(this)
+    this.onSequenceChange = this.onSequenceChange.bind(this)
   }
+  onSequenceChange (e) {
+    this.setState({sequenceValue: e.target.value})
+  }
+  openMessageBuilder () {
+    var secondReply = {
+      pageId: this.state.selectedPage._id,
+      payload: this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload: []
+    }
+    console.log('Second Reply Payload', secondReply)
+    this.props.saveSecondReply(secondReply)
+  }
+
   isValidFacebookUrl (e) {
     if (e.currentTarget.value !== '' && !isFacebookPageUrl(e.currentTarget.value)) {
       this.setState({
@@ -106,6 +126,12 @@ class FacebookPosts extends React.Component {
       this.setState({showSuccessMessage: false, postId: this.props.currentPost.post_id})
     }
   }
+  handleSecondReplyOption (e) {
+    this.setState({
+      secondReplyOption: e.currentTarget.value,
+    })
+  }
+
   handleRadioButton (e) {
     this.validationCommentCapture({
       selectedRadio: e.currentTarget.value,
@@ -245,6 +271,12 @@ class FacebookPosts extends React.Component {
         } else {
           this.setState({ selectedRadio: 'global'})
         }
+        if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'reply') {
+          this.setState({ secondReplyOption: 'reply'})
+          this.props.saveSecondReply(this.props.currentPost.secondReply.payload)
+        } else if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'subscribe') {
+          this.setState({ secondReplyOption: 'sequence', sequenceValue: this.props.currentPost.secondReply.sequenceId })
+        }
         this.setState({
           // postText: this.props.currentPost.payload,
           autoReply: this.props.currentPost.reply,
@@ -374,6 +406,15 @@ class FacebookPosts extends React.Component {
     if (this.validateKeywords()) {
       return
     }
+    var secondReply = {}
+    if (this.state.secondReplyOption === 'reply') {
+      secondReply['action'] = 'reply'
+      secondReply['payload'] = this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload : []
+    } 
+    if (this.state.secondReply === 'sequence') {
+      secondReply['action'] = 'subscribe'
+      secondReply['sequenceId'] = this.state.sequenceValue
+    }
     var payload = {
       postId: this.props.currentPost._id,
       pagePostId: this.props.currentPost.post_id,
@@ -382,6 +423,7 @@ class FacebookPosts extends React.Component {
       captureOption: this.state.selectedRadio,
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl : '',
       title : this.state.title,
+      secondReply: secondReply,
       postText: ''
     }
     if(this.state.selectedRadio === 'new' && this.state.postText !== this.state.postOriginalText){
@@ -409,6 +451,7 @@ class FacebookPosts extends React.Component {
       isCorrectUrl: true,
       titleLengthValid: true
     })
+    this.props.saveSecondReply(null)
   }
   validateFile (files, componentType) {
     var errors = false
@@ -560,6 +603,15 @@ class FacebookPosts extends React.Component {
     if (this.validateKeywords()) {
       return
     }
+    var secondReply = {}
+    if (this.state.secondReplyOption === 'reply') {
+      secondReply['action'] = 'reply'
+      secondReply['payload'] = this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload : []
+    } 
+    if (this.state.secondReply === 'sequence') {
+      secondReply['action'] = 'subscribe'
+      secondReply['sequenceId'] = this.state.sequenceValue
+    }
     var payload = {
       pageId: this.state.selectedPage._id,
       payload: this.state.selectedRadio === 'new' ? this.state.facebookPost: [],
@@ -568,7 +620,8 @@ class FacebookPosts extends React.Component {
       captureOption: this.state.selectedRadio,
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
-      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
+      secondReply: secondReply
     }
     console.log('facebook post', payload)
     this.props.createCommentCapture(payload, this.msg, this.reset)
@@ -967,6 +1020,69 @@ class FacebookPosts extends React.Component {
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
+                          <label className='col-form-label'>Second Reply</label>
+                        </div>
+                        <div className='col-12'>
+                          <p>
+                            Second reply will be sent after response to first message
+                          </p>
+                        </div>
+                        <div className='row' style={{marginLeft: '10px'}}>
+                          <div className='col-3'>
+                            <input id='reply'
+                              type='radio'
+                              value='reply'
+                              name='reply'
+                              onChange={this.handleSecondReplyOption}
+                              checked={this.state.secondReplyOption === 'reply'} />
+                            <span style={{marginLeft: '10px'}}>Create Reply</span>
+                          </div>
+                          <div className='col-3'>
+                            <input id='sequence'
+                              type='radio'
+                              value='sequence'
+                              name='sequence'
+                              onChange={this.handleSecondReplyOption}
+                              checked={this.state.secondReplyOption === 'sequence'} />
+                            <span style={{marginLeft: '10px'}}>Assign a Sequence</span>
+                          </div>
+                        </div>
+                        <div>
+                        <div className='row' style={{marginLeft: '10px', marginTop: '10px'}}>
+                          <div className='col-12'>
+                            {
+                              this.state.secondReplyOption === 'reply' && 
+                            <Link to='ccSecondReply' style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                              Show Message Builder
+                            </Link >
+                            }
+                            {
+                               this.state.secondReplyOption === 'sequence' &&
+                            <div className='row'>
+                              <div className='col-2' style={{marginTop: '10px'}}>
+                                <span>Select Sequence</span>
+                              </div>
+                              <div className='col-6'>
+                                <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
+                                  <option key='' value='' disabled>Select Sequence...</option>
+                                  {
+                                    this.state.sequences.map((seq, i) => (
+                                      seq.sequence.trigger.event === 'subscribes_to_sequence'
+                                      ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
+                                    ))
+                                  }
+                                </select>
+                              </div>
+                            </div>
+                            }
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-12'>
+                      <div className='form-group m-form__group'>
+                        <div className='col-3'>
                           <label className='col-form-label'>Target Comments</label>
                         </div>
                         <div className='col-12'>
@@ -1054,7 +1170,9 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
-    currentPost: (state.postsInfo.currentPost)
+    currentPost: (state.postsInfo.currentPost),
+    secondReply: (state.postsInfo.secondReply),
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
@@ -1062,7 +1180,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createCommentCapture: createCommentCapture,
     editCommentCapture: editCommentCapture,
-    uploadAttachment: uploadAttachment
+    uploadAttachment: uploadAttachment,
+    saveSecondReply: saveSecondReply,
+    fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)
