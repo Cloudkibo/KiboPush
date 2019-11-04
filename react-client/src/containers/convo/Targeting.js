@@ -315,7 +315,7 @@ class Targeting extends React.Component {
       /* eslint-enable */
       data: pageOptions,
       placeholder: this.props.component === 'broadcast' ? 'Select page' : 'Default: All Pages',
-      allowClear: true,
+      allowClear: false,
       multiple: false
     })
 
