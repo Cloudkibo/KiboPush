@@ -261,7 +261,9 @@ class QuickReplies extends React.Component {
   }
 
   toggleAddQuickReply () {
-      this.setState({addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: ''})
+      if (!this.state.addingAction) {
+        this.setState({addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: ''})
+      }
   }
 
   addQuickReply () {
@@ -271,7 +273,7 @@ class QuickReplies extends React.Component {
   slideIndexChange (newIndex) {
       this.setState({currentSlideIndex: newIndex})
   }
-
+addin
   render () {
     console.log('quickReplies props', this.props)
     console.log('quickReplies state', this.state)
@@ -331,7 +333,7 @@ class QuickReplies extends React.Component {
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply'>
+            <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply' toggle={this.toggleAddQuickReply}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '400px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}>❌</div>
