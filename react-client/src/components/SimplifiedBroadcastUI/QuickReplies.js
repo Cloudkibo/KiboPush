@@ -235,6 +235,16 @@ class QuickReplies extends React.Component {
     }
   }
 
+  getActionIcon (action) {
+      if (action.includes('sequence')) {
+        return 'flaticon-share'
+      } else if (action.includes('message')) {
+        return 'flaticon-speech-bubble'
+      } else if (action.includes('tag')) {
+        return 'flaticon-interface-9'
+      }
+  }
+
   getActionTitle (action) {
       let str = action.replace(/_/g, ' ')
       return str.charAt(0).toUpperCase() + str.slice(1);
@@ -369,7 +379,7 @@ class QuickReplies extends React.Component {
                                             <div className="m-portlet__head-caption">
                                                 <div className="m-portlet__head-title">
                                                     <span className="m-portlet__head-icon">
-                                                        <i style={{color: 'black'}} className="flaticon-map-location"></i>
+                                                        <i style={{color: 'black'}} className={this.getActionIcon(action.action)}></i>
                                                     </span>
                                                     <h5 style={{fontSize: '1em'}} className="m-portlet__head-text">
                                                         {this.getActionTitle(action.action)}
@@ -401,7 +411,7 @@ class QuickReplies extends React.Component {
                                         <div className="m-portlet__head-caption">
                                             <div className="m-portlet__head-title">
                                                 <span className="m-portlet__head-icon">
-                                                    <i style={{color: 'black'}} className="flaticon-map-location"></i>
+                                                    <i style={{color: 'black'}} className="flaticon-add"></i>
                                                 </span>
                                                 <h5 style={{fontSize: '1em'}} className="m-portlet__head-text">
                                                     Add an action
