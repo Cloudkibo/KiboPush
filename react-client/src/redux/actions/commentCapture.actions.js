@@ -18,13 +18,7 @@ export function saveCurrentPost (data) {
     data
   }
 }
-export function saveSecondReply (payload) {
-  console.log('Actions for saving second reply')
-  return {
-    type: ActionTypes.SECOND_REPLY,
-    data: payload
-  }
-}
+
 export function fetchAllPosts () {
   console.log('Actions for loading all facebook Posts')
   return (dispatch) => {

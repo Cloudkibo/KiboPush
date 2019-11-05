@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { saveSecondReply } from '../../redux/actions/commentCapture.actions'
+import { saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CommentCaptureEdit extends React.Component {
@@ -15,10 +15,10 @@ class CommentCaptureEdit extends React.Component {
     super(props, context)
     this.state = {
       buttonActions: ['open website', 'open webview'],
-      broadcast: this.props.secondReply ? this.props.secondReply.payload : [],
+      broadcast: this.props.currentPost.secondReply && this.props.currentPost.secondReply.payload ? this.props.currentPost.secondReply.payload : [],
       convoTitle: 'Create Second Reply',
       itemMenus: [],
-      pageId: this.props.pages.filter((page) => page._id === this.props.secondReply.pageId)[0].pageId
+      pageId: this.props.pages.filter((page) => page._id === this.props.currentPost.pageId)[0].pageId
     }
 
     this.gotoCommentCapture = this.gotoCommentCapture.bind(this)
@@ -30,12 +30,13 @@ class CommentCaptureEdit extends React.Component {
     this.setState(broadcast)
   }
   saveMessage () {
+    var currentPost = this.props.currentPost
     var secondReply = {
-      pageId: this.props.secondReply.pageId,
+      action: 'reply',
       payload: this.state.broadcast.length > 0 ? this.state.broadcast: []
     }
-    console.log('Second Reply Payload', secondReply)
-    this.props.saveSecondReply(secondReply)
+    currentPost.secondReply = secondReply
+    this.props.saveCurrentPost(currentPost)
     this.msg.success('Message saved successfully')
   }
   gotoCommentCapture () {
@@ -85,7 +86,7 @@ class CommentCaptureEdit extends React.Component {
         </div>
         <GenericMessage
           pageId={this.state.pageId}
-          pages={[this.props.secondReply.pageId]}
+          pages={[this.props.currentPost.pageId]}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
@@ -97,7 +98,7 @@ class CommentCaptureEdit extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    secondReply: (state.postsInfo.secondReply),
+    currentPost: (state.postsInfo.currentPost),
     pages: (state.pagesInfo.pages)
   }
 }
@@ -105,7 +106,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      saveSecondReply: saveSecondReply
+      saveCurrentPost: saveCurrentPost
     },
         dispatch)
 }

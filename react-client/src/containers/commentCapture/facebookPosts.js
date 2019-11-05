@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts, deletePost, saveCurrentPost, saveSecondReply
+  fetchAllPosts, deletePost, saveCurrentPost
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
@@ -29,7 +29,6 @@ class FacebookPosts extends React.Component {
     }
     props.fetchAllPosts()
     props.saveCurrentPost(null)
-    props.saveSecondReply(null)
     this.displayData = this.displayData.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -305,7 +304,7 @@ class FacebookPosts extends React.Component {
                                   <br />
                                 </span>
                               }
-                                <Link to='/editPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>
@@ -359,8 +358,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,
-    saveCurrentPost: saveCurrentPost,
-    saveSecondReply: saveSecondReply
+    saveCurrentPost: saveCurrentPost
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
-import { createCommentCapture, editCommentCapture, uploadAttachment, saveSecondReply } from '../../redux/actions/commentCapture.actions'
+import { createCommentCapture, editCommentCapture, uploadAttachment, saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
@@ -33,6 +33,7 @@ const styles = {
 class FacebookPosts extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.linkLimit = 10
     this.state = {
       postText: '',
       isCorrectUrl: true,
@@ -45,7 +46,7 @@ class FacebookPosts extends React.Component {
       excludedKeywords: '',
       disabled: true,
       keywordErrors: [],
-      isEdit: this.props.currentPost ? 'true' : 'false',
+      isEdit: this.props.currentPost && this.props.currentPost._id ? 'true' : 'false',
       loading: false,
       facebookPost: [],
       isVideo: false,
@@ -60,7 +61,9 @@ class FacebookPosts extends React.Component {
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
-      sequences: []
+      sequences: [],
+      createCarousel: false,
+      links:[]
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
@@ -92,17 +95,55 @@ class FacebookPosts extends React.Component {
     this.handleSecondReplyOption = this.handleSecondReplyOption.bind(this)
     this.openMessageBuilder = this.openMessageBuilder.bind(this)
     this.onSequenceChange = this.onSequenceChange.bind(this)
+    this.createPayload = this.createPayload.bind(this)
+    this.setCommentCapture = this.setCommentCapture.bind(this)
+    this.openCreateCarousel = this.openCreateCarousel.bind(this)
+    
   }
   onSequenceChange (e) {
     this.setState({sequenceValue: e.target.value})
   }
-  openMessageBuilder () {
-    var secondReply = {
-      pageId: this.state.selectedPage._id,
-      payload: this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload: []
+  createPayload () {
+    var secondReply = {}
+    var payload = {}
+    if (this.state.secondReplyOption === 'reply') {
+      secondReply['action'] = 'reply'
+      secondReply['payload'] = this.props.currentPost && this.props.currentPost.secondReply ? this.props.currentPost.secondReply.payload : []
+    } 
+    if (this.state.secondReplyOption === 'sequence') {
+      secondReply['action'] = 'subscribe'
+      secondReply['sequenceId'] = this.state.sequenceValue
     }
-    console.log('Second Reply Payload', secondReply)
-    this.props.saveSecondReply(secondReply)
+    var facebookPost = []
+    if (this.state.postText !== '') {
+      facebookPost.push({componentType: 'text', text: this.state.postText})
+    }
+    if (this.state.attachments.length > 0) {
+      for (var i = 0; i < this.state.attachments.length; i++) {
+        facebookPost.push(this.state.attachments[i])
+      }
+    }
+       
+    payload = {
+      pageId: this.state.selectedPage._id,
+      postId: this.props.currentPost ? this.props.currentPost._id : null,
+      _id:  this.props.currentPost ? this.props.currentPost._id : null,
+      payload: this.state.selectedRadio === 'new' ? facebookPost: [],
+      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
+      reply: this.state.autoReply,
+      captureOption: this.state.selectedRadio,
+      title : this.state.title,
+      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
+      secondReply: secondReply
+    }
+
+    return payload
+  }
+  openMessageBuilder () { 
+    var payload = this.createPayload()
+    console.log('Current post', payload)
+    this.props.saveCurrentPost(payload)
   }
 
   isValidFacebookUrl (e) {
@@ -226,70 +267,73 @@ class FacebookPosts extends React.Component {
       document.title = `${title} | New Facebook Post`
     }
     if (this.props.pages) {
-      var selectedPage = this.props.pages[0]
-
-      if (this.props.currentPost) {
-        console.log('Current Post', this.props.currentPost)
-        for (let i = 0; i < this.props.pages.length; i++) {
-          if (this.props.pages[i]._id === this.props.currentPost.pageId) {
-            selectedPage = this.props.pages[i]
-            break
-          }
+      this.setCommentCapture()
+    }
+    
+  }
+  setCommentCapture () {
+    var disabled = false
+    var selectedPage = this.props.pages[0]
+    if (this.props.currentPost) {
+      console.log('Current Post', this.props.currentPost)
+      for (let i = 0; i < this.props.pages.length; i++) {
+        if (this.props.pages[i]._id === this.props.currentPost.pageId) {
+          selectedPage = this.props.pages[i]
+          break
         }
-        if (this.props.currentPost.payload) {
-          var payload = this.props.currentPost.payload
-          var images = []
-          for (let i = 0; i < payload.length; i++) {
-            if (payload[i].componentType === 'text') {
-              this.setState({
-                postText: payload[i].text,
-                postOriginalText: payload[i].text
-              })
-            }
-            if (payload[i].componentType === 'video') {
-              var videoAttachment = []
-              videoAttachment.push(payload[i])
-              this.setState({
-                attachments: videoAttachment,
-                videoPost: true
-              })
-            }
-            if (payload[i].componentType === 'image') {
-              images.push(payload[i])
-            }
-          }
-          if (images.length > 0) {
+      }
+      if (this.props.currentPost.payload) {
+        var payload = this.props.currentPost.payload
+        var images = []
+        for (let i = 0; i < payload.length; i++) {
+          if (payload[i].componentType === 'text') {
             this.setState({
-              attachments: images
+              postText: payload[i].text,
+              postOriginalText: payload[i].text
             })
           }
+          if (payload[i].componentType === 'video') {
+            var videoAttachment = []
+            videoAttachment.push(payload[i])
+            this.setState({
+              attachments: videoAttachment,
+              videoPost: true
+            })
+          }
+          if (payload[i].componentType === 'image') {
+            images.push(payload[i])
+          }
         }
-        if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
-          this.setState({ selectedRadio: 'existing'})
-        } else if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
-          this.setState({ selectedRadio: 'new'})
-        } else {
-          this.setState({ selectedRadio: 'global'})
+        if (images.length > 0) {
+          this.setState({
+            attachments: images
+          })
         }
-        if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'reply') {
-          this.setState({ secondReplyOption: 'reply'})
-          this.props.saveSecondReply(this.props.currentPost.secondReply.payload)
-        } else if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'subscribe') {
-          this.setState({ secondReplyOption: 'sequence', sequenceValue: this.props.currentPost.secondReply.sequenceId })
-        }
-        this.setState({
-          // postText: this.props.currentPost.payload,
-          autoReply: this.props.currentPost.reply,
-          includedKeywords: this.props.currentPost.includedKeywords.join(),
-          excludedKeywords: this.props.currentPost.excludedKeywords.join(),
-          postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
-          title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
-        })
+      }
+      if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
+        this.setState({ selectedRadio: 'existing'})
+      } else if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
+        this.setState({ selectedRadio: 'new'})
+      } else {
+        this.setState({ selectedRadio: 'global'})
+      }
+      if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'reply') {
+        this.setState({ secondReplyOption: 'reply'})
+      } else if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'subscribe') {
+        this.setState({ secondReplyOption: 'sequence', sequenceValue: this.props.currentPost.secondReply.sequenceId })
       }
       this.setState({
-        selectedPage: selectedPage
+        // postText: this.props.currentPost.payload,
+        autoReply: this.props.currentPost.reply,
+        includedKeywords: this.props.currentPost.includedKeywords.join(),
+        excludedKeywords: this.props.currentPost.excludedKeywords.join(),
+        postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
+        title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
       })
     }
+    this.setState({
+      selectedPage: selectedPage
+    })
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -311,23 +355,28 @@ class FacebookPosts extends React.Component {
       showVideo: true
     })
   }
+  openCreateCarousel () {
+    this.setState({
+      createCarousel: true
+    })
+  }
   removeAttachment (attachment) {
     var id = attachment.id
-    var facebookPost = this.state.facebookPost
+   // var facebookPost = this.state.facebookPost
     var attachments = []
     for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
         attachments.push(this.state.attachments[i])
       }
     }
-    for (let i = 0; i < this.state.facebookPost.length; i++) {
+    /*for (let i = 0; i < this.state.facebookPost.length; i++) {
       if (this.state.facebookPost[i].id === id) {
         facebookPost.splice(i, 1)
       }
-    }
+    }*/
     this.setState({
-      attachments: attachments,
-      facebookPost: facebookPost
+      attachments: attachments
+      //facebookPost: facebookPost
     }, () => {
       this.validationCommentCapture({
         selectedRadio: this.state.selectedRadio,
@@ -350,22 +399,29 @@ class FacebookPosts extends React.Component {
     }
     if (res.status === 'success') {
       var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
-      var attachment = []
-      attachment.push(attachComponent)
-      var post = []
-      if (this.state.postText !== '') {
-        post.push({componentType: 'text', text: this.state.postText})
-      }
-      post.push(attachComponent)
-      this.setState({
-        attachments: attachment,
-        facebookPost: post
-      })
+      var attachments = this.state.attachments
       if (fileData.get('componentType') === 'video') {
         this.setState({
-          isVideo: true
+          videoPost: true
         })
+        attachments = []
+      } else {
+        if (this.state.videoPost) {
+          attachments = []
+          this.setState({
+            videoPost: false
+          })
+        }
       }
+      attachments.push(attachComponent)
+      // var post = []
+      /*if (this.state.postText !== '') {
+        post.push({componentType: 'text', text: this.state.postText})
+      }
+      post.push(attachComponent)*/
+      this.setState({
+        attachments: attachments
+      })
     }
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
@@ -373,7 +429,7 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
-      attachments: attachment
+      attachments: attachments
     })
   }
   validateKeywords () {
@@ -406,26 +462,7 @@ class FacebookPosts extends React.Component {
     if (this.validateKeywords()) {
       return
     }
-    var secondReply = {}
-    if (this.state.secondReplyOption === 'reply') {
-      secondReply['action'] = 'reply'
-      secondReply['payload'] = this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload : []
-    } 
-    if (this.state.secondReply === 'sequence') {
-      secondReply['action'] = 'subscribe'
-      secondReply['sequenceId'] = this.state.sequenceValue
-    }
-    var payload = {
-      postId: this.props.currentPost._id,
-      pagePostId: this.props.currentPost.post_id,
-      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
-      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
-      captureOption: this.state.selectedRadio,
-      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl : '',
-      title : this.state.title,
-      secondReply: secondReply,
-      postText: ''
-    }
+    var payload = this.createPayload()
     if(this.state.selectedRadio === 'new' && this.state.postText !== this.state.postOriginalText){
       payload.postText = this.state.postText
       payload.pageAccessToken = this.props.currentPost.pageId.accessToken
@@ -451,7 +488,7 @@ class FacebookPosts extends React.Component {
       isCorrectUrl: true,
       titleLengthValid: true
     })
-    this.props.saveSecondReply(null)
+    this.props.saveCurrentPost(null)
   }
   validateFile (files, componentType) {
     var errors = false
@@ -513,16 +550,9 @@ class FacebookPosts extends React.Component {
       postText:  e.target.value,
       attachments: this.state.attachments
     })
-    var facebookPost = []
-    facebookPost.push({componentType: 'text', text: e.target.value})
-    if (this.state.attachments.length > 0) {
-      for (var i = 0; i < this.state.attachments.length; i++) {
-        facebookPost.push(this.state.attachments[i])
-      }
-    }
     this.setState({
-      postText: e.target.value,
-      facebookPost: facebookPost
+      postText: e.target.value
+     // facebookPost: facebookPost
     })
   }
   replyChange (e) {
@@ -547,16 +577,16 @@ class FacebookPosts extends React.Component {
       postText: this.state.postText + emoji.native,
       attachments: this.state.attachments
     })
-    var facebookPost = []
+    /*var facebookPost = []
     facebookPost.push({componentType: 'text', text: this.state.postText + emoji.native})
     if (this.state.attachments.length > 0) {
       for (var i = 0; i < this.state.attachments.length; i++) {
         facebookPost.push(this.state.attachments[i])
       }
-    }
+    } */
     this.setState({
       postText: this.state.postText + emoji.native,
-      facebookPost: facebookPost,
+      //facebookPost: facebookPost,
       showEmojiPicker: false
     })
   }
@@ -603,29 +633,11 @@ class FacebookPosts extends React.Component {
     if (this.validateKeywords()) {
       return
     }
-    var secondReply = {}
-    if (this.state.secondReplyOption === 'reply') {
-      secondReply['action'] = 'reply'
-      secondReply['payload'] = this.props.secondReply && this.props.secondReply.payload ? this.props.secondReply.payload : []
-    } 
-    if (this.state.secondReply === 'sequence') {
-      secondReply['action'] = 'subscribe'
-      secondReply['sequenceId'] = this.state.sequenceValue
-    }
-    var payload = {
-      pageId: this.state.selectedPage._id,
-      payload: this.state.selectedRadio === 'new' ? this.state.facebookPost: [],
-      existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
-      reply: this.state.autoReply,
-      captureOption: this.state.selectedRadio,
-      title : this.state.title,
-      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
-      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
-      secondReply: secondReply
-    }
+    var payload = this.createPayload()
     console.log('facebook post', payload)
     this.props.createCommentCapture(payload, this.msg, this.reset)
   }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -652,17 +664,40 @@ class FacebookPosts extends React.Component {
             onClose={() => { this.setState({showVideo: false}) }}>
             <ModalDialog style={{width: '500px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                { this.state.attachments.length > 0 && this.state.videoPost &&
-                  <ReactPlayer
-                    url={this.state.attachments[0].url}
-                    controls
-                    width='100%'
-                    height='auto'
-                    onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
-                  />
-                }
-              </div>
+                <div className='row'>
+                <div className='col-12'>
+                    <div className='m-widget3'>
+                      <div className='m-widget3__item'>
+                          <div className='m-widget3__header'>
+                            <div className='m-widget3__user-img'>
+                              <img className='m-widget3__img' src={this.state.selectedPage.pagePic} />
+                            </div>
+                            <div className='m-widget3__info'>
+                              <span className='m-widget3__username'>
+                                {this.state.selectedPage.pageName}
+                              </span>
+                              <br/>
+                              <span className='m-widget3__time'>
+                                Just Now
+                              </span>
+                            </div>
+                          </div>
+                          <div className='m-widget3__body'>
+                            <p className='widget3__text'>{this.state.postText}</p>
+                            { this.state.attachments.length > 0 && this.state.videoPost &&
+                              <ReactPlayer
+                                url={this.state.attachments[0].url}
+                                controls
+                                width='100%'
+                                height='auto'
+                                onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
+                              />
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -672,17 +707,40 @@ class FacebookPosts extends React.Component {
             onClose={() => { this.setState({showImages: false}) }}>
             <ModalDialog style={{width: '500px', top: '100px'}}
               onClose={() => { this.setState({showImages: false}) }}>
-              <div>
-                {
-              this.state.attachments.map((attachment, i) => (
+              <div className='row'>
                 <div className='col-12'>
-                  <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                    <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
+                    <div className='m-widget3'>
+                      <div className='m-widget3__item'>
+                          <div className='m-widget3__header'>
+                            <div className='m-widget3__user-img'>
+                              <img className='m-widget3__img' src={this.state.selectedPage.pagePic} />
+                            </div>
+                            <div className='m-widget3__info'>
+                              <span className='m-widget3__username'>
+                                {this.state.selectedPage.pageName}
+                              </span>
+                              <br/>
+                              <span className='m-widget3__time'>
+                                Just Now
+                              </span>
+                            </div>
+                          </div>
+                          <div className='m-widget3__body' style={{height:'400px', overflow: 'auto'}}>
+                            <p className='widget3__text'>{this.state.postText}</p>
+                            {
+                            this.state.attachments.map((attachment, i) => (
+                              <div key={i} className='col-12'>
+                                <div className='ui-block'>
+                                  <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
+                                </div>
+                              </div>
+                            ))
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))
-              }
-              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -852,76 +910,102 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12'>
                           { this.state.isEdit === 'false'
-                        ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='postTextArea' rows='3'
-                            placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
-                            style={{height: '150px', resize: 'none'}}
-                            value={this.state.postText}
-                            onChange={this.onFacebookPostChange} />
-                          {
-                              this.state.attachments.length > 0 &&
-                              <div className='attachmentDiv' style={{display: 'flex'}}>
-                                {
-                                this.state.attachments.map((attachment, i) => (
-                                  <div className='col-2'>
-                                    <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
-                                    <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                                      { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                        ? <div style={{ border: '2px solid lightgray', borderRadius: '15px', padding: '10px'}}> 
+                            <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='postTextArea' rows='3'
+                                placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
+                                style={{height: '150px', resize: 'none'}}
+                                value={this.state.postText}
+                                onChange={this.onFacebookPostChange} />
+                              {
+                                  this.state.attachments.length > 0 &&
+                                  <div className='attachmentDiv' style={{display: 'flex'}}>
+                                    {
+                                    this.state.attachments.map((attachment, i) => (
+                                      <div className='col-2'>
+                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                        <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                                          { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
+                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                          </div>
+                                          }
+                                          { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
+                                            <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                          </div>
+                                          }
+                                        </div>
                                       </div>
-                                      }
-                                      { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
-                                      </div>
-                                      }
-                                    </div>
+                                    ))
+                                    }
                                   </div>
-                                ))
-                                }
-                              </div>
-                            }
-                          <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
-                            <span>
-                              <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
+                              }
+                              { this.state.attachments.length > 0 && !this.state.videoPost &&
+                              <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
+                                <span style={{color:'blue', textDecoration: 'underline'}} onClick={() => {this.previewImages()}}>See How It Looks?</span>
+                              </span>
+                              }
+                               { this.state.attachments.length > 0 && this.state.videoPost &&
+                              <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
+                                <span style={{color:'blue', textDecoration: 'underline'}} onClick={() => {this.previewVideo()}}>See How It Looks?</span>
+                              </span>
+                              }
+                              <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                                <span>
+                                  <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
+                                </span>
+                              </span>
+                              <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                                <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
+                                  ref='selectImage' style={styles.inputf} />
+                                <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
+                                  ref='selectVideo' style={styles.inputf} />
+                              </span>
+                            {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                              <span>
+                                <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
+                                  this.refs.selectVideo.click()
+                                }} />
+                              </span>
                             </span>
-                          </span>
-                          <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
-                            <span>
-                              <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
-                                this.refs.selectImage.click()
-                              }} />
-                            </span>
-                            <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onClick={(event) => { event.target.value = null }} onError={this.onFilesError}
-                              ref='selectImage' style={styles.inputf} />
-                          </span>
-                          {/* <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                            <span>
-                              <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
-                                this.refs.selectVideo.click()
-                              }} />
-                            </span>
-                            <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
-                              ref='selectVideo' style={styles.inputf} />
-                          </span>
-                          */}
-                          <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
-                            <PopoverBody>
-                              <div>
-                                <Picker
-                                  emojiSize={24}
-                                  perLine={6}
-                                  skin={1}
-                                  set='facebook'
-                                  custom={[]}
-                                  autoFocus={false}
-                                  showPreview={false}
-                                  onClick={(emoji, event) => this.setEmoji(emoji)}
-                                />
-                              </div>
-                            </PopoverBody>
-                          </Popover>
+                            */}
+                            <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
+                              <PopoverBody>
+                                <div>
+                                  <Picker
+                                    emojiSize={24}
+                                    perLine={6}
+                                    skin={1}
+                                    set='facebook'
+                                    custom={[]}
+                                    autoFocus={false}
+                                    showPreview={false}
+                                    onClick={(emoji, event) => this.setEmoji(emoji)}
+                                  />
+                                </div>
+                              </PopoverBody>
+                            </Popover>
+                          </div>
+                          <div className='col-12' style={{display: 'flex'}} id='postOptions'>
+                            <div className='col-4'>
+                              <button type='button' style={{width: '100%'}} onClick={() => {
+                                this.refs.selectImage.click()}} className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                                <i className='fa fa-image' style={{cursor: 'pointer'}}/> Upload Photos
+                              </button>
+                            </div>
+                            <div className='col-4'>
+                              <button type='button' style={{width: '100%'}} onClick={() => {
+                                this.refs.selectVideo.click()}} className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                                <i className='fa fa-file-video-o' style={{cursor: 'pointer'}}/> Upload Video
+                              </button>
+                            </div>
+                            <div className='col-4'>
+                              <button type='button' style={{width: '100%'}} className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                                <i className='fa fa-link' style={{cursor: 'pointer'}}/> Create Link Carousel
+                              </button>
+                            </div>
+                          </div>
                         </div>
                         : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
                           <textarea
@@ -1171,7 +1255,6 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     currentPost: (state.postsInfo.currentPost),
-    secondReply: (state.postsInfo.secondReply),
     sequences: (state.sequenceInfo.sequences)
   }
 }
@@ -1181,7 +1264,7 @@ function mapDispatchToProps (dispatch) {
     createCommentCapture: createCommentCapture,
     editCommentCapture: editCommentCapture,
     uploadAttachment: uploadAttachment,
-    saveSecondReply: saveSecondReply,
+    saveCurrentPost: saveCurrentPost,
     fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
