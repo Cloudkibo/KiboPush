@@ -207,9 +207,9 @@ class SessionItem extends React.Component {
                 {
                   this.props.session.status === 'new'
                   ? 
-                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }} data-tip='Mark as done' className='la la-check' data-toggle="modal" data-target="#resolveChatSession" />
+                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Mark as done' className='la la-check' data-toggle="modal" data-target="#resolveChatSession" />
                   : 
-                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }
               </div>
