@@ -30,6 +30,9 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      sendNotifications={this.props.sendNotifications}
+                      changeStatus={this.props.changeStatus}
+                      fetchTeamAgents={this.props.fetchTeamAgents}
                       subscriberName={session.name ? session.name : (session.firstName ? session.firstName+ ' '+session.lastName: '')}
                       profilePicError={this.props.profilePicError}
                       session={session}
