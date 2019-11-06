@@ -14,8 +14,9 @@ import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import ReactPlayer from 'react-player'
 import { isFacebookPageUrl } from '../../utility/utils'
+import LinkCarousel from '../../components/SimplifiedBroadcastUI/LinkCarousel'
+import Preview from './preview'
 
 const styles = {
   iconclass: {
@@ -50,20 +51,20 @@ class FacebookPosts extends React.Component {
       loading: false,
       facebookPost: [],
       isVideo: false,
-      videoPost: false,
-      showImages: false,
-      showVideo: false,
+      postType: '',
       showSuccessMessage: false,
       postId: '',
       selectedRadio: 'existing',
       postUrl: '',
       title: '',
+      showPost: false,
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
       sequences: [],
-      createCarousel: false,
-      links:[]
+      openLinkCarousel: false,
+      links:[],
+      cards: []
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
@@ -82,9 +83,7 @@ class FacebookPosts extends React.Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.validateFile = this.validateFile.bind(this)
-    this.previewImages = this.previewImages.bind(this)
-    this.previewVideo = this.previewVideo.bind(this)
-    this.onTestURLVideo = this.onTestURLVideo.bind(this)
+    this.previewPost = this.previewPost.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
@@ -97,8 +96,31 @@ class FacebookPosts extends React.Component {
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.createPayload = this.createPayload.bind(this)
     this.setCommentCapture = this.setCommentCapture.bind(this)
-    this.openCreateCarousel = this.openCreateCarousel.bind(this)
-    
+    this.openLinkCarousel = this.openLinkCarousel.bind(this)
+    this.saveLinks = this.saveLinks.bind(this)
+    this.removeLinkCarousel = this.removeLinkCarousel.bind(this)
+  }
+  saveLinks (links, cards) {
+    var cardArray = []
+    for (var i = 0; i < cards.length; i++) {
+      cardArray.push(cards[i].component)
+    }
+    this.setState({
+      postType: 'links',
+      openLinkCarousel: false,
+      cards: cardArray,
+      links: links,
+      attachments:[]
+    })
+  }
+  removeLinkCarousel () {
+    this.setState({
+      postType: '',
+      openLinkCarousel: false,
+      cards: [],
+      links: [],
+      attachments:[]
+    })
   }
   onSequenceChange (e) {
     this.setState({sequenceValue: e.target.value})
@@ -117,6 +139,11 @@ class FacebookPosts extends React.Component {
     var facebookPost = []
     if (this.state.postText !== '') {
       facebookPost.push({componentType: 'text', text: this.state.postText})
+    }
+    if (this.state.postType === 'links') {
+      for (var i = 0; i < this.state.links.length; i++) {
+        facebookPost.push({componentType: 'link', url: this.state.links[i].url})
+      }
     }
     if (this.state.attachments.length > 0) {
       for (var i = 0; i < this.state.attachments.length; i++) {
@@ -297,7 +324,7 @@ class FacebookPosts extends React.Component {
             videoAttachment.push(payload[i])
             this.setState({
               attachments: videoAttachment,
-              videoPost: true
+              postType: 'video'
             })
           }
           if (payload[i].componentType === 'image') {
@@ -306,7 +333,8 @@ class FacebookPosts extends React.Component {
         }
         if (images.length > 0) {
           this.setState({
-            attachments: images
+            attachments: images,
+            postType: 'images'
           })
         }
       }
@@ -335,29 +363,17 @@ class FacebookPosts extends React.Component {
       selectedPage: selectedPage
     })
   }
-  onTestURLVideo (url) {
-    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
-    var truef = videoEXTENSIONS.test(url)
-
-    if (truef === false) {
-    }
-  }
   componentWillReceiveProps (nextProps) {
     console.log(' componentWillReceiveProps called')
   }
-  previewImages () {
+  previewPost () {
     this.setState({
-      showImages: true
+      showPost: true
     })
   }
-  previewVideo () {
+  openLinkCarousel () {
     this.setState({
-      showVideo: true
-    })
-  }
-  openCreateCarousel () {
-    this.setState({
-      createCarousel: true
+      openLinkCarousel: true
     })
   }
   removeAttachment (attachment) {
@@ -394,7 +410,7 @@ class FacebookPosts extends React.Component {
     })
     if (res.status === 'failed') {
       this.setState({
-        attachments: []
+        attachments: [],
       })
     }
     if (res.status === 'success') {
@@ -402,14 +418,18 @@ class FacebookPosts extends React.Component {
       var attachments = this.state.attachments
       if (fileData.get('componentType') === 'video') {
         this.setState({
-          videoPost: true
+          postType: 'video',
+          cards: [],
+          links: []
         })
         attachments = []
       } else {
-        if (this.state.videoPost) {
+        if (this.state.postType === 'video') {
           attachments = []
           this.setState({
-            videoPost: false
+            postType: 'images',
+            cards: [],
+            links: []
           })
         }
       }
@@ -486,7 +506,10 @@ class FacebookPosts extends React.Component {
       selectedRadio: 'existing',
       title: '',
       isCorrectUrl: true,
-      titleLengthValid: true
+      titleLengthValid: true,
+      cards: [],
+      links: [],
+      postType: ''
     })
     this.props.saveCurrentPost(null)
   }
@@ -659,88 +682,37 @@ class FacebookPosts extends React.Component {
           : <span />
         }
         {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-                <div className='row'>
-                <div className='col-12'>
-                    <div className='m-widget3'>
-                      <div className='m-widget3__item'>
-                          <div className='m-widget3__header'>
-                            <div className='m-widget3__user-img'>
-                              <img className='m-widget3__img' src={this.state.selectedPage.pagePic} />
-                            </div>
-                            <div className='m-widget3__info'>
-                              <span className='m-widget3__username'>
-                                {this.state.selectedPage.pageName}
-                              </span>
-                              <br/>
-                              <span className='m-widget3__time'>
-                                Just Now
-                              </span>
-                            </div>
-                          </div>
-                          <div className='m-widget3__body'>
-                            <p className='widget3__text'>{this.state.postText}</p>
-                            { this.state.attachments.length > 0 && this.state.videoPost &&
-                              <ReactPlayer
-                                url={this.state.attachments[0].url}
-                                controls
-                                width='100%'
-                                height='auto'
-                                onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
-                              />
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          this.state.showPost &&
+          <ModalContainer style={{width: '500px', top: '100px'}}
+            onClose={() => { this.setState({showPost: false}) }}>
+            <ModalDialog style={{width: '500px', top: '100px'}}
+              onClose={() => { this.setState({showPost: false}) }}>
+                <Preview 
+                selectedPage={this.state.selectedPage}
+                postType={this.state.postType}
+                attachments={this.state.attachments}
+                cards={this.state.cards}
+                postText={this.props.postText}
+                edited={false}
+                />
             </ModalDialog>
           </ModalContainer>
         }
-        {
-          this.state.showImages &&
+         {
+          this.state.openLinkCarousel &&
           <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({showImages: false}) }}>
+            onClose={() => { this.setState({openLinkCarousel: false}) }}>
             <ModalDialog style={{width: '500px', top: '100px'}}
-              onClose={() => { this.setState({showImages: false}) }}>
-              <div className='row'>
-                <div className='col-12'>
-                    <div className='m-widget3'>
-                      <div className='m-widget3__item'>
-                          <div className='m-widget3__header'>
-                            <div className='m-widget3__user-img'>
-                              <img className='m-widget3__img' src={this.state.selectedPage.pagePic} />
-                            </div>
-                            <div className='m-widget3__info'>
-                              <span className='m-widget3__username'>
-                                {this.state.selectedPage.pageName}
-                              </span>
-                              <br/>
-                              <span className='m-widget3__time'>
-                                Just Now
-                              </span>
-                            </div>
-                          </div>
-                          <div className='m-widget3__body' style={{height:'400px', overflow: 'auto'}}>
-                            <p className='widget3__text'>{this.state.postText}</p>
-                            {
-                            this.state.attachments.map((attachment, i) => (
-                              <div key={i} className='col-12'>
-                                <div className='ui-block'>
-                                  <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
-                                </div>
-                              </div>
-                            ))
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              onClose={() => { this.setState({openLinkCarousel: false}) }}>
+                <LinkCarousel
+                  pages={[this.state.selectedPage._id]}
+                  module='commentcapture'
+                  edited={false}
+                  links={this.state.links}
+                  cards={this.state.cards}
+                  saveLinks={this.saveLinks}
+                  closeModal={() => {this.setState({openLinkCarousel: false})}}
+                />
             </ModalDialog>
           </ModalContainer>
         }
@@ -920,7 +892,7 @@ class FacebookPosts extends React.Component {
                                 value={this.state.postText}
                                 onChange={this.onFacebookPostChange} />
                               {
-                                  this.state.attachments.length > 0 &&
+                                  this.state.attachments.length > 0 && this.state.postType !== 'links' &&
                                   <div className='attachmentDiv' style={{display: 'flex'}}>
                                     {
                                     this.state.attachments.map((attachment, i) => (
@@ -941,17 +913,33 @@ class FacebookPosts extends React.Component {
                                     }
                                   </div>
                               }
-                              { this.state.attachments.length > 0 && !this.state.videoPost &&
+                              {
+                                  this.state.cards.length > 0 &&  this.state.postType === 'links' &&
+                                  <div className='attachmentDiv' style={{display: 'flex'}}>
+                                    {
+                                    this.state.cards.map((card, i) => (
+                                      <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
+                                          { card.image_url &&
+                                            <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                          }
+                                          <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
+                                          <span style={{fontSize: '8px'}}>{card.title}</span>
+                                      </div>                             
+                                    ))
+                                    }
+                                  </div>
+                              }
+                              { this.state.cards.length > 0 &&  this.state.postType === 'links' &&
+                                <span className='pull-right' style={{marginTop: '-80px', marginRight: '10px'}}>
+                                  <span onClick={() => this.removeLinkCarousel()} style={{marginTop: '10px', cursor: 'pointer'}}>❌</span>
+                                </span>
+                              }
+                              { (this.state.attachments.length > 0 ||  this.state.links.length > 0) &&
                               <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                                <span style={{color:'blue', textDecoration: 'underline'}} onClick={() => {this.previewImages()}}>See How It Looks?</span>
+                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
                               </span>
                               }
-                               { this.state.attachments.length > 0 && this.state.videoPost &&
-                              <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                                <span style={{color:'blue', textDecoration: 'underline'}} onClick={() => {this.previewVideo()}}>See How It Looks?</span>
-                              </span>
-                              }
-                              <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                              <span id='emogiPicker' style={{height: '150px'}} className='m-input-icon__icon m-input-icon__icon--right'>
                                 <span>
                                   <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
                                 </span>
@@ -1001,8 +989,8 @@ class FacebookPosts extends React.Component {
                               </button>
                             </div>
                             <div className='col-4'>
-                              <button type='button' style={{width: '100%'}} className='btn m-btn--pill m-btn--air btn-outline-primary'>
-                                <i className='fa fa-link' style={{cursor: 'pointer'}}/> Create Link Carousel
+                              <button type='button' style={{width: '100%'}} onClick={() => {this.openLinkCarousel()}}className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                                <i className='fa fa-link' style={{cursor: 'pointer'}}/>  { this.state.cards.length < 1 ? 'Create Link Carousel' : 'Edit Link Carousel' }
                               </button>
                             </div>
                           </div>
@@ -1015,20 +1003,11 @@ class FacebookPosts extends React.Component {
                             value={this.state.postText}
                             onChange={this.onFacebookPostChange}
                              />
-                          { this.state.attachments.length > 0 && this.state.videoPost &&
-                            <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                              <span>
-                                <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
+                            { this.state.attachments.length > 0 && 
+                              <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
+                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
                               </span>
-                            </span>
-                          }
-                          { this.state.attachments.length > 0 && !this.state.videoPost &&
-                            <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                              <span>
-                                <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
-                              </span>
-                            </span>
-                          }
+                            }
                         </div>
                         }
                         </div>
