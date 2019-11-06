@@ -58,7 +58,7 @@ class CreateConvo extends React.Component {
       setTarget: false,
       showInvalidSession: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
+      pageId: this.props.location.state && this.props.pages && this.props.location.state.pages && this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
       loadScript: true,
       messageType: '',
       subscriberCount: 0
@@ -619,7 +619,7 @@ class CreateConvo extends React.Component {
                             convoTitle={this.state.convoTitle}
                             titleEditable
                             pageId={this.state.pageId.pageId}
-                            pages={this.props.location.state.pages}
+                            pages={this.props.location.state && this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>
