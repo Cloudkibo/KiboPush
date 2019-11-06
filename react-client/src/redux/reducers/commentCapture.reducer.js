@@ -10,10 +10,6 @@ export function postsInfo (state = {}, action) {
       return Object.assign({}, state, {
         currentPost: action.data
       })
-    case ActionTypes.SECOND_REPLY: 
-      return Object.assign({}, state, {
-        secondReply: action.data
-      })
     default:
       return state
   }
