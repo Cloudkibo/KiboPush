@@ -27,7 +27,7 @@ class CustomFields extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.customFields) {
+    if (nextProps.customFields && this.props.onLoadCustomFields) {
       this.props.onLoadCustomFields(nextProps.customFields)
     }
   }
