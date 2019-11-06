@@ -7,19 +7,20 @@ import { Popover, PopoverBody } from 'reactstrap'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
-
+import CustomFields from '../customFields/customfields'
 
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag'],
+        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field'],
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
         addingQuickReply: false,
         image_url: '',
         addingAction: false,
         currentTitle: '',
         currentActions: [],
+        customFields: [],
         index: -1,
         currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
@@ -38,13 +39,20 @@ class QuickReplies extends React.Component {
     this.updateSequence = this.updateSequence.bind(this)
     this.updateTag = this.updateTag.bind(this)
     this.updateTemplate = this.updateTemplate.bind(this)
+    this.updateCustomField = this.updateCustomField.bind(this)
     this.saveQuickReply = this.saveQuickReply.bind(this)
     this.editQuickReply = this.editQuickReply.bind(this)
     this.removeQuickReply = this.removeQuickReply.bind(this)
     this.clickFile = this.clickFile.bind(this)
     this.slideIndexChange = this.slideIndexChange.bind(this)
     this.toggleAddAction = this.toggleAddAction.bind(this)
+    this.updateCustomFieldValue = this.updateCustomFieldValue.bind(this)
+    this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     console.log('quickReplies constructor')
+  }
+
+  onLoadCustomFields (customFields) {
+      this.setState({customFields})
   }
 
   toggleAddAction () {
@@ -87,7 +95,10 @@ class QuickReplies extends React.Component {
           if (!this.state.currentActions[i].action) {
               return true
           }
-          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId) {
+          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId) {
+              return true
+          }
+          if (this.state.currentActions[i].customFieldId && !this.state.currentActions[i].customFieldValue) {
               return true
           }
       }
@@ -154,6 +165,18 @@ class QuickReplies extends React.Component {
       currentActions.splice(index, 1)
       this.setState({currentActions})
   }
+
+  updateCustomField (event, index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].customFieldId = event.target.value
+    this.setState({currentActions})
+  }
+
+  updateCustomFieldValue (event, index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].customFieldValue = event.target.value
+    this.setState({currentActions})
+}
 
   updateSequence (event, index) {
     let currentActions = this.state.currentActions
@@ -232,6 +255,35 @@ class QuickReplies extends React.Component {
                 <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].tagId ? '*Required' : ''}</div>                                    
             </div>
         )
+    } else if (action.includes('custom')) {
+        return (
+            <div>
+                <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
+                    <option value={''} disabled>Select a custom field</option>
+                    {
+                        this.state.customFields.map((customField, index) => {
+                            return (
+                                <option key={index} value={customField._id}>{customField.name}</option>
+                            )
+                        })
+                    }
+                    {/* <option value={'Custom Field 1'}>{'Custom Field 1'}</option>
+                    <option value={'Custom Field 2'}>{'Custom Field 2'}</option>
+                    <option value={'Custom Field 3'}>{'Custom Field 3'}</option>                                     */}
+                </select>
+                {
+                    this.state.currentActions[index].customFieldId && 
+                    <div style={{marginTop: '25px'}}>
+                        <input style={{borderColor: !this.state.currentActions[index].customFieldValue ? 'red' : ''}} value={this.state.currentActions[index].customFieldValue} onChange={(event) => this.updateCustomFieldValue(event, index)} placeholder='Enter value here...' className='form-control' />
+                        <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].customFieldValue ? '*Required' : ''}</div>
+                    </div>
+                }
+                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].customFieldId ? '*Required' : ''}</div>
+                <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                    Manage Custom Fields
+                </button>
+            </div>
+        )
     }
   }
 
@@ -242,6 +294,8 @@ class QuickReplies extends React.Component {
         return 'flaticon-speech-bubble'
       } else if (action.includes('tag')) {
         return 'flaticon-interface-9'
+      } else if (action.includes('custom')) {
+        return 'flaticon-profile'
       }
   }
 
@@ -273,7 +327,7 @@ class QuickReplies extends React.Component {
   slideIndexChange (newIndex) {
       this.setState({currentSlideIndex: newIndex})
   }
-addin
+
   render () {
     console.log('quickReplies props', this.props)
     console.log('quickReplies state', this.state)
@@ -289,8 +343,8 @@ addin
         afterChange: this.slideIndexChange
     };
     return (
-        <div>
-
+        <div className='no-drag'>   
+            <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
             {this.state.quickReplies.length > 0 && 
                 <div style={{maxWidth: '80%'}}>
                     <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
@@ -322,8 +376,6 @@ addin
                         }
                     </Slider>
                 </div>
-            
-            
             }
 
             {
@@ -333,9 +385,9 @@ addin
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply' toggle={this.toggleAddQuickReply}>
+            <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply'>
                 <PopoverBody>
-                    <div style={{paddingRight: '10px', maxHeight: '400px', overflowY: 'scroll', overflowX: 'hidden'}}>
+                    <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}>❌</div>
                         <div style={{marginBottom: '20px', maxHeight: '100px'}} className='row'>
                             <div className='col-4'>
