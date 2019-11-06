@@ -59,24 +59,26 @@ class FacebookPosts extends React.Component {
     var text = ''
     var videoPost = false
     var imagePost = false
-    for (var i = 0; i < payload.length; i++) {
-      if (payload[i].componentType === 'text') {
-        text = payload[i].text
-        break
-      }
-      if (payload[i].componentType === 'video') {
-        videoPost = true
-      }
-      if (payload[i].componentType === 'image') {
-        imagePost = true
-      }
-    }
+    if (payload) {
+        for (var i = 0; i < payload.length; i++) {
+          if (payload[i].componentType === 'text') {
+            text = payload[i].text
+            break
+          }
+          if (payload[i].componentType === 'video') {
+            videoPost = true
+          }
+          if (payload[i].componentType === 'image') {
+            imagePost = true
+          }
+        }
     if (i === payload.length && text === '') {
-      if (videoPost) {
-        text = 'Video'
-      }
-      if (imagePost) {
-        text = 'Image'
+        if (videoPost) {
+          text = 'Video'
+        }
+        if (imagePost) {
+          text = 'Image'
+        }
       }
     }
     return text
@@ -257,7 +259,11 @@ class FacebookPosts extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Posts</span>
+                          <span style={{width: '150px'}}>Title</span>
+                          </th>
+                          <th data-field='posts'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Track Comments From</span>
                           </th>
                           <th data-field='reply'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -283,17 +289,22 @@ class FacebookPosts extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px', whiteSpace: 'nowrap'}} key={i}>
-                            <td data-field='post' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.getPostText(post.payload)}</span></td>
+                            <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='keywords' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.reply}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                                <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
-                                    View on FB
-                                </a>
-                                <br />
-                                <Link to='/editPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                              {post.post_id &&
+                                <span>
+                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
+                                      View on FB
+                                  </a>
+                                  <br />
+                                </span>
+                              }
+                                <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>

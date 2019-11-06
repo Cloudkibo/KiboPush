@@ -98,6 +98,7 @@ import ViewMessage from './containers/sequence/viewMessage'
 import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
+import CommentCaptureEdit from './containers/commentCapture/editMessage'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
@@ -294,6 +295,7 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/ccSecondReply' component={CommentCaptureEdit} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
