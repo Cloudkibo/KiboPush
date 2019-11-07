@@ -43,9 +43,9 @@ export function updateSponsoredMessage(sponsoredMessage, key, value){
     }
 }
 
-export function createSponsoredMessage(cb){
+export function createSponsoredMessage(cb, data){
     return (dispatch) => {
-        callApi('sponsoredmessaging','post')
+        callApi('sponsoredmessaging','post', data)
         .then(res => {
           if(res.status === 'success'){
                 cb()

@@ -164,7 +164,7 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate);}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <Link onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate, {status:'draft'});}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
