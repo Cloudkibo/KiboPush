@@ -30,6 +30,9 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      sendNotifications={this.props.sendNotifications}
+                      changeStatus={this.props.changeStatus}
+                      fetchTeamAgents={this.props.fetchTeamAgents}
                       subscriberName={session.name ? session.name : (session.firstName ? session.firstName+ ' '+session.lastName: '')}
                       profilePicError={this.props.profilePicError}
                       session={session}
@@ -55,6 +58,8 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions && this.props.closeSessions.length > 0
                   ? (this.props.closeSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      sendNotifications={this.props.sendNotifications}
+                      changeStatus={this.props.changeStatus}
                       subscriberName={session.name ? session.name : (session.firstName ? session.firstName+ ' '+session.lastName: '')}
                       session={session}
                       activeSession={this.props.activeSession}
@@ -89,7 +94,8 @@ SessionsAreaBody.propTypes = {
   'tabValue': PropTypes.string.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
-  'loadMore': PropTypes.func.isRequired
+  'loadMore': PropTypes.func.isRequired,
+  'changeStatus': PropTypes.func.isRequired
 }
 
 export default SessionsAreaBody
