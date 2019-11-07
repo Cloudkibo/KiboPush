@@ -55,32 +55,32 @@ class CommentCapturePreview extends React.Component {
                       </div>
                     ))
                     }
-                     { this.props.attachments.length > 0 && this.props.postType === 'video' &&
-                      <ReactPlayer
-                        url={this.props.attachments[0].url}
-                        controls
-                        width='100%'
-                        height='auto'
-                        onPlay={this.onTestURLVideo(this.props.attachments[0].url)}
+                    { this.props.attachments.length > 0 && this.props.postType === 'video' &&
+                    <ReactPlayer
+                      url={this.props.attachments[0].url}
+                      controls
+                      width='100%'
+                      height='auto'
+                      onPlay={this.onTestURLVideo(this.props.attachments[0].url)}
+                    />
+                    }
+                    { this.props.cards.length > 0 && this.props.postType === 'video' &&
+                    <ReactPlayer
+                      url={this.props.attachments[0].url}
+                      controls
+                      width='100%'
+                      height='auto'
+                      onPlay={this.onTestURLVideo(this.props.attachments[0].url)}
+                    />
+                    }
+                    {
+                      <Gallery 
+                        module='commentcapture'
+                        cards={this.props.cards}
+                        links={this.props.links}
+                        pages={[this.props.selectedPage._id]}
                       />
-                      }
-                      { this.props.cards.length > 0 && this.props.postType === 'video' &&
-                      <ReactPlayer
-                        url={this.props.attachments[0].url}
-                        controls
-                        width='100%'
-                        height='auto'
-                        onPlay={this.onTestURLVideo(this.props.attachments[0].url)}
-                      />
-                      }
-                      {
-                        <Gallery 
-                          module='commentcapture'
-                          cards={this.props.cards}
-                          links={this.props.links}
-                          pages={[this.props.selectedPage._id]}
-                        />
-                      }
+                    }
               </div>
             </div>
           </div>

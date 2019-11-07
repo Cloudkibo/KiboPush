@@ -52,7 +52,7 @@ export function createCommentCapture (data, msg, handleCreate) {
         console.log('response from server', res)
         if (res.status === 'success' && res.payload) {
           msg.success('Comment Capture saved successfully')
-          if (res.payload.post_id) {
+          if (res.payload.post_id && res.payload.payload && res.payload.payload.length > 0) {
             handleCreate(res.payload.post_id, true)
           } else {
             handleCreate(res.payload.post_id, false)
