@@ -191,10 +191,11 @@ class SessionItem extends React.Component {
 
               <div style={{display: 'inline-block'}}>
                 {
-                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) && 
+                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) ? 
                   <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                     {this.props.session.unreadCount}
                   </a>
+                  : null
                 }
 
                 {
