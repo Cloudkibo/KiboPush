@@ -856,32 +856,6 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        {/* {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Resolve Chat Session</h3>
-              <p>Are you sure you want to resolve this chat session?</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.changeStatus(e, 'resolved', this.props.currentSession._id)
-                    this.closeDialog()
-                  }}>
-                    Yes
-                  </button>
-                </div>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={this.closeDialog}>
-                    No
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        } */}
         <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
             <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
             <PopoverBody>

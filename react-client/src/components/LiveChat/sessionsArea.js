@@ -76,6 +76,7 @@ class SessionsArea extends React.Component {
             </ul>
           </div>
           <BODY
+            changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
             sendNotifications={this.props.sendNotifications}
             changeStatus={this.props.changeStatus}
             fetchTeamAgents={this.props.fetchTeamAgents}

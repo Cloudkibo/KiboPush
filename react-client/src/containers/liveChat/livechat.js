@@ -438,6 +438,7 @@ class LiveChat extends React.Component {
                 this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='row'>
                     <SESSIONSAREA
+                      changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox}
                       sendNotifications={this.props.sendNotifications}
                       changeStatus={this.props.changeStatus}
                       fetchTeamAgents={this.props.fetchTeamAgents}

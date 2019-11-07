@@ -30,6 +30,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                    changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
                       sendNotifications={this.props.sendNotifications}
                       changeStatus={this.props.changeStatus}
                       fetchTeamAgents={this.props.fetchTeamAgents}
