@@ -8,6 +8,7 @@ import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import { loadCustomFields} from '../../redux/actions/customFields.actions'
+import CustomFields from '../customFields/customfields'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -475,8 +476,10 @@ class Button extends React.Component {
   }
 
   render () {
+
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
+        <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
         <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
@@ -525,7 +528,7 @@ class Button extends React.Component {
                     { (this.props.buttonActions.indexOf('set custom field') > -1) &&
                        this.props.customFields && this.props.customFields.length > 0 &&
                        <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showCustomField}>
-                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' /> Set Custom Field</h7>
+                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' /> Set Custom Field</h7>
                        </div>
                     }
                   </div>
