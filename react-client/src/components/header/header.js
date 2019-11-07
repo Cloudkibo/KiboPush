@@ -578,7 +578,7 @@ class Header extends React.Component {
                           </div>
                         </div>
                       </li>
-                      {this.props.user && this.props.user.facebookInfo &&
+                      {this.props.user && this.props.user.isSuperUser && this.props.user.facebookInfo &&
                       <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                         <a href='#' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />

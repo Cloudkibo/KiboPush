@@ -5,6 +5,8 @@ import TemplateSurveys from './templateSurveys'
 import TemplatePolls from './templatePolls'
 import TemplateBroadcasts from './templateBroadcasts'
 import { Link } from 'react-router'
+const kiboPushTemplates = 10
+const userTemplates = 40
 
 class templates extends React.Component {
   scrollToTop () {
@@ -46,14 +48,14 @@ class templates extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <TemplateBroadcasts />
+          <TemplateBroadcasts kiboPushTemplates={kiboPushTemplates} userTemplates={userTemplates} />
           {
             this.props.user && this.props.user.isSuperUser &&
-            <TemplateSurveys />
+            <TemplateSurveys kiboPushTemplates={kiboPushTemplates} />
           }
           {
             this.props.user && this.props.user.isSuperUser &&
-            <TemplatePolls />
+            <TemplatePolls kiboPushTemplates={kiboPushTemplates} />
           }
         </div>
       </div>

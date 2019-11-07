@@ -654,12 +654,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    {this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setUploadCustomerFile} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-cloud-upload' />
                         <span className='m-nav__link-text'>Upload Customer Information</span>
                       </a>
                     </li>
+                    }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>

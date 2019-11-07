@@ -1231,7 +1231,7 @@ class ChatBox extends React.Component {
                                           <div className='m-messenger__message-username'>
                                             {this.props.currentSession.firstName} reacted
                                           </div>
-                                          <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                          <div style={{fontSize: '30px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -1239,7 +1239,7 @@ class ChatBox extends React.Component {
                                           <div className='m-messenger__message-username'>
                                             {this.props.currentSession.firstName} wrote
                                           </div>
-                                          <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                          <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -1552,7 +1552,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{width: '200px'}} className='m-messenger__message-text'>
+                                            <div style={{width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                               {msg.payload.text}
                                             </div>
                                             <div>
@@ -1578,7 +1578,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{width: '200px'}} className='m-messenger__message-text'>
+                                            <div style={{width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                               {msg.payload.attachment.payload.text}
                                             </div>
                                             <div style={{margin: '0px -14px -20px -20px'}}>
@@ -1684,12 +1684,12 @@ class ChatBox extends React.Component {
                                               </div>
                                               {
                                                 validURL(msg.payload.text)
-                                                ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                                   <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
                                                     <p>{msg.payload.text}</p>
                                                   </a>
                                                 </div>
-                                                : <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                : <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                                   {msg.payload.text}
                                                 </div>
                                               }
@@ -1707,7 +1707,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                            <div style={{fontSize: '30px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                               {msg.payload.text}
                                             </div>
                                           </div>
@@ -1722,7 +1722,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                            <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                               {msg.payload.text}
                                             </div>
                                           </div>
@@ -1878,23 +1878,20 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    {
-                      this.props.user.isSuperUser &&
-                      <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
-                        <i onClick={this.showDialogRecording} style={styles.iconclass}>
-                          <i style={{
-                            fontSize: '20px',
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            height: '2em',
-                            margin: '5px',
-                            textAlign: 'center',
-                            color: '#787878'
-                          }} className='fa fa-microphone' />
-                        </i>
-                      </div>
-                    }
+                    <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-microphone' />
+                      </i>
+                    </div>
                     <div style={{display: 'inline-block'}} data-tip='emoticons'>
                       <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
                         <i style={{
