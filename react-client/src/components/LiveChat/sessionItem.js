@@ -205,15 +205,6 @@ class SessionItem extends React.Component {
                     pending
                   </a>
                 }
-
-                {
-                  this.props.session.status === 'new'
-                  ? 
-                  <i  id='resolve_session' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
-                  : 
-                    <i id='resolve_session' style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
-                        this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
-                }
               </div>
             </span>
             <br />
@@ -264,6 +255,14 @@ class SessionItem extends React.Component {
             <br />
             { this.props.session.pageId
             ? <span className='m-widget4__sub'>
+                {
+                  this.props.session.status === 'new'
+                  ? 
+                  <i  id='resolve_session' style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                  : 
+                    <i id='resolve_session' style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                        this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
+                }
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
               {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i className='fa fa-calendar' />&nbsp;&nbsp;
@@ -273,6 +272,14 @@ class SessionItem extends React.Component {
               }
             </span>
             : <span className='m-widget4__sub'>
+                {
+                  this.props.session.status === 'new'
+                  ? 
+                  <i  id='resolve_session' style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                  : 
+                    <i id='resolve_session' style={{ marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                        this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
+                }
             {
               this.props.session.last_activity_time &&
               moment(this.props.session.last_activity_time).fromNow()
