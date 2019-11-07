@@ -371,7 +371,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) || (this.state.customFieldId && this.state.customFieldValue) && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -382,6 +382,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.openCreateMessage && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.openCustomField && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
