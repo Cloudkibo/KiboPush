@@ -22,10 +22,9 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import { Popover, PopoverBody } from 'reactstrap'
+import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, PopoverHeader, UncontrolledTooltip } from 'reactstrap'
 import {
   isEmoji,
   getmetaurl,
@@ -883,7 +882,7 @@ class ChatBox extends React.Component {
             </ModalDialog>
           </ModalContainer>
         } */}
-        <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='assignTag' toggle={this.closeDialog}>
+        <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
             <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
             <PopoverBody>
               <div className='row' style={{ minWidth: '250px' }}>
@@ -1085,7 +1084,7 @@ class ChatBox extends React.Component {
               : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
                 <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i  id='assignTag' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                <i  id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
