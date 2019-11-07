@@ -159,6 +159,9 @@ class LinkCarouselModal extends React.Component {
 
     
     closeModal () {
+        if (this.props.module && this.props.module === 'commentcapture') {
+           this.props.closeModal()
+        }
         if (!this.state.edited) {
           this.props.closeModal()
         } else {
