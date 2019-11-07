@@ -76,6 +76,9 @@ class SessionsArea extends React.Component {
             </ul>
           </div>
           <BODY
+            sendNotifications={this.props.sendNotifications}
+            changeStatus={this.props.changeStatus}
+            fetchTeamAgents={this.props.fetchTeamAgents}
             profilePicError={this.props.profilePicError}
             openSessions={this.props.openSessions}
             closeSessions={this.props.closeSessions}
@@ -102,7 +105,8 @@ SessionsArea.propTypes = {
   'fetchSessions': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
   'activeSession': PropTypes.object.isRequired,
-  'changeActiveSession': PropTypes.func.isRequired
+  'changeActiveSession': PropTypes.func.isRequired,
+  'changeStatus': PropTypes.func.isRequired
 }
 
 export default SessionsArea
