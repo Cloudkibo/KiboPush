@@ -101,6 +101,15 @@ class FacebookPosts extends React.Component {
     this.removeLinkCarousel = this.removeLinkCarousel.bind(this)
   }
   saveLinks (links, cards) {
+    this.validationCommentCapture({
+      selectedRadio: this.state.selectedRadio,
+      title: this.state.title,
+      autoReply: this.state.autoReply,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: this.state.attachments,
+      cards: cards
+    })
     var cardArray = []
     for (var i = 0; i < cards.length; i++) {
       cardArray.push(cards[i].component)
@@ -156,6 +165,7 @@ class FacebookPosts extends React.Component {
       postId: this.props.currentPost ? this.props.currentPost._id : null,
       _id:  this.props.currentPost ? this.props.currentPost._id : null,
       payload: this.state.selectedRadio === 'new' ? facebookPost: [],
+      post_id: this.props.currentPost ? this.props.currentPost.post_id : '',
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
       reply: this.state.autoReply,
       captureOption: this.state.selectedRadio,
@@ -189,9 +199,7 @@ class FacebookPosts extends React.Component {
   }
   handleEdit () {
     if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
-      this.setState({showSuccessMessage: true, postId: this.props.currentPost.post_id})
-    } else {
-      this.setState({showSuccessMessage: false, postId: this.props.currentPost.post_id})
+      this.setState({postId: this.props.currentPost.post_id})
     }
   }
   handleSecondReplyOption (e) {
@@ -207,7 +215,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     this.setState({
       selectedRadio: e.currentTarget.value,
@@ -220,7 +229,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     if (e.currentTarget.value.length < 1 || e.currentTarget.value.length > 2) {
       this.setState({titleLengthValid: true})
@@ -236,7 +246,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl:  e.currentTarget.value,
       postText: this.state.postText,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     if (e.currentTarget.value.length < 1 || (e.currentTarget.value.length > 1 && isFacebookPageUrl(e.currentTarget.value))) {
       this.setState({isCorrectUrl: true})
@@ -247,7 +258,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '') && (data.postText !== '' || data.attachments.length > 0)) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '') && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -299,9 +310,9 @@ class FacebookPosts extends React.Component {
     
   }
   setCommentCapture () {
-    var disabled = false
     var selectedPage = this.props.pages[0]
     if (this.props.currentPost) {
+      var disable = false
       console.log('Current Post', this.props.currentPost)
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i]._id === this.props.currentPost.pageId) {
@@ -309,9 +320,11 @@ class FacebookPosts extends React.Component {
           break
         }
       }
-      if (this.props.currentPost.payload) {
+      if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
         var payload = this.props.currentPost.payload
         var images = []
+        var links = []
+        var cards = []
         for (let i = 0; i < payload.length; i++) {
           if (payload[i].componentType === 'text') {
             this.setState({
@@ -330,6 +343,10 @@ class FacebookPosts extends React.Component {
           if (payload[i].componentType === 'image') {
             images.push(payload[i])
           }
+          if (payload[i].componentType === 'link') {
+            links.push({valid: true, url: payload[i].url, loading: false})
+            cards.push(payload[i].card)
+          }
         }
         if (images.length > 0) {
           this.setState({
@@ -337,11 +354,16 @@ class FacebookPosts extends React.Component {
             postType: 'images'
           })
         }
-      }
-      if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
-        this.setState({ selectedRadio: 'existing'})
-      } else if (this.props.currentPost.payload && this.props.currentPost.payload.length > 0) {
+        if (links.length > 0 && cards.length > 0) {
+          this.setState({
+            links: links,
+            cards: cards,
+            postType: 'links'
+          })
+        }
         this.setState({ selectedRadio: 'new'})
+      } else if ((this.props.currentPost.post_id && this.props.currentPost.post_id !== '') || (this.props.currentPost.existingPostUrl && this.props.currentPost.existingPostUrl !== '')) {
+        this.setState({ selectedRadio: 'existing'})
       } else {
         this.setState({ selectedRadio: 'global'})
       }
@@ -358,11 +380,31 @@ class FacebookPosts extends React.Component {
         postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
         title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
       })
+      if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
+        this.setState({
+          postUrl: `https://facebook.com/${this.props.currentPost.post_id}`
+        })
+      } else if (this.props.currentPost.existingPostUrl && this.props.currentPost.existingPostUrl !== '') {
+        this.setState({
+          postUrl: this.props.currentPost.existingPostUrl
+        })
+      } else {
+        this.setState({
+          postUrl: ''
+        })
+      }
+      if (!this.props.currentPost.reply || this.props.currentPost.reply === '' || !this.props.currentPost.title || this.props.currentPost.title === '' ) {
+        disable = true
+      }
+      this.setState({
+        disabled: disable
+      })
     }
     this.setState({
       selectedPage: selectedPage
     })
   }
+
   componentWillReceiveProps (nextProps) {
     console.log(' componentWillReceiveProps called')
   }
@@ -400,7 +442,8 @@ class FacebookPosts extends React.Component {
         autoReply: this.state.autoReply,
         postUrl: this.state.postUrl,
         postText: this.state.postText,
-        attachments: attachments
+        attachments: attachments,
+        cards: this.state.cards
       })
     })
   }
@@ -449,7 +492,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
-      attachments: attachments
+      attachments: attachments,
+      cards: this.state.cards
     })
   }
   validateKeywords () {
@@ -571,7 +615,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText:  e.target.value,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     this.setState({
       postText: e.target.value
@@ -585,7 +630,8 @@ class FacebookPosts extends React.Component {
       autoReply: e.target.value,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     this.setState({
       autoReply: e.target.value
@@ -598,7 +644,8 @@ class FacebookPosts extends React.Component {
       autoReply: this.state.autoReply,
       postUrl: this.state.postUrl,
       postText: this.state.postText + emoji.native,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      cards: this.state.cards
     })
     /*var facebookPost = []
     facebookPost.push({componentType: 'text', text: this.state.postText + emoji.native})
@@ -692,7 +739,7 @@ class FacebookPosts extends React.Component {
                 postType={this.state.postType}
                 attachments={this.state.attachments}
                 cards={this.state.cards}
-                postText={this.props.postText}
+                postText={this.state.postText}
                 edited={false}
                 />
             </ModalDialog>
@@ -1001,13 +1048,49 @@ class FacebookPosts extends React.Component {
                             id='postTextArea' rows='3'
                             style={{height: '150px', resize: 'none'}}
                             value={this.state.postText}
-                            onChange={this.onFacebookPostChange}
+                            disabled
                              />
-                            { this.state.attachments.length > 0 && 
-                              <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
-                              </span>
+                            {
+                              this.state.attachments.length > 0 && this.state.postType !== 'links' &&
+                              <div className='attachmentDiv' style={{display: 'flex'}}>
+                                {
+                                this.state.attachments.map((attachment, i) => (
+                                  <div className='col-2'>
+                                    <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                                      { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
+                                        <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                      </div>
+                                      }
+                                      { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
+                                        <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                      </div>
+                                      }
+                                    </div>
+                                  </div>
+                                ))
+                                }
+                              </div>
                             }
+                            {
+                              this.state.cards.length > 0 &&  this.state.postType === 'links' &&
+                              <div className='attachmentDiv' style={{display: 'flex'}}>
+                                {
+                                this.state.cards.map((card, i) => (
+                                  <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
+                                      { card.image_url &&
+                                        <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                      }
+                                      <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
+                                      <span style={{fontSize: '8px'}}>{card.title}</span>
+                                  </div>                             
+                                ))
+                                }
+                              </div>
+                            }
+                            <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
+                              <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
+                            </span>
+                            
                         </div>
                         }
                         </div>
