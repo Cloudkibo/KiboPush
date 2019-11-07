@@ -25,6 +25,13 @@ class CustomFields extends React.Component {
     this.onNameChange = this.onNameChange.bind(this)
     this.onDescriptionChange = this.onDescriptionChange.bind(this)
   }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.customFields && this.props.onLoadCustomFields) {
+      this.props.onLoadCustomFields(nextProps.customFields)
+    }
+  }
+
   componentDidMount () {
     this.props.loadCustomFields()
   }

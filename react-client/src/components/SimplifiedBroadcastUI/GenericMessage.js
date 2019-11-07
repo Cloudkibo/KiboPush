@@ -926,7 +926,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       fetchAllSequence: fetchAllSequence,
       loadBroadcastsList: loadBroadcastsList,
-      loadTags: loadTags,
+      loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

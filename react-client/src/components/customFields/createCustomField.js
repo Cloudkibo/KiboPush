@@ -44,6 +44,7 @@ class CreateCustomField extends React.Component {
 
   handleResponse (res) {
     if (res.status === 'success' && res.payload) {
+      console.log('handleResponse', res)
       this.msg.success('New Custom Field Created')
       this.setState({closeModal: 'modal'})
       document.getElementById('create').click()
@@ -57,6 +58,7 @@ class CreateCustomField extends React.Component {
   clear () {
     this.setState({name: '', type: '', description: ''})
   }
+  
   render () {
     var alertOptions = {
       offset: 14,
