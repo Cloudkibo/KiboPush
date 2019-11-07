@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import AlertContainer from 'react-alert'
+import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 
 const styles = {
   sessionStyle: {
@@ -20,13 +21,22 @@ class SessionItem extends React.Component {
     super(props, context)
     this.state = {
       unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
-      disabledValue: false
+      disabledValue: false,
+      isShowingModal: false
     }
     this.changeStatus = this.changeStatus.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
 
   componentDidMount () {
@@ -146,40 +156,31 @@ class SessionItem extends React.Component {
     return (
       <div key={this.props.session._id}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="resolveChatSession" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Resolve Chat Session
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                <p>Are you sure you want to resolve this chat session?</p>
-                <div style={{ width: '100%', textAlign: 'center' }}>
-                  <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' onClick={(e) => {
-                      this.changeStatus(e, 'resolved', this.props.activeSession._id)
-                    }}
-                    data-dismiss="modal">
-                      Yes
+        <Popover placement='left' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session' toggle={this.closeDialog}>
+            <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
+            <PopoverBody>
+              <div className='row' style={{ minWidth: '250px' }}>
+                <div className='col-12'>
+                  <p>Are you sure you want to resolve this chat session?</p>
+                  <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={(e) => {
+                    this.changeStatus(e, 'resolved', this.props.activeSession._id)
+                    this.closeDialog()
+                  }}>
+                    Yes
                   </button>
-                  </div>
-                  <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' data-dismiss="modal">
-                      No
+                </div>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={this.closeDialog}>
+                    No
                   </button>
-                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+                </div>
+              </div>
+            </PopoverBody>
+          </Popover>
         <div style={this.props.session._id === (this.props.activeSession !== {} && this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.props.changeActiveSession(this.props.session)} className='m-widget4__item'>
           <div className='m-widget4__img m-widget4__img--pic'>
             <img onError={(e) => this.props.profilePicError(e, this.props.session)} style={{width: '56px', height: '56px'}} src={this.props.session.profilePic} alt='' />
@@ -208,9 +209,9 @@ class SessionItem extends React.Component {
                 {
                   this.props.session.status === 'new'
                   ? 
-                    <i style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Mark as done' className='la la-check' data-toggle="modal" data-target="#resolveChatSession" />
+                  <i  id='resolve_session' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
                   : 
-                    <i style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                    <i id='resolve_session' style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }
               </div>
