@@ -35,7 +35,7 @@ export function fetchSponsoredMessages (){
     }
 }
 
-export function updateSponsoredMessage(sponsoredMessage,key,value){
+export function updateSponsoredMessage(sponsoredMessage, key, value){
     return (dispatch) => {
         let temp = sponsoredMessage
         temp[key] = value
