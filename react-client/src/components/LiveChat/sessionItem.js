@@ -191,7 +191,7 @@ class SessionItem extends React.Component {
 
               <div style={{display: 'inline-block'}}>
                 {
-                  this.props.session.unreadCount && 
+                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) && 
                   <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                     {this.props.session.unreadCount}
                   </a>
@@ -207,9 +207,9 @@ class SessionItem extends React.Component {
                 {
                   this.props.session.status === 'new'
                   ? 
-                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Mark as done' className='la la-check' data-toggle="modal" data-target="#resolveChatSession" />
+                    <i style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Mark as done' className='la la-check' data-toggle="modal" data-target="#resolveChatSession" />
                   : 
-                    <i style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                    <i style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }
               </div>
@@ -289,7 +289,8 @@ SessionItem.propTypes = {
   'subscriberName': PropTypes.string.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
-  'user': PropTypes.object.isRequired
+  'user': PropTypes.object.isRequired,
+  'changeStatus': PropTypes.func.isRequired
 }
 
 export default SessionItem

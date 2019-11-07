@@ -105,7 +105,8 @@ SessionsArea.propTypes = {
   'fetchSessions': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
   'activeSession': PropTypes.object.isRequired,
-  'changeActiveSession': PropTypes.func.isRequired
+  'changeActiveSession': PropTypes.func.isRequired,
+  'changeStatus': PropTypes.func.isRequired
 }
 
 export default SessionsArea
