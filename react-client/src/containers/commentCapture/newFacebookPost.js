@@ -61,7 +61,6 @@ class FacebookPosts extends React.Component {
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
-      sequences: [],
       openLinkCarousel: false,
       links:[],
       cards: []
@@ -151,7 +150,7 @@ class FacebookPosts extends React.Component {
     }
     if (this.state.postType === 'links') {
       for (var i = 0; i < this.state.links.length; i++) {
-        facebookPost.push({componentType: 'link', url: this.state.links[i].url})
+        facebookPost.push({componentType: 'link', url: this.state.links[i].url, card: this.state.cards[i]})
       }
     }
     if (this.state.attachments.length > 0) {
@@ -466,15 +465,15 @@ class FacebookPosts extends React.Component {
           links: []
         })
         attachments = []
-      } else {
+      } else if (fileData.get('componentType') === 'image'){
         if (this.state.postType === 'video') {
           attachments = []
-          this.setState({
-            postType: 'images',
-            cards: [],
-            links: []
-          })
         }
+        this.setState({
+          postType: 'images',
+          cards: [],
+          links: []
+        })
       }
       attachments.push(attachComponent)
       // var post = []
@@ -1212,7 +1211,7 @@ class FacebookPosts extends React.Component {
                                 <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
                                   <option key='' value='' disabled>Select Sequence...</option>
                                   {
-                                    this.state.sequences.map((seq, i) => (
+                                    this.props.sequences.map((seq, i) => (
                                       seq.sequence.trigger.event === 'subscribes_to_sequence'
                                       ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                                     ))

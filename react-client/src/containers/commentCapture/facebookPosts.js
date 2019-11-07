@@ -109,8 +109,8 @@ class FacebookPosts extends React.Component {
     console.log('offset', offset)
     for (var i = offset; i < limit; i++) {
       if (searchVal !== '') {
-        let postText = this.getPostText(posts[i].payload)
-        if (postText.toLowerCase().includes(searchVal.toLowerCase())) {
+        let postTitle = posts[i].title
+        if (postTitle.toLowerCase().includes(searchVal.toLowerCase())) {
           data[index] = posts[i]
           index++
         }
@@ -141,9 +141,9 @@ class FacebookPosts extends React.Component {
     var filtered = []
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.posts.length; i++) {
-        if (this.props.posts[i].payload) {
-          let postText = this.getPostText(this.props.posts[i].payload)
-          if (postText.toLowerCase().includes(event.target.value.toLowerCase())) {
+        if (this.props.posts[i].title) {
+          let postTitle = this.props.posts[i].title
+          if (postTitle.toLowerCase().includes(event.target.value.toLowerCase())) {
             filtered.push(this.props.posts[i])
           }
         }
