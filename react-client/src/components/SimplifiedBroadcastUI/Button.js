@@ -565,9 +565,9 @@ class Button extends React.Component {
                           </div>
                       }
                       <div style={{color: 'red', textAlign: 'left'}}>{!this.state.customFieldId ? '*Required' : ''}</div>
-                      <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                      {/* <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
                           Manage Custom Fields
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 }
