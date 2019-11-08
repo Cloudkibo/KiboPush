@@ -156,7 +156,7 @@ class SessionItem extends React.Component {
     return (
       <div key={this.props.session._id}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Popover placement='left' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session' toggle={this.closeDialog}>
+        <Popover placement='left' className='subscriberPopover' isOpen={this.state.isShowingModal} target={'resolve_session'+this.props.session._id} toggle={this.closeDialog}>
             <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
             <PopoverBody>
               <div className='row' style={{ minWidth: '250px' }}>
@@ -258,9 +258,9 @@ class SessionItem extends React.Component {
                 {
                   this.props.session.status === 'new'
                   ? 
-                  <i  id='resolve_session' style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                  <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
                   : 
-                    <i id='resolve_session' style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                    <i id={'resolve_session'+this.props.session._id} style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
