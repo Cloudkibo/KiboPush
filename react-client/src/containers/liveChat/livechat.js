@@ -22,7 +22,8 @@ import {
   updateUserChat,
   clearSearchResult,
   markRead,
-  updatePendingResponse
+  updatePendingResponse,
+  changeStatus
 } from '../../redux/actions/livechat.actions'
 import {
   getSubscriberTags,
@@ -437,6 +438,10 @@ class LiveChat extends React.Component {
                 this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='row'>
                     <SESSIONSAREA
+                      changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox}
+                      sendNotifications={this.props.sendNotifications}
+                      changeStatus={this.props.changeStatus}
+                      fetchTeamAgents={this.props.fetchTeamAgents}
                       profilePicError={this.profilePicError}
                       openSessions={this.props.openSessions}
                       closeSessions={this.props.closeSessions}
@@ -568,7 +573,8 @@ function mapDispatchToProps(dispatch) {
     getCustomFieldValue,
     loadCustomFields,
     setCustomFieldValue,
-    updatePendingResponse
+    updatePendingResponse,
+    changeStatus,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

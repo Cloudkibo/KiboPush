@@ -118,7 +118,7 @@ class CreateMessage extends React.Component {
     for (var l = 0; l < jsonMessages.length; l++) {
       let removePayload = false
       for (var m = 0; m < tempJsonPayloads.length; m++) {
-        if (tempJsonPayloads[m] === jsonMessages[l].jsonAdMessageId) {
+        if (''+tempJsonPayloads[m] === ''+jsonMessages[l].jsonAdMessageId) {
           for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
             let messageContent = jsonMessages[l].messageContent[i]
             if (messageContent.cards) {

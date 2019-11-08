@@ -159,6 +159,9 @@ class LinkCarouselModal extends React.Component {
 
     
     closeModal () {
+        if (this.props.module && this.props.module === 'commentcapture') {
+           this.props.closeModal()
+        }
         if (!this.state.edited) {
           this.props.closeModal()
         } else {
@@ -249,8 +252,6 @@ class LinkCarouselModal extends React.Component {
     }
 
     render () {
-        console.log('links in render', this.state.links)
-        console.log('cards in render', this.state.cards)
         return (
         <ModalContainer style={{width: '72vw', maxHeight: '85vh', left: '25vw', top: '12vh', cursor: 'default'}}
             onClose={this.closeModal}>
@@ -336,7 +337,7 @@ class LinkCarouselModal extends React.Component {
                                 <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
                                 <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
                                 {
-                                    card.component.buttons.map((button, index) => {
+                                    card.component.buttons && card.component.buttons.map((button, index) => {
                                     if (button.visible || button.type) {
                                         return (
                                         <div>
@@ -376,14 +377,25 @@ class LinkCarouselModal extends React.Component {
                     </div>
                 </div>
                 <div className='row' style={{marginTop: '-5vh'}}>
-                <div className='pull-right'>
-                    <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
-                        Cancel
-                    </button>
-                    <button disabled={!this.valid()} onClick={() => this.addComponent()} className='btn btn-primary'>
-                        {this.props.edit ? 'Edit' : 'Next'}
-                    </button>
-                </div>
+                { this.props.module !== 'commentcapture'
+                    ? <div className='pull-right'>
+                        <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                            Cancel
+                        </button>
+                        <button disabled={!this.valid()} onClick={() => this.addComponent()} className='btn btn-primary'>
+                            {this.props.edit ? 'Edit' : 'Next'}
+                        </button>
+                    </div>
+                    : <div className='pull-right'>
+                        <button onClick={this.closeModal} className='btn btn-secondary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                            Cancel
+                        </button>
+                        <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards)}} className='btn btn-primary'>
+                            Save
+                        </button>
+                    </div>
+                }
+                
                 </div>
             </div>
             </ModalDialog>

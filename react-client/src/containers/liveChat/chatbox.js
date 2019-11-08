@@ -22,7 +22,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import { Popover, PopoverBody } from 'reactstrap'
+import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import {
@@ -836,7 +836,7 @@ class ChatBox extends React.Component {
     this.downloadAudio(blob)
   }
   render () {
-    console.log('chatbox render')
+    console.log('chatbox render_data',this.state.isShowingModal)
     var settings = {
       arrows: true,
       dots: false,
@@ -856,15 +856,13 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Resolve Chat Session</h3>
-              <p>Are you sure you want to resolve this chat session?</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
+        <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
+            <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
+            <PopoverBody>
+              <div className='row' style={{ minWidth: '250px' }}>
+                <div className='col-12'>
+                  <p>Are you sure you want to resolve this chat session?</p>
+                  <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-primary' onClick={(e) => {
                     this.changeStatus(e, 'resolved', this.props.currentSession._id)
@@ -879,9 +877,10 @@ class ChatBox extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </PopoverBody>
+          </Popover>
         {
           this.state.isShowingModalPending &&
           <ModalContainer style={{width: '500px'}}
@@ -1055,19 +1054,19 @@ class ChatBox extends React.Component {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-              : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+              : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i  id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-                : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+                : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
+                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
                 }} className='fa fa-envelope-open-o' />
               </div>
