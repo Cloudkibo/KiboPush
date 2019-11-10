@@ -9,12 +9,10 @@ class adCreative extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      Campaign_name: '',
       buttonActions: ['open website'],
-      broadcast:[],
-      ad_account_id: ''
+      broadcast:(this.props.payload)? this.props.payload : [],
+      ad_account_id: (this.props.adAccountId) ? this.props.adAccountId : ''
     }
-    this.handleInput = this.handleInput.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleadAccountId = this.handleadAccountId.bind(this)
   }
@@ -24,15 +22,9 @@ class adCreative extends React.Component {
     this.props.updateSponsoredMessage(this.props.sponsoredMessage,'ad_account_id', e.target.value)
   }
 
-  handleInput (e) {
-    this.setState({Campaign_name: e.target.value})
-    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'campaign_name', e.target.value)
-  }
-
-  handleChange (state) {
-    this.setState(state)
-    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', this.state.broadcast[0])
-    console.log('gen states',this.state)
+  handleChange (broadcast) {
+    this.setState(broadcast)
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
   }
 
   render () {
@@ -51,7 +43,7 @@ class adCreative extends React.Component {
             titleEditable
             buttonActions={this.state.buttonActions} />
         <div>
-          <Footer page={this.props.page} Campaign_name={this.state.Campaign_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+          <Footer page={this.props.page} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
         </div>
       </div>
     )

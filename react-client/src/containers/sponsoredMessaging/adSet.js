@@ -15,15 +15,15 @@ class adSet extends React.Component {
     this.state = {
       page: this.props.pages[0].pageId,
       ad_set_payload: {
-        adset_name:'',
-        gender:'male',
-        min_age: 18,
-        max_age: 65
-      },    
-      budget: {
-        type: 'daily_budget',
-        amount:''
-      }
+        adset_name: (this.props.adSetPayload && this.props.adSetPayload.adset_name)? this.props.adSetPayload.adset_name : '' ,
+        gender: (this.props.adSetPayload && this.props.adSetPayload.gender)? this.props.adSetPayload.gender : 'male',
+        min_age:  (this.props.adSetPayload && this.props.adSetPayload.min_age)? this.props.adSetPayload.min_age : 18,
+        max_age:  (this.props.adSetPayload && this.props.adSetPayload.max_age)? this.props.adSetPayload.max_age : 65,
+        budget:  (this.props.adSetPayload && this.props.adSetPayload.budget)? this.props.adSetPayload.budget : {
+          type: 'daily_budget',
+          amount:''
+        }
+      },
     }
     this.handleName = this.handleName.bind(this)
     this.renderOptions = this.renderOptions.bind(this)
@@ -45,7 +45,7 @@ class adSet extends React.Component {
   handleAge (e) {
     let temp = this.state.ad_set_payload
     if(e.target.id === 'min_age'){
-      temp.min_age = e.target.value 
+      temp.min_age = e.target.value
       this.setState({ad_set_payload: temp})
       if(e.target.value > this.state.ad_set_payload.max_age){
         temp.max_age = e.target.value
@@ -63,15 +63,15 @@ class adSet extends React.Component {
   }
 
   handleBudget (e) {
-    let temp = this.state.budget
+    let temp = this.state.ad_set_payload
 
     if (e.target.id === 'budget_type'){
-      temp.type = e.target.value
+      temp.budget.type = e.target.value
     }else if (e. target.id === 'budget_amount'){
-      temp.amount = e.target.value
+      temp.budget.amount = e.target.value
     }
-
-    this.setState({budget: temp})
+    this.setState({ad_set_payload: temp})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
 
   }
 
@@ -105,7 +105,7 @@ class adSet extends React.Component {
         <div className="col-md-6 col-lg-6 col-sm-6">
           <div>
             <label>Adset Name:</label>
-            <input className='form-control m-input m-input--air' value={this.state.Adset_name} onChange={this.handleName} />
+            <input className='form-control m-input m-input--air' value={this.state.ad_set_payload.adset_name} onChange={this.handleName} />
           </div>
         <br />
         <div>
@@ -113,13 +113,13 @@ class adSet extends React.Component {
           <div onChange={this.handleGender}>
             <label>Gender:</label>
             <div className="radio">
-            <label><input type="radio" name="gender" value='male' checked={ this.state.ad_set_payload.gender === 'male' }/>Male</label>
+            <label><input type="radio" name="gender" value='male' checked={ this.state.ad_set_payload.gender === 'male'}/>Male</label>
             </div>
             <div className="radio">
-              <label><input type="radio" name="gender" value='female'/>Female</label>
+              <label><input type="radio" name="gender" value='female' checked={ this.state.ad_set_payload.gender === 'female'} />Female</label>
             </div>
             <div className="radio">
-              <label><input type="radio" name="gender" value='other'/>Other</label>
+              <label><input type="radio" name="gender" value='other' checked={ this.state.ad_set_payload.gender === 'other'} />Other</label>
             </div>
           </div>
         <br />
@@ -147,14 +147,14 @@ class adSet extends React.Component {
         <label>Budget:</label>
         <div className='row'>
           <div className='col-sm-6'>
-          <select className="form-control" id="budget_type" value={this.state.budget.type} onChange={this.handleBudget}>
+          <select className="form-control" id="budget_type" value={this.state.ad_set_payload.budget.type} onChange={this.handleBudget}>
             <option value='daily_budget'>Daily Budget</option>
             <option value='lifetime_budget'>Lifetime Budget</option>
           </select>
           </div>
           <div className='col-sm-4'>
-              <input className='form-control' id ='budget_amount' value={this.state.budget.amount} onChange={this.handleBudget} />
-              <label className='text-muted small' hidden = { this.state.budget.amount === '' ? true : false }>Rs. {this.state.budget.amount} PKR</label>
+              <input className='form-control' id ='budget_amount' value={this.state.ad_set_payload.budget.amount} onChange={this.handleBudget} />
+              <label className='text-muted small' hidden = { this.state.ad_set_payload.budget.amount === '' ? true : false }>Rs. {this.state.ad_set_payload.budget.amount} PKR</label>
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@ class adSet extends React.Component {
   <br/>
   <br/>
 
-        <Footer page={this.props.page} Adset_name={this.state.Adset_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+        <Footer page={this.props.page} adset_name={this.state.adset_name} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
       </div>
     )
   }

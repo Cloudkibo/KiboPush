@@ -35,14 +35,36 @@ export function fetchSponsoredMessages (){
     }
 }
 
+export function saveDraft(id, data, msg) {
+  console.log('saveDraft', data)
+  return (dispatch) => {
+      callApi(`sponsoredmessaging/update/${id}`, 'post', data)
+        .then(res => {
+          console.log('response from saveDraft', res)
+          if(res.status === 'success'){
+            msg.success('Information saved successfully')
+            dispatch(fetchSponsoredMessages())
+          } else {
+            msg.error('Failed to save Information')
+          }
+      })
+  }
+}
+
 export function updateSponsoredMessage(sponsoredMessage, key, value){
+  if(key) {
     return (dispatch) => {
         let temp = sponsoredMessage
         temp[key] = value
         dispatch(showUpdatedData(temp))
     }
-}
+  } else {
+    return (dispatch) => {
+      dispatch(showUpdatedData(sponsoredMessage))
+    }
+  }
 
+}
 export function createSponsoredMessage(cb, data){
     return (dispatch) => {
         callApi('sponsoredmessaging','post', data)
@@ -71,5 +93,3 @@ export function deleteSponsoredMessage(id, msg){
         })
     }
 }
-
-
