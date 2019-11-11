@@ -48,7 +48,7 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-label'>
                 Subscription URL:&nbsp;
               </span>
-              <a href={this.props.item.subscriptionUrl} target='_blank' className='m-widget5__info-date m--font-info'>
+              <a href={this.props.item.subscriptionUrl} target='_blank' rel='noopener noreferrer' className='m-widget5__info-date m--font-info'>
                 {this.props.item.subscriptionUrl}
               </a>
               <br />

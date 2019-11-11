@@ -225,8 +225,8 @@ class FacebookPosts extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -296,7 +296,7 @@ class FacebookPosts extends React.Component {
                                   <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(post.datetime)}</span></td>
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '150px' }}>
-                                      <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{ float: 'left', margin: 2, marginLeft: '40px' }}>
+                                      <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{ float: 'left', margin: 2, marginLeft: '40px' }}>
                                         View on FB
                                 </a>
                                       <br />
@@ -317,7 +317,7 @@ class FacebookPosts extends React.Component {
                           <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
-                            breakLabel={<a>...</a>}
+                            breakLabel={<a href='#/'>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}

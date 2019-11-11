@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Alert } from 'react-bs-notifier'
 import AlertContainer from 'react-alert'
 import { updateStoreInfo } from '../../redux/actions/abandonedCarts.actions'
 

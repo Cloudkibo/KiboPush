@@ -3,7 +3,6 @@
  */
 import callApi from '../../utility/api.caller.service'
 import {loadMyPagesList} from './pages.actions'
-import { removeButtonOldurl } from './actions.utility'
 
 export function isWelcomeMessageEnabled (data) {
   return (dispatch) => {
@@ -17,7 +16,6 @@ export function isWelcomeMessageEnabled (data) {
 }
 export function createWelcomeMessage (messageData, msg) {
   console.log('messageData', messageData)
-  // let data = removeButtonOldurl({payload: messageData.welcomeMessage})
   let dataToSend = {_id: messageData._id, welcomeMessage: messageData.welcomeMessage}
   return (dispatch) => {
     callApi(`pages/createWelcomeMessage/`, 'post', dataToSend)

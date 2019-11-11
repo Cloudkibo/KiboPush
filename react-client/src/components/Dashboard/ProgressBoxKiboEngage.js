@@ -64,7 +64,7 @@ class ProgressBox extends React.Component {
               <ul className='m-portlet__nav' style={{float: 'left'}}>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-left m-dropdown--align-push' data-dropdown-toggle='click'>
                   <span>Select Page: </span>&nbsp;&nbsp;&nbsp;
-                  <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                  <a href='#/' onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                     {this.props.pageId === 'all' ? 'All' : this.props.selectedPage.pageName}
                   </a>
                   {
@@ -83,7 +83,7 @@ class ProgressBox extends React.Component {
                               {
                                 this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a href='#/' onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
@@ -92,7 +92,7 @@ class ProgressBox extends React.Component {
                                 ))
                               }
                               <li key={'all'} className='m-nav__item'>
-                                <a onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
@@ -100,7 +100,7 @@ class ProgressBox extends React.Component {
                               </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <a href='#/' onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
                                 </a>
                               </li>

@@ -14,7 +14,7 @@ import { UncontrolledTooltip } from 'reactstrap'
   danger
   accent
  */
-
+/* eslint-disable */
 class CardBoxesContainer extends React.Component {
   render () {
     const url = window.location.hostname
@@ -81,5 +81,6 @@ class CardBoxesContainer extends React.Component {
     )
   }
 }
+/* eslint-enable */
 
 export default CardBoxesContainer

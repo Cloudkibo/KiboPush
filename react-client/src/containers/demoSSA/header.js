@@ -32,7 +32,7 @@ class Header extends React.Component {
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
                     <li style={{marginTop: '20px'}} className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='https://www.ssa.gov/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Visit Website </a>
+                      <a href='https://www.ssa.gov/' target='_blank' rel='noopener noreferrer' style={{color: 'white', textDecoration: 'none'}}> Visit Website </a>
                     </li>
                   </ul>
                 </div>

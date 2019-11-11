@@ -16,7 +16,7 @@ import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router-dom'
-import { checkConditions } from '../polls/utility'
+// import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 import Targeting from './Targeting'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -25,7 +25,6 @@ import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
-import MessengerSendToMessenger from 'react-messenger-send-to-messenger'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -278,7 +277,6 @@ class CreateConvo extends React.Component {
     }
     console.log('this.props.location.state.pages', this.props.location.state.pages)
     console.log('this.props.pages', this.props.pages)
-    let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     // var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
     if (this.props.subscribersCount === 0) {
       this.msg.error('No subscribers match the selected criteria')
@@ -418,7 +416,7 @@ class CreateConvo extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <a href='#' style={{ display: 'none' }} ref='reconnect' data-toggle="modal" data-target="#reconnect">reconnect</a>
+        <a href='#/' style={{ display: 'none' }} ref='reconnect' data-toggle="modal" data-target="#reconnect">reconnect</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="reconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -469,7 +467,7 @@ class CreateConvo extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank' rel='noopener noreferrer'>link.</a></p>
                     </div>
                   </div>
                 </div>
@@ -502,7 +500,7 @@ class CreateConvo extends React.Component {
               </div>
             </div>
           </div>
-        <a href='#' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -533,11 +531,11 @@ class CreateConvo extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
+              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
               <br />
               View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
 
-              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank'>image guidelines</a>
+              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
             </div>
           </div>
           <div className='row'>
@@ -586,12 +584,12 @@ class CreateConvo extends React.Component {
                     <div className='col-12'>
                       <ul className='nav nav-tabs'>
                         <li>
-                          <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
+                          <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                         </li>
                         <li>
                           {this.state.broadcast.length > 0
-                            ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                            : <a>Targeting</a>
+                            ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                            : <a href='#/'>Targeting</a>
                           }
                         </li>
 

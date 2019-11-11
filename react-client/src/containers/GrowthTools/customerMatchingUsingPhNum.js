@@ -504,7 +504,7 @@ class CustomerMatching extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
+        <a href='#/' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -579,7 +579,7 @@ class CustomerMatching extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='nameExists' data-toggle="modal" data-target="#nameExists">nameExists</a>
+        <a href='#/' style={{ display: 'none' }} ref='nameExists' data-toggle="modal" data-target="#nameExists">nameExists</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="nameExists" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -640,8 +640,8 @@ class CustomerMatching extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>&nbsp;
-            Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank' rel='noopener noreferrer'>documentation</a>&nbsp;
+            Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div
@@ -663,7 +663,7 @@ class CustomerMatching extends React.Component {
               specific
               for pages that belong to United States of America (One of the
               page admins should be from USA). There is a one time fee for each page that you have connected.
-              For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
+              For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank' rel='noopener noreferrer'>here</a>
             </div>
           </div>
           <div className='row'>
@@ -833,7 +833,7 @@ class CustomerMatching extends React.Component {
                             {this.state.alertMessage} <br />
                             {
                               this.state.file && this.state.file !== '' &&
-                              <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                              <a href='#/' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
                             }
                           </div>
                         }

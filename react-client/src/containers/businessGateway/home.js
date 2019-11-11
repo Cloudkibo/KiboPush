@@ -269,7 +269,7 @@ class Home extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts through KiboLite? Here is the <a href='http://kibopush.com/kibolite/' target='_blank'>documentation</a> Or check out this <a href='#' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>.
+              Need help in understanding broadcasts through KiboLite? Here is the <a href='https://kibopush.com/kibolite/' target='_blank' rel='noopener noreferrer'>documentation</a> Or check out this <a href='#' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>.
             </div>
           </div>
           <div className='row'>
@@ -294,13 +294,13 @@ class Home extends React.Component {
                     <div className='col-xl-12'>
                       <ul className='nav nav-tabs'>
                         <li>
-                          <a id='selectFile' className='broadcastTabs active' onClick={() => { this.onTabClick('selectFile') }}>Select File</a>
+                          <a href='#/' id='selectFile' className='broadcastTabs active' onClick={() => { this.onTabClick('selectFile') }}>Select File</a>
                         </li>
                         <li>
-                          <a id='pushMessage' className='broadcastTabs' onClick={() => { this.onTabClick('pushMessage') }}>Create Push Message</a>
+                          <a href='#/' id='pushMessage' className='broadcastTabs' onClick={() => { this.onTabClick('pushMessage') }}>Create Push Message</a>
                         </li>
                         <li>
-                          <a id='targetCustomers' className='broadcastTabs' onClick={() => { this.onTabClick('targetCustomers') }}>Target Customers</a>
+                          <a href='#/' id='targetCustomers' className='broadcastTabs' onClick={() => { this.onTabClick('targetCustomers') }}>Target Customers</a>
                         </li>
                       </ul>
                       <div className='tab-content'>

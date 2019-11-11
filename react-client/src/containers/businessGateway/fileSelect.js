@@ -55,7 +55,7 @@ class FileSelect extends React.Component {
     })
     if (e.currentTarget.value === 'phoneNumber') {
       if (this.state.subscriberIdColumn !== '') {
-        var dict_copy = this.state.dict
+        let dict_copy = this.state.dict
         dict_copy[this.state.subscriberIdColumn.value] = false
         this.setState({
           subscriberIdColumn: '',
@@ -64,7 +64,7 @@ class FileSelect extends React.Component {
       }
     } else if (e.currentTarget.value === 'subscriberId') {
       if (this.state.phoneColumn !== '') {
-        var dict_copy = this.state.dict
+        let dict_copy = this.state.dict
         dict_copy[this.state.phoneColumn.value] = false
         this.setState({
           phoneColumn: '',
@@ -339,7 +339,7 @@ class FileSelect extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='file' data-toggle="modal" data-target="#file">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='file' data-toggle="modal" data-target="#file">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">

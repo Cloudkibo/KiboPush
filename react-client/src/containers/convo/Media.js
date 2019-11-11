@@ -209,11 +209,11 @@ class Media extends React.Component {
       buttons: this.state.button})
   }
   removeButton (obj) {
-    this.state.button.map((elm, index) => {
-      if (index === obj.id) {
-        this.state.button.splice(index, 1)
+    for (let a = 0; a < this.state.buttons.length; a++) {
+      if (a === obj.id) {
+        this.state.button.splice(a, 1)
       }
-    })
+    }
     if (obj.button && obj.button.type === 'postback') {
       var deletePayload = obj.button.payload
     }
@@ -321,7 +321,7 @@ class Media extends React.Component {
                 (!this.state.showPreview && this.state.fileurl && this.state.fileurl !== '') &&
                   <div className='align-center'>
                     { this.state.mediaType === 'image' &&
-                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
+                    <img alt='' style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
                   }
                     { this.state.mediaType === 'video' &&
                     <div style={{marginTop: '50px'}}>
@@ -333,7 +333,7 @@ class Media extends React.Component {
               }
               {
                 this.state.showPreview && this.state.mediaType === 'image' &&
-                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
+                <img alt='' style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
               }
               { this.state.showPreview && this.state.mediaType === 'video' &&
                 <div style={{padding: '10px'}}>

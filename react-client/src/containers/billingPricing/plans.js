@@ -223,7 +223,7 @@ class Plans extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-          <a href='#' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
+          <a href='#/' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -566,11 +566,11 @@ class Plans extends React.Component {
                                   <Popover placement='bottom-end' isOpen={this.state.openPopover} target={this.state.targetValue} className='buttonPopoverPlan'>
                                     <PopoverBody>
                                       <div style={{color: '#6f727d'}}>
-                                        <i className='fa fa-user' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('individual')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                        <i className='fa fa-user' />&nbsp;&nbsp;<a href='#/' onClick={() => this.makeDefault('individual')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
                                           Make Default Premium (Individual)
                                         </a>
                                         <br />
-                                        <i className='fa fa-users' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('team')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '10px', marginBottom: '10px'}}>
+                                        <i className='fa fa-users' />&nbsp;&nbsp;<a href='#/' onClick={() => this.makeDefault('team')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '10px', marginBottom: '10px'}}>
                                           Make Default Premiuim (Team)
                                         </a>
                                       </div>

@@ -64,8 +64,8 @@ class DiscoverTabs extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Discover Tabs? Here is the <a href='http://kibopush.com/discoverTabs' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding Discover Tabs? Here is the <a href='http://kibopush.com/discoverTabs' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -85,7 +85,7 @@ class DiscoverTabs extends React.Component {
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <p> To apply to have your bot included in the Messenger's Discover Tab, click on “Discover Submission Form” below and select the page to which your bot is attached. Go to 'Discover Settings' section and fill out the form.</p>
                       <br />
-                      <p> You can also check out the <a href='https://developers.facebook.com/docs/messenger-platform/discovery/discover-tab' target='_blank'>FAQ</a> from the Messenger team about the Discover tab. <a href='http://kibopush.com/discoverTabs' target='_blank'>Read More</a></p>
+                      <p> You can also check out the <a href='https://developers.facebook.com/docs/messenger-platform/discovery/discover-tab' target='_blank' rel='noopener noreferrer'>FAQ</a> from the Messenger team about the Discover tab. <a href='http://kibopush.com/discoverTabs' target='_blank' rel='noopener noreferrer'>Read More</a></p>
                     </div>
                   </div>
                 </div>

@@ -7,9 +7,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { loadAutopostingMessages, loadAutopostingPosts } from '../../redux/actions/autoposting.actions'
 import { bindActionCreators } from 'redux'
-import { handleDate } from '../../utility/utils'
-import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router-dom'
 import MESSAGES from '../../components/autoposting/autoposting_messages'
 import POSTS from '../../components/autoposting/autoposting_posts'
 
@@ -179,7 +176,7 @@ class MessagesContainer extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding this page? Here is the <a href='https://kibopush.com/autoposting/' target='_blank'>documentation</a>.
+              Need help in understanding this page? Here is the <a href='https://kibopush.com/autoposting/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {

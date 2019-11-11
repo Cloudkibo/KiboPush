@@ -24,8 +24,8 @@ class Card extends React.Component {
           <div>
             <div onClick={this.openCardUrl} style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
               <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                <a href={this.props.card.image_url} target='_blank'>
-                  <img style={{maxWidth: 180, borderRadius: '5px'}} src={this.props.card.image_url} />
+                <a href={this.props.card.image_url} target='_blank' rel='noopener noreferrer'>
+                  <img alt='' style={{maxWidth: 180, borderRadius: '5px'}} src={this.props.card.image_url} />
                 </a>
               </div>
               <div style={{marginTop: '10px', padding: '5px'}}>
@@ -35,7 +35,7 @@ class Card extends React.Component {
               {
                 this.props.card.buttons && this.props.card.buttons.length > 0 &&
                 this.props.card.buttons.map(b => (
-                  <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                  <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
                     {b.title}
                   </a>
                 ))

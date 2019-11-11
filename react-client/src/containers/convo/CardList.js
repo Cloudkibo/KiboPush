@@ -660,7 +660,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '' && !this.state.loading)
             ? <img style={{maxHeight: '40px', margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-          : (!this.state.loading) && <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
+          : (!this.state.loading) && <img alt='' style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
           }
@@ -693,10 +693,10 @@ class Card extends React.Component {
           </div>
           <div className='col-md-6' style={{marginTop: '15px'}}>
             {(this.state.elementUrl === '' && this.state.webviewurl === '') && !this.state.checkbox
-              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
+              ? <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                 <i className='la la-plus' /> Add Action
                 </a>
-              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
+              : <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
                 Edit Action
                 </a>
               }

@@ -61,8 +61,8 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
     callApi(`jsonAd/${jsonAdId}`).then(res => {
       console.log('response from fetchMessengerAd', res)
       if (res.status === 'success' && res.payload) {
-        var data = res.payload
-        var payload = {
+        let data = res.payload
+        let payload = {
           // pageId: data.jsonAd.pageId,
           jsonAdId: data.jsonAd._id,
           title: data.jsonAd.title,
@@ -95,8 +95,8 @@ export function saveJsonAd (data, msg, handleSave) {
       .then(res => {
         console.log('response from messengerAds', res)
         if (res.status === 'success') {
-          var data = res.payload
-          var payload = {
+          let data = res.payload
+          let payload = {
             // pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
             title: data.jsonAd.title,
@@ -119,8 +119,8 @@ export function editJsonAd (data, msg, handleEdit) {
       .then(res => {
         console.log('response from messengerAds', res)
         if (res.status === 'success') {
-          var data = res.payload
-          var payload = {
+          let data = res.payload
+          let payload = {
             // pageId: data.jsonAd.pageId,
             jsonAdId: data.jsonAd._id,
             title: data.jsonAd.title,
@@ -137,16 +137,16 @@ export function editJsonAd (data, msg, handleEdit) {
 }
 export function createJsonPayload (obj) {
   return (dispatch) => {
-    var data = JSON.parse(obj)
-    var jsonAd = {}
-    for (var i = 0; i < data.length; i++) {
+    let data = JSON.parse(obj)
+    let jsonAd = {}
+    for (let i = 0; i < data.length; i++) {
       if (!data[i].jsonAdMessageParentId) {
         jsonAd = data[i]
         break
       }
     }
     let jsonObject = []
-    for (var j = 0; j < jsonAd.messageContent.length; j++) {
+    for (let j = 0; j < jsonAd.messageContent.length; j++) {
       let messageJson = prepareJsonPayload(data, jsonAd.messageContent[j])
       jsonObject.push({message: messageJson})
     }
@@ -158,14 +158,14 @@ const prepareJsonPayload = (data, optinMessage) => {
   let payload = {}
   let body = optinMessage
   let text = body.text
-  var buttonPayload = []
-  var button = {}
+  let buttonPayload = []
+  let button = {}
   if (body.buttons && body.buttons.length > 0) {
-    for (var i = 0; i < body.buttons.length; i++) {
+    for (let i = 0; i < body.buttons.length; i++) {
       button = body.buttons[i]
-      var jsonAdMessageId
+      let jsonAdMessageId
       if (button.payload && button.type === 'postback') {
-        for (var j = 0; j < data.length; j++) {
+        for (let j = 0; j < data.length; j++) {
           if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
             jsonAdMessageId = data[j]._id
             break
@@ -236,22 +236,22 @@ const prepareJsonPayload = (data, optinMessage) => {
       }
     }
   } else if (body.componentType === 'gallery') {
-    var cards = []
+    let cards = []
     if (body.cards && body.cards.length > 0) {
-      for (var m = 0; m < body.cards.length; m++) {
-        var card = {}
+      for (let m = 0; m < body.cards.length; m++) {
+        let card = {}
         card.title = body.cards[m].title
         card.image_url = body.cards[m].image_url
         card.subtitle = body.cards[m].subtitle
         card.description = body.cards[m].description
-        var cardButtons = body.cards[m].buttons
+        let cardButtons = body.cards[m].buttons
         if (cardButtons) {
-          for (var c = 0; c < cardButtons.length; c++) {
-            var cButtons = []
-            var cbutton = cardButtons[c]
-            var jsonAdMessageId
+          for (let c = 0; c < cardButtons.length; c++) {
+            let cButtons = []
+            let cbutton = cardButtons[c]
+            let jsonAdMessageId
             if (cbutton.payload && cbutton.type === 'postback') {
-              for (var j = 0; j < data.length; j++) {
+              for (let j = 0; j < data.length; j++) {
                 if ((cbutton.payload).toString() === (data[j].jsonAdMessageId).toString()) {
                   jsonAdMessageId = data[j]._id
                   break
@@ -281,12 +281,12 @@ const prepareJsonPayload = (data, optinMessage) => {
     }
   } else if (body.componentType === 'list') {
     if (body.listItems && body.listItems.length > 0) {
-      for (var l = 0; l < body.listItems.length; l++) {
-        var listButtons = body.listItems[l].buttons
+      for (let l = 0; l < body.listItems.length; l++) {
+        let listButtons = body.listItems[l].buttons
         if (listButtons) {
-          for (var u = 0; u < listButtons.length; u++) {
-            var lButtons = []
-            var lbutton = listButtons[u]
+          for (let u = 0; u < listButtons.length; u++) {
+            let lButtons = []
+            let lbutton = listButtons[u]
             if (lbutton.type === 'web_url') {
               if (lbutton.newUrl) {
                 delete lbutton.newUrl

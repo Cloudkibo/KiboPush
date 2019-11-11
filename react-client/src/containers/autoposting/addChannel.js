@@ -170,6 +170,8 @@ class AddChannel extends React.Component {
           segmentationLocale: ''
         }
         break
+      default:
+        break
     }
     if (!incorrectUrl) {
       this.setState({
@@ -256,6 +258,8 @@ class AddChannel extends React.Component {
           rssForeGroundColor: 'black',
           wordPressForeGroundColor: 'white'
         })
+        break
+      default: 
         break
     }
   }

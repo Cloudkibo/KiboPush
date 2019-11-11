@@ -61,8 +61,8 @@ class Connect extends React.Component {
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
-                    <a href='#'>
-                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                    <a href='#/'>
+                      <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   {
@@ -100,7 +100,7 @@ class Connect extends React.Component {
                   this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <a onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
+                    <a href='#/' onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
                   </div>
                 }
               </div>

@@ -165,7 +165,7 @@ class CustomerLists extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>                     
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                     </div>
                   </div>
                   { this.props.customerLists && this.props.customerLists.length > 0
@@ -224,7 +224,7 @@ class CustomerLists extends React.Component {
                       <div className='pagination'>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}

@@ -45,7 +45,7 @@ class ItemSettings extends React.Component {
       alertMessage: '',
       alertType: '',
       actionType: this.props.location.state.item.actionType,
-      filterTweets: this.props.location.state.item.filterTweets == true ? 'yes' : 'no',
+      filterTweets: this.props.location.state.item.filterTweets === true ? 'yes' : 'no',
       moderateTweets: this.props.location.state.item.moderateTweets ? 'yes' : 'no',
       tags: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags : [],
       filterTagsValue: this.props.location.state.item.filterTags.length > 0 ? this.props.location.state.item.filterTags.join(';') : '',

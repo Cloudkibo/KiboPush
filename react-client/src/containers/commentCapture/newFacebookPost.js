@@ -12,7 +12,6 @@ import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../re
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { RingLoader } from 'halogenium'
-import ReactPlayer from 'react-player'
 const styles = {
   iconclass: {
     height: 24,
@@ -440,7 +439,7 @@ class FacebookPosts extends React.Component {
                     this.state.attachments.map((attachment, i) => (
                       <div className='col-12'>
                         <div className='ui-block' style={{ borderStyle: 'dotted', borderWidth: '2px' }}>
-                          <img src={attachment.url} alt='Image' style={{ maxWidth: '400px', maxHeight: '200px' }} />
+                          <img src={attachment.url} alt='' style={{ maxWidth: '400px', maxHeight: '200px' }} />
                         </div>
                       </div>
                     ))
@@ -450,7 +449,7 @@ class FacebookPosts extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='viewPost' data-toggle="modal" data-target="#viewPost">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='viewPost' data-toggle="modal" data-target="#viewPost">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="viewPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -466,7 +465,7 @@ class FacebookPosts extends React.Component {
               </div>
               <div style={{ color: 'black' }} className="modal-body">
                 <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
-                <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{ cursor: 'pointer' }}>Click Here</a> to view your Facebook Page Post.</p>
+                <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' rel='noopener noreferrer' style={{ cursor: 'pointer' }}>Click Here</a> to view your Facebook Page Post.</p>
                 <p>The people who comment on this post will receive the reply that you set. </p>
               </div>
             </div>
@@ -549,7 +548,7 @@ class FacebookPosts extends React.Component {
                                         <span className='fa-stack' style={{ cursor: 'pointer', float: 'right', padding: '7px' }} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{ borderStyle: 'dotted', borderWidth: '2px' }}>
                                           {attachment.componentType === 'image' && <div className='align-center' style={{ height: '60px' }}>
-                                            <img src={attachment.url} alt='Image' style={{ maxHeight: '40px', maxWidth: '120px' }} />
+                                            <img src={attachment.url} alt='' style={{ maxHeight: '40px', maxWidth: '120px' }} />
                                           </div>
                                           }
                                           {attachment.componentType === 'video' && <div className='align-center' style={{ height: '60px' }}>

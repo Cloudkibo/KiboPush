@@ -532,7 +532,7 @@ class Targeting extends React.Component {
       this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
-        this.state.selectedRadio = 'segmentation'
+        this.setState({selectedRadio: 'segmentation'})
       }
     }
     if (this.props.tags) {
@@ -609,7 +609,7 @@ class Targeting extends React.Component {
           >
             This broadcast will be sent to {this.props.subscriberCount} subscriber(s).
             { this.props.subscriberCount === 0 &&
-              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
+              <a href='#/' onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
               data-toggle="modal" data-target="#learnMore">
                 Learn More
             </a>
@@ -739,7 +739,7 @@ class Targeting extends React.Component {
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
                       {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'  */ }
-                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                         <i className='la la-info-circle' />
                       </a>
                       {/* add paid plan check later
@@ -772,7 +772,7 @@ class Targeting extends React.Component {
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
                       {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                         <i className='la la-info-circle' />
                       </a>
                       {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
@@ -813,7 +813,7 @@ class Targeting extends React.Component {
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
                     {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
                     {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
@@ -843,7 +843,7 @@ class Targeting extends React.Component {
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
                     {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                    ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    ? <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
                     {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;

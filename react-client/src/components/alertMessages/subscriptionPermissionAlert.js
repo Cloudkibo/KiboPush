@@ -72,7 +72,7 @@ class SubscriptionPermissionAlert extends React.Component {
                       <br /><br />
                     </span>
                   ))}
-                <p>This means that outside of the 24 hour window, you will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/08/02/facebook-subscription-messaging-policy-change/' target='_blank' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
+                <p>This means that outside of the 24 hour window, you will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/08/02/facebook-subscription-messaging-policy-change/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
                 </div>
               </div>
             </div>

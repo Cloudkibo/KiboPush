@@ -140,13 +140,13 @@ class Image extends React.Component {
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+              : <img alt='' onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.imgSrc} target='_blank' download>
+              <a href={this.state.imgSrc} target='_blank' rel='noopener noreferrer' download>
                 <h6><i className='fa fa-file-image-o' /><strong> Download Image </strong></h6>
               </a>
             </div>
