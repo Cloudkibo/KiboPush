@@ -105,18 +105,18 @@ class Tab extends React.Component {
       <div>
         <ul className='nav nav-tabs'>
           <li>
-            <a id='initialState' className='broadcastTabs active' onClick={() => { this.onTabClick('initialState') }}>Initial State</a>
+            <a href='#/' id='initialState' className='broadcastTabs active' onClick={() => { this.onTabClick('initialState') }}>Initial State</a>
           </li>
           <li>
-            <a id='submittedState' className='broadcastTabs' onClick={() => { this.onTabClick('submittedState') }}>Submitted State </a>
+            <a href='#/' id='submittedState' className='broadcastTabs' onClick={() => { this.onTabClick('submittedState') }}>Submitted State </a>
           </li>
           <li>
-            <a id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
+            <a href='#/' id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
           </li>
           {
             this.props.module === 'edit' &&
             <li>
-            <a id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
+            <a href='#/' id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
           </li>
           }
         </ul>

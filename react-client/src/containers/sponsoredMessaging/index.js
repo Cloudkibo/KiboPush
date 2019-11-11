@@ -7,11 +7,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+// import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class sponsoredMessaging extends React.Component {
   constructor (props, context) {

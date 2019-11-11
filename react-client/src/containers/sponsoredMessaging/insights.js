@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
-import AlertContainer from 'react-alert'
 
 class adInsights extends React.Component {
   constructor (props, context) {

@@ -344,14 +344,14 @@ class LinkCarouselModal extends React.Component {
                                                         <p style={{ textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px' }}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
                                                         <p style={{ textAlign: 'left', marginLeft: '10px', fontSize: '13px' }}>{card.component.default_action && card.component.default_action.url}</p>
                                                         {
-                                                            card.component.buttons.map((button, index) => {
+                                                            card.component.buttons.map((button, index) => (
                                                               (button.visible || button.type) && (
                                                                   <div>
                                                                       <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
                                                                       <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
                                                                   </div>
                                                               )
-                                                            })
+                                                            ))
                                                         }
                                                     </div>
                                                 )

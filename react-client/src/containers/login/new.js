@@ -102,7 +102,7 @@ class Login extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#/'>
-                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                      <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>
@@ -132,7 +132,7 @@ class Login extends React.Component {
                       </div>
                       <div className='m-login__form-action'>
                         <span>
-                          <a href='#/' id='m_login_signup_cancel' href='#/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
+                          <a href='#/' id='m_login_signup_cancel' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
                             Back
                           </a>
                         </span>

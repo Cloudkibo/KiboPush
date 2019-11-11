@@ -14,7 +14,6 @@ import { loadWhatsAppContactsList, loadContactsList } from '../../redux/actions/
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import { joinRoom } from '../../utility/socketio'
-import { Link } from 'react-router-dom'
 
 class Dashboard extends React.Component {
   constructor (props, context) {

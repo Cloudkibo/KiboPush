@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {fetchURLs, deleteURL, resetState} from '../../redux/actions/messengerRefURL.actions'
-import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 

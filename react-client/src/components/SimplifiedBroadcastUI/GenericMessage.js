@@ -164,11 +164,11 @@ class GenericMessage extends React.Component {
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
       if (data.id === obj.id) {
-        temp[i].text = obj.text
+        temp[a].text = obj.text
         if (obj.buttons.length > 0) {
-          temp[i].buttons = obj.buttons
+          temp[a].buttons = obj.buttons
         } else {
-          delete temp[i].buttons
+          delete temp[a].buttons
         }
         isPresent = true
       }
@@ -200,26 +200,26 @@ class GenericMessage extends React.Component {
       let data = temp[a]
       if (data.id === obj.id) {
         console.log('enter in function')
-        temp[i].componentType = obj.componentType
-        temp[i].fileName = obj.fileName
-        temp[i].fileurl = obj.fileurl
-        temp[i].image_url = obj.image_url
-        temp[i].size = obj.size
-        temp[i].type = obj.type
-        temp[i].title = obj.title
-        temp[i].buttons = obj.buttons
-        temp[i].description = obj.description
-        temp[i].webviewsize = obj.webviewsize
-        temp[i].webviewurl = obj.webviewurl
-        temp[i].elementUrl = obj.elementUrl
+        temp[a].componentType = obj.componentType
+        temp[a].fileName = obj.fileName
+        temp[a].fileurl = obj.fileurl
+        temp[a].image_url = obj.image_url
+        temp[a].size = obj.size
+        temp[a].type = obj.type
+        temp[a].title = obj.title
+        temp[a].buttons = obj.buttons
+        temp[a].description = obj.description
+        temp[a].webviewsize = obj.webviewsize
+        temp[a].webviewurl = obj.webviewurl
+        temp[a].elementUrl = obj.elementUrl
         if (obj.default_action && obj.default_action !== '') {
-          temp[i].default_action = obj.default_action
-        } else if (temp[i].default_action) {
+          temp[a].default_action = obj.default_action
+        } else if (temp[a].default_action) {
           console.log('delete default action')
-          delete temp[i].default_action
+          delete temp[a].default_action
         }
-        if (temp[i].cards) {
-          delete temp[i].cards
+        if (temp[a].cards) {
+          delete temp[a].cards
         }
         isPresent = true
       }
@@ -253,15 +253,15 @@ class GenericMessage extends React.Component {
       let data = temp[a]
       if (data.id === obj.id) {
         if (obj.file) {
-          temp[i].file = obj.file
+          temp[a].file = obj.file
         }
-        temp[i].fileName = obj.fileName
-        temp[i].mediaType = obj.mediaType
-        temp[i].fileurl = obj.fileurl
-        temp[i].image_url = obj.image_url
-        temp[i].size = obj.size
-        temp[i].type = obj.type
-        temp[i].buttons = obj.buttons
+        temp[a].fileName = obj.fileName
+        temp[a].mediaType = obj.mediaType
+        temp[a].fileurl = obj.fileurl
+        temp[a].image_url = obj.image_url
+        temp[a].size = obj.size
+        temp[a].type = obj.type
+        temp[a].buttons = obj.buttons
         isPresent = true
       }
     }
@@ -284,10 +284,10 @@ class GenericMessage extends React.Component {
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
       if (data.id === obj.id) {
-        if (temp[i].buttons) {
-          delete temp[i].buttons
+        if (temp[a].buttons) {
+          delete temp[a].buttons
         }
-        temp[i].cards = obj.cards
+        temp[a].cards = obj.cards
         isPresent = true
       }
     }
@@ -304,7 +304,7 @@ class GenericMessage extends React.Component {
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
       if (data.id === obj.id) {
-        temp[i] = obj
+        temp[a] = obj
         isPresent = true
       }
     }
@@ -322,7 +322,7 @@ class GenericMessage extends React.Component {
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
       if (data.id === obj.id) {
-        temp[i] = obj
+        temp[a] = obj
         isPresent = true
       }
     }

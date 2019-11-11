@@ -19,7 +19,7 @@ import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
-import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
@@ -468,7 +468,7 @@ class AddSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {(i + 1)} </strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
@@ -494,7 +494,7 @@ class AddSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {i + 1}</strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
@@ -611,7 +611,7 @@ class AddSurvey extends React.Component {
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
-          let tagIDs = []
+          // let tagIDs = []
           // for (let i = 0; i < this.props.tags.length; i++) {
           //   for (let j = 0; j < this.state.tagValue.length; j++) {
           //     if (this.props.tags[i].tag === this.state.tagValue[j]) {
@@ -844,13 +844,13 @@ class AddSurvey extends React.Component {
                       <div className='col-12'>
                         <ul className='nav nav-tabs'>
                           <li>
-                            <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onSurveyClick}>Survey </a>
+                            <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onSurveyClick}>Survey </a>
                           </li>
                           <li>
                             {
                             (surveyErrors.flag || surveyErrors.questionLengthFlag)
-                            ? <a>Targeting</a>
-                            : <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                            ? <a href='#/'>Targeting</a>
+                            : <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
                           }
                           </li>
                         </ul>

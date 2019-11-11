@@ -109,7 +109,9 @@ export function setWebViewUrl(url){
 }
 
 export function getVideoId (url) {
-  let i, r, rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+  /* eslint-disable */
+  let r, rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+  /* eslint-enable */
   r = url.match(rx)
   return r ? r[1] : false
 }

@@ -13,7 +13,7 @@ class ContentLeftSide extends React.Component {
         <br />
         <div className='row'>
           <div className='col-md-4 col-lg-4 col-sm-4' style={{height: '400px', lineHeight: '400px'}}>
-            <img className='col-md-12 col-lg-12 col-sm-12' style={{width: 'auto', height: 'auto', verticalAlign: 'baseline'}} src={this.props.initialState.mediaLink} />
+            <img alt='' className='col-md-12 col-lg-12 col-sm-12' style={{width: 'auto', height: 'auto', verticalAlign: 'baseline'}} src={this.props.initialState.mediaLink} />
           </div>
           <div className='col-md-8 col-lg-8 col-sm-8 '>
             <textarea className='addMenu' value={this.props.title} rows='3' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={() => this.props.handleTitleChange()} />

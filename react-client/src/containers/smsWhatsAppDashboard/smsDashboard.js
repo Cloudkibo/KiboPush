@@ -14,7 +14,6 @@ import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { Link } from 'react-router-dom'
 
 class Dashboard extends React.Component {
   constructor (props, context) {

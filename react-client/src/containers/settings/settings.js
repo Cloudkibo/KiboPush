@@ -18,7 +18,6 @@ import ResponseMethods from './responseMethods'
 import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
 import Configuration from './configuration'
-import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
@@ -561,7 +560,7 @@ class Settings extends React.Component {
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && !this.state.hideAPI &&
                       <li className='m-nav__item'>
                         {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                        <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                        <a href='#/' className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
                           <i className='m-nav__link-icon flaticon-share' />
                           <span className='m-nav__link-text'>API</span>
                         </a>
@@ -577,20 +576,20 @@ class Settings extends React.Component {
                       </li>
                     }
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
                         <span className='m-nav__link-text'>Change Password</span>
                       </a>
                     </li>
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-settings' />
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-share' />
                         <span className='m-nav__link-text'>NGP Integration</span>
                       </a>
@@ -598,7 +597,7 @@ class Settings extends React.Component {
                     }
                     {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-mark' />
                         <span className='m-nav__link-text'>User Permissions</span>
                       </a>
@@ -607,7 +606,7 @@ class Settings extends React.Component {
                     { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
                     <li className='m-nav__item'>
                       {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-list-2' />
                         <span className='m-nav__link-text'> Live Chat Response Methods</span>
                       </a>
@@ -624,21 +623,21 @@ class Settings extends React.Component {
                     }
                     { this.props.user && !this.props.user.facebookInfo && this.props.user.role === 'buyer' &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-facebook' />
                         <span className='m-nav__link-text'>Connect with Facebook</span>
                       </a>
                     </li>
                     }
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setUploadCustomerFile} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setUploadCustomerFile} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-cloud-upload' />
                         <span className='m-nav__link-text'>Upload Customer Information</span>
                       </a>
                     </li>
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
+                      <a href='#?' className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-cc-mastercard' />
                         <span className='m-nav__link-text'>Payment Methods</span>
                       </a>
@@ -646,7 +645,7 @@ class Settings extends React.Component {
                     }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-money' />
                         <span className='m-nav__link-text'>Billing</span>
                       </a>
@@ -654,7 +653,7 @@ class Settings extends React.Component {
                   }
                     <li className='m-nav__item'>
                       {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-link' />
                         <span className='m-nav__link-text'>Webhooks</span>
                       </a>
@@ -670,14 +669,14 @@ class Settings extends React.Component {
                     </li>
                     { this.props.user && this.props.user.role === 'buyer' &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-delete' />
                         <span className='m-nav__link-text'>Delete Information</span>
                       </a>
                     </li>
                     }
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-list' />
                         <span className='m-nav__link-text'>Whitelist Domains</span>
                       </a>

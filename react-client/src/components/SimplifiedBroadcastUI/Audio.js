@@ -14,7 +14,6 @@ import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
-import ReactPlayer from 'react-player'
 
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -141,7 +140,7 @@ class Audio extends React.Component {
               onChange={this.onFilesChange}
               onError={this.onFilesError}
               accepts={['audio/*']}
-              maxFileSize={this.props.module && this.props.module == 'whatsapp' ? 5000000 : 10000000}
+              maxFileSize={this.props.module && this.props.module === 'whatsapp' ? 5000000 : 10000000}
               minFileSize={0}
               clickable
             >

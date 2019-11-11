@@ -12,7 +12,6 @@ import { registerAction } from '../../utility/socketio'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from '../menu/viewScreen'
-import { RingLoader } from 'halogenium'
 import {getCurrentProduct} from '../../utility/utils'
 
 class Menu extends React.Component {
@@ -73,7 +72,7 @@ class Menu extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = 'KiboPush | Persistent Menu'
+    document.title = `${title} | Persistent Menu`
     var compProp = this.props
     registerAction({
       event: 'menu_updated',

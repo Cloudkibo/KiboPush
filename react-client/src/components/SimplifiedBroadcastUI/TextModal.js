@@ -169,13 +169,11 @@ class TextModal extends React.Component {
                 <div className='discussion' style={{ display: 'inline-block', marginTop: '100px' }} >
                   <div style={{ maxWidth: '100%', fontSize: '16px' }} className='bubble recipient'>{this.state.text}</div>
                   {
-                    this.state.buttons.map((button, index) => {
-                      if (button.visible) {
-                        return (
-                          <div className='bubble recipient' style={{ maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF' }}>{button.title}</div>
-                        )
-                      }
-                    })
+                    this.state.buttons.map((button, index) => (
+                      button.visible && (
+                        <div className='bubble recipient' style={{ maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF' }}>{button.title}</div>
+                      )
+                    ))
                   }
                 </div>
               </div>

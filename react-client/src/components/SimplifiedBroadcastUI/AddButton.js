@@ -179,7 +179,7 @@ class AddButton extends React.Component {
       <div>
         <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
         {
-            this.state.buttons.map((button, index) => {
+            this.state.buttons.map((button, index) => (
               button.visible && (
                   <Button
                     cardId={this.props.cardId}
@@ -202,7 +202,7 @@ class AddButton extends React.Component {
                     disabled={this.props.disabled}
                     />
                 )
-            })
+            ))
         }
         {
             (this.state.numOfCurrentButtons < this.props.buttonLimit) &&

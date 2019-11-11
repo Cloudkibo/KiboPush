@@ -140,7 +140,7 @@ class PageSubscribersWithTags extends React.Component {
   applyUserFilter (data, search) {
     return data.filter(x => (x.subscriber.firstName).toLowerCase().includes(search.toLowerCase()) || (x.subscriber.lastName).toLowerCase().includes(search.toLowerCase()))
   }
-
+/* eslint-disable */
   applyAssignedFilter (data, search) {
     return data.filter(x => {
         for (let i = 0; i < x.assignedTags.length; i++) {
@@ -172,6 +172,7 @@ class PageSubscribersWithTags extends React.Component {
         }
     })
   }
+/* eslint-enable */
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -262,7 +263,7 @@ class PageSubscribersWithTags extends React.Component {
                     <div style={{marginTop: '30px'}} className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {this.props.location.state.pageName} Subscribers
-                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersDataSorted[this.state.currentPageOwner] && this.state.pageSubscribersDataSorted[this.state.currentPageOwner].length} Subscribers</span>
+                        <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', marginLeft: '10px', display: 'inline', fontSize: '0.8em'}}>{this.state.pageSubscribersDataSorted[this.state.currentPageOwner] && this.state.pageSubscribersDataSorted[this.state.currentPageOwner].length} Subscribers</span>
 
                         <div style={{marginTop: '20px', width: '440px'}} className="panel-group" id="accordion">
                             <div className="panel panel-default">
@@ -278,8 +279,8 @@ class PageSubscribersWithTags extends React.Component {
 
                                         {
                                            this.state.pageOwners.length > 0 && Object.keys(this.state.pageSubscribersDataSorted).length > 0 ? this.state.pageOwners.map(pageOwner => {
-                                                 return (<p><a style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>:
-                                                            <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
+                                                 return (<p><a href='#/' style={{cursor: 'pointer', color: pageOwner._id === this.state.connectedUser ? 'green' : ''}} onClick={() => this.onPageOwnerSelect({target: {value: pageOwner._id}})}>{pageOwner.email}</a>:
+                                                            <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', marginLeft: '10px', display: 'inline'}}>
                                                                 {this.state.pageSubscribersDataSorted[pageOwner._id] && this.state.pageSubscribersDataSorted[pageOwner._id].length} subscribers
                                                             </span>
                                                         </p>)
@@ -287,7 +288,7 @@ class PageSubscribersWithTags extends React.Component {
                                         }
                                     </div>
                                     <p style={{marginTop: '20px', fontSize: '1em'}}>Total:
-                                        <span className="m-badge m-badge--brand m-badge--wide" style={{fontSize: '1em', marginBottom: '5px', display: 'inline', marginLeft: '10px', display: 'inline'}}>
+                                        <span className="m-badge m-badge--brand m-badge--wide" style={{fontSize: '1em', marginBottom: '5px', marginLeft: '10px', display: 'inline'}}>
                                             {this.state.totalSubscribers} subscribers
                                         </span>
                                     </p>

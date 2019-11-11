@@ -14,7 +14,7 @@ class AboveDescription extends React.Component {
         <textarea className='addMenu' value={this.props.title} rows='2' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
         <br />
         {this.props.initialState.mediaLink !== '' &&
-          <img style={{width: '300px', height: '300px', margin: '10px auto -5px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
+          <img alt='' style={{width: '300px', height: '300px', margin: '10px auto -5px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
         }
         <br />
         <textarea className='addMenu' value={this.props.description} rows='2' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />

@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
-import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 

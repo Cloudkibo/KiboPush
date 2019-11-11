@@ -160,7 +160,9 @@ class YoutubeVideoModal extends React.Component {
   validateYoutubeUrl() {
     let url = this.state.link
     if (url !== undefined || url !== '') {
+      /* eslint-disable */
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
+      /* eslint-enable */
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
         this.setState({ disabled: false, loading: true, fileSizeExceeded: false, edited: true }, () => {

@@ -10,7 +10,6 @@ import { createLandingPage, updateLandingPageData, editLandingPage } from '../..
 import AlertContainer from 'react-alert'
 import Header from './header'
 import Tabs from './tabs'
-import Preview from '../landingPages/preview'
 
 class CreateSponsoredMessage extends React.Component {
   constructor (props, context) {

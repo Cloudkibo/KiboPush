@@ -14,7 +14,6 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
 import Popover from 'react-simple-popover'
 import {
   loadUsersList,
@@ -47,7 +46,6 @@ import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import AutopostingDetails from './autopostingDetails'
 import auth from '../../utility/auth.service'
 
 class OperationalDashboard extends React.Component {
@@ -497,11 +495,11 @@ class OperationalDashboard extends React.Component {
                               <div>
                                 <label style={{color: '#716aca'}}>Actions:</label>
                                 <br />
-                                <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                <i className='la la-download' />&nbsp;<a href='#/' onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
                                 Download Data
                               </a>
                                 <br />
-                                <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                <i className='la la-envelope-o' />&nbsp;<a href='#/' onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
                                 Send Weekly Email
                               </a>
                                 <br />
@@ -599,7 +597,7 @@ class OperationalDashboard extends React.Component {
                                 {this.state.usersData.length < this.props.count &&
                                 <center>
                                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                  <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                  <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
                                 </center>
                                 }
                               </div>

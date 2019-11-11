@@ -109,7 +109,7 @@ class Billing extends React.Component {
                         <br />
                       </div>
                       }
-                      <a className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
+                      <a href='#/' className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
                         <u>Learn more about pricing</u>
                       </a>
                       {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')

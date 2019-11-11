@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadPagePermissions } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class PageUsers extends React.Component {
   constructor (props, context) {

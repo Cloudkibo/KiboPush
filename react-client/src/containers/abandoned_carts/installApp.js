@@ -38,7 +38,7 @@ class InstallApp extends React.Component {
   }
 
   verifyString (event) {
-    /* eslint-diable */
+    /* eslint-disable */
     let re = new RegExp('\\b(https?|ftp|file):\/\/[\\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\\-A-Za-z0-9+&@#\/%=~_|]')
     /* eslint-enable */
     if (re.test(this.state.pageUrl)) {

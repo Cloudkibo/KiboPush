@@ -9,8 +9,6 @@ import { bindActionCreators } from 'redux'
 import { requestMessengerCode, resetState, createCode, updateData, editCode } from '../../redux/actions/messengerCode.actions'
 import AlertContainer from 'react-alert'
 import Tabs from '../messengerCode/tabs'
-import { Link } from 'react-router-dom'
-
 
 class CreateURL extends React.Component {
   constructor (props, context) {

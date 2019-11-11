@@ -84,8 +84,8 @@ class AddCard extends React.Component {
         fileName: this.state.file ? this.state.file.fileName : '',
         type: this.state.file ? this.state.file.type : '',
         size: this.state.file ? this.state.file.size : ''
-      } 
-      if (this.state.title === '' || this.state.subtitle === '' || 
+      }
+      if (this.state.title === '' || this.state.subtitle === '' ||
         (this.props.onlyCard && !this.state.file)) {
           data.disabled = true
         } else {
@@ -101,7 +101,7 @@ class AddCard extends React.Component {
 
   handleTitleChange (e) {
     this.setState({title: e.target.value}, () => {
-      if (this.state.title === '' || this.state.subtitle === '' || 
+      if (this.state.title === '' || this.state.subtitle === '' ||
         (this.props.onlyCard && !this.state.file)) {
         this.updateStatus({disabled: true, title: this.state.title})
       } else {
@@ -152,10 +152,10 @@ class AddCard extends React.Component {
 
   render () {
     return (
-      <div> 
+      <div>
         <div style={{color: 'red'}}>{this.props.card.invalid ? this.props.errorMsg : ''}</div>
         <div className='ui-block' style={{transform: 'scale(0.95, 0.95)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '15px'}}>
-          {<div onClick={this.props.closeCard} style={{marginLeft: '98%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>}
+          {<div onClick={this.props.closeCard} style={{marginLeft: '98%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>}
           {/* <div>
             <h4 style={{textAlign: 'left'}}>{this.props.cardComponent ? 'Card ' : 'Element '} #{this.props.index+1}</h4>
           </div>

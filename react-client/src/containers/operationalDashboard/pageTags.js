@@ -38,59 +38,6 @@ class PageTags extends React.Component {
     this.loadedTags = false
   }
 
-  onTagNameSearch (event) {
-      this.setState({searchValue: event.target.value}, () => {
-          this.applyNecessaryFilters()
-      })
-  }
-
-  onFbFilter (event) {
-    this.setState({fbValue: event.target.value}, () => {
-        this.applyNecessaryFilters()
-    })
-  }
-
-  onKiboFilter (event) {
-    this.setState({kiboValue: event.target.value}, () => {
-        this.applyNecessaryFilters()
-    })
-  }
-
-  onDefaultFilter (event) {
-    this.setState({defaultValue: event.target.value}, () => {
-        this.applyNecessaryFilters()
-    })
-  }
-
-  applyNecessaryFilters() {
-      //debugger;
-      let filteredData = this.state.pageTags
-      let filter = false
-      if (this.state.selectedValue === 'incorrect') {
-        filteredData = this.state.incorrectRecords
-      }
-      if (this.state.fbValue !== '' && this.state.fbValue !== 'all') {
-        filteredData = this.applyFbFilter(filteredData, this.state.fbValue)
-        filter = true
-      }
-      if (this.state.kiboValue !== '' && this.state.kiboValue !== 'all') {
-        filteredData = this.applyKiboFilter(filteredData, this.state.kiboValue)
-        filter = true
-      }
-      if (this.state.defaultValue !== '' && this.state.defaultValue !== 'all') {
-        filteredData = this.applyDefaultFilter(filteredData, this.state.defaultValue)
-        filter = true
-      }
-      if (this.state.searchValue !== '') {
-        console.log(`applying search filter ${this.state.searchValue} ${JSON.stringify(filteredData)}`)
-        filteredData = this.applySearchFilter(filteredData, this.state.searchValue)
-        filter = true
-      }
-      console.log('after applying filters', filteredData)
-      this.setState({filteredData, filter, totalLength: filteredData.length})
-      this.displayData(0, filteredData)
-  }
-
   applySearchFilter(data, search) {
     return data.filter(x => (x.tagName).toLowerCase().includes(search.toLowerCase()))
   }
@@ -162,22 +109,6 @@ class PageTags extends React.Component {
       this.displayData(0, filteredData)
   }
 
-  applySearchFilter(data, search) {
-    return data.filter(x => x.tagName.includes(search))
-  }
-
-  applyFbFilter(data, fb) {
-      return data.filter(x => (''+x.facebook) === fb)
-  }
-
-  applyKiboFilter(data, kibo) {
-    return data.filter(x => (''+x.kibopush) === kibo)
-  }
-
-  applyDefaultFilter(data, def) {
-    return data.filter(x => (''+x.default) === def)
-  }
-
   onFilterChange (event) {
     this.setState({selectedValue: event.target.value}, () => {
         this.applyNecessaryFilters()
@@ -237,20 +168,21 @@ class PageTags extends React.Component {
                 }
             }
         })
-
+        /* eslint-disable */
         let fbPageTags = nextProps.pageTags.fbPageTags.map(fbPageTag => {
-            let kiboPageTag = nextProps.pageTags.kiboPageTags.find(x => {
-                return x.labelFbId === fbPageTag.id
-            })
-            if (!kiboPageTag) {
-                return {
-                    tagName: fbPageTag.name,
-                    default: fbPageTag.name.startsWith("_pageId") || fbPageTag.name === 'male' || fbPageTag.name === 'female',
-                    facebook: true,
-                    kibopush: false
-                }
-            }
+          let kiboPageTag = nextProps.pageTags.kiboPageTags.find(x => {
+              return x.labelFbId === fbPageTag.id
+          })
+          if (!kiboPageTag) {
+              return {
+                  tagName: fbPageTag.name,
+                  default: fbPageTag.name.startsWith("_pageId") || fbPageTag.name === 'male' || fbPageTag.name === 'female',
+                  facebook: true,
+                  kibopush: false
+              }
+          }
         })
+        /* eslint-enable */
         let pageTagsData = [...kiboPageTags, ...fbPageTags]
         pageTagsData = pageTagsData.filter(pageTag => !!pageTag)
         let incorrectRecords = pageTagsData.filter(pageTag => pageTag.facebook !== pageTag.kibopush)
@@ -294,7 +226,7 @@ class PageTags extends React.Component {
 
                 <h1 style={{marginBottom: '-30px'}}>
                     {this.props.location.state.pageName}
-                    <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', display: 'block', marginLeft: '10px', display: 'inline', fontSize: '0.4em'}}>{this.state.filteredData.length} Tags</span>
+                    <span className="m-badge m-badge--brand m-badge--wide" style={{marginBottom: '5px', marginLeft: '10px', display: 'inline', fontSize: '0.4em'}}>{this.state.filteredData.length} Tags</span>
                 </h1>
 
 

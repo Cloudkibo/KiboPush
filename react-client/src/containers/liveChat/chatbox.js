@@ -139,11 +139,12 @@ class ChatBox extends React.Component {
   isUserSessionValid(chats) {
     var userMessages = []
     var sessionValid = false
-    chats.map((msg, index) => {
+    for (let a = 0; a < chats.length; a++) {
+      let msg = chats[a]
       if (msg.format === 'facebook') {
         userMessages.push(msg)
       }
-    })
+    }
     var lastMessage = userMessages[userMessages.length - 1]
     if (lastMessage) {
       sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
@@ -692,7 +693,7 @@ class ChatBox extends React.Component {
           <div style={{ width: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
             <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
               <a href={cards[i].image_url} target='_blank' rel='noopener noreferrer'>
-                <img style={{ maxWidth: 180, borderRadius: '5px' }} src={cards[i].image_url} />
+                <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={cards[i].image_url} />
               </a>
             </div>
             <div style={{ marginTop: '10px', padding: '5px' }}>
@@ -947,7 +948,7 @@ class ChatBox extends React.Component {
                   ? <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
                     <div style={{ display: 'block', fontSize: '14px' }}>
                       <div style={{ height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-                      <a role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                      <a href='#/' role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
                         <div style={{ backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
                           <span style={{ left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }}>Record</span>
                         </div>
@@ -957,7 +958,7 @@ class ChatBox extends React.Component {
                   : <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
                     <div style={{ display: 'block', fontSize: '14px' }}>
                       <div style={{ height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-                      <a role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                      <a href='#/' role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
                         <div style={{ borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
                           <span style={{ height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }} />
                         </div>
@@ -1140,6 +1141,7 @@ class ChatBox extends React.Component {
                                                       : att.type === 'image'
                                                         ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                           <img
+                                                            alt=''
                                                             src={att.payload.url}
                                                             style={{ maxWidth: '150px', maxHeight: '85px', marginTop: '10px' }}
                                                           />
@@ -1150,7 +1152,7 @@ class ChatBox extends React.Component {
                                                               <tr>
                                                                 <td>
                                                                   <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
-                                                                    <img style={{ width: '200px' }} src={this.geturl(att.payload)} />
+                                                                    <img alt='' style={{ width: '200px' }} src={this.geturl(att.payload)} />
                                                                   </a>
                                                                 </td>
                                                               </tr>
@@ -1206,7 +1208,7 @@ class ChatBox extends React.Component {
                                                               <div style={{ width: 45, height: 45 }}>
                                                                 {
                                                                   msg.url_meta.image &&
-                                                                  <img src={msg.url_meta.image.url} style={{ width: 45, height: 45 }} />
+                                                                  <img alt='' src={msg.url_meta.image.url} style={{ width: 45, height: 45 }} />
                                                                 }
                                                               </div>
                                                             </td>
@@ -1336,7 +1338,7 @@ class ChatBox extends React.Component {
                                                           {
                                                             msg.payload.image_url &&
                                                             <a href={msg.payload.image_url} target='_blank' rel='noopener noreferrer'>
-                                                              <img style={{ maxWidth: 180, borderRadius: '5px' }} src={msg.payload.image_url} />
+                                                              <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={msg.payload.image_url} />
                                                             </a>
                                                           }
                                                         </div>
@@ -1379,7 +1381,7 @@ class ChatBox extends React.Component {
                                                                   {
                                                                     card.image_url &&
                                                                     <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
-                                                                      <img style={{ maxWidth: 180, borderRadius: '5px' }} src={card.image_url} />
+                                                                      <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={card.image_url} />
                                                                     </a>
                                                                   }
                                                                 </div>
@@ -1394,7 +1396,7 @@ class ChatBox extends React.Component {
                                                                   card.buttons && card.buttons.length > 0 &&
                                                                   card.buttons.map(b => (
                                                                     <a href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
-                                                                      {b.type == 'element_share' ? 'Share' : b.title}
+                                                                      {b.type === 'element_share' ? 'Share' : b.title}
                                                                     </a>
                                                                   ))
                                                                 }
@@ -1447,7 +1449,7 @@ class ChatBox extends React.Component {
                                                                         {
                                                                           list.image_url &&
                                                                           <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%' }} >
-                                                                            <img src={list.image_url} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                                                            <img alt='' src={list.image_url} style={{ maxWidth: '100%', maxHeight: '100%' }} />
                                                                           </div>
                                                                         }
                                                                       </div>
@@ -1488,6 +1490,7 @@ class ChatBox extends React.Component {
                                                             {this.getRepliedByMsg(msg)}
                                                           </div>
                                                           <img
+                                                            alt=''
                                                             src={msg.payload.fileurl.url}
                                                             style={{ maxWidth: '150px', maxHeight: '85px' }}
                                                           />
@@ -1505,6 +1508,7 @@ class ChatBox extends React.Component {
                                                               {this.getRepliedByMsg(msg)}
                                                             </div>
                                                             <img
+                                                              alt=''
                                                               src={msg.payload.fileurl}
                                                               style={{ maxWidth: '150px', maxHeight: '85px' }}
                                                             />
@@ -1522,6 +1526,7 @@ class ChatBox extends React.Component {
                                                                 {this.getRepliedByMsg(msg)}
                                                               </div>
                                                               <img
+                                                                alt=''
                                                                 src={msg.payload.fileurl}
                                                                 style={{ maxWidth: '150px', maxHeight: '85px' }}
                                                               />
@@ -1539,6 +1544,7 @@ class ChatBox extends React.Component {
                                                                   {this.getRepliedByMsg(msg)}
                                                                 </div>
                                                                 <img
+                                                                  alt=''
                                                                   src={msg.payload.fileurl}
                                                                   style={{ maxWidth: '150px', maxHeight: '85px' }}
                                                                 />
@@ -1651,7 +1657,7 @@ class ChatBox extends React.Component {
                                                                                         <div style={{ width: 45, height: 45 }}>
                                                                                           {
                                                                                             msg.url_meta.image &&
-                                                                                            <img src={msg.url_meta.image.url} style={{ width: 45, height: 45 }} />
+                                                                                            <img alt='' src={msg.url_meta.image.url} style={{ width: 45, height: 45 }} />
                                                                                           }
                                                                                         </div>
                                                                                       </td>
@@ -1745,7 +1751,7 @@ class ChatBox extends React.Component {
                                                                             }}
                                                                             className='btn btn-outline-primary btn-block'
                                                                           >
-                                                                            {b.type == 'element_share' ? 'Share' : b.title}
+                                                                            {b.type === 'element_share' ? 'Share' : b.title}
                                                                           </a>
                                                                         ))
                                                                       }
@@ -1781,7 +1787,6 @@ class ChatBox extends React.Component {
                               showSkinTones={false}
                               custom={[]}
                               autoFocus={false}
-                              showPreview={false}
                               onClick={(emoji, event) => this.setEmoji(emoji)}
                             />
                           </div>
@@ -1810,7 +1815,7 @@ class ChatBox extends React.Component {
                           <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                         </div>
                         <div className='m-messenger__form-tools'>
-                          <a className='m-messenger__form-attachment'>
+                          <a href='#/' className='m-messenger__form-attachment'>
                             <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
                           </a>
                         </div>
@@ -2001,7 +2006,7 @@ class ChatBox extends React.Component {
                                         <div style={{ width: 45, height: 45 }}>
                                           {
                                             this.state.urlmeta.image &&
-                                            <img src={this.state.urlmeta.image.url} style={{ width: 45, height: 45 }} />
+                                            <img alt='' src={this.state.urlmeta.image.url} style={{ width: 45, height: 45 }} />
                                           }
                                         </div>
                                       </td>

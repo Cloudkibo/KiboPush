@@ -155,7 +155,7 @@ class MediaModal extends React.Component {
                   {
                     this.state.imgSrc &&
                     <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px' }}>
-                      <img src={this.state.imgSrc} style={{ minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px' }} />
+                      <img alt='' src={this.state.imgSrc} style={{ minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px' }} />
                     </div>
                   }
                   {

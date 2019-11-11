@@ -1325,9 +1325,6 @@ class Subscriber extends React.Component {
       overflow: 'inherit',
       color: '#818a91'
     }
-    var style_block = {
-      display: 'block !important'
-    }
 
     return (
       <div>
@@ -1892,13 +1889,13 @@ class Subscriber extends React.Component {
                                     ? <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-check-circle' />
                                       subscribed
-                                    <a onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
+                                    <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
                                     </div>
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
                                     {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
-                                        <a onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
+                                        <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
                                       }
                                     </div>
                                 }
@@ -1960,7 +1957,7 @@ class Subscriber extends React.Component {
                             <br />
                             <div className='row'>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>User Tags:</span>
-                              <a id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
+                              <a href='#/' id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
                             </div>
                             {
                               this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
@@ -2013,16 +2010,16 @@ class Subscriber extends React.Component {
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>Custom Fields: </span>
                               {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
                                 ? <span>
-                                  <a data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
+                                  <a href='#/' data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
                                     onClick={this.showToggle}>
                                     {this.state.show
                                       ? <span>Hide <i style={{ fontSize: '12px' }} className='la la-angle-up ' /></span>
                                       : <span>Show <i style={{ fontSize: '12px' }} className='la la-angle-down ' /></span>
                                     }
                                   </a>
-                                  <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</a>
+                                  <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</a>
                                 </span>
-                                : <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px' }}><i className='la la-gear' /> Manage Fields</a>
+                                : <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px' }}><i className='la la-gear' /> Manage Fields</a>
                               }
                             </div>
                             <div className='row'>
@@ -2073,7 +2070,7 @@ class Subscriber extends React.Component {
                             {hostname.includes('kiboengage.cloudkibo.com') &&
                               <div className='row'>
                                 <span style={{ fontWeight: 600, marginLeft: '15px' }}>Subscribed to Sequences:</span>
-                                <a id='subSeqInd' onClick={this.toggleSeqInd} style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px' }}> Subscribe</a>
+                                <a href='#/' id='subSeqInd' onClick={this.toggleSeqInd} style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px' }}> Subscribe</a>
                               </div>
                             }
                             {hostname.includes('kiboengage.cloudkibo.com') &&

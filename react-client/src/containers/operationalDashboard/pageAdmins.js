@@ -67,18 +67,17 @@ class PageAdmins extends React.Component {
   applyEmailFilter (data, search) {
     return data.filter(x => x.email && (x.email).toLowerCase().includes(search.toLowerCase()))
   }
-
+/* eslint-disable */
   applyKiboFilter (data, search) {
     return data.filter(x => {
-        if (search === 'onKiboPush') {
-            return !!x.email
-        } else if (search === 'offKiboPush') {
-            return !x.email
-        } else {
-          return
-        }
+      if (search === 'onKiboPush') {
+          return !!x.email
+      } else if (search === 'offKiboPush') {
+          return !x.email
+      }
     })
   }
+/* eslint-enable */
 
   applyNecessaryFilters() {
     //debugger;

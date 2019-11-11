@@ -10,8 +10,6 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import auth from '../../utility/auth.service'
-import { autoScroll } from '@interactjs/interact'
 
 class CreateBot extends React.Component {
   constructor (props) {
@@ -82,7 +80,7 @@ class CreateBot extends React.Component {
             <div className='panel-heading clearfix'>
               <strong className='panel-title'>Question {i + 1}</strong>
               <div role='toolbar' className='pull-right btn-toolbar'>
-                <a className='remove'
+                <a href='#/' className='remove'
                   onClick={this.removeClick.bind(this, i)}>
                   <span className='fa fa-times' />
                 </a>
