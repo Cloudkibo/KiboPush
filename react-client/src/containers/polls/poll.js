@@ -625,14 +625,6 @@ class Poll extends React.Component {
                                           onClick={() => this.sendPoll(poll)}>
                                           Send
                                   </button>
-<<<<<<< HEAD
-                                      </span>
-                                      : <span style={{ width: '150px' }}>
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{ float: 'left', margin: 2 }}
-                                          onClick={() => this.sendPoll(poll)}>
-                                          Send
-=======
                                 </span>
                                 : <span style={{width: '150px'}}>
                                   <button className='btn btn-primary btn-sm'
@@ -640,7 +632,6 @@ class Poll extends React.Component {
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.savePoll(poll)}>
                                     Send
->>>>>>> fece8e1afb8bde4400bd51b40fcf64ed90620f6f
                                   </button>
                                       </span>
                                     }

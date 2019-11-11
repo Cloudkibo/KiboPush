@@ -7,7 +7,7 @@ import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../redux/actions/templates.actions'
 
-import Image from './PreviewComponents/Image'
+// import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
 import Text from './PreviewComponents/Text'
@@ -166,6 +166,7 @@ class GenericMessage extends React.Component {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
       this.setState({isShowingAddComponentModal: true, componentType, editData})
+      this.refs.singleModal.click()
     }
   }
 

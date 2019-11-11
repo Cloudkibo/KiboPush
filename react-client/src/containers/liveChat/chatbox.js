@@ -847,12 +847,11 @@ class ChatBox extends React.Component {
                   }}>
                     Yes
                   </button>
-                  </div>
-                  <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' data-dismiss="modal">
-                      No
+                </div>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={this.closeDialog}>
+                    No
                   </button>
-                  </div>
                 </div>
               </div>
                 </div>
@@ -860,79 +859,116 @@ class ChatBox extends React.Component {
             </PopoverBody>
           </Popover>
 
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="voiceRecording" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Voice Recordings
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                {/*  <div ref='app'>
-                <h3>Audio Recorder</h3>
-                <MediaCapturer
-                constraints={{ audio: true }}
-                mimeType='audio/webm'
-                timeSlice={10}
-                onStart={this.handleStart}
-                onStop={this.onStop}
-                onError={this.handleError}
-                render={({ start, stop, pause, resume }) =>
-                <div>
-                <button onClick={start}>Start</button>
-                <button onClick={stop}>Stop</button>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="pendingResponse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    {this.state.pendingResponseValue ? 'Add ' : 'Remove '}Pending Response
+  									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+  											</span>
+                  </button>
                 </div>
-                } />
-                </div> */}
-                <div>
-                  <ReactMic style={{ width: '450px' }}
-                    width='450'
-                    record={this.state.record}
-                    className='sound-wave'
-                    onStop={this.onStop}
-                    strokeColor='#000000'
-                    mimeType='audio.mp3' />
-                </div>
-                <br />
-                {this.state.buttonState === 'start'
-                  ? <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
-                    <div style={{ display: 'block', fontSize: '14px' }}>
-                      <div style={{ height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-                      <a href='#/' role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
-                        <div style={{ backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                          <span style={{ left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }}>Record</span>
-                        </div>
-                      </a>
+                <div style={{ color: 'black' }} className="modal-body">
+                  <p>{this.state.pendingResponseValue ? 'Are you sure you want to mark this session as pending response?' : 'Are you sure you want to remove this session as pending response?'}</p>
+                  <div style={{ width: '100%', textAlign: 'center' }}>
+                    <div style={{ display: 'inline-block', padding: '5px' }}>
+                      <button className='btn btn-primary' onClick={(e) => {
+                        this.props.removePending(this.props.currentSession, this.state.pendingResponseValue)
+                        this.closeDialogPending()
+                      }}
+                        data-dismiss='modal'>
+                        Yes
+                    </button>
+                    </div>
+                    <div style={{ display: 'inline-block', padding: '5px' }}>
+                      <button className='btn btn-primary' data-dismiss='modal'>
+                        No
+                    </button>
                     </div>
                   </div>
-                  : <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
-                    <div style={{ display: 'block', fontSize: '14px' }}>
-                      <div style={{ height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-                      <a href='#/' role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
-                        <div style={{ borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                          <span style={{ height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }} />
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                }
+                </div>
               </div>
             </div>
           </div>
-        </div>
+
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="voiceRecording" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Voice Recordings
+  									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+  											</span>
+                  </button>
+                </div>
+                <div style={{ color: 'black' }} className="modal-body">
+                  {/*  <div ref='app'>
+                  <h3>Audio Recorder</h3>
+                  <MediaCapturer
+                  constraints={{ audio: true }}
+                  mimeType='audio/webm'
+                  timeSlice={10}
+                  onStart={this.handleStart}
+                  onStop={this.onStop}
+                  onError={this.handleError}
+                  render={({ start, stop, pause, resume }) =>
+                  <div>
+                  <button onClick={start}>Start</button>
+                  <button onClick={stop}>Stop</button>
+                  </div>
+                  } />
+                  </div> */}
+                  <div>
+                    <ReactMic style={{ width: '450px' }}
+                      width='450'
+                      record={this.state.record}
+                      className='sound-wave'
+                      onStop={this.onStop}
+                      strokeColor='#000000'
+                      mimeType='audio.mp3' />
+                  </div>
+                  <br />
+                  {this.state.buttonState === 'start'
+                    ? <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
+                      <div style={{ display: 'block', fontSize: '14px' }}>
+                        <div style={{ height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
+                        <a href='#/' role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                          <div style={{ backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                            <span style={{ left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }}>Record</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    : <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
+                      <div style={{ display: 'block', fontSize: '14px' }}>
+                        <div style={{ height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
+                        <a href='#/' role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                          <div style={{ borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                            <span style={{ height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }} />
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <ReactTooltip
           place='bottom'
           type='dark'
           effect='solid'
         />
-        <div style={{ float: 'left', clear: 'both' }}
+        <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
           /*
@@ -1007,10 +1043,10 @@ class ChatBox extends React.Component {
           </div>
         </Popover>
       } */
-        }
+    }
         <div className='m-portlet m-portlet--mobile'>
-          <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2' }}>
-            <button style={{ backgroundColor: 'white' }} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
+          <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
+            <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
             {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
@@ -1033,33 +1069,33 @@ class ChatBox extends React.Component {
               </div>
             }
           </div>
-          <div style={{ padding: '2.2rem 0rem 2.2rem 2.2rem' }} className='m-portlet__body'>
+          <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                  <div style={{ height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom' }} className='m-messenger__messages'>
-                    <div id='chat-container' ref='chatScroll' style={{ position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr' }}>
-                      <div style={{ position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto' }} >
+                  <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                    <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                      <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                         {
                           (this.props.chatCount > this.props.userChat.length) &&
-                          <p style={{ textAlign: 'center' }}>Loading...</p>
+                          <p style={{textAlign: 'center'}}>Loading...</p>
                         }
                         {
-                          this.props.userChat.map((msg, index) => (
-                            msg.format === 'facebook'
-                              ? <div key={index} style={{ marginLeft: 0, marginRight: 0, display: 'block', clear: 'both' }} className='row'>
+                            this.props.userChat.map((msg, index) => (
+                              msg.format === 'facebook'
+                              ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                                 <Element name={msg._id}>
                                   {
                                     index === 0
-                                      ? <div className='m-messenger__datetime'>
-                                        {displayDate(msg.datetime)}
-                                      </div>
-                                      : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
-                                      <div className='m-messenger__datetime'>
-                                        {displayDate(msg.datetime)}
-                                      </div>
+                                    ? <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                    : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                    <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
                                   }
-                                  <div style={{ minWidth: '200px', maxWidth: '200px' }} key={msg._id} className='m-messenger__message m-messenger__message--in'>
+                                  <div style={{minWidth: '200px', maxWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
                                     <div className='m-messenger__message-pic'>
                                       <img src={this.props.currentSession.profilePic} alt='' />
                                     </div>
@@ -1067,70 +1103,124 @@ class ChatBox extends React.Component {
                                       <div className='m-messenger__message-arrow' />
                                       {
                                         msg.payload.attachments && !msg.url_meta
-                                          ? (
-                                            <div className='m-messenger__message-content'>
-                                              <div className='m-messenger__message-username'>
-                                                {this.props.currentSession.firstName} shared
+                                        ? (
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.props.currentSession.firstName} shared
                                             </div>
-                                              {
-                                                msg.payload.attachments.map((att, index) => (
-                                                  att.type === 'video'
-                                                    ? <div key={index}>
-                                                      <ReactPlayer
-                                                        url={att.payload.url}
-                                                        controls
-                                                        width='100%'
-                                                        height='140px'
-                                                        onPlay={this.onTestURLVideo(att.payload.url)}
-                                                      />
-                                                    </div>
-                                                    : att.type === 'audio'
-                                                      ? <div key={index}>
-                                                        <ReactPlayer
-                                                          url={att.payload.url}
-                                                          controls
-                                                          width='230px'
-                                                          height='60px'
-                                                          onPlay={this.onTestURLAudio(att.payload.url)}
-                                                        />
-                                                      </div>
-                                                      : att.type === 'image'
-                                                        ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
-                                                          <img
-                                                            alt=''
-                                                            src={att.payload.url}
-                                                            style={{ maxWidth: '150px', maxHeight: '85px', marginTop: '10px' }}
-                                                          />
+                                            {
+                                              msg.payload.attachments.map((att, index) => (
+                                                att.type === 'video'
+                                                ? <div key={index}>
+                                                  <ReactPlayer
+                                                    url={att.payload.url}
+                                                    controls
+                                                    width='100%'
+                                                    height='140px'
+                                                    onPlay={this.onTestURLVideo(att.payload.url)}
+                                                  />
+                                                </div>
+                                                : att.type === 'audio'
+                                                ? <div key={index}>
+                                                  <ReactPlayer
+                                                    url={att.payload.url}
+                                                    controls
+                                                    width='230px'
+                                                    height='60px'
+                                                    onPlay={this.onTestURLAudio(att.payload.url)}
+                                                  />
+                                                </div>
+                                                : att.type === 'image'
+                                                ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
+                                                  <img
+                                                    alt=''
+                                                    src={att.payload.url}
+                                                    style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+                                                  />
+                                                </a>
+                                                : att.type === 'location'
+                                                ? <table key={index} style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
+                                                  <tbody>
+                                                    <tr>
+                                                      <td>
+                                                        <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
+                                                          <img alt='' style={{width: '200px'}} src={this.geturl(att.payload)} />
                                                         </a>
-                                                        : att.type === 'location'
-                                                          ? <table key={index} style={{ border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px' }}>
-                                                            <tbody>
-                                                              <tr>
-                                                                <td>
-                                                                  <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
-                                                                    <img alt='' style={{ width: '200px' }} src={this.geturl(att.payload)} />
-                                                                  </a>
-                                                                </td>
-                                                              </tr>
-                                                              <tr>
-                                                                <td>
-                                                                  <p style={{ fontWeight: 'bold' }}> {att.title} </p>
-                                                                </td>
-                                                              </tr>
-                                                            </tbody>
-                                                          </table>
-                                                          : att.type === 'file' &&
-                                                          <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
-                                                            <h6 style={{ marginTop: '10px' }}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                                      </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>
+                                                        <p style={{fontWeight: 'bold'}}> {att.title} </p>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                                : att.type === 'file' &&
+                                                <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
+                                                  <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                                </a>
+                                              ))
+                                            }
+                                          </div>
+                                        )
+                                        : msg.url_meta
+                                        ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.props.currentSession.firstName} shared a link
+                                          </div>
+                                          <div style={{clear: 'both', display: 'block'}}>
+                                            <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                              <table style={{maxWidth: '175px'}}>
+                                                {
+                                                  msg.url_meta.type && msg.url_meta.type === 'video'
+                                                  ? <tbody>
+                                                    <tr>
+                                                      <td style={{width: '30%'}} colspan='2'>
+                                                        <ReactPlayer
+                                                          url={msg.url_meta.url}
+                                                          controls
+                                                          width='100%'
+                                                          height='100px'
+                                                        />
+                                                      </td>
+                                                      <td style={{width: '70%'}}>
+                                                        <div>
+                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
-                                                ))
-                                              }
+                                                          <br />
+                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        </div>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                  : <tbody>
+                                                    <tr>
+                                                      <td>
+                                                        <div style={{width: 45, height: 45}}>
+                                                          {
+                                                            msg.url_meta.image &&
+                                                            <img alt='' src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                          }
+                                                        </div>
+                                                      </td>
+                                                      <td>
+                                                        <div>
+                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                          </a>
+                                                          <br />
+                                                          {
+                                                            msg.url_meta.description &&
+                                                            <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                          }
+                                                        </div>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                }
+                                              </table>
                                             </div>
-                                          )
-                                          : msg.url_meta
-                                            ? <div className='m-messenger__message-content'>
-                                              <div className='m-messenger__message-username'>
-                                                {this.props.currentSession.firstName} shared a link
                                           </div>
                                         </div>
                                         : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
@@ -1149,167 +1239,221 @@ class ChatBox extends React.Component {
                                           <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                             {msg.payload.text}
                                           </div>
-                                                <div style={{ wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px' }} className='m-messenger__message-text'>
-                                                  {msg.payload.text}
-                                                </div>
-                                              </div>
+                                        </div>
                                       }
                                     </div>
                                   </div>
                                 </Element>
                               </div>
-                              : <div key={index} style={{ marginLeft: 0, marginRight: 0, display: 'block', clear: 'both' }} className='row'>
+                              : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                                 <Element name={msg._id}>
                                   {
                                     index === 0
-                                      ? <div className='m-messenger__datetime'>
-                                        {displayDate(msg.datetime)}
-                                      </div>
-                                      : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
-                                      <div className='m-messenger__datetime'>
-                                        {displayDate(msg.datetime)}
-                                      </div>
+                                    ? <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                    : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                    <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
                                   }
-                                  <div style={{ minWidth: '200px' }} key={msg._id} className='m-messenger__message m-messenger__message--out'>
+                                  <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
                                     <div className='m-messenger__message-body'>
                                       <div className='m-messenger__message-arrow' />
                                       {
                                         msg.payload.componentType &&
                                         (msg.payload.componentType === 'video'
-                                          ? <div>
-                                            <div className='m-messenger__message-content'>
-                                              <div className='m-messenger__message-username'>
-                                                {this.getRepliedByMsg(msg)}
-                                              </div>
-                                              <ReactPlayer
-                                                url={msg.payload.fileurl.url}
-                                                controls
-                                                width='100%'
-                                                height='140px'
-                                                onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
-                                              />
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
                                             </div>
-                                            {index === this.props.userChat.length - 1 && msg.seen &&
-                                              <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                              </div>
-                                            }
+                                            <ReactPlayer
+                                              url={msg.payload.fileurl.url}
+                                              controls
+                                              width='100%'
+                                              height='140px'
+                                              onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+                                            />
                                           </div>
-                                          : msg.payload.componentType === 'audio'
-                                            ? <div>
-                                              <div className='m-messenger__message-content'>
-                                                <div className='m-messenger__message-username'>
-                                                  {this.getRepliedByMsg(msg)}
-                                                </div>
-                                                <ReactPlayer
-                                                  url={msg.payload.fileurl.url}
-                                                  controls
-                                                  width='230px'
-                                                  height='60px'
-                                                  onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
-                                                />
-                                              </div>
-                                              {index === this.props.userChat.length - 1 && msg.seen &&
-                                                <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                  <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                </div>
-                                              }
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
                                             </div>
-                                            : msg.payload.componentType === 'file'
-                                              ? <div>
-                                                <div className='m-messenger__message-content'>
-                                                  <div className='m-messenger__message-username'>
-                                                    {this.getRepliedByMsg(msg)}
-                                                  </div>
-                                                  <a download={msg.payload.fileName} target='_blank' rel='noopener noreferrer' href={msg.payload.fileurl.url} >
-                                                    <h6 style={{ color: 'white' }}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
-                                                  </a>
-                                                </div>
-                                                {index === this.props.userChat.length - 1 && msg.seen &&
-                                                  <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                    <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                  </div>
-                                                }
-                                              </div>
-                                              : msg.payload.componentType === 'card'
-                                                ? <div>
-                                                  <div className='m-messenger__message-content'>
-                                                    <div className='m-messenger__message-username'>
-                                                      {this.getRepliedByMsg(msg)}
-                                                    </div>
-                                                    <div>
-                                                      <div style={{ maxWidth: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
-                                                        <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
-                                                          {
-                                                            msg.payload.image_url &&
-                                                            <a href={msg.payload.image_url} target='_blank' rel='noopener noreferrer'>
-                                                              <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={msg.payload.image_url} />
-                                                            </a>
-                                                          }
-                                                        </div>
-                                                        <div style={{ marginTop: '10px', padding: '5px' }}>
-                                                          <div style={{ textAlign: 'left', fontWeight: 'bold' }}>{msg.payload.title}</div>
-                                                          {
-                                                            msg.payload.subtitle &&
-                                                            <div style={{ textAlign: 'left', color: '#ccc' }}>{msg.payload.subtitle}</div>
-                                                          }
-                                                        </div>
-                                                        {
-                                                          msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                                          msg.payload.buttons.map(b => (
-                                                            <a href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
-                                                              {b.type === 'element_share' ? 'Share' : b.title}
-                                                            </a>
-                                                          ))
-                                                        }
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                  {index === this.props.userChat.length - 1 && msg.seen &&
-                                                    <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                      <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                    </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'audio'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <ReactPlayer
+                                              url={msg.payload.fileurl.url}
+                                              controls
+                                              width='230px'
+                                              height='60px'
+                                              onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'file'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <a download={msg.payload.fileName} target='_blank' rel='noopener noreferrer' href={msg.payload.fileurl.url} >
+                                              <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
+                                            </a>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'card'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div>
+                                              <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                                  {
+                                                    msg.payload.image_url &&
+                                                    <a href={msg.payload.image_url} target='_blank' rel='noopener noreferrer'>
+                                                      <img alt='' style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
+                                                    </a>
                                                   }
                                                 </div>
-                                                : msg.payload.componentType === 'gallery'
-                                                  ? <div>
-                                                    <div style={{ width: '250px' }} className='m-messenger__message-content'>
-                                                      <div className='m-messenger__message-username'>
-                                                        {this.getRepliedByMsg(msg)}
-                                                      </div>
-                                                      <Slider ref={(c) => { this.slider = c }} {...settings}>
+                                                <div style={{marginTop: '10px', padding: '5px'}}>
+                                                  <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
+                                                  {
+                                                    msg.payload.subtitle &&
+                                                    <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.subtitle}</div>
+                                                  }
+                                                </div>
+                                                {
+                                                  msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                                  msg.payload.buttons.map(b => (
+                                                    <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                      {b.type === 'element_share' ? 'Share' : b.title}
+                                                    </a>
+                                                  ))
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'gallery'
+                                        ? <div>
+                                          <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <Slider ref={(c) => { this.slider = c }} {...settings}>
+                                              {
+                                                msg.payload.cards.map((card, i) => (
+                                                  <div key={i}>
+                                                    <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                      <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                                         {
-                                                          msg.payload.cards.map((card, i) => (
-                                                            <div key={i}>
-                                                              <div style={{ maxWidth: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
-                                                                <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
-                                                                  {
-                                                                    card.image_url &&
-                                                                    <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
-                                                                      <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={card.image_url} />
-                                                                    </a>
-                                                                  }
-                                                                </div>
-                                                                <div style={{ marginTop: '10px', padding: '5px' }}>
-                                                                  <div style={{ textAlign: 'left', fontWeight: 'bold' }}>{card.title}</div>
-                                                                  {
-                                                                    card.subtitle &&
-                                                                    <div style={{ textAlign: 'left', color: '#ccc' }}>{card.subtitle}</div>
-                                                                  }
-                                                                </div>
-                                                                {
-                                                                  card.buttons && card.buttons.length > 0 &&
-                                                                  card.buttons.map(b => (
-                                                                    <a href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
-                                                                      {b.type === 'element_share' ? 'Share' : b.title}
-                                                                    </a>
-                                                                  ))
-                                                                }
+                                                          card.image_url &&
+                                                          <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
+                                                            <img alt='' style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
+                                                          </a>
+                                                        }
+                                                      </div>
+                                                      <div style={{marginTop: '10px', padding: '5px'}}>
+                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
+                                                        {
+                                                          card.subtitle &&
+                                                          <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                        }
+                                                      </div>
+                                                      {
+                                                        card.buttons && card.buttons.length > 0 &&
+                                                        card.buttons.map(b => (
+                                                          <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                            {b.type === 'element_share' ? 'Share' : b.title}
+                                                          </a>
+                                                        ))
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                ))
+                                              }
+                                            </Slider>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'list'
+                                        ? <div>
+                                          <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px'}} >
+                                              {
+                                                msg.payload.elements.map((list, index) => {
+                                                  let largeStyle = {
+                                                    border: '1px solid #ccc'
+                                                  }
+                                                  let isLarge = (msg.payload.top_element_style === 'large' && index === 0)
+                                                  if (isLarge) {
+                                                    largeStyle = {
+                                                      backgroundImage: list.image_url && `url(${list.image_url})`,
+                                                      backgroundSize: '100%',
+                                                      backgroundRepeat: 'no-repeat',
+                                                      border: '1px solid #ccc'
+                                                    }
+                                                  }
+                                                  return (
+                                                    <div style={largeStyle}>
+                                                      <div className='row' style={{padding: '10px'}}>
+                                                        <div className={isLarge ? 'col-12' : 'col-6'} style={{minHeight: '75px'}}>
+                                                          <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px'}}>{list.title}</h6>
+                                                          {
+                                                            list.subtitle &&
+                                                            <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px'}}>{list.subtitle}</p>
+                                                          }
+                                                        </div>
+                                                        {
+                                                          !isLarge &&
+                                                          <div className='col-6'>
+                                                            {
+                                                              list.image_url &&
+                                                              <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
+                                                                <img alt='' src={list.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
                                                               </div>
+                                                            }
+                                                          </div>
+                                                        }
+                                                        {
+                                                          list.buttons && list.buttons.map(button => (
+                                                            <div className='ui-block' style={{border: '1px solid rgb(7, 130, 255)', borderRadius: '5px', minHeight: '50%', minWidth: '25%', marginLeft: '10%', marginTop: '-10px'}} >
+                                                              <h5 style={{color: '#0782FF', fontSize: '12px'}}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
                                                             </div>
                                                           ))
                                                         }
-                                                      </Slider>
+                                                      </div>
                                                     </div>
                                                   )
                                                 })
@@ -1338,6 +1482,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl.url}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                               />
@@ -1355,6 +1500,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1372,6 +1518,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1389,6 +1536,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1451,148 +1599,69 @@ class ChatBox extends React.Component {
                                                     {typeof b.title === 'string' &&
                                                       b.title
                                                     }
-                                                  </div>
-                                                  : msg.payload.componentType === 'list'
-                                                    ? <div>
-                                                      <div style={{ width: '250px' }} className='m-messenger__message-content'>
-                                                        <div className='m-messenger__message-username'>
-                                                          {this.getRepliedByMsg(msg)}
-                                                        </div>
-                                                        <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px' }} >
-                                                          {
-                                                            msg.payload.elements.map((list, index) => {
-                                                              let largeStyle = {
-                                                                border: '1px solid #ccc'
-                                                              }
-                                                              let isLarge = (msg.payload.top_element_style === 'large' && index === 0)
-                                                              if (isLarge) {
-                                                                largeStyle = {
-                                                                  backgroundImage: list.image_url && `url(${list.image_url})`,
-                                                                  backgroundSize: '100%',
-                                                                  backgroundRepeat: 'no-repeat',
-                                                                  border: '1px solid #ccc'
-                                                                }
-                                                              }
-                                                              return (
-                                                                <div style={largeStyle}>
-                                                                  <div className='row' style={{ padding: '10px' }}>
-                                                                    <div className={isLarge ? 'col-12' : 'col-6'} style={{ minHeight: '75px' }}>
-                                                                      <h6 style={{ textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '15px' }}>{list.title}</h6>
-                                                                      {
-                                                                        list.subtitle &&
-                                                                        <p style={{ textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '12px' }}>{list.subtitle}</p>
-                                                                      }
-                                                                    </div>
-                                                                    {
-                                                                      !isLarge &&
-                                                                      <div className='col-6'>
-                                                                        {
-                                                                          list.image_url &&
-                                                                          <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%' }} >
-                                                                            <img alt='' src={list.image_url} style={{ maxWidth: '100%', maxHeight: '100%' }} />
-                                                                          </div>
-                                                                        }
-                                                                      </div>
-                                                                    }
-                                                                    {
-                                                                      list.buttons && list.buttons.map(button => (
-                                                                        <div className='ui-block' style={{ border: '1px solid rgb(7, 130, 255)', borderRadius: '5px', minHeight: '50%', minWidth: '25%', marginLeft: '10%', marginTop: '-10px' }} >
-                                                                          <h5 style={{ color: '#0782FF', fontSize: '12px' }}>{button.type === 'element_share' ? 'Share' : button.title}</h5>
-                                                                        </div>
-                                                                      ))
-                                                                    }
-                                                                  </div>
-                                                                </div>
-                                                              )
-                                                            })
-                                                          }
-                                                          {
-                                                            msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                                            msg.payload.buttons.map(button => (
-                                                              <div>
-                                                                <h7 style={{ color: '#0782FF' }}>{button.type === 'element_share' ? 'Share' : button.title}</h7>
-                                                              </div>
-                                                            ))
-                                                          }
-                                                        </div>
-                                                      </div>
-                                                      {
-                                                        index === this.props.userChat.length - 1 && msg.seen &&
-                                                        <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                          <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                        </div>
-                                                      }
-                                                    </div>
-                                                    : msg.payload.componentType === 'image'
-                                                      ? <div>
-                                                        <div className='m-messenger__message-content'>
-                                                          <div className='m-messenger__message-username'>
-                                                            {this.getRepliedByMsg(msg)}
-                                                          </div>
-                                                          <img
-                                                            alt=''
-                                                            src={msg.payload.fileurl.url}
-                                                            style={{ maxWidth: '150px', maxHeight: '85px' }}
-                                                          />
-                                                        </div>
-                                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                                          <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                            <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                          </div>
-                                                        }
-                                                      </div>
-                                                      : msg.payload.componentType === 'gif'
-                                                        ? <div>
-                                                          <div className='m-messenger__message-content'>
-                                                            <div className='m-messenger__message-username'>
-                                                              {this.getRepliedByMsg(msg)}
-                                                            </div>
-                                                            <img
-                                                              alt=''
-                                                              src={msg.payload.fileurl}
-                                                              style={{ maxWidth: '150px', maxHeight: '85px' }}
+                                                  </button>
+                                                ))
+                                              }
+                                            </div>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.url_meta && msg.url_meta !== ''
+                                        ? (msg.url_meta.type
+                                          ? <div>
+                                            <div className='m-messenger__message-content'>
+                                              <div className='m-messenger__message-username'>
+                                                {this.getRepliedByMsg(msg)}
+                                              </div>
+                                              <div style={{clear: 'both', display: 'block'}}>
+                                                <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                                  <table style={{maxWidth: '175px'}}>
+                                                    {
+                                                      msg.url_meta.type && msg.url_meta.type === 'video'
+                                                      ? <tbody>
+                                                        <tr>
+                                                          <td style={{width: '30%'}} colspan='2'>
+                                                            <ReactPlayer
+                                                              url={msg.url_meta.url}
+                                                              controls
+                                                              width='100%'
+                                                              height='100px'
                                                             />
-                                                          </div>
-                                                          {index === this.props.userChat.length - 1 && msg.seen &&
-                                                            <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                              <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                                          </td>
+                                                          <td style={{width: '70%'}}>
+                                                            <div>
+                                                              <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
+                                                                <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                              </a>
+                                                              <br />
+                                                              <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                                             </div>
-                                                          }
-                                                        </div>
-                                                        : msg.payload.componentType === 'sticker'
-                                                          ? <div>
-                                                            <div className='m-messenger__message-content'>
-                                                              <div className='m-messenger__message-username'>
-                                                                {this.getRepliedByMsg(msg)}
-                                                              </div>
-                                                              <img
-                                                                alt=''
-                                                                src={msg.payload.fileurl}
-                                                                style={{ maxWidth: '150px', maxHeight: '85px' }}
-                                                              />
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                      : <tbody>
+                                                        <tr>
+                                                          <td>
+                                                            <div style={{width: 45, height: 45}}>
+                                                              {
+                                                                msg.url_meta.image &&
+                                                                <img alt='' src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                              }
                                                             </div>
-                                                            {index === this.props.userChat.length - 1 && msg.seen &&
-                                                              <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                                <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                              </div>
-                                                            }
-                                                          </div>
-                                                          : msg.payload.componentType === 'thumbsUp'
-                                                            ? <div>
-                                                              <div className='m-messenger__message-content'>
-                                                                <div className='m-messenger__message-username'>
-                                                                  {this.getRepliedByMsg(msg)}
-                                                                </div>
-                                                                <img
-                                                                  alt=''
-                                                                  src={msg.payload.fileurl}
-                                                                  style={{ maxWidth: '150px', maxHeight: '85px' }}
-                                                                />
-                                                              </div>
-                                                              {index === this.props.userChat.length - 1 && msg.seen &&
-                                                                <div style={{ float: 'right', marginRight: '15px', fontSize: 'small' }}>
-                                                                  <i className='la la-check' style={{ fontSize: 'small' }} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                                                </div>
+                                                          </td>
+                                                          <td>
+                                                            <div>
+                                                              <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
+                                                                <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                              </a>
+                                                              <br />
+                                                              {
+                                                                msg.url_meta.description &&
+                                                                <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                                               }
                                                             </div>
                                                           </td>
@@ -1617,7 +1686,7 @@ class ChatBox extends React.Component {
                                               {
                                                 validURL(msg.payload.text)
                                                 ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
-                                                  <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                  <a style={{color: 'white'}} href={msg.payload.text} target='_blank' rel='noopener noreferrer'>
                                                     <p>{msg.payload.text}</p>
                                                   </a>
                                                 </div>
@@ -1665,6 +1734,7 @@ class ChatBox extends React.Component {
                                                 key={i}
                                                 href={b.url}
                                                 target='_blank'
+                                                rel='noopener noreferrer'
                                                 style={{
                                                   margin: '3px 3px -4px 3px',
                                                   borderRadius: msg.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
@@ -1673,7 +1743,7 @@ class ChatBox extends React.Component {
                                                 }}
                                                 className='btn btn-outline-primary btn-block'
                                               >
-                                                {b.type == 'element_share' ? 'Share' : b.title}
+                                                {b.type === 'element_share' ? 'Share' : b.title}
                                               </a>
                                             ))
                                           }
@@ -1688,160 +1758,112 @@ class ChatBox extends React.Component {
                                   </div>
                                 </Element>
                               </div>
-                          ))
+                            ))
                         }
                       </div>
                     </div>
                   </div>
                   <div className='m-messenger__seperator' />
                   {this.state.sessionValid
-                    ? <div>
-                      <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
-                        <PopoverBody>
-                          <div>
-                            <Picker
-                              style={{ paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px' }}
-                              emojiSize={24}
-                              perLine={6}
-                              skin={1}
-                              set='facebook'
-                              showPreview={false}
-                              showSkinTones={false}
-                              custom={[]}
-                              autoFocus={false}
-                              onClick={(emoji, event) => this.setEmoji(emoji)}
-                            />
-                          </div>
-                        </PopoverBody>
-                      </Popover>
-                      <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
-                        <PopoverBody>
-                          <div>
-                            <StickerMenu
-                              apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
-                              userId={'imran.shoukat@khi.iba.edu.pk'}
-                              sendSticker={(sticker) => { this.sendSticker(sticker) }}
-                            />
-                          </div>
-                        </PopoverBody>
-                      </Popover>
-                      <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
-                        <PopoverBody>
-                          <GiphySelect
-                            onEntrySelect={gif => this.sendGif(gif)}
-                          />
-                        </PopoverBody>
-                      </Popover>
-                      <div className='m-messenger__form'>
-                        <div className='m-messenger__form-controls'>
-                          <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
-                        </div>
-                        <div className='m-messenger__form-tools'>
-                          <a href='#/' className='m-messenger__form-attachment'>
-                            <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
-                          </a>
-                        </div>
-                      </div>
-                      {this.state.uploaded
-                        ? <div style={{ wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px' }}>
-                          <span onClick={this.removeAttachment} style={{ cursor: 'pointer', float: 'right' }} className='fa-stack'>
-                            <i style={{ color: '#ccc' }} className='fa fa-times fa-stack-1x fa-inverse' />
-                          </span>
-                          <div><i className='fa fa-file-text-o' /> {this.state.attachment.name}</div>
-                          <div style={{ wordWrap: 'break-word', color: 'red', fontSize: 'small' }}>{this.state.removeFileDescription}</div>
-                        </div>
-                        : <div style={{ wordWrap: 'break-word', color: 'red', fontSize: 'small' }}>{this.state.uploadDescription}</div>
-                      }
+                ? <div>
+                <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
+                    <PopoverBody>
                       <div>
-                        <div style={{ display: 'inline-block' }} data-tip='Upload Image'>
+                        <Picker
+                          style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                          emojiSize={24}
+                          perLine={6}
+                          skin={1}
+                          set='facebook'
+                          showPreview={false}
+                          showSkinTones={false}
+                          custom={[]}
+                          autoFocus={false}
+                          onClick={(emoji, event) => this.setEmoji(emoji)}
+                        />
+                      </div>
+                    </PopoverBody>
+                  </Popover>
+                  <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
+                    <PopoverBody>
+                      <div>
+                        <StickerMenu
+                          apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+                          userId={'imran.shoukat@khi.iba.edu.pk'}
+                          sendSticker={(sticker) => { this.sendSticker(sticker) }}
+                        />
+                      </div>
+                    </PopoverBody>
+                  </Popover>
+                  <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover _popover_max_width_400' target='gifPickerChat' toggle={this.toggleGifPicker}>
+                    <PopoverBody>
+                      <GiphySelect
+                        onEntrySelect={gif => this.sendGif(gif)}
+                      />
+                    </PopoverBody>
+                  </Popover>
+                <div className='m-messenger__form'>
+                    <div className='m-messenger__form-controls'>
+                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                    </div>
+                    <div className='m-messenger__form-tools'>
+                      <a href='#/' className='m-messenger__form-attachment'>
+                        <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
+                      </a>
+                    </div>
+                  </div>
+                  { this.state.uploaded
+                    ? <div style={{wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+                      <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
+                        <i style={{color: '#ccc'}} className='fa fa-times fa-stack-1x fa-inverse' />
+                      </span>
+                      <div><i className='fa fa-file-text-o' /> {this.state.attachment.name}</div>
+                      <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
+                    </div>
+                    : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
+                  }
+                  <div>
+                    <div style={{display: 'inline-block'}} data-tip='Upload Image'>
+                      <i style={styles.iconclass} onClick={() => {
+                        this.refs.selectImage.click()
+                      }}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '1em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-image-o' />
+                      </i>
+                      <input type='file' accept='image/*' onClick={(e)=>{e.target.value= ''}} onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
+                        ref='selectImage' style={styles.inputf} />
+                    </div>
+                    <div style={{display: 'inline-block'}} data-tip='Upload File'>
+                      { this.state.uploadedId !== ''
+                        ? <div>
                           <i style={styles.iconclass} onClick={() => {
-                            this.refs.selectImage.click()
+                            this.refs.selectFile.click()
                           }}>
                             <i style={{
                               fontSize: '20px',
                               position: 'absolute',
                               left: '0',
                               width: '100%',
-                              height: '1em',
-                              margin: '5px',
-                              textAlign: 'center'
-                            }} className='fa fa-file-image-o' />
-                          </i>
-                          <input type='file' accept='image/*' onClick={(e) => { e.target.value = '' }} onChange={this.onFileChange} onError={this.onFilesError} onKeyPress={this.onEnter}
-                            ref='selectImage' style={styles.inputf} />
-                        </div>
-                        <div style={{ display: 'inline-block' }} data-tip='Upload File'>
-                          {this.state.uploadedId !== ''
-                            ? <div>
-                              <i style={styles.iconclass} onClick={() => {
-                                this.refs.selectFile.click()
-                              }}>
-                                <i style={{
-                                  fontSize: '20px',
-                                  position: 'absolute',
-                                  left: '0',
-                                  width: '100%',
-                                  height: '2em',
-                                  margin: '5px',
-                                  textAlign: 'center',
-                                  color: 'lightgrey'
-                                }} className='fa fa-paperclip' />
-                              </i>
-                              <input type='file' onClick={(e) => { e.target.value = '' }} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                                ref='selectFile' style={styles.inputf} disabled />
-                            </div>
-                            : <div>
-                              <i style={styles.iconclass} onClick={() => {
-                                this.refs.selectFile.click()
-                              }}>
-                                <i style={{
-                                  fontSize: '20px',
-                                  position: 'absolute',
-                                  left: '0',
-                                  width: '100%',
-                                  height: '2em',
-                                  margin: '5px',
-                                  textAlign: 'center'
-                                }} className='fa fa-paperclip' />
-                              </i>
-                              <input type='file' onClick={(e) => { e.target.value = '' }} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                                ref='selectFile' style={styles.inputf} />
-                            </div>
-                          }
-                        </div>
-                        {
-                          this.props.user.isSuperUser &&
-                          <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{ display: 'inline-block' }} data-tip='recording'>
-                            <i style={styles.iconclass} data-toggle="modal" data-target="#voiceRecording">
-                              <i style={{
-                                fontSize: '20px',
-                                position: 'absolute',
-                                left: '0',
-                                width: '100%',
-                                height: '2em',
-                                margin: '5px',
-                                textAlign: 'center',
-                                color: '#787878'
-                              }} className='fa fa-microphone' />
-                            </i>
-                          </div>
-                        }
-                        <div style={{ display: 'inline-block' }} data-tip='emoticons'>
-                          <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
-                            <i style={{
-                              fontSize: '20px',
-                              position: 'absolute',
-                              left: '0',
-                              width: '100%',
                               height: '2em',
                               margin: '5px',
                               textAlign: 'center',
-                              color: '#787878'
-                            }} className='fa fa-smile-o' />
+                              color: 'lightgrey'
+                            }} className='fa fa-paperclip' />
                           </i>
+                          <input type='file' onClick={(e)=>{e.target.value= ''}} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                            ref='selectFile' style={styles.inputf} disabled />
                         </div>
-                        <div style={{ display: 'inline-block' }} data-tip='stickers'>
-                          <i id='stickerPickerChat' onClick={this.showStickers} style={styles.iconclass}>
+                        : <div>
+                          <i style={styles.iconclass} onClick={() => {
+                            this.refs.selectFile.click()
+                          }}>
                             <i style={{
                               fontSize: '20px',
                               position: 'absolute',
@@ -1850,41 +1872,10 @@ class ChatBox extends React.Component {
                               height: '2em',
                               margin: '5px',
                               textAlign: 'center'
-                            }} className='fa fa-file-o' />
-                            <i style={{
-                              position: 'absolute',
-                              left: '0',
-                              width: '100%',
-                              textAlign: 'center',
-                              margin: '5px',
-                              fontSize: '12px',
-                              bottom: -4
-                            }}
-                              className='center fa fa-smile-o' />
+                            }} className='fa fa-paperclip' />
                           </i>
-                        </div>
-                        <div style={{ display: 'inline-block' }} data-tip='GIF'>
-                          <i id='gifPickerChat' onClick={this.showGif} style={styles.iconclass}>
-                            <i style={{
-                              fontSize: '20px',
-                              position: 'absolute',
-                              left: '0',
-                              width: '100%',
-                              height: '2em',
-                              margin: '5px',
-                              textAlign: 'center'
-                            }} className='fa fa-file-o' />
-                            <p style={{
-                              position: 'absolute',
-                              text: 'GIF',
-                              left: '0',
-                              width: '100%',
-                              textAlign: 'center',
-                              margin: '5px',
-                              fontSize: '8px',
-                              bottom: -5
-                            }}>GIF</p>
-                          </i>
+                          <input type='file' onClick={(e)=>{e.target.value= ''}} accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                            ref='selectFile' style={styles.inputf} />
                         </div>
                       }
                     </div>
@@ -1966,11 +1957,71 @@ class ChatBox extends React.Component {
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                     <div className='align-center'>
-                      <center><Halogen.RingLoader color='#716aca' /></center>
+                      <center><RingLoader color='#716aca' /></center>
                     </div>
-                    : <span><p>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</p>
-                    </span>
                   }
+                  {
+                     JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
+                     <div style={{clear: 'both', display: 'block'}}>
+                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block', padding: '5px'}}>
+                         <i style={{float: 'right', color: 'red', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
+                         <table style={{maxWidth: '318px', margin: '10px'}}>
+                           {
+                             this.state.urlmeta.type && this.state.urlmeta.type === 'video'
+                             ? <tbody>
+                               <tr>
+                                 <td style={{width: '30%'}} colspan='2'>
+                                   <ReactPlayer
+                                     url={this.state.urlmeta.url}
+                                     controls
+                                     width='100%'
+                                     height='100px'
+                                   />
+                                 </td>
+                                 <td style={{width: '70%'}}>
+                                   <div>
+                                     <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
+                                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                                     </a>
+                                     <br />
+                                     <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                                   </div>
+                                 </td>
+                               </tr>
+                             </tbody>
+                            : <tbody>
+                              <tr>
+                                <td>
+                                  <div style={{width: 45, height: 45}}>
+                                    {
+                                      this.state.urlmeta.image &&
+                                        <img alt='' src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
+                                    }
+                                  </div>
+                                </td>
+                                <td>
+                                  <div>
+                                    <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
+                                      <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                                    </a>
+                                    <br />
+                                    {
+                                      this.state.urlmeta.description &&
+                                        <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                                    }
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          }
+                         </table>
+                       </div>
+                     </div>
+                  }
+                </div>
+                : <span><p>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</p>
+                </span>
+              }
                 </div>
               </div>
             </div>

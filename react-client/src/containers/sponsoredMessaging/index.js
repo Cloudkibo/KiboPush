@@ -27,7 +27,6 @@ class sponsoredMessaging extends React.Component {
     }
      props.fetchSponsoredMessages()
      this.displayData = this.displayData.bind(this)
-      this.closeDialogDelete = this.closeDialogDelete.bind(this)
       this.showDialogDelete = this.showDialogDelete.bind(this)
       this.onEdit = this.onEdit.bind(this)
       this.gotoCreate = this.gotoCreate.bind(this)

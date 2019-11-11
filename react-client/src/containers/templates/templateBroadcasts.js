@@ -39,7 +39,7 @@ class TemplateBroadcasts extends React.Component {
   goToCreate () {
     if (!this.props.user.isSuperUser) {
       if (this.props.userCount < this.props.userTemplates) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: `/createBroadcastTemplate`
         })
       } else {
@@ -47,7 +47,7 @@ class TemplateBroadcasts extends React.Component {
       }
     } else {
       if (this.props.superUserCount < this.props.kiboPushTemplates) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: `/createBroadcastTemplate`
         })
       } else {
@@ -360,12 +360,12 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><a href='#/' onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
+                                  style={{width: '170px'}}><button onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                   View
-                                </a>
-                                  <a href='#/' onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
+                                </button>
+                                  <button onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                     Edit
-                                  </a>
+                                  </button>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(broadcast._id)}

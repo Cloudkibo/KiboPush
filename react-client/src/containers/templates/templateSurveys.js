@@ -37,7 +37,7 @@ class templateSurveys extends React.Component {
 
   goToCreate () {
     if (this.props.totalCount < this.props.kiboPushTemplates) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createSurvey`
       })
     } else {

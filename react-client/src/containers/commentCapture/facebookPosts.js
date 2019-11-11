@@ -305,7 +305,7 @@ class FacebookPosts extends React.Component {
                               <span style={{width: '150px'}}>
                               {post.post_id &&
                                 <span>
-                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
+                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
                                       View on FB
                                   </a>
                                   <br />

@@ -32,7 +32,7 @@ class CommentCapturePreview extends React.Component {
               <div className='m-widget3__item'>
                   <div className='m-widget3__header'>
                     <div className='m-widget3__user-img'>
-                      <img className='m-widget3__img' src={this.props.selectedPage.pagePic} />
+                      <img alt='' className='m-widget3__img' src={this.props.selectedPage.pagePic} />
                     </div>
                     <div className='m-widget3__info'>
                       <span className='m-widget3__username'>
@@ -50,7 +50,7 @@ class CommentCapturePreview extends React.Component {
                     this.props.attachments.map((attachment, i) => (
                       <div key={i} className='col-12'>
                         <div className='ui-block'>
-                          <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
+                          <img src={attachment.url} alt='' style={{maxWidth: '400px', maxHeight: '200px'}} />
                         </div>
                       </div>
                     ))
@@ -65,7 +65,7 @@ class CommentCapturePreview extends React.Component {
                     />
                     }
                     { this.props.cards.length > 0 && this.props.postType === 'links' &&
-                      <Gallery 
+                      <Gallery
                         module='commentcapture'
                         cards={this.props.cards}
                         links={this.props.links}

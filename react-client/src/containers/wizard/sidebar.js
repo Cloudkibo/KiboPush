@@ -16,6 +16,7 @@ class Sidebar extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
   redirectFunction (redirectionLink) {
+    console.log('redirectFunction', this.props)
     this.props.history.push({
       pathname: redirectionLink,
       state: 'history'
