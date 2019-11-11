@@ -295,7 +295,7 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
-    <Route path='/ccSecondReply' component={CommentCaptureEdit} onEnter={requireAuth} />
+    <Route path='/commentCaptureReply' component={CommentCaptureEdit} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
