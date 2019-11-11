@@ -57,14 +57,12 @@ class FacebookPosts extends React.Component {
       selectedRadio: 'existing',
       postUrl: '',
       title: '',
-      showPost: false,
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
       openLinkCarousel: false,
       links:[],
-      cards: [],
-      openPreviewModal: false 
+      cards: []
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
@@ -82,7 +80,6 @@ class FacebookPosts extends React.Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.validateFile = this.validateFile.bind(this)
-    this.previewPost = this.previewPost.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
@@ -407,11 +404,7 @@ class FacebookPosts extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log(' componentWillReceiveProps called')
   }
-  previewPost () {
-    this.setState({
-      showPost: true
-    })
-  }
+
   openLinkCarousel () {
     this.setState({
       openLinkCarousel: true
@@ -713,50 +706,17 @@ class FacebookPosts extends React.Component {
           </ModalContainer>
           : <span />
         }
-        {
-          this.state.openPreviewModal &&
-          <ModalContainer style={{width: 'auto', top: '100px'}}
-            onClose={() => { this.setState({openPreviewModal: false}) }}>
-            <ModalDialog style={{width: 'auto', top: '100px'}}
-              onClose={() => { this.setState({openPreviewModal: false}) }}>
-                <ViewMessage payload={this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : []} />
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showPost &&
-          <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({showPost: false}) }}>
-            <ModalDialog style={{width: '500px', top: '100px'}}
-              onClose={() => { this.setState({showPost: false}) }}>
-                <Preview 
-                selectedPage={this.state.selectedPage}
-                postType={this.state.postType}
-                attachments={this.state.attachments}
-                cards={this.state.cards}
-                postText={this.state.postText}
-                edited={false}
-                />
-            </ModalDialog>
-          </ModalContainer>
-        }
          {
           this.state.openLinkCarousel &&
-          <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({openLinkCarousel: false}) }}>
-            <ModalDialog style={{width: '500px', maxHeight: '500px', overflowY: 'scroll', top: '100px'}}
-              onClose={() => { this.setState({openLinkCarousel: false}) }}>
-                <LinkCarousel
-                  pages={[this.state.selectedPage._id]}
-                  module='commentcapture'
-                  edited={false}
-                  links={this.state.links}
-                  cards={this.state.cards}
-                  saveLinks={this.saveLinks}
-                  closeModal={() => {this.setState({openLinkCarousel: false})}}
-                />
-            </ModalDialog>
-          </ModalContainer>
+            <LinkCarousel
+              pages={[this.state.selectedPage._id]}
+              module='commentcapture'
+              edited={false}
+              links={this.state.links}
+              cards={this.state.cards}
+              saveLinks={this.saveLinks}
+              closeModal={() => {this.setState({openLinkCarousel: false})}}
+            />
         }
         {
           this.state.showSuccessMessage &&
@@ -978,7 +938,7 @@ class FacebookPosts extends React.Component {
                               }
                               { (this.state.attachments.length > 0 ||  this.state.links.length > 0) &&
                               <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
+                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.refs.previewModal.click()}}>See How It Looks?</span>
                               </span>
                               }
                               <span id='emogiPicker' style={{height: '150px'}} className='m-input-icon__icon m-input-icon__icon--right'>
@@ -1083,7 +1043,7 @@ class FacebookPosts extends React.Component {
                               </div>
                             }
                             <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                              <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
+                              <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.refs.previewModal.click()}}>See How It Looks?</span>
                             </span>
                             
                         </div>
@@ -1153,9 +1113,7 @@ class FacebookPosts extends React.Component {
                               Preview reply that will be sent to people who comment on your Facebook Page Post
                             </p>
                             <button state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {
-                              this.setState({
-                                openPreviewModal: true
-                              })
+                             this.refs.viewMessageModal.click()
                             }}>
                               Preview Reply
                             </button >
@@ -1303,6 +1261,53 @@ class FacebookPosts extends React.Component {
                 </div>
                 }
                 </div>
+              </div>
+            </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='viewMessageModal' data-toggle="modal" data-target="#viewMessageModal">viewMessageModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="viewMessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content" style={{width: '450px'}}>
+                <div style={{ display: 'block' }} className="modal-header">
+                    <h5 className='modal-title' id='exampleModalLabel'>
+                      Reply Message
+                    </h5>
+                    <button style={{opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                      <span aria-hidden='true'>
+                        &times;
+                      </span>
+                    </button>
+                </div>
+                <div style={{ maxHeight: '600px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200' className="modal-body">
+                  <ViewMessage payload={this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : []} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='previewModal' data-toggle="modal" data-target="#previewModal">previewModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content" style={{width: '500px'}}>
+                <div style={{ display: 'block' }} className="modal-header">
+                    <h5 className='modal-title' id='exampleModalLabel'>
+                      Preview Post
+                    </h5>
+                    <button style={{opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                      <span aria-hidden='true'>
+                        &times;
+                      </span>
+                    </button>
+                </div>
+                <div style={{ maxHeight: '500px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200' className="modal-body">
+                  <Preview 
+                  selectedPage={this.state.selectedPage}
+                  postType={this.state.postType}
+                  attachments={this.state.attachments}
+                  cards={this.state.cards}
+                  postText={this.state.postText}
+                  edited={false}
+                  />
+                  </div>
               </div>
             </div>
           </div>

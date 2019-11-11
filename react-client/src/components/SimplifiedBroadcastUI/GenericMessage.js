@@ -161,12 +161,10 @@ class GenericMessage extends React.Component {
     console.log('showAddComponentModal editData', editData)
     console.log('component limit', this.props.componentLimit)
     document.body.style.overflow = 'hidden'
-    if (editData || (this.props.componentLimit && this.state.list.length < this.props.componentLimit)) {
-      this.setState({isShowingAddComponentModal: true, componentType, editData})
+    if (!editData && this.props.componentLimit && this.state.list.length === this.props.componentLimit) {
+      this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
-      if (this.state.list.length === this.props.componentLimit) {
-        this.msg.info(`You can only add ${this.props.componentLimit} componet in this message`)
-      }
+      this.setState({isShowingAddComponentModal: true, componentType, editData})
     }
   }
 
