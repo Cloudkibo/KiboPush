@@ -83,7 +83,7 @@ class CreateMessage extends React.Component {
     if (this.props.location.state.payload && this.props.location.state.payload.length > 0) {
       this.props.history.push({
         pathname: `/viewMessage`,
-        state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+        state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId, name: this.state.convoTitle}
       })
     } else {
       this.props.history.push({

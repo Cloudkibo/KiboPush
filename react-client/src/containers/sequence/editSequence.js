@@ -64,7 +64,7 @@ class CreateSequence extends React.Component {
       segmentation: [],
       showBackWarning: false
     }
-    if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
+    if (props.location.state && (props.location.state.module === 'edit' || props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
     props.loadMyPagesList()
@@ -911,7 +911,7 @@ class CreateSequence extends React.Component {
                     <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
                       <option disabled selected value>Select Message </option>
                       {
-                        this.props.messages.map((message, i) => {
+                        this.props.messages && this.props.messages.map((message, i) => {
                           if (this.state.selectedMessageId != message._id) {
                             return <option value={message._id}>{message.title}</option>
                           }
@@ -960,14 +960,14 @@ class CreateSequence extends React.Component {
                     </select>
                     <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{ marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px' }}>
                       {
-                        this.props.messages.map((message, i) => {
+                        this.props.messages && this.props.messages.map((message, i) => {
                           if (this.state.selectedTriggerMsgId == message._id) {
                             return <option selected value>{message.title} </option>
                           }
                         })
                       }
                       {
-                        this.props.messages.map((message, i) => {
+                        this.props.messages && this.props.messages.map((message, i) => {
                           if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
                             return <option value={message._id}>{message.title}</option>
                           }

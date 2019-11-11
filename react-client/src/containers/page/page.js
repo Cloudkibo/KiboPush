@@ -61,7 +61,7 @@ class Page extends React.Component {
     } else {
       limit = offset + 10
     }
-    for (var i = offset; i < limit; i++) {
+    for (let i = offset; i < limit; i++) {
       data[index] = pages[i]
       index++
     }
@@ -108,7 +108,7 @@ class Page extends React.Component {
     if (nextProps.pages && nextProps.count) {
       var connectedPages = []
       for(let a = 0; a < nextProps.pages.length; a++) {
-        let page = nextProps.pages[0]
+        let page = nextProps.pages[a]
         if (page.connected) {
           connectedPages.push(page)
         }
@@ -371,8 +371,8 @@ class Page extends React.Component {
                           </thead>
                           <tbody className='m-datatable__body'>
                             {
-                              this.state.pagesData.map((page, i) => (
-                                (page.connected) ? <tr data-row={i}
+                              this.state.pagesData.filter((p) => p.connected).map((page, i) => (
+                                <tr data-row={i}
                                   className='m-datatable__row m-datatable__row--even'
                                   style={{ height: '55px' }} key={i}>
                                   <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}><img src={page.pagePic} alt='' /></span></td>
@@ -396,7 +396,7 @@ class Page extends React.Component {
 
                                     </span>
                                   </td>
-                                </tr> : ''
+                                </tr>
                               ))
                             }
                           </tbody>

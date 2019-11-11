@@ -89,7 +89,7 @@ class ViewBroadcastTemplate extends React.Component {
                       <h6 style={{color: '#007aff'}} onClick={() => this.goBack()}><i className='fa fa-chevron-left' />Back</h6>
                     </div>
                     <div style={{display: 'inline-block', margin: '5px'}}>
-                      <h7>KiboPush</h7>
+                      <span>KiboPush</span>
                       <p style={{color: '#ccc'}}>Typically replies instantly</p>
                     </div>
                     <div style={{display: 'inline-block', margin: '5px'}}>
@@ -292,7 +292,7 @@ class ViewBroadcastTemplate extends React.Component {
               </div>
             </div>
             <div className='col-xl-3'>
-              <a href='#/' onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </a>&nbsp;&nbsp;
+              <button onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </button>&nbsp;&nbsp;
               <button onClick={() => this.gotoEdit()} style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </button>
             </div>
           </div>
