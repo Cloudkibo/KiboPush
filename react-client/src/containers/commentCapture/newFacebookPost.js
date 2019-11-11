@@ -17,6 +17,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { isFacebookPageUrl } from '../../utility/utils'
 import LinkCarousel from '../../components/SimplifiedBroadcastUI/LinkCarousel'
 import Preview from './preview'
+import ViewMessage from '../../components/ViewMessage/viewMessage'
 
 const styles = {
   iconclass: {
@@ -42,7 +43,6 @@ class FacebookPosts extends React.Component {
       attachments: [],
       selectedPage: {},
       showEmojiPicker: false,
-      autoReply: '',
       includedKeywords: '',
       excludedKeywords: '',
       disabled: true,
@@ -63,14 +63,14 @@ class FacebookPosts extends React.Component {
       sequenceValue: '',
       openLinkCarousel: false,
       links:[],
-      cards: []
+      cards: [],
+      openPreviewModal: false 
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
-    this.replyChange = this.replyChange.bind(this)
     this.includedKeywordsChange = this.includedKeywordsChange.bind(this)
     this.excludedKeywordsChange = this.excludedKeywordsChange.bind(this)
     this.reset = this.reset.bind(this)
@@ -103,7 +103,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -166,7 +166,7 @@ class FacebookPosts extends React.Component {
       payload: this.state.selectedRadio === 'new' ? facebookPost: [],
       post_id: this.props.currentPost ? this.props.currentPost.post_id : '',
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
-      reply: this.state.autoReply,
+      reply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       captureOption: this.state.selectedRadio,
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
@@ -211,7 +211,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: e.currentTarget.value,
       title: e.currentTarget.value,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -225,7 +225,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: e.currentTarget.value,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -242,7 +242,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl:  e.currentTarget.value,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -257,7 +257,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '') && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1) && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -267,7 +267,7 @@ class FacebookPosts extends React.Component {
         })
       } 
     } else if(data.selectedRadio === 'existing') {
-      if (data.title !== ''&& data.title.length > 2 && data.autoReply !== '' && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
+      if (data.title !== ''&& data.title.length > 2 && data.autoReply.length < 1 && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
         this.setState({
           disabled: false
         })
@@ -277,7 +277,7 @@ class FacebookPosts extends React.Component {
         })
       } 
     } else {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '')) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1)) {
         this.setState({
           disabled: false
         })
@@ -373,7 +373,7 @@ class FacebookPosts extends React.Component {
       }
       this.setState({
         // postText: this.props.currentPost.payload,
-        autoReply: this.props.currentPost.reply,
+        autoReply: this.props.currentPost.reply ? this.props.currentPost.reply : [],
         includedKeywords: this.props.currentPost.includedKeywords.join(),
         excludedKeywords: this.props.currentPost.excludedKeywords.join(),
         postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
@@ -392,7 +392,7 @@ class FacebookPosts extends React.Component {
           postUrl: ''
         })
       }
-      if (!this.props.currentPost.reply || this.props.currentPost.reply === '' || !this.props.currentPost.title || this.props.currentPost.title === '' ) {
+      if (!this.props.currentPost.reply || this.props.currentPost.reply.length < 1 || !this.props.currentPost.title || this.props.currentPost.title === '' ) {
         disable = true
       }
       this.setState({
@@ -438,7 +438,7 @@ class FacebookPosts extends React.Component {
       this.validationCommentCapture({
         selectedRadio: this.state.selectedRadio,
         title: this.state.title,
-        autoReply: this.state.autoReply,
+        autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
         postUrl: this.state.postUrl,
         postText: this.state.postText,
         attachments: attachments,
@@ -488,7 +488,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: attachments,
@@ -537,7 +537,6 @@ class FacebookPosts extends React.Component {
     this.setState({
       postText: '',
       showEmojiPicker: false,
-      autoReply: '',
       includedKeywords: '',
       excludedKeywords: '',
       disabled: true,
@@ -611,7 +610,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText:  e.target.value,
       attachments: this.state.attachments,
@@ -622,25 +621,12 @@ class FacebookPosts extends React.Component {
      // facebookPost: facebookPost
     })
   }
-  replyChange (e) {
-    this.validationCommentCapture({
-      selectedRadio: this.state.selectedRadio,
-      title: this.state.title,
-      autoReply: e.target.value,
-      postUrl: this.state.postUrl,
-      postText: this.state.postText,
-      attachments: this.state.attachments,
-      cards: this.state.cards
-    })
-    this.setState({
-      autoReply: e.target.value
-    })
-  }
+
   setEmoji (emoji) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText + emoji.native,
       attachments: this.state.attachments,
@@ -728,6 +714,16 @@ class FacebookPosts extends React.Component {
           : <span />
         }
         {
+          this.state.openPreviewModal &&
+          <ModalContainer style={{width: 'auto', top: '100px'}}
+            onClose={() => { this.setState({openPreviewModal: false}) }}>
+            <ModalDialog style={{width: 'auto', top: '100px'}}
+              onClose={() => { this.setState({openPreviewModal: false}) }}>
+                <ViewMessage payload={this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : []} />
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
           this.state.showPost &&
           <ModalContainer style={{width: '500px', top: '100px'}}
             onClose={() => { this.setState({showPost: false}) }}>
@@ -748,7 +744,7 @@ class FacebookPosts extends React.Component {
           this.state.openLinkCarousel &&
           <ModalContainer style={{width: '500px', top: '100px'}}
             onClose={() => { this.setState({openLinkCarousel: false}) }}>
-            <ModalDialog style={{width: '500px', top: '100px'}}
+            <ModalDialog style={{width: '500px', maxHeight: '500px', overflowY: 'scroll', top: '100px'}}
               onClose={() => { this.setState({openLinkCarousel: false}) }}>
                 <LinkCarousel
                   pages={[this.state.selectedPage._id]}
@@ -1142,22 +1138,27 @@ class FacebookPosts extends React.Component {
                         </div>
                         { this.state.isEdit === 'false'
                         ? <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Your reply to the commentor goes here...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            onChange={this.replyChange} />
+                            {
+                              this.props.currentPost && this.props.currentPost.reply && this.props.currentPost.reply.length > 0 
+                              ? <Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                                Edit Reply
+                              </Link> 
+                              :<Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                                Create Reply
+                              </Link>
+                            }
                         </div>
                         : <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Create a reply that will be sent to people who comment on your Facebook Page Post...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            disabled />
+                            <p>
+                              Preview reply that will be sent to people who comment on your Facebook Page Post
+                            </p>
+                            <button state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {
+                              this.setState({
+                                openPreviewModal: true
+                              })
+                            }}>
+                              Preview Reply
+                            </button >
                         </div>
                       }
                       </div>
@@ -1197,7 +1198,7 @@ class FacebookPosts extends React.Component {
                           <div className='col-12'>
                             {
                               this.state.secondReplyOption === 'reply' && 
-                            <Link to='ccSecondReply' style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                            <Link to='commentCaptureReply' state={{mode: 'secondReply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
                               Show Message Builder
                             </Link >
                             }
