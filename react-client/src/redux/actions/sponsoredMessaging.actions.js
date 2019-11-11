@@ -52,10 +52,14 @@ export function saveDraft(id, data, msg) {
 }
 
 export function updateSponsoredMessage(sponsoredMessage, key, value){
+  console.log('value in updateSponoredmessage',value)
   if(key) {
+    let temp = sponsoredMessage
+    if(key === 'payload') {
+      value = value.broadcast
+    }
     return (dispatch) => {
-        let temp = sponsoredMessage
-        temp[key] = value
+      temp[key] = value
         dispatch(showUpdatedData(temp))
     }
   } else {
