@@ -69,7 +69,7 @@ class GenericMessageComponents extends React.Component {
               </div>
               <div className='col-8'>
                 <h5>Media</h5>
-                {this.props.module && this.props.module == 'whatsapp' ?
+                {this.props.module && this.props.module === 'whatsapp' ?
                 <p>Upload an image or video (up to 5 MB)</p>
                 :
                 <p>Upload an image or video (up to 10 MB)</p>
@@ -107,7 +107,7 @@ class GenericMessageComponents extends React.Component {
               </div>
               <div className='col-8'>
                 <h5>Audio</h5>
-                {this.props.module && this.props.module == 'whatsapp' ?
+                {this.props.module && this.props.module === 'whatsapp' ?
                 <p>Upload an audio file (up to 5 MB)</p>
                 :
                 <p>Upload an audio file (up to 10 MB)</p>
@@ -124,7 +124,7 @@ class GenericMessageComponents extends React.Component {
               </div>
               <div className='col-8'>
                 <h5>File</h5>
-                {this.props.module && this.props.module == 'whatsapp' ?
+                {this.props.module && this.props.module === 'whatsapp' ?
                   <p>Upload a file (up to 5 MB)</p>
                   :
                   <p>Upload a file (up to 10 MB)</p>

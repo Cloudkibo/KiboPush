@@ -2,10 +2,9 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import CopyLink from './copyLink'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class GrowthTools extends React.Component {
   constructor (props, context) {
@@ -30,7 +29,7 @@ class GrowthTools extends React.Component {
       copyPopover: false
     })
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
   }
 
   componentDidMount () {
@@ -42,14 +41,13 @@ class GrowthTools extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Growth Tools`;  
+    document.title = `${title} | Growth Tools`;
   }
 
   render () {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
         <Sidebar />
         <Responsive />
         <div id='growthTools' className='container'>
@@ -59,7 +57,7 @@ class GrowthTools extends React.Component {
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/smartphone.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/smartphone.png' style={{width: 200, height: 200}} alt='Card cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6' style={{padding: 10}}>
                   <div className='card-body' >
                     <h4 className='card-title'>Customer Matching Using Phone Numbers</h4>
@@ -75,7 +73,7 @@ class GrowthTools extends React.Component {
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/messenger.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/messenger.png' style={{width: 200, height: 200}} alt='Card cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6' style={{margin: 10}}>
                   <div className='card-body'>
                     <h4 className='card-title'>Subscribe to Messenger</h4>
@@ -93,7 +91,7 @@ class GrowthTools extends React.Component {
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/invitation.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <img className='img-card' src='https://cdn.cloudkibo.com/public/icons/invitation.png' style={{width: 200, height: 200}} alt='Card cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6' style={{padding: 10}}>
                   <div className='card-body' >
                     <h4 className='card-title'>Copy Page Link</h4>

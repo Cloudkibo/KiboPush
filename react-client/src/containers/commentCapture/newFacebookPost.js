@@ -11,9 +11,7 @@ import { Picker } from 'emoji-mart'
 import { createCommentCapture, editCommentCapture, uploadAttachment, saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
-import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { isFacebookPageUrl } from '../../utility/utils'
 import LinkCarousel from '../../components/SimplifiedBroadcastUI/LinkCarousel'
 import Preview from './preview'
@@ -136,7 +134,7 @@ class FacebookPosts extends React.Component {
     if (this.state.secondReplyOption === 'reply') {
       secondReply['action'] = 'reply'
       secondReply['payload'] = this.props.currentPost && this.props.currentPost.secondReply ? this.props.currentPost.secondReply.payload : []
-    } 
+    }
     if (this.state.secondReplyOption === 'sequence') {
       secondReply['action'] = 'subscribe'
       secondReply['sequenceId'] = this.state.sequenceValue
@@ -146,16 +144,16 @@ class FacebookPosts extends React.Component {
       facebookPost.push({componentType: 'text', text: this.state.postText})
     }
     if (this.state.postType === 'links') {
-      for (var i = 0; i < this.state.links.length; i++) {
+      for (let i = 0; i < this.state.links.length; i++) {
         facebookPost.push({componentType: 'link', url: this.state.links[i].url, card: this.state.cards[i]})
       }
     }
     if (this.state.attachments.length > 0) {
-      for (var i = 0; i < this.state.attachments.length; i++) {
+      for (let i = 0; i < this.state.attachments.length; i++) {
         facebookPost.push(this.state.attachments[i])
       }
     }
-       
+
     payload = {
       pageId: this.state.selectedPage._id,
       postId: this.props.currentPost ? this.props.currentPost._id : null,
@@ -173,7 +171,7 @@ class FacebookPosts extends React.Component {
 
     return payload
   }
-  openMessageBuilder () { 
+  openMessageBuilder () {
     var payload = this.createPayload()
     console.log('Current post', payload)
     this.props.saveCurrentPost(payload)
@@ -262,7 +260,7 @@ class FacebookPosts extends React.Component {
         this.setState({
           disabled: true
         })
-      } 
+      }
     } else if(data.selectedRadio === 'existing') {
       if (data.title !== ''&& data.title.length > 2 && data.autoReply.length < 1 && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
         this.setState({
@@ -272,7 +270,7 @@ class FacebookPosts extends React.Component {
         this.setState({
           disabled: true
         })
-      } 
+      }
     } else {
       if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1)) {
         this.setState({
@@ -303,7 +301,7 @@ class FacebookPosts extends React.Component {
     if (this.props.pages) {
       this.setCommentCapture()
     }
-    
+
   }
   setCommentCapture () {
     var selectedPage = this.props.pages[0]
@@ -525,7 +523,7 @@ class FacebookPosts extends React.Component {
     }
     this.props.editCommentCapture(payload, this.msg, this.handleEdit)
   }
-  
+
   reset (postId, showSuccessMessage) {
     this.setState({
       postText: '',
@@ -696,16 +694,6 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
          {
           this.state.openLinkCarousel &&
             <LinkCarousel
@@ -717,18 +705,6 @@ class FacebookPosts extends React.Component {
               saveLinks={this.saveLinks}
               closeModal={() => {this.setState({openLinkCarousel: false})}}
             />
-        }
-        {
-          this.state.showSuccessMessage &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
-              <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{cursor: 'pointer'}}>Click Here</a> to view your Facebook Page Post.</p>
-              <p>The people who comment on this post will receive the reply that you set. </p>
-          </ModalDialog>
-          </ModalContainer>
         }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
@@ -774,9 +750,9 @@ class FacebookPosts extends React.Component {
                                   })
                                 }
                               }} maxLength='25'/>
-                            { !this.state.titleLengthValid && 
+                            { !this.state.titleLengthValid &&
                             <label htmlFor='title' className='form-control-label'>Title should be atleast 3 characters long</label>
-                            }    
+                            }
                           </div>
                       </div>
                     </div>
@@ -884,7 +860,7 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12'>
                           { this.state.isEdit === 'false'
-                        ? <div style={{ border: '2px solid lightgray', borderRadius: '15px', padding: '10px'}}> 
+                        ? <div style={{ border: '2px solid lightgray', borderRadius: '15px', padding: '10px'}}>
                             <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
                               <textarea
                                 className='form-control m-input m-input--solid'
@@ -902,7 +878,7 @@ class FacebookPosts extends React.Component {
                                         <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                            <img src={attachment.url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -922,18 +898,18 @@ class FacebookPosts extends React.Component {
                                     this.state.cards.map((card, i) => (
                                       <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
                                           { card.image_url &&
-                                            <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                            <img src={card.image_url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           }
                                           <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
                                           <span style={{fontSize: '8px'}}>{card.title}</span>
-                                      </div>                             
+                                      </div>
                                     ))
                                     }
                                   </div>
                               }
                               { this.state.cards.length > 0 &&  this.state.postType === 'links' &&
                                 <span className='pull-right' style={{marginTop: '-80px', marginRight: '10px'}}>
-                                  <span onClick={() => this.removeLinkCarousel()} style={{marginTop: '10px', cursor: 'pointer'}}>❌</span>
+                                  <span onClick={() => this.removeLinkCarousel()} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></span>
                                 </span>
                               }
                               { (this.state.attachments.length > 0 ||  this.state.links.length > 0) &&
@@ -1013,7 +989,7 @@ class FacebookPosts extends React.Component {
                                   <div className='col-2'>
                                     <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                       { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                        <img src={attachment.url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                       </div>
                                       }
                                       { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -1033,11 +1009,11 @@ class FacebookPosts extends React.Component {
                                 this.state.cards.map((card, i) => (
                                   <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
                                       { card.image_url &&
-                                        <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                        <img src={card.image_url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                       }
                                       <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
                                       <span style={{fontSize: '8px'}}>{card.title}</span>
-                                  </div>                             
+                                  </div>
                                 ))
                                 }
                               </div>
@@ -1045,14 +1021,14 @@ class FacebookPosts extends React.Component {
                             <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
                               <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.refs.previewModal.click()}}>See How It Looks?</span>
                             </span>
-                            
+
                         </div>
                         }
                         </div>
                       </div>
                     </div>
                     }
-                    {this.state.selectedRadio === 'existing' && 
+                    {this.state.selectedRadio === 'existing' &&
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-12'>
@@ -1060,7 +1036,7 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12'>
                           <p>
-                            Copy paste the Post Url here. View <a href='https://kibopush.com/comment-capture/' target='_blank'>user guide</a> to know how to copy correct post url 
+                            Copy paste the Post Url here. View <a href='https://kibopush.com/comment-capture/' target='_blank' rel='noopener noreferrer'>user guide</a> to know how to copy correct post url
                           </p>
                         </div>
                         { this.state.isEdit === 'false'
@@ -1069,7 +1045,7 @@ class FacebookPosts extends React.Component {
                             className='form-control form-control-danger m-input'
                             id='postUrl'
                             value={this.state.postUrl}
-                            onChange={(e) => {this.handlePostUrlChange(e)}} 
+                            onChange={(e) => {this.handlePostUrlChange(e)}}
                             onBlur={(e) => {this.isValidFacebookUrl(e)}}/>
                           { !this.state.isCorrectUrl &&
                             <label className='form-control-label' htmlFor='postUrl'>Invalid Facebook Post Url</label>
@@ -1099,10 +1075,10 @@ class FacebookPosts extends React.Component {
                         { this.state.isEdit === 'false'
                         ? <div className='col-12'>
                             {
-                              this.props.currentPost && this.props.currentPost.reply && this.props.currentPost.reply.length > 0 
+                              this.props.currentPost && this.props.currentPost.reply && this.props.currentPost.reply.length > 0
                               ? <Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
                                 Edit Reply
-                              </Link> 
+                              </Link>
                               :<Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
                                 Create Reply
                               </Link>
@@ -1155,7 +1131,7 @@ class FacebookPosts extends React.Component {
                         <div className='row' style={{marginLeft: '10px', marginTop: '10px'}}>
                           <div className='col-12'>
                             {
-                              this.state.secondReplyOption === 'reply' && 
+                              this.state.secondReplyOption === 'reply' &&
                             <Link to='commentCaptureReply' state={{mode: 'secondReply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
                               Show Message Builder
                             </Link >
@@ -1278,7 +1254,7 @@ class FacebookPosts extends React.Component {
                       </span>
                     </button>
                 </div>
-                <div style={{ maxHeight: '600px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200' className="modal-body">
+                <div style={{ maxHeight: '600px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
                   <ViewMessage payload={this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : []} />
                 </div>
               </div>
@@ -1298,8 +1274,8 @@ class FacebookPosts extends React.Component {
                       </span>
                     </button>
                 </div>
-                <div style={{ maxHeight: '500px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200' className="modal-body">
-                  <Preview 
+                <div style={{ maxHeight: '500px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                  <Preview
                   selectedPage={this.state.selectedPage}
                   postType={this.state.postType}
                   attachments={this.state.attachments}

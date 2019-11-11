@@ -1,6 +1,6 @@
 import React from 'react'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {

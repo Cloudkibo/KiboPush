@@ -6,9 +6,8 @@ import PollsInfo from './userPolls'
 import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -102,7 +101,7 @@ class UserDetails extends React.Component {
     this.displayData(data.selected, this.props.pages)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in allpages', nextProps)
     if (nextProps.pages && nextProps.count) {
       this.displayData(0, nextProps.pages)
@@ -111,7 +110,7 @@ class UserDetails extends React.Component {
       this.setState({pagesData: [], totalLength: 0})
     }
     if (nextProps.response) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/operationalDashboard`
       })
     }

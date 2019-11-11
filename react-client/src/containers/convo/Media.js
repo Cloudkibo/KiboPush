@@ -8,9 +8,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 
 class Media extends React.Component {
@@ -209,11 +209,11 @@ class Media extends React.Component {
       buttons: this.state.button})
   }
   removeButton (obj) {
-    this.state.button.map((elm, index) => {
-      if (index === obj.id) {
-        this.state.button.splice(index, 1)
+    for (let a = 0; a < this.state.buttons.length; a++) {
+      if (a === obj.id) {
+        this.state.button.splice(a, 1)
       }
-    })
+    }
     if (obj.button && obj.button.type === 'postback') {
       var deletePayload = obj.button.payload
     }
@@ -272,7 +272,7 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        {
+        {/* {
         this.state.showErrorDialogue &&
           <ModalContainer style={{width: '300px'}}
             onClose={this.closeDialog}>
@@ -282,7 +282,7 @@ class Media extends React.Component {
               <p>{this.state.errorMsg}</p>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         {!this.state.loading &&
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
@@ -293,11 +293,11 @@ class Media extends React.Component {
         <div style={{minHeight: 170, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
-          ? <div className='align-center' style={{padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>
-          
+
             <input
               ref='file'
               type='file'
@@ -321,7 +321,7 @@ class Media extends React.Component {
                 (!this.state.showPreview && this.state.fileurl && this.state.fileurl !== '') &&
                   <div className='align-center'>
                     { this.state.mediaType === 'image' &&
-                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
+                    <img alt='' style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
                   }
                     { this.state.mediaType === 'video' &&
                     <div style={{marginTop: '50px'}}>
@@ -333,7 +333,7 @@ class Media extends React.Component {
               }
               {
                 this.state.showPreview && this.state.mediaType === 'image' &&
-                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
+                <img alt='' style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
               }
               { this.state.showPreview && this.state.mediaType === 'video' &&
                 <div style={{padding: '10px'}}>

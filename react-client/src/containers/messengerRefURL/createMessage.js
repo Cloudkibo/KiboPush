@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import AlertContainer from 'react-alert'
-import { browserHistory } from 'react-router'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerRefURL.actions'
 
@@ -52,12 +51,12 @@ class MessengerRefURLMessage extends React.Component {
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/editMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL}
       })
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.state.pageId}
       })

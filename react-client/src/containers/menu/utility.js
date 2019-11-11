@@ -10,8 +10,10 @@ import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 export function transformData (data) {
   data = JSON.parse(JSON.stringify(data))
-  data.map((item) => {
-    item.submenu.map((sub) => {
+  for (let a = 0; a < data.length; a++) {
+    let item = data[a]
+    for (let b = 0; b < item.submenu.length; b++) {
+      let sub = item.submenu[b]
       if (sub.submenu && sub.submenu.length > 0) {
         sub.type = 'nested'
         sub.call_to_actions = sub.submenu
@@ -20,7 +22,7 @@ export function transformData (data) {
       } else {
         delete sub.submenu
       }
-    })
+    }
     if (item.submenu && item.submenu.length > 0) {
       item.type = 'nested'
       item.call_to_actions = item.submenu
@@ -29,7 +31,7 @@ export function transformData (data) {
     } else {
       delete item.submenu
     }
-  })
+  }
   var final = {}
   final.persistent_menu = [{locale: 'default', call_to_actions: data}]
   JSONstringify(final)

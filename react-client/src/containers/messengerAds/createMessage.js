@@ -142,6 +142,7 @@ class CreateMessage extends React.Component {
       }
       if (!removePayload) {
         if (event.buttons) {
+          /* eslint-disable */
           let buttonIndex = event.buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
           if (buttonIndex > -1) {
              event.buttons[buttonIndex].payload = tempMessages.length + 1
@@ -149,6 +150,7 @@ class CreateMessage extends React.Component {
         } else if (event.cards) {
           for (let i = 0; i < event.cards.length; i++) {
               let buttonIndex = event.cards[i].buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
+              /* eslint-enable */
               if (buttonIndex > -1) {
                   event.cards[i].buttons[buttonIndex].payload = tempMessages.length + 1
               }
@@ -329,7 +331,7 @@ class CreateMessage extends React.Component {
               <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
                 { this.state.jsonMessages.map((jsonMessage, index) => (
                   <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
-                    <a id={'tab-' + jsonMessage.jsonAdMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonAdMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
+                    <a href='#/' id={'tab-' + jsonMessage.jsonAdMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonAdMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
                       {jsonMessage.title}
                     </a>
                     { (index < this.state.jsonMessages.length - 1) &&

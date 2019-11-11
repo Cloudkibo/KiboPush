@@ -1,12 +1,11 @@
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {getSubscriberReachEstimation} from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -87,7 +86,7 @@ class Targeting extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -513,8 +512,8 @@ class Targeting extends React.Component {
 
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     console.log('this.state.pageValue in component will receive', this.state.pageValue)
     if (nextProps.resetTarget) {
       this.resetTargeting()
@@ -533,7 +532,7 @@ class Targeting extends React.Component {
       this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
-        this.state.selectedRadio = 'segmentation'
+        this.setState({selectedRadio: 'segmentation'})
       }
     }
     if (this.props.tags) {
@@ -557,13 +556,21 @@ class Targeting extends React.Component {
   render () {
     return (
       <div className='row'>
-         {
-          this.state.isShowingLearnMore &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.isShowingLearnMore}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.isShowingLearnMore}>
-              <span>you can not send messages to any of your subscribers if :</span>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="learnMore" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                      Subscriber count is zero
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <span>you can not send messages to any of your subscribers if :</span>
               <ol>
                 <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
                 <li>No subscriber match the selected criteria</li>
@@ -572,10 +579,11 @@ class Targeting extends React.Component {
                 <div style={{display: 'inline-block', padding: '5px'}}>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
+                </div>
+              </div>
+            </div>
+          </div>
+        {/* {
           this.state.isShowingModalPro &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeProDialog}>
@@ -592,16 +600,17 @@ class Targeting extends React.Component {
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
-        { 
+        {
           <span
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}
           >
-            This {this.props.component} will be sent to {this.props.subscriberCount} subscriber(s). 
+            This {this.props.component} will be sent to {this.props.subscriberCount} subscriber(s).
             { this.props.subscriberCount === 0 &&
-              <a onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}>
+              <a href='#/' onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
+              data-toggle="modal" data-target="#learnMore">
                 Learn More
             </a>
             }
@@ -629,7 +638,7 @@ class Targeting extends React.Component {
             <span class="m-form__help">
               These broadcasts cannot contain any promotions (no sales, coupons and discounts, etc.) and
               should be within one of the 16 allowed use cases defined by
-              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank'> Facebook</a>.
+              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank' rel='noopener noreferrer'> Facebook</a>.
 					  </span>
             <div className="m-alert m-alert--outline m-alert--outline-2x alert alert-warning alert-dismissible fade show" role="alert">
 							<button type="button" style={{top: '-10px'}} className="close" data-dismiss="alert" aria-label="Close"></button>
@@ -649,7 +658,7 @@ class Targeting extends React.Component {
             <span class="m-form__help">
               These broadcasts can contain promotions, but the target audience is limited to subscribers who
               interacted with your bot in the last 24 hours.
-              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank'> Learn more here</a>
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank' rel='noopener noreferrer'> Learn more here</a>
 					  </span>
 				  </div>
         </div> */}
@@ -680,7 +689,7 @@ class Targeting extends React.Component {
             <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
             <span style={{fontSize: '0.9rem'}}>
               This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank' rel='noopener noreferrer'>link.</a>
             </span>
           </div>
           }
@@ -730,7 +739,7 @@ class Targeting extends React.Component {
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
                       {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'  */ }
-                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                         <i className='la la-info-circle' />
                       </a>
                       {/* add paid plan check later
@@ -763,7 +772,7 @@ class Targeting extends React.Component {
                     </div>
                     <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
                       {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                      <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                         <i className='la la-info-circle' />
                       </a>
                       {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
@@ -804,7 +813,7 @@ class Targeting extends React.Component {
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
                     {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
                     {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
@@ -834,7 +843,7 @@ class Targeting extends React.Component {
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
                     {/* this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C' */}
-                    ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    ? <a href='#/' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
                     {/* : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;

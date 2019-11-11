@@ -5,8 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { loadAutopostingList, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
@@ -19,22 +18,14 @@ class Autoposting extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isShowingModal: false,
-      isShowingModalDelete: false,
       showListItems: true,
       deleteid: '',
-      showWordPressGuide: false,
       newsPageIndex: []
     }
     props.loadAutopostingList()
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
-    this.closeGuide = this.closeGuide.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
   }
   scrollToTop () {
@@ -64,16 +55,8 @@ class Autoposting extends React.Component {
     }
   }
   viewGuide () {
-    this.setState({
-      showWordPressGuide: true
-    })
   }
-  closeGuide () {
-    this.setState({
-      showWordPressGuide: false
-    })
-  }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
       this.setState({newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
@@ -81,23 +64,6 @@ class Autoposting extends React.Component {
 
   updateDeleteID (id) {
     this.setState({deleteid: id})
-    this.showDialogDelete()
-  }
-
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  showDialogDelete () {
-    this.setState({isShowingModalDelete: true})
-  }
-
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
   }
 
   gotoSettings (item) {
@@ -123,18 +89,27 @@ class Autoposting extends React.Component {
       time: 3000,
       transition: 'scale'
     }
+    console.log('autoposting history', this.props.location)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-        this.state.showWordPressGuide &&
-        <ModalContainer style={{width: '500px', top: '80px'}}
-          onClose={this.closeGuide}>
-          <ModalDialog style={{width: '500px', top: '80px'}}
-            onClose={this.closeGuide}>
-            <h4>Guidelines for integrating WordPress blogs</h4>
-            <div className='panel-group accordion' id='accordion1'>
+        <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Guidelines for integrating WordPress blogs
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='panel-group accordion' id='accordion1'>
               <div className='panel panel-default'>
                 <div className='panel-heading guidelines-heading'>
                   <h4 className='panel-title'>
@@ -174,7 +149,7 @@ class Autoposting extends React.Component {
                 </div>
                 <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                   <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
+                    <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank' rel='noopener noreferrer'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
                     <ul>
                       <li>
                       Go to Settings -> Webhooks on WordPress dashboard
@@ -198,32 +173,85 @@ class Autoposting extends React.Component {
                 </div>
               </div>
             </div>
-          </ModalDialog>
-        </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Autoposting Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='Rt4uOwG9vQE'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Feed
+									          </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											        </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <AddChannel msg={this.msg} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Integration
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this integration?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteautoposting(this.state.deleteid)
+                  }}
+                  data-dismiss='modal'>Delete
+                          </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -238,8 +266,8 @@ class Autoposting extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Auto Posting? Here is the <a href='https://kibopush.com/autoposting/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Auto Posting? Here is the <a href='https://kibopush.com/autoposting/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
         }
@@ -264,8 +292,8 @@ class Autoposting extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Autoposting is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank'>Register to News Page Index</a>.
-              Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank'>Facebook's Subcription Messaging Policy</a>
+              Autoposting is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
+              Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank' rel='noopener noreferrer'>Facebook's Subcription Messaging Policy</a>
             </div>
           </div>
         }
@@ -281,7 +309,7 @@ class Autoposting extends React.Component {
               <div className='m-portlet__head-tools'>
               {
                 this.state.newsPageIndex.length > 0?
-                <Link onClick={this.showDialog}>
+                <Link data-toggle="modal" data-target="#addFeed">
                   <button
                     className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                     <span>
@@ -314,36 +342,7 @@ class Autoposting extends React.Component {
                 className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                 <div className='row align-items-center'>
                   <div className='col-xl-8 order-2 order-xl-1' />
-                  <div
-                    className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                    {
-                      this.state.isShowingModal &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <AddChannel msg={this.msg} onClose={this.closeDialog} openGuidelines={this.viewGuide} />
-                        </ModalDialog>
-                      </ModalContainer>
-                    }
-                    {
-                      this.state.isShowingModalDelete &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeDialogDelete}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <h3>Delete Integration</h3>
-                          <p>Are you sure you want to delete this integration?</p>
-                          <button style={{float: 'right'}}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.props.deleteautoposting(this.state.deleteid)
-                              this.closeDialogDelete()
-                            }}>Delete
-                          </button>
-                        </ModalDialog>
-                      </ModalContainer>
-                    }
+                  <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                     <div
                       className='m-separator m-separator--dashed d-xl-none' />
                   </div>
@@ -353,7 +352,7 @@ class Autoposting extends React.Component {
                 this.props.autopostingData && this.props.autopostingData.length > 0
                   ? this.props.autopostingData.map((item, i) => (
                     <div className='m-widget5'>
-                      <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
+                      <ListItem key={item._id} data-toggle="modal" data-target="#deleteFeed" updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
                     </div>
                 ))
                   : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>

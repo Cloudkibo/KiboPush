@@ -8,7 +8,7 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
 import NonSubscribersList from './nonSubscribersList'
@@ -45,7 +45,7 @@ class CustomerListDetails extends React.Component {
     document.title = `${title} | Customer List Details`;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
       this.setState({ totalLength: nextProps.listDetail.length })
@@ -267,7 +267,7 @@ class CustomerListDetails extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(this.state.totalLength / 4)}
                           marginPagesDisplayed={1}

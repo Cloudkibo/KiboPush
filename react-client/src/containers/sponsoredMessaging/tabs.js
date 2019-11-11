@@ -98,13 +98,13 @@ class Tab extends React.Component {
       <div>
         <ul className='nav nav-tabs'>
           <li>
-            <a id='Campaign' className='broadcastTabs active'>Ad Campaign</a>
+            <a href='#/' id='Campaign' className='broadcastTabs active'>Ad Campaign</a>
           </li>
           <li>
-            <a id='Adset' className='broadcastTabs'>Ad set</a>
+            <a href='#/' id='Adset' className='broadcastTabs'>Ad set</a>
           </li>
           <li>
-            <a id='AdCreative' className='broadcastTabs'>Create Ad</a>
+            <a href='#?' id='AdCreative' className='broadcastTabs'>Create Ad</a>
           </li>
         </ul>
         <div className='tab-content'>

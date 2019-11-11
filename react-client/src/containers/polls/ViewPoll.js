@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 class ViewPoll extends React.Component {
   componentDidMount () {
     const hostname =  window.location.hostname;

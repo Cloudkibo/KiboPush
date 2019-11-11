@@ -1,0 +1,1 @@
+console.error("Error: Couldn't find preset \"@babel/preset-env\" relative to directory \"/home/cloudkibo-faizan/Drive/Cloudkibo/KiboPush/node_modules/react-notification-badge\" while parsing file: /home/cloudkibo-faizan/Drive/Cloudkibo/KiboPush/node_modules/react-notification-badge/lib/index.js");

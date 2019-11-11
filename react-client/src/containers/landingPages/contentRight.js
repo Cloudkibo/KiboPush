@@ -35,7 +35,7 @@ class ContentRightSide extends React.Component {
             }
           </div>
           <div className='col-md-4 col-lg-4 col-sm-4' style={{height: '400px', lineHeight: '400px'}}>
-            <img className='col-md-12 col-lg-12 col-sm-12' style={{width: 'auto', height: 'auto', verticalAlign: 'baseline'}} src={this.props.initialState.mediaLink} />
+            <img alt='' className='col-md-12 col-lg-12 col-sm-12' style={{width: 'auto', height: 'auto', verticalAlign: 'baseline'}} src={this.props.initialState.mediaLink} />
           </div>
         </div>
       </div>

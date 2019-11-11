@@ -30,12 +30,12 @@ class Tab extends React.Component {
       <div className='col-md-12 col-lg-12 col-sm-12'>
         <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
           <li className='nav-item m-tabs__item'>
-            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('optInActions')}>
+            <a href='#/' className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('optInActions')}>
               Opt-In Actions
             </a>
           </li>
           <li className='nav-item m-tabs__item'>
-            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
+            <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('setup')}>
               QRCode
             </a>
           </li>

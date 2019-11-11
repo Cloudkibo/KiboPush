@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
-import { browserHistory } from 'react-router'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
@@ -31,7 +30,7 @@ class GettingStarted extends React.Component {
     /* eslint-enable */
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       this.generateAlert('success', nextprops.successMessage)
     } else if (nextprops.errorMessage && this.state.step !== 0) {
@@ -95,7 +94,7 @@ class GettingStarted extends React.Component {
   }
 /* eslint-enable */
   gotopage () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/addPageWizard`,
       state: {showMsg: true}
     })

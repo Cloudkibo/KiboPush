@@ -30,7 +30,7 @@ class ChatArea extends React.Component {
     }
     props.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
     props.markRead(this.props.activeSession._id, this.props.sessions)
-    
+
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
     this.updateChat = this.updateChat.bind(this)
@@ -58,11 +58,12 @@ class ChatArea extends React.Component {
   isUserSessionValid (chats) {
     var userMessages = []
     var sessionValid = true
-    chats.map((msg, index) => {
+    for (let a = 0; a < chats.length; a++) {
+      let msg = chats[a]
       if (msg.format === 'twilio') {
         userMessages.push(msg)
       }
-    })
+    }
     var lastMessage = userMessages[userMessages.length -1]
     if (lastMessage) {
       sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
@@ -88,7 +89,7 @@ updateChat (chat, newChat) {
   loadMoreMessage () {
     this.props.fetchChat(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.chat[0]._id})
   }
-  
+
   // componentDidMount () {
   //   console.log('in componentDidMount')
   //   var addScript = document.createElement('script')
@@ -136,8 +137,8 @@ updateChat (chat, newChat) {
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of ChatArea', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of ChatArea', nextProps)
     if (nextProps.socketSession || nextProps.socketSeen) {
       nextProps.fetchChat(this.props.activeSession._id, {page: 'first', number: 25})
       nextProps.resetSocket()
@@ -178,7 +179,7 @@ updateChat (chat, newChat) {
                   <ChatItem activeSession={this.props.activeSession}
                     user={this.props.user}
                     updateUnreadCount={this.props.updateUnreadCount}
-                    chat={this.props.chat} 
+                    chat={this.props.chat}
                     scrollToMessage={this.props.scrollToMessage}/>
                   <div className='m-messenger__seperator' />
                   <ChatBox activeSession={this.props.activeSession}

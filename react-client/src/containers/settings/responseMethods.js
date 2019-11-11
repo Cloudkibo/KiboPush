@@ -20,7 +20,7 @@ class AutomationControls extends React.Component {
   componentDidMount () {
     this.updateResponseMethod(this.props.responseMethod)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateResponseMethod(nextProps.responseMethod)
   }
   updateResponseMethod (responseMethod) {

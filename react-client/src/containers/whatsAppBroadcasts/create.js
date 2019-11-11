@@ -44,7 +44,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     props.getCount([], this.onGetCount)
   }
 
-  
+
   debounce () {
     this.props.getCount(this.state.conditions, this.onGetCount)
   }
@@ -273,12 +273,12 @@ class CreateWhatsAppBroadcast extends React.Component {
                       <div className='col-12'>
                         <ul className='nav nav-tabs'>
                           <li>
-                            <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
+                            <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                           </li>
                           <li>
                             {this.state.broadcast.length > 0
-                              ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                              : <a>Targeting</a>
+                              ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              : <a href='#/'>Targeting</a>
                             }
                           </li>
 

@@ -6,7 +6,6 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
@@ -36,7 +35,6 @@ class Stats extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
         <Sidebar />
         <Responsive />
         <div className='container'>
@@ -130,7 +128,7 @@ class Stats extends React.Component {
                         <option value='LY'>LAST YEAR (2016)</option>
                         <option value='CUR'>CURRENT YEAR (2017)</option>
                       </select>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
@@ -166,7 +164,7 @@ class Stats extends React.Component {
                       Subscribers
                     </span>
                       </div>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
@@ -185,7 +183,7 @@ class Stats extends React.Component {
                   <div className='ui-block' data-mh='pie-chart'>
                     <div className='ui-block-title'>
                       <div className='h6 title'>Activity Chart</div>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
@@ -252,7 +250,7 @@ class Stats extends React.Component {
                   <div className='ui-block'>
                     <div className='ui-block-title'>
                       <div className='h6 title'>Push to Click Ratio</div>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
@@ -280,7 +278,7 @@ class Stats extends React.Component {
                       <div className='h6 title'>Geolocation data Of
                         subscribers
                       </div>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
@@ -346,7 +344,7 @@ class Stats extends React.Component {
                         <option value='LY'>LAST YEAR (2016)</option>
                         <option value={2}>CURRENT YEAR (2017)</option>
                       </select>
-                      <a href='#' className='more'>
+                      <a href='#/' className='more'>
                         <svg className='olymp-three-dots-icon'>
                           <use
                             xlinkHref='icons/icons.svg#olymp-three-dots-icon' />

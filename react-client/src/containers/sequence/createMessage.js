@@ -8,8 +8,7 @@ import { editMessage, createMessage } from '../../redux/actions/sequence.action'
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
@@ -20,24 +19,14 @@ class CreateMessage extends React.Component {
       buttonActions: ['open website', 'send sequence message'],
       broadcast: this.props.location.state ? this.props.location.state.payload : [],
       convoTitle: 'Broadcast Title',
-      isShowingModalGuideLines: false
     }
     this.sendConvo = this.sendConvo.bind(this)
     this.goBack = this.goBack.bind(this)
-    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
-    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
 
   handleChange (broadcast) {
     this.setState(broadcast)
-  }
-  showGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: true})
-  }
-
-  closeGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: false})
   }
 
   componentDidMount () {
@@ -75,10 +64,10 @@ class CreateMessage extends React.Component {
       payload.payload = this.state.broadcast
       payload.title = this.state.convoTitle
       payload.sequenceId = this.props.location.state.sequenceId
-      this.props.createMessage(payload, browserHistory, this.msg, this.props.location.state.name)
+      this.props.createMessage(payload, this.props.history, this.msg, this.props.location.state.name)
     } else if (this.props.location.state.action === 'edit') {
       this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
         state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
       })
@@ -92,12 +81,12 @@ class CreateMessage extends React.Component {
   goBack () {
     //  this.props.createSequence({name: this.state.name})
     if (this.props.location.state.payload && this.props.location.state.payload.length > 0) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
-        state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+        state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId, name: this.state.convoTitle}
       })
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/editSequence`,
         state: {module: 'view', _id: this.props.location.state.sequenceId, name: this.state.convoTitle}
       })
@@ -113,13 +102,21 @@ class CreateMessage extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.isShowingModalGuideLines &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeGuideLinesDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeGuideLinesDialog}>
-              <h4>Message Types</h4>
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messagesType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                Message Types
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
               <p> Following are the types of messages that can be sent to facebook messenger.</p>
               <div className='panel-group accordion' id='accordion1'>
                 <div className='panel panel-default'>
@@ -131,7 +128,7 @@ class CreateMessage extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
+                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank' rel='noopener noreferrer'>link.</a></p>
                     </div>
                   </div>
                 </div>
@@ -160,9 +157,10 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              </div>
+            </div>
+          </div>
+        </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -172,7 +170,7 @@ class CreateMessage extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} data-toggle="modal" data-target="#messagesType">Message Types</Link>
             </div>
           </div>
           <div className='row'>

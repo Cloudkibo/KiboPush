@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
 import {loadAutopostingSummary} from '../../redux/actions/dashboard.actions'
 import {loadAutopostingSummaryForBackdoor} from '../../redux/actions/backdoor.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import IconStack from '../../components/Dashboard/IconStackForAutoposting'
 import moment from 'moment'
 import LISTWIDGET from '../../components/Dashboard/listWidget'
@@ -34,8 +33,8 @@ class AutopostingSummary extends React.Component {
       this.props.loadAutopostingSummary({days: 30})
     }
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('in UNSAFE_componentWillReceiveProps of autopostingSummary', nextprops)
     if (nextprops.autopostingSummary &&
       (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
         nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||

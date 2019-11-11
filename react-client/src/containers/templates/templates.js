@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import TemplateSurveys from './templateSurveys'
 import TemplatePolls from './templatePolls'
 import TemplateBroadcasts from './templateBroadcasts'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 const kiboPushTemplates = 10
 const userTemplates = 40
 
@@ -36,7 +36,7 @@ class templates extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding templates? Here is the <a href='http://kibopush.com/templates/' target='_blank'>documentation</a>.
+              Need help in understanding templates? Here is the <a href='https://kibopush.com/templates/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <Link to='/categories' className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right'>Category

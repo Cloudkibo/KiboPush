@@ -5,7 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -116,7 +115,7 @@ class CommentCaptureEdit extends React.Component {
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
-          buttonActions={this.state.buttonActions} 
+          buttonActions={this.state.buttonActions}
           componentLimit={this.state.componentLimit}/>
       </div>
     )

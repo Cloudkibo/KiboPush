@@ -9,14 +9,13 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import { updateChecks } from '../../redux/actions/wizard.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {getCurrentProduct} from '../../utility/utils'
 
 class InviteSubscribers extends React.Component {
@@ -57,7 +56,7 @@ class InviteSubscribers extends React.Component {
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       //  this.generateAlert('success', nextprops.successMessage)
       this.msg.success('Message sent successfully!')
@@ -127,6 +126,9 @@ class InviteSubscribers extends React.Component {
           selectPage: this.props.pages[0]
         })
       }
+    }
+    if(this.props.location && !this.props.location.state) {
+      this.refs.welcome.click()
     }
   }
 
@@ -198,19 +200,28 @@ class InviteSubscribers extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Welcome to KiboPush</h3>
-              <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
+        <a href='#/' style={{ display: 'none' }} ref='welcome' data-toggle="modal" data-target="#welcome">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Welcome to KiboPush
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
+                  <a href='#/' style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'
+                  data-dismiss='modal'>
                     Continue
-                  </Link>
+                  </a>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <Link to='/dashboard' className='btn btn-secondary'>
@@ -218,16 +229,17 @@ class InviteSubscribers extends React.Component {
                   </Link>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <Header />
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='1' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
+                  <Sidebar history={this.props.history} step='1' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -240,17 +252,17 @@ class InviteSubscribers extends React.Component {
                       <div className='m-portlet__head-tools'>
                         <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist'>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
+                            <a href='#/' className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
                               Become a Subscriber
                             </a>
                           </li>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
+                            <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
                               Share Your Page
                             </a>
                           </li>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
+                            <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
                               Share Page Link
                             </a>
                           </li>
@@ -282,7 +294,7 @@ class InviteSubscribers extends React.Component {
                           </div>
                           <br /><br /><br /><br />
                           <center>
-                            <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
+                            <a className='btn btn-primary' href={this.state.fblink} target='_blank' rel='noopener noreferrer' onClick={this.sendTestMessage}>
                               <span>Subscribe Now</span>
                             </a>
                           </center>
@@ -312,7 +324,7 @@ class InviteSubscribers extends React.Component {
                           </div>
                           <br /><br /><br /><br />
                           <center>
-                            <a className='btn btn-primary' target='_blank' href={this.getlink()}>
+                            <a className='btn btn-primary' target='_blank' rel='noopener noreferrer' href={this.getlink()}>
                               <i className='fa fa-facebook' style={{marginRight: '10px'}} />
                               <span>Share Page</span>
                             </a>

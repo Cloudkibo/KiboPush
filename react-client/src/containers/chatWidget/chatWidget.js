@@ -6,8 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import AlertContainer from 'react-alert'
-import { Link, browserHistory } from 'react-router'
 
 class ChatWidget extends React.Component {
   constructor (props, context) {
@@ -20,7 +18,7 @@ class ChatWidget extends React.Component {
   }
 
   goToWhitelistDomain () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'whitelistDomains'}
     })
@@ -36,16 +34,9 @@ class ChatWidget extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
@@ -69,11 +60,11 @@ class ChatWidget extends React.Component {
                     </div>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <h5>Step 1 -> Whitelist Domain:</h5>
-                      <p>You need to whitelist your website URL on your Facebook Page to display the plugin. Please click <Link style={{color: '#5867dd', cursor: 'pointer'}}onClick={this.goToWhitelistDomain}> here </Link>to whitelist your domain</p>
+                      <p>You need to whitelist your website URL on your Facebook Page to display the plugin. Please click <a href='#/' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.goToWhitelistDomain}> here </a>to whitelist your domain</p>
                     </div>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <h5>Step 2 -> Embed Messenger Plugin:</h5>
-                      <p>Please follow the guide <a href='https://developers.facebook.com/docs/messenger-platform/discovery/customer-chat-plugin/' target='_blank'> here </a>to embed Messenger Plugin.</p>
+                      <p>Please follow the guide <a href='https://developers.facebook.com/docs/messenger-platform/discovery/customer-chat-plugin/' target='_blank' rel='noopener noreferrer'> here </a>to embed Messenger Plugin.</p>
                     </div>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <h5>Step 3 -> Add KiboPush Code:</h5>

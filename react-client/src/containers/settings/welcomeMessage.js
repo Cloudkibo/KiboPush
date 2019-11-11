@@ -1,14 +1,13 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import YouTube from 'react-youtube'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class WelcomeMessage extends React.Component {
@@ -62,21 +61,21 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoCreate (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
   }
 
   gotoEdit (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editWelcomeMessage`,
       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
     })
   }
 
   gotoView (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -85,7 +84,7 @@ class WelcomeMessage extends React.Component {
   render () {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-        {
+        {/* {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false }) }}>
@@ -98,14 +97,14 @@ class WelcomeMessage extends React.Component {
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -123,8 +122,8 @@ class WelcomeMessage extends React.Component {
             <div className='m-content'>
               <div className='form-group m-form__group'>
                 <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
-                  Or Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                  Need help in understanding Welcome Message? <a href='https://kibopush.com/welcome-message/' target='_blank' rel='noopener noreferrer'>Click Here </a>
+                  Or Check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
                 </div>
               </div>
               <div className='row'>

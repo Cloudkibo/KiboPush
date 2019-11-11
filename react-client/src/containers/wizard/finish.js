@@ -8,7 +8,7 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
@@ -48,7 +48,7 @@ class Finish extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/dashboard`
       })
     })
@@ -60,7 +60,7 @@ class Finish extends React.Component {
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       //  this.generateAlert('success', nextprops.successMessage)
       this.msg.success('Message sent successfully!')
@@ -205,7 +205,7 @@ class Finish extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='7' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
+                  <Sidebar history={this.props.history} step='7' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -222,7 +222,7 @@ class Finish extends React.Component {
                         <label style={{fontWeight: 'normal'}}>Want to get the latest updates and news from KiboPush? Please send a message on our page to become a subscriber.</label>
                         <br /><br /><br /><br />
                         <center>
-                          <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' onClick={this.sendTestMessage}>
+                          <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' rel='noopener noreferrer' onClick={this.sendTestMessage}>
                             <span>Subscribe To KiboPush</span>
                           </a>
                         </center>

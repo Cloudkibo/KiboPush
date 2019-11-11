@@ -15,8 +15,8 @@ import {
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Halogen from 'halogen'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
 
 class File extends React.Component {
@@ -134,7 +134,7 @@ class File extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
-            ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
             : <Files
               className='files-dropzone'
               onChange={this.onFilesChange}
@@ -152,12 +152,12 @@ class File extends React.Component {
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.file.url} target='_blank' download>
+              <a href={this.state.file.url} target='_blank' rel='noopener noreferrer' download>
                 <h6 style={{wordBreak: 'break-word'}}><i className='fa fa-file-text-o' /><strong> {this.state.file.name} </strong></h6>
               </a>
             </div>
           }
-          {
+          {/* {
           this.state.showDialog &&
           <ModalContainer style={{width: '300px'}}
             onClose={this.closeDialog}>
@@ -167,7 +167,7 @@ class File extends React.Component {
               <p>{this.state.errorMsg}</p>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         </div>
       </div>
     )

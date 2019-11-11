@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import MAPCUSTOMER from './mapCustomer'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
@@ -11,7 +10,6 @@ class ProfileArea extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      showUnsubscribeModal: false,
       isAssigned: '',
       role: '',
       assignedTeam: '',
@@ -34,8 +32,6 @@ class ProfileArea extends React.Component {
       oldSelectedFieldValue: '',
       hoverId: '',
     }
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.unassignTeam = this.unassignTeam.bind(this)
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.onTeamChange = this.onTeamChange.bind(this)
@@ -60,21 +56,20 @@ class ProfileArea extends React.Component {
     this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
   }
 
-  unSubscribe () {
+  unSubscribe() {
     this.props.changeActiveSession('none')
-    if (this.props.module === 'WHATSAPP' ) {
-      this.props.unSubscribe(this.props.activeSession._id, {isSubscribed: false, unSubscribedBy: 'agent'}, this.props.msg)
+    if (this.props.module === 'WHATSAPP') {
+      this.props.unSubscribe(this.props.activeSession._id, { isSubscribed: false, unSubscribedBy: 'agent' }, this.props.msg)
     } else {
       this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
     }
-    this.closeDialog()
   }
 
-  showToggle () {
-    this.setState({show: !this.state.show})
+  showToggle() {
+    this.setState({ show: !this.state.show })
   }
 
-  saveCustomField () {
+  saveCustomField() {
     let subscriberIds = this.props.activeSession._id
     let temp = {
       customFieldId: this.state.selectedField._id,
@@ -82,10 +77,10 @@ class ProfileArea extends React.Component {
       value: this.state.selectedField.value
     }
     this.props.setCustomFieldValue(temp)
-    this.setState({setFieldIndex: !this.state.setFieldIndex})
+    this.setState({ setFieldIndex: !this.state.setFieldIndex })
   }
 
-  handleSetCustomField (event) {
+  handleSetCustomField(event) {
     var temp = {
       _id: this.state.selectedField._id,
       name: this.state.selectedField.label,
@@ -93,15 +88,15 @@ class ProfileArea extends React.Component {
       value: event.target.value
     }
     if (this.state.oldSelectedFieldValue === event.target.value) {
-      this.setState({selectedField: temp, saveFieldValueButton: true})
+      this.setState({ selectedField: temp, saveFieldValueButton: true })
     } else {
-      this.setState({selectedField: temp, saveFieldValueButton: false})
+      this.setState({ selectedField: temp, saveFieldValueButton: false })
     }
   }
 
-  toggleSetFieldPopover (field) {
-    console.log('field',field)
-    this.setState({setFieldIndex: !this.state.setFieldIndex, selectedField: field, oldSelectedFieldValue: field.value})
+  toggleSetFieldPopover(field) {
+    console.log('field', field)
+    this.setState({ setFieldIndex: !this.state.setFieldIndex, selectedField: field, oldSelectedFieldValue: field.value })
   }
 
   hoverOn(id) {
@@ -109,14 +104,6 @@ class ProfileArea extends React.Component {
   }
   hoverOff() {
     this.setState({ hoverId: '' })
-  }
-
-  showDialog(subscriber, page) {
-    this.setState({ showUnsubscribeModal: true })
-  }
-
-  closeDialog() {
-    this.setState({ showUnsubscribeModal: false })
   }
 
   unassignTeam() {
@@ -293,8 +280,8 @@ class ProfileArea extends React.Component {
     this.hideAddTag()
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps profileArea.js', nextProps)
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps profileArea.js', nextProps)
     if (nextProps.activeSession.is_assigned) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
@@ -321,14 +308,14 @@ class ProfileArea extends React.Component {
 
   render() {
     console.log('state in profile', this.state)
-    let setFieldInput = <div style={{padding: '15px', maxHeight: '120px'}}>No Type Found</div>
+    let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
         className='form-control m-input'
         placeholder='value'
         onChange={this.handleSetCustomField}
         value={this.state.selectedField.value}
-    />
+      />
     } else if (this.state.selectedField.type === 'number') {
       setFieldInput = <input
         type='text'
@@ -336,7 +323,7 @@ class ProfileArea extends React.Component {
         placeholder='value'
         onChange={this.handleSetCustomField}
         value={this.state.selectedField.value}
-    />
+      />
     } else if (this.state.selectedField.type === 'date') {
       setFieldInput = <input className='form-control m-input'
         value={this.state.selectedField.value}
@@ -389,18 +376,18 @@ class ProfileArea extends React.Component {
                 </span>
                 {
                   this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                  <a className='m-card-profile__email m-link' onClick={() => this.showDialog()} style={{ color: '#716aca', cursor: 'pointer' }}>
+                  <a href='#/' className='m-card-profile__email m-link' data-toggle="modal" data-target="#unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
                     (Unsubscribe)
                   </a>
                 }
                 <br />
-                <a className='m-card-profile__email m-link'>
+                <a href='#/' className='m-card-profile__email m-link'>
                   {this.props.module !== 'WHATSAPP' && this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
                 </a>
                 <br />
                 {
                   this.props.user.isSuperUser && this.props.activeSession.customerId &&
-                  <a style={{ color: 'white' }}
+                  <a href='#/' style={{ color: 'white' }}
                     onClick={() => {
                       window.open(`http://demoapp.cloudkibo.com/${this.props.activeSession.customerId}`, '_blank', 'fullscreen=yes')
                     }}
@@ -434,259 +421,267 @@ class ProfileArea extends React.Component {
                       this.state.isAssigned &&
                       (
                         this.state.role === 'team'
-                        ? <div>
-                          <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
-                          <br />
-                          <br />
-                        </div>
-                        : <div>
-                          <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
-                          <br />
-                          <br />
-                        </div>
+                          ? <div>
+                            <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
+                            <br />
+                            <br />
+                          </div>
+                          : <div>
+                            <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
+                            <br />
+                            <br />
+                          </div>
                       )
                     }
                     {
                       this.props.user && this.props.user.role !== 'agent' &&
                       (
                         this.state.showAssignTeam
-                            ? <div className='m-accordion__item'>
-                              <div className='m-accordion__item-head'>
-                                <span className='m-accordion__item-icon'>
-                                  <i className='fa fa-users' />
-                                </span>
-                                <span className='m-accordion__item-title'>Assign to team</span>
-                                <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                                  <i className='la la-minus' />
-                                </span>
-                              </div>
-                              <div className='m-accordion__item-body'>
-                                <div className='m-accordion__item-content'>
-                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
-                                    <option value='' disabled>Select team</option>
-                                    {
-                                      this.props.teams.map((team, i) => (
-                                        <option key={i} value={team._id}>{team.name}</option>
-                                      ))
-                                    }
-                                  </select>
-                                  <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
-                                </div>
-                              </div>
-                            </div>
-                            : <div className='m-accordion__item'>
-                              <div className='m-accordion__item-head collapsed'>
-                                <span className='m-accordion__item-icon'>
-                                  <i className='fa fa-users' />
-                                </span>
-                                <span className='m-accordion__item-title'>Assign to team</span>
-                                <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                                  <i className='la la-plus' />
-                                </span>
-                              </div>
-                            </div>
-                      )
-                    }
-                    {
-                      this.state.showAssignAgent
                           ? <div className='m-accordion__item'>
                             <div className='m-accordion__item-head'>
                               <span className='m-accordion__item-icon'>
-                                <i className='fa fa-user' />
+                                <i className='fa fa-users' />
                               </span>
-                              <span className='m-accordion__item-title'>Assign to agent</span>
-                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                              <span className='m-accordion__item-title'>Assign to team</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
                                 <i className='la la-minus' />
                               </span>
                             </div>
                             <div className='m-accordion__item-body'>
                               <div className='m-accordion__item-content'>
-                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.agentValue} onChange={this.onAgentChange}>
-                                  <option value='' disabled>Select agent</option>
+                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.teamValue} onChange={this.onTeamChange}>
+                                  <option value='' disabled>Select team</option>
                                   {
-                                    this.props.agents.map((agent, i) => (
-                                      <option key={i} value={agent._id}>{agent.name}</option>
+                                    this.props.teams.map((team, i) => (
+                                      <option key={i} value={team._id}>{team.name}</option>
                                     ))
                                   }
                                 </select>
-                                <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToAgent}>Assign</button>
+                                <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToTeam}>Assign</button>
                               </div>
                             </div>
                           </div>
                           : <div className='m-accordion__item'>
                             <div className='m-accordion__item-head collapsed'>
                               <span className='m-accordion__item-icon'>
-                                <i className='fa fa-user' />
+                                <i className='fa fa-users' />
                               </span>
-                              <span className='m-accordion__item-title'>Assign to agent</span>
-                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                              <span className='m-accordion__item-title'>Assign to team</span>
+                              <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
                                 <i className='la la-plus' />
                               </span>
                             </div>
                           </div>
+                      )
+                    }
+                    {
+                      this.state.showAssignAgent
+                        ? <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-user' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign to agent</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
+                          </div>
+                          <div className='m-accordion__item-body'>
+                            <div className='m-accordion__item-content'>
+                              <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.agentValue} onChange={this.onAgentChange}>
+                                <option value='' disabled>Select agent</option>
+                                {
+                                  this.props.agents.map((agent, i) => (
+                                    <option key={i} value={agent._id}>{agent.name}</option>
+                                  ))
+                                }
+                              </select>
+                              <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.assignToAgent}>Assign</button>
+                            </div>
+                          </div>
+                        </div>
+                        : <div className='m-accordion__item'>
+                          <div className='m-accordion__item-head collapsed'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-user' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign to agent</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.toggleAssignAgent} className='m-accordion__item-icon'>
+                              <i className='la la-plus' />
+                            </span>
+                          </div>
+                        </div>
                     }
                   </div>
                 }
                 {this.props.module !== 'WHATSAPP' &&
-                <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
-                {
-                  this.state.popoverAddTagOpen
-                      ? <div className='m-accordion__item' style={{overflow: 'visible'}}>
-                        <div className='m-accordion__item-head'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-tags' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign Tags</span>
-                          <span style={{ cursor: 'pointer' }} onClick={this.hideAddTag} className='m-accordion__item-icon'>
-                            <i className='la la-minus' />
-                          </span>
-                      </div>
-                      <div className='m-accordion__item-body'>
-                        <div className='m-accordion__item-content'>
-                          <Select.Creatable
-                            options={this.state.tagOptions}
-                            onChange={this.handleAdd}
-                            value={this.state.addTag}
-                            placeholder='Add User Tags'
-                            menuShouldScrollIntoView={true}
-                          />
-                          {this.state.saveEnable
-                            ? <div className='col-12'>
-                              <button style={{marginTop: '10px'}}
-                                className='btn btn-primary btn-sm'
-                                onClick={() => {this.addTags()}}>Save
+                  <div style={{ marginTop: '20px' }} className='m-accordion m-accordion--default'>
+                    {
+                      this.state.popoverAddTagOpen
+                        ? <div className='m-accordion__item' style={{ overflow: 'visible' }}>
+                          <div className='m-accordion__item-head'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-tags' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign Tags</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.hideAddTag} className='m-accordion__item-icon'>
+                              <i className='la la-minus' />
+                            </span>
+                          </div>
+                          <div className='m-accordion__item-body'>
+                            <div className='m-accordion__item-content'>
+                              <Select.Creatable
+                                options={this.state.tagOptions}
+                                onChange={this.handleAdd}
+                                value={this.state.addTag}
+                                placeholder='Add User Tags'
+                                menuShouldScrollIntoView={true}
+                              />
+                              {this.state.saveEnable
+                                ? <div className='col-12'>
+                                  <button style={{ marginTop: '10px' }}
+                                    className='btn btn-primary btn-sm'
+                                    onClick={() => { this.addTags() }}>Save
                             </button>
-                            </div>
-                            : <div className='col-12'>
-                              <button style={{marginTop: '10px'}}
-                                className='btn btn-primary btn-sm'
-                                disabled>
-                                Save
+                                </div>
+                                : <div className='col-12'>
+                                  <button style={{ marginTop: '10px' }}
+                                    className='btn btn-primary btn-sm'
+                                    disabled>
+                                    Save
                             </button>
+                                </div>
+                              }
                             </div>
-                          }
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                      : <div className='m-accordion__item' style={{overflow: 'visible'}}>
-                      <div className='m-accordion__item-head collapsed'>
-                          <span className='m-accordion__item-icon'>
-                            <i className='fa fa-tags' />
-                          </span>
-                          <span className='m-accordion__item-title'>Assign Tags</span>
-                          <span style={{ cursor: 'pointer' }} onClick={this.showAddTag} className='m-accordion__item-icon'>
-                            <i className='la la-plus' />
-                          </span>
+                        : <div className='m-accordion__item' style={{ overflow: 'visible' }}>
+                          <div className='m-accordion__item-head collapsed'>
+                            <span className='m-accordion__item-icon'>
+                              <i className='fa fa-tags' />
+                            </span>
+                            <span className='m-accordion__item-title'>Assign Tags</span>
+                            <span style={{ cursor: 'pointer' }} onClick={this.showAddTag} className='m-accordion__item-icon'>
+                              <i className='la la-plus' />
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                    }
+                  </div>
                 }
-              </div>
-            }
               </div>
               {this.props.subscriberTags && this.props.subscriberTags.length > 0 &&
                 <div className='row' style={{ minWidth: '150px', padding: '10px' }}>
-                {
-                  this.props.subscriberTags.map((tag, i) => (
-                    <span key={i} style={{ display: 'flex' }} className='tagLabel'>
-                      <label className='tagName'>{tag.tag}</label>
-                      <div className='deleteTag' style={{ marginLeft: '10px' }}>
-                        <i className='fa fa-times fa-stack' style={{ marginRight: '-8px', cursor: 'pointer' }} onClick={() => this.removeTags(tag.tag)} />
-                      </div>
-                    </span>
-                  ))
-                }
-              </div>
+                  {
+                    this.props.subscriberTags.map((tag, i) => (
+                      <span key={i} style={{ display: 'flex' }} className='tagLabel'>
+                        <label className='tagName'>{tag.tag}</label>
+                        <div className='deleteTag' style={{ marginLeft: '10px' }}>
+                          <i className='fa fa-times fa-stack' style={{ marginRight: '-8px', cursor: 'pointer' }} onClick={() => this.removeTags(tag.tag)} />
+                        </div>
+                      </span>
+                    ))
+                  }
+                </div>
               }
               <div className='row'>
-              <div className='col-12'>
-                <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
-                {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
-                  ? <span>
-                    <a data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
-                      onClick={this.showToggle}>
-                        Custom Fields
+                <div className='col-12'>
+                  <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
+                    {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
+                      ? <span>
+                        <a href='#/' data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
+                          onClick={this.showToggle}>
+                          Custom Fields
                       {this.state.show
-                        ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
-                        : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
-                      }
-                    </a>
+                            ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
+                            : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
+                          }
+                        </a>
+                      </span>
+                      : null
+                    }
+                    <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
-                  : null
-                }
-                <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
-                </span>
                 </div>
               </div>
 
-                {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
-                  ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
-                    {
-                      this.props.customFieldOptions.map((field, i) => (
-                        <div key={i} className='row'>
-                          <div className='col-sm-12'>
-                            <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
-                              onMouseEnter={() => { this.hoverOn(field._id) }}
-                              onMouseLeave={this.hoverOff}
-                              style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
-                              <span style={{ marginLeft: '10px' }}>
-                                <span style={{ fontWeight: '100' }}>{field.label} : </span>
-                                <span style={{ color: '#3c3c7b' }}>{field.value === "" ? 'Not Set' : field.value}</span>
-                              </span>
-                            </div>
+              {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
+                ? <div id='customFields' style={{ paddingTop: '15px' }} className='collapse'>
+                  {
+                    this.props.customFieldOptions.map((field, i) => (
+                      <div key={i} className='row'>
+                        <div className='col-sm-12'>
+                          <div id='target' onClick={() => { this.toggleSetFieldPopover(field) }}
+                            onMouseEnter={() => { this.hoverOn(field._id) }}
+                            onMouseLeave={this.hoverOff}
+                            style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                            <span style={{ marginLeft: '10px' }}>
+                              <span style={{ fontWeight: '100' }}>{field.label} : </span>
+                              <span style={{ color: '#3c3c7b' }}>{field.value === "" ? 'Not Set' : field.value}</span>
+                            </span>
                           </div>
                         </div>
-                      ))
-                    }
-                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
-                      <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
-                      <PopoverBody>
-                        <div className='row' style={{ minWidth: '250px' }}>
-                          <div className='col-12'>
-                            <label>Set Value</label>
-                            {setFieldInput}
-                          </div>
-                          <button style={{ float: 'right', margin: '15px' }}
-                            className='btn btn-primary btn-sm'
-                            onClick={() => {
-                              this.saveCustomField()
-                            }}
-                            disabled={this.state.saveFieldValueButton}>
-                            Save
+                      </div>
+                    ))
+                  }
+                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                    <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
+                    <PopoverBody>
+                      <div className='row' style={{ minWidth: '250px' }}>
+                        <div className='col-12'>
+                          <label>Set Value</label>
+                          {setFieldInput}
+                        </div>
+                        <button style={{ float: 'right', margin: '15px' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.saveCustomField()
+                          }}
+                          disabled={this.state.saveFieldValueButton}>
+                          Save
                                         </button>
-                        </div>
-                      </PopoverBody>
-                    </Popover>
-                  </div>
-                  : <div style={{ padding: '15px', maxHeight: '120px' }}>
-                    <span>No Custom Field Found</span>
-                  </div>}
+                      </div>
+                    </PopoverBody>
+                  </Popover>
+                </div>
+                : <div style={{ padding: '15px', maxHeight: '120px' }}>
+                  <span>No Custom Field Found</span>
+                </div>}
 
             </div>
           </div>
         </div>
-        {
-          this.state.showUnsubscribeModal &&
-          <ModalContainer style={{ width: '500px' }}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{ width: '500px' }}
-              onClose={this.closeDialog}>
-              <h3>Unsubscribe</h3>
-              <p>Are you sure you want to Unsubscribe this Subscriber?</p>
-              <div style={{ width: '100%', textAlign: 'center' }}>
-                <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button className='btn btn-primary' onClick={this.unSubscribe}>
-                    Yes
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Unsubscribe
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to Unsubscribe this Subscriber?</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' onClick={this.unSubscribe} data-dismiss='modal'>
+                      Yes
                     </button>
-                </div>
-                <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button className='btn btn-primary' onClick={this.closeDialog}>
-                    No
+                  </div>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' data-dismiss='modal'>
+                      No
                     </button>
+                  </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

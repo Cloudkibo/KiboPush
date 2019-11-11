@@ -2,7 +2,6 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 import { removeButtonOldurl } from './actions.utility'
-import responseMethods from '../../containers/wizard/responseMethods'
 export const API_URL = '/api'
 
 export function deleteFiles (data) {

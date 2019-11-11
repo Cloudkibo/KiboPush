@@ -13,7 +13,7 @@ import {
   sendbroadcast,
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
@@ -91,7 +91,7 @@ class Image extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
-            ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+            ? {<div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
             : <div>
               <input
                 ref='file'
@@ -112,7 +112,7 @@ class Image extends React.Component {
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.imgSrc} target='_blank' download>
+              <a href={this.state.imgSrc} target='_blank' rel='noopener noreferrer' download>
                 <h6><i className='fa fa-file-image-o' /><strong> Download Image </strong></h6>
               </a>
             </div>

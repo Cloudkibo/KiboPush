@@ -7,9 +7,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { loadAutopostingMessages, loadAutopostingPosts } from '../../redux/actions/autoposting.actions'
 import { bindActionCreators } from 'redux'
-import { handleDate } from '../../utility/utils'
-import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router'
 import MESSAGES from '../../components/autoposting/autoposting_messages'
 import POSTS from '../../components/autoposting/autoposting_posts'
 
@@ -34,7 +31,7 @@ class MessagesContainer extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     if (['messenger', 'both'].indexOf(this.props.location.state.actionType) !== -1) {
       this.props.loadAutopostingMessages(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10})
     }
@@ -149,8 +146,8 @@ class MessagesContainer extends React.Component {
     this.displayPostsData(data.selected, this.props.autoposting_posts)
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.autoposting_messages && nextProps.autoposting_messages.length > 0) {
       this.displayMessagesData(0, nextProps.autoposting_messages)
       this.setState({ totalMessagesLength: nextProps.messagesCount })
@@ -179,7 +176,7 @@ class MessagesContainer extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding this page? Here is the <a href='https://kibopush.com/autoposting/' target='_blank'>documentation</a>.
+              Need help in understanding this page? Here is the <a href='https://kibopush.com/autoposting/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {

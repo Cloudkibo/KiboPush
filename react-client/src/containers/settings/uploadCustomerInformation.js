@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { uploadCustomerInfoFile } from '../../redux/actions/settings.actions'
 
 class ResetPassword extends React.Component {
@@ -18,7 +17,6 @@ class ResetPassword extends React.Component {
       columns: [],
       mappedColumns: [],
       selectedColumns: [],
-      showDialog: false,
       customerId: '',
       customerFirstName: '',
       customerLastName: '',
@@ -26,8 +24,6 @@ class ResetPassword extends React.Component {
     }
     this.onFileChange = this.onFileChange.bind(this)
     this.parseCSV = this.parseCSV.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.onSelectCustomerId = this.onSelectCustomerId.bind(this)
     this.onSelectCustomerFirstName = this.onSelectCustomerFirstName.bind(this)
     this.onSelectCustomerLastName = this.onSelectCustomerLastName.bind(this)
@@ -52,15 +48,6 @@ class ResetPassword extends React.Component {
         self.setState({columns: results.data[0], fileData: results.data})
       }
     })
-  }
-
-  showDialog (e) {
-    e.preventDefault()
-    this.setState({showDialog: true})
-  }
-
-  closeDialog () {
-    this.setState({showDialog: false})
   }
 
   onSelectCustomerId (e) {
@@ -152,55 +139,64 @@ class ResetPassword extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showDialog &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <div className='form-group m-form__group'>
-                <div className='alert m-alert m-alert--default' role='alert'>
-                  Please select columns for Customer ID, Customer First Name, and Customer Last Name.
-                </div>
-              </div>
-              <div className='form-group m-form__group'>
-                <select className='custom-select' style={{width: '100%'}} value={this.state.customerId} onChange={this.onSelectCustomerId} >
-                  <option value='' disabled>Select cloum for Customer ID...</option>
-                  {
-                    this.state.columns.map(column => (
-                      <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
-                    ))
-                  }
-                </select>
-              </div>
-              <div className='form-group m-form__group'>
-                <select className='custom-select' style={{width: '100%'}} value={this.state.customerFirstName} onChange={this.onSelectCustomerFirstName} >
-                  <option value='' disabled>Select cloum for Customer First Name...</option>
-                  {
-                    this.state.columns.map(column => (
-                      <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
-                    ))
-                  }
-                </select>
-              </div>
-              <div className='form-group m-form__group'>
-                <select className='custom-select' style={{width: '100%'}} value={this.state.customerLastName} onChange={this.onSelectCustomerLastName} >
-                  <option value='' disabled>Select cloum for Customer Last Name...</option>
-                  {
-                    this.state.columns.map(column => (
-                      <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
-                    ))
-                  }
-                </select>
-              </div>
-              <div className='form-group m-form__group'>
-                <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={this.uploadFile}>
-                  Upload
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="uploadCustomerInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Customer Information
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
                 </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='form-group m-form__group'>
+                  <div className='alert m-alert m-alert--default' role='alert'>
+                    Please select columns for Customer ID, Customer First Name, and Customer Last Name.
+                </div>
+                </div>
+                <div className='form-group m-form__group'>
+                  <select className='custom-select' style={{ width: '100%' }} value={this.state.customerId} onChange={this.onSelectCustomerId} >
+                    <option value='' disabled>Select cloum for Customer ID...</option>
+                    {
+                      this.state.columns.map(column => (
+                        <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='form-group m-form__group'>
+                  <select className='custom-select' style={{ width: '100%' }} value={this.state.customerFirstName} onChange={this.onSelectCustomerFirstName} >
+                    <option value='' disabled>Select cloum for Customer First Name...</option>
+                    {
+                      this.state.columns.map(column => (
+                        <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='form-group m-form__group'>
+                  <select className='custom-select' style={{ width: '100%' }} value={this.state.customerLastName} onChange={this.onSelectCustomerLastName} >
+                    <option value='' disabled>Select cloum for Customer Last Name...</option>
+                    {
+                      this.state.columns.map(column => (
+                        <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='form-group m-form__group'>
+                  <button style={{ float: 'right' }} className='btn btn-primary btn-sm' onClick={this.uploadFile}>
+                    Upload
+                </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -251,8 +247,8 @@ class ResetPassword extends React.Component {
                     <button
                       style={{float: 'right'}}
                       className='btn btn-primary btn-sm'
-                      onClick={this.showDialog}
                       disabled={this.state.file === ''}
+                      data-toggle="modal" data-target="#uploadCustomerInfo"
                     >
                       Upload
                     </button>

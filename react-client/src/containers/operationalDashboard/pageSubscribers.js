@@ -83,7 +83,7 @@ class PageSubscribers extends React.Component {
     this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers && nextProps.count) {
       this.displayData(0, nextProps.pageSubscribers)
       this.setState({ totalLength: nextProps.count })
@@ -408,7 +408,7 @@ class PageSubscribers extends React.Component {
                             </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
-                              breakLabel={<a>...</a>}
+                              breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
                               pageCount={Math.ceil(this.state.totalLength / 10)}
                               marginPagesDisplayed={2}

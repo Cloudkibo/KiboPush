@@ -3,7 +3,6 @@ import ReactPaginate from 'react-paginate'
 import { loadUniquePages } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory } from 'react-router'
 
 class UniquePages extends React.Component {
   constructor (props, context) {
@@ -27,7 +26,7 @@ class UniquePages extends React.Component {
   }
 
   goToUsers (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageUsers',
         state: {
           pageId: pageId,
@@ -37,7 +36,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageAdmins (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageAdmins',
         state: {
           pageId: pageId,
@@ -47,7 +46,7 @@ class UniquePages extends React.Component {
   }
 
   goToPermissions (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPagePermissions',
         state: {
           pageId: pageId,
@@ -57,7 +56,7 @@ class UniquePages extends React.Component {
   }
 
   goToPageTags (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageTags',
         state: {
             pageId: pageId,
@@ -67,7 +66,7 @@ class UniquePages extends React.Component {
   }
 
   goToSubscribersWithTags (pageId, pageName) {
-    browserHistory.push({
+    this.props.history.push({
         pathname: '/backdoorPageSubscribersWithTags',
         state: {
             pageId: pageId,
@@ -144,7 +143,7 @@ class UniquePages extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
                   <li className='m-portlet__nav-item'>
-                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                    <a href='#/' data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
                       {this.state.showUniquePages
                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
@@ -250,7 +249,7 @@ class UniquePages extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.props.uniquePages.totalCount / 10)}
                       marginPagesDisplayed={1}

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { loadBroadcastsList } from '../../redux/actions/whatsAppBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 import { handleDate } from '../../utility/utils'
 
@@ -76,7 +76,7 @@ onFilter (e) {
 }
 
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createWhatsAppBroadcast`
     })
   }
@@ -102,7 +102,7 @@ onFilter (e) {
     if (data.selected === 0) {
       this.props.loadBroadcastsList({
         last_id: 'none',
-        number_of_records: 10, 
+        number_of_records: 10,
         first_page: 'first',
         filter: this.state.filter,
         filter_criteria: {
@@ -152,8 +152,8 @@ onFilter (e) {
     document.title = `${title} | Broadcasts`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of smsBroadcasts', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -197,7 +197,7 @@ onFilter (e) {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -250,7 +250,7 @@ onFilter (e) {
                       &nbsp;&nbsp;days
                       </span>
                     </div>
-                    
+
                  </div>
                     { this.state.broadcastsData && this.state.broadcastsData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -304,7 +304,7 @@ onFilter (e) {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

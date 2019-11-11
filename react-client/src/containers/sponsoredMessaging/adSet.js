@@ -67,7 +67,7 @@ class adSet extends React.Component {
 
     if (e.target.id === 'budget_type'){
       temp.budget.type = e.target.value
-    }else if (e. target.id === 'budget_amount'){
+    }else if (e.target.id === 'budget_amount'){
       temp.budget.amount = e.target.value
     }
     this.setState({ad_set_payload: temp})

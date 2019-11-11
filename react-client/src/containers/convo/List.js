@@ -111,7 +111,8 @@ class List extends React.Component {
     }
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         console.log('data modification in list')
         data.image_url = obj.image_url
@@ -125,7 +126,7 @@ class List extends React.Component {
         }
         isPresent = true
       }
-    })
+    }
     if (!isPresent) {
       if (obj.default_action) {
         temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons, default_action: obj.default_action})

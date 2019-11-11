@@ -31,7 +31,7 @@ class viewPoll extends React.Component {
     this.setState({pollDetailsData: data})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
 
   backToUserDetails () {

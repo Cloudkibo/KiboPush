@@ -140,7 +140,7 @@ class SessionItem extends React.Component {
     }
   }
 
-  componentWillReceiveProps () {
+  UNSAFE_componentWillReceiveProps () {
     this.setState({
       unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
     })
@@ -192,8 +192,8 @@ class SessionItem extends React.Component {
 
               <div style={{display: 'inline-block'}}>
                 {
-                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) ? 
-                  <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) ?
+                  <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                     {this.props.session.unreadCount}
                   </a>
                   : null
@@ -201,7 +201,7 @@ class SessionItem extends React.Component {
 
                 {
                   this.props.session.pendingResponse &&
-                  <a style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                  <a href='#/' style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                     pending
                   </a>
                 }
@@ -257,9 +257,9 @@ class SessionItem extends React.Component {
             ? <span className='m-widget4__sub'>
                 {
                   this.props.session.status === 'new'
-                  ? 
+                  ?
                   <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
-                  : 
+                  :
                     <i id={'resolve_session'+this.props.session._id} style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }
@@ -274,9 +274,9 @@ class SessionItem extends React.Component {
             : <span className='m-widget4__sub'>
                 {
                   this.props.session.status === 'new'
-                  ? 
+                  ?
                   <i  id='resolve_session' style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
-                  : 
+                  :
                     <i id='resolve_session' style={{ marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
                         this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
                 }

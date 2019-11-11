@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { loadPollsList, saveCurrentPoll } from '../../redux/actions/backdoor.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -83,7 +83,7 @@ class PollsInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
@@ -124,7 +124,8 @@ class PollsInfo extends React.Component {
   filterByDays (val) {
     var data = []
     var index = 0
-    this.props.polls.map((poll) => {
+    for(let a=0; a<this.props.polls.length; a++){
+      let poll = this.props.polls[a]
       let pollDate = moment(poll.datetime, 'YYYY-MM-DD')
       const end = moment(moment(), 'YYYY-MM-DD')
       const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
@@ -133,7 +134,7 @@ class PollsInfo extends React.Component {
         data[index] = poll
         index = index + 1
       }
-    })
+    }
     this.displayData(0, data)
     this.setState({ totalLength: data.length })
   }
@@ -240,7 +241,7 @@ class PollsInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

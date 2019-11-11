@@ -54,7 +54,7 @@ class SessionItem extends React.Component {
           <div className='m-widget4__ext'>
             {
               this.props.session.unreadCount &&
-              <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+              <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                 {this.props.session.unreadCount}
               </a>
             }

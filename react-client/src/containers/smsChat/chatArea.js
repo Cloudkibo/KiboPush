@@ -192,7 +192,7 @@ class ChatBox extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in chatArea', nextProps)
     if (this.state.changedActiveSession) {
       this.previousScrollHeight = undefined

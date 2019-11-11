@@ -5,8 +5,7 @@ import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { Link, browserHistory } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class templatePolls extends React.Component {
@@ -38,7 +37,7 @@ class templatePolls extends React.Component {
 
   goToCreate () {
     if (this.props.totalCount < this.props.kiboPushTemplates) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createTemplatePoll`
       })
     } else {
@@ -88,7 +87,7 @@ class templatePolls extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.pollsDataAll)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
@@ -177,6 +176,32 @@ class templatePolls extends React.Component {
     return (
       <div className='template-polls row'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Poll
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this poll?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deletePoll(this.state.deleteid, this.msg, { last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: { search_value: '', category_value: '' } })
+                    this.closeDialogDelete()
+                  }}>Delete
+                        </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
           <div className='m-portlet m-portlet--mobile'>
@@ -205,24 +230,6 @@ class templatePolls extends React.Component {
               <div className='row align-items-center'>
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                  {
-                    this.state.isShowingModalDelete &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialogDelete}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialogDelete}>
-                        <h3>Delete Poll</h3>
-                        <p>Are you sure you want to delete this poll?</p>
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: {search_value: '', category_value: ''}})
-                            this.closeDialogDelete()
-                          }}>Delete
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
                 </div>
               </div>
               <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
@@ -300,15 +307,16 @@ class templatePolls extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span style={{width: '170px'}}>
-                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View
-                                  </Link>
-                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  </a>
+                                  <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
-                                  </Link>
+                                  </a>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
-                                    onClick={() => this.showDialogDelete(poll._id)}>
+                                    onClick={() => this.showDialogDelete(poll._id)}
+                                    data-toggle="modal" data-target="#delete">
                                   Delete
                                 </button>
                                 </span></td>
@@ -319,7 +327,7 @@ class templatePolls extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}

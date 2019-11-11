@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 //  import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -36,7 +35,7 @@ class OptInActions extends React.Component {
     }
   }
   editMessage () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/editMessengerRefURLMessage`,
       state: {module: this.props.module, messengerRefSelectedURL: this.props.messengerRefSelectedURL}
     })
@@ -49,7 +48,7 @@ class OptInActions extends React.Component {
           <span>Opt-In Message: </span>
           <div className='menuDiv m-input-icon m-input-icon--right' style={{marginTop: '10px'}}>
             <input onClick={this.editMessage} readonly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
-            <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='javascript:;'>
+            <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
               <i className='fa fa-edit' />
             </a>
           </div>

@@ -10,22 +10,19 @@ import ReactPaginate from 'react-paginate'
 import {
   fetchAllPosts, deletePost, saveCurrentPost
 } from '../../redux/actions/commentCapture.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
 class FacebookPosts extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       postsData: [],
       totalLength: 0,
       searchValue: '',
-      isShowingModalDelete: false,
       deleteid: '',
-      showVideo: false
     }
     props.fetchAllPosts()
     props.saveCurrentPost(null)
@@ -33,17 +30,12 @@ class FacebookPosts extends React.Component {
     this.onEdit = this.onEdit.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.getPostText = this.getPostText.bind(this)
   }
-  showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
+  showDialogDelete(id) {
+    this.setState({ deleteid: id })
   }
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
-  }
-  componentDidMount () {
+  componentDidMount() {
     $('#sidebarDiv').removeClass('hideSideBar')
     const hostname = window.location.hostname
     let title = ''
@@ -55,7 +47,7 @@ class FacebookPosts extends React.Component {
 
     document.title = `${title} | Comment Capture`
   }
-  getPostText (payload) {
+  getPostText(payload) {
     var text = ''
     var videoPost = false
     var imagePost = false
@@ -83,10 +75,10 @@ class FacebookPosts extends React.Component {
     }
     return text
   }
-  onEdit (post) {
+  onEdit(post) {
     this.props.saveCurrentPost(post)
   }
-  displayData (n, posts, searchValue) {
+  displayData(n, posts, searchValue) {
     console.log('searchVal', searchValue)
     var searchVal = ''
     if (searchValue && searchValue === 'empty') {
@@ -119,21 +111,21 @@ class FacebookPosts extends React.Component {
         index++
       }
     }
-    this.setState({postsData: data})
+    this.setState({ postsData: data })
   }
 
-  handlePageClick (data) {
+  handlePageClick(data) {
     this.displayData(data.selected, this.props.posts)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.posts) {
       this.displayData(0, nextProps.posts)
-      this.setState({totalLength: nextProps.posts.length})
+      this.setState({ totalLength: nextProps.posts.length })
     }
   }
 
-  searchPosts (event) {
+  searchPosts(event) {
     console.log('event.target.value', event.target.value)
     this.setState({
       searchValue: event.target.value
@@ -157,7 +149,7 @@ class FacebookPosts extends React.Component {
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -168,45 +160,60 @@ class FacebookPosts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{ width: '680px', top: 100 }}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Comment Capture Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='H7McTv_1Dk0'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Post</h3>
-              <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.props.deletePost(this.state.deleteid, this.msg)
-                  this.closeDialogDelete()
-                }}>Delete
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Post
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deletePost(this.state.deleteid, this.msg)
+                  }}
+                  data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -220,8 +227,8 @@ class FacebookPosts extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -248,7 +255,7 @@ class FacebookPosts extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='form-row'>
-                    <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                    <div style={{ display: 'inline-block' }} className='form-group col-md-3'>
                       <input type='text' placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
                     </div>
                     { this.state.postsData && this.state.postsData.length > 0
@@ -298,7 +305,7 @@ class FacebookPosts extends React.Component {
                               <span style={{width: '150px'}}>
                               {post.post_id &&
                                 <span>
-                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
+                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
                                       View on FB
                                   </a>
                                   <br />
@@ -307,35 +314,35 @@ class FacebookPosts extends React.Component {
                                 <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>
-                                    Delete
+                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
+                                        Delete
                                 </button>
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate
-                        previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
-                    </div>
-                  </div>
-                  : <div className='col-12'>
-                    <p> No data to display </p>
-                  </div>
-                }
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a href='#/'>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                      </div>
+                      : <div className='col-12'>
+                        <p> No data to display </p>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
@@ -347,14 +354,14 @@ class FacebookPosts extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log(state)
   return {
     posts: (state.postsInfo.posts)
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,

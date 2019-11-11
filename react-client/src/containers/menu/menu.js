@@ -5,11 +5,11 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem, removeMenu } from '../../redux/actions/menu.actions'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl, removeMenuPayload } from './utility'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
 import { registerAction } from '../../utility/socketio'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -89,7 +89,7 @@ class Menu extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages) {
       var myPages = []
       nextProps.pages.map((page) => {
@@ -540,7 +540,7 @@ class Menu extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/* {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
@@ -553,14 +553,14 @@ class Menu extends React.Component {
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
               </div>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -578,8 +578,8 @@ class Menu extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
@@ -617,7 +617,7 @@ class Menu extends React.Component {
                 <div className='row align-items-center'>
                   <div className='col-xl-8 order-2 order-xl-1' />
                   <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                    {
+                    {/* {
                       this.state.isShowingModal &&
                       <ModalContainer style={{top: '100px'}}
                         onClose={this.closeDialog}>
@@ -630,7 +630,7 @@ class Menu extends React.Component {
                           }
                         </ModalDialog>
                       </ModalContainer>
-                    }
+                    } */}
                   </div>
                 </div>
                 <div className='tab-content'>

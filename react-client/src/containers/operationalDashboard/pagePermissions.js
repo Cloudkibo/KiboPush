@@ -4,11 +4,10 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadPagePermissions } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class PageUsers extends React.Component {
   constructor (props, context) {
@@ -40,7 +39,7 @@ class PageUsers extends React.Component {
     document.title = `${title} | Page Permissions`
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pagePermissions) {
       let appLevelKeys = Object.keys(nextProps.pagePermissions.appLevelPermissions)
       let pageLevelKeys = Object.keys(nextProps.pagePermissions.pageLevelPermissions)

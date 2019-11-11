@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadSurveysList, loadCategoriesList } from '../../redux/actions/templates.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -46,7 +46,7 @@ class ShowTemplates extends React.Component {
   hideDropDown() {
     this.setState({ showDropDown: false })
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.surveys) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
@@ -149,14 +149,14 @@ class ShowTemplates extends React.Component {
                                               </span>
                                             </div>
                                             <div className='m-widget4__ext'>
-                                              <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editTemplateSurvey'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                              <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editTemplateSurvey'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                                 Edit Template
-                                        </Link>
+                                        </a>
                                             </div>
                                             <div className='m-widget4__ext'>
-                                              <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewTemplateSurveyUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                              <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewTemplateSurveyUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                                 View Template
-                                        </Link>
+                                        </a>
                                             </div>
                                           </div>
                                         ))}

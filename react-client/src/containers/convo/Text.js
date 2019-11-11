@@ -108,7 +108,7 @@ class Text extends React.Component {
     var temp = this.state.buttons
     temp.push(obj)
 
-    this.setState({buttons: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
+    this.setState({buttons: temp, count: 1, numOfButtons: this.state.numOfButtons + 1})
     this.props.handleText({id: this.props.id, text: this.state.text, buttons: this.state.buttons})
   }
   editButton (obj) {
@@ -122,16 +122,16 @@ class Text extends React.Component {
     this.setState({buttons: temp})
   }
   removeButton (obj) {
-    this.state.buttons.map((elm, index) => {
-      if (index === obj.id) {
-        this.state.buttons.splice(index, 1)
+    for (let a = 0; a < this.state.buttons; a++) {
+      if (a === obj.id) {
+        this.state.buttons.splice(a, 1)
       }
-    })
+    }
     if (obj.button && obj.button.type === 'postback') {
       var deletePayload = obj.button.payload
     }
     var temp = this.state.buttons
-    this.setState({buttons: temp, numOfButtons: --this.state.numOfButtons})
+    this.setState({buttons: temp, numOfButtons: this.state.numOfButtons - 1})
     this.props.handleText({id: this.props.id, text: this.state.text, buttons: temp, deletePayload: deletePayload})
   }
 

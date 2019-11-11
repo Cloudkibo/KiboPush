@@ -9,8 +9,6 @@ import { bindActionCreators } from 'redux'
 import { requestMessengerCode, resetState, createCode, updateData, editCode } from '../../redux/actions/messengerCode.actions'
 import AlertContainer from 'react-alert'
 import Tabs from '../messengerCode/tabs'
-import { Link, browserHistory } from 'react-router'
-
 
 class CreateURL extends React.Component {
   constructor (props, context) {
@@ -30,7 +28,7 @@ class CreateURL extends React.Component {
       this.props.location.state.messengerCode = this.props.messengerCode
       this.props.location.state.messengerCode._id = this.props.messengerCode.pageId
       this.props.createCode(this.props.messengerCode, this.msg)
-    } 
+    }
   }
 
   componentDidMount () {
@@ -44,7 +42,7 @@ class CreateURL extends React.Component {
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData(this.props.messengerCode,this.props.location.state.messengerCode)
       document.title = `${title} | Edit  Messenger Code`
-      
+
     } else {
       document.title = `${title} | Create  Messenger Code`
     }

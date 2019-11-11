@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
@@ -337,7 +337,7 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
-                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank'>here.</a>
+                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank' rel='noopener noreferrer'>here.</a>
                       </div>
                       <div>
                         <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>

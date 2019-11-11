@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {editBot, updateStatus, botDetails} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class EditBot extends React.Component {
@@ -40,7 +40,7 @@ class EditBot extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in editbot.js', nextProps)
     if (nextProps.showBotDetails) {
       console.log('nextProps bot Details', nextProps.botDetails)
@@ -66,7 +66,7 @@ class EditBot extends React.Component {
             <div className='panel-heading clearfix'>
               <strong className='panel-title'>Question {i + 1}</strong>
               <div role='toolbar' className='pull-right btn-toolbar'>
-                <a className='remove'
+                <a href='#/' className='remove'
                   onClick={this.removeClick.bind(this, i)}>
                   <span className='fa fa-times' />
                 </a>

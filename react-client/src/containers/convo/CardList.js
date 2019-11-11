@@ -12,9 +12,9 @@ import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -293,7 +293,7 @@ class Card extends React.Component {
       }
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {
@@ -643,11 +643,11 @@ class Card extends React.Component {
           </div>
 
           {!this.state.checkbox &&
-          
+
             <div style={{ display: 'inline-grid', backgroundColor: '#F2F3F8' }} className='cardimageblock col-md-4'>
               {
                 (this.state.loading)
-                  ? <span style={{marginTop: '50px', marginLeft: '16px'}}><Halogen.RingLoader color='#FF5E3A' /></span>
+                  ? <span style={{marginTop: '50px', marginLeft: '16px'}}><RingLoader color='#FF5E3A' /></span>
                   : <input
                     ref='file'
                     type='file'
@@ -656,11 +656,11 @@ class Card extends React.Component {
                     accept='image/*'
                     title=' '
                     onChange={this._onChange} style={{ position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px' }} />
-              }     
+              }
             {
             (this.state.imgSrc === '' && !this.state.loading)
             ? <img style={{maxHeight: '40px', margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-          : (!this.state.loading) && <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
+          : (!this.state.loading) && <img alt='' style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
           }
@@ -693,10 +693,10 @@ class Card extends React.Component {
           </div>
           <div className='col-md-6' style={{marginTop: '15px'}}>
             {(this.state.elementUrl === '' && this.state.webviewurl === '') && !this.state.checkbox
-              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
+              ? <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                 <i className='la la-plus' /> Add Action
                 </a>
-              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
+              : <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
                 Edit Action
                 </a>
               }

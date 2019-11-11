@@ -1,15 +1,15 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Header from './header'
 import Sidebar from './sidebar'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {StripeProvider, Elements} from 'react-stripe-elements'
+// import {StripeProvider, Elements} from 'react-stripe-elements'
 import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
-import InjectedCheckoutForm from './checkout'
+// import InjectedCheckoutForm from './checkout'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -44,8 +44,8 @@ class PaymentMethods extends React.Component {
 
     document.title = `${title} | Payment Methodes`;
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps plan', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('in UNSAFE_componentWillReceiveProps plan', nextprops)
     if (nextprops.user) {
       if (nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
@@ -105,7 +105,7 @@ class PaymentMethods extends React.Component {
                 <div className='m-portlet__body m-portlet__body--no-padding'>
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='8' />
+                      <Sidebar history={this.props.history} step='8' />
                       <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>
@@ -168,7 +168,7 @@ class PaymentMethods extends React.Component {
                               Save
                             </button>
                           </div>
-                          {this.state.change &&
+                          {/*this.state.change &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialog}>
                               <ModalDialog style={{width: '500px'}}
@@ -186,7 +186,7 @@ class PaymentMethods extends React.Component {
                                 </div>
                               </ModalDialog>
                             </ModalContainer>
-                        }
+                        */}
                         </div>
                         <div className='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                           <div className='m-form__actions'>

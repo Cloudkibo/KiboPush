@@ -16,7 +16,6 @@ import Media from '../../containers/convo/Media'
 import { validateFields } from '../../containers/convo/utility'
 import StickyDiv from 'react-stickydiv'
 import AlertContainer from 'react-alert'
-import { browserHistory } from 'react-router'
 
 class LandingPageMessage extends React.Component {
   constructor (props) {
@@ -103,13 +102,13 @@ class LandingPageMessage extends React.Component {
   }
   goBack () {
     if (this.props.module === 'landingPage') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createLandingPage`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0]}
       })
     } else if (this.props.module === 'messengerRefURL') {
       console.log('in back', this.props.module)
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'createMessage'}
       })

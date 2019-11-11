@@ -11,7 +11,7 @@ import {
   clearAlertMessages
 } from '../../redux/actions/invitations.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
 import AlertContainer from 'react-alert'
@@ -47,7 +47,7 @@ class InviteMembers extends React.Component {
     document.title = `${title} | Invite Member`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     // if (nextProps.successMessage) {
     //   this.setState({
     //     alertMessage: nextProps.successMessage,

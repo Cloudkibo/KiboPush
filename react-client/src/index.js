@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
-import { Router, browserHistory } from 'react-router'
-
+import { Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 import { configureStore } from './redux/store/store'
-import routes from './routes'
+import Routes from './routes'
 import { initiateSocket } from './utility/socketio'
+import App from "./sub.app.js"
 
 import {setBrowserName, setBrowserVersion} from './redux/actions/basicinfo.actions'
 import {BROWSER_NAME, BROWSER_VERSION} from './utility/browser.utility'
 
-const history = browserHistory
+const history = createBrowserHistory()
 
 const store = configureStore(window.__INITIAL_STATE__)
 const rootElement = document.getElementById('content')
@@ -24,7 +25,10 @@ console.log(store.getState())
 
 ReactDOM.render((
     <Provider store={store}>
-      <Router history={history} routes={routes} />
+      <Router history={history}>
+        <App history={history}>
+          <Routes />
+        </App>
+      </Router>
     </Provider>
   ), rootElement)
-

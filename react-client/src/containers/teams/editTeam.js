@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { update, addAgent, addPage, removePage, removeAgent, loadTeamsList, fetchPages, fetchAgents } from '../../redux/actions/teams.actions'
@@ -100,7 +100,7 @@ class EditTeam extends React.Component {
     return false
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
     console.log('this.props.location.state', this.props.location.state)
     if (nextProps.teamAgents && nextProps.teamAgents.length > 0) {
@@ -138,7 +138,7 @@ class EditTeam extends React.Component {
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.removedPages[j]._id })
       }
     }
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/teams`
     })
   }
@@ -423,7 +423,7 @@ class EditTeam extends React.Component {
                       <br />
                       {this.props.location.state.module === 'edit' &&
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
-                        <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                        <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Agents
                         </a>
                         {
@@ -442,7 +442,7 @@ class EditTeam extends React.Component {
                                       {
                                         this.props.members.map((member, i) => (
                                           <li className='m-nav__item'>
-                                            <a onClick={() => this.changeAgent(member.userId)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            <a href='#/' onClick={() => this.changeAgent(member.userId)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                               { this.exists(member.userId.name) === true
                                               ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                 <i className='la la-check' /> {member.userId.name}
@@ -455,7 +455,7 @@ class EditTeam extends React.Component {
                                         ))
                                       }
                                       <li className='m-nav__item'>
-                                        <a onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        <a href='#/' onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                           { this.state.agentIds.length === this.props.members.length
                                           ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                             <i className='la la-check' />All
@@ -499,7 +499,7 @@ class EditTeam extends React.Component {
                       <br />
                       {this.props.location.state.module === 'edit' &&
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
-                        <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                        <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Pages
                         </a>
                         {
@@ -518,7 +518,7 @@ class EditTeam extends React.Component {
                                       {
                                         this.props.pages.map((page, i) => (
                                           <li className='m-nav__item'>
-                                            <a onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            <a href='#/' onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                               { this.existsPage(page.pageName) === true
                                               ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                 <i className='la la-check' /> {page.pageName}
@@ -531,7 +531,7 @@ class EditTeam extends React.Component {
                                         ))
                                       }
                                       <li className='m-nav__item'>
-                                        <a onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        <a href='#/' onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                           { this.state.pageIds.length === this.props.pages.length
                                           ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                             <i className='la la-check' /> All
@@ -558,10 +558,10 @@ class EditTeam extends React.Component {
                     ? <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                       <button className='btn btn-primary' onClick={this.createTeam}> Save
                       </button>
-                      <Link onClick={this.cancel}
+                      <a href='#/' onClick={this.cancel}
                         className='btn btn-secondary' style={{'marginLeft': '10px'}}>
                         Cancel
-                      </Link>
+                      </a>
                     </div>
                     : <div className='m-form__actions' style={{'float': 'left', 'marginTop': '25px', 'marginRight': '20px'}}>
                       <Link

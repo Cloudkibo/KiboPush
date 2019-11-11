@@ -1,3 +1,4 @@
+var PropTypes = require('prop-types');
 /* eslint-disable no-undef */
 /** @jsx React.DOM */
 
@@ -11,8 +12,8 @@ var typeLabels = {
 
 var EditQuestion = React.createClass({
   propTypes: {
-    type: React.PropTypes.string.isRequired,
-    onRemove: React.PropTypes.func.isRequired
+    type: PropTypes.string.isRequired,
+    onRemove: PropTypes.func.isRequired
   },
 
   getTypeLabel: function () {

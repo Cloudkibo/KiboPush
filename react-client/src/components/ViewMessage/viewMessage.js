@@ -1,8 +1,6 @@
 import React from 'react'
 import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
-import RightArrow from '../../containers/convo/RightArrow'
-import LeftArrow from '../../containers/convo/LeftArrow'
 import {setWebViewUrl} from './../../utility/utils'
 
 class ViewMessage extends React.Component {
@@ -14,7 +12,7 @@ class ViewMessage extends React.Component {
       payload: (this.props.payload && this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) ? this.props.payload.jsonAdMessages[0].messageContent : this.props.payload
     }
   }
-/* componentWillMount() {
+/* UNSAFE_componentWillMount() {
   console.log('In will mount Method')
   console.log('this.props.payload.jsonAdMessages', this.props.payload.jsonAdMessages)
   console.log('this.props.payload.jsonAdMessages.length', this.props.payload.jsonAdMessages.length)
@@ -99,22 +97,23 @@ class ViewMessage extends React.Component {
                                       />
                                     </div>
                                     : b.componentType === 'image'
-                                    ? <a key={index} href={b.image_url} target='_blank'>
+                                    ? <a key={index} href={b.image_url} target='_blank' rel='noopener noreferrer'>
                                       <img
+                                        alt=''
                                         src={b.image_url}
                                         style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
                                       />
                                     </a>
                                     : b.componentType === 'file'
-                                    ? <a key={index} href={b.file? b.file.fileurl.url : b.fileurl.url} target='_blank'>
+                                    ? <a key={index} href={b.file? b.file.fileurl.url : b.fileurl.url} target='_blank' rel='noopener noreferrer'>
                                       <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.fileName}</strong></h6>
                                     </a>
                                     : b.componentType === 'card'
                                     ? <div key={index}>
                                       <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                          <a href={b.iamge_url} target='_blank'>
-                                            <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.image_url} />
+                                          <a href={b.iamge_url} target='_blank' rel='noopener noreferrer'>
+                                            <img alt='' style={{maxWidth: '160px', borderRadius: '5px'}} src={b.image_url} />
                                           </a>
                                         </div>
                                         <div style={{marginTop: '10px', padding: '5px'}}>
@@ -125,7 +124,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
 
                                             <span>{button.title}</span>
                                           </a>
@@ -139,8 +138,8 @@ class ViewMessage extends React.Component {
                                           <div key={i}>
                                             <div id={i} style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                               <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                                <a href={card.image_url} target='_blank'>
-                                                  <img style={{maxWidth: '160px', borderRadius: '5px'}} src={card.image_url} />
+                                                <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
+                                                  <img alt='' style={{maxWidth: '160px', borderRadius: '5px'}} src={card.image_url} />
                                                 </a>
                                               </div>
                                               <div style={{marginTop: '10px', padding: '5px'}}>
@@ -151,7 +150,7 @@ class ViewMessage extends React.Component {
                                             {
                                               card.buttons && card.buttons.length > 0 &&
                                               card.buttons.map((button, i) => (
-                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{width: '175px', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                                   <span>{button.title}</span>
                                                 </a>
                                               ))
@@ -168,7 +167,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{borderColor: '#716aca', whiteSpace: 'inherit', width: '175px', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{borderColor: '#716aca', whiteSpace: 'inherit', width: '175px', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
                                             <span>{button.title}</span>
                                           </a>
                                         ))
@@ -179,8 +178,8 @@ class ViewMessage extends React.Component {
                                       <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                           { b.mediaType === 'image' &&
-                                            <a href={b.fileurl.url} target='_blank'>
-                                              <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
+                                            <a href={b.fileurl.url} target='_blank' rel='noopener noreferrer'>
+                                              <img alt='' style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
                                             </a>
                                            }
                                           { b.mediaType === 'video' &&
@@ -197,7 +196,7 @@ class ViewMessage extends React.Component {
                                       {
                                         b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
                                             <span>{button.title}</span>
                                           </a>
                                         ))
@@ -206,7 +205,7 @@ class ViewMessage extends React.Component {
                                     : b.componentType === 'list' &&
                                     <div key={index} className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
                                       {b.listItems.map((item, i) => (
-                                        <a key={i} href={item.default_action && item.default_action !== '' ? '//' + item.default_action.url : null} target='_blank' style={{width: '-webkit-fill-available'}} className='btn btn-sm'>
+                                        <a key={i} href={item.default_action && item.default_action !== '' ? '//' + item.default_action.url : null} target='_blank' rel='noopener noreferrer' style={{width: '-webkit-fill-available'}} className='btn btn-sm'>
                                           <div style={{padding: '10px', maxWidth: 400, marginBottom: '-19px', backgroundImage: b.topElementStyle === 'LARGE' && i === 0 ? 'url(' + b.listItems[0].image_url + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: b.componentType === 'LARGE' ? '350px' : ''}} className='ui-block hoverbordersolid'>
                                             <div className='row'>
                                               <div className={b.topElementStyle === 'LARGE' && i === 0 ? 'col-md-12' : 'col-md-4'} style={{marginLeft: '10px'}}>
@@ -216,14 +215,14 @@ class ViewMessage extends React.Component {
                                               {b.topElementStyle === 'LARGE' && i === 0
                                                 ? null
                                               : item.image_url && item.image_url !== '' &&
-                                              <img style={{maxHeight: '50px', maxWidth: '50px', float: 'right'}} src={item.image_url} />
+                                              <img alt='' style={{maxHeight: '50px', maxWidth: '50px', float: 'right'}} src={item.image_url} />
                                             }
                                             </div>
                                             <br />
                                             {
                                               item.buttons && item.buttons.length > 0 &&
                                               item.buttons.map((button, i) => (
-                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                                <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                                   <span>{button.title}</span>
                                                 </a>
                                               ))
@@ -233,7 +232,7 @@ class ViewMessage extends React.Component {
                                         ))}
                                         {b.buttons && b.buttons.length > 0 &&
                                         b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                          <a key={i} href={'//' + button.url ? setWebViewUrl(button.url) : '#'} target='_blank' rel='noopener noreferrer' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
                                             <span>{button.title}</span>
                                           </a>
                                         ))
