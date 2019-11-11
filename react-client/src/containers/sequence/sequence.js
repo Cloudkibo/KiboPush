@@ -63,11 +63,12 @@ class Sequence extends React.Component {
 
   createSelectItems () {
     let items = []
-    this.state.sequencesData.map((sequence) => {
+    for(let a = 0; a < this.state.sequencesData.length; a++) {
+      let sequence = this.state.sequencesData[a]
       if (this.state.selectedSequenceId !== sequence.sequence._id) {
         items.push(<option key={sequence.sequence._id} data-key={sequence.sequence._id} value={sequence.sequence.name}>{sequence.sequence.name}</option>)
       }
-    })
+    }
     return items
   }
 
@@ -76,12 +77,13 @@ class Sequence extends React.Component {
   }
   getSequenceStatus (messages) {
     var active = 'InActive'
-    messages.map((msg, i) => {
+    for(let a = 0; a < messages.length; a++) {
+      let msg = messages[a]
       if (msg.isActive) {
         active = 'Active'
         return active
       }
-    })
+    }
     return active
   }
   gotoCreate () {
@@ -143,11 +145,12 @@ class Sequence extends React.Component {
 
   showDialogTrigger (sequence) {
     let sequenceList = []
-    this.state.sequencesData.map((sequence2) => {
+    for(let a = 0; a < this.state.sequencesData.length; a++) {
+      let sequence2 = this.state.sequencesData[0]
       if (sequence.sequence._id !== sequence2.sequence._id) {
         sequenceList.push(sequence2)
       }
-    })
+    }
     if (sequenceList.length > 0) {
       this.setState({
         sequenceList: sequenceList,
@@ -170,11 +173,12 @@ class Sequence extends React.Component {
     // }
     if (seqEvent === 'responds_to_poll') {
       this.setState({isShowPollsDropdown: true})
-      this.props.polls.map((poll) => {
+      for(let a = 0; a < this.props.polls.length; a++) {
+        let poll = this.props.polls[a]
         if (sequence.sequence.trigger.value === poll._id) {
           this.setState({selectDropdownName: poll.statement})
         }
-      })
+      }
     }
     this.setState({
       isShowModalTrigger: true,

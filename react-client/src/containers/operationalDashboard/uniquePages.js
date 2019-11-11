@@ -143,7 +143,7 @@ class UniquePages extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
                   <li className='m-portlet__nav-item'>
-                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                    <a href='#/' data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
                       {this.state.showUniquePages
                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
@@ -249,7 +249,7 @@ class UniquePages extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.props.uniquePages.totalCount / 10)}
                       marginPagesDisplayed={1}

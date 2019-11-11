@@ -124,7 +124,8 @@ class PollsInfo extends React.Component {
   filterByDays (val) {
     var data = []
     var index = 0
-    this.props.polls.map((poll) => {
+    for(let a=0; a<this.props.polls.length; a++){
+      let poll = this.props.polls[a]
       let pollDate = moment(poll.datetime, 'YYYY-MM-DD')
       const end = moment(moment(), 'YYYY-MM-DD')
       const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
@@ -133,7 +134,7 @@ class PollsInfo extends React.Component {
         data[index] = poll
         index = index + 1
       }
-    })
+    }
     this.displayData(0, data)
     this.setState({ totalLength: data.length })
   }
@@ -240,7 +241,7 @@ class PollsInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

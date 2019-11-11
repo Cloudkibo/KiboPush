@@ -89,7 +89,7 @@ class AddPage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='permission' data-toggle="modal" data-target="#permission">permission</a>
+        <a href='#/' style={{ display: 'none' }} ref='permission' data-toggle="modal" data-target="#permission">permission</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="permission" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -118,7 +118,7 @@ class AddPage extends React.Component {
               <h3 className='m-subheader__title'>Manage Pages</h3>
             </div>
           </div>
-          <a href='#' style={{ display: 'none' }} ref='notAdmin' data-toggle="modal" data-target="#notAdmin">notAdmin</a>
+          <a href='#/' style={{ display: 'none' }} ref='notAdmin' data-toggle="modal" data-target="#notAdmin">notAdmin</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="notAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
@@ -211,13 +211,13 @@ class AddPage extends React.Component {
                           <div className='m-widget4__ext'>
                             {(page.connected) &&
 
-                              <a onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                              <a href='#/' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                               </a>
                             }
                             {(!page.connected) &&
 
-                              <a onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
+                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                               </a>
 

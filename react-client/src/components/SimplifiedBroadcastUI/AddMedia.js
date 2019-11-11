@@ -148,11 +148,11 @@ class Media extends React.Component {
       buttons: this.state.button})
   }
   removeButton (obj) {
-    this.state.button.map((elm, index) => {
-      if (index === obj.id) {
-        this.state.button.splice(index, 1)
+    for(let a=0; a<this.state.button.length; a++) {
+      if (a === obj.id) {
+        this.state.button.splice(a, 1)
       }
-    })
+    }
     if (obj.button && obj.button.type === 'postback') {
       var deletePayload = obj.button.payload
     }
@@ -238,7 +238,7 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <a href='#' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
+        <a href='#/' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -273,7 +273,7 @@ class Media extends React.Component {
               multiple='true'
               accept='image/*, video/*'
               title=' '
-              maxFileSize={this.props.module && this.props.module == 'whatsapp' ? 5000000 : 10000000}
+              maxFileSize={this.props.module && this.props.module === 'whatsapp' ? 5000000 : 10000000}
               minFileSize={0}
               clickable
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
@@ -289,7 +289,7 @@ class Media extends React.Component {
                 (this.state.fileurl && this.state.fileurl !== '') &&
                   <div className='align-center'>
                     { this.state.mediaType === 'image' &&
-                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
+                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} alt='' />
                   }
                     { this.state.mediaType === 'video' &&
                     <div style={{marginTop: '50px'}}>

@@ -126,7 +126,8 @@ class SurveysInfo extends React.Component {
   filterByDays (val) {
     var data = []
     var index = 0
-    this.props.surveys.map((survey) => {
+    for(let a = 0; a < this.props.surveys.length; a++) {
+      let survey = this.props.surveys[a]
       let surveyDate = moment(survey.datetime, 'YYYY-MM-DD')
       const end = moment(moment(), 'YYYY-MM-DD')
       const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
@@ -135,7 +136,7 @@ class SurveysInfo extends React.Component {
         data[index] = survey
         index = index + 1
       }
-    })
+    }
     this.displayData(0, data)
     this.setState({ totalLength: data.length })
   }
@@ -240,7 +241,7 @@ class SurveysInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

@@ -19,7 +19,7 @@ import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
-import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
 
 class CreatePoll extends React.Component {
   constructor(props, context) {
@@ -305,7 +305,6 @@ class CreatePoll extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
-        let tagIDs = []
         // for (let i = 0; i < this.props.tags.length; i++) {
         //   for (let j = 0; j < this.state.tagValue.length; j++) {
         //     if (this.props.tags[i].tag === this.state.tagValue[j]) {
@@ -356,7 +355,7 @@ class CreatePoll extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='send' data-toggle="modal" data-target="#send">send</a>
+        <a href='#/' style={{ display: 'none' }} ref='send' data-toggle="modal" data-target="#send">send</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -422,7 +421,7 @@ class CreatePoll extends React.Component {
                     <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
                       <div className='panel-body'>
                         <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                        <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+                        <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank' rel='noopener noreferrer'>link.</a>
                         </p>
                       </div>
                     </div>
@@ -527,13 +526,13 @@ class CreatePoll extends React.Component {
                     <div className='col-12'>
                       <ul className='nav nav-tabs'>
                         <li>
-                          <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onPollClick}>Poll </a>
+                          <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onPollClick} href='#/'>Poll </a>
                         </li>
                         <li>
                           {
                             (this.state.option1 === '' || this.state.option2 === '' || this.state.option3 === '' || this.state.statement === '')
-                              ? <a>Targeting</a>
-                              : <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              ? <a href='#/'>Targeting</a>
+                              : <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick} href='#/'>Targeting </a>
                           }
                         </li>
                       </ul>

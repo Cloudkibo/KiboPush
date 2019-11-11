@@ -1,5 +1,3 @@
-import { number } from "prop-types";
-
 export function getSubList(data, conditions, pages, joiningCondition, customFields, customFieldValues, responses) {
   console.log('data', data)
   console.log('conditions', conditions)
