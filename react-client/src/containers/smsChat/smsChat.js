@@ -66,8 +66,8 @@ class LiveChat extends React.Component {
     document.title = `${title} | Live Chat`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of smsChat', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of smsChat', nextProps)
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
     }
@@ -75,13 +75,14 @@ class LiveChat extends React.Component {
 
   updateUnreadCount () {
     console.log('out unread count mark', this.props.sessions)
-    this.props.sessions.filter(session => {
+    for (let a = 0;  a < this.props.sessions.length; a++) {
+      let session = this.props.sessions[a]
       if (session._id === this.state.activeSession._id) {
         delete session.unreadCount
         console.log('unread count mark', this.props.sessions)
         this.forceUpdate()
       }
-    })
+    }
   }
 
   render () {
@@ -94,7 +95,7 @@ class LiveChat extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding livechat? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding livechat? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {

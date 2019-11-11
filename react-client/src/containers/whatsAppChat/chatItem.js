@@ -79,26 +79,29 @@ class ChatItem extends React.Component {
           {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
         </div>
         {msg.payload.componentType === 'image'
-          ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
+          ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank' rel='noopener noreferrer'>
             <img
+              alt=''
               src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
           </a>
         : msg.payload.componentType === 'file'
-        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank' style={{color: type === 'kibopush' ? 'white' : '#5867dd'}}>
+        ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file.fileurl.url } target='_blank' rel='noopener noreferrer' style={{color: type === 'kibopush' ? 'white' : '#5867dd'}}>
           <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{msg.payload.fileName ? msg.payload.fileName : msg.payload.file && msg.payload.file.fileName}</strong></h6>
         </a>
         : msg.payload.componentType === 'sticker'
-        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank' rel='noopener noreferrer'>
             <img
+              alt=''
               src={msg.payload.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
         </a>
         :msg.payload.componentType === 'gif'
-        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank' rel='noopener noreferrer'>
             <img
+              alt=''
               src={msg.payload.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
@@ -114,8 +117,9 @@ class ChatItem extends React.Component {
           />
         </div>
         :msg.payload.componentType === 'thumbsUp'
-        ? <a key={index} href={msg.payload.fileurl.url} target='_blank'>
+        ? <a key={index} href={msg.payload.fileurl.url} target='_blank' rel='noopener noreferrer'>
             <img
+              alt=''
               src={msg.payload.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
@@ -150,8 +154,9 @@ class ChatItem extends React.Component {
           />
         </div>
       : msg.payload.componentType === 'media' && msg.payload.mediaType === 'image' &&
-      <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank'>
+      <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank' rel='noopener noreferrer'>
             <img
+              alt=''
               src={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url}
               style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
             />
@@ -178,8 +183,8 @@ class ChatItem extends React.Component {
                  autoplay: 0
                }
              }}/>
-           <a href={metaUrl} target='_blank'>
-               <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+           <a href={metaUrl} target='_blank' rel='noopener noreferrer'>
+               <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
              </a>
              <br />
              {
@@ -194,14 +199,14 @@ class ChatItem extends React.Component {
                    <div style={{width: 45, height: 45}}>
                      {
                        msg.url_meta.image &&
-                         <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                         <img alt='' src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
                      }
                    </div>
                  </td>
                  <td>
                    <div>
-                     <a href={metaUrl} target='_blank'>
-                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+                     <a href={metaUrl} target='_blank' rel='noopener noreferrer'>
+                       <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
                      </a>
                      <br />
                      {
@@ -286,7 +291,7 @@ class ChatItem extends React.Component {
     // this.top.scrollIntoView({behavior: 'instant'})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (this.state.changedActiveSession) {
       this.previousScrollHeight = undefined
     }

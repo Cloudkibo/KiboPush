@@ -49,7 +49,7 @@ class createSurvey extends React.Component {
 
     document.title = `${title} | Edit Survey`;
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     console.log('nextprops', nextprops)
     if (nextprops.categories) {
       let options = []
@@ -326,7 +326,7 @@ class createSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {(i + 1)} </strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
@@ -352,7 +352,7 @@ class createSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {i + 1}</strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>

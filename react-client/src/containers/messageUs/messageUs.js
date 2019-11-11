@@ -27,7 +27,7 @@ class MessageUs extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -143,8 +143,8 @@ class MessageUs extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Message Us Widget? Here is the <a href='http://kibopush.com/messageus/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding Message Us Widget? Here is the <a href='http://kibopush.com/messageus/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
@@ -255,7 +255,7 @@ class MessageUs extends React.Component {
                           }}>
                             <label htmlFor='textbtn'> Button Preview</label>
                             <br />
-                            <a className='btn' href='#' style={{
+                            <a className='btn' href='#/' style={{
                               'backgroundColor': this.state.buttonColor,
                               'color': this.state.fontColor,
                               'borderColor': this.state.fontColor

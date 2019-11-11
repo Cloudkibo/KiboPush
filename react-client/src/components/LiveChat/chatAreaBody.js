@@ -590,7 +590,7 @@ class ChatAreaBody extends React.Component {
                                                     />
                                                   </div>
                                                   : att.type === 'image'
-                                                    ? <a key={index} href={att.payload.url} target='_blank'>
+                                                    ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                       <img
                                                         src={att.payload.url}
                                                         style={{ maxWidth: '150px', maxHeight: '85px', marginTop: '10px' }}
@@ -601,7 +601,7 @@ class ChatAreaBody extends React.Component {
                                                         <tbody>
                                                           <tr>
                                                             <td>
-                                                              <a href={this.getmainURL(att.payload)} target='_blank'>
+                                                              <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
                                                                 <img style={{ width: '200px' }} src={this.geturl(att.payload)} />
                                                               </a>
                                                             </td>
@@ -614,7 +614,7 @@ class ChatAreaBody extends React.Component {
                                                         </tbody>
                                                       </table>
                                                       : att.type === 'file' &&
-                                                      <a key={index} href={att.payload.url} target='_blank'>
+                                                      <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                         <h6 style={{ marginTop: '10px' }}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                                                       </a>
                                             ))
@@ -643,7 +643,7 @@ class ChatAreaBody extends React.Component {
                                                         </td>
                                                         <td style={{ width: '70%' }}>
                                                           <div>
-                                                            <a href={msg.url_meta.url} target='_blank'>
+                                                            <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                               <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                             </a>
                                                             <br />
@@ -664,7 +664,7 @@ class ChatAreaBody extends React.Component {
                                                         </td>
                                                         <td>
                                                           <div>
-                                                            <a href={msg.url_meta.url} target='_blank'>
+                                                            <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                               <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                             </a>
                                                             <br />
@@ -766,7 +766,7 @@ class ChatAreaBody extends React.Component {
                                               <div className='m-messenger__message-username'>
                                                 {this.getRepliedByMsg(msg)}
                                               </div>
-                                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
+                                              <a download={msg.payload.fileName} target='_blank' rel='noopener noreferrer' href={msg.payload.fileurl.url} >
                                                 <h6 style={{ color: 'white' }}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                               </a>
                                             </div>
@@ -785,7 +785,7 @@ class ChatAreaBody extends React.Component {
                                                 <div>
                                                   <div style={{ maxWidth: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
                                                     <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
-                                                      <a href={msg.payload.fileurl} target='_blank'>
+                                                      <a href={msg.payload.fileurl} target='_blank' rel='noopener noreferrer'>
                                                         <img style={{ maxWidth: 180, borderRadius: '5px' }} src={msg.payload.fileurl} />
                                                       </a>
                                                     </div>
@@ -797,7 +797,7 @@ class ChatAreaBody extends React.Component {
                                                   {
                                                     msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                     msg.payload.buttons.map((b, i) => (
-                                                      <a key={i} href={b.url} target='_blank' style={{ width: '100%', marginTop: '5px' }} className='btn btn-secondary btn-sm'>
+                                                      <a key={i} href={b.url} target='_blank' rel='noopener noreferrer' style={{ width: '100%', marginTop: '5px' }} className='btn btn-secondary btn-sm'>
                                                         {b.title}
                                                       </a>
                                                     ))
@@ -822,7 +822,7 @@ class ChatAreaBody extends React.Component {
                                                         <div key={i}>
                                                           <div id={i} style={{ maxWidth: '200px', borderRadius: '10px' }} className='ui-block hoverbordersolid'>
                                                             <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
-                                                              <a href={card.image_url} target='_blank'>
+                                                              <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
                                                                 <img style={{ maxWidth: 180, borderRadius: '5px' }} src={card.image_url} />
                                                               </a>
                                                             </div>
@@ -834,7 +834,7 @@ class ChatAreaBody extends React.Component {
                                                           {
                                                             card.buttons && card.buttons.length > 0 &&
                                                             card.buttons.map((b, i) => (
-                                                              <a key={i} href={b.url} target='_blank' style={{ width: '100%', marginTop: '5px' }} className='btn btn-secondary btn-sm'>
+                                                              <a key={i} href={b.url} target='_blank' rel='noopener noreferrer' style={{ width: '100%', marginTop: '5px' }} className='btn btn-secondary btn-sm'>
                                                                 {b.title}
                                                               </a>
                                                             ))
@@ -942,7 +942,7 @@ class ChatAreaBody extends React.Component {
                                                                             </td>
                                                                             <td style={{ width: '70%' }}>
                                                                               <div>
-                                                                                <a href={msg.url_meta.url} target='_blank'>
+                                                                                <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                                   <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                                 </a>
                                                                                 <br />
@@ -963,7 +963,7 @@ class ChatAreaBody extends React.Component {
                                                                             </td>
                                                                             <td>
                                                                               <div>
-                                                                                <a href={msg.url_meta.url} target='_blank'>
+                                                                                <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                                   <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                                 </a>
                                                                                 <br />
@@ -994,7 +994,7 @@ class ChatAreaBody extends React.Component {
                                                               {
                                                                 validURL(msg.payload.text)
                                                                   ? <div style={{ wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px' }} className='m-messenger__message-text'>
-                                                                    <a style={{ color: 'white' }} href={msg.payload.text} target='_blank'>
+                                                                    <a style={{ color: 'white' }} href={msg.payload.text} target='_blank' rel='noopener noreferrer'>
                                                                       <p>{msg.payload.text}</p>
                                                                     </a>
                                                                   </div>
@@ -1038,7 +1038,7 @@ class ChatAreaBody extends React.Component {
                                                             {
                                                               msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                               msg.payload.buttons.map((b, i) => (
-                                                                <a key={i} href={b.url} target='_blank' style={{ borderColor: '#716aca', width: '100%', marginTop: '5px' }} className='btn btn-outline-brand btn-sm'>
+                                                                <a key={i} href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#716aca', width: '100%', marginTop: '5px' }} className='btn btn-outline-brand btn-sm'>
                                                                   {b.title}
                                                                 </a>
                                                               ))
@@ -1237,7 +1237,7 @@ class ChatAreaBody extends React.Component {
                               </td>
                               <td style={{ width: '70%' }}>
                                 <div>
-                                  <a href={this.state.urlmeta.url} target='_blank'>
+                                  <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                     <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold' }}>{this.state.urlmeta.title}</p>
                                   </a>
                                   <br />
@@ -1258,7 +1258,7 @@ class ChatAreaBody extends React.Component {
                               </td>
                               <td>
                                 <div>
-                                  <a href={this.state.urlmeta.url} target='_blank'>
+                                  <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                     <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold' }}>{this.state.urlmeta.title}</p>
                                   </a>
                                   <br />

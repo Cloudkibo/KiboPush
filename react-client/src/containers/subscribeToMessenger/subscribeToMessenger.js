@@ -29,7 +29,7 @@ class SubscribeToMessenger extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -223,7 +223,7 @@ class SubscribeToMessenger extends React.Component {
                             }}>
                               <label htmlFor='textbtn'> Button Preview</label>
                               <br />
-                              <a className='btn' href='#' style={{
+                              <a className='btn' href='#/' style={{
                                 'backgroundColor': this.state.buttonColor,
                                 'color': this.state.fontColor,
                                 'borderColor': this.state.fontColor

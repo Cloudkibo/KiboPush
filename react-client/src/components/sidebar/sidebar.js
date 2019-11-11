@@ -56,7 +56,7 @@ class Sidebar extends Component {
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     let url = window.location.hostname
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
@@ -87,7 +87,7 @@ class Sidebar extends Component {
     this.setState({isShowingModal: false})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
 
    /* if (nextProps.user) {
@@ -402,7 +402,7 @@ class Sidebar extends Component {
     if (this.state.settings) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+          <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-info' title='User Guide' />
             <span className='m-menu__link-text'>User Guide</span>
           </a>
@@ -1024,7 +1024,7 @@ class Sidebar extends Component {
     console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
-      this.props.browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
       <div id='sidebarDiv'>

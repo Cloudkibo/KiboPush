@@ -56,7 +56,7 @@ class Autoposting extends React.Component {
   }
   viewGuide () {
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
       this.setState({newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
@@ -67,14 +67,14 @@ class Autoposting extends React.Component {
   }
 
   gotoSettings (item) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/autopostingItemSettings`,
       state: item
     })
   }
 
   gotoMessages (item) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/autopostingMessages`,
       state: item
     })
@@ -89,6 +89,7 @@ class Autoposting extends React.Component {
       time: 3000,
       transition: 'scale'
     }
+    console.log('autoposting history', this.props.location)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />

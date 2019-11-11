@@ -47,11 +47,11 @@ class FileModal extends React.Component {
     }
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       disabled: false,
       file: nextProps.file ? nextProps.file : ''
@@ -85,7 +85,7 @@ class FileModal extends React.Component {
               <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px' }} >
                 <div className='discussion'>
                   <div className='bubble recipient' style={{ marginRight: '120px', marginTop: '100px', fontSize: '20px' }}>
-                    📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+                    <span role='img' aria-label='file'>📁</span> <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
                   </div>
                 </div>
               </div>

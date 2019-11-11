@@ -102,14 +102,14 @@ class MessengerCode extends React.Component {
 
   gotoCreate() {
     console.log('this.props.messengerCode', this.props.messengerCode)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessengerCode`,
       state: { module: 'createMessage', messengerCode: this.props.messengerCode }
     })
   }
 
   onEdit(messengerCode) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editMessengerCode`,
       state: { module: 'edit', messengerCode }
     })
@@ -128,7 +128,7 @@ class MessengerCode extends React.Component {
     this.props.fetchCodes()
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     var edit = {
       page_id: this.props.pages[0]._id,
       pageId: this.props.pages[0].pageId,
@@ -138,7 +138,7 @@ class MessengerCode extends React.Component {
     this.props.requestMessengerCode(edit)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextprops', nextProps)
     if (nextProps.pages) {
       this.setState({
@@ -321,14 +321,14 @@ class MessengerCode extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     {this.state.pagesToShow.length > 0
-                      ? <Link data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
                           <span>
                             Create New
                       </span>
                         </span>
-                      </Link>
+                      </a>
                       : <Link disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />

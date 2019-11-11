@@ -74,6 +74,8 @@ class PageAdmins extends React.Component {
             return !!x.email
         } else if (search === 'offKiboPush') {
             return !x.email
+        } else {
+          return
         }
     })
   }
@@ -144,7 +146,7 @@ class PageAdmins extends React.Component {
     return array.filter((e, i) => array.findIndex(a => a.user.facebookInfo.fbId === e.user.facebookInfo.fbId) === i);
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageUsers) {
         if (nextProps.pageAdmins) {
             let uniquePageAdmins = this.unique(nextProps.pageUsers)
@@ -262,7 +264,7 @@ class PageAdmins extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

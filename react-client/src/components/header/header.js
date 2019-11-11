@@ -57,17 +57,17 @@ class Header extends React.Component {
     console.log('in updatePlatformValue', value)
     if (this.props.user && this.props.user.role === 'buyer') {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
         })
       } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })
       } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
         })
@@ -118,14 +118,14 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/live',
       state: { session_id: this.props.socketData.session_id }
     })
     this.setState({ ignore: true })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ ignore: false })
@@ -179,7 +179,7 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getuserdetails()
   }
   timeSince (date) {
@@ -213,17 +213,17 @@ class Header extends React.Component {
   gotoView (id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'webhook' }
       })
     } else if (type === 'limit') {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'pro' }
       })
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/liveChat`,
         state: { id: id }
       })
@@ -427,7 +427,7 @@ class Header extends React.Component {
                         </div>
                       </li>
                       : <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-redirect='true' aria-haspopup='true'>
-                        <a href='#/' href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                        <a href='https://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
                           <i className='m-menu__link-icon flaticon-info' />
                           <span className='m-menu__link-text'>
                             Documentation
@@ -840,7 +840,7 @@ class Header extends React.Component {
                       </li>
 
                       {/* <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                      <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li> */}
                     </ul>
                   }

@@ -46,7 +46,7 @@ class CustomerLists extends React.Component {
     this.setState({editName: e.target.value})
   }
   saveCurrentList (list) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/customerListDetails`,
       state: {module: 'customerList'}
     })
@@ -93,7 +93,7 @@ class CustomerLists extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps.customerLists', nextProps.customerLists)
     if (nextProps.customerLists && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});

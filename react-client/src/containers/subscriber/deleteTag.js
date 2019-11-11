@@ -14,7 +14,7 @@ class DeleteTags extends React.Component {
         }
         this.deleteTag = this.deleteTag.bind(this)
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.tags) {
             this.setState({
                 tags: nextProps.tags

@@ -36,13 +36,13 @@ class CheckBox extends React.Component {
   }
 
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/settings',
       state: {module: 'whitelistDomains'}
     })
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     console.log('nextprops in Checkbox', nextprops)
     if (nextprops.pages && nextprops.pages.length > 0) {
     this.selectPage()
@@ -296,7 +296,7 @@ class CheckBox extends React.Component {
                   </div>
                 </div>
                 : <span>You do not have any whitelisted domains for the selected page. Please click
-              <Link onClick={this.goToSettings} style={{color: 'blue', cursor: 'pointer'}}> here </Link> to add whitelist domains.</span>
+              <a href='#/' onClick={this.goToSettings} style={{color: 'blue', cursor: 'pointer'}}> here </a> to add whitelist domains.</span>
               }
             <br />
             { this.state.pageid !== '' && this.state.selectedDomain !== '' && this.state.selectedDomain !== undefined &&

@@ -249,14 +249,14 @@ class CreateSequence extends React.Component {
       this.setState({showBackWarning: true})
       this.refs.backWarning.click()
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/sequenceMessaging`
       })
     }
   }
 
-  componentWillUnmount () {
-    console.log('componentWillUnmount called', this.addMessageFlag)
+  UNSAFE_componentWillUnmount () {
+    console.log('UNSAFE_componentWillUnmount called', this.addMessageFlag)
     if (this.props.messages.length === 0 && !this.addMessageFlag){
       this.props.deleteSequence(this.state.sequenceId)
     }
@@ -269,12 +269,12 @@ class CreateSequence extends React.Component {
   gotoView (message) {
     //  this.props.createSequence({name: this.state.name})
     if (message.payload && message.payload.length > 0) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
         state: {title: message.title, name: this.props.location.state.name, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessageSeq`,
         state: {title: message.title, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
@@ -456,7 +456,7 @@ class CreateSequence extends React.Component {
       title: 'New Message',
       payload: []
     }
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessageSeq`,
       state: {
         data: payload,
@@ -546,7 +546,7 @@ class CreateSequence extends React.Component {
     this.setState({name: e.target.value, error: false})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (this.props.location.state.module === 'create' && (nextProps.createdSequence && nextProps.createdSequence !== '')) {
       this.setState({sequenceId: nextProps.createdSequence._id})
       this.props.fetchAllMessages(nextProps.createdSequence._id)
@@ -672,7 +672,7 @@ class CreateSequence extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='backWarning' data-toggle="modal" data-target="#backWarning">backWarning</a>
+        <a href='#/' style={{ display: 'none' }} ref='backWarning' data-toggle="modal" data-target="#backWarning">backWarning</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="backWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -885,7 +885,7 @@ class CreateSequence extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='triggerIsNone' data-toggle="modal" data-target="#triggerIsNone">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='triggerIsNone' data-toggle="modal" data-target="#triggerIsNone">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="triggerIsNone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -935,7 +935,7 @@ class CreateSequence extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='triggerIsNotNone' data-toggle="modal" data-target="#triggerIsNotNone">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='triggerIsNotNone' data-toggle="modal" data-target="#triggerIsNotNone">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="triggerIsNotNone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">

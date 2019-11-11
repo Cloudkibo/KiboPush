@@ -20,7 +20,7 @@ class FacebookIntegration extends React.Component {
   }
 
   updateShowIntegrations () {
-    this.props.updateShowIntegrations({showIntegrations: false}, this.props.browserHistory)
+    this.props.updateShowIntegrations({showIntegrations: false}, this.props.history)
   }
 
   disconnectFacebook () {
@@ -31,11 +31,11 @@ class FacebookIntegration extends React.Component {
     this.setState({showModal: false})
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
@@ -58,8 +58,8 @@ class FacebookIntegration extends React.Component {
           <div className='m-grid__item m-grid__item--fluid m-grid m-grid--hor m-login m-login--singin m-login--2 m-login-2--skin-1'>
             <div className='m-login__wrapper'>
               <div className='m-login__logo'>
-                <a href='#'>
-                  <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                <a href='#/'>
+                  <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                 </a>
               </div>
               {
@@ -108,7 +108,7 @@ class FacebookIntegration extends React.Component {
                   </a>
                   <br />
                   <br />
-                  <a href='#' data-toggle="modal" data-target="#disconnect" onClick={this.disconnectFacebook} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                  <a href='#/' data-toggle="modal" data-target="#disconnect" onClick={this.disconnectFacebook} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                     <span>
                       <i className='la la-unlink' />
                       <span>Disconnect My Facebook Account</span>
@@ -116,7 +116,7 @@ class FacebookIntegration extends React.Component {
                   </a>
                   <br />
                   <br />
-                  <a href='#' onClick={this.updateShowIntegrations} style={{borderColor: '#34bfa3'}} className='btn btn-outline-success m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                  <a href='#/' onClick={this.updateShowIntegrations} style={{borderColor: '#34bfa3'}} className='btn btn-outline-success m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                     <span>
                       <i className='la la-check' />
                       <span>Continue</span>

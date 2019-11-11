@@ -635,8 +635,8 @@ class ChatBox extends React.Component {
     this.top.scrollIntoView({ behavior: 'instant' })
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps chatbox.js')
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js')
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
     }
@@ -691,7 +691,7 @@ class ChatBox extends React.Component {
         elemnet: (<div>
           <div style={{ width: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
             <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
-              <a href={cards[i].image_url} target='_blank'>
+              <a href={cards[i].image_url} target='_blank' rel='noopener noreferrer'>
                 <img style={{ maxWidth: 180, borderRadius: '5px' }} src={cards[i].image_url} />
               </a>
             </div>
@@ -1138,7 +1138,7 @@ class ChatBox extends React.Component {
                                                         />
                                                       </div>
                                                       : att.type === 'image'
-                                                        ? <a key={index} href={att.payload.url} target='_blank'>
+                                                        ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                           <img
                                                             src={att.payload.url}
                                                             style={{ maxWidth: '150px', maxHeight: '85px', marginTop: '10px' }}
@@ -1149,7 +1149,7 @@ class ChatBox extends React.Component {
                                                             <tbody>
                                                               <tr>
                                                                 <td>
-                                                                  <a href={this.getmainURL(att.payload)} target='_blank'>
+                                                                  <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
                                                                     <img style={{ width: '200px' }} src={this.geturl(att.payload)} />
                                                                   </a>
                                                                 </td>
@@ -1162,7 +1162,7 @@ class ChatBox extends React.Component {
                                                             </tbody>
                                                           </table>
                                                           : att.type === 'file' &&
-                                                          <a key={index} href={att.payload.url} target='_blank'>
+                                                          <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                             <h6 style={{ marginTop: '10px' }}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                                                           </a>
                                                 ))
@@ -1191,7 +1191,7 @@ class ChatBox extends React.Component {
                                                             </td>
                                                             <td style={{ width: '70%' }}>
                                                               <div>
-                                                                <a href={msg.url_meta.url} target='_blank'>
+                                                                <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                   <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                 </a>
                                                                 <br />
@@ -1212,7 +1212,7 @@ class ChatBox extends React.Component {
                                                             </td>
                                                             <td>
                                                               <div>
-                                                                <a href={msg.url_meta.url} target='_blank'>
+                                                                <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                   <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                 </a>
                                                                 <br />
@@ -1314,7 +1314,7 @@ class ChatBox extends React.Component {
                                                   <div className='m-messenger__message-username'>
                                                     {this.getRepliedByMsg(msg)}
                                                   </div>
-                                                  <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
+                                                  <a download={msg.payload.fileName} target='_blank' rel='noopener noreferrer' href={msg.payload.fileurl.url} >
                                                     <h6 style={{ color: 'white' }}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                                   </a>
                                                 </div>
@@ -1335,7 +1335,7 @@ class ChatBox extends React.Component {
                                                         <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
                                                           {
                                                             msg.payload.image_url &&
-                                                            <a href={msg.payload.image_url} target='_blank'>
+                                                            <a href={msg.payload.image_url} target='_blank' rel='noopener noreferrer'>
                                                               <img style={{ maxWidth: 180, borderRadius: '5px' }} src={msg.payload.image_url} />
                                                             </a>
                                                           }
@@ -1350,7 +1350,7 @@ class ChatBox extends React.Component {
                                                         {
                                                           msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                           msg.payload.buttons.map(b => (
-                                                            <a href={b.url} target='_blank' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
+                                                            <a href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
                                                               {b.type === 'element_share' ? 'Share' : b.title}
                                                             </a>
                                                           ))
@@ -1378,7 +1378,7 @@ class ChatBox extends React.Component {
                                                                 <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
                                                                   {
                                                                     card.image_url &&
-                                                                    <a href={card.image_url} target='_blank'>
+                                                                    <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
                                                                       <img style={{ maxWidth: 180, borderRadius: '5px' }} src={card.image_url} />
                                                                     </a>
                                                                   }
@@ -1393,7 +1393,7 @@ class ChatBox extends React.Component {
                                                                 {
                                                                   card.buttons && card.buttons.length > 0 &&
                                                                   card.buttons.map(b => (
-                                                                    <a href={b.url} target='_blank' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
+                                                                    <a href={b.url} target='_blank' rel='noopener noreferrer' style={{ borderColor: '#36a3f7', width: '100%', marginTop: '5px' }} className='btn btn-outline-info btn-sm'>
                                                                       {b.type == 'element_share' ? 'Share' : b.title}
                                                                     </a>
                                                                   ))
@@ -1636,7 +1636,7 @@ class ChatBox extends React.Component {
                                                                                       </td>
                                                                                       <td style={{ width: '70%' }}>
                                                                                         <div>
-                                                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                                             <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                                           </a>
                                                                                           <br />
@@ -1657,7 +1657,7 @@ class ChatBox extends React.Component {
                                                                                       </td>
                                                                                       <td>
                                                                                         <div>
-                                                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                                             <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px' }}>{msg.url_meta.title}</p>
                                                                                           </a>
                                                                                           <br />
@@ -1688,7 +1688,7 @@ class ChatBox extends React.Component {
                                                                         {
                                                                           validURL(msg.payload.text)
                                                                             ? <div style={{ wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px' }} className='m-messenger__message-text'>
-                                                                              <a style={{ color: 'white' }} href={msg.payload.text} target='_blank'>
+                                                                              <a style={{ color: 'white' }} href={msg.payload.text} target='_blank' rel='noopener noreferrer'>
                                                                                 <p>{msg.payload.text}</p>
                                                                               </a>
                                                                             </div>
@@ -1736,6 +1736,7 @@ class ChatBox extends React.Component {
                                                                             key={i}
                                                                             href={b.url}
                                                                             target='_blank'
+                                                                            rel='noopener noreferrer'
                                                                             style={{
                                                                               margin: '3px 3px -4px 3px',
                                                                               borderRadius: msg.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
@@ -1985,7 +1986,7 @@ class ChatBox extends React.Component {
                                       </td>
                                       <td style={{ width: '70%' }}>
                                         <div>
-                                          <a href={this.state.urlmeta.url} target='_blank'>
+                                          <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                             <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold' }}>{this.state.urlmeta.title}</p>
                                           </a>
                                           <br />
@@ -2006,7 +2007,7 @@ class ChatBox extends React.Component {
                                       </td>
                                       <td>
                                         <div>
-                                          <a href={this.state.urlmeta.url} target='_blank'>
+                                          <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                             <p style={{ color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold' }}>{this.state.urlmeta.title}</p>
                                           </a>
                                           <br />

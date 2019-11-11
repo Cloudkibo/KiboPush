@@ -51,7 +51,7 @@ class EditTemplate extends React.Component {
     this.pageChange = this.pageChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (this.state.pageValue === '') {
       this.initializeSwitch(nextprops.pages[0].isWelcomeMessageEnabled, nextprops.pages[0]._id)
       this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
@@ -263,7 +263,7 @@ class EditTemplate extends React.Component {
                           }
                         </div>
                         <div className='col-lg-6 m--align-right'>
-                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
+                          <a href='#/' className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                           <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
                         </div>
                       </div>

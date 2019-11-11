@@ -19,7 +19,7 @@ class adSet extends React.Component {
         gender:'male',
         min_age: 18,
         max_age: 65
-      },    
+      },
       budget: {
         type: 'daily_budget',
         amount:''
@@ -45,7 +45,7 @@ class adSet extends React.Component {
   handleAge (e) {
     let temp = this.state.ad_set_payload
     if(e.target.id === 'min_age'){
-      temp.min_age = e.target.value 
+      temp.min_age = e.target.value
       this.setState({ad_set_payload: temp})
       if(e.target.value > this.state.ad_set_payload.max_age){
         temp.max_age = e.target.value
@@ -67,7 +67,7 @@ class adSet extends React.Component {
 
     if (e.target.id === 'budget_type'){
       temp.type = e.target.value
-    }else if (e. target.id === 'budget_amount'){
+    } else if (e.target.id === 'budget_amount'){
       temp.amount = e.target.value
     }
 

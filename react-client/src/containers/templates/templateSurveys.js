@@ -76,7 +76,7 @@ class templateSurveys extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.surveysDataAll)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -310,12 +310,12 @@ class templateSurveys extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  style={{width: '170px'}}><a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                   View
-                                </Link>
-                                  <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                </a>
+                                  <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
-                                  </Link>
+                                  </a>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(survey._id)}
@@ -330,7 +330,7 @@ class templateSurveys extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}

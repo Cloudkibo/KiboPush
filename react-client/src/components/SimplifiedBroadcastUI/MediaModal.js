@@ -69,7 +69,7 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 

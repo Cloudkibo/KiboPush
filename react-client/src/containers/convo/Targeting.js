@@ -86,7 +86,7 @@ class Targeting extends React.Component {
     this.setState({isShowingModalPro: false})
   }
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -512,8 +512,8 @@ class Targeting extends React.Component {
 
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     console.log('this.state.pageValue in component will receive', this.state.pageValue)
     if (nextProps.resetTarget) {
       this.resetTargeting()
@@ -638,7 +638,7 @@ class Targeting extends React.Component {
             <span class="m-form__help">
               These broadcasts cannot contain any promotions (no sales, coupons and discounts, etc.) and
               should be within one of the 16 allowed use cases defined by
-              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank'> Facebook</a>.
+              <a href='https://developers.facebook.com/docs/messenger-platform/send-messages/message-tags#supported_tags' target='_blank' rel='noopener noreferrer'> Facebook</a>.
 					  </span>
             <div className="m-alert m-alert--outline m-alert--outline-2x alert alert-warning alert-dismissible fade show" role="alert">
 							<button type="button" style={{top: '-10px'}} className="close" data-dismiss="alert" aria-label="Close"></button>
@@ -658,7 +658,7 @@ class Targeting extends React.Component {
             <span class="m-form__help">
               These broadcasts can contain promotions, but the target audience is limited to subscribers who
               interacted with your bot in the last 24 hours.
-              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank'> Learn more here</a>
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/policy-overview#24hours_window' target='_blank' rel='noopener noreferrer'> Learn more here</a>
 					  </span>
 				  </div>
         </div> */}
@@ -689,7 +689,7 @@ class Targeting extends React.Component {
             <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
             <span style={{fontSize: '0.9rem'}}>
               This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank' rel='noopener noreferrer'>link.</a>
             </span>
           </div>
           }

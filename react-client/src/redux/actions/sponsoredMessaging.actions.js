@@ -1,6 +1,5 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import { createBrotliCompress } from 'zlib';
 
 export function showAllSponsoredMessages (data) {
     return {
@@ -71,5 +70,3 @@ export function deleteSponsoredMessage(id, msg){
         })
     }
 }
-
-

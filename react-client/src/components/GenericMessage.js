@@ -63,7 +63,7 @@ class GenericMessage extends React.Component {
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (this.props.convoTitle !== nextProps.convoTitle) {
       this.setState({convoTitle: nextProps.convoTitle})
     }

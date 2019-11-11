@@ -56,7 +56,7 @@ class InviteSubscribers extends React.Component {
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       //  this.generateAlert('success', nextprops.successMessage)
       this.msg.success('Message sent successfully!')
@@ -200,7 +200,7 @@ class InviteSubscribers extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='welcome' data-toggle="modal" data-target="#welcome">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='welcome' data-toggle="modal" data-target="#welcome">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -218,10 +218,10 @@ class InviteSubscribers extends React.Component {
                 <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'
+                  <a href='#/' style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'
                   data-dismiss='modal'>
                     Continue
-                  </Link>
+                  </a>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <Link to='/dashboard' className='btn btn-secondary'>
@@ -252,17 +252,17 @@ class InviteSubscribers extends React.Component {
                       <div className='m-portlet__head-tools'>
                         <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist'>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
+                            <a href='#/' className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
                               Become a Subscriber
                             </a>
                           </li>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
+                            <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
                               Share Your Page
                             </a>
                           </li>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
+                            <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
                               Share Page Link
                             </a>
                           </li>
@@ -294,7 +294,7 @@ class InviteSubscribers extends React.Component {
                           </div>
                           <br /><br /><br /><br />
                           <center>
-                            <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
+                            <a className='btn btn-primary' href={this.state.fblink} target='_blank' rel='noopener noreferrer' onClick={this.sendTestMessage}>
                               <span>Subscribe Now</span>
                             </a>
                           </center>
@@ -324,7 +324,7 @@ class InviteSubscribers extends React.Component {
                           </div>
                           <br /><br /><br /><br />
                           <center>
-                            <a className='btn btn-primary' target='_blank' href={this.getlink()}>
+                            <a className='btn btn-primary' target='_blank' rel='noopener noreferrer' href={this.getlink()}>
                               <i className='fa fa-facebook' style={{marginRight: '10px'}} />
                               <span>Share Page</span>
                             </a>

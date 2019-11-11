@@ -62,7 +62,7 @@ class EditPoll extends React.Component {
 
     document.title = `${title} | Edit Template`;
   }
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.pollDetails) {
       this.setState({ title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category })
     }
@@ -311,7 +311,7 @@ class EditPoll extends React.Component {
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary' onClick={() => {
                       this.createPoll()
-                      this.props.browserHistory.push({
+                      this.props.history.push({
                         pathname: '/poll'
                       })
                     }}

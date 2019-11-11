@@ -64,7 +64,7 @@ class BroadcastsInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })

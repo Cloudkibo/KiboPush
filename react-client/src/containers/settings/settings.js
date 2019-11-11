@@ -81,7 +81,7 @@ class Settings extends React.Component {
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     let url = window.location.hostname
     console.log('this.props.location', this.props.location)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
@@ -372,11 +372,11 @@ class Settings extends React.Component {
       app_secret: this.state.NGPSecret
     }, this.msg)
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('iin componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('iin UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/resendVerificationEmail'
       })
     }
@@ -748,7 +748,7 @@ class Settings extends React.Component {
                     </form>
                     <div className='form-group m-form__group'>
                       <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank'>https://app.kibopush.com/docs</a>
+                        For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank' rel='noopener noreferrer'>https://app.kibopush.com/docs</a>
                       </div>
                     </div>
                   </div>

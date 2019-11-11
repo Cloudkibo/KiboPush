@@ -45,7 +45,7 @@ class GettingStarted extends React.Component {
     /* eslint-enable */
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       this.generateAlert('success', nextprops.successMessage)
     } else if (nextprops.errorMessage && this.state.step !== 0) {
@@ -204,7 +204,7 @@ class GettingStarted extends React.Component {
                     Become a subscriber of your page.
                     You need to send a message to your page in order to subscribe it.
                   </p>
-                  <a href={this.state.inviteUrl} target='_blank' className='btn btn-success'>
+                  <a href={this.state.inviteUrl} target='_blank' rel='noopener noreferrer' className='btn btn-success'>
                     Subscribe Now
                   </a>
                 </div>
@@ -260,7 +260,7 @@ class GettingStarted extends React.Component {
                 <div className='modal-body'>
                   <p>
                     Invite other people to subscribe your page by sharing this link:
-                    <a href={this.state.inviteUrl} target='_blank'> {this.state.inviteUrl}</a>
+                    <a href={this.state.inviteUrl} target='_blank' rel='noopener noreferrer'> {this.state.inviteUrl}</a>
                   </p>
                   <CopyToClipboard text={this.state.inviteUrl} onCopy={() => this.generateAlert('success', 'Link copied successfully!')}>
                     <button href={this.state.inviteUrl} className='btn btn-success'>

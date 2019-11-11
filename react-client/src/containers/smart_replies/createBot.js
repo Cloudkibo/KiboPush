@@ -43,7 +43,7 @@ class CreateBot extends React.Component {
     document.title = `${title} | Create Bot`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.createdBot && nextProps.pages) {
       var botName = nextProps.createdBot.botName
       if (botName) {
@@ -222,7 +222,7 @@ class CreateBot extends React.Component {
     }
     this.props.editBot({botId: this.state.id, payload: this.state.payload}, this.msg)
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/bots`
     })
   }

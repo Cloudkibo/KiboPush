@@ -44,7 +44,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions.length < this.props.openCount &&
                   <center>
                     <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                    <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreOpen}>Load More</a>
+                    <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreOpen}>Load More</a>
                   </center>
                 }
               </div>
@@ -68,7 +68,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions.length < this.props.closeCount &&
                   <center>
                     <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                    <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
+                    <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
                   </center>
                 }
               </div>

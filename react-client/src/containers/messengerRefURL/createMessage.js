@@ -51,12 +51,12 @@ class MessengerRefURLMessage extends React.Component {
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/editMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL}
       })
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/createMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.state.pageId}
       })

@@ -24,11 +24,11 @@ class ForgotWorkspaceName extends React.Component {
     this.onSubmit = this.onSubmit.bind(this)
     this.check = this.check.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
   check () {
@@ -44,7 +44,7 @@ class ForgotWorkspaceName extends React.Component {
     event.preventDefault()
     this.props.forgotWorkspaceName({email: this.refs.email.value}, this.msg)
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successForgot) {
       this.setState({fail: false})
       this.setState({success: true})
@@ -70,8 +70,8 @@ class ForgotWorkspaceName extends React.Component {
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
-                    <a href='#'>
-                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                    <a href='#/'>
+                      <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>

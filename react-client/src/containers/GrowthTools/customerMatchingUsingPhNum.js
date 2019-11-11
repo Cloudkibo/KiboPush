@@ -391,7 +391,7 @@ class CustomerMatching extends React.Component {
     return !errors
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     var res = nextProps.uploadResponse.fileUploadResponse
     if (res.status === 'failed') {
       this.setState({

@@ -91,7 +91,7 @@ class Sequence extends React.Component {
       this.setState({ error: true })
     } else {
       this.props.createSequence({ name: this.state.name })
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/editSequence`,
         state: { name: this.state.name, module: 'create' }
       })
@@ -280,7 +280,7 @@ class Sequence extends React.Component {
     this.closeDialogTrigger()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextprops in sequence', nextProps)
     if (nextProps.sequences && nextProps.sequences.length > 0) {
       this.displayData(0, nextProps.sequences)
@@ -356,7 +356,7 @@ class Sequence extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editSequence`,
       state: { module: 'edit', name: sequence.name, _id: sequence._id, trigger: sequence.trigger.event }
     })
@@ -538,7 +538,7 @@ class Sequence extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sequence Messaging? Here is the <a href='#' target='_blank'>documentation</a>.
+              Need help in understanding Sequence Messaging? Here is the <a href='#/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -632,7 +632,7 @@ class Sequence extends React.Component {
                                 <ReactPaginate
                                   previousLabel={'previous'}
                                   nextLabel={'next'}
-                                  breakLabel={<a>...</a>}
+                                  breakLabel={<a href='#/'>...</a>}
                                   breakClassName={'break-me'}
                                   pageCount={Math.ceil(this.state.totalLength / 5)}
                                   marginPagesDisplayed={2}

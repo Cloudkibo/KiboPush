@@ -33,7 +33,7 @@ class AutomationControls extends React.Component {
 
     document.title = `${title} | Response Methods`
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateResponseMethod(nextProps.responseMethod)
   }
   updateResponseMethod (responseMethod) {

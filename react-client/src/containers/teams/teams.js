@@ -84,7 +84,7 @@ class Teams extends React.Component {
     this.displayData(data.selected, this.props.teams)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.teams) {
       this.displayData(0, nextProps.teams)
       this.setState({ totalLength: nextProps.teams.length })
@@ -149,7 +149,7 @@ class Teams extends React.Component {
     // }
     // console.log('agents', agents)
     // console.log('pages', pages)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editTeam`,
       state: {module: 'edit', name: team.name, description: team.description, _id: team._id}
     })
@@ -167,7 +167,7 @@ class Teams extends React.Component {
     //     pages.push(this.props.teamUniquePages[j])
     //   }
     // }
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editTeam`,
       state: {module: 'view', name: team.name, description: team.description, _id: team._id}
     })
@@ -252,7 +252,7 @@ class Teams extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>. Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/teams/' target='_blank' rel='noopener noreferrer'>documentation</a>. Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -381,7 +381,7 @@ class Teams extends React.Component {
                             <ReactPaginate
                               previousLabel={'previous'}
                               nextLabel={'next'}
-                              breakLabel={<a>...</a>}
+                              breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
                               pageCount={Math.ceil(this.state.totalLength / 5)}
                               marginPagesDisplayed={2}

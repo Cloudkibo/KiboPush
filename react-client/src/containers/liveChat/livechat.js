@@ -41,7 +41,6 @@ import SESSIONSAREA from '../../components/LiveChat/sessionsArea.js'
 import PROFILEAREA from '../../components/LiveChat/profileArea.js'
 import CHATAREA from './chatbox.js'
 import SEARCHAREA from './search'
-import customfields from '../../components/customFields/customfields';
 
 const CHATMODULE= 'KIBOCHAT'
 class LiveChat extends React.Component {
@@ -236,7 +235,7 @@ class LiveChat extends React.Component {
     this.props.clearSearchResult()
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fetchSessions({ first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } })
     this.props.loadTags()
     this.props.loadCustomFields()
@@ -261,8 +260,8 @@ class LiveChat extends React.Component {
     document.title = `${title} | Live Chat`
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps livechat.js', nextProps)
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps livechat.js', nextProps)
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({ loading: false })
       if (this.props.location.state && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {

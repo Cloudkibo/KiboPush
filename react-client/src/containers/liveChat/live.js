@@ -199,8 +199,8 @@ class LiveChat extends React.Component {
     this.setState({ showDropDown: false })
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps in live.js')
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in live.js')
     this.setState({ ignore: true })
     if (nextProps.openSessions && nextProps.closeSessions) {
       console.log('open sessions', nextProps.openSessions)
@@ -343,8 +343,8 @@ class LiveChat extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
-                  Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial.</a>
+                  Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank' rel='noopener noreferrer'>Click Here. </a>
+                  Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial.</a>
                 </div>
               </div>
             </div>
@@ -832,7 +832,7 @@ class LiveChat extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                        <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+                        <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank' rel='noopener noreferrer'>link.</a>
                       </p>
                     </div>
                   </div>

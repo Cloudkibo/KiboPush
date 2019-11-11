@@ -25,8 +25,8 @@ console.log(store.getState())
 
 ReactDOM.render((
     <Provider store={store}>
-      <Router browserHistory={history} history={history}>
-        <App browserHistory={history}>
+      <Router history={history}>
+        <App history={history}>
           <Routes />
         </App>
       </Router>

@@ -61,7 +61,7 @@ class Video extends React.Component {
     if (truef === false) {
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (!nextProps.loading) {
       this.setState({loading: false})
       this.props.setLoading()

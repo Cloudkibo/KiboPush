@@ -114,7 +114,7 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/dashboard`
     })
   }
@@ -188,8 +188,8 @@ class OperationalDashboard extends React.Component {
       this.props.loadSurveysGraphData(defaultVal)
     }
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in backdoor', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in backdoor', nextProps)
     if (nextProps.users && nextProps.count) {
       console.log('in nextProps.users')
       this.displayData(0, nextProps.users)
@@ -361,7 +361,7 @@ class OperationalDashboard extends React.Component {
 
   goToBroadcasts (user) {
     this.props.saveUserInformation(user)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/userDetails`,
       state: user
     })
@@ -463,7 +463,7 @@ class OperationalDashboard extends React.Component {
                       </li>
                       <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                         <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
-                          <Link onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </Link>
+                          <a href='#/' onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </a>
                           <Popover
                             style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                             placement='bottom'

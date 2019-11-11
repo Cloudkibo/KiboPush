@@ -37,7 +37,7 @@ class Card extends React.Component {
       loading: false
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
   }
   setLoading () {

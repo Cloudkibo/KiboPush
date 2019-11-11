@@ -36,7 +36,7 @@ class FacebookIntegration extends React.Component {
   }
 
   cancel () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -76,7 +76,7 @@ class FacebookIntegration extends React.Component {
   closeDialogWhatsApp () {
     this.setState({isShowingModalWhatsApp: false})
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     console.log('nextprops in Integrations', nextprops)
   }
 
@@ -109,16 +109,16 @@ class FacebookIntegration extends React.Component {
       }, this.msg)
     }
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
   goToNext () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/dashboard',
       state: {loadScript: true}
     })
@@ -151,7 +151,7 @@ class FacebookIntegration extends React.Component {
           <div className='m-grid__item m-grid__item--fluid m-grid m-grid--hor m-login m-login--singin m-login--2 m-login-2--skin-1'>
             <div className='m-login__wrapper col-md-8 col-lg-8 col-sm-8'>
               <div className='m-login__logo'>
-                <a href='#'>
+                <a href='#/'>
                   <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                 </a>
               </div>
@@ -321,7 +321,7 @@ class FacebookIntegration extends React.Component {
                     <label className='control-label'>Sandbox Code:</label>
                     <input className='form-control' value={this.state.code} onChange={(e) => this.updateWhatsAppValues(e, 'code')} />
                   </div>
-                  <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank'>here</a></span>
+                  <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                   <div className='m-form__actions' style={{'float': 'right'}}>

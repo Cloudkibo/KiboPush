@@ -90,7 +90,7 @@ class Plans extends React.Component {
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.plans && nextprops.plans.length > 0) {
       var temp = []
       for (var i = 0; i < nextprops.plans.length; i++) {

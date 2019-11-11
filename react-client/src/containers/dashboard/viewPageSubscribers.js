@@ -82,7 +82,7 @@ class ViewPageSubscribers extends React.Component {
     this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers && nextProps.count) {
       this.displayData(0, nextProps.pageSubscribers)
       this.setState({ totalLength: nextProps.count })

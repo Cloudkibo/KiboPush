@@ -59,7 +59,7 @@ class CopyLink extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({

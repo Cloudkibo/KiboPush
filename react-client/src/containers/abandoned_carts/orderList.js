@@ -31,7 +31,7 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('nextprops', nextprops.abandonedList)
   }
 

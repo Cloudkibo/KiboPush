@@ -40,7 +40,7 @@ class EditTemplate extends React.Component {
   }
 
   goBack () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/welcomeMessage`
     })
   }
@@ -66,7 +66,7 @@ class EditTemplate extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
     var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
     console.log('PageSelected', pages[0])

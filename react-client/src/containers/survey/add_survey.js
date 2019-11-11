@@ -200,9 +200,9 @@ class AddSurvey extends React.Component {
     this.initTab()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.createwarning) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/surveys'
 
       })
@@ -694,7 +694,7 @@ class AddSurvey extends React.Component {
                     <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
                       <div className='panel-body'>
                         <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank' rel='noopener noreferrer'>link.</a></p>
                       </div>
                     </div>
                   </div>
@@ -727,7 +727,7 @@ class AddSurvey extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='sendSurvey' data-toggle="modal" data-target="#sendSurvey">sendSurvey</a>
+        <a href='#/' style={{ display: 'none' }} ref='sendSurvey' data-toggle="modal" data-target="#sendSurvey">sendSurvey</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="sendSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -759,7 +759,7 @@ class AddSurvey extends React.Component {
                       disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                       onClick={() => {
                         this.createSurvey()
-                        this.props.browserHistory.push({
+                        this.props.history.push({
                           pathname: '/surveys'
                         })
                       }} data-dismiss='modal'>

@@ -38,7 +38,9 @@ class InstallApp extends React.Component {
   }
 
   verifyString (event) {
+    /* eslint-diable */
     let re = new RegExp('\\b(https?|ftp|file):\/\/[\\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\\-A-Za-z0-9+&@#\/%=~_|]')
+    /* eslint-enable */
     if (re.test(this.state.pageUrl)) {
       let hostname = new URL(this.state.pageUrl).host
       this.setState({pageUrl: hostname})

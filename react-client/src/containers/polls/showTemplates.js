@@ -45,14 +45,14 @@ class ShowTemplates extends React.Component {
   hideDropDown () {
     this.setState({showDropDown: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.polls) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
     }
   }
   gotoView () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/poll`
     })
   }
@@ -148,14 +148,14 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editTemplatePoll'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editTemplatePoll'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
-                                        </Link>
+                                        </a>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewTemplatePollUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewTemplatePollUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                          View Template
-                                        </Link>
+                                        </a>
                                        </div>
                                      </div>
                                   ))}

@@ -173,7 +173,7 @@ class PageUsers extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageUsers) {
       this.displayData(0, nextProps.pageUsers)
     }
@@ -318,7 +318,7 @@ class PageUsers extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

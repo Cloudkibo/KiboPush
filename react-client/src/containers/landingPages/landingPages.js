@@ -70,7 +70,7 @@ class LandingPage extends React.Component {
   }
   gotoCreate () {
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createLandingPage`,
       state: {pageId: pageId, _id: this.state.pageSelected}
     })
@@ -91,7 +91,7 @@ class LandingPage extends React.Component {
   onEdit (landingPage) {
     console.log('edit landing page called', landingPage)
     landingPage.currentTab= 'initialState'
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editLandingPage`,
       state: {module: 'edit', landingPage: landingPage}
     })
@@ -135,7 +135,7 @@ class LandingPage extends React.Component {
     this.displayData(data.selected, this.props.landingPages)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.landingPages) {
       this.displayData(0, nextProps.landingPages)
       this.setState({totalLength: nextProps.landingPages.length})
@@ -297,8 +297,8 @@ class LandingPage extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Landing Pages? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Landing Pages? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -313,14 +313,14 @@ class LandingPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
                           Create New
                         </span>
                       </span>
-                    </Link>
+                    </a>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -388,7 +388,7 @@ class LandingPage extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

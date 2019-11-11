@@ -46,7 +46,7 @@ class Webhook extends React.Component {
     this.edit = this.edit.bind(this)
     this.saveEdited = this.saveEdited.bind(this)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0].pageId})
@@ -291,7 +291,7 @@ class Webhook extends React.Component {
     this.props.enabled({_id: id, isEnabled: data}, this.msg)
   }
   gotoView (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -365,8 +365,8 @@ class Webhook extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='form-group m-form__group'>
                         <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank'>documentation</a>.
-                        Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a> to understand this feature.
+                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                        Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a> to understand this feature.
                         </div>
                       </div>
                       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="endpoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

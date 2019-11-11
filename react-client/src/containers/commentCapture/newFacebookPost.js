@@ -151,8 +151,8 @@ class FacebookPosts extends React.Component {
     if (truef === false) {
     }
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(' componentWillReceiveProps called')
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log(' UNSAFE_componentWillReceiveProps called')
   }
   removeAttachment(attachment) {
     var id = attachment.id

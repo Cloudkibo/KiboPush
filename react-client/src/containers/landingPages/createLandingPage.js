@@ -66,7 +66,7 @@ class CreateLandingPage extends React.Component {
       pageId: this.props.location.state._id,
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/landingPages`
     })
   }

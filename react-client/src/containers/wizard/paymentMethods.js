@@ -5,9 +5,9 @@ import Header from './header'
 import Sidebar from './sidebar'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {StripeProvider, Elements} from 'react-stripe-elements'
+// import {StripeProvider, Elements} from 'react-stripe-elements'
 import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
-import InjectedCheckoutForm from './checkout'
+// import InjectedCheckoutForm from './checkout'
 import AlertContainer from 'react-alert'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -44,8 +44,8 @@ class PaymentMethods extends React.Component {
 
     document.title = `${title} | Payment Methodes`;
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps plan', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('in UNSAFE_componentWillReceiveProps plan', nextprops)
     if (nextprops.user) {
       if (nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_C') {
         this.setState({selectedRadio: 'premium'})

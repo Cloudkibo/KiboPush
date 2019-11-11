@@ -17,7 +17,7 @@ class AudioModal extends React.Component {
     this.closeModal = this.closeModal.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.setState({
       disabled: false,
       file: nextProps.file ? nextProps.file : null
@@ -52,7 +52,7 @@ class AudioModal extends React.Component {
     }
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 

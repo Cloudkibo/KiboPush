@@ -131,7 +131,7 @@ class Usage extends React.Component {
     return table
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.usage) {
       console.log('in nextprops usage', nextprops)
     } else if (nextprops.plans && nextprops.plans.length > 0) {

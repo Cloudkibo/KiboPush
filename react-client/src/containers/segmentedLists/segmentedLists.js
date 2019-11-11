@@ -47,7 +47,7 @@ class SegmentedList extends React.Component {
   }
 
   saveCurrentList(list) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/listDetails`,
       state: { module: 'customerList' }
     })
@@ -76,7 +76,7 @@ class SegmentedList extends React.Component {
     this.setState({ pageNumber: data.selected })
     this.displayData(data.selected, this.props.customerLists)
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.customerLists && nextProps.count) {
       console.log('Will Receive Propes called after deletion')
       // var lists = []

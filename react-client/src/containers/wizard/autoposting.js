@@ -72,7 +72,7 @@ class Autoposting extends React.Component {
       showWordPressGuide: false
     })
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
@@ -103,7 +103,7 @@ class Autoposting extends React.Component {
   }
 
   gotoSettings (item) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/autopostingItemSettings`,
       state: item
     })

@@ -155,182 +155,182 @@ export function createJsonPayload (obj) {
 }
 
 const prepareJsonPayload = (data, optinMessage) => {
-  let payload = {}
-  let body = optinMessage
-  let text = body.text
-  let buttonPayload = []
-  let button = {}
-  if (body.buttons && body.buttons.length > 0) {
-    for (let i = 0; i < body.buttons.length; i++) {
-      button = body.buttons[i]
-      let jsonAdMessageId
-      if (button.payload && button.type === 'postback') {
-        for (let j = 0; j < data.length; j++) {
-          if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
-            jsonAdMessageId = data[j]._id
-            break
-          }
-        }
-        button.payload = 'JSONAD-' + jsonAdMessageId
-      } else if (button.type === 'web_url') {
-        if (button.newUrl) {
-          delete button.newUrl
-        }
-      }
-      buttonPayload.push(button)
-    }
-  } else {
-    buttonPayload = body.buttons
-  }
-  if (body.componentType === 'text' && !body.buttons) {
-    payload = {
-      'text': text,
-      'metadata': 'This is a meta data'
-    }
-  } else if (body.componentType === 'text' && body.buttons) {
-    payload = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'button',
-          'text': text,
-          'buttons': buttonPayload
-        }
-      }
-    }
-  } else if (['image', 'audio', 'file', 'video'].indexOf(
-    body.componentType) > -1) {
-    payload = {
-      'attachment': {
-        'type': body.componentType,
-        'payload': {
-          'url': body.file.fileurl.url
-        }
-      }
-    }
-  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
-    body.componentType) > -1) {
-    payload = {
-      'attachment': {
-        'type': 'image',
-        'payload': {
-          'url': body.fileurl
-        }
-      }
-    }
-  } else if (body.componentType === 'card') {
-    payload = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'generic',
-          'elements': [
-            {
-              'title': body.title,
-              'image_url': body.image_url,
-              'subtitle': body.description,
-              'buttons': buttonPayload
-            }
-          ]
-        }
-      }
-    }
-  } else if (body.componentType === 'gallery') {
-    let cards = []
-    if (body.cards && body.cards.length > 0) {
-      for (let m = 0; m < body.cards.length; m++) {
-        let card = {}
-        card.title = body.cards[m].title
-        card.image_url = body.cards[m].image_url
-        card.subtitle = body.cards[m].subtitle
-        card.description = body.cards[m].description
-        let cardButtons = body.cards[m].buttons
-        if (cardButtons) {
-          for (let c = 0; c < cardButtons.length; c++) {
-            let cButtons = []
-            let cbutton = cardButtons[c]
-            let jsonAdMessageId
-            if (cbutton.payload && cbutton.type === 'postback') {
-              for (let j = 0; j < data.length; j++) {
-                if ((cbutton.payload).toString() === (data[j].jsonAdMessageId).toString()) {
-                  jsonAdMessageId = data[j]._id
-                  break
-                }
-              }
-            cbutton.payload = 'JSONAD-' + jsonAdMessageId
-            } else if (cbutton.type === 'web_url') {
-              if (cbutton.newUrl) {
-                delete cbutton.newUrl
-              }
-            }
-            cButtons.push(cbutton)
-          }
-        }
-        card.buttons = cButtons
-        cards.push(card)
-      }
-    }
-    payload = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'generic',
-          'elements': cards
-        }
-      }
-    }
-  } else if (body.componentType === 'list') {
-    if (body.listItems && body.listItems.length > 0) {
-      for (let l = 0; l < body.listItems.length; l++) {
-        let listButtons = body.listItems[l].buttons
-        if (listButtons) {
-          for (let u = 0; u < listButtons.length; u++) {
-            let lButtons = []
-            let lbutton = listButtons[u]
-            if (lbutton.type === 'web_url') {
-              if (lbutton.newUrl) {
-                delete lbutton.newUrl
-              }
-            }
-            lButtons.push(lbutton)
-          }
-          body.listItems[l].buttons = lButtons
-        }
-        if (body.listItems[l].fileurl) {
-          delete body.listItems[l].fileurl
-        }
-        if (body.listItems[l].id !== null) {
-          delete body.listItems[l].id
-        }
-      }
-    }
-    payload = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'list',
-          'top_element_style': body.topElementStyle,
-          'elements': body.listItems,
-          'buttons': buttonPayload
-        }
-      }
-    }
-  } else if (body.componentType === 'media') {
-    payload = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'media',
-          'elements': [
-            {
-              'url': body.fileurl.url,
-              'media_type': body.mediaType,
-              'buttons': buttonPayload
-            }
-          ]
-        }
-      }
-    }
-  }
-  return payload
+//   let payload = {}
+//   let body = optinMessage
+//   let text = body.text
+//   let buttonPayload = []
+//   let button = {}
+//   if (body.buttons && body.buttons.length > 0) {
+//     for (let i = 0; i < body.buttons.length; i++) {
+//       button = body.buttons[i]
+//       let jsonAdMessageId
+//       if (button.payload && button.type === 'postback') {
+//         for (let j = 0; j < data.length; j++) {
+//           if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
+//             jsonAdMessageId = data[j]._id
+//             break
+//           }
+//         }
+//         button.payload = 'JSONAD-' + jsonAdMessageId
+//       } else if (button.type === 'web_url') {
+//         if (button.newUrl) {
+//           delete button.newUrl
+//         }
+//       }
+//       buttonPayload.push(button)
+//     }
+//   } else {
+//     buttonPayload = body.buttons
+//   }
+//   if (body.componentType === 'text' && !body.buttons) {
+//     payload = {
+//       'text': text,
+//       'metadata': 'This is a meta data'
+//     }
+//   } else if (body.componentType === 'text' && body.buttons) {
+//     payload = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'button',
+//           'text': text,
+//           'buttons': buttonPayload
+//         }
+//       }
+//     }
+//   } else if (['image', 'audio', 'file', 'video'].indexOf(
+//     body.componentType) > -1) {
+//     payload = {
+//       'attachment': {
+//         'type': body.componentType,
+//         'payload': {
+//           'url': body.file.fileurl.url
+//         }
+//       }
+//     }
+//   } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+//     body.componentType) > -1) {
+//     payload = {
+//       'attachment': {
+//         'type': 'image',
+//         'payload': {
+//           'url': body.fileurl
+//         }
+//       }
+//     }
+//   } else if (body.componentType === 'card') {
+//     payload = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'generic',
+//           'elements': [
+//             {
+//               'title': body.title,
+//               'image_url': body.image_url,
+//               'subtitle': body.description,
+//               'buttons': buttonPayload
+//             }
+//           ]
+//         }
+//       }
+//     }
+//   } else if (body.componentType === 'gallery') {
+//     let cards = []
+//     if (body.cards && body.cards.length > 0) {
+//       for (let m = 0; m < body.cards.length; m++) {
+//         let card = {}
+//         card.title = body.cards[m].title
+//         card.image_url = body.cards[m].image_url
+//         card.subtitle = body.cards[m].subtitle
+//         card.description = body.cards[m].description
+//         let cardButtons = body.cards[m].buttons
+//         if (cardButtons) {
+//           for (let c = 0; c < cardButtons.length; c++) {
+//             let cButtons = []
+//             let cbutton = cardButtons[c]
+//             let jsonAdMessageId
+//             if (cbutton.payload && cbutton.type === 'postback') {
+//               for (let j = 0; j < data.length; j++) {
+//                 if ((cbutton.payload).toString() === (data[j].jsonAdMessageId).toString()) {
+//                   jsonAdMessageId = data[j]._id
+//                   break
+//                 }
+//               }
+//             cbutton.payload = 'JSONAD-' + jsonAdMessageId
+//             } else if (cbutton.type === 'web_url') {
+//               if (cbutton.newUrl) {
+//                 delete cbutton.newUrl
+//               }
+//             }
+//             cButtons.push(cbutton)
+//           }
+//         }
+//         card.buttons = cButtons
+//         cards.push(card)
+//       }
+//     }
+//     payload = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'generic',
+//           'elements': cards
+//         }
+//       }
+//     }
+//   } else if (body.componentType === 'list') {
+//     if (body.listItems && body.listItems.length > 0) {
+//       for (let l = 0; l < body.listItems.length; l++) {
+//         let listButtons = body.listItems[l].buttons
+//         if (listButtons) {
+//           for (let u = 0; u < listButtons.length; u++) {
+//             let lButtons = []
+//             let lbutton = listButtons[u]
+//             if (lbutton.type === 'web_url') {
+//               if (lbutton.newUrl) {
+//                 delete lbutton.newUrl
+//               }
+//             }
+//             lButtons.push(lbutton)
+//           }
+//           body.listItems[l].buttons = lButtons
+//         }
+//         if (body.listItems[l].fileurl) {
+//           delete body.listItems[l].fileurl
+//         }
+//         if (body.listItems[l].id !== null) {
+//           delete body.listItems[l].id
+//         }
+//       }
+//     }
+//     payload = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'list',
+//           'top_element_style': body.topElementStyle,
+//           'elements': body.listItems,
+//           'buttons': buttonPayload
+//         }
+//       }
+//     }
+//   } else if (body.componentType === 'media') {
+//     payload = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'media',
+//           'elements': [
+//             {
+//               'url': body.fileurl.url,
+//               'media_type': body.mediaType,
+//               'buttons': buttonPayload
+//             }
+//           ]
+//         }
+//       }
+//     }
+//   }
+//   return payload
 }

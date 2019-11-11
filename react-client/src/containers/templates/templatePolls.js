@@ -76,7 +76,7 @@ class templatePolls extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.pollsDataAll)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
@@ -296,12 +296,12 @@ class templatePolls extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span style={{width: '170px'}}>
-                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View
-                                  </Link>
-                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  </a>
+                                  <a href='#/' onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
-                                  </Link>
+                                  </a>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(poll._id)}
@@ -316,7 +316,7 @@ class templatePolls extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}

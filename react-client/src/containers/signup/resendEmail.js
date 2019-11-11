@@ -17,11 +17,11 @@ class ResendEmail extends React.Component {
     props.getuserdetails()
     this.resend = this.resend.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
   resend () {
@@ -56,7 +56,7 @@ class ResendEmail extends React.Component {
                   <div className='m-stack__item m-topbar__nav-wrapper'>
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
                       <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
+                        <a href='#/' onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
                           Logout
                         </a>
                       </li>
@@ -71,8 +71,8 @@ class ResendEmail extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <center>
             <div className='m-login__logo'>
-              <a href='#'>
-                <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+              <a href='#/'>
+                <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
               </a>
             </div>
           </center>

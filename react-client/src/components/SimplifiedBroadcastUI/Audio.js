@@ -151,7 +151,7 @@ class Audio extends React.Component {
               </div>
             </Files>
           }
-          <a href='#' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
+          <a href='#/' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">

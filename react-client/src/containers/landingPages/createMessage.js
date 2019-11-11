@@ -57,12 +57,12 @@
         this.props.landingPage.pageId = this.props.landingPages[0].pageId
         this.props.landingPage._id = this.props.landingPages[0]._id
         this.props.landingPage.currentTab = 'optInActions'
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: `/editLandingPage`,
           state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
         })
       } else {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: `/createLandingPage`,
           state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
         })

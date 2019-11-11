@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -45,7 +44,7 @@ class ShowTemplates extends React.Component {
   hideDropDown () {
     this.setState({showDropDown: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
@@ -78,12 +77,12 @@ class ShowTemplates extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   gotoView () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/broadcasts`
     })
   }
   gotoCreate (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.props.location.state.pages}
     })
@@ -150,9 +149,9 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/createBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <a href='#/' onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/createBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
-                                        </Link>
+                                        </a>
                                        </div>
                                      </div>
                                   ))}

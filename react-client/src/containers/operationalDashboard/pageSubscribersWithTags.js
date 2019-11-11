@@ -219,7 +219,7 @@ class PageSubscribersWithTags extends React.Component {
     return array.filter((e, i) => array.findIndex(a => a[propertyName] === e[propertyName]) === i);
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageOwners) {
         console.log('recieved page owners', nextProps.pageOwners)
         if (nextProps.pageOwners.length === 1 && !this.state.currentPageOwner) {
@@ -411,7 +411,7 @@ class PageSubscribersWithTags extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

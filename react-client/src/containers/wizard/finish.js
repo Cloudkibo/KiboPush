@@ -48,7 +48,7 @@ class Finish extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/dashboard`
       })
     })
@@ -60,7 +60,7 @@ class Finish extends React.Component {
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage && this.state.step !== 0) {
       //  this.generateAlert('success', nextprops.successMessage)
       this.msg.success('Message sent successfully!')
@@ -222,7 +222,7 @@ class Finish extends React.Component {
                         <label style={{fontWeight: 'normal'}}>Want to get the latest updates and news from KiboPush? Please send a message on our page to become a subscriber.</label>
                         <br /><br /><br /><br />
                         <center>
-                          <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' onClick={this.sendTestMessage}>
+                          <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' rel='noopener noreferrer' onClick={this.sendTestMessage}>
                             <span>Subscribe To KiboPush</span>
                           </a>
                         </center>

@@ -193,11 +193,11 @@ class YoutubeVideoModal extends React.Component {
   }
 
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
       numOfCurrentButtons: 0,

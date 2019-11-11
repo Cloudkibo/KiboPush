@@ -45,7 +45,7 @@ class createPoll extends React.Component {
 
     document.title = `${title} | Create Poll Template`;
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
@@ -56,7 +56,7 @@ class createPoll extends React.Component {
     if (nextprops.warning) {
       this.msg.error(nextprops.warning)
     } else if (nextprops.pollCreated) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/templates'
       })
     }

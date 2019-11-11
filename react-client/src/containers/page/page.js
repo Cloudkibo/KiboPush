@@ -38,15 +38,16 @@ class Page extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
+    this.goToAddPages = this.goToAddPages.bind(this)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.getuserdetails()
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
     this.props.loadSubscribersList()
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
   }
 
@@ -102,7 +103,7 @@ class Page extends React.Component {
     document.title = `${title} | Page`;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in pages', nextProps)
     if (nextProps.pages && nextProps.count) {
       var connectedPages = []
@@ -126,7 +127,7 @@ class Page extends React.Component {
 
   // addPages(fbId){
   //  this.props.addPages(fbId);
-  //  // this.props.browserHistory
+  //  // this.props.history
   // }
 
   removePage(page) {
@@ -148,7 +149,7 @@ class Page extends React.Component {
   }
 
   inviteSubscribers(page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/invitesubscribers`,
       state: page
 
@@ -174,7 +175,7 @@ class Page extends React.Component {
     // this.setState({ totalLength: filtered.length })
   }
   goToAddPages() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/addPages`,
       state: { module: 'page' }
     })

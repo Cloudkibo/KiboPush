@@ -65,7 +65,7 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoCreate (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
@@ -76,7 +76,7 @@ class WelcomeMessage extends React.Component {
     //page.welcomeMessage[0].default_action=default_action
   //  console.log('pagein edit', default_action)
    console.log( 'page.welcomeMessage',  page.welcomeMessage)
-     this.props.browserHistory.push({
+     this.props.history.push({
        pathname: `/editWelcomeMessage`,
        state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
      })
@@ -84,13 +84,13 @@ class WelcomeMessage extends React.Component {
 
   gotoView (page) {
     console.log('page.welcomeMessage',page)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
     (nextProps.pages && nextProps.pages.length === 0))
   ) {
@@ -137,7 +137,7 @@ class WelcomeMessage extends React.Component {
               </div>
             </div>
           </div>
-        <a href='#' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -179,8 +179,8 @@ class WelcomeMessage extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
-              Or Check out this <a href='#' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+              Need help in understanding Welcome Message? <a href='https://kibopush.com/welcome-message/' target='_blank' rel='noopener noreferrer'>Click Here </a>
+              Or Check out this <a href='#/' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
             </div>
           </div>
           <div className='row'>

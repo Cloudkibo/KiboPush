@@ -365,7 +365,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -588,7 +588,7 @@ class ChatBox extends React.Component {
               </i>
             </div>
             <div style={{display: 'inline-block', width: '50%'}}>
-              <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
+              <a href='#/' style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</a>
             </div>
           </div>
           {
@@ -654,7 +654,7 @@ class ChatBox extends React.Component {
         </div>
       :
       <span><p>Chat's 24 hours window session has been expired for this subscriber. You can only use templates to send a message</p>
-        <Link style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</Link>
+        <a href='#/' style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer', float: 'right', marginRight: '10px'}} data-toggle="modal" data-target="#messageTemplate" onClick={this.openTemplates}>Use Templates</a>
       </span>
       }
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

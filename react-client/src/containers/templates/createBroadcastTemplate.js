@@ -57,7 +57,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.setState(broadcast)
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
@@ -203,7 +203,7 @@ class CreateBroadcastTemplate extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
+              Need help in understanding how to create template broadcasts? Here is the <a href='https://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>

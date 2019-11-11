@@ -2,7 +2,6 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import CopyLink from './copyLink'
 import { Link } from 'react-router-dom'
@@ -30,7 +29,7 @@ class GrowthTools extends React.Component {
       copyPopover: false
     })
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
   }
 
   componentDidMount () {
@@ -49,7 +48,6 @@ class GrowthTools extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
         <Sidebar />
         <Responsive />
         <div id='growthTools' className='container'>

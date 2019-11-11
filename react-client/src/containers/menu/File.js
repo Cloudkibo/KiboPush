@@ -119,7 +119,7 @@ class File extends React.Component {
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.file.url} target='_blank' download>
+              <a href={this.state.file.url} target='_blank' rel='noopener noreferrer' download>
                 <h6 style={{wordBreak: 'break-word'}}><i className='fa fa-file-text-o' /><strong> {this.state.file.name} </strong></h6>
               </a>
             </div>

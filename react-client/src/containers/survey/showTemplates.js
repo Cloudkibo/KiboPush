@@ -46,7 +46,7 @@ class ShowTemplates extends React.Component {
   hideDropDown() {
     this.setState({ showDropDown: false })
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.surveys) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
@@ -79,7 +79,7 @@ class ShowTemplates extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   gotoView() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/surveys`
     })
   }
@@ -149,14 +149,14 @@ class ShowTemplates extends React.Component {
                                               </span>
                                             </div>
                                             <div className='m-widget4__ext'>
-                                              <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editTemplateSurvey'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                              <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editTemplateSurvey'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                                 Edit Template
-                                        </Link>
+                                        </a>
                                             </div>
                                             <div className='m-widget4__ext'>
-                                              <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewTemplateSurveyUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                              <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewTemplateSurveyUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                                 View Template
-                                        </Link>
+                                        </a>
                                             </div>
                                           </div>
                                         ))}

@@ -64,7 +64,7 @@ class ChatBox extends React.Component {
     this.scrollToBottom()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.chat && nextProps.chat.length > 0) {
       console.log('demoSSA responses', nextProps.chat)
       this.scrollToBottom()

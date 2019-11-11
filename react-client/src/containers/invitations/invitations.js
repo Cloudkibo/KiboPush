@@ -31,7 +31,7 @@ class Invitations extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.invitations) {
       this.displayData(0, nextProps.invitations)
       this.setState({totalLength: nextProps.invitations.length})
@@ -129,8 +129,8 @@ class Invitations extends React.Component {
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding invitations? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding invitations? Here is the <a href='https://kibopush.com/invite-members/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
@@ -283,7 +283,7 @@ class Invitations extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(
                                        this.state.totalLength / 4)}

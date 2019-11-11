@@ -67,7 +67,7 @@ class Poll extends React.Component {
   }
 
   goToSettings() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: { module: 'pro' }
     })
@@ -99,7 +99,7 @@ class Poll extends React.Component {
   closeDialogDelete() {
     this.setState({ pageNumber: 0 })
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // this.props.loadSubscribersList()
     //  document.title('KiboPush | Poll')
   }
@@ -134,7 +134,7 @@ class Poll extends React.Component {
     this.displayData(data.selected, this.props.polls)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.polls && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
@@ -191,22 +191,22 @@ class Poll extends React.Component {
   }
 
   gotoView(poll) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/pollResult`,
       state: poll
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoViewPoll(poll) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/pollView`,
       state: poll
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
   gotoCreate() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createpoll`
     })
   }

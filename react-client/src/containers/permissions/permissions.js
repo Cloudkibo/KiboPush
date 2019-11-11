@@ -102,7 +102,7 @@ class Permissions extends React.Component {
     }
     this.props.fetchAllPermissions(value)
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.permissions) {
       console.log('permissions', nextprops.permissions)
       var permissions = []

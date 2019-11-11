@@ -112,7 +112,7 @@ class Image extends React.Component {
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.imgSrc} target='_blank' download>
+              <a href={this.state.imgSrc} target='_blank' rel='noopener noreferrer' download>
                 <h6><i className='fa fa-file-image-o' /><strong> Download Image </strong></h6>
               </a>
             </div>

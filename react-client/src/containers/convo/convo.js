@@ -51,7 +51,7 @@ class Convo extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
   }
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -162,21 +162,21 @@ class Convo extends React.Component {
   }
 
   gotoEdit (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editbroadcast`,
       state: broadcast._id
     })
   }
 
   gotoCreate (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.state.pageValue}
     })
   }
 
   gotoTemplates () {
-    this.props.browserHistory.push(
+    this.props.history.push(
       {
         pathname: '/showTemplateBroadcasts',
         state: {pages: this.state.pageValue}
@@ -195,7 +195,7 @@ class Convo extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
     }

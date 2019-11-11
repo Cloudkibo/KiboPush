@@ -35,7 +35,7 @@ class EditBroadcast extends React.Component {
       type: 'message',
       text: this.refs.message.value
     })
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/broadcasts'
     })
   }
@@ -71,7 +71,7 @@ class EditBroadcast extends React.Component {
                                     : ''} ref='message' />
                       </div>
                       <div className='add-options-message'>
-                        <a href='#' className='options-message'
+                        <a href='#/' className='options-message'
                           data-toggle='modal'
                           data-target='#update-header-photo'
                           data-placement='top' title
@@ -79,19 +79,19 @@ class EditBroadcast extends React.Component {
                           <i className='fa fa-image' />
                           <span>Add Image</span>
                         </a>
-                        <a href='#' className='options-message'
+                        <a href='#/' className='options-message'
                           data-toggle='tooltip' data-placement='top' title
                           data-original-title='TAG YOUR FRIENDS'>
                           <i className='fa fa-video-camera' />
                           <span>Add Video</span>
                         </a>
-                        <a href='#' className='options-message'
+                        <a href='#/' className='options-message'
                           data-toggle='tooltip' data-placement='top' title
                           data-original-title='ADD LOCATION'>
                           <i className='fa fa-link' />
                           <span>Add Link</span>
                         </a>
-                        <a href='#' className='options-message'
+                        <a href='#/' className='options-message'
                           data-toggle='tooltip' data-placement='top' title
                           data-original-title='ADD LOCATION'>
                           <i className='fa fa-volume-up' />

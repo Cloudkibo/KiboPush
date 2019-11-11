@@ -65,7 +65,7 @@ class Dashboard extends React.Component {
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.getuserdetails()
     this.props.loadDashboardData()
@@ -82,14 +82,14 @@ class Dashboard extends React.Component {
     if (this.props.user && this.props.user.role === 'buyer' &&
         response.status === 'failed' && response.payload.error &&
         response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/connectFb',
         state: { session_inavalidated: true }
       })
     }
   }
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -183,45 +183,45 @@ class Dashboard extends React.Component {
       this.props.loadGraphData(defaultVal)
     }
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps dashboard', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.emailVerified === false) {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
       } else
       if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations'
         })
       }
       //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-      //   this.props.browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'messenger'}
       //   })
       // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-      //   this.props.browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'sms'}
       //   })
       // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-      //   this.props.browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/integrations',
       //     state: {showCancel: 'whatsApp'}
       //   })
       // }
       // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-      //   this.props.browserHistory.push({
+      //   this.props.history.push({
       //     pathname: '/connectFb',
       //     state: { account_type: 'individual' }
       //   })
       // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
       //   if (nextprops.pages && nextprops.pages.length === 0) {
       //     console.log('going to push')
-      //     this.props.browserHistory.push({
+      //     this.props.history.push({
       //       pathname: '/connectFb',
       //       state: { account_type: 'team' }
       //     })
@@ -229,16 +229,16 @@ class Dashboard extends React.Component {
       // }
       else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
         console.log('nextprops pages', nextprops)
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/addfbpages'
         })
       } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/inviteUsingLinkWizard'
         })
       } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/abandonedCarts'
         })
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribers && nextprops.subscribers.length > 0) {
@@ -249,7 +249,7 @@ class Dashboard extends React.Component {
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-        // this.props.browserHistory.push({
+        // this.props.history.push({
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })

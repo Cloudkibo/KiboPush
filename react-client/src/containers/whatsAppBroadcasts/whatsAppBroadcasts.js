@@ -76,7 +76,7 @@ onFilter (e) {
 }
 
   gotoCreate (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createWhatsAppBroadcast`
     })
   }
@@ -152,8 +152,8 @@ onFilter (e) {
     document.title = `${title} | Broadcasts`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of smsBroadcasts', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -197,7 +197,7 @@ onFilter (e) {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/whatsapp-twilio' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -304,7 +304,7 @@ onFilter (e) {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

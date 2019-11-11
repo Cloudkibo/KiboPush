@@ -3,7 +3,6 @@ import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
 import RightArrow from '../../containers/convo/RightArrow'
 import LeftArrow from '../../containers/convo/LeftArrow'
-import { Link } from 'react-router-dom'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -42,7 +41,7 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   goBack () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editSequence`,
       state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.name}
     })
@@ -50,7 +49,7 @@ class ViewBroadcastTemplate extends React.Component {
 
   gotoEdit () {
     //  this.props.createSequence({name: this.state.name})
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessageSeq`,
       state: {
         title: this.props.location.state.title,
@@ -293,7 +292,7 @@ class ViewBroadcastTemplate extends React.Component {
               </div>
             </div>
             <div className='col-xl-3'>
-              <Link onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>&nbsp;&nbsp;
+              <a href='#/' onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </a>&nbsp;&nbsp;
               <button onClick={() => this.gotoEdit()} style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </button>
             </div>
           </div>

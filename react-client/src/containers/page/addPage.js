@@ -31,11 +31,11 @@ class AddPage extends React.Component {
   }
 
   gotoView() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/pages`
 
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   showErrorDialog() {
@@ -54,7 +54,7 @@ class AddPage extends React.Component {
     document.title = `${title} | Add Pages`
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.message && nextprops.message !== '') {
       this.setState({ showAlert: true, alertmsg: nextprops.message })
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
@@ -69,7 +69,7 @@ class AddPage extends React.Component {
   }
 
   gotoSettings() {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: { module: 'addPages' }
     })
@@ -146,7 +146,7 @@ class AddPage extends React.Component {
                 <i className='flaticon-exclamation m--font-brand' />
               </div>
               <div className='m-alert__text'>
-                This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{ color: 'blue', cursor: 'pointer' }}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{ color: 'blue', cursor: 'pointer' }}>here</Link> to invite admins to your company.
+                This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <a href='#/' onClick={() => this.gotoSettings()} style={{ color: 'blue', cursor: 'pointer' }}>here</a> to connect with facebook or Click <Link to='/newInvitation' style={{ color: 'blue', cursor: 'pointer' }}>here</Link> to invite admins to your company.
               </div>
             </div>
             : <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>

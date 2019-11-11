@@ -38,7 +38,7 @@ class SmsBroadcast extends React.Component {
   }
 
   gotoCreate (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createsmsBroadcast`,
       state: {number: this.state.numberValue}
     })
@@ -104,8 +104,8 @@ class SmsBroadcast extends React.Component {
     document.title = `${title} | Broadcasts`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of smsBroadcasts', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -183,7 +183,7 @@ class SmsBroadcast extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -257,7 +257,7 @@ class SmsBroadcast extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

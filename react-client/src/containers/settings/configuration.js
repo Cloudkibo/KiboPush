@@ -37,8 +37,8 @@ class Webhook extends React.Component {
     this.setState({type: type})
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
       this.setState({SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken})
     }
@@ -50,17 +50,17 @@ class Webhook extends React.Component {
       })
     }
     if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'sms'
       })
     } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.twilioWhatsApp) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'whatsApp'
       })
     } else if (nextProps.user && nextProps.user.platform === 'messenger' && !nextProps.user.facebookInfo) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'messenger'
       })
@@ -254,7 +254,7 @@ class Webhook extends React.Component {
                       <label className='control-label'>Sandbox Code:</label>
                       <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
                     </div>
-                    <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank'>here</a></span>
+                    <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>

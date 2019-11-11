@@ -213,7 +213,7 @@ class ViewBroadcastTemplate extends React.Component {
                             </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
-                              breakLabel={<a>...</a>}
+                              breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
                               pageCount={Math.ceil(this.state.totalLengthSubscriber / 4)}
                               marginPagesDisplayed={1}

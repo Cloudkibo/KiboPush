@@ -38,7 +38,6 @@ class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      loading: true,
       activeSession: {},
       scroll: true,
       tagOptions: [],
@@ -79,7 +78,7 @@ class LiveChat extends React.Component {
       }
     }
   }
-  
+
   scrollToMessage (messageId) {
     console.log('scrollToMessage called')
     // check if message exists
@@ -157,7 +156,7 @@ class LiveChat extends React.Component {
     return agents
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.fetchSessions({first_page: true,
       last_id: 'none',
       number_of_records: 10,
@@ -192,15 +191,6 @@ class LiveChat extends React.Component {
       activeSession: {}
     })
     this.resetSessions()
-  }
-
-  showSearch () {
-    this.setState({ showSearch: true })
-  }
-
-  hideSearch () {
-    this.setState({ showSearch: false })
-    this.props.clearSearchResult()
   }
 
   changeStatus (e, status, id) {
@@ -268,8 +258,8 @@ class LiveChat extends React.Component {
     document.title = `${title} | Live Chat`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps of whatsAppChat', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of whatsAppChat', nextProps)
 
     if (nextProps.sessions && nextProps.sessions.length > 0 && Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object) {
       this.setState({loading: false, activeSession: nextProps.sessions[0]})
@@ -310,13 +300,14 @@ class LiveChat extends React.Component {
 
   updateUnreadCount () {
      console.log('out unread count mark', this.props.sessions)
-    this.props.openSessions.filter(session => {
-      if (session._id === this.state.activeSession._id) {
-        delete session.unreadCount
-        console.log('unread count mark', this.props.sessions)
-        this.forceUpdate()
-      }
-    })
+     for (let a = 0; a < this.props.openSessions.length; a++) {
+       let session = this.props.openSessions[a]
+       if (session._id === this.state.activeSession._id) {
+         delete session.unreadCount
+         console.log('unread count mark', this.props.sessions)
+         this.forceUpdate()
+       }
+     }
   }
 
   render () {
@@ -399,7 +390,6 @@ class LiveChat extends React.Component {
                       customFields={this.props.customFields}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
-                      teams={this.props.teams? this.props.teams: []}
                       subscriberTags={this.props.subscriberTags? this.props.subscriberTags: []}
                       msg={this.msg}
                       module={CHATMODULE}
@@ -436,8 +426,6 @@ function mapStateToProps (state) {
     chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user),
     contacts: (state.contactsInfo.contacts),
-    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
-    teams: (state.teamsInfo.teams),
     members: (state.membersInfo.members),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),

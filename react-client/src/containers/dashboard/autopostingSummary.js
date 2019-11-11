@@ -33,8 +33,8 @@ class AutopostingSummary extends React.Component {
       this.props.loadAutopostingSummary({days: 30})
     }
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps of autopostingSummary', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('in UNSAFE_componentWillReceiveProps of autopostingSummary', nextprops)
     if (nextprops.autopostingSummary &&
       (nextprops.autopostingSummary.wordpressAutopostingGraph.length > 0 ||
         nextprops.autopostingSummary.twitterAutopostingGraph.length > 0 ||

@@ -65,7 +65,7 @@ class sponsoredMessaging extends React.Component {
 
   gotoCreate () {
     //let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createsponsoredMessage`,
       //state: {pageId: pageId, _id: this.state.pageSelected}
     })
@@ -106,7 +106,7 @@ class sponsoredMessaging extends React.Component {
     this.displayData(data.selected, this.props.sponsoredMessages)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.sponsoredMessages) {
       this.displayData(0, nextProps.sponsoredMessages)
       this.setState({totalLength: nextProps.sponsoredMessages.length})
@@ -174,8 +174,8 @@ class sponsoredMessaging extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sponsored Messages? Here is the <a href='#' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Sponsored Messages? Here is the <a href='#/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -190,14 +190,14 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate);}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate);}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
                           Create New
                         </span>
                       </span>
-                    </Link>
+                    </a>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -253,7 +253,7 @@ class sponsoredMessaging extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

@@ -47,7 +47,7 @@ class ViewSurvey extends React.Component {
   }
 
   gotoresp () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/submitsurveyresponse`,
       state: this.props.response
     })

@@ -22,7 +22,7 @@ class EditTags extends React.Component {
     this.openDeleteConfirmation = this.openDeleteConfirmation.bind(this)
     this.closeDeleteConfirmation = this.closeDeleteConfirmation.bind(this)
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.tags) {
       this.setState({
         tags: nextProps.tags

@@ -22,7 +22,7 @@ class Billing extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps.user', nextProps.user)
     if (nextProps.user) {
       if (this.props.pro === true) {

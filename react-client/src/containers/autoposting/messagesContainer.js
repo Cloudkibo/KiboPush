@@ -31,7 +31,7 @@ class MessagesContainer extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     if (['messenger', 'both'].indexOf(this.props.location.state.actionType) !== -1) {
       this.props.loadAutopostingMessages(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10})
     }
@@ -146,8 +146,8 @@ class MessagesContainer extends React.Component {
     this.displayPostsData(data.selected, this.props.autoposting_posts)
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('in componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.autoposting_messages && nextProps.autoposting_messages.length > 0) {
       this.displayMessagesData(0, nextProps.autoposting_messages)
       this.setState({ totalMessagesLength: nextProps.messagesCount })

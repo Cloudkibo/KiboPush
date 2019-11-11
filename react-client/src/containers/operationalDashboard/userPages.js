@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { savePageInformation } from '../../redux/actions/backdoor.actions'
@@ -97,7 +96,7 @@ class PagesInfo extends React.Component {
                                <a
                                  style={{width: '150px', display: 'block'}}
                                  href={'http://m.me/' + page.pageId}
-                                 target='_blank' 
+                                 target='_blank'
                                  rel='noopener noreferrer'>
                                  {page.pageName}
                                  </a>
@@ -121,9 +120,9 @@ class PagesInfo extends React.Component {
                                className='m-datatable__cell'>
                                <span
                                  style={{width: '150px'}}>
-                                 <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
+                                 <a href='#/' onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
                                  See Subscribers
-                               </Link>
+                               </a>
                                </span>
                              </td>
                            </tr>

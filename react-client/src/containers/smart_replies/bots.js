@@ -88,7 +88,7 @@ class Bot extends React.Component {
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
    // this.props.loadSubscribersList()
   //  document.title('KiboPush | Poll')
   }
@@ -175,7 +175,7 @@ class Bot extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
@@ -223,36 +223,36 @@ class Bot extends React.Component {
   }
 
   gotoView (bot) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewBot`,
       state: bot
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoEdit (bot) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editBot`,
       state: bot
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoWaitingReply (bot) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/WaitingReplyList`,
       state: bot
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   gotoUnansweredQueries (bot) {
     console.log('going to unanswered queries')
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/UnansweredQueries`,
       state: bot
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
   showDropdown () {
@@ -270,7 +270,7 @@ class Bot extends React.Component {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
       this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/createBot`
       })
     }
@@ -412,8 +412,8 @@ class Bot extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding bots? Here is the <a href='http://kibopush.com/smart-replies/' target='_blank'>documentation</a>.
-              Or check out this <a href='#'  data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding bots? Here is the <a href='https://kibopush.com/smart-replies/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/'  data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
 
@@ -604,7 +604,7 @@ class Bot extends React.Component {
                                   <div className='m-portlet__head-tools'>
                                     <ul className='m-portlet__nav'>
                                       <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                        <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                        <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
                                           <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
                                         </a>
                                         {
@@ -617,7 +617,7 @@ class Bot extends React.Component {
                                                 <div className='m-dropdown__content'>
                                                   <ul className='m-nav'>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.gotoView(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a href='#/' onClick={() => this.gotoView(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             View
@@ -626,7 +626,7 @@ class Bot extends React.Component {
                                                       </a>
                                                     </li>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.gotoEdit(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a href='#/' onClick={() => this.gotoEdit(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             Edit
@@ -635,7 +635,7 @@ class Bot extends React.Component {
                                                       </a>
                                                     </li>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.showDialogDelete(bot._id)} data-toggle="modal" data-target="#delete" className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a href='#/' onClick={() => this.showDialogDelete(bot._id)} data-toggle="modal" data-target="#delete" className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             Delete
@@ -644,7 +644,7 @@ class Bot extends React.Component {
                                                       </a>
                                                     </li>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.gotoWaitingReply(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a href='#/' onClick={() => this.gotoWaitingReply(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             Waiting Subscribers
@@ -653,7 +653,7 @@ class Bot extends React.Component {
                                                       </a>
                                                     </li>
                                                     <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a onClick={() => this.gotoUnansweredQueries(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      <a href='#/' onClick={() => this.gotoUnansweredQueries(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                         {
                                                           <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                             Unanswered Queries
@@ -690,7 +690,7 @@ class Bot extends React.Component {
                     <div className='pagination'>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

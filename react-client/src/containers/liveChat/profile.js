@@ -68,7 +68,7 @@ class Profile extends React.Component {
     this.updateCustomerId = this.updateCustomerId.bind(this)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent') {
         this.setState({
@@ -284,7 +284,7 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.tags) {
       var tagOptions = []
       for (var i = 0; i < nextProps.tags.length; i++) {

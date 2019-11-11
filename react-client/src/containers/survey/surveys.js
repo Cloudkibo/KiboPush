@@ -62,13 +62,13 @@ class Survey extends React.Component {
     document.title = `${title} | Survey`
     this.props.saveSurveyInformation(undefined)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.loadSubscribersList()
     this.props.loadTags()
   }
 
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -123,13 +123,13 @@ class Survey extends React.Component {
   }
 
   gotoView (survey) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewsurveydetail`,
       state: survey._id
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -167,7 +167,7 @@ class Survey extends React.Component {
   }
 
   gotoResults (survey) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/surveyResult`,
       state: survey
     })
@@ -176,7 +176,7 @@ class Survey extends React.Component {
     this.setState({deleteid: id})
   }
   gotoCreate () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/addsurvey`
     })
   }
@@ -265,7 +265,7 @@ class Survey extends React.Component {
             </div>
           </div>
         </div>
-        <a href='#' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
@@ -316,8 +316,8 @@ class Survey extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding surveys? Here is the <a href='http://kibopush.com/surveys/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding surveys? Here is the <a href='https://kibopush.com/surveys/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -336,7 +336,7 @@ class Survey extends React.Component {
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.subscribers && this.props.subscribers.length === 0
-                      ? <a href='#'>
+                      ? <a href='#/'>
                         <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                           <span>
                             <i className='la la-plus' />
@@ -535,7 +535,7 @@ class Survey extends React.Component {
                     <ReactPaginate
                       previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={2}

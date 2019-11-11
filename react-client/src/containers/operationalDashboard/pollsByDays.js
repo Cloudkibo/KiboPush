@@ -72,7 +72,7 @@ class PollsInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
@@ -134,7 +134,7 @@ class PollsInfo extends React.Component {
   }
   onPollClick (poll) {
     this.props.saveCurrentPoll(poll)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewPollDetail`,
       state: {_id: poll._id, data: poll}
     })
@@ -272,7 +272,7 @@ class PollsInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

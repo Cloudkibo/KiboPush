@@ -58,23 +58,23 @@ class Login extends React.Component {
   componentDidMount () {
     log(TAG, 'Login Container Mounted')
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.errorMessage) {
       //  this.setState({error: true})
     }
     if (nextprops.successMessage) {
       this.setState({success: true, error: false})
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard',
         state: {loadScript: true}
       })
     }
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
@@ -101,7 +101,7 @@ class Login extends React.Component {
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
-                    <a href='#'>
+                    <a href='#/'>
                       <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
@@ -132,9 +132,9 @@ class Login extends React.Component {
                       </div>
                       <div className='m-login__form-action'>
                         <span>
-                          <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
+                          <a href='#/' id='m_login_signup_cancel' href='#/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
                             Back
-                          </Link>
+                          </a>
                         </span>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                             Sign In
@@ -186,7 +186,7 @@ class Login extends React.Component {
                 <br />
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
-                  <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
+                  <a href='https://kibopush.com/faq/' id='m_login_signup' target='_blank' rel='noopener noreferrer' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
                 </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router-dom'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
@@ -8,7 +7,7 @@ import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.action
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import YouTube from 'react-youtube'
+// import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class WelcomeMessage extends React.Component {
@@ -62,21 +61,21 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoCreate (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
   }
 
   gotoEdit (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editWelcomeMessage`,
       state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
     })
   }
 
   gotoView (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -123,8 +122,8 @@ class WelcomeMessage extends React.Component {
             <div className='m-content'>
               <div className='form-group m-form__group'>
                 <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
-                  Or Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                  Need help in understanding Welcome Message? <a href='https://kibopush.com/welcome-message/' target='_blank' rel='noopener noreferrer'>Click Here </a>
+                  Or Check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
                 </div>
               </div>
               <div className='row'>

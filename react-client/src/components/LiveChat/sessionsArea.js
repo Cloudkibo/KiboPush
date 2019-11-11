@@ -64,12 +64,12 @@ class SessionsArea extends React.Component {
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
               <li className='nav-item m-tabs__item'>
-                <a className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
                   Open
                 </a>
               </li>
               <li className='nav-item m-tabs__item'>
-                <a className={`nav-link m-tabs__link ${this.props.tabValue === 'closed' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
+                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'closed' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
                   Closed
                 </a>
               </li>

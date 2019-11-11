@@ -31,11 +31,11 @@ class viewPoll extends React.Component {
     this.setState({pollDetailsData: data})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
 
   backToUserDetails () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/showTemplatePolls`
     })
   }

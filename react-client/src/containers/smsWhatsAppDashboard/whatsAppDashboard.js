@@ -28,18 +28,18 @@ class Dashboard extends React.Component {
     this.prepareChartData = this.prepareChartData.bind(this)
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.loadCardBoxesDataWhatsApp()
     this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     this.props.loadSentSeenWhatsApp({days: 30})
     this.props.loadSubscriberSummaryWhatsApp({days: 'all'})
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
-        this.props.browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })
@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {this.state.loading

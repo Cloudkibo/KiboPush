@@ -64,10 +64,10 @@ class CreateMessage extends React.Component {
       payload.payload = this.state.broadcast
       payload.title = this.state.convoTitle
       payload.sequenceId = this.props.location.state.sequenceId
-      this.props.createMessage(payload, this.props.browserHistory, this.msg, this.props.location.state.name)
+      this.props.createMessage(payload, this.props.history, this.msg, this.props.location.state.name)
     } else if (this.props.location.state.action === 'edit') {
       this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
         state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
       })
@@ -81,12 +81,12 @@ class CreateMessage extends React.Component {
   goBack () {
     //  this.props.createSequence({name: this.state.name})
     if (this.props.location.state.payload && this.props.location.state.payload.length > 0) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/viewMessage`,
         state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
       })
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/editSequence`,
         state: {module: 'view', _id: this.props.location.state.sequenceId, name: this.state.convoTitle}
       })

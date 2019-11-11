@@ -59,7 +59,7 @@ class GreetingMessage extends React.Component {
     props.loadMyPagesList()
   }
   redirectToInviteSub () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: '/inviteUsingLinkWizard',
       state: 'history'
     })
@@ -167,7 +167,7 @@ class GreetingMessage extends React.Component {
       this.setState({showEmojiPicker: false})
     }
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
   }
   componentDidMount () {
     this.selectPage()
@@ -194,7 +194,7 @@ class GreetingMessage extends React.Component {
       })
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.greetingMessage) {
       this.setState({greetingMessage: nextProps.greetingMessage.greetingText})
       for (var i = 0; i < nextProps.pages.length; i++) {
@@ -356,7 +356,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-9' />
                           <div className='col-3 form-group m-form__group row' style={{ marginLeft: '-45px' }}>
                             <div>
-                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <a href='#/' className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                               {
                                 this.state.greetingMessage.length > 0
                                   ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
@@ -370,7 +370,7 @@ class GreetingMessage extends React.Component {
                       <div className='col-9' />
                       {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                              <div>
-                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <a href='#/' className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </a>
                               <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                             </div>
                           </div> */}
@@ -378,12 +378,12 @@ class GreetingMessage extends React.Component {
                         <div className='m-form__actions'>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              <Link onClick={() => this.redirectToInviteSub()} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <a href='#/' onClick={() => this.redirectToInviteSub()} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                 <span>
                                   <i className='la la-arrow-left' />
                                   <span>Back</span>&nbsp;&nbsp;
                                 </span>
-                              </Link>
+                              </a>
                             </div>
                             <div className='col-lg-6 m--align-right'>
                               <Link to='/welcomeMessageWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>

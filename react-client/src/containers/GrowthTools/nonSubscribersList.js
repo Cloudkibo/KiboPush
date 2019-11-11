@@ -39,7 +39,7 @@ class NonSubscribersList extends React.Component {
     document.title = `${title} | Non Subscribers List`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.nonSubscribersNumbers) {
       this.displayData(0, nextProps.nonSubscribersNumbers)
       this.setState({ totalLength: nextProps.nonSubscribersNumbers.length })

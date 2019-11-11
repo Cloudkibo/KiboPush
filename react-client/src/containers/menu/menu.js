@@ -89,7 +89,7 @@ class Menu extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages) {
       var myPages = []
       nextProps.pages.map((page) => {
@@ -243,7 +243,7 @@ class Menu extends React.Component {
   handleClick (event) {
     var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     this.props.saveCurrentMenuItem(currentState)
-    // this.props.browserHistory.push({
+    // this.props.history.push({
     //   pathname: `/CreateMessage`,
     //   state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
     // })
@@ -578,8 +578,8 @@ class Menu extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>

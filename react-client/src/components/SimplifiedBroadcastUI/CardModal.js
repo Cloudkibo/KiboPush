@@ -374,7 +374,7 @@ class CardModal extends React.Component {
     })
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 
@@ -386,7 +386,7 @@ class CardModal extends React.Component {
     }
     return (
       <div className="modal-content" style={{ width: '72vw' }}>
-        <a href='#' style={{ display: 'none' }} ref='addCard' data-toggle="modal" data-target="#addCard">addCard</a>
+        <a href='#/' style={{ display: 'none' }} ref='addCard' data-toggle="modal" data-target="#addCard">addCard</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className="modal fade" id="addCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">

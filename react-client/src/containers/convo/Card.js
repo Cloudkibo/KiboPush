@@ -260,7 +260,7 @@ class Card extends React.Component {
       this.updateCardDetails(this.props)
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {

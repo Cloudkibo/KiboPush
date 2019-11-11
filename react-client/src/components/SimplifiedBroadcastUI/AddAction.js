@@ -43,7 +43,7 @@ class AddAction extends React.Component {
     this.getDefaultAction = this.getDefaultAction.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps AddAction', nextProps)
     let openWebView = nextProps.webviewurl === '' || !!nextProps.webviewurl || (nextProps.default_action && nextProps.default_action.messenger_extensions)
     let openWebsite = nextProps.elementUrl === '' || !!nextProps.elementUrl || (nextProps.default_action && !nextProps.default_action.messenger_extensions)

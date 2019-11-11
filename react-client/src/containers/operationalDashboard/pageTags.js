@@ -213,8 +213,8 @@ class PageTags extends React.Component {
     document.title = `${title} | Page Tags`
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in broadcastbydays', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in broadcastbydays', nextProps)
     this.loadedTags = true
     if (nextProps.pageTags) {
         let kiboPageTags = nextProps.pageTags.kiboPageTags.map(kiboPageTag => {
@@ -462,7 +462,7 @@ class PageTags extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

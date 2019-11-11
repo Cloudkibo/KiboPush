@@ -111,7 +111,7 @@ class adInsights extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         // pageCount={Math.ceil(this.state.totalLength / 10)}
                         pageCount = {1}

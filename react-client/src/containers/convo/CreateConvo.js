@@ -245,7 +245,7 @@ class CreateConvo extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
     }
 
@@ -255,7 +255,7 @@ class CreateConvo extends React.Component {
   }
 
   gotoView (event) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/broadcasts`
 
     })

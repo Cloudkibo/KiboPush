@@ -6,7 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Link } from 'react-router-dom'
 
 class ChatWidget extends React.Component {
   constructor (props, context) {
@@ -19,7 +18,7 @@ class ChatWidget extends React.Component {
   }
 
   goToWhitelistDomain () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'whitelistDomains'}
     })
@@ -35,7 +34,7 @@ class ChatWidget extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
   render () {
     return (
@@ -61,7 +60,7 @@ class ChatWidget extends React.Component {
                     </div>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <h5>Step 1 -> Whitelist Domain:</h5>
-                      <p>You need to whitelist your website URL on your Facebook Page to display the plugin. Please click <Link style={{color: '#5867dd', cursor: 'pointer'}}onClick={this.goToWhitelistDomain}> here </Link>to whitelist your domain</p>
+                      <p>You need to whitelist your website URL on your Facebook Page to display the plugin. Please click <a href='#/' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.goToWhitelistDomain}> here </a>to whitelist your domain</p>
                     </div>
                     <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12'>
                       <h5>Step 2 -> Embed Messenger Plugin:</h5>

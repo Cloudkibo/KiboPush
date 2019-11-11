@@ -47,7 +47,7 @@ class InviteMembers extends React.Component {
     document.title = `${title} | Invite Member`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     // if (nextProps.successMessage) {
     //   this.setState({
     //     alertMessage: nextProps.successMessage,
@@ -95,7 +95,7 @@ class InviteMembers extends React.Component {
       email: this.state.email,
       role: this.state.role
     }, this.msg)
-    // this.props.browserHistory.push({
+    // this.props.history.push({
     //   pathname: '/workflows'
     // })
   }

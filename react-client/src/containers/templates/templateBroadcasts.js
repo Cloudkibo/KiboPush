@@ -48,14 +48,14 @@ class TemplateBroadcasts extends React.Component {
   }
 
   gotoEditBroadcast (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editBroadcastTemplate`,
       state: broadcast
     })
   }
 
   gotoViewBroadcast (broadcast) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/viewBroadcastTemplate`,
       state: broadcast
     })
@@ -90,7 +90,7 @@ class TemplateBroadcasts extends React.Component {
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
@@ -339,12 +339,12 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><Link onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
+                                  style={{width: '170px'}}><a href='#/' onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                   View
-                                </Link>
-                                  <Link onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
+                                </a>
+                                  <a href='#/' onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                     Edit
-                                  </Link>
+                                  </a>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(broadcast._id)}
@@ -359,7 +359,7 @@ class TemplateBroadcasts extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}

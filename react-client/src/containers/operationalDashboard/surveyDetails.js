@@ -61,12 +61,12 @@ class SurveyDetails extends React.Component {
 
   backToUserDetails () {
     if (this.props.location.state) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/operationalDashboard`
       })
     } else {
       const user = this.props.currentUser
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/userDetails`,
         state: user
       })
@@ -290,7 +290,7 @@ class SurveyDetails extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLengthSubscriber / 4)}
                         marginPagesDisplayed={1}

@@ -953,7 +953,7 @@ class Subscriber extends React.Component {
       })
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('next Props in subscribers', nextProps)
     console.log('nextProps in subscribers', nextProps)
     if (nextProps.subscribers && nextProps.count) {
@@ -1383,8 +1383,8 @@ class Subscriber extends React.Component {
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-                Need help in understanding subscribers? Here is the <a href='http://kibopush.com/subscribers/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+                Need help in understanding subscribers? Here is the <a href='https://kibopush.com/subscribers/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
               </div>
             </div>
             <div className='row'>
@@ -1832,7 +1832,7 @@ class Subscriber extends React.Component {
                             <div className='col-sm-9'>
                               <ReactPaginate previousLabel={'previous'}
                                 nextLabel={'next'}
-                                breakLabel={<a>...</a>}
+                                breakLabel={<a href='#/'>...</a>}
                                 breakClassName={'break-me'}
                                 pageCount={Math.ceil(this.state.totalLength / 10)}
                                 marginPagesDisplayed={1}

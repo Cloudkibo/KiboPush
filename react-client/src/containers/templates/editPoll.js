@@ -50,7 +50,7 @@ class EditPoll extends React.Component {
 
     document.title = `${title} | Edit Poll`;
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var j = 0; j < nextprops.pollDetails.category.length; j++) {

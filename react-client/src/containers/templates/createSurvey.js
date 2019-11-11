@@ -46,7 +46,7 @@ class createSurvey extends React.Component {
 
     document.title = `${title} | Create Survey Template`;
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
@@ -57,7 +57,7 @@ class createSurvey extends React.Component {
     if (nextprops.warning) {
       this.msg.error(nextprops.warning)
     } else if (nextprops.surveyCreated) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/templates'
       })
     }
@@ -311,7 +311,7 @@ class createSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {(i + 1)} </strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
@@ -337,7 +337,7 @@ class createSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {i + 1}</strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove'
+                  <a href='#/' className='remove'
                     onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>

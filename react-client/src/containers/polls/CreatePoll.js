@@ -113,11 +113,11 @@ class CreatePoll extends React.Component {
     this.setState({ tabActive: 'target', resetTarget: false })
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.warning) {
       this.msg.error(nextProps.warning)
     } else if (nextProps.pollCreated) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/poll'
       })
     }
@@ -383,7 +383,7 @@ class CreatePoll extends React.Component {
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary' onClick={() => {
                       this.createPoll()
-                      this.props.browserHistory.push({
+                      this.props.history.push({
                         pathname: '/poll'
                       })
                     }}

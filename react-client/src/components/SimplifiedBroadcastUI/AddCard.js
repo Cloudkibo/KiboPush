@@ -49,7 +49,7 @@ class AddCard extends React.Component {
     document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     let newState = {
       file: nextProps.card.component.fileurl ? {
       fileurl: nextProps.card.component.fileurl,

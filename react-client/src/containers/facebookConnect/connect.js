@@ -15,21 +15,21 @@ class Connect extends React.Component {
     super(props, context)
     this.skip = this.skip.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer') {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     }

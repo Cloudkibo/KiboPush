@@ -40,7 +40,7 @@ class ViewBot extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.showBotDetails) {
       console.log('This is supposed to be the botDetails', nextProps.showBotDetails)
       var botName = nextProps.showBotDetails.botName
@@ -179,7 +179,7 @@ class ViewBot extends React.Component {
     }
     this.props.editBot({botId: this.state.id, payload: this.state.payload})
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/bots`
     })
   }

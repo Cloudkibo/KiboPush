@@ -98,7 +98,7 @@ class CreateSubList extends React.Component {
     document.title = `${title} | Create Sublist`
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.subscribers) {
       this.setState({ allSubscribers: nextProps.subscribers })
     }

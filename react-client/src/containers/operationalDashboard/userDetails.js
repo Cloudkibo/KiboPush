@@ -101,7 +101,7 @@ class UserDetails extends React.Component {
     this.displayData(data.selected, this.props.pages)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in allpages', nextProps)
     if (nextProps.pages && nextProps.count) {
       this.displayData(0, nextProps.pages)
@@ -110,7 +110,7 @@ class UserDetails extends React.Component {
       this.setState({pagesData: [], totalLength: 0})
     }
     if (nextProps.response) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/operationalDashboard`
       })
     }

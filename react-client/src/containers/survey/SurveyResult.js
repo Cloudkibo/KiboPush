@@ -25,7 +25,7 @@ class SurveyResult extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
   }
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -44,11 +44,11 @@ class SurveyResult extends React.Component {
   }
 
   gotoView () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/surveys`
     })
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
   //  var survey = this.props.location.state
    // this.setState({totalSent: survey.sent})
     if (nextprops.responses) {
@@ -92,7 +92,6 @@ class SurveyResult extends React.Component {
   getFile () {
     console.log('this.props.responses', this.props.responses)
     console.log('this.props.responses', this.props.questions)
-    console.log('temp', temp)
     let usersPayload = []
     for (let i = 0; i < this.props.responses.length; i++) {
       var jsonStructure = {}

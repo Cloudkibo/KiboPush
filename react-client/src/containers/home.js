@@ -15,13 +15,13 @@ class Home extends Component {
     }
 
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getuserdetails()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.user && nextProps.user.platform === 'messenger' && nextProps.user.role === 'buyer' && nextProps.user.showIntegrations) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/facebookIntegration'
       })
     }

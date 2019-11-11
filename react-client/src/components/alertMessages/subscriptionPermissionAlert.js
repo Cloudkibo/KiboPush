@@ -25,7 +25,7 @@ class SubscriptionPermissionAlert extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
 
     if (nextProps.pages !== this.props.pages) {
       let pages = []

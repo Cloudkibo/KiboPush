@@ -66,7 +66,7 @@ class CreateSponsoredMessage extends React.Component {
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
     console.log('hello ji!')
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/landingPages`
     })
   }

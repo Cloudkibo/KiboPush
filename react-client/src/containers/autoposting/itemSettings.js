@@ -302,7 +302,7 @@ class ItemSettings extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.setState({
         alertMessage: nextProps.successMessage,

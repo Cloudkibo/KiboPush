@@ -35,7 +35,7 @@ class AddPage extends React.Component {
     this.closeErrorDialog = this.closeErrorDialog.bind(this)
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
@@ -68,7 +68,7 @@ class AddPage extends React.Component {
     this.setState({showWarning: false})
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.message && nextprops.message !== '') {
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
@@ -128,11 +128,11 @@ class AddPage extends React.Component {
                   <div style={{paddingLeft:'50px'}}>
                     <span style={{fontSize: '16px', lineHeight: '70px'}}>Try:</span>
                     <ul>
-                      <li>Please make sure you are admin of atleast one facebook page from  <a href='https://www.facebook.com/bookmarks/pages/' target='_blank'>Facebook Pages</a>.
-                      If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank'>Create A New Facebook Page</a> and then
-                      <a href='/auth/facebook/' target='_blank'> ReConnect</a> kibopush app with your facebook account.</li>
+                      <li>Please make sure you are admin of atleast one facebook page from  <a href='https://www.facebook.com/bookmarks/pages/' target='_blank' rel='noopener noreferrer'>Facebook Pages</a>.
+                      If you are not admin of any page <a href='https://www.facebook.com/pages/creation/' target='_blank' rel='noopener noreferrer'>Create A New Facebook Page</a> and then
+                      <a href='/auth/facebook/' target='_blank' rel='noopener noreferrer'> ReConnect</a> kibopush app with your facebook account.</li>
                       <li>If you have facebook page, please make sure you have approved kibopush to manage atleast one of your facebook pages. Do check </li>
-                      <a href='https://kibopush.com/allow_kibopush_manage_facebook_pages' target='_blank'> Documentation</a> for furthure assistance.
+                      <a href='https://kibopush.com/allow_kibopush_manage_facebook_pages' target='_blank' rel='noopener noreferrer'> Documentation</a> for furthure assistance.
                     </ul>
                   </div>
                   </div>

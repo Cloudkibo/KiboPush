@@ -949,8 +949,8 @@ class Menu extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div

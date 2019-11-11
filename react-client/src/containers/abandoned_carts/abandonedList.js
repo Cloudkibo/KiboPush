@@ -28,7 +28,7 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('nextprops', nextprops.abandonedList)
   }
 
@@ -68,8 +68,8 @@ class AbandonedList extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding abandoned carts? Here is the <a href='http://kibopush.com/bots/' target='_blank'>documentation</a>.
-                Or check out this <a>video tutorial</a>
+              Need help in understanding abandoned carts? Here is the <a href='http://kibopush.com/bots/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Or check out this <a href='#/'>video tutorial</a>
             </div>
           </div>
           <Analytics />
@@ -175,7 +175,7 @@ class AbandonedList extends React.Component {
                       <div className='pagination'>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil((this.props.abandonedList) ? this.props.abandonedList.length / 10 : 1)}
                           marginPagesDisplayed={2}

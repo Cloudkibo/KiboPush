@@ -15,7 +15,7 @@ class TopPages extends React.Component {
     this.props.savePageInformation(page)
   }
   goToSubscribers (page) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/subscribers`,
       state: {page: page}
     })
@@ -77,9 +77,9 @@ class TopPages extends React.Component {
                                    </div>
                                  </div>
                                  <div className='m-widget4__ext'>
-                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={() => this.goToSubscribers(page)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                   <a href='#/' style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={() => this.goToSubscribers(page)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                     See Subscribers
-                                  </Link>
+                                  </a>
                                  </div>
                                </div>
                             ))}

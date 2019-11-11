@@ -24,7 +24,7 @@ class File extends React.Component {
 
   edit () {
     this.props.editComponent('file', {
-      file: this.state.file, 
+      file: this.state.file,
       id: this.props.id
     })
   }
@@ -60,7 +60,7 @@ class File extends React.Component {
         <div className='discussion' style={{display: 'inline-block'}}>
           <div className='bubble recipient' style={{maxWidth: '100%', cursor: 'pointer', fontSize: '18px'}}>
             {/* eslint-disable */}
-            📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+            📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
             {/* eslint-enable */}
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from './PreviewComponents/Image'
+// import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
 import File from './PreviewComponents/File'
 import Text from './PreviewComponents/Text'
@@ -70,7 +70,7 @@ class GenericMessage extends React.Component {
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (this.props.convoTitle !== nextProps.convoTitle) {
       this.setState({convoTitle: nextProps.convoTitle})
     }
@@ -161,7 +161,8 @@ class GenericMessage extends React.Component {
     console.log('handleText', obj)
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         temp[i].text = obj.text
         if (obj.buttons.length > 0) {
@@ -171,7 +172,7 @@ class GenericMessage extends React.Component {
         }
         isPresent = true
       }
-    })
+    }
 
     if (!isPresent) {
       if (obj.buttons.length > 0) {
@@ -195,7 +196,8 @@ class GenericMessage extends React.Component {
     }
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         console.log('enter in function')
         temp[i].componentType = obj.componentType
@@ -221,7 +223,7 @@ class GenericMessage extends React.Component {
         }
         isPresent = true
       }
-    })
+    }
     if (!isPresent) {
       temp.push(obj)
     }
@@ -247,7 +249,8 @@ class GenericMessage extends React.Component {
     }
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         if (obj.file) {
           temp[i].file = obj.file
@@ -261,7 +264,7 @@ class GenericMessage extends React.Component {
         temp[i].buttons = obj.buttons
         isPresent = true
       }
-    })
+    }
     if (!isPresent) {
       temp.push(obj)
     }
@@ -278,7 +281,8 @@ class GenericMessage extends React.Component {
         delete d.id
       })
     }
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         if (temp[i].buttons) {
           delete temp[i].buttons
@@ -286,7 +290,7 @@ class GenericMessage extends React.Component {
         temp[i].cards = obj.cards
         isPresent = true
       }
-    })
+    }
     if (!isPresent) {
       temp.push(obj)
     }
@@ -297,12 +301,13 @@ class GenericMessage extends React.Component {
   handleImage (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         temp[i] = obj
         isPresent = true
       }
-    })
+    }
 
     if (!isPresent) {
       temp.push(obj)
@@ -314,12 +319,13 @@ class GenericMessage extends React.Component {
   handleFile (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data, i) => {
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
       if (data.id === obj.id) {
         temp[i] = obj
         isPresent = true
       }
-    })
+    }
 
     if (!isPresent) {
       temp.push(obj)
@@ -761,7 +767,7 @@ class GenericMessage extends React.Component {
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    <a href='#' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
+                    <a href='#/' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -783,7 +789,7 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
-                    <a href='#' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
+                    <a href='#/' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
 
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
@@ -791,7 +797,7 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
-                    <a href='#' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
+                    <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -824,7 +830,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     </div>
-                    <a href='#' style={{ display: 'none' }} ref='resetModal' data-toggle="modal" data-target="#resetModal">lossData</a>
+                    <a href='#/' style={{ display: 'none' }} ref='resetModal' data-toggle="modal" data-target="#resetModal">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
                         <div className="modal-content">

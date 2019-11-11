@@ -338,7 +338,7 @@ class UploadContacts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <a href='#' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
+        <a href='#/' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -447,7 +447,7 @@ class UploadContacts extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to upload contacts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding how to upload contacts? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>

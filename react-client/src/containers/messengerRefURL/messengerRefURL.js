@@ -56,13 +56,13 @@ class MessengerRefURL extends React.Component {
     this.props.resetState()
     let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     console.log('pageId', pageId)
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/createMessengerRefURL`,
       state: {_id: this.state.pageSelected, pageId: pageId, module: 'createMessage'}
     })
   }
   onEdit (messengerRefURL) {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/editMessengerRefURL`,
       state: {module: 'edit', messengerRefURL: messengerRefURL}
     })
@@ -102,7 +102,7 @@ class MessengerRefURL extends React.Component {
     this.displayData(data.selected, this.props.messengerRefURLs)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.messengerRefURLs) {
       this.displayData(0, nextProps.messengerRefURLs)
       this.setState({totalLength: nextProps.messengerRefURLs.length})
@@ -200,8 +200,8 @@ class MessengerRefURL extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenfer Ref URLs? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Messenfer Ref URLs? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -216,14 +216,14 @@ class MessengerRefURL extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
                           Create New
                         </span>
                       </span>
-                    </Link>
+                    </a>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -282,7 +282,7 @@ class MessengerRefURL extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

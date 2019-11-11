@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import React from 'react'
 import asyncComponent from "./components/AsyncComponent";
 
-import App from "./sub.app.js"
 import Home from "./containers/home"
 import Login from './containers/login/new'
 import MessageUs from './containers/messageUs/messageUs'
@@ -58,9 +57,7 @@ import EditPoll from './containers/templates/editPoll'
 import EditSurvey from './containers/templates/editSurvey'
 import Categories from './containers/templates/categories'
 import ShowTemplateSurveys from './containers/survey/showTemplates'
-import EditTemplateSurvey from './containers/survey/editTemplate'
 import ShowTemplatePolls from './containers/polls/showTemplates'
-import EditTemplatePoll from './containers/polls/editTemplate'
 import ViewTemplatePollUser from './containers/polls/viewTemplate'
 import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
 import ShowTemplateBroadcasts from './containers/convo/showTemplates'

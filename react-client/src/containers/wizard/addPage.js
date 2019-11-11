@@ -42,11 +42,11 @@ class AddPage extends React.Component {
   }
 
   gotoView () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/pages`
 
     })
-    // this.props.browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
   showError () {
     this.msg.error('Please connect atleast one page')
@@ -71,8 +71,8 @@ class AddPage extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-  componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps in addpages', nextprops)
+  UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('UNSAFE_componentWillReceiveProps in addpages', nextprops)
     if (nextprops.message && nextprops.message !== '') {
       this.msg.error('The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.')
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
@@ -91,7 +91,7 @@ class AddPage extends React.Component {
     if (this.props.pages && this.props.pages.length === 0) {
       this.msg.error('Please connect atleast one page')
     } else {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/inviteUsingLinkWizard`
       })
     }
@@ -122,9 +122,9 @@ class AddPage extends React.Component {
                 <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
                 <div style={{width: '100%', textAlign: 'center'}}>
                   <div style={{display: 'inline-block', padding: '5px'}}>
-                    <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
+                    <a href='#/' style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
                       Continue
-                    </Link>
+                    </a>
                   </div>
                   <div style={{display: 'inline-block', padding: '5px'}}>
                     <Link to='/dashboard' className='btn btn-secondary'>

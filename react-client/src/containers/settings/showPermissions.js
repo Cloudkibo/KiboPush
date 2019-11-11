@@ -17,14 +17,14 @@ class ShowPermissions extends React.Component {
     this.onChangeHandel = this.onChangeHandel.bind(this)
     this.sendToServer = this.sendToServer.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getPermissions()
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Permissions'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
 
   sendToServer () {

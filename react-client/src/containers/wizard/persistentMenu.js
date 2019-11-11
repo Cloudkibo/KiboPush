@@ -116,7 +116,7 @@ class Menu extends React.Component {
       menuItems: tempItemMenus
     })
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages && nextProps.pages.length > 0 && this.state.selectPage === '') {
       this.setState({selectPage: nextProps.pages[0]})
     }

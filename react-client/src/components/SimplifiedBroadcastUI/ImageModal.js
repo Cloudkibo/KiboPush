@@ -51,7 +51,7 @@ class ImageModal extends React.Component {
   }
 
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.props.closeModal()
   }
 
@@ -83,7 +83,7 @@ class ImageModal extends React.Component {
                 <div className='ui-block' style={{ margin: 'auto', marginTop: '100px' }} >
                   {
                     this.state.imgSrc &&
-                    <img src={this.state.imgSrc} style={{ maxWidth: '80%', maxHeight: '30vh', borderRadius: '10px' }} />
+                    <img alt='' src={this.state.imgSrc} style={{ maxWidth: '80%', maxHeight: '30vh', borderRadius: '10px' }} />
                   }
                 </div>
               </div>

@@ -35,7 +35,7 @@ class Members extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.members) {
       console.log('members', nextProps.members)
       this.displayData(0, nextProps.members)
@@ -198,8 +198,8 @@ class Members extends React.Component {
              <i className='flaticon-exclamation m--font-brand' />
            </div>
             <div className='m-alert__text'>
-              Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
            </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
@@ -345,7 +345,7 @@ class Members extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(
                                        this.state.totalLength / 4)}

@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { loadCompanyInfo } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class CompanyInfo extends React.Component {
   constructor (props, context) {
@@ -54,7 +53,7 @@ class CompanyInfo extends React.Component {
     return array.filter((e, i) => array.findIndex(a => a[propertyName] === e[propertyName]) === i);
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.companyInfo) {
         if (this.loadedMore) {
             if (nextProps.companyInfo.length < 10) {
@@ -172,7 +171,7 @@ class CompanyInfo extends React.Component {
                             {!this.state.reachedLimit && this.state.companyInfo.length >= 10 &&
                             <center>
                                 <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
                             </center>
                             }
                             </div>

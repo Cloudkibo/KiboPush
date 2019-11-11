@@ -146,7 +146,7 @@ class GreetingMessage extends React.Component {
       this.setState({ showEmojiPicker: false })
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
   }
   componentDidMount() {
     this.selectPage()
@@ -173,7 +173,7 @@ class GreetingMessage extends React.Component {
       })
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.greetingMessage) {
       this.setState({ greetingMessage: nextProps.greetingMessage.greetingText })
       for (var i = 0; i < nextProps.pages.length; i++) {
@@ -398,7 +398,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-7' />
                           <div className='col-5 form-group m-form__group row'>
                             <div style={{ paddingLeft: '140px' }}>
-                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <a href='#/' className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                               {
                                 this.state.greetingMessage.length > 0
                                   ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>

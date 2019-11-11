@@ -31,7 +31,7 @@ class DeleteUserData extends React.Component {
   componentDidMount () {
     this.updateDeleteOption(this.props.user)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateDeleteOption(nextProps.user)
   }
 

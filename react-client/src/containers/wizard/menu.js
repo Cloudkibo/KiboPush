@@ -90,7 +90,7 @@ class Menu extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: `/dashboard`
       })
     })
@@ -101,7 +101,7 @@ class Menu extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages) {
       var myPages = []
       nextProps.pages.map((page) => {
@@ -252,7 +252,7 @@ class Menu extends React.Component {
   handleClick (event) {
     var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     this.props.saveCurrentMenuItem(currentState)
-    // this.props.browserHistory.push({
+    // this.props.history.push({
     //   pathname: `/CreateMessage`,
     //   state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
     // })

@@ -98,7 +98,7 @@ class Features extends React.Component {
     this.setState({openTab: value})
     this.props.fetchAllFeatures(value)
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.features) {
       console.log('permissions', nextprops.features)
       var features = []

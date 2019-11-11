@@ -21,12 +21,13 @@ class PlatformStats extends React.Component {
       totalPolls: 0,
       totalSurveys: 0
     }
-    data.map((item) => {
+    for (let a = 0; a < data.length; a++) {
+      let item = data[a]
       aggregate.totalBroadcasts += item.totalBroadcasts
       aggregate.totalPolls += item.totalPolls
       aggregate.totalSurveys += item.totalSurveys
       aggregate.totalUsers += item.totalUsers
-    })
+    }
 
     return aggregate
   }
@@ -40,7 +41,7 @@ class PlatformStats extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.platformStats && this.state.selectedValue === 'all') {
       this.updateCurrentState(this.props.platformStats)
     }
@@ -88,7 +89,7 @@ class PlatformStats extends React.Component {
                   <div className='col'>
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
-                        <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                        <a href='#/' className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                           <i className='fa fa-facebook m--font-light' />
                         </a>
                       </span>
@@ -106,7 +107,7 @@ class PlatformStats extends React.Component {
                   <div className='col'>
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
-                        <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                        <a href='#/' className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                           <i className='fa fa-facebook m--font-light' />
                         </a>
                       </span>
@@ -124,7 +125,7 @@ class PlatformStats extends React.Component {
                   <div className='col'>
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
-                        <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                        <a href='#/' className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                           <i className='fa flaticon-users m--font-light' />
                         </a>
                       </span>
@@ -159,7 +160,7 @@ class PlatformStats extends React.Component {
                     </div>
                   </div>
                 </div>
-                <a href="http://167.71.253.114:8080/dashbuilder/" target="_blank"><strong>Performance Dashboard</strong> (Username: root Password: root) </a>
+                <a href="http://167.71.253.114:8080/dashbuilder/" target="_blank" rel='noopener noreferrer'><strong>Performance Dashboard</strong> (Username: root Password: root) </a>
               </div>
             </div>
           </div>

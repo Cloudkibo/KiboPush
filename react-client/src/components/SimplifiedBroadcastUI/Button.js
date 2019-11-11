@@ -68,7 +68,7 @@ class Button extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     let newState = {
       title: nextProps.tempButton
         ? nextProps.tempButton.title
@@ -435,7 +435,7 @@ class Button extends React.Component {
   render () {
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
-        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
+        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
         <div>
           <h6>Button Title:</h6>
           <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
@@ -509,7 +509,7 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
-                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank'>here.</a>
+                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank' rel='noopener noreferrer'>here.</a>
                       </div>
                       <div>
                         <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>

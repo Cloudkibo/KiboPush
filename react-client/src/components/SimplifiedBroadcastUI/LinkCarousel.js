@@ -244,7 +244,7 @@ class LinkCarouselModal extends React.Component {
         return urlregex.test(textval);
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
         this.props.closeModal()
     }
 
@@ -276,7 +276,7 @@ class LinkCarouselModal extends React.Component {
                                                 </div>
 
                                                 <div className='col-1'>
-                                                    <div onClick={() => this.removeLink(index)} style={{ marginTop: '10px', cursor: 'pointer' }}>❌</div>
+                                                    <div onClick={() => this.removeLink(index)} style={{ marginTop: '10px', cursor: 'pointer' }}><span role='img' aria-label='times'>❌</span></div>
                                                 </div>
 
                                             </div>
@@ -337,7 +337,7 @@ class LinkCarouselModal extends React.Component {
                                                     <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
                                                         {
                                                             card.component.image_url &&
-                                                            <img src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
+                                                            <img alt='' src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
                                                         }
                                                         <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
                                                         <h6 style={{ textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
@@ -345,14 +345,12 @@ class LinkCarouselModal extends React.Component {
                                                         <p style={{ textAlign: 'left', marginLeft: '10px', fontSize: '13px' }}>{card.component.default_action && card.component.default_action.url}</p>
                                                         {
                                                             card.component.buttons.map((button, index) => {
-                                                                if (button.visible || button.type) {
-                                                                    return (
-                                                                        <div>
-                                                                            <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
-                                                                            <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
-                                                                        </div>
-                                                                    )
-                                                                }
+                                                              (button.visible || button.type) && (
+                                                                  <div>
+                                                                      <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
+                                                                      <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
+                                                                  </div>
+                                                              )
                                                             })
                                                         }
                                                     </div>
@@ -365,14 +363,14 @@ class LinkCarouselModal extends React.Component {
                                         <div>
                                             {
                                                 this.state.selectedIndex > 0 &&
-                                                <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex - 1)} className="carousel-control-prev" style={{ top: '125px' }} role="button">
+                                                <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex - 1)} className="carousel-control-prev" style={{ top: '125px' }} role="button">
                                                     <span className="carousel-control-prev-icon" style={{ cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")` }} aria-hidden="true"></span>
                                                     <span className="sr-only">Previous</span>
                                                 </a>
                                             }
                                             {
                                                 this.state.selectedIndex < this.state.cards.length - 1 &&
-                                                <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex + 1)} className="carousel-control-next" style={{ top: '125px' }} role="button" >
+                                                <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex + 1)} className="carousel-control-next" style={{ top: '125px' }} role="button" >
                                                     <span className="carousel-control-next-icon" style={{ cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")` }} aria-hidden="true"></span>
                                                     <span className="sr-only">Next</span>
                                                 </a>

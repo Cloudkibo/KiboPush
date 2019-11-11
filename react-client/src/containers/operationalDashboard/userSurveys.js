@@ -4,7 +4,6 @@ import { loadSurveysList, saveSurveyInformation } from '../../redux/actions/back
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { Link } from 'react-router-dom'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 const moment = extendMoment(Moment)
@@ -84,7 +83,7 @@ class SurveysInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -230,9 +229,9 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '150px'}}>
-                                    <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View Survey
-                                  </Link></span>
+                                  </a></span>
                                 </td>
                               </tr>
                             ))

@@ -116,7 +116,7 @@ class FacebookPosts extends React.Component {
     this.displayData(data.selected, this.props.posts)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.posts) {
       this.displayData(0, nextProps.posts)
       this.setState({ totalLength: nextProps.posts.length })

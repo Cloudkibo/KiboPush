@@ -40,7 +40,7 @@ class PageUsers extends React.Component {
     document.title = `${title} | Page Permissions`
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pagePermissions) {
       let appLevelKeys = Object.keys(nextProps.pagePermissions.appLevelPermissions)
       let pageLevelKeys = Object.keys(nextProps.pagePermissions.pageLevelPermissions)

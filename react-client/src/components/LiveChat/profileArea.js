@@ -280,8 +280,8 @@ class ProfileArea extends React.Component {
     this.hideAddTag()
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps profileArea.js', nextProps)
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps profileArea.js', nextProps)
     if (nextProps.activeSession.is_assigned) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
@@ -376,18 +376,18 @@ class ProfileArea extends React.Component {
                 </span>
                 {
                   this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                  <a className='m-card-profile__email m-link' data-toggle="modal" data-target="#unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
+                  <a href='#/' className='m-card-profile__email m-link' data-toggle="modal" data-target="#unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
                     (Unsubscribe)
                   </a>
                 }
                 <br />
-                <a className='m-card-profile__email m-link'>
+                <a href='#/' className='m-card-profile__email m-link'>
                   {this.props.module !== 'WHATSAPP' && this.props.activeSession.gender + ', ' + this.props.activeSession.locale}
                 </a>
                 <br />
                 {
                   this.props.user.isSuperUser && this.props.activeSession.customerId &&
-                  <a style={{ color: 'white' }}
+                  <a href='#/' style={{ color: 'white' }}
                     onClick={() => {
                       window.open(`http://demoapp.cloudkibo.com/${this.props.activeSession.customerId}`, '_blank', 'fullscreen=yes')
                     }}
@@ -589,7 +589,7 @@ class ProfileArea extends React.Component {
                   <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
                     {this.props.customFieldOptions && this.props.customFieldOptions.length > 0
                       ? <span>
-                        <a data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
+                        <a href='#/' data-toggle='collapse' data-target='#customFields' style={{ color: '#716aca', cursor: 'pointer' }}
                           onClick={this.showToggle}>
                           Custom Fields
                       {this.state.show
@@ -600,7 +600,7 @@ class ProfileArea extends React.Component {
                       </span>
                       : null
                     }
-                    <a id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                    <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
                   </span>
                 </div>
               </div>

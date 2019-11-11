@@ -28,7 +28,7 @@ class PollResult extends React.Component {
   }
 
   goToSettings () {
-    this.props.browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -83,7 +83,7 @@ class PollResult extends React.Component {
     document.title = `${title} | Poll Results`;
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     this.setState({show: true})
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})

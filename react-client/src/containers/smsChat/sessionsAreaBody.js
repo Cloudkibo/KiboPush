@@ -40,7 +40,7 @@ class SessionsAreaBody extends React.Component {
                 this.props.sessions.length < this.props.count &&
                 <center>
                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                  <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
+                  <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
                 </center>
               }
             </div>

@@ -75,7 +75,7 @@ class SubscriberSummary extends React.Component {
       this.props.loadSubscriberSummary({pageId: page._id, days: this.state.days})
     }
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if(nextprops.subscriberSummary !== this.props.subscriberSummary) {
       if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
         var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)

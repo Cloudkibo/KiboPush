@@ -65,18 +65,18 @@ class Signup extends React.Component {
     log(TAG, 'signup Container Mounted')
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     this.setState({ error: false })
     if (nextprops.successSignup) {
-      this.props.browserHistory.push({
+      this.props.history.push({
         pathname: '/resendVerificationEmail',
         state: { account_type: this.state.account_type }
       })
@@ -207,7 +207,7 @@ class Signup extends React.Component {
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
-                    <a href='#'>
+                    <a href='#/'>
                       <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{ maxWidth: 250 }} />
                     </a>
                   </div>
@@ -280,7 +280,7 @@ class Signup extends React.Component {
                             </select>
                           </div>
                           <div style={{ verticalAlign: 'middle', lineHeight: '38px' }} className='col-xl-2'>
-                            <a target='_blank' href='http://kibopush.com/ui-modes/'>
+                            <a target='_blank' rel='noopener noreferrer' href='https://kibopush.com/ui-modes/'>
                               <i className='la la-info-circle' />
                             </a>
                           </div>
@@ -301,9 +301,9 @@ class Signup extends React.Component {
                           <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess || this.state.mode === ''}>
                             Sign Up
                         </button>
-                          <Link id='m_login_signup_cancel' onClick={this.onCancel} className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                          <a href='#/' id='m_login_signup_cancel' onClick={this.onCancel} className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                             Cancel
-                        </Link>
+                        </a>
                         </div>
                       </form>
                     }

@@ -45,7 +45,7 @@ class CustomerListDetails extends React.Component {
     document.title = `${title} | Customer List Details`;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
       this.setState({ totalLength: nextProps.listDetail.length })
