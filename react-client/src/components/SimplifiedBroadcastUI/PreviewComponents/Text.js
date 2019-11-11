@@ -52,7 +52,7 @@ class Text extends React.Component {
     } else {
       this.props.editComponent('text', {
         id: this.props.id,
-        buttons: this.state.buttons,
+        buttons: JSON.parse(JSON.stringify(this.state.buttons)),
         text: this.state.text,
         buttonActions: this.state.buttonActions
       })

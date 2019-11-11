@@ -36,7 +36,8 @@ export function templatesInfo (state = {}, action) {
         surveys: action.surveys,
         surveysCount: action.count,
         surveyCreated: '',
-        pollCreated: ''
+        pollCreated: '',
+        totalSurveysCount: action.totalCount
       })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {
@@ -48,7 +49,8 @@ export function templatesInfo (state = {}, action) {
       return Object.assign({}, state, {
         polls: action.polls,
         pollsCount: action.count,
-        pollCreated: ''
+        pollCreated: '',
+        totalPollsCount: action.totalCount
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEY_DETAILS:
       return Object.assign({}, state, {
@@ -66,7 +68,9 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW:
       return Object.assign({}, state, {
         broadcasts: action.broadcasts,
-        broadcastsCount: action.count
+        broadcastsCount: action.count,
+        superUserCount: action.superUserCount,
+        userCount: action.userCount
       })
     case ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS:
       return Object.assign({}, state, {

@@ -33,7 +33,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
@@ -52,7 +52,7 @@ class CreateConvo extends React.Component {
       resetTarget: false,
       setTarget: false,
       invalidSessionMessage: '',
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
+      pageId: this.props.location.state && this.props.pages && this.props.location.state.pages && this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
       loadScript: true,
       messageType: '',
       subscriberCount: 0
@@ -603,7 +603,7 @@ class CreateConvo extends React.Component {
                             convoTitle={this.state.convoTitle}
                             titleEditable
                             pageId={this.state.pageId.pageId}
-                            pages={this.props.location.state.pages}
+                            pages={this.props.location.state && this.props.location.state.pages}
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>

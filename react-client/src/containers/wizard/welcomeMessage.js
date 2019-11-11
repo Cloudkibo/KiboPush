@@ -37,47 +37,32 @@ class EditTemplate extends React.Component {
       pageValue: '',
       previewMessage: '',
       welcomeMessage: false,
-      switchState: false,
       pageId: this.props.pages.filter((page) => page._id === this.props.pages[0]._id)[0].pageId
     }
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
-    this.initializeSwitch = this.initializeSwitch.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.viewGreetingMessage = this.viewGreetingMessage.bind(this)
     this.closePreviewDialog = this.closePreviewDialog.bind(this)
     this.pageChange = this.pageChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (this.state.pageValue === '') {
-      this.initializeSwitch(nextprops.pages[0].isWelcomeMessageEnabled, nextprops.pages[0]._id)
-      this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
+      this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
   }
-  initializeSwitch (state, id) {
-    var self = this
-    // var temp = '#' + id
-    /* eslint-disable */
-    $("[name='switch']").bootstrapSwitch({
-      /* eslint-enable */
-      onText: 'Enabled',
-      offText: 'Disabled',
-      offColor: 'danger',
-      state: state
-    })
-    /* eslint-disable */
-    $("[name='switch']").on('switchChange.bootstrapSwitch', function (event, state) {
-      /* eslint-enable */
-      if (state === true) {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
-      } else {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
-      }
-    })
+  handleEnableWelMessage (pageId, enable) {
+    if (enable === true) {
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true})
+    } else {
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false})
+    }
   }
+
   pageChange (event) {
     if (event === null) {
       this.setState({pageValue: event})
@@ -88,14 +73,6 @@ class EditTemplate extends React.Component {
     this.setState({pageValue: event.target.value, pageId: pageId})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
-        console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
-        /* eslint-disable */
-        console.log($("[name='switch']").bootstrapSwitch('state'))
-        // if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
-        $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
-        /* eslint-enable */
-        // }
-        // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled, broadcast: this.props.pages[i].welcomeMessage})
       }
     }
@@ -250,15 +227,17 @@ class EditTemplate extends React.Component {
                       </center>
                       <div className='row'>
                         <div className='col-lg-6 m--align-left' >
-                          {// this.state.switchState &&
+                          {
                             <div className='row'>
-                              <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
-                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
-                                <div className='bootstrap-switch-container'>
-                                  <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
-                                </div>
+                              <label className='col- col-form-label' style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Enable Welcome Message</label>
+                              <div className='col-3'>
+                                <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marinTop: '10px'}}>
+                                  <label>
+                                    <input type='checkbox' data-switch='true' checked={this.state.welcomeMessage} onChange={() => { this.handleEnableWelMessage(this.state.pageValue, !this.state.welcomeMessage)}} />
+                                    <span></span>
+                                  </label>
+                                </span>
                               </div>
-                              {/* this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue) */}
                             </div>
                           }
                         </div>

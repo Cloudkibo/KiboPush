@@ -7,6 +7,8 @@ import { addButton, editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
+import { loadCustomFields} from '../../redux/actions/customFields.actions'
+import CustomFields from '../customFields/customfields'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -19,6 +21,7 @@ class Button extends React.Component {
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
+      openCustomField: this.props.button ? this.props.button.openCustomField : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
@@ -27,10 +30,13 @@ class Button extends React.Component {
       openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload) : false,
       showSequenceMessage: true,
       buttonDisabled: this.props.button ? false : true,
-      errorMsg:''
+      errorMsg:'',
+      customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
+      customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : ''
     }
 
     props.fetchAllSequence()
+    props.loadCustomFields()
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -55,6 +61,7 @@ class Button extends React.Component {
     this.removeReplyWithMessage = this.removeReplyWithMessage.bind(this)
     this.resetButton = this.resetButton.bind(this)
     this.handleFetch = this.handleFetch.bind(this)
+    this.showCustomField = this.showCustomField.bind(this)
 
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
@@ -108,6 +115,11 @@ class Button extends React.Component {
       this.props.updateButtonStatus({buttonDisabled: true, buttonData})
     }
   }
+
+  showCustomField () {
+    this.setState({openCustomField: true})
+  }
+
   showWebsite () {
     this.setState({openWebsite: true})
   }
@@ -324,6 +336,17 @@ class Button extends React.Component {
         pageId: this.props.pageId
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.openCustomField) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'set_custom_field',
+          customFieldId: this.state.customFieldId,
+          customFieldValue: this.state.customFieldValue
+        })
+      }
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 
@@ -348,7 +371,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) || (this.state.customFieldId && this.state.customFieldValue) && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -359,6 +382,11 @@ class Button extends React.Component {
         this.props.updateButtonStatus({buttonDisabled: false})
       }
     } else if (this.state.openCreateMessage && event.target.value !== '') {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false})
+      }
+    } else if (this.state.openCustomField && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -432,10 +460,32 @@ class Button extends React.Component {
     this.setState({webviewurl: e.target.value})
   }
 
+  updateCustomFieldId (event) {
+    this.setState({customFieldId: event.target.value})
+    let buttonData = {title: this.state.title, visible: true, customFieldId: event.target.value, customFieldValue: this.state.customFieldValue, index: this.props.index}
+    if (this.state.customFieldValue) {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+      }
+    }
+  }
+
+  updateCustomFieldValue (event) {
+    this.setState({customFieldValue: event.target.value})
+    let buttonData = {title: this.state.title, visible: true, customFieldValue: this.state.customFieldValue, customFieldId: event.target.value, index: this.props.index}
+    if (this.state.customFieldId) {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+      }
+    }
+  }
+
   render () {
+
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
-        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
+        <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
+        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
         <div>
           <h6>Button Title:</h6>
           <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
@@ -443,7 +493,7 @@ class Button extends React.Component {
 
           <div style={{marginTop: '30px'}}>
             {
-                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage &&
+                  !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage &&
                   <div>
                     <h6 style={{color: 'red'}}>Select one of the below actions:</h6>
                     {
@@ -480,6 +530,12 @@ class Button extends React.Component {
                          <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
                        </div>
                     }
+                    { (this.props.buttonActions.indexOf('set custom field') > -1) &&
+                       this.props.customFields && this.props.customFields.length > 0 &&
+                       <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showCustomField}>
+                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' /> Set Custom Field</h7>
+                       </div>
+                    }
                   </div>
                 }
           {
@@ -488,6 +544,35 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                    </div>
+                  </div>
+                }
+                {
+                  this.state.openCustomField &&
+                  <div className='card'>
+                    <h7 className='card-header'>Set custom field <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                    <div style={{padding: '10px'}} className='card-block'>
+                      <select value={this.state.customFieldId ? this.state.customFieldId : ''} style={{borderColor: !this.state.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event)}>
+                        <option value={''} disabled>Select a custom field</option>
+                        {
+                            this.props.customFields.map((customField, index) => {
+                                return (
+                                    <option key={index} value={customField._id}>{customField.name}</option>
+                                )
+                            })
+                        }
+                      </select>
+                      {
+                          this.state.customFieldId &&
+                          <div style={{marginTop: '25px'}}>
+                              <input style={{borderColor: !this.state.customFieldValue ? 'red' : ''}} value={this.state.customFieldValue} onChange={(event) => this.updateCustomFieldValue(event)} placeholder='Enter value here...' className='form-control' />
+                              <div style={{color: 'red', textAlign: 'left'}}>{!this.state.customFieldValue ? '*Required' : ''}</div>
+                          </div>
+                      }
+                      <div style={{color: 'red', textAlign: 'left'}}>{!this.state.customFieldId ? '*Required' : ''}</div>
+                      {/* <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                          Manage Custom Fields
+                      </button> */}
                     </div>
                   </div>
                 }
@@ -578,13 +663,15 @@ class Button extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
+    loadCustomFields: loadCustomFields,
     editButton: editButton,
     addButton: addButton,
    checkWhitelistedDomains: checkWhitelistedDomains,

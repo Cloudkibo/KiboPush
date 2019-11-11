@@ -12,7 +12,8 @@ export function messengerAdsInfo (state = {}, action) {
       })
     case ActionTypes.CLEAR_MESSENGER_AD:
       return Object.assign({}, state, {
-        messengerAd: action.data
+        messengerAd: action.data,
+        jsonCode: action.data
       })
     case ActionTypes.SET_DEFAULT_JSON_AD:
       return Object.assign({}, state, {

@@ -33,6 +33,27 @@ class TemplateBroadcasts extends React.Component {
     this.gotoViewBroadcast = this.gotoViewBroadcast.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.goToCreate = this.goToCreate.bind(this)
+  }
+
+  goToCreate () {
+    if (!this.props.user.isSuperUser) {
+      if (this.props.userCount < this.props.userTemplates) {
+        browserHistory.push({
+          pathname: `/createBroadcastTemplate`
+        })
+      } else {
+        this.msg.error(`Cannot create more Broadcast Templates!`)
+      }
+    } else {
+      if (this.props.superUserCount < this.props.kiboPushTemplates) {
+        browserHistory.push({
+          pathname: `/createBroadcastTemplate`
+        })
+      } else {
+        this.msg.error(`Cannot create more Broadcast Templates!`)
+      }
+    }
   }
 
   componentDidMount () {
@@ -219,7 +240,7 @@ class TemplateBroadcasts extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
-                <Link to='/createBroadcastTemplate' >
+                <Link onClick={this.goToCreate}>
                   <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                     <span>
                       <i className='la la-plus' />
@@ -386,7 +407,10 @@ function mapStateToProps (state) {
   return {
     broadcasts: state.templatesInfo.broadcasts,
     count: state.templatesInfo.broadcastsCount,
-    categories: state.templatesInfo.categories
+    categories: state.templatesInfo.categories,
+    superUserCount: state.templatesInfo.superUserCount,
+    userCount: state.templatesInfo.userCount,
+    user: state.basicInfo.user
   }
 }
 

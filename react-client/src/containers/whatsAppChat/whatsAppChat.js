@@ -16,7 +16,8 @@ import {
   setCustomFieldValue,
   clearSearchResult,
   fetchTeamAgents,
-  assignToTeam
+  assignToTeam,
+  resetSocket
 } from '../../redux/actions/whatsAppChat.actions'
 import AlertContainer from 'react-alert'
 import INFO from '../../components/LiveChat/info.js'
@@ -295,6 +296,9 @@ class LiveChat extends React.Component {
           activeSession.status = 'new'
           this.setState({activeSession: activeSession})
         }
+      if (!(Object.keys(this.state.activeSession).length > 0) || this.state.activeSession.constructor !== Object) {
+        nextProps.resetSocket()
+      }
     }
   }
 
@@ -453,7 +457,8 @@ function mapDispatchToProps (dispatch) {
     clearSearchResult,
     fetchTeamAgents,
     assignToTeam,
-    loadTeamsList
+    loadTeamsList,
+    resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

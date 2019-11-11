@@ -44,26 +44,30 @@ export function deletePost (id, msg) {
     })
   }
 }
-export function createFacebookPost (data, msg, handleCreate) {
+export function createCommentCapture (data, msg, handleCreate) {
   console.log('data', data)
   return (dispatch) => {
     callApi('post/create', 'post', data)
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success' && res.payload) {
-          msg.success('Posted on Facebook successfully')
-          handleCreate(res.payload.post_id, true)
-        } else {
-          if (res.status === 'failed' && res.description) {
-            msg.error(`Failed to post on facebook. ${res.description}`)
+          msg.success('Comment Capture saved successfully')
+          if (res.payload.post_id && res.payload.payload && res.payload.payload.length > 0) {
+            handleCreate(res.payload.post_id, true)
           } else {
-            msg.error('Failed to post on facebook')
+            handleCreate(res.payload.post_id, false)
+          }
+        } else {
+          if (res.status === 'failed' && res.payload) {
+            msg.error(res.payload)
+          } else {
+            msg.error('Failed to create Comment Capture record')
           }
         }
       })
   }
 }
-export function editFacebookPost (data, msg) {
+export function editCommentCapture (data, msg, handleEdit) {
   console.log('edit Facebook Post', data)
   return (dispatch) => {
     callApi('post/edit', 'post', data)
@@ -71,6 +75,9 @@ export function editFacebookPost (data, msg) {
         console.log('response from server', res)
         if (res.status === 'success') {
           msg.success('Changes saved successfully')
+          if (handleEdit) {
+            handleEdit()
+          }
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to save changes. ${res.description}`)

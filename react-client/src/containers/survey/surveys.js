@@ -23,7 +23,9 @@ import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
-
+import {
+  getSubscriberCount
+} from '../../redux/actions/broadcast.actions'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -40,6 +42,10 @@ class Survey extends React.Component {
       deleteid: '',
       selectedDays: '0',
       pageNumber: 0,
+      isShowingModalPro: false,
+      subscriberCount: 0,
+      savesurvey: ''
+
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -48,6 +54,29 @@ class Survey extends React.Component {
     this.sendSurvey = this.sendSurvey.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
+    this.saveSurvey = this.saveSurvey.bind(this)
+
+  }
+
+  handleSubscriberCount(response) {
+    this.setState({subscriberCount: response.payload.count})
+  }
+  saveSurvey(survey) {
+    console.log('poll in savesurvey', survey)
+      this.setState({savesurvey:survey})
+      let pageId = this.props.pages.find(page => page.pageId === survey.segmentationPageIds[0])
+      var payload = {
+        pageId:  pageId._id,
+        segmented: survey.isSegmented,
+        segmentationGender: survey.segmentationGender,
+        segmentationLocale: survey.segmentationLocale,
+        segmentationTags: survey.segmentationTags,
+        isList: survey.isList ? true : false,
+        segmentationList: survey.segmentationList
+    }
+    this.props.getSubscriberCount(payload, this.handleSubscriberCount)
+
   }
 
   componentDidMount () {
@@ -297,6 +326,51 @@ class Survey extends React.Component {
             </div>
           </div>
         </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)', paddingTop:'150px' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Send Survey
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+								  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+              <span
+                className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
+                style={{marginLeft: '10px'}}>
+                This Survey will be sent to {this.state.subscriberCount} subscriber(s).
+              { this.state.subscriberCount === 0 &&
+              <div>
+                <br/>
+                <br/>
+                <span style={{ color: 'black', paddingLeft:'20px' }}>
+                Because of Either reason:
+                </span>
+                  <ol style={{ color: 'black', fontWeight:'300' }}>
+                  <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
+                  <li>No subscriber match the selected criteria.</li>
+                </ol>
+                </div>
+              }
+
+            </span>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <br />
+                  <div style={{ display: 'inline-block', padding: '5px'}}>
+                    <button style={{ color: 'white'}} disabled={this.state.subscriberCount === 0 ? true : null} onClick={() => {this.sendSurvey(this.state.savesurvey)}} className='btn btn-primary' data-dismiss="modal" aria-label="Close">
+                    Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -497,8 +571,9 @@ class Survey extends React.Component {
 
                             <button className='btn btn-primary btn-sm'
                               style={{float: 'left', margin: 2}}
+                              data-toggle="modal" data-target="#send"
                               onClick={() => {
-                                this.sendSurvey(survey)
+                                this.saveSurvey(survey)
                               }}>
                               Send
                           </button>
@@ -572,12 +647,14 @@ function mapStateToProps (state) {
     successTime: (state.surveysInfo.successTime),
     errorTime: (state.surveysInfo.errorTime),
     user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    subscribersCount: (state.subscribersInfo.subscribersCount)
+
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    { saveSurveyInformation: saveSurveyInformation,loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags, loadMyPagesListNew: loadMyPagesListNew}, dispatch)
+    { saveSurveyInformation: saveSurveyInformation,loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags, loadMyPagesListNew: loadMyPagesListNew, getSubscriberCount: getSubscriberCount}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

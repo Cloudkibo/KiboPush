@@ -32,6 +32,17 @@ class templatePolls extends React.Component {
     this.onPollClick = this.onPollClick.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.goToCreate = this.goToCreate.bind(this)
+  }
+
+  goToCreate () {
+    if (this.props.totalCount < this.props.kiboPushTemplates) {
+      browserHistory.push({
+        pathname: `/createTemplatePoll`
+      })
+    } else {
+      this.msg.error(`Cannot create more than ${this.props.kiboPushTemplates} Poll Templates!`)
+    }
   }
 
   componentDidMount () {
@@ -203,7 +214,7 @@ class templatePolls extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
-                <Link to='/createTemplatePoll' >
+                <Link onClick={this.goToCreate} >
                   <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                     <span>
                       <i className='la la-plus' />
@@ -342,7 +353,8 @@ function mapStateToProps (state) {
   return {
     polls: state.templatesInfo.polls,
     count: state.templatesInfo.pollsCount,
-    categories: state.templatesInfo.categories
+    categories: state.templatesInfo.categories,
+    totalCount: state.templatesInfo.totalPollsCount
   }
 }
 

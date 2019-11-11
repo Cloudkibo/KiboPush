@@ -6,37 +6,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createLandingPage, updateLandingPageData, editLandingPage } from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import Tabs from './tabs'
+import {updateSponsoredMessage, saveDraft } from '../../redux/actions/sponsoredMessaging.actions'
+
 
 class CreateSponsoredMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isActive: props.location.state && props.location.state.landingPage ? props.location.state.landingPage.isActive : true,
-      isEdit: false
+      isEdit: false,
+      editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {}
     }
-
-    if (props.location.state && props.location.state.pageId) {
-      props.updateLandingPageData(this.props.landingPage, '', 'pageId', props.location.state.pageId)
+    if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
+      this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
     }
     this.onEdit = this.onEdit.bind(this)
-    this.onSave = this.onSave.bind(this)
-    this.setStatus = this.setStatus.bind(this)
+    this.onSend = this.onSend.bind(this)
   }
+
   componentDidMount () {
-    console.log('this.props.location.state', this.props.location.state)
     if (this.props.location.state && this.props.location.state.module === 'edit') {
-      this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive})
-      this.props.updateLandingPageData('', '', '', '', '', {
-        pageId: this.props.location.state.landingPage.pageId.pageId,
-        initialState: this.props.location.state.landingPage.initialState,
-        submittedState: this.props.location.state.landingPage.submittedState,
-        optInMessage: this.props.location.state.landingPage.optInMessage,
-        currentTab: this.props.location.state.landingPage.currentTab
-      })
+      this.setState({isEdit: true})
+      this.setState({editSponsoredMessage: this.props.location.state.sponsoredMessage})
     }
     const hostname = window.location.hostname
     let title = ''
@@ -52,25 +45,16 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onEdit () {
-    this.props.editLandingPage(this.props.location.state.landingPage._id, {
-      initialState: this.props.landingPage.initialState,
-      submittedState: this.props.landingPage.submittedState,
-      optInMessage: this.props.landingPage.optInMessage,
-      isActive: this.state.isActive}, this.msg)
+    if(this.props.location.state && this.props.location.state.module === 'edit') {
+      this.props.saveDraft(this.state.editSponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+    } else {
+      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+    }
   }
-  onSave () {
-    this.props.createLandingPage({initialState: this.props.landingPage.initialState,
-      submittedState: this.props.landingPage.submittedState,
-      pageId: this.props.location.state._id,
-      optInMessage: this.props.landingPage.optInMessage,
-      isActive: this.state.isActive}, this.msg)
-    console.log('hello ji!')
-    this.props.history.push({
-      pathname: `/landingPages`
-    })
+  onSend () {
+
   }
   setStatus (value) {
-    this.setState({isActive: value})
   }
   render () {
     var alertOptions = {
@@ -87,15 +71,14 @@ class CreateSponsoredMessage extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-                <Header onSave={this.onSave}
+                <Header onSend={this.onSend}
                   onEdit={this.onEdit}
                   isEdit={this.state.isEdit}
-                  isActive={this.state.isActive}
-                  setStatus={this.setStatus} />
+                />
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-12 col-lg-12 col-sm-12'>
-                    <Tabs/>
+                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage}/>
                     </div>
                   </div>
                 </div>
@@ -111,15 +94,14 @@ class CreateSponsoredMessage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    landingPage: state.landingPagesInfo.landingPage
+    sponsoredMessage: (state.sponsoredMessagingInfo.sponsoredMessage),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createLandingPage: createLandingPage,
-    updateLandingPageData: updateLandingPageData,
-    editLandingPage: editLandingPage
+    updateSponsoredMessage:updateSponsoredMessage,
+    saveDraft: saveDraft
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSponsoredMessage)

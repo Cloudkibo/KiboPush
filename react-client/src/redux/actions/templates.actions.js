@@ -44,7 +44,8 @@ export function showSurveysNew (data) {
   return {
     type: ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW,
     surveys: data.surveys,
-    count: data.count
+    count: data.count,
+    totalCount: data.totalCount
   }
 }
 
@@ -61,7 +62,8 @@ export function showPollsNew (data) {
   return {
     type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW,
     polls: data.polls,
-    count: data.count
+    count: data.count,
+    totalCount: data.totalCount
   }
 }
 
@@ -99,7 +101,9 @@ export function showBroadcastsNew (data) {
   return {
     type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW,
     broadcasts: data.broadcasts,
-    count: data.count
+    count: data.count,
+    userCount: data.userCount,
+    superUserCount: data.superUserCount
   }
 }
 
@@ -204,7 +208,7 @@ export function loadSurveyDetails (id) {
   return (dispatch) => {
     callApi(`templates/surveyDetails/${id}`)
       .then(res => {
-    console.log('res in updated survey',res)   
+    console.log('res in updated survey',res)
     dispatch(updateSurveyDetails(res))})
   }
 }

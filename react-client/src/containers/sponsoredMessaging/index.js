@@ -25,21 +25,12 @@ class sponsoredMessaging extends React.Component {
       pages: [],
       isSetupShow: false,
     }
-    // props.loadMyPagesList()
      props.fetchSponsoredMessages()
-    // props.setInitialState()
      this.displayData = this.displayData.bind(this)
-    // this.handlePageClick = this.handlePageClick.bind(this)
+      this.closeDialogDelete = this.closeDialogDelete.bind(this)
       this.showDialogDelete = this.showDialogDelete.bind(this)
-    // this.closeCreateDialog = this.closeCreateDialog.bind(this)
-      // this.showCreateDialog = this.showCreateDialog.bind(this)
-    // this.onEdit = this.onEdit.bind(this)
+      this.onEdit = this.onEdit.bind(this)
       this.gotoCreate = this.gotoCreate.bind(this)
-    // this.changePage = this.changePage.bind(this)
-    // this.updateAllowedPages = this.updateAllowedPages.bind(this)
-    // this.perviewLink = this.perviewLink.bind(this)
-    // this.setupLandingPage = this.setupLandingPage.bind(this)
-    // this.closeDialogSetup = this.closeDialogSetup.bind(this)
   }
 
   componentDidMount () {
@@ -66,22 +57,14 @@ class sponsoredMessaging extends React.Component {
     //let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     this.props.history.push({
       pathname: `/createsponsoredMessage`,
-      //state: {pageId: pageId, _id: this.state.pageSelected}
     })
   }
-//   updateAllowedPages (pages, landingPages) {
-//     var temp = pages.filter((page) => {
-//       for (let i = 0; i < landingPages.length; i++) {
-//         // console.log('Comparing the two', bots[i].pageId._id, page._id, bots[i].pageId._id === page._id)
-//         if (landingPages[i].pageId._id === page._id) {
-//           return false
-//         }
-//       }
-//       return true
-//     })
-//     // console.log('Updating the allowed pages', temp)
-//     this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
-//   }
+  onEdit (sponsoredMessage) {
+    browserHistory.push({
+      pathname: '/editSponsoredMessage',
+      state: {module: 'edit', sponsoredMessage: sponsoredMessage}
+    })
+  }
 
   displayData (n, sponsoredMessages) {
     console.log('in displayData', sponsoredMessages)
@@ -110,13 +93,6 @@ class sponsoredMessaging extends React.Component {
       this.displayData(0, nextProps.sponsoredMessages)
       this.setState({totalLength: nextProps.sponsoredMessages.length})
     }
-    // if (nextProps.pages) {
-    //   this.setState({pageSelected: nextProps.pages[0]._id})
-    // }
-    // if (nextProps.pages && nextProps.pages.length > 0 && nextProps.landingPages) {
-    //   // this.state.pageSelected = nextProps.pages[0]._id
-    //   this.updateAllowedPages(nextProps.pages, nextProps.landingPages)
-    // }
   }
 
 
@@ -189,7 +165,7 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate);}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate, {status:'draft'});}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -235,7 +211,7 @@ class sponsoredMessaging extends React.Component {
                                 <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessaging/insights'>
                                     Insights
                                 </ Link>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(landingPage)}>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                     Edit
                                 </button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>

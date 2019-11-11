@@ -95,6 +95,7 @@ import ViewMessage from './containers/sequence/viewMessage'
 import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
+import CommentCaptureEdit from './containers/commentCapture/editMessage'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
@@ -291,6 +292,7 @@ const Routes = () => (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/ccSecondReply' component={CommentCaptureEdit} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
@@ -338,6 +340,7 @@ const Routes = () => (
     <Route path='/demoSSA' component={DemoSSA} />
     <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
     <Route path='/createsponsoredMessage' component={createsponsoredMessaging} />
+    <Route path='/editSponsoredMessage' component={createsponsoredMessaging} />
     <Route path='/sponsoredMessaging/insights' component={sponsoredMessageInsights} />
     <Route path='/backdoorPageUsers' component={BackdoorPageUsers} onEnter={requireAuth} />
     <Route path='/backdoorPagePermissions' component={BackdoorPagePermissions} onEnter={requireAuth} />

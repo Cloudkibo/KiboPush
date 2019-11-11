@@ -74,7 +74,7 @@ class Gallery extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
+        { this.props.module !== 'commentcapture' &&
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />

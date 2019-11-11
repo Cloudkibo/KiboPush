@@ -24,7 +24,9 @@ import { loadTags } from '../../redux/actions/tags.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
-
+import {
+  getSubscriberCount
+} from '../../redux/actions/broadcast.actions'
 class Poll extends React.Component {
   constructor(props, context) {
     props.loadSubscribersList()
@@ -42,7 +44,9 @@ class Poll extends React.Component {
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       deleteid: '',
       selectedDays: '0',
-      pageNumber: 0
+      pageNumber: 0,
+      savePoll: '',
+      subscriberCount: 0
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -55,7 +59,39 @@ class Poll extends React.Component {
     this.sendPoll = this.sendPoll.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
+    this.isShowingLearnMore = this.isShowingLearnMore.bind(this)
+    this.savePoll = this.savePoll.bind(this)
     this.props.getAllPollResults()
+  }
+  isShowingLearnMore () {
+    this.setState({isShowingLearnMore: !this.state.isShowingLearnMore})
+  }
+  handleSubscriberCount(response) {
+    this.setState({subscriberCount: response.payload.count})
+  }
+  savePoll(poll) {
+    console.log('poll in savePoll', poll)
+      this.setState({savePoll:poll})
+      let pageId = this.props.pages.find(page => page.pageId === poll.segmentationPageIds[0])
+      var payload = {
+        pageId:  pageId._id,
+        segmented: poll.isSegmented,
+        segmentationGender: poll.segmentationGender,
+        segmentationLocale: poll.segmentationLocale,
+        segmentationTags: poll.segmentationTags,
+        isList: poll.isList ? true : false,
+        segmentationList: poll.segmentationList
+    }
+    this.props.getSubscriberCount(payload, this.handleSubscriberCount)
+
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
 
   showZeroSubDialog() {
@@ -338,6 +374,51 @@ class Poll extends React.Component {
             </div>
           </div>
         </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)', paddingTop:'150px' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Send Poll
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+								  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+              <span
+                className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
+                style={{marginLeft: '10px'}}>
+                This Poll will be sent to {this.state.subscriberCount} subscriber(s).
+              { this.state.subscriberCount === 0 &&
+              <div>
+                <br/>
+                <br/>
+                <span style={{ color: 'black', paddingLeft:'20px' }}>
+                Because of Either reason:
+                </span>
+                  <ol style={{ color: 'black', fontWeight:'300' }}>
+                  <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
+                  <li>No subscriber match the selected criteria.</li>
+                </ol>
+                </div>
+              }
+
+            </span>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <br />
+                  <div style={{ display: 'inline-block', padding: '5px'}}>
+                    <button style={{ color: 'white'}} disabled={this.state.subscriberCount === 0 ? true : null} onClick={() => {this.sendPoll(this.state.savePoll)}} className='btn btn-primary' data-dismiss="modal" aria-label="Close">
+                    Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -544,12 +625,22 @@ class Poll extends React.Component {
                                           onClick={() => this.sendPoll(poll)}>
                                           Send
                                   </button>
+<<<<<<< HEAD
                                       </span>
                                       : <span style={{ width: '150px' }}>
                                         <button className='btn btn-primary btn-sm'
                                           style={{ float: 'left', margin: 2 }}
                                           onClick={() => this.sendPoll(poll)}>
                                           Send
+=======
+                                </span>
+                                : <span style={{width: '150px'}}>
+                                  <button className='btn btn-primary btn-sm'
+                                    data-toggle="modal" data-target="#send"
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.savePoll(poll)}>
+                                    Send
+>>>>>>> fece8e1afb8bde4400bd51b40fcf64ed90620f6f
                                   </button>
                                       </span>
                                     }
@@ -621,7 +712,8 @@ function mapStateToProps(state) {
     subscribers: (state.subscribersInfo.subscribers),
     user: (state.basicInfo.user),
     tags: (state.tagsInfo.tags),
-    allResponses: (state.pollsInfo.allResponses)
+    allResponses: (state.pollsInfo.allResponses),
+    subscribersCount: (state.subscribersInfo.subscribersCount)
   }
 }
 
@@ -635,7 +727,8 @@ function mapDispatchToProps(dispatch) {
       clearAlertMessage: clearAlertMessage,
       loadSubscribersList: loadSubscribersList,
       deletePoll: deletePoll,
-      loadTags: loadTags
+      loadTags: loadTags,
+      getSubscriberCount: getSubscriberCount
     },
     dispatch)
 }

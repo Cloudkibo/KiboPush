@@ -1048,7 +1048,7 @@ class Sidebar extends Component {
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
                   {this.showLiveChatItem()}
-                  {this.showAutomationItems()}
+                  {this.props.user.isSuperUser && this.showAutomationItems()}
                   {this.showGrowthToolsItems()}
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}

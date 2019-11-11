@@ -314,7 +314,7 @@ class Targeting extends React.Component {
       /* eslint-enable */
       data: pageOptions,
       placeholder: this.props.component === 'broadcast' ? 'Select page' : 'Default: All Pages',
-      allowClear: true,
+      allowClear: false,
       multiple: false
     })
 
@@ -602,12 +602,12 @@ class Targeting extends React.Component {
           </ModalContainer>
         } */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
-        { this.props.component === 'broadcast' &&
+        {
           <span
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}
           >
-            This broadcast will be sent to {this.props.subscriberCount} subscriber(s).
+            This {this.props.component} will be sent to {this.props.subscriberCount} subscriber(s).
             { this.props.subscriberCount === 0 &&
               <a href='#/' onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
               data-toggle="modal" data-target="#learnMore">

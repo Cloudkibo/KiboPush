@@ -20,6 +20,9 @@ import Targeting from '../convo/Targeting'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import {
+  getSubscriberCount
+} from '../../redux/actions/broadcast.actions'
 
 class CreatePoll extends React.Component {
   constructor(props, context) {
@@ -48,8 +51,11 @@ class CreatePoll extends React.Component {
       pollValue: [],
       isShowingModalGuideLines: false,
       pageId: this.props.pages[0],
-      tabActive: 'poll'
+      tabActive: 'poll',
+      subscriberCount: 0
+
     }
+    this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
     this.goToSend = this.goToSend.bind(this)
@@ -63,6 +69,12 @@ class CreatePoll extends React.Component {
     this.onPrevious = this.onPrevious.bind(this)
     this.updateOptionsActions = this.updateOptionsActions.bind(this)
   }
+  handleSubscriberCount(response) {
+    this.setState({subscriberCount: response.payload.count})
+  }
+  showGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: true})
+  }
 
   onNext(e) {
     /* eslint-disable */
@@ -71,7 +83,14 @@ class CreatePoll extends React.Component {
     $('#titleBroadcast').removeClass('active')
     $('#titleTarget').addClass('active')
     /* eslint-enable */
-    this.setState({ tabActive: 'target' })
+    this.setState({tabActive: 'target'})
+    const payload = {
+      pageId: this.state.pageId._id,
+      segmented: false,
+      isList: false,
+    }
+    this.props.getSubscriberCount(payload, this.handleSubscriberCount)
+
   }
 
   onPrevious() {
@@ -139,18 +158,37 @@ class CreatePoll extends React.Component {
     this.initTab()
     this.props.saveCurrentPoll(undefined)
   }
-  handleTargetValue(targeting) {
-    console.log('targeting createPoll', targeting)
-    console.log('pageId', this.props.pages.find(page => page.pageId === targeting.pageValue[0]))
+
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+  handleTargetValue (targeting) {
+    //console.log('targeting createPoll', targeting)
+    //console.log('pageId', this.props.pages.find(page => page.pageId === targeting.pageValue[0]))
+    let pageId = this.props.pages.find(page => page.pageId === targeting.pageValue[0])
     this.setState({
       listSelected: targeting.listSelected,
       pageValue: targeting.pageValue,
-      pageId: this.props.pages.find(page => page.pageId === targeting.pageValue[0]),
+      pageId: pageId,
       genderValue: targeting.genderValue,
       localeValue: targeting.localeValue,
       tagValue: targeting.tagValue,
       pollValue: targeting.pollValue
     })
+    var payload = {
+      pageId:  pageId._id,
+      segmented: true,
+      segmentationGender: targeting.genderValue,
+      segmentationLocale: targeting.localeValue,
+      segmentationTags: targeting.tagValue,
+      isList: targeting.isList ? true : false,
+      segmentationList: targeting.listSelected
+  }
+  this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
 
   checkValidation() {
@@ -625,7 +663,7 @@ class CreatePoll extends React.Component {
                           }
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='poll' />
+                          <Targeting handleTargetValue={this.handleTargetValue} subscriberCount = {this.state.subscriberCount} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='poll' />
                         </div>
                       </div>
                     </div>
@@ -653,7 +691,8 @@ function mapStateToProps(state) {
     pollDetails: (state.templatesInfo.pollDetails),
     currentPoll: (state.backdoorInfo.currentPoll),
     allResponses: (state.pollsInfo.allResponses),
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    subscribersCount: (state.subscribersInfo.subscribersCount)
   }
 }
 
@@ -667,8 +706,9 @@ function mapDispatchToProps(dispatch) {
     sendPollDirectly: sendPollDirectly,
     loadTags: loadTags,
     loadPollDetails: loadPollDetails,
-    saveCurrentPoll: saveCurrentPoll,
-    fetchAllSequence: fetchAllSequence
+    saveCurrentPoll:saveCurrentPoll,
+    fetchAllSequence:fetchAllSequence,
+    getSubscriberCount: getSubscriberCount
   },
     dispatch)
 }

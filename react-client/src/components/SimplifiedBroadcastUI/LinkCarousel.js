@@ -158,7 +158,11 @@ class LinkCarouselModal extends React.Component {
         }
     }
 
-    closeModal() {
+
+    closeModal () {
+        if (this.props.module && this.props.module === 'commentcapture') {
+           this.props.closeModal()
+        }
         if (!this.state.edited) {
             this.props.closeModal()
         } else {
@@ -248,9 +252,7 @@ class LinkCarouselModal extends React.Component {
         this.props.closeModal()
     }
 
-    render() {
-        console.log('links in render', this.state.links)
-        console.log('cards in render', this.state.cards)
+    render () {
         return (
             <div className="modal-content" style={{ width: '72vw' }}>
                 <div style={{ display: 'block' }} className="modal-header">
@@ -302,64 +304,25 @@ class LinkCarouselModal extends React.Component {
                                     </div>
                                 </div>
                             }
-                        </div>
-                        <div className='col-1'>
-                            <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
-                        </div>
-                        <div className='col-5'>
-                            <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
-                            <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', maxHeight: '68vh', minHeight: '68vh', marginLeft: '-50px' }} >
-                                <div id="carouselExampleControls" data-interval="false" className="carousel slide ui-block" data-ride="carousel">
-
-                                    {
-                                        this.state.cards.length > 1 &&
-                                        <ol className="carousel-indicators carousel-indicators-numbers" style={{ bottom: '-65px' }}>
-                                            {
-                                                this.state.cards.map((card, index) => {
-                                                    return (<li
-                                                        style={(this.state.hover === index || this.state.selectedIndex === index) ? { ...this.carouselIndicatorStyle, ...this.carouselIndicatorActiveStyle } : this.carouselIndicatorStyle}
-                                                        onMouseEnter={() => this.toggleHover(index, true)}
-                                                        onMouseLeave={() => this.toggleHover(index, false)}
-                                                        data-target="#carouselExampleControls"
-                                                        data-slide-to={index}
-                                                        onClick={() => this.updateSelectedIndex(index)}
-                                                        className={(index === this.state.selectedIndex ? "active" : "")}>
-                                                        {index + 1}
-                                                    </li>)
-                                                })
-                                            }
-                                        </ol>
-                                    }
-                                    <div className="carousel-inner">
-                                        {
-                                            this.state.cards.map((card, index) => {
-                                                return (
-                                                    <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
-                                                        {
-                                                            card.component.image_url &&
-                                                            <img alt='' src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
-                                                        }
-                                                        <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
-                                                        <h6 style={{ textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
-                                                        <p style={{ textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px' }}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                                                        <p style={{ textAlign: 'left', marginLeft: '10px', fontSize: '13px' }}>{card.component.default_action && card.component.default_action.url}</p>
-                                                        {
-                                                            card.component.buttons.map((button, index) => (
-                                                              (button.visible || button.type) && (
-                                                                  <div>
-                                                                      <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
-                                                                      <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
-                                                                  </div>
-                                                              )
-                                                            ))
-                                                        }
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                    {
-                                        this.state.cards.length > 1 &&
+                        </ol>
+                    }
+                    <div className="carousel-inner">
+                    {
+                        this.state.cards.map((card, index) => {
+                        return (
+                            <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px'}} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
+                                {
+                                    card.component.image_url &&
+                                    <img src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
+                                }
+                                <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
+                                <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
+                                <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
+                                <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
+                                {
+                                    card.component.buttons && card.component.buttons.map((button, index) => {
+                                    if (button.visible || button.type) {
+                                        return (
                                         <div>
                                             {
                                                 this.state.selectedIndex > 0 &&
@@ -392,6 +355,27 @@ class LinkCarouselModal extends React.Component {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className='row' style={{marginTop: '-5vh'}}>
+                { this.props.module !== 'commentcapture'
+                    ? <div className='pull-right'>
+                        <button onClick={this.closeModal} className='btn btn-primary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                            Cancel
+                        </button>
+                        <button disabled={!this.valid()} onClick={() => this.addComponent()} className='btn btn-primary'>
+                            {this.props.edit ? 'Edit' : 'Next'}
+                        </button>
+                    </div>
+                    : <div className='pull-right'>
+                        <button onClick={this.closeModal} className='btn btn-secondary' style={{marginRight: '25px', marginLeft: '280px'}}>
+                            Cancel
+                        </button>
+                        <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards)}} className='btn btn-primary'>
+                            Save
+                        </button>
+                    </div>
+                }
+
                 </div>
             </div>
         )

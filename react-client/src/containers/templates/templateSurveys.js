@@ -32,6 +32,17 @@ class templateSurveys extends React.Component {
     this.onSurveyClick = this.onSurveyClick.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.goToCreate = this.goToCreate.bind(this)
+  }
+
+  goToCreate () {
+    if (this.props.totalCount < this.props.kiboPushTemplates) {
+      browserHistory.push({
+        pathname: `/createSurvey`
+      })
+    } else {
+      this.msg.error(`Cannot create more than ${this.props.kiboPushTemplates} Survey Templates!`)
+    }
   }
 
   componentDidMount () {
@@ -204,7 +215,7 @@ class templateSurveys extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
-                <Link to='/createSurvey' >
+                <Link onClick={this.goToCreate}>
                   <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                     <span>
                       <i className='la la-plus' />
@@ -356,7 +367,8 @@ function mapStateToProps (state) {
   return {
     surveys: state.templatesInfo.surveys,
     count: state.templatesInfo.surveysCount,
-    categories: state.templatesInfo.categories
+    categories: state.templatesInfo.categories,
+    totalCount: state.templatesInfo.totalSurveysCount
   }
 }
 

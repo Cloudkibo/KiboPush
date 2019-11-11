@@ -30,6 +30,7 @@ class PagesInfo extends React.Component {
     this.props.search(value, 'pages')
   }
   render () {
+    console.log('this.userPages', this.props.pages)
     return (
       <div className='row'>
         <div
@@ -68,6 +69,10 @@ class PagesInfo extends React.Component {
                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                              <span style={{width: '150px'}}>Pages</span>
                            </th>
+                           <th data-field='Approved'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Permission</span>
+                           </th>
                            <th data-field='likes'
                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                              <span style={{width: '150px'}}>Likes</span>
@@ -100,6 +105,11 @@ class PagesInfo extends React.Component {
                                  rel='noopener noreferrer'>
                                  {page.pageName}
                                  </a>
+                             </td>
+                             <td data-field='Approved'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.isApproved ? 'true' : 'false'}</span>
                              </td>
                              <td data-field='likes'
                                className='m-datatable__cell'>
