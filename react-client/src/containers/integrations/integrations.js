@@ -277,7 +277,7 @@ class FacebookIntegration extends React.Component {
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                   <div className='m-form__actions' style={{'float': 'right'}}>
-                    <button className='btn btn-primary'
+                    <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
                       onClick={this.submit}> Submit
                     </button>
                   </div>
@@ -325,7 +325,7 @@ class FacebookIntegration extends React.Component {
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                   <div className='m-form__actions' style={{'float': 'right'}}>
-                    <button className='btn btn-primary'
+                    <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
                       onClick={this.submitWapp}> Submit
                     </button>
                   </div>

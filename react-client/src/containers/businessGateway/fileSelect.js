@@ -341,7 +341,7 @@ class FileSelect extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='file' data-toggle="modal" data-target="#file">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
@@ -433,7 +433,7 @@ class FileSelect extends React.Component {
                 }
                 </div>
                 <div className='row' style={{margin: '20px', float: 'right'}}>
-                  <button style={{marginRight: '10px'}}
+                  <button data-dismiss="modal" aria-label="Close" style={{marginRight: '10px'}}
                     className='btn btn-secondary'
                     onClick={() => {
                       this.setState({
@@ -446,6 +446,8 @@ class FileSelect extends React.Component {
                     }}>Cancel
                   </button>
                   <button
+                    data-dismiss="modal"
+                    aria-label="Close"
                     className='btn btn-primary'
                     disabled={!this.state.enableSaveColumns}
                     onClick={() => {
