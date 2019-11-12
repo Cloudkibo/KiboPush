@@ -96,7 +96,7 @@ class Gallery extends React.Component {
                     <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.subtitle}</p>
                     <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.default_action && card.default_action.url}</p>
                     {
-                        card.buttons.map((button, index) => {
+                        this.props.module !== 'commentcapture' && card.buttons.map((button, index) => {
                             return (
                             <div>
                                 <hr style={{marginTop: !card.title && !card.subtitle && index === 0 ? '50px' : ''}}/>
