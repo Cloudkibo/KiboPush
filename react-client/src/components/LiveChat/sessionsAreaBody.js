@@ -59,6 +59,8 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions && this.props.closeSessions.length > 0
                   ? (this.props.closeSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
+                      profilePicError={this.props.profilePicError}
                       sendNotifications={this.props.sendNotifications}
                       changeStatus={this.props.changeStatus}
                       subscriberName={session.name ? session.name : (session.firstName ? session.firstName+ ' '+session.lastName: '')}
