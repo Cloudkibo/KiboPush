@@ -200,7 +200,7 @@ export function updateShowIntegrations (data, browserHistory) {
         console.log('Failed to update show integrations!')
       }
       if (browserHistory) {
-        this.props.history.push({
+        browserHistory.push({
           pathname: '/dashboard',
           state: {loadScript: true}
         })

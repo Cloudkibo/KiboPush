@@ -94,7 +94,7 @@ class CreateLandingPage extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-                <Header onSave={this.onSave}
+                <Header history={this.props.history} location={this.props.location} onSave={this.onSave}
                   onEdit={this.onEdit}
                   isEdit={this.state.isEdit}
                   isActive={this.state.isActive}
@@ -104,15 +104,15 @@ class CreateLandingPage extends React.Component {
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       {
                           this.props.location.state && this.props.location.state.module === 'edit' ?
-                          <Tabs module={this.props.location.state.module}
+                          <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module}
                             landing_page_id={this.props.location.state.landingPage._id}
                             isActive={this.state.isActive}
                              />
-                          : <Tabs />
+                          : <Tabs history={this.props.history} location={this.props.location} />
                       }
 
                     </div>
-                    <Preview />
+                    <Preview history={this.props.history} location={this.props.location} />
                   </div>
                 </div>
               </div>

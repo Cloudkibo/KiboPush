@@ -233,7 +233,7 @@ class ViewBroadcastTemplate extends React.Component {
                 */ }
             </div>
             <div className='col-xl-4'>
-              <ViewMessage payload={this.props.location.state.payload} />
+              <ViewMessage payload={this.props.location.state.payload} history={this.props.history} location={this.props.location} />
             </div>
           </div>
         </div>
