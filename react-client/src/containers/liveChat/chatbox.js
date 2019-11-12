@@ -833,7 +833,7 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
+        {/* <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
             <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
             <PopoverBody>
               <div className='row' style={{ minWidth: '250px' }}>
@@ -857,7 +857,7 @@ class ChatBox extends React.Component {
                 </div>
               </div>
             </PopoverBody>
-          </Popover>
+          </Popover> */}
 
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="pendingResponse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -1051,19 +1051,19 @@ class ChatBox extends React.Component {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-              : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+              : <i  style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i  id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={(e) => { this.changeStatus(e, 'resolved', this.props.currentSession._id)}} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-                : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+                : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
                 }} className='fa fa-envelope-open-o' />
               </div>
