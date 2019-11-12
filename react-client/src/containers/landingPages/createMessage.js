@@ -16,8 +16,8 @@
       super(props, context)
       this.state = {
         buttonActions: ['open website', 'open webview'],
-        broadcast: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
-        pageId: this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id,
+        broadcast: props.landingPage.optInMessage ? props.landingPage.optInMessage : [],
+        pageId: props.pages.filter((page) => page.pageId === props.landingPage.pageId)[0]._id,
         convoTitle: 'Landing Page Opt-In Message'
       }
       this.saveMessage = this.saveMessage.bind(this)

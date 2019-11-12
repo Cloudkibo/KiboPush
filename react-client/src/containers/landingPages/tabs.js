@@ -100,7 +100,7 @@ class Tab extends React.Component {
     }
   }
   render () {
-    console.log('render in tabs', this.props.landingPage)
+    console.log('render in tabs', this.props)
     return (
       <div>
         <ul className='nav nav-tabs'>
