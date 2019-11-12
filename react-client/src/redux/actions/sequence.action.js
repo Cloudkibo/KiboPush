@@ -67,7 +67,7 @@ export function createMessage (data, browserHistory, msg, sequenceName) {
         console.log('response from createMessage', res)
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
-          this.props.history.push({
+          browserHistory.push({
             pathname: '/editSequence',
             state: {module: 'view', _id: data.sequenceId, name: sequenceName}
           })

@@ -341,7 +341,7 @@ const Routes = () => (
     <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
     <Route path='/createsponsoredMessage' component={createsponsoredMessaging} />
     <Route path='/editSponsoredMessage' component={createsponsoredMessaging} />
-    <Route path='/sponsoredMessaging/insights' component={sponsoredMessageInsights} />
+    <Route path='/sponsoredMessagingInsights' component={sponsoredMessageInsights} />
     <Route path='/backdoorPageUsers' component={BackdoorPageUsers} onEnter={requireAuth} />
     <Route path='/backdoorPagePermissions' component={BackdoorPagePermissions} onEnter={requireAuth} />
     <Route path='/backdoorPageTags' component={BackdoorPageTags} onEnter={requireAuth} />

@@ -3,6 +3,8 @@ import React from 'react'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+
 class ShowTemplates extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -149,9 +151,9 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <a href='#/' onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/createBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/createBroadcast', state: {pages: this.props.location.state.pages, payload: broadcast.payload, title: broadcast.title}}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
-                                        </a>
+                                        </Link>
                                        </div>
                                      </div>
                                   ))}

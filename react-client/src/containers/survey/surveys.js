@@ -471,38 +471,39 @@ class Survey extends React.Component {
                   </div>
                 </div>
 
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div style={{ display: 'block' }} className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Delete Survey
+                        </h5>
+                        <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">
+                            &times;
+                          </span>
+                        </button>
+                      </div>
+                      <div style={{ color: 'black' }} className="modal-body">
+                        <p>Are you sure you want to delete this survey?</p>
+                        <button style={{ float: 'right' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            let loadData = {}
+                            loadData = { last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays }
+                            this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
+                          }}
+                          data-dismiss='modal'>Delete
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className='m-portlet__body'>
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-                          <div className="modal-content">
-                            <div style={{ display: 'block' }} className="modal-header">
-                              <h5 className="modal-title" id="exampleModalLabel">
-                                Delete Survey
-									            </h5>
-                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">
-                                  &times;
-											          </span>
-                              </button>
-                            </div>
-                            <div style={{ color: 'black' }} className="modal-body">
-                              <p>Are you sure you want to delete this survey?</p>
-                              <button style={{ float: 'right' }}
-                                className='btn btn-primary btn-sm'
-                                onClick={() => {
-                                  let loadData = {}
-                                  loadData = { last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays }
-                                  this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
-                                }}
-                                data-dismiss='modal'>Delete
-                            </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div className='form-row'>

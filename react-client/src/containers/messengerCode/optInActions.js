@@ -41,7 +41,7 @@ class OptInActions extends React.Component {
                         </div>
                     </div>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                        <Preview />
+                        <Preview history={this.props.history} location={this.props.location} />
                     </div>
             </div>
         )

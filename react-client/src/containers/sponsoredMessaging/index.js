@@ -59,7 +59,7 @@ class sponsoredMessaging extends React.Component {
     })
   }
   onEdit (sponsoredMessage) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/editSponsoredMessage',
       state: {module: 'edit', sponsoredMessage: sponsoredMessage}
     })
@@ -207,7 +207,7 @@ class sponsoredMessaging extends React.Component {
                               <span style={{width: '100px'}}>{sponsoredMessage.status}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '400px'}}>
-                                <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessaging/insights'>
+                                <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessagingInsights'>
                                     Insights
                                 </ Link>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>

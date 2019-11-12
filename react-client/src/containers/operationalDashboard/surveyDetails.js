@@ -133,9 +133,14 @@ class SurveyDetails extends React.Component {
                               <strong>Q. {c.statement}</strong>
                             </li>
                             {this.props.responses && this.props.responses.length > 0
-                            ? <Response responses={this.props.responses.filter(
-                              (d) => d.questionId._id === c._id)}
-                              question={c} />
+                            ? <Response
+                                history={this.props.history}
+                                location={this.props.location}
+                                responses={ this.props.responses.filter(
+                                    (d) => d.questionId._id === c._id)
+                                }
+                                question={c}
+                              />
                             : <ol>
                               {c.options.map((c,index) => (
                                 <li style={{marginLeft: '30px'}}
