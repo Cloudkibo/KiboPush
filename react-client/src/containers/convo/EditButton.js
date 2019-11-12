@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class EditButton extends React.Component {

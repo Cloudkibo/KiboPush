@@ -9,7 +9,6 @@ import Adset from './adSet'
 import AdCreative from './adCreative'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
 
 class Tab extends React.Component {
   constructor (props, context) {
@@ -38,7 +37,7 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#AdCreative').addClass('active')
       this.setState({activeTab: 'AdCreative'})
-    } 
+    }
     console.log('activeTab', this.state.activeTab)
 
   }
@@ -86,37 +85,37 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#AdCreative').addClass('active')
       this.setState({activeTab: 'AdCreative'})
-    } 
+    }
     console.log('activeTab', this.state.activeTab)
 
   }
   componentDidMount () {
-  
+
   }
   render () {
-    console.log('render in tabs', this.props.landingPage)
+    console.log('this.props.editSponsoredMessage in tabs', this.props.editSponsoredMessage)
     return (
       <div>
         <ul className='nav nav-tabs'>
           <li>
-            <a id='Campaign' className='broadcastTabs active'>Ad Campaign</a>
+            <a href='#/' id='Campaign' className='broadcastTabs active'>Ad Campaign</a>
           </li>
           <li>
-            <a id='Adset' className='broadcastTabs'>Ad set</a>
+            <a href='#/' id='Adset' className='broadcastTabs'>Ad set</a>
           </li>
           <li>
-            <a id='AdCreative' className='broadcastTabs'>Create Ad</a>
+            <a href='#?' id='AdCreative' className='broadcastTabs'>Create Ad</a>
           </li>
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <AdCampaign page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCampaign campaignName={this.props.editSponsoredMessage.campaign_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_2'>
-            <Adset page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <Adset adSetPayload={this.props.editSponsoredMessage.ad_set_payload} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_3'>
-            <AdCreative page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCreative adAccountId={this.props.editSponsoredMessage.ad_account_id} payload={this.props.editSponsoredMessage.payload} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
         </div>
       </div>
@@ -127,13 +126,11 @@ class Tab extends React.Component {
 function mapStateToProps (state) {
   console.log('state in tabs', state)
   return {
-    landingPage: state.landingPagesInfo.landingPage
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateLandingPageData: updateLandingPageData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Tab)

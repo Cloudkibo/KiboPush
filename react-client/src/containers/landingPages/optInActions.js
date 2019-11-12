@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import Footer from './footer'
 
 class OptInActions extends React.Component {
@@ -14,12 +13,12 @@ class OptInActions extends React.Component {
   }
   editMessage () {
     if(this.props.module === 'edit'){
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/createLandingPageMessage`,
         state: {module: 'edit'}
        })
     }else{
-      browserHistory.push({
+      this.props.history.push({
        pathname: `/createLandingPageMessage`
       })
     }
@@ -29,7 +28,7 @@ class OptInActions extends React.Component {
       <div className='form-group m-form__group'>
         <div className='menuDiv m-input-icon m-input-icon--right'>
           <input onClick={this.editMessage} readonly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
-          <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='javascript:;'>
+          <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
             <i className='fa fa-edit' />
           </a>
         </div>

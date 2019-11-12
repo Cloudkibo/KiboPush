@@ -11,7 +11,7 @@ class Responsive extends React.Component {
 
         <div className='fixed-sidebar-left sidebar--small'
           id='sidebar-left-responsive'>
-          <a href='#' className='logo js-sidebar-open'>
+          <a href='#/' className='logo js-sidebar-open'>
             <img src='img/logo.png' alt='Olympus' />
           </a>
 
@@ -19,7 +19,7 @@ class Responsive extends React.Component {
 
         <div className='fixed-sidebar-left sidebar--large'
           id='sidebar-left-1-responsive'>
-          <a href='#' className='logo'>
+          <a href='#/' className='logo'>
             <img src='img/logo.png' alt='Olympus' />
             <h6 className='logo-title'>olympus</h6>
           </a>
@@ -52,7 +52,7 @@ class Responsive extends React.Component {
 
             <ul className='left-menu'>
               <li>
-                <a href='#' className='js-sidebar-open'>
+                <a href='#/' className='js-sidebar-open'>
                   <svg className='olymp-close-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-close-icon' />
                   </svg>
@@ -150,7 +150,7 @@ class Responsive extends React.Component {
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <svg className='olymp-manage-widgets-icon left-menu-icon'
                     data-toggle='tooltip' data-placement='right' title=''
                     data-original-title='Manage Widgets'>
@@ -167,7 +167,7 @@ class Responsive extends React.Component {
 
             <ul className='account-settings'>
               <li>
-                <a href='#'>
+                <a href='#/'>
 
                   <svg className='olymp-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-menu-icon' />
@@ -177,7 +177,7 @@ class Responsive extends React.Component {
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <svg className='olymp-star-icon left-menu-icon'
                     data-toggle='tooltip' data-placement='right' title=''
                     data-original-title='FAV PAGE'>
@@ -188,7 +188,7 @@ class Responsive extends React.Component {
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <svg className='olymp-logout-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-logout-icon' />
                   </svg>
@@ -204,22 +204,22 @@ class Responsive extends React.Component {
 
             <ul className='about-olympus'>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <span>Terms and Conditions</span>
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <span>FAQs</span>
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <span>Careers</span>
                 </a>
               </li>
               <li>
-                <a href='#'>
+                <a href='#/'>
                   <span>Contact</span>
                 </a>
               </li>

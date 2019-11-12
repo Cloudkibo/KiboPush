@@ -1,9 +1,8 @@
 
-import { Route, IndexRoute } from 'react-router'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import React from 'react'
 import asyncComponent from "./components/AsyncComponent";
 
-import App from "./sub.app.js"
 import Home from "./containers/home"
 import Login from './containers/login/new'
 import MessageUs from './containers/messageUs/messageUs'
@@ -58,9 +57,7 @@ import EditPoll from './containers/templates/editPoll'
 import EditSurvey from './containers/templates/editSurvey'
 import Categories from './containers/templates/categories'
 import ShowTemplateSurveys from './containers/survey/showTemplates'
-import EditTemplateSurvey from './containers/survey/editTemplate'
 import ShowTemplatePolls from './containers/polls/showTemplates'
-import EditTemplatePoll from './containers/polls/editTemplate'
 import ViewTemplatePollUser from './containers/polls/viewTemplate'
 import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
 import ShowTemplateBroadcasts from './containers/convo/showTemplates'
@@ -185,9 +182,9 @@ function redirectAuthUsers (nextState, replace) {
   }
 }
 
-const routes = (
-  <Route path='/' component={App}>
-    <IndexRoute component={Home} onEnter={redirectAuthUsers} />
+const Routes = () => (
+  <Switch>
+    <Route exact path='/' component={Home} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
     <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
@@ -295,7 +292,7 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
-    <Route path='/ccSecondReply' component={CommentCaptureEdit} onEnter={requireAuth} />
+    <Route path='/commentCaptureReply' component={CommentCaptureEdit} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
@@ -344,14 +341,15 @@ const routes = (
     <Route path='/sponsoredMessaging' component={sponsoredMessaging} />
     <Route path='/createsponsoredMessage' component={createsponsoredMessaging} />
     <Route path='/editSponsoredMessage' component={createsponsoredMessaging} />
-    <Route path='/sponsoredMessaging/insights' component={sponsoredMessageInsights} />
+    <Route path='/sponsoredMessagingInsights' component={sponsoredMessageInsights} />
     <Route path='/backdoorPageUsers' component={BackdoorPageUsers} onEnter={requireAuth} />
     <Route path='/backdoorPagePermissions' component={BackdoorPagePermissions} onEnter={requireAuth} />
     <Route path='/backdoorPageTags' component={BackdoorPageTags} onEnter={requireAuth} />
     <Route path='/backdoorPageSubscribersWithTags' component={BackdoorSubscribersWithTags} onEnter={requireAuth} />
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
-  </Route>
+    <Route path='*' render={() => <Redirect to='/' />} />
+  </Switch>
 
 )
 
-export default routes
+export default Routes

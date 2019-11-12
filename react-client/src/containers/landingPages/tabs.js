@@ -105,34 +105,36 @@ class Tab extends React.Component {
       <div>
         <ul className='nav nav-tabs'>
           <li>
-            <a id='initialState' className='broadcastTabs active' onClick={() => { this.onTabClick('initialState') }}>Initial State</a>
+            <a href='#/' id='initialState' className='broadcastTabs active' onClick={() => { this.onTabClick('initialState') }}>Initial State</a>
           </li>
           <li>
-            <a id='submittedState' className='broadcastTabs' onClick={() => { this.onTabClick('submittedState') }}>Submitted State </a>
+            <a href='#/' id='submittedState' className='broadcastTabs' onClick={() => { this.onTabClick('submittedState') }}>Submitted State </a>
           </li>
           <li>
-            <a id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
+            <a href='#/' id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
           </li>
           {
             this.props.module === 'edit' &&
             <li>
-            <a id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
+            <a href='#/' id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
           </li>
           }
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <InitialState initialState={this.props.landingPage.initialState} handleNext={this.handleNext} handleBack={this.handleBack} />
+            <InitialState history={this.props.history} location={this.props.location} initialState={this.props.landingPage.initialState} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_2'>
-            <SubmittedState handleNext={this.handleNext} handleBack={this.handleBack} />
+            <SubmittedState history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
-            <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
+            <OptInActions history={this.props.history} location={this.props.location} optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
           </div>
           { this.props.module === 'edit' &&
           <div className='tab-pane' id='tab_4'>
             <Setup
+              history={this.props.history}
+              location={this.props.location}
               handleNext={this.handleNext}
               handleBack={this.handleBack}
               module={this.props.module}

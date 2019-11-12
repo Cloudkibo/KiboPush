@@ -5,7 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -15,8 +14,9 @@ class CommentCaptureEdit extends React.Component {
     super(props, context)
     this.state = {
       buttonActions: ['open website', 'open webview'],
-      broadcast: this.props.currentPost.secondReply && this.props.currentPost.secondReply.payload ? this.props.currentPost.secondReply.payload : [],
-      convoTitle: 'Create Second Reply',
+      broadcast: [],
+      convoTitle: '',
+      componentLimit: null,
       itemMenus: [],
       pageId: this.props.pages.filter((page) => page._id === this.props.currentPost.pageId)[0].pageId
     }
@@ -31,13 +31,22 @@ class CommentCaptureEdit extends React.Component {
   }
   saveMessage () {
     var currentPost = this.props.currentPost
-    var secondReply = {
-      action: 'reply',
-      payload: this.state.broadcast.length > 0 ? this.state.broadcast: []
+    if (this.props.location.state && this.props.location.state.mode) {
+      if (this.props.location.state.mode === 'reply') {
+        var reply =  this.state.broadcast.length > 0 ? this.state.broadcast: []
+        currentPost.reply = reply
+        this.props.saveCurrentPost(currentPost)
+      }
+      if (this.props.location.state.mode === 'secondReply') {
+        var secondReply = {
+          action: 'reply',
+          payload: this.state.broadcast.length > 0 ? this.state.broadcast: []
+        }
+        currentPost.secondReply = secondReply
+        this.props.saveCurrentPost(currentPost)
+      }
+      this.msg.success('Message saved successfully')
     }
-    currentPost.secondReply = secondReply
-    this.props.saveCurrentPost(currentPost)
-    this.msg.success('Message saved successfully')
   }
   gotoCommentCapture () {
     this.props.history.push({
@@ -56,6 +65,22 @@ class CommentCaptureEdit extends React.Component {
     }
 
     document.title = `${title} | Second Reply`
+    if (this.props.location.state && this.props.location.state.mode) {
+      if (this.props.location.state.mode === 'reply') {
+        this.setState({
+          broadcast: this.props.currentPost.reply ? this.props.currentPost.reply : [],
+          convoTitle: 'Create Bot Reply',
+          componentLimit: 1
+        })
+      }
+      if (this.props.location.state.mode === 'secondReply') {
+        this.setState({
+          broadcast: this.props.currentPost.secondReply && this.props.currentPost.secondReply.payload ? this.props.currentPost.secondReply.payload : [],
+          convoTitle: 'Create Second Reply',
+          componentLimit: null
+        })
+      }
+    }
   }
 
   render () {
@@ -90,7 +115,8 @@ class CommentCaptureEdit extends React.Component {
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}
           convoTitle={this.state.convoTitle}
-          buttonActions={this.state.buttonActions} />
+          buttonActions={this.state.buttonActions}
+          componentLimit={this.state.componentLimit}/>
       </div>
     )
   }

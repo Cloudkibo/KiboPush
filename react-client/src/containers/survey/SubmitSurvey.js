@@ -10,8 +10,11 @@ class SubmitSurvey extends React.Component {
     if(hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'Submit Survey';
+      title = 'KiboChat';
+    } else {
+      title = ''
     }
+    document.title = `${title} | Submit Survey`;
   }
 
   render () {

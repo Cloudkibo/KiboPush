@@ -80,7 +80,7 @@ class ViewPollDetail extends React.Component {
   handlePageClick (data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pollDetails) {
       let pollResponses = nextProps.pollDetails.pollResponses
       let pollPages = nextProps.pollDetails.pollpages
@@ -93,7 +93,8 @@ class ViewPollDetail extends React.Component {
         var value = []
         var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']
         var index = 0
-        pollResponses.map((poll) => {
+        for (let a = 0; a < pollResponses.length; a++) {
+          let poll = pollResponses[a]
           if (value.length < 1) {
             counts[index] = 1
             value[index] = poll.response
@@ -111,7 +112,7 @@ class ViewPollDetail extends React.Component {
               value[index] = poll.response
             }
           }
-        })
+        }
         this.drawPieChart(colors, counts, value)
       }
     }
@@ -248,7 +249,7 @@ class ViewPollDetail extends React.Component {
                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
                     }}>
                       <canvas id='radar-chart' width={250} height={170} />
-                    </div>  : 
+                    </div>  :
                     <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
 
                     <h5> Currently there are no responses for this poll.</h5>
@@ -396,7 +397,7 @@ class ViewPollDetail extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLengthSubscriber / 4)}
                         marginPagesDisplayed={1}

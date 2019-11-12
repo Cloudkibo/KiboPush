@@ -16,10 +16,9 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Notification from 'react-web-notification'
 import cookie from 'react-cookie'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -34,7 +33,6 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      showModal: false
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -44,8 +42,6 @@ class Header extends React.Component {
     this.changeStatus = this.changeStatus.bind(this)
     this.showDropDown = this.showDropDown.bind(this)
     this.logout = this.logout.bind(this)
-    this.showDisconnectFacebook = this.showDisconnectFacebook.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
     this.updatePlatformValue = this.updatePlatformValue.bind(this)
     this.removeActingAsUser = this.removeActingAsUser.bind(this)
@@ -61,17 +57,17 @@ class Header extends React.Component {
     console.log('in updatePlatformValue', value)
     if (this.props.user && this.props.user.role === 'buyer') {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
         })
       } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
         })
       } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
         })
@@ -87,13 +83,6 @@ class Header extends React.Component {
     console.log('profile picture error for user')
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture()
-  }
-
-  closeDialog () {
-    this.setState({showModal: false})
-  }
-  showDisconnectFacebook () {
-    this.setState({showModal: true})
   }
   logout () {
     this.props.updateShowIntegrations({showIntegrations: true})
@@ -129,14 +118,14 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/live',
       state: { session_id: this.props.socketData.session_id }
     })
     this.setState({ ignore: true })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ ignore: false })
@@ -190,7 +179,7 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getuserdetails()
   }
   timeSince (date) {
@@ -224,17 +213,17 @@ class Header extends React.Component {
   gotoView (id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'webhook' }
       })
     } else if (type === 'limit') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/settings`,
         state: { module: 'pro' }
       })
     } else {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/liveChat`,
         state: { id: id }
       })
@@ -318,18 +307,18 @@ class Header extends React.Component {
                     KIBOPUSH</h4>
                 </div>
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
-                  <a href='javascript:;' onClick={this.toggleSidebar} id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
+                  <a href='#/' onClick={this.toggleSidebar} id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
                     <span />
                   </a>
-                  <a href='javascript:;' id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
-                    <span />
-                  </a>
-
-                  <a id='m_aside_header_menu_mobile_toggle' href='javascript:;' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
+                  <a href='#/' id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
                     <span />
                   </a>
 
-                  <a id='m_aside_header_topbar_mobile_toggle' href='javascript:;' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
+                  <a id='m_aside_header_menu_mobile_toggle' href='#/' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
+                    <span />
+                  </a>
+
+                  <a id='m_aside_header_topbar_mobile_toggle' href='#/' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
                     <i className='flaticon-more' />
                   </a>
                 </div>
@@ -345,7 +334,7 @@ class Header extends React.Component {
                     this.props.user && !this.state.url &&
                     <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                       <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
-                      <a onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                      <a href='#/' onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                         {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : this.props.user.platform === 'sms' ? 'SMS' : 'WhatsApp'}
                       </a>
                       {
@@ -357,7 +346,7 @@ class Header extends React.Component {
                               <div className='m-dropdown__content'>
                                 <ul className='m-nav'>
                                   <li key={'messenger'} className='m-nav__item'>
-                                    <a onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon fa fa-facebook-square' />
                                       <span className='m-nav__link-text'>
                                         Messenger
@@ -365,7 +354,7 @@ class Header extends React.Component {
                                     </a>
                                   </li>
                                   <li key={'sms'} className='m-nav__item'>
-                                    <a onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon flaticon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>
                                         SMS
@@ -373,7 +362,7 @@ class Header extends React.Component {
                                     </a>
                                   </li>
                                   <li key={'whatsApp'} className='m-nav__item'>
-                                    <a onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon socicon socicon-whatsapp' />
                                       <span className='m-nav__link-text'>
                                         WhatsApp
@@ -391,7 +380,7 @@ class Header extends React.Component {
                   {
                     this.props.user && this.props.user.isSuperUser
                       ? <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                        <a href='' className='m-menu__link m-menu__toggle'>
+                        <a href='#/' className='m-menu__link m-menu__toggle'>
                           <i className='m-menu__link-icon flaticon-settings' />
                           <span className='m-menu__link-text'>
                             Plans & Permissions
@@ -438,7 +427,7 @@ class Header extends React.Component {
                         </div>
                       </li>
                       : <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-redirect='true' aria-haspopup='true'>
-                        <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                        <a href='https://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
                           <i className='m-menu__link-icon flaticon-info' />
                           <span className='m-menu__link-text'>
                             Documentation
@@ -460,7 +449,7 @@ class Header extends React.Component {
 
                                 <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
                                 <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                  <a style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                                  <a href='#/' style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                                     Viewing As...
                                   </a>
                                   {
@@ -477,7 +466,7 @@ class Header extends React.Component {
                                                 </span>
                                               </li>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
-                                                <a onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
+                                                <a href='#/' onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
                                                   <span className='m-nav__link-text'>
                                                     Switch back to my view
                                                   </span>
@@ -497,7 +486,7 @@ class Header extends React.Component {
                         </li>
                       }
                       <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
-                        <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
+                        <a href='#/' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                             <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
                           }
@@ -580,7 +569,7 @@ class Header extends React.Component {
                       </li>
                       {this.props.user && this.props.user.isSuperUser && this.props.user.facebookInfo &&
                       <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
                             <i className='flaticon-share' />
@@ -659,7 +648,7 @@ class Header extends React.Component {
                       }
                       {/* APP CHOOSER */}
                       <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
                             <i className='flaticon-app' />
@@ -679,7 +668,7 @@ class Header extends React.Component {
                                             <i className='m-nav-grid__icon flaticon-network' />
                                             <span className='m-nav-grid__text'>KiboEngage</span>
                                           </a>
-                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-network' />
                                             <span className='m-nav-grid__text'>KiboEngage</span>
                                           </a>
@@ -691,7 +680,7 @@ class Header extends React.Component {
                                             <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                             <span className='m-nav-grid__text'>KiboChat</span>
                                           </a>
-                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                             <span className='m-nav-grid__text'>KiboChat</span>
                                           </a>
@@ -729,7 +718,7 @@ class Header extends React.Component {
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
-                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
@@ -740,7 +729,7 @@ class Header extends React.Component {
                                             <i className='m-nav-grid__icon flaticon-share' />
                                             <span className='m-nav-grid__text'>KiboAPI</span>
                                           </a>
-                                          : <a style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-share' />
                                             <span className='m-nav-grid__text'>KiboAPI</span>
                                           </a>
@@ -755,7 +744,7 @@ class Header extends React.Component {
                       </li>
 
                       <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-topbar__userpic'>
                             <div style={{ display: 'inline-block', marginRight: '5px' }}>
                               <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
@@ -806,7 +795,7 @@ class Header extends React.Component {
                                   }
                                   <li className='m-nav__item'>
                                     {window.location.hostname.toLowerCase().includes('kiboengage')
-                                    ? <a href={liveChatLink} target='_blank' className='m-nav__link'>
+                                    ? <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>Messages</span>
                                     </a>
@@ -818,7 +807,7 @@ class Header extends React.Component {
                                   </li>
                                   {this.props.user && this.props.user.role === 'buyer' &&
                                     <li className='m-nav__item'>
-                                      <a href='#' onClick={this.showDisconnectFacebook} className='m-nav__link'>
+                                      <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
                                         <span className='m-nav__link-text'>Disconnect Facebook</span>
                                       </a>
@@ -826,7 +815,7 @@ class Header extends React.Component {
                                   }
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>
+                                    <a href='http://kibopush.com/faq/' target='_blank' rel='noopener noreferrer' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-info' />
                                       <span className='m-nav__link-text'>FAQ</span>
                                     </a>
@@ -839,7 +828,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <a onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <a href='#/' onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                   </a>
                                   </li>
@@ -851,7 +840,7 @@ class Header extends React.Component {
                       </li>
 
                       {/* <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                      <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li> */}
                     </ul>
                   }
@@ -860,25 +849,32 @@ class Header extends React.Component {
             </div>
           </div>
         </div>
-        {
-          this.state.showModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Disconnet Facebook Account</h3>
-              <p>Are you sure you want to disconnect your Facebook account?</p>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.props.disconnectFacebook()
-                  this.closeDialog()
-                  this.logout()
-                }}>Yes
-              </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)'}} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Disconnet Facebook Account
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to disconnect your Facebook account?</p>
+                <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                    this.props.disconnectFacebook()
+                    this.logout()
+                    }}>Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
       </header>
     )
   }

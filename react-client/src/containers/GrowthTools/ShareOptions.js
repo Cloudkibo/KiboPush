@@ -10,7 +10,7 @@ import {
 
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
 class ShareOptions extends React.Component {
@@ -29,7 +29,7 @@ class ShareOptions extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -113,7 +113,7 @@ class ShareOptions extends React.Component {
     }
 
     document.title = `${title} | Subscribe to Messenger`;
-    
+
   }
 
   render () {

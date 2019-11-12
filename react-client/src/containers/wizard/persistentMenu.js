@@ -6,14 +6,12 @@ import { saveCurrentMenuItem, saveMenu, getIndexBypage } from '../../redux/actio
 import Sidebar from './sidebar'
 import Header from './header'
 import { transformData, removeMenuPayload } from '../menu/utility'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from '../menu/viewScreen'
-import Halogen from 'halogen'
 import {getCurrentProduct} from '../../utility/utils'
 
 class Menu extends React.Component {
@@ -74,7 +72,7 @@ class Menu extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = 'KiboPush | Persistent Menu'
+    document.title = `${title} | Persistent Menu`
     var compProp = this.props
     registerAction({
       event: 'menu_updated',
@@ -117,7 +115,7 @@ class Menu extends React.Component {
       menuItems: tempItemMenus
     })
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages && nextProps.pages.length > 0 && this.state.selectPage === '') {
       this.setState({selectPage: nextProps.pages[0]})
     }
@@ -532,16 +530,25 @@ class Menu extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopoverWizard' />
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Persistent Menu Preview
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
+              </div>
             </div>
-          </ModalContainer>
-          : <span />
-        }
+          </div>
+        </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
@@ -592,7 +599,7 @@ class Menu extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='5' stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} user={this.props.user} />
+                  <Sidebar history={this.props.history} step='5' stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} user={this.props.user} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -607,38 +614,12 @@ class Menu extends React.Component {
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.showPreview &&
-                            <ModalContainer style={{top: '100px'}}
-                              onClose={this.closeDialog}>
-                              <ModalDialog style={{top: '100px'}}
-                                onClose={this.closeDialog}>
-                                <h3>Persistent Menu Preview</h3>
-                                <div>
-                                  <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
-                                </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
                         </div>
                       </div>
                       <div className='m-portlet__body'>
                         <div className='row align-items-center'>
                           <div className='col-xl-8 order-2 order-xl-1' />
                           <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                            {
-                              this.state.showPreview &&
-                              <ModalContainer style={{ top: '100px' }}
-                                onClose={this.closeDialog}>
-                                <ModalDialog style={{ top: '100px' }}
-                                  onClose={this.closeDialog}>
-                                  <h3>Persistent Menu Preview</h3>
-                                  <div>
-                                    <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
-                                  </div>
-                                </ModalDialog>
-                              </ModalContainer>
-                            }
                           </div>
                         </div>
                         <div className='form-group m-form__group row'>
@@ -740,7 +721,7 @@ class Menu extends React.Component {
                             <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
                                 Save Menu
                               </button>
-                            <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
+                            <button className='btn btn-sm btn-primary' data-toggle="modal" data-target="#preview" onClick={this.showPreview} style={{marginLeft: '15px'}}>
                                 Preview
                               </button>
                           </div>

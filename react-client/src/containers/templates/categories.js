@@ -2,9 +2,8 @@ import React from 'react'
 import {loadCategoriesList, addCategory, deleteCategory, editCategory} from '../../redux/actions/templates.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Category extends React.Component {
   constructor (props, context) {
@@ -108,6 +107,88 @@ class Category extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <input className='form-control'
+                  placeholder='Enter category' ref='newCategory' />
+                <br />
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeDialogCreate()
+                    this.saveCategory()
+                  }} >Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <input className='form-control'
+                  value={this.state.editName} onChange={(e) => this.updateCategory(e)} />
+                <br />
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeDialogEdit()
+                    this.editCategory()
+                  }}>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this category?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteCategory(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='row'>
             <div
@@ -122,7 +203,7 @@ class Category extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialogCreate}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialogCreate}>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -136,64 +217,6 @@ class Category extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModalCreate &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogCreate}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogCreate}>
-                            <h3>Add Category</h3>
-                            <input className='form-control'
-                              placeholder='Enter category' ref='newCategory' />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialogCreate()
-                                this.saveCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalEdit &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogEdit}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogEdit}>
-                            <h3>Edit Category</h3>
-                            <input className='form-control'
-                              value={this.state.editName} onChange={(e) => this.updateCategory(e)} />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialogEdit()
-                                this.editCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <h3>Delete Category</h3>
-                            <p>Are you sure you want to delete this category?</p>
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.props.deleteCategory(this.state.deleteid, this.msg)
-                                this.closeDialogDelete()
-                              }}>Delete
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
                     </div>
                   </div>
                   { this.props.categories && this.props.categories.length > 0
@@ -235,12 +258,14 @@ class Category extends React.Component {
                                         style={{width: '170px'}}>
                                         <button className='btn btn-primary btn-sm'
                                           style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogEdit(category)}>
+                                          onClick={() => this.showDialogEdit(category)}
+                                          data-toggle="modal" data-target="#edit">
                                         Edit
                                     </button>
                                         <button className='btn btn-primary btn-sm'
                                           style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogDelete(category._id)}>
+                                          onClick={() => this.showDialogDelete(category._id)}
+                                          data-toggle="modal" data-target="#delete">
                                         Delete
                                     </button>
                                       </span></td>

@@ -7,11 +7,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {editBot, updateStatus, loadPoliticsBotTemplate} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import auth from '../../utility/auth.service'
-import { autoScroll } from '@interactjs/interact'
 
 class CreateBot extends React.Component {
   constructor (props) {
@@ -43,7 +41,7 @@ class CreateBot extends React.Component {
     document.title = `${title} | Create Bot`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.createdBot && nextProps.pages) {
       var botName = nextProps.createdBot.botName
       if (botName) {
@@ -82,7 +80,7 @@ class CreateBot extends React.Component {
             <div className='panel-heading clearfix'>
               <strong className='panel-title'>Question {i + 1}</strong>
               <div role='toolbar' className='pull-right btn-toolbar'>
-                <a className='remove'
+                <a href='#/' className='remove'
                   onClick={this.removeClick.bind(this, i)}>
                   <span className='fa fa-times' />
                 </a>

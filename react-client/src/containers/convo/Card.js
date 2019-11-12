@@ -8,14 +8,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
+// import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -260,7 +260,7 @@ class Card extends React.Component {
       this.updateCardDetails(this.props)
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
   }
   updateCardDetails (cardProps) {
@@ -462,7 +462,7 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
+        {/* {
           this.state.isshowGuideLinesImageDialog &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeGuideLinesImageDialog}>
@@ -480,7 +480,7 @@ class Card extends React.Component {
               </ul>
             </ModalDialog>
           </ModalContainer>
-        }
+        } */}
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -550,7 +550,7 @@ class Card extends React.Component {
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
-          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 135, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
@@ -565,7 +565,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
-            : <img onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
+            : <img alt='' onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
            }
           </div>
           }
@@ -573,10 +573,10 @@ class Card extends React.Component {
             <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
             <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             {(this.state.elementUrl === '' && this.state.webviewurl === '')
-              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
+              ? <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                 <i className='la la-plus' /> Add Action
                 </a>
-              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
+              : <a href='#/' className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
                 Edit Action
                 </a>
             }

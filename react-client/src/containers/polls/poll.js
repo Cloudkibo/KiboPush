@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -17,11 +17,10 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-import {loadTags} from '../../redux/actions/tags.actions'
+import { loadTags } from '../../redux/actions/tags.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
@@ -29,9 +28,9 @@ import {
   getSubscriberCount
 } from '../../redux/actions/broadcast.actions'
 class Poll extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     props.loadSubscribersList()
-    props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
+    props.loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', days: '0' })
     props.loadTags()
     super(props, context)
     this.state = {
@@ -39,12 +38,10 @@ class Poll extends React.Component {
       alertType: '',
       pollsData: [],
       totalLength: 0,
-      isShowingModal: false,
       isShowingModalPro: false,
       isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      isShowingModalDelete: false,
       deleteid: '',
       selectedDays: '0',
       pageNumber: 0,
@@ -54,10 +51,6 @@ class Poll extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.props.clearAlertMessage()
@@ -101,31 +94,25 @@ class Poll extends React.Component {
     this.setState({isShowingModal: false})
   }
 
-  showZeroSubDialog () {
-    this.setState({isShowingZeroModal: true})
+  showZeroSubDialog() {
+    this.setState({ isShowingZeroModal: true })
   }
 
-  closeZeroSubDialog () {
-    this.setState({isShowingZeroModal: false})
+  closeZeroSubDialog() {
+    this.setState({ isShowingZeroModal: false })
   }
 
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
-  }
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
-  }
-  goToSettings () {
-    browserHistory.push({
+  goToSettings() {
+    this.props.history.push({
       pathname: `/settings`,
-      state: {module: 'pro'}
+      state: { module: 'pro' }
     })
   }
 
-  onDaysChange (e) {
+  onDaysChange(e) {
     //  var defaultVal = 0
     var value = e.target.value
-    this.setState({selectedDays: value, pageNumber: 0})
+    this.setState({ selectedDays: value, pageNumber: 0 })
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -135,26 +122,25 @@ class Poll extends React.Component {
           selectedDays: ''
         })
       }
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: value})
+      this.props.loadPollsListNew({ last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: value })
     } else if (value === '') {
-      this.setState({selectedDays: ''})
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: '0'})
+      this.setState({ selectedDays: '' })
+      this.props.loadPollsListNew({ last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: '0' })
     }
   }
-  showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
+  showDialogDelete(id) {
+    this.setState({ deleteid: id })
   }
 
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false, pageNumber: 0 })
+  closeDialogDelete() {
+    this.setState({ pageNumber: 0 })
   }
-  componentWillMount () {
-   // this.props.loadSubscribersList()
-  //  document.title('KiboPush | Poll')
+  UNSAFE_componentWillMount() {
+    // this.props.loadSubscribersList()
+    //  document.title('KiboPush | Poll')
   }
 
-  displayData (n, polls) {
+  displayData(n, polls) {
     console.log('in displayData', polls)
     let offset = n * 10
     let data = []
@@ -169,22 +155,22 @@ class Poll extends React.Component {
       data[index] = polls[i]
       index++
     }
-    this.setState({pollsData: data})
+    this.setState({ pollsData: data })
   }
 
-  handlePageClick (data) {
+  handlePageClick(data) {
     if (data.selected === 0) {
-      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+      this.props.loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays })
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPollsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+      this.props.loadPollsListNew({ current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays })
     } else {
-      this.props.loadPollsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+      this.props.loadPollsListNew({ current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays })
     }
-    this.setState({pageNumber: data.selected})
+    this.setState({ pageNumber: data.selected })
     this.displayData(data.selected, this.props.polls)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.polls && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
@@ -210,9 +196,14 @@ class Poll extends React.Component {
         alertType: ''
       })
     }
+    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+      (nextProps.pages && nextProps.pages.length === 0))
+    ) {
+      this.refs.zeroModal.click()
+    }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
     // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
@@ -235,28 +226,28 @@ class Poll extends React.Component {
     document.title = `${title} | Polls`
   }
 
-  gotoView (poll) {
+  gotoView(poll) {
     this.props.history.push({
       pathname: `/pollResult`,
       state: poll
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoViewPoll (poll) {
+  gotoViewPoll(poll) {
     this.props.history.push({
       pathname: `/pollView`,
       state: poll
     })
-    // browserHistory.push(`/pollResult/${poll._id}`)
+    // this.props.history.push(`/pollResult/${poll._id}`)
   }
-  gotoCreate () {
-    browserHistory.push({
+  gotoCreate() {
+    this.props.history.push({
       pathname: `/createpoll`
     })
   }
 
-  sendPoll (poll) {
+  sendPoll(poll) {
     let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === poll.segmentationPageIds[0])
     poll.subscribersCount = currentPageSubscribers.length
     let segmentationValues = []
@@ -282,7 +273,7 @@ class Poll extends React.Component {
       this.setState({ pageNumber: 0 })
     }
   }
-  render () {
+  render() {
     console.log('poll props', this.props)
     console.log('polls local state', this.state)
     var alertOptions = {
@@ -297,70 +288,92 @@ class Poll extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100 }}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Polls Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='DpcqcTdguTg'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                  />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
-                    Upgrade to Pro
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeZeroSubDialog}>
-            <ModalDialog style={{width: '700px', top: '75px'}}
-              onClose={this.closeZeroSubDialog}>
-              {(this.props.pages && this.props.pages.length === 0)
-              ? <AlertMessageModal type='page' />
-            : <AlertMessageModal type='subscriber' />
-            }
-              <div>
-                <YouTube
-                  videoId='9kY3Fmj_tbM'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: {
                       autoplay: 0
                     }
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Upgrade to Pro
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                  </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                {(this.props.pages && this.props.pages.length === 0)
+                  ? <AlertMessageModal type='page' />
+                  : <AlertMessageModal type='subscriber' />
+                }
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  <YouTube
+                    videoId='9kY3Fmj_tbM'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)', paddingTop:'150px' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -378,7 +391,7 @@ class Poll extends React.Component {
               <span
                 className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
                 style={{marginLeft: '10px'}}>
-                This Poll will be sent to {this.state.subscriberCount} subscriber(s). 
+                This Poll will be sent to {this.state.subscriberCount} subscriber(s).
               { this.state.subscriberCount === 0 &&
               <div>
                 <br/>
@@ -416,17 +429,17 @@ class Poll extends React.Component {
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0
-            ? <AlertMessage type='page' />
-          : this.props.subscribers && this.props.subscribers.length === 0 &&
-            <AlertMessage type='subscriber' />
+              ? <AlertMessage type='page' />
+              : this.props.subscribers && this.props.subscribers.length === 0 &&
+              <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding polls? Here is the <a href='http://kibopush.com/polls/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding polls? Here is the <a href='http://kibopush.com/polls/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -443,163 +456,174 @@ class Poll extends React.Component {
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.subscribers && this.props.subscribers.length === 0
-                      ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled>
-                        <span>
-                          <i className='la la-plus' />
+                        ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" disabled>
                           <span>
-                            Create New
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
                           </span>
-                        </span>
-                      </button>
-                      : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                        <span>
-                          <i className='la la-plus' />
+                          </span>
+                        </button>
+                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create">
                           <span>
-                            Create New
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
                           </span>
-                        </span>
-                      </button>
+                          </span>
+                        </button>
                     }
                   </div>
                 </div>
-                <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Create Poll</h3>
-                            <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
-                                  Create New Poll
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div style={{ display: 'block' }} className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Create Poll
+									            </h5>
+                        <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">
+                            &times;
+											          </span>
+                        </button>
+                      </div>
+                      <div style={{ color: 'black' }} className="modal-body">
+                        <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
+                        <div style={{ width: '100%', textAlign: 'center' }}>
+                          <div style={{ display: 'inline-block', padding: '5px' }}>
+                            <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                              Create New Poll
                                 </button>
-                              </div>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                                <Link to='/showTemplatePolls' className='btn btn-primary'>
-                                  Use Template
+                          </div>
+                          <div style={{ display: 'inline-block', padding: '5px' }}>
+                            {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                            <Link to='/showTemplatePolls' className='btn btn-primary'>
+                              Use Template
                                 </Link>
-                                {/* add paid plan check later
-                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                            {/* add paid plan check later
+                                  : <button data-toggle="modal" data-target="#upgrade" className='btn btn-primary'>
                                   Use Template&nbsp;&nbsp;&nbsp;
                                   <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                     <span style={{color: '#34bfa3'}}>PRO</span>
                                   </span>
                                 </button>
                               */}
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <h3>Delete Poll</h3>
-                            <p>Are you sure you want to delete this poll?</p>
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                let loadData = {}
-                                loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-
-                                this.props.deletePoll(this.state.deleteid, this.msg, loadData)
-                                this.closeDialogDelete()
-                              }}>Delete
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="subscriptionPermission" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div style={{ display: 'block' }} className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Delete Poll
+									            </h5>
+                        <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">
+                            &times;
+											          </span>
+                        </button>
+                      </div>
+                      <div style={{ color: 'black' }} className="modal-body">
+                        <p>Are you sure you want to delete this poll?</p>
+                        <button style={{ float: 'right' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            let loadData = {}
+                            loadData = { last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays }
+                            this.props.deletePoll(this.state.deleteid, this.msg, loadData)
+                            this.closeDialogDelete()
+                          }}
+                          data-dismiss='modal'>Delete
+                            </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
                   <div className='form-row'>
                     <div className='form-group col-md-6' />
-                    <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
-                      <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                    <div className='form-group col-md-6' style={{ display: 'flex', float: 'right' }}>
+                      <span style={{ marginLeft: '70px' }} htmlFor='example-text-input' className='col-form-label'>
                         Show records for last:&nbsp;&nbsp;
                       </span>
-                      <div style={{width: '200px'}}>
+                      <div style={{ width: '200px' }}>
                         <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
                       </div>
                       <span htmlFor='example-text-input' className='col-form-label'>
-                      &nbsp;&nbsp;days
+                        &nbsp;&nbsp;days
                       </span>
                     </div>
                   </div>
-                  { this.state.pollsData && this.state.pollsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='platform'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Platform</span>
-                          </th>
-                          <th data-field='statement'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Statement</span>
-                          </th>
-                          <th data-field='datetime'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Created At</span>
-                          </th>
-                          <th data-field='sent'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '50px'}}>Sent</span>
-                          </th>
-                          {/* <th data-field='seen'
+                  {this.state.pollsData && this.state.pollsData.length > 0
+                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{ height: '53px' }}>
+                            <th data-field='platform'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '100px' }}>Platform</span>
+                            </th>
+                            <th data-field='statement'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '150px' }}>Statement</span>
+                            </th>
+                            <th data-field='datetime'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '150px' }}>Created At</span>
+                            </th>
+                            <th data-field='sent'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '50px' }}>Sent</span>
+                            </th>
+                            {/* <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '50px'}}>Seen</span>
                           </th> */}
-                          <th data-field='responses'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Responses</span>
-                          </th>
-                          <th data-field='actions'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '200px'}}>Actions</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body'>
-                        {
-                        this.state.pollsData.map((poll, i) => (
-                          <tr data-row={i}
-                            className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px'}} key={i}>
-                            <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{poll.platform}</span></td>
-                            <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{poll.statement}</span></td>
-                            <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
-                            <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.sent}</span></td>
-                            {/* <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td> */}
-                            <td data-field='responses' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.responses}</span></td>
-                            <td data-field='actions' className='m-datatable__cell'>
-                              <span style={{width: '200px'}}>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoViewPoll(poll)}>
-                                  View
+                            <th data-field='responses'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '100px' }}>Responses</span>
+                            </th>
+                            <th data-field='actions'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{ width: '200px' }}>Actions</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body'>
+                          {
+                            this.state.pollsData.map((poll, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{ height: '55px' }} key={i}>
+                                <td data-field='platform' className='m-datatable__cell'><span style={{ width: '100px' }}>{poll.platform}</span></td>
+                                <td data-field='statement' className='m-datatable__cell'><span style={{ width: '150px' }}>{poll.statement}</span></td>
+                                <td data-field='datetime' className='m-datatable__cell'><span style={{ width: '150px' }}>{handleDate(poll.datetime)}</span></td>
+                                <td data-field='sent' className='m-datatable__cell'><span style={{ width: '50px' }}>{poll.sent}</span></td>
+                                {/* <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td> */}
+                                <td data-field='responses' className='m-datatable__cell'><span style={{ width: '50px' }}>{poll.responses}</span></td>
+                                <td data-field='actions' className='m-datatable__cell'>
+                                  <span style={{ width: '200px' }}>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{ float: 'left', margin: 2 }}
+                                      onClick={() => this.gotoViewPoll(poll)}>
+                                      View
                                 </button>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(poll)}>Report
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{ float: 'left', margin: 2 }}
+                                      onClick={() => this.gotoView(poll)}>Report
                                 </button>
-                                { this.props.subscribers && this.props.subscribers.length === 0
-                                ? <span style={{width: '150px'}}>
-                                  <button className='btn btn-sm' disabled
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.sendPoll(poll)}>
-                                    Send
+                                    {this.props.subscribers && this.props.subscribers.length === 0
+                                      ? <span style={{ width: '150px' }}>
+                                        <button className='btn btn-sm' disabled
+                                          style={{ float: 'left', margin: 2 }}
+                                          onClick={() => this.sendPoll(poll)}>
+                                          Send
                                   </button>
                                 </span>
                                 : <span style={{width: '150px'}}>
@@ -609,55 +633,55 @@ class Poll extends React.Component {
                                     onClick={() => this.savePoll(poll)}>
                                     Send
                                   </button>
-                                </span>
-                                }
-                                { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
-                                  ? <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.showDialogDelete(poll._id)}>
-                                  Delete
+                                      </span>
+                                    }
+                                    {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
+                                      ? <button className='btn btn-primary btn-sm'
+                                        style={{ float: 'left', margin: 2 }}
+                                        onClick={() => this.showDialogDelete(poll._id)}>
+                                        Delete
                               </button>
-                              : <div>
-                                {poll.sent === 0
-                                ? <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.showDialogDelete(poll._id)}>
-                                Delete
+                                      : <div>
+                                        {poll.sent === 0
+                                          ? <button className='btn btn-primary btn-sm'
+                                            style={{ float: 'left', margin: 2 }}
+                                            onClick={() => this.showDialogDelete(poll._id)}>
+                                            Delete
                             </button>
-                            : <button className='btn btn-primary btn-sm' disabled
-                              style={{float: 'left', margin: 2}}
-                              onClick={() => this.showDialogDelete(poll._id)}>
-                            Delete
+                                          : <button className='btn btn-primary btn-sm' disabled
+                                            style={{ float: 'left', margin: 2 }}
+                                            onClick={() => this.showDialogDelete(poll._id)}>
+                                            Delete
                             </button>
-                              }
-                              </div>
-                            }
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                        forcePage={this.state.pageNumber} />
+                                        }
+                                      </div>
+                                    }
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <div className='pagination'>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a href='#/'>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'}
+                          forcePage={this.state.pageNumber} />
+                      </div>
                     </div>
-                  </div>
-                  : <span>
-                    <p> No data to display </p>
-                  </span>
-                }
+                    : <span>
+                      <p> No data to display </p>
+                    </span>
+                  }
                 </div>
               </div>
             </div>
@@ -668,7 +692,7 @@ class Poll extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('poll state', state)
   return {
     pages: (state.pagesInfo.pages),
@@ -684,7 +708,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       loadPollsListNew: loadPollsListNew,

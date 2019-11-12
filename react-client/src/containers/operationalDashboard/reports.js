@@ -10,7 +10,7 @@ class Reports extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.week && this.state.selectedValue === '10 days') {
       this.setState({chartData: this.transformData(nextProps.week)})
     }
@@ -29,9 +29,11 @@ class Reports extends React.Component {
       })
       // Removing duplicate dates
       let temp = {}
-      transformed.reverse().map((item) => {
+      let newArr = transformed.reverse()
+      for (let a = 0; a < newArr.length; a++) {
+        let item = newArr[a]
         temp[item.date] = item
-      })
+      }
       transformed = Object.values(temp)
       return transformed
     } else {

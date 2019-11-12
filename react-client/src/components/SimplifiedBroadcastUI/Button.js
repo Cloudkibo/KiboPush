@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton, editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
@@ -75,7 +75,7 @@ class Button extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     let newState = {
       title: nextProps.tempButton
         ? nextProps.tempButton.title
@@ -344,7 +344,7 @@ class Button extends React.Component {
           action: 'set_custom_field',
           customFieldId: this.state.customFieldId,
           customFieldValue: this.state.customFieldValue
-        })        
+        })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
@@ -371,7 +371,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) || (this.state.customFieldId && this.state.customFieldValue) && event.target.value !== '') {
+    if (((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) || (this.state.customFieldId && this.state.customFieldValue)) && event.target.value !== '') {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false})
@@ -485,7 +485,7 @@ class Button extends React.Component {
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
-        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}>❌</div>
+        <div onClick={this.props.closeButton} style={{marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
         <div>
           <h6>Button Title:</h6>
           <input style={{borderColor: this.state.title === '' ? 'red' : ''}} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
@@ -563,7 +563,7 @@ class Button extends React.Component {
                         }
                       </select>
                       {
-                          this.state.customFieldId && 
+                          this.state.customFieldId &&
                           <div style={{marginTop: '25px'}}>
                               <input style={{borderColor: !this.state.customFieldValue ? 'red' : ''}} value={this.state.customFieldValue} onChange={(event) => this.updateCustomFieldValue(event)} placeholder='Enter value here...' className='form-control' />
                               <div style={{color: 'red', textAlign: 'left'}}>{!this.state.customFieldValue ? '*Required' : ''}</div>
@@ -594,7 +594,7 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
-                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank'>here.</a>
+                        Need help in understanding webview? click <a href='https://kibopush.com/webview/' target='_blank' rel='noopener noreferrer'>here.</a>
                       </div>
                       <div>
                         <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>

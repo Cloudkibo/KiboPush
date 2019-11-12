@@ -64,7 +64,7 @@ class ChatBox extends React.Component {
     this.scrollToBottom()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.chat && nextProps.chat.length > 0) {
       console.log('demoSSA responses', nextProps.chat)
       this.scrollToBottom()
@@ -106,7 +106,7 @@ class ChatBox extends React.Component {
                       <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
-                      <a onClick={this.sendMessage} className='m-messenger__form-attachment'>
+                      <a href='#/' onClick={this.sendMessage} className='m-messenger__form-attachment'>
                         <i className='flaticon-paper-plane' />
                       </a>
                     </div>

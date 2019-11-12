@@ -13,10 +13,9 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import { checkConditions } from '../polls/utility'
 import {loadTags} from '../../redux/actions/tags.actions'
@@ -38,11 +37,8 @@ class Survey extends React.Component {
       surveysData: [],
       totalLength: 0,
       sent: false,
-      isShowingModal: false,
-      isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      isShowingModalDelete: false,
       deleteid: '',
       selectedDays: '0',
       pageNumber: 0,
@@ -53,17 +49,10 @@ class Survey extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
-    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.sendSurvey = this.sendSurvey.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
     this.saveSurvey = this.saveSurvey.bind(this)
@@ -102,36 +91,13 @@ class Survey extends React.Component {
     document.title = `${title} | Survey`
     this.props.saveSurveyInformation(undefined)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.loadSubscribersList()
     this.props.loadTags()
   }
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  showZeroSubDialog () {
-    this.setState({isShowingZeroModal: true})
-  }
-
-  closeZeroSubDialog () {
-    this.setState({isShowingZeroModal: false})
-  }
-
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
-  }
-
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
-  }
 
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -192,7 +158,7 @@ class Survey extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -215,6 +181,11 @@ class Survey extends React.Component {
         alertType: ''
       })
     }
+    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+    (nextProps.pages && nextProps.pages.length === 0))
+  ) {
+    this.refs.zeroModal.click()
+  }
   }
 
   showAlert (message, type) {
@@ -231,15 +202,10 @@ class Survey extends React.Component {
     })
   }
   showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})
   }
-
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false, pageNumber: 0 })
-  }
   gotoCreate () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/addsurvey`
     })
   }
@@ -274,76 +240,98 @@ class Survey extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Survey Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='bizOCjXE6tM'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-              />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
-                    Upgrade to Pro
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeZeroSubDialog}>
-            <ModalDialog style={{width: '700px', top: '75px'}}
-              onClose={this.closeZeroSubDialog}>
-              {(this.props.pages && this.props.pages.length === 0)
-              ? <AlertMessageModal type='page' />
-            : <AlertMessageModal type='subscriber' />
-            }
-              <div>
-                <YouTube
-                  videoId='9kY3Fmj_tbM'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: {
                       autoplay: 0
                     }
                   }}
-                />
+              />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Upgrade to Pro
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                  </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                {(this.props.pages && this.props.pages.length === 0)
+                  ? <AlertMessageModal type='page' />
+                  : <AlertMessageModal type='subscriber' />
+                }
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  <YouTube
+                    videoId='9kY3Fmj_tbM'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)', paddingTop:'150px' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Send Survey 
+                  Send Survey
 								</h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
@@ -355,7 +343,7 @@ class Survey extends React.Component {
               <span
                 className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
                 style={{marginLeft: '10px'}}>
-                This Survey will be sent to {this.state.subscriberCount} subscriber(s). 
+                This Survey will be sent to {this.state.subscriberCount} subscriber(s).
               { this.state.subscriberCount === 0 &&
               <div>
                 <br/>
@@ -402,8 +390,8 @@ class Survey extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding surveys? Here is the <a href='http://kibopush.com/surveys/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding surveys? Here is the <a href='https://kibopush.com/surveys/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -422,7 +410,7 @@ class Survey extends React.Component {
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.subscribers && this.props.subscribers.length === 0
-                      ? <a href='#'>
+                      ? <a href='#/'>
                         <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                           <span>
                             <i className='la la-plus' />
@@ -432,7 +420,7 @@ class Survey extends React.Component {
                           </span>
                         </button>
                       </a>
-                      : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                      : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#createSurvey">
                         <span>
                           <i className='la la-plus' />
                           <span>
@@ -443,62 +431,79 @@ class Survey extends React.Component {
                       }
                   </div>
                 </div>
-
-                <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Create Survey</h3>
-                            <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
-                                  Create New Survey
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="createSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div style={{ display: 'block' }} className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Create Survey
+									            </h5>
+                        <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">
+                            &times;
+											          </span>
+                        </button>
+                      </div>
+                      <div style={{ color: 'black' }} className="modal-body">
+                        <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
+                        <div style={{ width: '100%', textAlign: 'center' }}>
+                          <div style={{ display: 'inline-block', padding: '5px' }}>
+                            <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                              Create New Survey
                                 </button>
-                              </div>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                                <Link to='/showTemplateSurveys' className='btn btn-primary'>
-                                  Use Template
+                          </div>
+                          <div style={{ display: 'inline-block', padding: '5px' }}>
+                            {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                            <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                              Use Template
                                 </Link>
-                                {/*: <button onClick={this.showProDialog} className='btn btn-primary'>
+                            {/*: <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>
                                     </span>
                                   </button>
                                 */}
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <h3>Delete Survey</h3>
-                            <p>Are you sure you want to delete this survey?</p>
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                let loadData = {}
-                                loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
-                                this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
-                                this.closeDialogDelete()
-                              }}>Delete
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div style={{ display: 'block' }} className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Delete Survey
+                        </h5>
+                        <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">
+                            &times;
+                          </span>
+                        </button>
+                      </div>
+                      <div style={{ color: 'black' }} className="modal-body">
+                        <p>Are you sure you want to delete this survey?</p>
+                        <button style={{ float: 'right' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            let loadData = {}
+                            loadData = { last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays }
+                            this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
+                          }}
+                          data-dismiss='modal'>Delete
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='m-portlet__body'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                     </div>
                   </div>
                   <div className='form-row'>
@@ -577,7 +582,8 @@ class Survey extends React.Component {
                         } { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                           ? <button className='btn btn-primary btn-sm'
                             style={{float: 'left', margin: 2}}
-                            onClick={() => this.showDialogDelete(survey._id)}>
+                            onClick={() => this.showDialogDelete(survey._id)}
+                            data-toggle="modal" data-target="#deleteSurvey">
                           Delete
                       </button>
                       : <div>
@@ -605,7 +611,7 @@ class Survey extends React.Component {
                     <ReactPaginate
                       previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={2}

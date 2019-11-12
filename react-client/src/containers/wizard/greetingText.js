@@ -7,9 +7,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Popover from 'react-simple-popover'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from '../settings/viewScreen'
@@ -60,7 +59,7 @@ class GreetingMessage extends React.Component {
     props.loadMyPagesList()
   }
   redirectToInviteSub () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/inviteUsingLinkWizard',
       state: 'history'
     })
@@ -168,7 +167,7 @@ class GreetingMessage extends React.Component {
       this.setState({showEmojiPicker: false})
     }
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
   }
   componentDidMount () {
     this.selectPage()
@@ -195,7 +194,7 @@ class GreetingMessage extends React.Component {
       })
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.greetingMessage) {
       this.setState({greetingMessage: nextProps.greetingMessage.greetingText})
       for (var i = 0; i < nextProps.pages.length; i++) {
@@ -252,23 +251,31 @@ class GreetingMessage extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </Popover>
-          {
-            this.state.showPreview &&
-            <ModalContainer style={{top: '100px'}}
-              onClose={this.closePreviewDialog}>
-              <ModalDialog style={{top: '100px'}}
-                onClose={this.closePreviewDialog}>
-                <h3>Greeting Message Preview</h3>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Greeting Text Preview
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
-              </ModalDialog>
-            </ModalContainer>
-          }
+                </div>
+              </div>
+            </div>
+          </div>
           <div className='m-content'>
             <div className='m-portlet m-portlet--full-height'>
               <div className='m-portlet__body m-portlet__body--no-padding'>
                 <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                   <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                    <Sidebar step='2' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
+                    <Sidebar history={this.props.history} step='2' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                     <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                       <div className='m-portlet__head'>
                         <div className='m-portlet__head-caption'>
@@ -349,7 +356,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-9' />
                           <div className='col-3 form-group m-form__group row' style={{ marginLeft: '-45px' }}>
                             <div>
-                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <a href='#/' className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                               {
                                 this.state.greetingMessage.length > 0
                                   ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
@@ -363,7 +370,7 @@ class GreetingMessage extends React.Component {
                       <div className='col-9' />
                       {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                              <div>
-                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <a href='#/' className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </a>
                               <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                             </div>
                           </div> */}
@@ -371,12 +378,12 @@ class GreetingMessage extends React.Component {
                         <div className='m-form__actions'>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              <Link onClick={() => this.redirectToInviteSub()} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <a href='#/' onClick={() => this.redirectToInviteSub()} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                 <span>
                                   <i className='la la-arrow-left' />
                                   <span>Back</span>&nbsp;&nbsp;
                                 </span>
-                              </Link>
+                              </a>
                             </div>
                             <div className='col-lg-6 m--align-right'>
                               <Link to='/welcomeMessageWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>

@@ -7,11 +7,10 @@ import Sidebar from './sidebar'
 import Header from './header'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl } from '../menu/utility'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from '../menu/viewScreen'
 import { registerAction } from '../../utility/socketio'
 import swal from 'sweetalert2'
@@ -91,7 +90,7 @@ class Menu extends React.Component {
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/dashboard`
       })
     })
@@ -102,7 +101,7 @@ class Menu extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pages) {
       var myPages = []
       nextProps.pages.map((page) => {
@@ -479,27 +478,28 @@ class Menu extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='2I7qnG03zVs'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Persistent Menu Preview
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              <div style={{ color: 'black' }} className="modal-body">
+                {!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
+                  ? <div><ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
+                  : <div><ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
@@ -507,7 +507,7 @@ class Menu extends React.Component {
                 <div className='m-portlet__body m-portlet__body--no-padding'>
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='6' />
+                      <Sidebar history={this.props.history} step='6' />
                       <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>
@@ -543,20 +543,7 @@ class Menu extends React.Component {
                           <div className='row align-items-center'>
                             <div className='col-xl-8 order-2 order-xl-1' />
                             <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                              {
-                                this.state.isShowingModal &&
-                                <ModalContainer style={{top: '100px'}}
-                                  onClose={this.closeDialog}>
-                                  <ModalDialog style={{top: '100px'}}
-                                    onClose={this.closeDialog}>
-                                    <h3>Persistent Menu Preview</h3>
-                                    { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
-                                        ? <div><ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
-                                      : <div><ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
-                                    }
-                                  </ModalDialog>
-                                </ModalContainer>
-                              }
+
                             </div>
                           </div>
                           <br /><br /><br />
@@ -733,10 +720,10 @@ class Menu extends React.Component {
                             <div className='col-lg-6 m--align-left' />
                             <div className='col-lg-6 m--align-right'>
                               { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
-                                ? <button onClick={this.showDialog} className='btn btn-primary' style={{'marginRight': '20px'}} disabled>
+                                ? <button onClick={this.showDialog} data-toggle="modal" data-target="#preview" className='btn btn-primary' style={{'marginRight': '20px'}} disabled>
                                   Preview
                                 </button>
-                                : <button onClick={this.showDialog} className='btn btn-primary' style={{'marginRight': '20px'}}>
+                                : <button onClick={this.showDialog} data-toggle="modal" data-target="#preview" className='btn btn-primary' style={{'marginRight': '20px'}}>
                                   Preview
                                 </button>
                               }

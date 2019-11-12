@@ -39,7 +39,7 @@ class NonSubscribersList extends React.Component {
     document.title = `${title} | Non Subscribers List`;
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.nonSubscribersNumbers) {
       this.displayData(0, nextProps.nonSubscribersNumbers)
       this.setState({ totalLength: nextProps.nonSubscribersNumbers.length })
@@ -199,7 +199,7 @@ class NonSubscribersList extends React.Component {
                 </table>
                 <ReactPaginate previousLabel={'previous'}
                   nextLabel={'next'}
-                  breakLabel={<a>...</a>}
+                  breakLabel={<a href='#/'>...</a>}
                   breakClassName={'break-me'}
                   pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}

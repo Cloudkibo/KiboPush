@@ -1,6 +1,5 @@
 import React from 'react'
 import Button from './Button'
-import { throws } from 'assert';
 
 class AddButton extends React.Component {
   constructor (props) {
@@ -36,7 +35,7 @@ class AddButton extends React.Component {
     console.log('AddButton constructor props', this.props)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
       if (nextProps.finalButtons.length > 0 && nextProps.finalButtons[0] && !nextProps.finalButtons[0].type) {
         let buttons = []
         for (let i = 0; i < nextProps.buttonLimit; i++) {
@@ -81,7 +80,7 @@ class AddButton extends React.Component {
     for (let i = 0; i < this.state.buttons.length; i++) {
       if (!this.state.buttons[i].visible) {
         buttons[i].visible = true
-        this.setState({buttons, numOfCurrentButtons: ++this.state.numOfCurrentButtons}, () => {
+        this.setState({buttons, numOfCurrentButtons: this.state.numOfCurrentButtons + 1}, () => {
           this.checkInvalidButtons()
         })
         this.props.updateButtonStatus({buttons})
@@ -96,7 +95,7 @@ class AddButton extends React.Component {
     buttons[index].title = ``
     this.finalButtons[index] = null
     this.buttonComponents[index] = null
-    this.setState({buttons, numOfCurrentButtons: --this.state.numOfCurrentButtons}, () => {
+    this.setState({buttons, numOfCurrentButtons: this.state.numOfCurrentButtons - 1}, () => {
       this.checkInvalidButtons()
     })
     this.props.updateButtonStatus({buttons})
@@ -180,9 +179,8 @@ class AddButton extends React.Component {
       <div>
         <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
         {
-            this.state.buttons.map((button, index) => {
-              if (button.visible) {
-                return (
+            this.state.buttons.map((button, index) => (
+              button.visible && (
                   <Button
                     cardId={this.props.cardId}
                     scrollTo={!this.finalButtons[index] && visibleButtons.length-1 === index}
@@ -204,17 +202,16 @@ class AddButton extends React.Component {
                     disabled={this.props.disabled}
                     />
                 )
-              }
-            })
+            ))
         }
         {
-            (this.state.numOfCurrentButtons < this.props.buttonLimit) && 
+            (this.state.numOfCurrentButtons < this.props.buttonLimit) &&
             <div>
-              <div className='ui-block hoverborder' 
-                style={{minHeight: '30px', 
-                  width: '100%', 
-                  marginLeft: '0px', 
-                  borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}} 
+              <div className='ui-block hoverborder'
+                style={{minHeight: '30px',
+                  width: '100%',
+                  marginLeft: '0px',
+                  borderColor: this.props.required && visibleButtons.length === 0 ? 'red' : ''}}
                   onClick={this.addButton}>
                 <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
                   <h6> + Add Button </h6>

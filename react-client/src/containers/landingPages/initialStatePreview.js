@@ -58,7 +58,7 @@ class PreviewInitialSate extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.fbAppId && this.state.loadScript) {
       this.loadsdk(nextProps.fbAppId)
     }

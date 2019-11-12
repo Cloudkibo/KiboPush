@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { UncontrolledTooltip } from 'reactstrap'
 import PropTypes from 'prop-types'
 
@@ -14,7 +12,7 @@ class MessageTemplate extends React.Component {
     super(props, context)
     this.state = {
       templateMessage: 'Your {{1}} appointment is coming up on {{2}}',
-      selectedRadio: 'appointmentReminders', 
+      selectedRadio: 'appointmentReminders',
       isTemplateValid: true
     }
     this.resetTemplate = this.resetTemplate.bind(this)
@@ -30,7 +28,7 @@ class MessageTemplate extends React.Component {
       isTemplateValid: true
     })
      /* eslint-disable */
-     $('#templateText').removeClass('border border-danger') 
+     $('#templateText').removeClass('border border-danger')
      /* eslint-enable */
   }
   validateTemplate(msg) {
@@ -49,16 +47,16 @@ class MessageTemplate extends React.Component {
     }
     if (!isValid) {
       /* eslint-disable */
-      $('#templateText').addClass('border border-danger')  
+      $('#templateText').addClass('border border-danger')
       /* eslint-enable */
     } else {
       /* eslint-disable */
       $('#templateText').removeClass('border border-danger')
-      /* eslint-enable */ 
+      /* eslint-enable */
     }
     this.setState({
       isTemplateValid: isValid
-    }) 
+    })
   }
   onTextChange (e) {
     this.setState({
@@ -71,11 +69,11 @@ class MessageTemplate extends React.Component {
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    if (e.currentTarget.value == 'appointmentReminders') {
+    if (e.currentTarget.value === 'appointmentReminders') {
       textValue = 'Your {{1}} appointment is coming up on {{2}}'
-    } else if (e.currentTarget.value == 'orderNotification') {
+    } else if (e.currentTarget.value === 'orderNotification') {
       textValue = 'Your {{1}} order of {{2}} has shipped and should be delivered on {{3}}. Details : {{4}}'
-    } else if (e.currentTarget.value == 'verificationCodes') {
+    } else if (e.currentTarget.value === 'verificationCodes') {
       textValue = 'Your {{1}} code is {{2}}'
     }
     this.setState({
@@ -83,13 +81,13 @@ class MessageTemplate extends React.Component {
       isTemplateValid: true
     })
     /* eslint-disable */
-    $('#templateText').removeClass('border border-danger') 
+    $('#templateText').removeClass('border border-danger')
     /* eslint-enable */
   }
 
   render () {
     return (
-      <div> 
+      <div>
         <h3>Message templates</h3>
         <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
         <div>
@@ -124,8 +122,8 @@ class MessageTemplate extends React.Component {
             </div>
           </div>
           <div style={{textAlign: 'center', display: 'flex'}}>
-            <textarea id='templateText' onChange={this.onTextChange} value={this.state.templateMessage} className='form-control'  className='m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} rows='5' maxLength='200' />
-            { !this.state.isTemplateValid && 
+            <textarea id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} rows='5' maxLength='200' />
+            { !this.state.isTemplateValid &&
             <div style={{marginTop: '25px', marginLeft: '5px'}}>
               <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
                 <span>Message template format cannot be changed</span>
@@ -133,7 +131,7 @@ class MessageTemplate extends React.Component {
               <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
             </div>
             }
-            
+
           </div>
           <p>Each variable 'x' can be replaced with the text that contains letters, digits, special characters or spaces</p>
         </div>
@@ -164,4 +162,3 @@ MessageTemplate.propTypes = {
   'closeTemplates': PropTypes.func.isRequired
 }
 export default MessageTemplate
-

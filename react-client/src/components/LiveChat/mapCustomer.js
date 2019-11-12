@@ -22,11 +22,11 @@ class MapCustomer extends React.Component {
     this.attachCustomer = this.attachCustomer.bind(this)
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getCustomers()
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.customers) {
       let temp = []
       for (let i = 0; i < nextProps.customers.length; i++) {

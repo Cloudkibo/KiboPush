@@ -8,7 +8,7 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
 var json2csv = require('json2csv')
@@ -62,32 +62,11 @@ class ListDetails extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.listDetail) {
       this.displayData(0, nextProps.listDetail)
       this.setState({ totalLength: nextProps.listDetail.length })
     }
-  }
-
-
-  prepareExportData () {
-    var data = []
-    var subscriberObj = {}
-    for (var i = 0; i < this.state.subscribersData.length; i++) {
-      var subscriber = this.state.subscribersData[i]
-      subscriberObj = {
-        'Profile Picture': subscriber.profilePic,
-        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
-        'Page': subscriber.pageId.pageName,
-        'PhoneNumber': subscriber.phoneNumber,
-        'Email': subscriber.email,
-        'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
-        'Locale': subscriber.locale,
-        'Gender': subscriber.gender
-      }
-      data.push(subscriberObj)
-    }
-    return data
   }
 
   handlePageClick (data) {
@@ -283,7 +262,7 @@ class ListDetails extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(this.state.totalLength / 4)}
                           marginPagesDisplayed={1}

@@ -4,7 +4,6 @@ import { loadSurveysByDays, saveSurveyInformation } from '../../redux/actions/ba
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { browserHistory } from 'react-router'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 const moment = extendMoment(Moment)
@@ -80,8 +79,8 @@ class SurveysInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in surveys', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in surveys', nextProps)
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -144,7 +143,8 @@ class SurveysInfo extends React.Component {
   filterByDays (val) {
     var data = []
     var index = 0
-    this.props.surveys.map((survey) => {
+    for(let a = 0; a <this.props.surveys.length; a++){
+      let survey = this.props.surveys[a]
       let surveyDate = moment(survey.datetime, 'YYYY-MM-DD')
       const end = moment(moment(), 'YYYY-MM-DD')
       const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
@@ -153,12 +153,12 @@ class SurveysInfo extends React.Component {
         data[index] = survey
         index = index + 1
       }
-    })
+    }
     this.displayData(0, data)
     this.setState({ totalLength: data.length })
   }
   onSurveyClick (survey) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/surveyDetails`,
       state: {_id: survey._id, data: survey}
     })
@@ -183,7 +183,7 @@ class SurveysInfo extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
                   <li className='m-portlet__nav-item'>
-                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                    <a href='#/' data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
                       {this.state.showSurveys
                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
@@ -296,7 +296,7 @@ class SurveysInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

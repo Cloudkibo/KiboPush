@@ -13,8 +13,7 @@ import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from 
 import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import Halogen from 'halogen'
-import { browserHistory, Link } from 'react-router'
+import { RingLoader } from 'halogenium'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -28,16 +27,16 @@ class Dashboard extends React.Component {
     this.prepareChartData = this.prepareChartData.bind(this)
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.loadCardBoxesDataSms()
     this.props.loadSentSeenSms({days: 30})
     this.props.loadSubscriberSummarySms({days: 'all'})
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio && nextprops.user.role === 'buyer') {
-        browserHistory.push({
+        this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
         })
@@ -133,11 +132,11 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {this.state.loading
-          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <div className='row'>
               <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='sms' />

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react'
 
 function IconPurchase ({ color }) {
@@ -11,7 +12,7 @@ function IconPurchase ({ color }) {
 }
 
 IconPurchase.propTypes = {
-  color: React.PropTypes.string
+  color: PropTypes.string
 }
 
 IconPurchase.defaultProps = {

@@ -6,7 +6,7 @@ import AlertContainer from 'react-alert'
 import { saveResponseMethod, findResponseMethod } from '../../redux/actions/settings.actions'
 import Sidebar from './sidebar'
 import Header from './header'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class AutomationControls extends React.Component {
   constructor (props, context) {
@@ -33,7 +33,7 @@ class AutomationControls extends React.Component {
 
     document.title = `${title} | Response Methods`
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateResponseMethod(nextProps.responseMethod)
   }
   updateResponseMethod (responseMethod) {
@@ -93,7 +93,7 @@ class AutomationControls extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='6' isBuyer={this.props.user.role === 'buyer'} user={this.props.user} stepNumber={4} />
+                  <Sidebar history={this.props.history} step='6' isBuyer={this.props.user.role === 'buyer'} user={this.props.user} stepNumber={4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>

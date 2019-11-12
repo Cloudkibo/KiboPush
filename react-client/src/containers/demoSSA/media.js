@@ -22,7 +22,7 @@ class Media extends React.Component {
             this.props.buttons && this.props.buttons.length > 1 &&
             this.props.buttons.map((b, i) => (
               i > 0 &&
-              <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+              <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
                 {b.title}
               </a>
             ))

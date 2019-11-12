@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router'
 
 class ListItem extends React.Component {
   render () {
@@ -48,23 +47,23 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-label'>
                 Subscription URL:&nbsp;
               </span>
-              <a href={this.props.item.subscriptionUrl} target='_blank' className='m-widget5__info-date m--font-info'>
+              <a href={this.props.item.subscriptionUrl} target='_blank' rel='noopener noreferrer' className='m-widget5__info-date m--font-info'>
                 {this.props.item.subscriptionUrl}
               </a>
               <br />
               <span className='m-widget5__info-date m--font-info'>
-                <Link onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <button data-toggle="modal" data-target="#deleteFeed" onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-remove' />&nbsp;&nbsp;
-                </Link>
+                </button>
               </span>
               <span className='m-widget5__info-date m--font-info'>
                 &nbsp;&nbsp;
               </span>
               {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
-                <Link onClick={() => this.props.openSettings(item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <button onClick={() => this.props.openSettings(item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-gear' />
-                </Link>
+                </button>
               </span>
               }
               <span className='m-widget5__info-date m--font-info'>
@@ -72,9 +71,9 @@ class ListItem extends React.Component {
               </span>
               {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
-                <Link onClick={() => this.props.gotoMessages(this.props.item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <button onClick={() => this.props.gotoMessages(this.props.item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-envelope' />
-                </Link>
+                </button>
               </span>
               }
               <span className='m-widget5__info-date m--font-info'>
@@ -82,9 +81,9 @@ class ListItem extends React.Component {
               </span>
               {this.props.type === 'wordpress' &&
               <span className='m-widget5__info-date m--font-info'>
-                <Link style={{color: '#36a3f7'}} onClick={() => this.props.openGuidelines()} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--pill m-btn--air'>
+                <button style={{color: '#36a3f7'}} onClick={() => this.props.openGuidelines()} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--pill m-btn--air'>
                   View Integration Guideliness
-                </Link>
+                </button>
               </span>
               }
             </div>

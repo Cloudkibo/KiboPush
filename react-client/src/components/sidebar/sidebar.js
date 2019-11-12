@@ -4,7 +4,7 @@
  */
 
 import React, {Component} from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -56,7 +56,7 @@ class Sidebar extends Component {
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     let url = window.location.hostname
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
@@ -87,7 +87,7 @@ class Sidebar extends Component {
     this.setState({isShowingModal: false})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
 
    /* if (nextProps.user) {
@@ -205,7 +205,7 @@ class Sidebar extends Component {
     if (!this.state.isKiboChat && !this.state.isKiboLite) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a className='m-menu__link m-menu__toggle'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
             <span className='m-menu__link-text'>Broadcasting</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -214,7 +214,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a className='m-menu__link'>
+                <a href='#/' className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Broadcasting
                   </span>
@@ -260,7 +260,7 @@ class Sidebar extends Component {
     if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a className='m-menu__link m-menu__toggle'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-share' title='Automation' />
             <span className='m-menu__link-text'>Automation</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -269,7 +269,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a className='m-menu__link'>
+                <a href='#/' className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Automation
                   </span>
@@ -293,7 +293,7 @@ class Sidebar extends Component {
     if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a className='m-menu__link m-menu__toggle'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
             <span className='m-menu__link-text'>Growth Tools</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -302,7 +302,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a className='m-menu__link'>
+                <a href='#/' className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Growth Tools
                   </span>
@@ -330,7 +330,7 @@ class Sidebar extends Component {
     if (this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a className='m-menu__link m-menu__toggle'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
             <span className='m-menu__link-text'>Manage Pages</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -339,7 +339,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a className='m-menu__link'>
+                <a href='#/' className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Manage Pages
                   </span>
@@ -360,7 +360,7 @@ class Sidebar extends Component {
     if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a className='m-menu__link m-menu__toggle'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-share' title='Organization' />
             <span className='m-menu__link-text'>Organization</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -369,7 +369,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a className='m-menu__link'>
+                <a href='#/' className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Organization
                   </span>
@@ -402,7 +402,7 @@ class Sidebar extends Component {
     if (this.state.settings) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+          <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-info' title='User Guide' />
             <span className='m-menu__link-text'>User Guide</span>
           </a>
@@ -814,7 +814,7 @@ class Sidebar extends Component {
   showHTMLWidget () {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
-        <a href='' className='m-menu__link'>
+        <a href='#/' className='m-menu__link'>
           <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
             <span />
           </i>
@@ -829,7 +829,7 @@ class Sidebar extends Component {
   showKiboPushWidget () {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
-        <a href='' className='m-menu__link'>
+        <a href='#/' className='m-menu__link'>
           <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
             <span />
           </i>
@@ -1024,7 +1024,7 @@ class Sidebar extends Component {
     console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
-      browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
       <div id='sidebarDiv'>

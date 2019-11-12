@@ -4,12 +4,9 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import AlertContainer from 'react-alert'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
-import Analytics from './analytics'
-import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 
 class AbandonedList extends React.Component {
@@ -34,7 +31,7 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
-  componentWillReceiveProps(nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('nextprops', nextprops.abandonedList)
   }
 
@@ -51,13 +48,6 @@ class AbandonedList extends React.Component {
   }
 
   render() {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div className='row'>
         <div className='col-xl-12'>
@@ -120,7 +110,7 @@ class AbandonedList extends React.Component {
                   <div className='pagination'>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil((this.props.abandonedList) ? this.props.abandonedList.length / 10 : 1)}
                       marginPagesDisplayed={2}
@@ -189,7 +179,7 @@ class AbandonedList extends React.Component {
                             <div>
                               <span style={{ fontWeight: 600 }}>Abandoned Checkout URL:</span>
                               <br />
-                              <span><a href={this.state.order.abandonedCheckoutUrl} target='_blank' style={{ cursor: 'pointer' }}>Click here</a></span>
+                              <span><a href={this.state.order.abandonedCheckoutUrl} target='_blank' rel='noopener noreferrer' style={{ cursor: 'pointer' }}>Click here</a></span>
                             </div>
                           </div>
                           <div className='col-md-6'>

@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
 import Select from 'react-select'
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
+import {Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
 
 class SequencePopover extends React.Component {
@@ -17,7 +16,7 @@ class SequencePopover extends React.Component {
             sequenceOptions: [],
             mappedSequence: false,
             mappedSequenceUnsub: false,
-            actionButtonSize: this.props.questionNumber == undefined ? ' btn-sm' : ' btn-xs',
+            actionButtonSize: this.props.questionNumber === undefined ? ' btn-sm' : ' btn-xs',
             isActionSaved:false
         }
 
@@ -32,7 +31,6 @@ class SequencePopover extends React.Component {
 
 componentDidMount() {
     let sequenceOptions = []
-    let unsubSequenceOptions = []
     for (let a = 0; a < this.props.sequences.length; a++) {
         sequenceOptions.push({ 'value': this.props.sequences[a].sequence._id, 'label': this.props.sequences[a].sequence.name })
     }
@@ -168,7 +166,7 @@ componentDidMount() {
                     <button style={{ float: 'right', margin: '3px' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                        if(this.props.questionNumber != undefined){ //survey
+                        if(this.props.questionNumber !== undefined){ //survey
                             if(this.state.isSubscribe){
                                 if(this.state.sequenceValue !== ''){
                                     this.props.onSave(this.state.sequenceValue,'subscribe',this.props.questionNumber, this.state.optionNumber)

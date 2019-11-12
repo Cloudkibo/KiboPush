@@ -107,7 +107,7 @@ class ResetPassword extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
   render () {
     var alertOptions = {

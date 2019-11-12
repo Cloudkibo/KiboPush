@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 //  import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -14,15 +13,15 @@ class OptInActions extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-           
+
         }
         this.editMessage = this.editMessage.bind(this)
     }
     componentDidMount() {
-       
+
     }
     editMessage() {
-        browserHistory.push({
+        this.props.history.push({
             pathname: `/editMessageCodeMessage`,
             state: { module: this.props.module, selectedMessengerCode: this.props.messengerCode }
         })
@@ -35,14 +34,14 @@ class OptInActions extends React.Component {
                             <span>Opt-In Message: </span>
                             <div className='menuDiv m-input-icon m-input-icon--right' style={{ marginTop: '10px' }}>
                                 <input onClick={this.editMessage} readOnly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
-                                <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='javascript:;'>
+                                <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
                                     <i className='fa fa-edit' />
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                        <Preview />
+                        <Preview history={this.props.history} location={this.props.location} />
                     </div>
             </div>
         )

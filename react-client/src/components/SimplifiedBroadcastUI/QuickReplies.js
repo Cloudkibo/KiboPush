@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import CustomFields from '../customFields/customfields'
@@ -79,9 +79,9 @@ class QuickReplies extends React.Component {
       console.log('editQuickReply index', index)
       console.log('quickReplies', this.state.quickReplies)
       this.setState({
-        addingQuickReply: true, 
-        currentActions: JSON.parse(this.state.quickReplies[index].payload), 
-        currentTitle: this.state.quickReplies[index].title, 
+        addingQuickReply: true,
+        currentActions: JSON.parse(this.state.quickReplies[index].payload),
+        currentTitle: this.state.quickReplies[index].title,
         image_url: this.state.quickReplies[index].image_url,
         index: index
     })
@@ -127,7 +127,7 @@ class QuickReplies extends React.Component {
       } else {
         quickReplies.push(quickReply)
       }
-      
+
       this.setState({quickReplies, index: -1, addingQuickReply: false}, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies)
@@ -146,7 +146,7 @@ class QuickReplies extends React.Component {
         this.props.uploadImage(file, undefined, 'image', {}, this.handleImage)
       }
     }
-  
+
     handleImage (fileInfo) {
         console.log('finished uploading file', fileInfo)
         this.setState({image_url: fileInfo.image_url, loading: false})
@@ -182,7 +182,7 @@ class QuickReplies extends React.Component {
     let currentActions = this.state.currentActions
     currentActions[index].sequenceId = event.target.value
     this.setState({currentActions})
-  } 
+  }
 
   updateTemplate (event, index) {
     let currentActions = this.state.currentActions
@@ -233,7 +233,7 @@ class QuickReplies extends React.Component {
                     <option value={'Message 2'}>{'Message 2'}</option>
                     <option value={'Message 3'}>{'Message 3'}</option> */}
                 </select>
-                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].templateId ? '*Required' : ''}</div>                                    
+                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].templateId ? '*Required' : ''}</div>
             </div>
         )
     } else if (action.includes('tag')) {
@@ -252,7 +252,7 @@ class QuickReplies extends React.Component {
                     <option value={'Tag 2'}>{'Tag 2'}</option>
                     <option value={'Tag 3'}>{'Tag 3'}</option>                                     */}
                 </select>
-                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].tagId ? '*Required' : ''}</div>                                    
+                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].tagId ? '*Required' : ''}</div>
             </div>
         )
     } else if (action.includes('custom')) {
@@ -272,7 +272,7 @@ class QuickReplies extends React.Component {
                     <option value={'Custom Field 3'}>{'Custom Field 3'}</option>                                     */}
                 </select>
                 {
-                    this.state.currentActions[index].customFieldId && 
+                    this.state.currentActions[index].customFieldId &&
                     <div style={{marginTop: '25px'}}>
                         <input style={{borderColor: !this.state.currentActions[index].customFieldValue ? 'red' : ''}} value={this.state.currentActions[index].customFieldValue} onChange={(event) => this.updateCustomFieldValue(event, index)} placeholder='Enter value here...' className='form-control' />
                         <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].customFieldValue ? '*Required' : ''}</div>
@@ -343,9 +343,9 @@ class QuickReplies extends React.Component {
         afterChange: this.slideIndexChange
     };
     return (
-        <div className='no-drag'>   
+        <div className='no-drag'>
             <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
-            {this.state.quickReplies.length > 0 && 
+            {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>
                     <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
                         {
@@ -356,16 +356,16 @@ class QuickReplies extends React.Component {
                                         <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
                                             {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
                                         </button>
-    
+
                                         {
-                                            (index+1) < this.state.quickReplies.length && 
+                                            (index+1) < this.state.quickReplies.length &&
                                             <button onClick={() => this.editQuickReply(index+1)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
                                                 {this.state.quickReplies[index+1].title}
                                             </button>
                                         }
-    
+
                                         {
-                                            (index+2) < this.state.quickReplies.length && 
+                                            (index+2) < this.state.quickReplies.length &&
                                             <button onClick={() => this.editQuickReply(index+2)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
                                                 {this.state.quickReplies[index+2].title}
                                             </button>
@@ -388,13 +388,13 @@ class QuickReplies extends React.Component {
             <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply'>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
-                    <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}>❌</div>
+                    <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
                         <div style={{marginBottom: '20px', maxHeight: '100px'}} className='row'>
                             <div className='col-4'>
                                 <div onClick={this.clickFile} className='ui-block hoverbordercomponent' style={{height: '75px', width: '75px', borderRadius: '50%', display: 'inline-block'}}>
                                     {
                                     this.state.loading
-                                    ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+                                    ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
                                     : <div>
                                         <input
                                         ref={el => { this.file = el }}
@@ -500,23 +500,23 @@ class QuickReplies extends React.Component {
                                 </div>
                             </PopoverBody>
                         </Popover>
-                        
+
                         <div style={{marginBottom: '10px', marginTop: '20px'}}>
                             <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
                             </button>
-                            
+
                             <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary'>
                                 Save
                             </button>
 
                         </div>
-                    
+
                     </div>
                 </PopoverBody>
             </Popover>
 
-        </div>   
+        </div>
     )
   }
 }
@@ -527,7 +527,7 @@ function mapStateToProps (state) {
     return {
     }
   }
-  
+
   function mapDispatchToProps (dispatch) {
     return bindActionCreators({
         uploadImage: uploadImage

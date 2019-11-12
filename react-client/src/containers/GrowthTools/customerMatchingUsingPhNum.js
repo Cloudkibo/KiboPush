@@ -1,13 +1,12 @@
 import React from 'react'
 import Files from 'react-files'
 import { bindActionCreators } from 'redux'
-import Halogen from 'halogen'
-import { Link } from 'react-router'
+import { RingLoader } from 'halogenium'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   loadCustomerListsNew, saveCurrentList
 } from '../../redux/actions/customerLists.actions'
@@ -16,7 +15,7 @@ import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 class CustomerMatching extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       file: '',
@@ -34,8 +33,6 @@ class CustomerMatching extends React.Component {
       loading: false,
       customerLists: [],
       nonSubscribersList: '',
-      isShowingModalFileName: false,
-      showFileColumns: false,
       columns: [],
       nameColumn: '',
       phoneColumn: '',
@@ -44,8 +41,6 @@ class CustomerMatching extends React.Component {
     }
 
     this.onTextChange = this.onTextChange.bind(this)
-    this.showDialogFileName = this.showDialogFileName.bind(this)
-    this.closeDialogFileName = this.closeDialogFileName.bind(this)
     this.closeDialogFileColumns = this.closeDialogFileColumns.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
@@ -64,13 +59,10 @@ class CustomerMatching extends React.Component {
     this.saveColumns = this.saveColumns.bind(this)
     this.parseCSV = this.parseCSV.bind(this)
     this.props.clearAlertMessage()
-    this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    this.props.loadCustomerListsNew({ last_id: 'none', number_of_records: 10, first_page: 'first' })
     this.props.getPendingSubscriptions()
   }
-  showDialogFileName () {
-    this.setState({isShowingModalFileName: true})
-  }
-  saveColumns () {
+  saveColumns() {
     if (this.state.phoneColumn === '' || this.state.nameColumn === '') {
       this.setState({
         columnAlerts: true
@@ -88,16 +80,12 @@ class CustomerMatching extends React.Component {
     })
     this.closeDialogFileColumns()
   }
-  closeDialogFileName () {
-    this.setState({isShowingModalFileName: false})
-  }
-  closeDialogFileColumns () {
+  closeDialogFileColumns() {
     this.setState({
-      showFileColumns: false,
       columnAlerts: false
     })
   }
-  handleNameColumn (value) {
+  handleNameColumn(value) {
     if (!value) {
       this.setState({
         nameColumn: ''
@@ -108,7 +96,7 @@ class CustomerMatching extends React.Component {
       })
     }
   }
-  handlePhoneColumn (value) {
+  handlePhoneColumn(value) {
     if (!value) {
       this.setState({
         phoneColumn: ''
@@ -119,7 +107,7 @@ class CustomerMatching extends React.Component {
       })
     }
   }
-  onSubmit () {
+  onSubmit() {
     var file = this.state.file
     if (file && file !== '') {
       var name = (file[0].name).split('.')
@@ -132,28 +120,28 @@ class CustomerMatching extends React.Component {
         }
       }
       if (nameExists) {
-        this.showDialogFileName()
+        this.refs.nameExists.click()
         return
       }
     }
     this.handleSubmit()
   }
-  scrollToTop () {
-    this.top.scrollIntoView({behavior: 'instant'})
+  scrollToTop() {
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
-  getSampleFile () {
+  getSampleFile() {
     this.props.downloadSampleFile()
   }
 
-  enterPhoneNoManually () {
-    this.setState({manually: true})
+  enterPhoneNoManually() {
+    this.setState({ manually: true })
   }
 
-  removeFile () {
-    this.setState({file: ''})
+  removeFile() {
+    this.setState({ file: '' })
   }
 
-  onChangeValue (event) {
+  onChangeValue(event) {
     if (event.target.value !== -1) {
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
@@ -176,7 +164,7 @@ class CustomerMatching extends React.Component {
     }
   }
 
-  clickAlert (e) {
+  clickAlert(e) {
     e.preventDefault()
     this.setState({
       file: '',
@@ -196,7 +184,7 @@ class CustomerMatching extends React.Component {
     this.selectPage()
   }
 
-  onFilesChange (files) {
+  onFilesChange(files) {
     var self = this
     if (files.length > 0) {
       this.setState({
@@ -209,14 +197,14 @@ class CustomerMatching extends React.Component {
       var fileSelected = files[0]
       if (fileSelected.extension !== 'csv') {
         this.setState({
-          fileErrors: [{errorMsg: 'Please select a file with .csv extension'}]
+          fileErrors: [{ errorMsg: 'Please select a file with .csv extension' }]
         })
         return
       }
       this.parseCSV(self, fileSelected)
     }
   }
-  validateFileContent () {
+  validateFileContent() {
     var content = this.state.fileContent
     var columnsArray = content[0]
     var indexName = ''
@@ -237,7 +225,7 @@ class CustomerMatching extends React.Component {
       var recordPhone = record[indexPhone]
       if (content.length === 2 && record && record.length === 1 && record[0] === '') {
         faulty = true
-        let error = {errorMsg: 'No records found'}
+        let error = { errorMsg: 'No records found' }
         errors.push(error)
         break
       }
@@ -245,13 +233,13 @@ class CustomerMatching extends React.Component {
       let regexp = /^[0-9+\(\)#\.\s\/ext-]+$/
       if (recordName && recordName.length > 50) {
         faulty = true
-        let error = {errorMsg: 'File consists of customer names that is too long'}
+        let error = { errorMsg: 'File consists of customer names that is too long' }
         errors.push(error)
         break
       }
       if (recordPhone && ((recordPhone.length > 0 && recordPhone.length < 5) || !regexp.test(recordPhone))) {
         faulty = true
-        let error = {errorMsg: 'File consists of invalid phone numbers'}
+        let error = { errorMsg: 'File consists of invalid phone numbers' }
         errors.push(error)
         break
       }
@@ -264,7 +252,7 @@ class CustomerMatching extends React.Component {
     }
     return faulty
   }
-  parseCSV (self, file) {
+  parseCSV(self, file) {
     Papa.parse(file, {
       complete: function (results) {
         console.log('Finished:', results.data)
@@ -274,7 +262,7 @@ class CustomerMatching extends React.Component {
           var columns = results.data[0]
           for (var i = 0; i < columns.length; i++) {
             if (columns[i] !== '') {
-              columnsArray.push({'value': columns[i], 'label': columns[i]})
+              columnsArray.push({ 'value': columns[i], 'label': columns[i] })
             } else {
               faulty = true
               break
@@ -282,21 +270,22 @@ class CustomerMatching extends React.Component {
           }
           if (faulty) {
             self.setState({
-              fileErrors: [{errorMsg: 'Incorrect data format'}]
+              fileErrors: [{ errorMsg: 'Incorrect data format' }]
             })
             return
           }
           self.setState({
             columns: columnsArray,
-            showFileColumns: true,
             fileContent: results.data
           })
         }
       }
     })
+    this.refs.fileInfo.click()
+
   }
 
-  uploadFile (file) {
+  uploadFile(file) {
     if (file && file !== '') {
       var fileData = new FormData()
       fileData.append('file', file)
@@ -317,14 +306,14 @@ class CustomerMatching extends React.Component {
       }
     }
   }
-  onFilesError (error, file) {
+  onFilesError(error, file) {
     this.setState({
-      fileErrors: [{errorMsg: error.message}]
+      fileErrors: [{ errorMsg: error.message }]
     })
   }
 
   /* global FormData */
-  handleSubmit () {
+  handleSubmit() {
     var file = this.state.file
     if (file && file.length > 0) {
       var hasErrors = this.validateFileContent()
@@ -333,58 +322,58 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
+        this.props.sendPhoneNumbers({ numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id })
       }
     }
   }
-  handleResponse (res) {
+  handleResponse(res) {
     this.setState({
       loading: false
     })
   }
 
-  onPhoneNumbersChange (e) {
+  onPhoneNumbersChange(e) {
     if (e.target.value === '') {
-      this.setState({disabled: true})
+      this.setState({ disabled: true })
       return
     }
-    this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
-    this.setState({disabled: false})
+    this.setState({ phoneNumbers: this.inputPhoneNumbers.value.split(';') })
+    this.setState({ disabled: false })
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
-      this.setState({disabled: false})
+      this.setState({ disabled: false })
     }
   }
 
-  onTextChange (e) {
+  onTextChange(e) {
     if (e.target.value === '') {
-      this.setState({disabled: true})
+      this.setState({ disabled: true })
     }
-    this.setState({textAreaValue: e.target.value})
+    this.setState({ textAreaValue: e.target.value })
     if (e.target.value !== '' && ((this.state.file && this.state.file !== '') || this.inputPhoneNumbers.value !== '')) {
-      this.setState({disabled: false})
+      this.setState({ disabled: false })
     }
     if (e.target.value) {
-      this.setState({messageErrors: []})
+      this.setState({ messageErrors: [] })
     } else {
       this.setState({
-        messageErrors: [{errorMsg: 'Enter an invitation message'}]
+        messageErrors: [{ errorMsg: 'Enter an invitation message' }]
       })
     }
   }
 
-  validate (type) {
+  validate(type) {
     var errors = false
     if (type === 'file') {
       if (this.state.file === '') {
         this.setState({
-          fileErrors: [{errorMsg: 'Upload a file'}]
+          fileErrors: [{ errorMsg: 'Upload a file' }]
         })
         errors = true
       }
       if (this.state.textAreaValue === '' &&
         this.state.textAreaValue.length < 1) {
         this.setState({
-          messageErrors: [{errorMsg: 'Enter an invitation message'}]
+          messageErrors: [{ errorMsg: 'Enter an invitation message' }]
         })
         errors = true
       }
@@ -397,12 +386,12 @@ class CustomerMatching extends React.Component {
           errors = true
         }
       }
-      this.setState({numbersError: err})
+      this.setState({ numbersError: err })
     }
     return !errors
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     var res = nextProps.uploadResponse.fileUploadResponse
     if (res.status === 'failed') {
       this.setState({
@@ -446,7 +435,7 @@ class CustomerMatching extends React.Component {
       })
     }
   }
-  selectPage () {
+  selectPage() {
     if (this.props.pages && this.props.pages.length > 0) {
       this.setState({
         textAreaValue: `Please subscribe to my page *${this.props.pages[0].pageName}* by typing Yes`,
@@ -459,12 +448,12 @@ class CustomerMatching extends React.Component {
       })
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     this.scrollToTop()
     this.selectPage()
-    const hostname =  window.location.hostname;
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -473,7 +462,7 @@ class CustomerMatching extends React.Component {
     document.title = `${title} | Invite Using Phone Number`;
   }
 
-  render () {
+  render() {
     console.log('customerMatchingUsingPhNum state', this.state)
     var alertOptions = {
       offset: 14,
@@ -485,117 +474,144 @@ class CustomerMatching extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{float: 'left', clear: 'both'}}
+        <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Invite Using Phone Number Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='gytuYccBcyQ'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showFileColumns &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={this.closeDialogFileColumns}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={this.closeDialogFileColumns}>
-              <div className='form-group m-form__group col-12'>
-                <label className='col-lg-12 col-form-label'>
-                  Select column for customer names
-                </label>
-                <div className='col-lg-8'>
-                  <Select
-                    options={this.state.columns}
-                    onChange={this.handleNameColumn}
-                    value={this.state.nameColumn}
-                    placeholder='Select Field'
-                  />
-                </div>
-                { this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
-                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
-                  </span>
-                }
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Provide File Information
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
               </div>
-              <div className='form-group m-form__group col-12'>
-                <label className='col-lg-12 col-form-label'>
-                  Select column for customer phone numbers
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='form-group m-form__group col-12'>
+                  <label className='col-lg-12 col-form-label'>
+                    Select column for customer names
                 </label>
-                <div className='col-lg-8'>
-                  <Select
-                    options={this.state.columns}
-                    onChange={this.handlePhoneColumn}
-                    value={this.state.phoneColumn}
-                    placeholder='Select Field'
-                  />
-                </div>
-                { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
-                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  <div className='col-lg-8'>
+                    <Select
+                      options={this.state.columns}
+                      onChange={this.handleNameColumn}
+                      value={this.state.nameColumn}
+                      placeholder='Select Field'
+                    />
+                  </div>
+                  {this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
+                    <span style={{ color: 'red', paddingLeft: '14px' }}>Select a field</span>
                   </span>
-                }
-              </div>
-              { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
-                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                  }
+                </div>
+                <div className='form-group m-form__group col-12'>
+                  <label className='col-lg-12 col-form-label'>
+                    Select column for customer phone numbers
+                </label>
+                  <div className='col-lg-8'>
+                    <Select
+                      options={this.state.columns}
+                      onChange={this.handlePhoneColumn}
+                      value={this.state.phoneColumn}
+                      placeholder='Select Field'
+                    />
+                  </div>
+                  {this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
+                    <span style={{ color: 'red', paddingLeft: '14px' }}>Select a field</span>
+                  </span>
+                  }
+                </div>
+                {this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
+                  <span style={{ color: 'red', marginLeft: '28px' }}> You cannot select same fields for both columns</span>
                 </span>
-              }
-              <button style={{float: 'right', marginLeft: '10px'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.saveColumns()
-                }}>Save
+                }
+                <button style={{ float: 'right', marginLeft: '10px' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.saveColumns()
+                  }}
+                  data-dismiss='modal'>Save
               </button>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.setState({
-                    phoneColumn: '',
-                    nameColumn: '',
-                    disabled: true
-                  })
-                  this.closeDialogFileColumns()
-                }}>Cancel
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.setState({
+                      phoneColumn: '',
+                      nameColumn: '',
+                      disabled: true
+                    })
+                  }}
+                  data-dismiss='modal'>Cancel
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalFileName &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogFileName}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogFileName}>
-              <p>A customer list file name with a similar name exists.
-               Do you want to replace the list ?</p>
-              <button style={{float: 'right', marginLeft: '10px'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.handleSubmit()
-                  this.closeDialogFileName()
-                }}>Yes
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='nameExists' data-toggle="modal" data-target="#nameExists">nameExists</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="nameExists" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Warning
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>A customer list file name with a similar name exists.
+                Do you want to replace the list ?</p>
+                <button style={{ float: 'right', marginLeft: '10px' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.handleSubmit()
+                  }}
+                  data-dismiss='modal'>Yes
               </button>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.closeDialogFileName()
-                }}>Cancel
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                  }} data-dismiss='modal'>Cancel
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -606,17 +622,17 @@ class CustomerMatching extends React.Component {
         </div>
         <div className='m-content'>
           {
-              this.props.pages &&
-              this.props.pages.length === 0 &&
-              <AlertMessage type='page' />
+            this.props.pages &&
+            this.props.pages.length === 0 &&
+            <AlertMessage type='page' />
           }
           {
-                this.props.pages &&
-                this.props.pages.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Pages Connected</h4>
-                  You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
-                </div>
+            this.props.pages &&
+            this.props.pages.length === 0 &&
+            <div className='alert alert-success'>
+              <h4 className='block'>0 Pages Connected</h4>
+              You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+            </div>
           }
 
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -624,8 +640,8 @@ class CustomerMatching extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-            Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>&nbsp;
-            Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank' rel='noopener noreferrer'>documentation</a>&nbsp;
+            Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div
@@ -647,7 +663,7 @@ class CustomerMatching extends React.Component {
               specific
               for pages that belong to United States of America (One of the
               page admins should be from USA). There is a one time fee for each page that you have connected.
-              For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
+              For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank' rel='noopener noreferrer'>here</a>
             </div>
           </div>
           <div className='row'>
@@ -664,23 +680,23 @@ class CustomerMatching extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     {
-                    this.state.customerLists.length === 0
-                      ? <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                        <span>
-                          <i className='la la-list' />
+                      this.state.customerLists.length === 0
+                        ? <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                           <span>
+                            <i className='la la-list' />
+                            <span>
                               View Customers Lists
                           </span>
-                        </span>
-                      </Link>
-                      : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' to='/customerLists'>
-                        <span>
-                          <i className='la la-list' />
-                          <span>
-                            View Customers Lists
                           </span>
-                        </span>
-                      </Link>
+                        </Link>
+                        : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' to='/customerLists'>
+                          <span>
+                            <i className='la la-list' />
+                            <span>
+                              View Customers Lists
+                          </span>
+                          </span>
+                        </Link>
                     }
                   </div>
                 </div>
@@ -704,57 +720,57 @@ class CustomerMatching extends React.Component {
                     <div className='col-lg-6 col-md-9 col-sm-12'>
                       {
                         this.state.file !== ''
-                        ? <div className='m-dropzone dropzone dz-clickable'
-                          id='m-dropzone-one'>
-                          <div style={{marginTop: '10%'}}>
-                            <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
-                              <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
-                            </span>
-                            <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                            {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
-                          </div>
-                          <span className='m-form__help'>
-                            {
-                              this.state.fileErrors.map(
-                                m => <span style={{color: 'red'}}>{m.errorMsg}</span>
-                              )
-                            }
-                          </span>
-                        </div>
-                        : <div className='m-dropzone dropzone dz-clickable'
-                          id='m-dropzone-one'>
-                          {
-                            this.state.manually
-                            ? <div>
-                              <label>{'Enter phone number separated by semi colon {;}'}</label>
-                              <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
-                              {
-                                this.state.numbersError.length > 0 &&
-                                <span className='m-form__help'>
-                                  <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
-                                </span>
-                              }
+                          ? <div className='m-dropzone dropzone dz-clickable'
+                            id='m-dropzone-one'>
+                            <div style={{ marginTop: '10%' }}>
+                              <span onClick={this.removeFile} style={{ float: 'right' }} className='fa-stack'>
+                                <i style={{ color: '#ccc', cursor: 'pointer' }} className='fa fa-times fa-stack-1x fa-inverse' />
+                              </span>
+                              <h4><i style={{ fontSize: '20px' }} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
+                              {this.state.fileErrors.length < 1 && <button style={{ cursor: 'pointer', marginTop: '20px' }} className='btn m-btn--pill btn-success'>Select Columns</button>}
                             </div>
-                            : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
-                          }
-                          <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
-                          <Files
-                            className='file-upload-area'
-                            onChange={this.onFilesChange}
-                            onError={this.onFilesError}
-                            accepts={[
-                              'text/comma-separated-values',
-                              'text/csv',
-                              'application/csv',
-                              '.csv',
-                              'application/vnd.ms-excel']}
-                            multiple={false}
-                            maxFileSize={25000000}
-                            minFileSize={0}
-                            clickable>
-                            <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
-                          </Files>
-                        </div>
+                            <span className='m-form__help'>
+                              {
+                                this.state.fileErrors.map(
+                                  m => <span style={{ color: 'red' }}>{m.errorMsg}</span>
+                                )
+                              }
+                            </span>
+                          </div>
+                          : <div className='m-dropzone dropzone dz-clickable'
+                            id='m-dropzone-one'>
+                            {
+                              this.state.manually
+                                ? <div>
+                                  <label>{'Enter phone number separated by semi colon {;}'}</label>
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  {
+                                    this.state.numbersError.length > 0 &&
+                                    <span className='m-form__help'>
+                                      <span style={{ color: 'red' }}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
+                                    </span>
+                                  }
+                                </div>
+                                : <button style={{ cursor: 'pointer' }} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
+                            }
+                            <h4 style={{ marginTop: '20px', marginBottom: '15px' }}>OR</h4>
+                            <Files
+                              className='file-upload-area'
+                              onChange={this.onFilesChange}
+                              onError={this.onFilesError}
+                              accepts={[
+                                'text/comma-separated-values',
+                                'text/csv',
+                                'application/csv',
+                                '.csv',
+                                'application/vnd.ms-excel']}
+                              multiple={false}
+                              maxFileSize={25000000}
+                              minFileSize={0}
+                              clickable>
+                              <button style={{ cursor: 'pointer' }} className='btn m-btn--pill btn-success'>Upload CSV File</button>
+                            </Files>
+                          </div>
                       }
                     </div>
                   </div>
@@ -772,7 +788,7 @@ class CustomerMatching extends React.Component {
                       <span className='m-form__help'>
                         {
                           this.state.messageErrors.map(
-                            m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                            m => <span style={{ color: 'red' }}>{m.errorMsg}</span>
                           )
                         }
                       </span>
@@ -781,11 +797,11 @@ class CustomerMatching extends React.Component {
                   <div className='m-form'>
                     <div className='m-portlet__body'>
                       <div className='m-portlet__foot m-portlet__foot--fit'>
-                        <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                          <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
+                        <div style={{ paddingTop: '30px', paddingBottom: '30px' }}>
+                          <button style={{ marginRight: '10px' }} className='btn btn-primary' onClick={this.clickAlert}>
                             Reset
                           </button>
-                          { ((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
+                          {((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
                             ? <button type='submit' className='btn btn-primary' disabled>
                               Submit
                             </button>
@@ -805,13 +821,11 @@ class CustomerMatching extends React.Component {
                         </div>
                         {
                           this.state.loading
-                          ? <ModalContainer>
-                            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-                              className='align-center'>
-                              <center><Halogen.RingLoader color='#716aca' /></center>
-                            </div>
-                          </ModalContainer>
-                          : <span />
+                            &&
+                              <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+                                className='align-center'>
+                                <center><RingLoader color='#716aca' /></center>
+                              </div>
                         }
                         {
                           this.state.alertMessage !== '' &&
@@ -819,7 +833,7 @@ class CustomerMatching extends React.Component {
                             {this.state.alertMessage} <br />
                             {
                               this.state.file && this.state.file !== '' &&
-                              <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                              <a href='#/' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
                             }
                           </div>
                         }
@@ -836,7 +850,7 @@ class CustomerMatching extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.growthToolsInfo,
@@ -846,7 +860,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     saveFileForPhoneNumbers: saveFileForPhoneNumbers,
     loadMyPagesList: loadMyPagesList,
