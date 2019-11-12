@@ -141,6 +141,9 @@ class SurveysInfo extends React.Component {
   }
   onSurveyClick (e, survey) {
     this.props.saveSurveyInformation(survey)
+    this.props.history.push({
+      pathname: '/surveyDetails'
+    })
   }
 
   render () {
@@ -229,9 +232,9 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '150px'}}>
-                                    <a href='#/' onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <button onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View Survey
-                                  </a></span>
+                                  </button></span>
                                 </td>
                               </tr>
                             ))

@@ -172,7 +172,7 @@ class Webhook extends React.Component {
                   <span>{`Are you sure you want to disconnect from Twilio? You won't be able to send ${this.state.type} broadcasts.`}</span>
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>
-                      <button className='btn btn-danger'
+                      <button className='btn btn-danger' data-dismiss="modal" aria-label="Close"
                         onClick={this.disconnect}> Disconnect
                   </button>
                     </div>
@@ -210,7 +210,7 @@ class Webhook extends React.Component {
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>
-                      <button className='btn btn-primary'
+                      <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
                         onClick={this.submit}> Submit
                   </button>
                     </div>

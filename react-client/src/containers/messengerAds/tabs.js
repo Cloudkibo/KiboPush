@@ -30,6 +30,7 @@ class Tab extends React.Component {
   }
 
   render () {
+    console.log('tabs jsonAdId', this.props.jsonAdId)
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
