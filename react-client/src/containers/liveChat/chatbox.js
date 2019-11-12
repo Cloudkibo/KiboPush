@@ -22,7 +22,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { Popover, PopoverBody} from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import {
@@ -833,32 +833,6 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        {/* <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
-            <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
-            <PopoverBody>
-              <div className='row' style={{ minWidth: '250px' }}>
-                <div className='col-12'>
-                  <p>Are you sure you want to resolve this chat session?</p>
-                  <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.changeStatus(e, 'resolved', this.props.currentSession._id)
-                    this.closeDialog()
-                  }}>
-                    Yes
-                  </button>
-                </div>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={this.closeDialog}>
-                    No
-                  </button>
-                </div>
-              </div>
-                </div>
-              </div>
-            </PopoverBody>
-          </Popover> */}
-
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="pendingResponse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
