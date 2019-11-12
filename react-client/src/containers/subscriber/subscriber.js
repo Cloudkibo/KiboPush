@@ -2129,38 +2129,39 @@ class Subscriber extends React.Component {
                               <div>
                                 <div className='row'>
                                   <span style={{ fontWeight: 600, marginLeft: '15px' }}>Web Chat Plugin Information:</span>
-                                  <span style={{ marginLeft: '15px' }}>This is the information captured when a customer sends a message from the chat plugin installed on your website</span>
+            
                                 </div>
-                                <div>
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Page Title: </span>
-                                  </div>
-                              
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Page URL: </span>
-                                  </div>
+                                {
+                                  this.state.subscriber.siteInfo ? 
+                                  <div>
+                                    <span style={{ marginLeft: '15px' }}>This is the information captured when a customer sends a message from the chat plugin installed on your website</span>
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>Page Title: {this.state.subscriber.siteInfo.pageTitle}</span>
+                                    </div>
+                                
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>Page URL: {this.state.subscriber.siteInfo.fullUrl}</span>
+                                    </div>
 
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Page Full URL: </span>
-                                  </div>
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>IP Address: {this.state.subscriber.siteInfo.location && this.state.subscriber.siteInfo.location.ip ? this.state.subscriber.siteInfo.location.ip : 'Unavailable'} </span>
+                                    </div>
 
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>IP Address: </span>
-                                  </div>
-
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Country: </span>
-                                  </div>
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>Country: {this.state.subscriber.siteInfo.location && this.state.subscriber.siteInfo.location.country ? this.state.subscriber.siteInfo.location.country : 'Unavailable'}</span>
+                                    </div>
 
 
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Browser Info: </span>
-                                  </div>
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>Browser: {this.state.subscriber.siteInfo.browser.browserName + ' ' + this.state.subscriber.siteInfo.browser.browserFullVersion}</span>
+                                    </div>
 
-                                  <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span>Platform: </span>
-                                  </div>
-                                </div>
+                                    <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
+                                      <span>Platform: {this.state.subscriber.siteInfo.platform}</span>
+                                    </div>
+                                  </div> :
+                                  <span>This subscriber did not come from any website, so there is no web chat plugin information available</span>
+                                }
                               </div>
                             }
                           </div>
