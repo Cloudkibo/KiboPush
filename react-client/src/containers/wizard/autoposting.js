@@ -247,7 +247,7 @@ class Autoposting extends React.Component {
                   onClick={() => {
                     this.props.deleteautoposting(this.state.deleteid)
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                 </button>
               </div>
             </div>

@@ -196,7 +196,7 @@ class templatePolls extends React.Component {
                   onClick={() => {
                     this.props.deletePoll(this.state.deleteid, this.msg, { last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: { search_value: '', category_value: '' } })
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                         </button>
               </div>
             </div>

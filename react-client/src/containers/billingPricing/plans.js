@@ -244,7 +244,7 @@ class Plans extends React.Component {
                 onClick={() => {
                   this.props.deletePlan(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
                 </div>
               </div>
@@ -304,13 +304,13 @@ class Plans extends React.Component {
               <div style={{width: '100%', textAlign: 'right'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button className='btn btn-secondary' onClick={this.goToCancel}
-                  data-modal='modal'>
+                  data-dismiss='modal'>
                     Cancel
                   </button>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
                   <button style={{color: 'white'}} onClick={this.goToCreate} className='btn btn-primary'
-                  data-modal='modal'>
+                  data-dismiss='modal'>
                     Create
                   </button>
                 </div>
@@ -372,12 +372,12 @@ class Plans extends React.Component {
               <br /><br />
               <div style={{width: '100%', textAlign: 'right'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-secondary' onClick={this.goToUpdateCancel}>
+                  <button className='btn btn-secondary' onClick={this.goToUpdateCancel} data-dismiss='modal'>
                     Cancel
                   </button>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button style={{color: 'white'}} onClick={this.goToUpdate} className='btn btn-primary'>
+                  <button style={{color: 'white'}} onClick={this.goToUpdate} className='btn btn-primary' data-dismiss='modal'>
                     Update
                   </button>
                 </div>
@@ -424,7 +424,12 @@ class Plans extends React.Component {
               <br /><br />
               <div style={{width: '100%', textAlign: 'right'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button style={{color: 'white'}} onClick={this.migrateCompanies} className='btn btn-primary' disabled={this.state.disabled}>
+                  <button
+                    style={{color: 'white'}}
+                    onClick={this.migrateCompanies}
+                    className='btn btn-primary'
+                    disabled={this.state.disabled}
+                    data-dismiss='modal'>
                     Migrate
                   </button>
                 </div>

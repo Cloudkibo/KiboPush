@@ -432,7 +432,10 @@ class CreateConvo extends React.Component {
                 <p>{this.state.invalidSessionMessage}</p>
                 <br />
                 <p>You need to reconnect your Facebook account to send this broadcast.</p>
-                <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                <a
+                  href='/auth/facebook/'
+                  className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'
+                  data-dismiss='modal'>
                   <span>
                     <i className='la la-power-off' />
                     <span>Connect with Facebook</span>

@@ -218,7 +218,8 @@ class Contact extends React.Component {
               <br />
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
-                onClick={this.editSubscriber}>Save
+                onClick={this.editSubscriber}
+                data-dismiss='modal'>Save
               </button>
                 </div>
               </div>

@@ -432,10 +432,14 @@ class Webhook extends React.Component {
                             <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                               <div className='m-form__actions' style={{'float': 'right'}}>
                                 <button className='btn btn-primary'
-                                  onClick={this.save}> Save
+                                  onClick={this.save}
+                                  data-dismiss='modal'> Save
                                 </button>
                                 <button
-                                  className='btn btn-secondary' style={{'margin-left': '10px'}} onClick={this.cancel}>
+                                  className='btn btn-secondary'
+                                  style={{'margin-left': '10px'}}
+                                  onClick={this.cancel}
+                                  data-dismiss='modal'>
                                   Cancel
                                 </button>
                               </div>
@@ -463,7 +467,6 @@ class Webhook extends React.Component {
                                   <label className='control-label'>Page:&nbsp;&nbsp;&nbsp;</label>
                                   <span>
                                     <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
->>>>>>> 3c8aad41416b4d5fea354f5f5fc75013c6ddddcc
                                   <span>{this.state.pageEdit.pageName}</span>
                                   </span>
                                   <div id='question' className='form-group m-form__group'>
@@ -505,10 +508,12 @@ class Webhook extends React.Component {
                               <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                                 <div className='m-form__actions' style={{ 'float': 'right' }}>
                                   <button className='btn btn-primary'
-                                    onClick={this.saveEdited}> Save
+                                    onClick={this.saveEdited}
+                                    data-dismiss='modal'> Save
                                 </button>
                                   <button onClick={this.closeDialogEdit}
-                                    className='btn btn-secondary' style={{ 'margin-left': '10px' }}>
+                                    className='btn btn-secondary' style={{ 'margin-left': '10px' }}
+                                    data-dismiss='modal'>
                                     Cancel
                                 </button>
                                 </div>

@@ -429,7 +429,7 @@ class createSurvey extends React.Component {
                 onClick={() => {
                   this.closeDialog()
                   this.saveCategory()
-                }}>Save
+                }} data-dismiss='modal'>Save
               </button>
               </div>
             </div>

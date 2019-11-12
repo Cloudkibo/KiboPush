@@ -189,7 +189,8 @@ class ResetPassword extends React.Component {
                   </select>
                 </div>
                 <div className='form-group m-form__group'>
-                  <button style={{ float: 'right' }} className='btn btn-primary btn-sm' onClick={this.uploadFile}>
+                  <button style={{ float: 'right' }} className='btn btn-primary btn-sm' onClick={this.uploadFile}
+                  data-dismiss='modal'>
                     Upload
                 </button>
                 </div>

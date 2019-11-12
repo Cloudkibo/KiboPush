@@ -259,7 +259,7 @@ class Webhook extends React.Component {
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>
                       <button className='btn btn-primary'
-                        onClick={this.submitWapp}> Submit
+                        onClick={this.submitWapp} data-dismiss='modal'> Submit
                   </button>
                     </div>
                   </div>

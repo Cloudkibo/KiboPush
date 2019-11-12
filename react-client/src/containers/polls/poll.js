@@ -492,7 +492,7 @@ class Poll extends React.Component {
                         <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
                         <div style={{ width: '100%', textAlign: 'center' }}>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
-                            <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                            <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                               Create New Poll
                                 </button>
                           </div>

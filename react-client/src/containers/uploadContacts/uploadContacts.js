@@ -427,7 +427,8 @@ class UploadContacts extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.saveColumns()
-                  }} disabled={this.state.phoneColumn === '' || this.state.nameColumn === ''}>Save
+                  }} disabled={this.state.phoneColumn === '' || this.state.nameColumn === ''}
+                  data-dismiss='modal'>Save
                 </button>
               </center>
                 </div>

@@ -443,7 +443,7 @@ class FileSelect extends React.Component {
                         dict: {}
                       })
                       this.closeDialogFileColumns()
-                    }}>Cancel
+                    }} data-dismiss='moda;'>Cancel
                   </button>
                   <button
                     data-dismiss="modal"
@@ -452,7 +452,7 @@ class FileSelect extends React.Component {
                     disabled={!this.state.enableSaveColumns}
                     onClick={() => {
                       this.saveColumns()
-                    }}>Save
+                    }} data-dismiss='modal'>Save
                   </button>
                 </div>
               </div>

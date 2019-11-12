@@ -162,7 +162,8 @@ class SmsBroadcast extends React.Component {
                   </div>
                   <br />
                   <div style={{display: 'inline-block', padding: '5px'}}>
-                    <button style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                    <button style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'
+                    data-dismiss='modal'>
                       Create New Broadcast
                     </button>
                   </div>
