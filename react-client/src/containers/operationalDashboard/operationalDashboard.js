@@ -423,13 +423,15 @@ class OperationalDashboard extends React.Component {
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
           { this.props.platformStats &&
-            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} />
+            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} history={this.props.history} location={this.props.location} />
           }
           <div className='row'>
-            <AutopostingSummary backdoor={true} />
+            <AutopostingSummary backdoor={true} history={this.props.history} location={this.props.location} />
           </div>
           <div className='row'>
             <Reports
+              history={this.props.history}
+              location={this.props.location}
               iconClassName={'fa fa-line-chart'}
               title={'Reports'}
               lineChartData={this.state.chartData}
@@ -440,7 +442,7 @@ class OperationalDashboard extends React.Component {
               />
           </div>
           <div className='row'>
-            <Top10pages pagesData={this.props.toppages} />
+            <Top10pages pagesData={this.props.toppages} history={this.props.history} location={this.props.location} />
             <div className='col-xl-12'>
               <div className='m-portlet m-portlet--full-height '>
                 <div className='m-portlet__head'>
@@ -611,11 +613,11 @@ class OperationalDashboard extends React.Component {
               </div>
             </div>
           </div>
-          <CompanyInfo />
-          <BroadcastsByDays />
-          <SurveysByDays />
-          <PollsByDays />
-          <UniquePages />
+          <CompanyInfo history={this.props.history} location={this.props.location} />
+          <BroadcastsByDays history={this.props.history} location={this.props.location} />
+          <SurveysByDays history={this.props.history} location={this.props.location} />
+          <PollsByDays history={this.props.history} location={this.props.location} />
+          <UniquePages history={this.props.history} location={this.props.location} />
         </div>
       </div>
     )

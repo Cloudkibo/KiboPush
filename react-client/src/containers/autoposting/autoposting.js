@@ -352,7 +352,7 @@ class Autoposting extends React.Component {
                 this.props.autopostingData && this.props.autopostingData.length > 0
                   ? this.props.autopostingData.map((item, i) => (
                     <div className='m-widget5'>
-                      <ListItem key={item._id} data-toggle="modal" data-target="#deleteFeed" updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
+                      <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
                     </div>
                 ))
                   : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
