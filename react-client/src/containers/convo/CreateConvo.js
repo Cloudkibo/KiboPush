@@ -55,7 +55,8 @@ class CreateConvo extends React.Component {
       pageId: this.props.location.state && this.props.pages && this.props.location.state.pages && this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
       loadScript: true,
       messageType: '',
-      subscriberCount: 0
+      subscriberCount: 0,
+      locationPages: this.props.location.state ? this.props.location.state.pages : []
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -122,9 +123,9 @@ class CreateConvo extends React.Component {
       messageType: targeting.messageTypeSelectedRadio
     })
     let data = {}
-    console.log(this.props.location.state.pages)
+    console.log(this.state.locationPages)
     if (targeting.pageValue.length > 0) {
-      data['pageValue'] = this.props.location.state.pages
+      data['pageValue'] = this.state.locationPages
     }
     if (targeting.genderValue.length > 0) {
       data['genderValue'] = targeting.genderValue
@@ -137,7 +138,7 @@ class CreateConvo extends React.Component {
     }
     this.props.loadSubscribersCount(data)
     var payload = {
-        pageId: this.props.location.state.pages[0],
+        pageId: this.state.locationPages[0],
         segmented: true,
         segmentationGender: targeting.genderValue,
         segmentationLocale: targeting.localeValue,
@@ -275,7 +276,7 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    console.log('this.props.location.state.pages', this.props.location.state.pages)
+    console.log('this.state.locationPages', this.state.locationPages)
     console.log('this.props.pages', this.props.pages)
     // var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
     if (this.props.subscribersCount === 0) {
@@ -294,7 +295,7 @@ class CreateConvo extends React.Component {
         platform: 'facebook',
         payload: this.state.broadcast,
         isSegmented: isSegmentedValue,
-        segmentationPageIds: this.props.location.state.pages,
+        segmentationPageIds: this.state.locationPages,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
         segmentationTags:  this.state.tagValue,
@@ -323,10 +324,10 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    if (this.props.location.state.pages.length > 1 || this.props.location.state.pages.length === 0) {
+    if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
       this.msg.error('Only one page should be selected to test the broadcast')
     } else {
-      let pageSelected = this.props.location.state.pages[0]
+      let pageSelected = this.state.locationPages[0]
       if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
         var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
         if (check.length <= 0) {
@@ -375,7 +376,7 @@ class CreateConvo extends React.Component {
         payload: this.state.broadcast,
         title: this.state.convoTitle,
         isSegmented: isSegmentedValue,
-        segmentationPageIds: this.props.location.state.pages,
+        segmentationPageIds: this.state.locationPages,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
         segmentationTags: tagIDs,
@@ -606,7 +607,7 @@ class CreateConvo extends React.Component {
                             convoTitle={this.state.convoTitle}
                             titleEditable
                             pageId={this.state.pageId.pageId}
-                            pages={this.props.location.state && this.props.location.state.pages}
+                            pages={this.props.location.state && this.state.locationPages}
                             buttonActions={this.state.buttonActions} />
                         </div>
                         <div className='tab-pane' id='tab_2'>

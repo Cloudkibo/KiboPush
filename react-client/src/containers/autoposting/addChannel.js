@@ -177,6 +177,7 @@ class AddChannel extends React.Component {
       this.setState({
         errorMessage: ''
       })
+      this.props.addFeedClose.click()
       this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
       var errorMsg = ''
@@ -193,7 +194,6 @@ class AddChannel extends React.Component {
 
   handleCreateAutopostingResponse (response) {
     if (response.status === 'success') {
-      this.props.onClose()
       this.props.msg.success('Changes saved successfully!')
     } else {
       if (typeof response.description === 'string' || response.description instanceof String) {
@@ -259,7 +259,7 @@ class AddChannel extends React.Component {
           wordPressForeGroundColor: 'white'
         })
         break
-      default: 
+      default:
         break
     }
   }

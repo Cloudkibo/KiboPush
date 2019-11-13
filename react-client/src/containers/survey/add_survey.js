@@ -774,7 +774,7 @@ class AddSurvey extends React.Component {
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary'
-                      disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                      disabled={this.state.subscriberCount === 0 ? true : null}
                       onClick={() => {
                         this.goToSend()
                       }}

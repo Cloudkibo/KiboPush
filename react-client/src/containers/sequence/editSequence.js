@@ -692,7 +692,7 @@ class CreateSequence extends React.Component {
                   className='btn btn-primary btn-sm pull-right'
                   onClick={() => {
                     this.props.deleteSequence(this.state.sequenceId)
-                    browserHistory.push({ pathname: '/sequenceMessaging' })
+                    this.props.history.push({ pathname: '/sequenceMessaging' })
                   }} data-dismiss='modal'>Yes
                   </button>
                 <button
@@ -879,7 +879,7 @@ class CreateSequence extends React.Component {
                   <button onClick={() => this.closeDialogSegmentation()} data-dismiss='modal' style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px' }} className='btn'> Cancel </button>
                   {
                     this.state.conditions.length > 0 && this.state.conditions[0].value !== '' &&
-                    <button onClick={() => this.removeSegmentation()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px' }} className='btn'> Remove Segmentation </button>
+                    <button onClick={() => this.removeSegmentation()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px' }} data-dismiss='modal' className='btn'> Remove Segmentation </button>
                   }
                 </div>
               </div>
