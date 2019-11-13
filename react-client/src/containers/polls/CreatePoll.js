@@ -414,7 +414,7 @@ class CreatePoll extends React.Component {
                     <button className='btn btn-primary' onClick={() => {
                       this.closeDialog()
                       this.goToSend()
-                    }} data-dismiss='modal'>
+                    }} disabled={this.state.subscriberCount === 0 ? true : null} data-dismiss='modal'>
                       Send
                     </button>
                   </div>
