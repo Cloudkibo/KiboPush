@@ -389,7 +389,7 @@ class Bot extends React.Component {
                   onClick={() => {
                     this.props.deleteBot(this.state.deleteid, this.msg)
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                 </button>
               </div>
             </div>

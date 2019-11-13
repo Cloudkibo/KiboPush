@@ -184,7 +184,7 @@ class Members extends React.Component {
                 onClick={() => {
                   this.removeMember(this.state.deleteid)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
                 </div>
               </div>

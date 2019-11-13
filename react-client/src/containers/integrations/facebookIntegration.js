@@ -164,7 +164,7 @@ class FacebookIntegration extends React.Component {
                 onClick={() => {
                   this.props.disconnectFacebook()
                   this.closeDialog()
-                }}>Yes
+                }} data-dismiss='modal'>Yes
               </button>
                 </div>
               </div>

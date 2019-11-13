@@ -510,7 +510,7 @@ class Settings extends React.Component {
                 <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
                       Upgrade to Pro
                   </button>
                   </div>

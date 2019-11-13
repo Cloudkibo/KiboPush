@@ -102,7 +102,11 @@ class AddPage extends React.Component {
               </div>
               <div style={{ color: 'black' }} className="modal-body">
                 <p>Looks like you have not granted permissions for this page. Permissions must be granted to connect this page.</p>
-                <a style={{ float: 'right' }} href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                <a
+                  style={{ float: 'right' }}
+                  href='/auth/facebook/'
+                  className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'
+                  data-dismiss='modal'>
                   <span>
                     <i className='fa fa-facebook' />
                     <span>Grant Permissions</span>

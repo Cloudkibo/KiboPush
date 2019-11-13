@@ -185,7 +185,7 @@ class SegmentedList extends React.Component {
                   onClick={() => {
                     this.props.deleteList(this.state.deleteid, this.msg)
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                             </button>
               </div>
             </div>

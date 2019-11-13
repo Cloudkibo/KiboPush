@@ -416,7 +416,7 @@ class createSurvey extends React.Component {
                   onClick={() => {
                     this.closeDialog()
                     this.saveCategory()
-                  }}>Save
+                  }} data-dismiss='modal'>Save
                 </button>
               </div>
             </div>
@@ -440,7 +440,7 @@ class createSurvey extends React.Component {
                   <div className='form-group m-form__group'>
                     <div className='m-input-icon m-input-icon--left m-input-icon--right'>
                       <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
-                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
+                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)} data-dismiss='modal'>
                         <span>
                           <i className='fa fa-times' />
                         </span>

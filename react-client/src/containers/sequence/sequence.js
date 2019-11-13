@@ -395,7 +395,7 @@ class Sequence extends React.Component {
                 onClick={() => {
                   this.props.deleteSequence(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
                 </div>
               </div>
@@ -425,7 +425,8 @@ class Sequence extends React.Component {
                 </div>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
-                  onClick={() => this.gotoCreate()}>Create
+                  onClick={() => this.gotoCreate()}
+                  data-dismiss='modal'>Create
               </button>
               </div>
             </div>

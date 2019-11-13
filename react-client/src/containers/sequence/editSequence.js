@@ -666,7 +666,7 @@ class CreateSequence extends React.Component {
                   onClick={() => {
                     this.props.deleteMessage(this.state.deleteid, this.msg, this.state.sequenceId)
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                   </button>
               </div>
             </div>
@@ -693,12 +693,13 @@ class CreateSequence extends React.Component {
                   onClick={() => {
                     this.props.deleteSequence(this.state.sequenceId)
                     browserHistory.push({ pathname: '/sequenceMessaging' })
-                  }}>Yes
+                  }} data-dismiss='modal'>Yes
                   </button>
                 <button
                   style={{ marginRight: '5px' }}
                   className='btn btn-secondary btn-sm pull-right'
                   onClick={() => { this.closeBackWarning() }}
+                  data-dismiss='modal'
                 >No
                   </button>
               </div>

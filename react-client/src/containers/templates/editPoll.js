@@ -220,7 +220,7 @@ class EditPoll extends React.Component {
                   onClick={() => {
                     this.closeAddCategoryDialog()
                     this.saveCategory()
-                  }}>Save
+                  }} data-dismiss='modal'>Save
                 </button>
               </div>
             </div>

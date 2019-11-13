@@ -197,7 +197,7 @@ class SubscriberSummary extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.showReport()}>
+                  <button className='btn btn-primary' onClick={() => this.showReport()} data-dismiss='modal'>
                     Show Report
                   </button>
                 </div>
