@@ -619,7 +619,7 @@ class Dashboard extends React.Component {
               <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
             </div>
             <div className='row'>
-              {/*
+              {
               this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost'))
               ? <ProgressBoxKiboEngage
                 lineChartData={this.state.chartData}
@@ -641,7 +641,7 @@ class Dashboard extends React.Component {
                 selectedPage={this.state.selectedPage}
                 changeDays={this.changeDays}
                 onKeyDown={this.onKeyDown} />
-            */}
+            }
             </div>
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
