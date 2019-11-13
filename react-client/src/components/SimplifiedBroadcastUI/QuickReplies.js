@@ -22,6 +22,7 @@ class QuickReplies extends React.Component {
         currentActions: [],
         customFields: [],
         index: -1,
+        editing: false,
         currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
     this.addQuickReply = this.addQuickReply.bind(this)
@@ -48,7 +49,14 @@ class QuickReplies extends React.Component {
     this.toggleAddAction = this.toggleAddAction.bind(this)
     this.updateCustomFieldValue = this.updateCustomFieldValue.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
+    this.closeQuickReply = this.closeQuickReply.bind(this)
     console.log('quickReplies constructor')
+  }
+
+  closeQuickReply () {
+      if (!this.state.editing) {
+          this.toggleAddQuickReply()
+      }
   }
 
   onLoadCustomFields (customFields) {
@@ -83,7 +91,8 @@ class QuickReplies extends React.Component {
         currentActions: JSON.parse(this.state.quickReplies[index].payload),
         currentTitle: this.state.quickReplies[index].title,
         image_url: this.state.quickReplies[index].image_url,
-        index: index
+        index: index,
+        editing: true
     })
   }
 
@@ -149,11 +158,23 @@ class QuickReplies extends React.Component {
 
     handleImage (fileInfo) {
         console.log('finished uploading file', fileInfo)
-        this.setState({image_url: fileInfo.image_url, loading: false})
+        this.setState({image_url: fileInfo.image_url, loading: false}, () => {
+            this.checkIfEdited()
+        })
     }
 
   changeTitle (e) {
-      this.setState({currentTitle: e.target.value})
+    this.setState({currentTitle: e.target.value}, () => {
+        this.checkIfEdited()
+    })
+  }
+
+  checkIfEdited () {
+    if (!this.state.currentTitle !== '' || this.state.image_url ||                this.state.currentActions.length > 0) {
+        this.setState({editing: true})
+    } else {
+        this.setState({editing: false})
+    }
   }
 
   closeAddAction () {
@@ -163,7 +184,9 @@ class QuickReplies extends React.Component {
   removeAction (index) {
       let currentActions = this.state.currentActions
       currentActions.splice(index, 1)
-      this.setState({currentActions})
+      this.setState({currentActions}, () => {
+        this.checkIfEdited()
+    })
   }
 
   updateCustomField (event, index) {
@@ -311,12 +334,14 @@ class QuickReplies extends React.Component {
   selectAction (e) {
       let currentActions = this.state.currentActions
       currentActions.push({action: e.target.value.replace(/ /g, '_')})
-      this.setState({selectedAction: e.target.value, addingAction: false, currentActions})
+      this.setState({selectedAction: e.target.value, addingAction: false, currentActions}, () => {
+        this.checkIfEdited()
+    })
   }
 
   toggleAddQuickReply () {
       if (!this.state.addingAction) {
-        this.setState({addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: ''})
+        this.setState({addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
       }
   }
 
@@ -344,6 +369,52 @@ class QuickReplies extends React.Component {
     };
     return (
         <div className='no-drag'>
+            
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Warning</h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {
+                            this.state.index === -1 ?
+                            <div style={{ color: 'black' }} className="modal-body">
+                                <p>Are you sure you want to close this quick reply and lose all the data that was entered?</p>
+                                <button style={{ float: 'right', marginLeft: '10px' }}
+                                className='btn btn-primary btn-sm'
+                                onClick={() => {
+                                    this.removeQuickReply()
+                                }} data-dismiss='modal'>Yes
+                                </button>
+                                    <button style={{ float: 'right' }}
+                                    className='btn btn-primary btn-sm'
+                                    data-dismiss='modal'>Cancel
+                                </button>
+                            </div> :
+                                <div style={{ color: 'black' }} className="modal-body">
+                                <p>Do you want to delete this quick reply?</p>
+                                <button style={{ float: 'right', marginLeft: '10px' }}
+                                className='btn btn-primary btn-sm'
+                                onClick={() => {
+                                    this.removeQuickReply()
+                                }} data-dismiss='modal'>Yes
+                                </button>
+                                <button style={{ float: 'right' }}
+                                    onClick={() => {
+                                        this.toggleAddQuickReply()
+                                    }} 
+                                    className='btn btn-primary btn-sm'
+                                    data-dismiss='modal'>No
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
             <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
             {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>
@@ -388,7 +459,7 @@ class QuickReplies extends React.Component {
             <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply'>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
-                    <div onClick={this.removeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
+                    <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
                         <div style={{marginBottom: '20px', maxHeight: '100px'}} className='row'>
                             <div className='col-4'>
                                 <div onClick={this.clickFile} className='ui-block hoverbordercomponent' style={{height: '75px', width: '75px', borderRadius: '50%', display: 'inline-block'}}>
