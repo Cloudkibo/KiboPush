@@ -92,9 +92,9 @@ class top10pages extends React.Component {
 
               <br />
               <span className='m-widget5__votes'>
-                <a href='#/' style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                <button style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                  Subscribers
-               </a>
+               </button>
               </span>
             </div>
           </div>
