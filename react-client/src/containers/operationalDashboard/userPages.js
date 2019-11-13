@@ -13,6 +13,9 @@ class PagesInfo extends React.Component {
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
+    this.props.history.push({
+      pathname: '/pageSubscribers'
+    })
   }
 
   componentDidMount () {
@@ -130,9 +133,9 @@ class PagesInfo extends React.Component {
                                className='m-datatable__cell'>
                                <span
                                  style={{width: '150px'}}>
-                                 <a href='#/' onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
+                                 <button onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} className='btn btn-primary btn-sm'>
                                  See Subscribers
-                               </a>
+                               </button>
                                </span>
                              </td>
                            </tr>
