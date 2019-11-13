@@ -149,7 +149,9 @@ class EditTags extends React.Component {
                                     </button>
                                         <button className='btn btn-primary btn-sm'
                                           style={{ float: 'left', margin: 2 }}
-                                          data-toggle="modal" data-target="#deleteTag">
+                                          data-toggle="modal" data-target="#deleteTag" 
+                                          onClick={() => this.openDeleteConfirmation(tag.tag)}
+                                          >
                                           Delete
                                     </button>
                                       </span>
