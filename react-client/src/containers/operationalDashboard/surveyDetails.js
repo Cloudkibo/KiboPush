@@ -94,7 +94,6 @@ class SurveyDetails extends React.Component {
   }
 
   render () {
-    console.log('this.props.survey in surveyDetails', this.props.location.state.data)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>

@@ -94,7 +94,6 @@ class ViewPollDetail extends React.Component {
         var value = []
         var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']
         var index = 0
-        console.log("nextprops.responses in", pollResponses)
         for (let a = 0; a < pollResponses.length; a++) {
           let poll = pollResponses[a]
           if (value.length < 1) {
@@ -115,9 +114,6 @@ class ViewPollDetail extends React.Component {
             }
           }
         }
-        console.log('colors', colors)
-        console.log('counts', counts)
-        console.log('value', value)
         this.drawPieChart(colors, counts, value)
       }
     }
