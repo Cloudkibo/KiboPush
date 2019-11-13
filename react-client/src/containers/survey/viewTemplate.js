@@ -31,7 +31,7 @@ class viewSurvey extends React.Component {
     this.setState({surveyDetailsData: data})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.questions) {
       this.displayData(0, nextProps.questions)
       this.setState({ totalLength: nextProps.questions.length })

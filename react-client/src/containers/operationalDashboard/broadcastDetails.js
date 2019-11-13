@@ -1,6 +1,6 @@
 import React from 'react'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -213,7 +213,7 @@ class ViewBroadcastTemplate extends React.Component {
                             </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
-                              breakLabel={<a>...</a>}
+                              breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
                               pageCount={Math.ceil(this.state.totalLengthSubscriber / 4)}
                               marginPagesDisplayed={1}
@@ -233,7 +233,7 @@ class ViewBroadcastTemplate extends React.Component {
                 */ }
             </div>
             <div className='col-xl-4'>
-              <ViewMessage payload={this.props.location.state.payload} />
+              <ViewMessage payload={this.props.location.state.payload} history={this.props.history} location={this.props.location} />
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@
 
 import React from 'react'
 import CardBox from '../Dashboard/CardBox'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { UncontrolledTooltip } from 'reactstrap'
 
 /* card box style must be any of these
@@ -14,7 +14,7 @@ import { UncontrolledTooltip } from 'reactstrap'
   danger
   accent
  */
-
+/* eslint-disable */
 class CardBoxesContainer extends React.Component {
   render () {
     const url = window.location.hostname
@@ -55,5 +55,5 @@ class CardBoxesContainer extends React.Component {
     )
   }
 }
-
+/* eslint-enable */
 export default CardBoxesContainer

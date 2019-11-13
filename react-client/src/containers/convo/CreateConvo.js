@@ -15,18 +15,16 @@ import {
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router'
-import { checkConditions } from '../polls/utility'
+import { Link } from 'react-router-dom'
+// import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 import Targeting from './Targeting'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
-import MessengerSendToMessenger from 'react-messenger-send-to-messenger'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -44,11 +42,8 @@ class CreateConvo extends React.Component {
       localeValue: [],
       tagValue: [],
       isShowingModal: false,
-      isShowingModalGuideLines: false,
-      isshowGuideLinesImageDialog: false,
       isShowingModalResetAlert: false,
       convoTitle: this.props.location.state && this.props.location.state.title ? this.props.location.state.title : 'Broadcast Title',
-      showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
       isList: false,
@@ -56,7 +51,6 @@ class CreateConvo extends React.Component {
       tabActive: 'broadcast',
       resetTarget: false,
       setTarget: false,
-      showInvalidSession: false,
       invalidSessionMessage: '',
       pageId: this.props.location.state && this.props.pages && this.props.location.state.pages && this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0],
       loadScript: true,
@@ -67,8 +61,6 @@ class CreateConvo extends React.Component {
     props.getFbAppId()
     props.getAdminSubscriptions()
     props.loadTags()
-    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
-    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
@@ -78,9 +70,6 @@ class CreateConvo extends React.Component {
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
-    this.closeInvalidSession = this.closeInvalidSession.bind(this)
-    this.showGuideLinesImageDialog = this.showGuideLinesImageDialog.bind(this)
-    this.closeGuideLinesImageDialog = this.closeGuideLinesImageDialog.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
@@ -195,10 +184,6 @@ class CreateConvo extends React.Component {
     }
   }
 
-  closeInvalidSession () {
-    this.setState({showInvalidSession: false})
-  }
-
   loadsdk (fbAppId) {
     console.log('inside loadsdk', fbAppId)
     window.fbAsyncInit = function () {
@@ -229,7 +214,8 @@ class CreateConvo extends React.Component {
       this.reset(false)
       this.setState({resetTarget: true})
     } else if (res.status === 'INVALID_SESSION') {
-      this.setState({showInvalidSession: true, invalidSessionMessage: res.description})
+      this.setState({invalidSessionMessage: res.description})
+      this.refs.reconnect.click()
     }
   }
   scrollToTop () {
@@ -254,33 +240,18 @@ class CreateConvo extends React.Component {
       event: 'admin_subscriber',
       action: function (data) {
         compProp.getAdminSubscriptions()
-        comp.setState({showMessengerModal: false})
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
       }
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
     }
 
     if (nextProps.fbAppId && this.state.loadScript) {
       this.loadsdk(nextProps.fbAppId)
     }
-  }
-  showGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: true})
-  }
-
-  showGuideLinesImageDialog () {
-    this.setState({isshowGuideLinesImageDialog: true})
-  }
-  closeGuideLinesImageDialog () {
-    this.setState({isshowGuideLinesImageDialog: false})
-  }
-
-  closeGuideLinesDialog () {
-    this.setState({isShowingModalGuideLines: false})
   }
 
   gotoView (event) {
@@ -306,7 +277,6 @@ class CreateConvo extends React.Component {
     }
     console.log('this.props.location.state.pages', this.props.location.state.pages)
     console.log('this.props.pages', this.props.pages)
-    let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
     // var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
     if (this.props.subscribersCount === 0) {
       this.msg.error('No subscribers match the selected criteria')
@@ -360,11 +330,15 @@ class CreateConvo extends React.Component {
       if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
         var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
         if (check.length <= 0) {
-          this.setState({showMessengerModal: true})
+          if(this.props.fbAppId && this.props.fbAppId !== '') {
+            this.refs.messengerModal.click()
+          }
           return
         }
       } else {
-        this.setState({showMessengerModal: true})
+        if(this.props.fbAppId && this.props.fbAppId !== '') {
+          this.refs.messengerModal.click()
+        }
         return
       }
       // for (let i = 0; i < this.props.pages.length; i++) {
@@ -442,33 +416,50 @@ class CreateConvo extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
-          this.state.showInvalidSession &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeInvalidSession}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeInvalidSession}>
-              <h3>Error:</h3>
-              <p>{this.state.invalidSessionMessage}</p>
-              <br />
-              <p>You need to reconnect your Facebook account to send this broadcast.</p>
-              <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
-                <span>
-                  <i className='la la-power-off' />
-                  <span>Connect with Facebook</span>
-                </span>
-              </a>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalGuideLines &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeGuideLinesDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeGuideLinesDialog}>
-              <h4>Message Types</h4>
-              <p> Following are the types of messages that can be sent to facebook messenger.</p>
+        <a href='#/' style={{ display: 'none' }} ref='reconnect' data-toggle="modal" data-target="#reconnect">reconnect</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="reconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5>Error:</h5>
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>{this.state.invalidSessionMessage}</p>
+                <br />
+                <p>You need to reconnect your Facebook account to send this broadcast.</p>
+                <a
+                  href='/auth/facebook/'
+                  className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'
+                  data-dismiss='modal'>
+                  <span>
+                    <i className='la la-power-off' />
+                    <span>Connect with Facebook</span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTypes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Message Types
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p> Following are the types of messages that can be sent to facebook messenger.</p>
               <div className='panel-group accordion' id='accordion1'>
                 <div className='panel panel-default'>
                   <div className='panel-heading guidelines-heading'>
@@ -479,7 +470,7 @@ class CreateConvo extends React.Component {
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
                       <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
-                      <a href='https://kibopush.com/subscription-messaging/' target='_blank'>link.</a></p>
+                      <a href='https://kibopush.com/subscription-messaging/' target='_blank' rel='noopener noreferrer'>link.</a></p>
                     </div>
                   </div>
                 </div>
@@ -508,50 +499,46 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isshowGuideLinesImageDialog &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeGuideLinesImageDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeGuideLinesImageDialog}>
-              <p>Use the correct aspect ratio for your image. Photos in the generic template that aren't <strong>1.91:1 </strong>will be scaled or cropped. </p>
-
-            </ModalDialog>
-          </ModalContainer>
-        }
-
-        {
-          this.state.showMessengerModal && this.props.fbAppId && this.props.fbAppId !== '' &&
-          <ModalContainer style={{width: '500px'}}
-            onClick={() => { this.setState({showMessengerModal: false}) }}
-            onClose={() => { this.setState({showMessengerModal: false}) }}>
-            <ModalDialog style={{width: '500px'}}
-              onClick={() => { this.setState({showMessengerModal: false}) }}
-              onClose={() => { this.setState({showMessengerModal: false}) }}>
-              <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
-              <MessengerPlugin
-                appId={this.props.fbAppId}
-                pageId={this.state.pageId.pageId}
-                size='large'
-                passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
+                </div>
+              </div>
+            </div>
+          </div>
+        <a href='#/' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Connect to Messenger:
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <MessengerPlugin
+                  appId={this.props.fbAppId}
+                  pageId={this.state.pageId.pageId}
+                  size='large'
+                  passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
                 />
-            </ModalDialog>
-          </ModalContainer>
-        }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
+              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
               <br />
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
 
-              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank'>image guidelines</a>
+              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
             </div>
           </div>
           <div className='row'>
@@ -600,12 +587,12 @@ class CreateConvo extends React.Component {
                     <div className='col-12'>
                       <ul className='nav nav-tabs'>
                         <li>
-                          <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
+                          <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                         </li>
                         <li>
                           {this.state.broadcast.length > 0
-                            ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                            : <a>Targeting</a>
+                            ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                            : <a href='#/'>Targeting</a>
                           }
                         </li>
 

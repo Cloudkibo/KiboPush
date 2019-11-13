@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadPageUsers, loadPageAdmins } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -67,16 +67,17 @@ class PageAdmins extends React.Component {
   applyEmailFilter (data, search) {
     return data.filter(x => x.email && (x.email).toLowerCase().includes(search.toLowerCase()))
   }
-
+/* eslint-disable */
   applyKiboFilter (data, search) {
     return data.filter(x => {
-        if (search === 'onKiboPush') {
-            return !!x.email
-        } else if (search === 'offKiboPush') {
-            return !x.email
-        }
+      if (search === 'onKiboPush') {
+          return !!x.email
+      } else if (search === 'offKiboPush') {
+          return !x.email
+      }
     })
   }
+/* eslint-enable */
 
   applyNecessaryFilters() {
     //debugger;
@@ -144,7 +145,7 @@ class PageAdmins extends React.Component {
     return array.filter((e, i) => array.findIndex(a => a.user.facebookInfo.fbId === e.user.facebookInfo.fbId) === i);
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageUsers) {
         if (nextProps.pageAdmins) {
             let uniquePageAdmins = this.unique(nextProps.pageUsers)
@@ -262,7 +263,7 @@ class PageAdmins extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

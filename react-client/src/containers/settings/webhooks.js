@@ -1,11 +1,9 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { loadWebhook, createEndpoint, editEndpoint, enabled } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
@@ -15,7 +13,6 @@ class Webhook extends React.Component {
     super(props, context)
     this.state = {
       isShowingModal: false,
-      isShowingModalEdit: false,
       pageSelected: '',
       selectAllChecked: null,
       selectAllCheckedEdit: null,
@@ -30,7 +27,6 @@ class Webhook extends React.Component {
       errorToken: false,
       pageEdit: '',
       id: '',
-      showVideo: false
     }
     props.loadWebhook()
     props.loadMyPagesList()
@@ -50,7 +46,7 @@ class Webhook extends React.Component {
     this.edit = this.edit.bind(this)
     this.saveEdited = this.saveEdited.bind(this)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0].pageId})
@@ -62,7 +58,7 @@ class Webhook extends React.Component {
         for (var i = 0; i < this.state.subscriptions.length; i++) {
           subscriptions[i].selected = false
         }
-        this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false, isShowingModalEdit: false})
+        this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
       }
     }
   }
@@ -100,11 +96,11 @@ class Webhook extends React.Component {
         this.setState({pageEdit: this.props.pages[j]})
       }
     }
-    this.setState({id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId, subscriptionsEdit: subscriptionsEdit, isShowingModalEdit: true})
+    this.setState({id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId, subscriptionsEdit: subscriptionsEdit})
   }
 
   closeDialogEdit () {
-    this.setState({isShowingModalEdit: false, errorUrl: '', errorToken: false})
+    this.setState({errorUrl: '', errorToken: false})
   }
   updateURL (e) {
     this.setState({url: e.target.value, errorUrl: ''})
@@ -295,7 +291,7 @@ class Webhook extends React.Component {
     this.props.enabled({_id: id, isEnabled: data}, this.msg)
   }
   gotoView (page) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}
     })
@@ -312,27 +308,34 @@ class Webhook extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Webhook Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='LxlrENo0vW8'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -344,7 +347,7 @@ class Webhook extends React.Component {
                   </span>
                 </li>
               </ul>
-              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} style={{marginTop: '15px'}} data-toggle='modal' data-target='#m_modal_1_2'>
+              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#endpoint" style={{marginTop: '15px'}}>
                 <span>
                   <i className='la la-plus' />
                   <span>
@@ -362,17 +365,24 @@ class Webhook extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='form-group m-form__group'>
                         <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank'>documentation</a>.
-                        Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                        Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a> to understand this feature.
                         </div>
                       </div>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Create Endpoint</h3>
+                      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="endpoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                          <div className="modal-content">
+                            <div style={{ display: 'block' }} className="modal-header">
+                              <h5 className="modal-title" id="exampleModalLabel">
+                              Create Endpoint
+								  	          </h5>
+                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">
+                                  &times;
+											          </span>
+                              </button>
+                            </div>
+                            <div style={{ color: 'black' }} className="modal-body">
                             <div className='m-form'>
                               <div className='form-group m-form__group'>
                                 <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
@@ -422,81 +432,96 @@ class Webhook extends React.Component {
                             <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                               <div className='m-form__actions' style={{'float': 'right'}}>
                                 <button className='btn btn-primary'
-                                  onClick={this.save}> Save
+                                  onClick={this.save}
+                                  data-dismiss='modal'> Save
                                 </button>
                                 <button
-                                  className='btn btn-secondary' style={{'margin-left': '10px'}} onClick={this.cancel}>
+                                  className='btn btn-secondary'
+                                  style={{'margin-left': '10px'}}
+                                  onClick={this.cancel}
+                                  data-dismiss='modal'>
                                   Cancel
                                 </button>
                               </div>
                             </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalEdit &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogEdit}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogEdit}>
-                            <h3>Edit Endpoint</h3>
-                            <div className='m-form'>
-                              <div className='form-group m-form__group'>
-                                <label className='control-label'>Page:&nbsp;&nbsp;&nbsp;</label>
-                                <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="editEndpoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                          <div className="modal-content">
+                            <div style={{ display: 'block' }} className="modal-header">
+                              <h5 className="modal-title" id="exampleModalLabel">
+                                Edit Endpoint
+									            </h5>
+                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">
+                                  &times;
+											          </span>
+                              </button>
+                            </div>
+                            <div style={{ color: 'black' }} className="modal-body">
+                              <div className='m-form'>
+                                <div className='form-group m-form__group'>
+                                  <label className='control-label'>Page:&nbsp;&nbsp;&nbsp;</label>
+                                  <span>
+                                    <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{this.state.pageEdit.pageName}</span>
-                                </span>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Callback URL</label>
-                                  {this.state.errorUrl &&
-                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a callback URL</bold></div>
+                                  </span>
+                                  <div id='question' className='form-group m-form__group'>
+                                    <label className='control-label'>Callback URL</label>
+                                    {this.state.errorUrl &&
+                                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a callback URL</bold></div>
                                     }
-                                  <input className='form-control'
-                                    value={this.state.urlEdit} onChange={(e) => this.updateURLEdit(e)} />
-                                </div>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Verify Token:</label>
-                                  {this.state.errorToken &&
-                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter token</bold></div>
-                                    }
-                                  <input className='form-control'
-                                    value={this.state.token} onChange={(e) => this.updateToken(e)} />
-                                </div>
-                              </div>
-                              <div className='form-group m-form__group'>
-                                <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
-                                <span style={{width: '30px', overflow: 'inherit'}}>
-                                  <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllCheckedEdit} onChange={this.handleSubscriptionClickEdit} />&nbsp;&nbsp;Select All</span>
-                                <br />
-                                {this.state.subscriptionsEdit.map(subscription => (
-                                  <div className='row'>
-                                    <div className='col-md-2' />
-                                    <div className='col-md-10'>
-                                      <span style={{marginLeft: '13px'}}>
-                                        <input type='checkbox' value={subscription.name} onChange={this.handleSubscriptionClickEdit} checked={subscription.selected} />&nbsp;&nbsp;
-                                        {subscription.name}
-                                      </span>
-                                    </div>
-                                    <br />
+                                    <input className='form-control'
+                                      value={this.state.urlEdit} onChange={(e) => this.updateURLEdit(e)} />
                                   </div>
+                                  <div id='question' className='form-group m-form__group'>
+                                    <label className='control-label'>Verify Token:</label>
+                                    {this.state.errorToken &&
+                                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter token</bold></div>
+                                    }
+                                    <input className='form-control'
+                                      value={this.state.token} onChange={(e) => this.updateToken(e)} />
+                                  </div>
+                                </div>
+                                <div className='form-group m-form__group'>
+                                  <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
+                                <span style={{ width: '30px', overflow: 'inherit' }}>
+                                    <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllCheckedEdit} onChange={this.handleSubscriptionClickEdit} />&nbsp;&nbsp;Select All</span>
+                                  <br />
+                                  {this.state.subscriptionsEdit.map(subscription => (
+                                    <div className='row'>
+                                      <div className='col-md-2' />
+                                      <div className='col-md-10'>
+                                        <span style={{ marginLeft: '13px' }}>
+                                          <input type='checkbox' value={subscription.name} onChange={this.handleSubscriptionClickEdit} checked={subscription.selected} />&nbsp;&nbsp;
+                                        {subscription.name}
+                                        </span>
+                                      </div>
+                                      <br />
+                                    </div>
                                   ))}
+                                </div>
+                              </div>
+                              <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                                <div className='m-form__actions' style={{ 'float': 'right' }}>
+                                  <button className='btn btn-primary'
+                                    onClick={this.saveEdited}
+                                    data-dismiss='modal'> Save
+                                </button>
+                                  <button onClick={this.closeDialogEdit}
+                                    className='btn btn-secondary' style={{ 'margin-left': '10px' }}
+                                    data-dismiss='modal'>
+                                    Cancel
+                                </button>
+                                </div>
                               </div>
                             </div>
-                            <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                              <div className='m-form__actions' style={{'float': 'right'}}>
-                                <button className='btn btn-primary'
-                                  onClick={this.saveEdited}> Save
-                                </button>
-                                <button onClick={this.closeDialogEdit}
-                                  className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                          </div>
+                        </div>
+                      </div>
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -519,7 +544,7 @@ class Webhook extends React.Component {
                                             <br />
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{borderColor: '#5867dd', color: '#5867dd', marginRight: '10px'}} onClick={() => this.showDialogEdit(webhook)}>
+                                            <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{borderColor: '#5867dd', color: '#5867dd', marginRight: '10px'}} data-toggle="modal" data-target="#editEndpoint" onClick={() => this.showDialogEdit(webhook)}>
                                              Edit
                                            </button>
                                           </div>

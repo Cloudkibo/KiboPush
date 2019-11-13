@@ -8,8 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadCategoriesList, addCategory, loadPollDetails, editPoll } from '../../redux/actions/templates.actions'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 
 class EditPoll extends React.Component {
@@ -51,7 +50,7 @@ class EditPoll extends React.Component {
 
     document.title = `${title} | Edit Poll`;
   }
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var j = 0; j < nextprops.pollDetails.category.length; j++) {
@@ -199,26 +198,34 @@ class EditPoll extends React.Component {
     }
     return (
       <div style={{width: '100%'}}>
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Add Category</h3>
-              <input className='form-control'
-                placeholder='Enter category' ref='newCategory' />
-              <br />
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.closeDialog()
-                  this.saveCategory()
-                }}>Save
-              </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <input className='form-control'
+                  placeholder='Enter category' ref='newCategory' />
+                <br />
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeAddCategoryDialog()
+                    this.saveCategory()
+                  }} data-dismiss='modal'>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -243,7 +250,7 @@ class EditPoll extends React.Component {
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
                           <select id='selectcategory' />
-                          <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                          <button data-toggle="modal" data-target="#create" onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
                            Add category
                          </button>
                         </div>

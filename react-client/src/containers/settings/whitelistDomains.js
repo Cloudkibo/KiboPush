@@ -118,7 +118,7 @@ class WhiteListDomains extends React.Component {
       this.msg.error('Please enter a valid URL, including the protocol identifier (e.g. "https://"")')
     }
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
   render () {
     var alertOptions = {

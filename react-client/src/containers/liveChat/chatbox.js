@@ -22,7 +22,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { Popover, PopoverBody} from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import {
@@ -33,11 +33,10 @@ import {
   validURL
 } from './utilities'
 import { ReactMic } from 'react-mic'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactTooltip from 'react-tooltip'
 import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 import moment from 'moment'
@@ -58,7 +57,7 @@ const styles = {
 }
 
 class ChatBox extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.previousScrollHeight = undefined
     this.newMessage = false
@@ -80,18 +79,15 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
-      isShowingModal: false,
-      isShowingModalRecording: false,
       disabledValue: false,
       record: false,
       buttonState: 'start',
       recording: false,
       scrolling: true,
-      isShowingModalPending: false,
       pendingResponseValue: '',
       sessionValid: false
     }
-    props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
+    props.fetchUserChats(this.props.currentSession._id, { page: 'first', number: 25 })
     props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
@@ -124,12 +120,8 @@ class ChatBox extends React.Component {
     this.createGallery = this.createGallery.bind(this)
     this.getmainURL = this.getmainURL.bind(this)
     this.geturl = this.geturl.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.showDialogPending = this.showDialogPending.bind(this)
     this.closeDialogPending = this.closeDialogPending.bind(this)
-    this.showDialogRecording = this.showDialogRecording.bind(this)
-    this.closeDialogRecording = this.closeDialogRecording.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
@@ -144,15 +136,16 @@ class ChatBox extends React.Component {
     this.isUserSessionValid = this.isUserSessionValid.bind(this)
   }
 
-  isUserSessionValid (chats) {
+  isUserSessionValid(chats) {
     var userMessages = []
     var sessionValid = false
-    chats.map((msg, index) => {
+    for (let a = 0; a < chats.length; a++) {
+      let msg = chats[a]
       if (msg.format === 'facebook') {
         userMessages.push(msg)
       }
-    })
-    var lastMessage = userMessages[userMessages.length -1]
+    }
+    var lastMessage = userMessages[userMessages.length - 1]
     if (lastMessage) {
       sessionValid = moment(lastMessage.datetime).isAfter(moment().subtract(24, 'hours'))
     }
@@ -162,35 +155,19 @@ class ChatBox extends React.Component {
     return sessionValid
   }
 
-  removeUrlMeta () {
+  removeUrlMeta() {
     this.props.fetchUrlMeta('')
   }
 
-  showDialogRecording () {
-    this.setState({isShowingModalRecording: true})
+  showDialogPending(value) {
+    this.setState({ pendingResponseValue: value })
   }
 
-  closeDialogRecording () {
-    this.setState({isShowingModalRecording: false})
+  closeDialogPending() {
+    this.setState({ pendingResponseValue: '' })
   }
 
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  showDialogPending (value) {
-    this.setState({isShowingModalPending: true, pendingResponseValue: value })
-  }
-
-  closeDialogPending () {
-    this.setState({isShowingModalPending: false, pendingResponseValue: ''})
-  }
-
-  shouldLoad () {
+  shouldLoad() {
     if (this.props.userChat.length < this.props.chatCount) {
       return true
     } else {
@@ -198,32 +175,32 @@ class ChatBox extends React.Component {
     }
   }
 
-  loadMoreMessage () {
-    this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id})
+  loadMoreMessage() {
+    this.props.fetchUserChats(this.props.currentSession._id, { page: 'next', number: 25, last_id: this.props.userChat[0]._id })
   }
 
-  handleAgentsForDisbaledValue (teamAgents) {
+  handleAgentsForDisbaledValue(teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       agentIds.push(teamAgents[i].agentId._id)
     }
     if (!agentIds.includes(this.props.user._id)) {
-      this.setState({disabledValue: true})
+      this.setState({ disabledValue: true })
     }
   }
 
-  getDisabledValue () {
-    this.setState({disabledValue: false})
+  getDisabledValue() {
+    this.setState({ disabledValue: false })
     if (this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
-        this.setState({disabledValue: true})
+        this.setState({ disabledValue: true })
       } else if (this.props.currentSession.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
       }
     }
   }
 
-  getRepliedByMsg (msg) {
+  getRepliedByMsg(msg) {
     if (
       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
       msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
@@ -234,7 +211,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
@@ -260,7 +237,7 @@ class ChatBox extends React.Component {
     scrollSpy.update()
   }
 
-  updateScrollTop () {
+  updateScrollTop() {
     console.log('updateScrollTop refs.chatScroll.scrollHeight', this.refs.chatScroll.scrollHeight)
     console.log('updateScrollTop previousScrollHeight', this.previousScrollHeight)
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
@@ -269,56 +246,56 @@ class ChatBox extends React.Component {
     } else {
       this.scrollToTop()
       if (this.props.userChat && this.props.userChat.length > 0) {
-        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
+        setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, { delay: 300, containerId: 'chat-container' }), 3000)
       }
       this.props.disableScroll()
     }
   }
 
-  componetWillUnmount () {
+  componetWillUnmount() {
     Events.scrollEvent.remove('begin')
     Events.scrollEvent.remove('end')
   }
 
-  removeAttachment () {
+  removeAttachment() {
     if (this.state.uploadedId !== '') {
       this.props.deletefile(this.state.uploadedId, this.handleRemove)
     }
   }
 
-  showEmojiPicker () {
-    this.setState({showEmojiPicker: true, scrolling: false})
+  showEmojiPicker() {
+    this.setState({ showEmojiPicker: true, scrolling: false })
   }
 
-  toggleEmojiPicker () {
-    this.setState({showEmojiPicker: !this.state.showEmojiPicker})
+  toggleEmojiPicker() {
+    this.setState({ showEmojiPicker: !this.state.showEmojiPicker })
   }
 
-  showRecorder () {
-    this.setState({showRecorder: true})
+  showRecorder() {
+    this.setState({ showRecorder: true })
   }
 
-  closeRecorder () {
-    this.setState({showRecorder: false})
+  closeRecorder() {
+    this.setState({ showRecorder: false })
   }
 
-  startRecording () {
-    this.setState({record: true, buttonState: 'stop'})
+  startRecording() {
+    this.setState({ record: true, buttonState: 'stop' })
   }
 
-  stopRecording () {
+  stopRecording() {
     this.setState({
       record: false, buttonState: 'start'
     })
   }
 
-  onData (recordedBlob) {
+  onData(recordedBlob) {
     console.log('chunk of real-time data is: ', recordedBlob)
   }
 
-  onStop (recordedBlob) {
-    this.closeDialogRecording()
-    var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
+  onStop(recordedBlob) {
+    // this.closeDialogRecording()
+    var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', { type: 'audio/mp3', lastModified: Date.now() })
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -332,29 +309,29 @@ class ChatBox extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       fileData.append('componentType', 'audio')
-      this.setState({uploadDescription: 'File is uploading..'})
+      this.setState({ uploadDescription: 'File is uploading..' })
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
   }
 
-  showStickers () {
-    this.setState({showStickers: true, scrolling: false})
+  showStickers() {
+    this.setState({ showStickers: true, scrolling: false })
   }
 
-  toggleStickerPicker () {
-    this.setState({showStickers: !this.state.showStickers})
+  toggleStickerPicker() {
+    this.setState({ showStickers: !this.state.showStickers })
   }
 
-  showGif () {
-    this.setState({showGifPicker: true, scrolling: false})
+  showGif() {
+    this.setState({ showGifPicker: true, scrolling: false })
   }
 
-  toggleGifPicker () {
-    this.setState({showGifPicker: !this.state.showGifPicker})
+  toggleGifPicker() {
+    this.setState({ showGifPicker: !this.state.showGifPicker })
   }
 
-  sendSticker (sticker) {
+  sendSticker(sticker) {
     var payload = {
       componentType: 'sticker',
       fileurl: sticker.image.hdpi
@@ -373,7 +350,7 @@ class ChatBox extends React.Component {
     this.newMessage = true
   }
 
-  sendGif (gif) {
+  sendGif(gif) {
     var payload = {
       componentType: 'gif',
       fileurl: gif.images.downsized.url
@@ -392,7 +369,7 @@ class ChatBox extends React.Component {
     this.newMessage = true
   }
 
-  sendThumbsUp () {
+  sendThumbsUp() {
     this.setState({
       componentType: 'thumbsUp',
       scrolling: true
@@ -407,10 +384,10 @@ class ChatBox extends React.Component {
     data.format = 'convos'
     this.props.userChat.push(data)
     this.newMessage = true
-    this.setState({textAreaValue: ''})
+    this.setState({ textAreaValue: '' })
   }
 
-  resetFileComponent () {
+  resetFileComponent() {
     this.newMessage = true
     this.setState({
       attachment: [],
@@ -424,7 +401,7 @@ class ChatBox extends React.Component {
     })
   }
 
-  handleTextChange (e) {
+  handleTextChange(e) {
     var isUrl = getmetaurl(e.target.value)
     if (isUrl !== null && isUrl !== '') {
       this.props.fetchUrlMeta(isUrl)
@@ -443,7 +420,7 @@ class ChatBox extends React.Component {
       textAreaValue: e.target.value
     })
   }
-  setMessageData (session, payload) {
+  setMessageData(session, payload) {
     console.log('current session', session)
     var data = ''
     data = {
@@ -483,7 +460,7 @@ class ChatBox extends React.Component {
     // })
     return data
   }
-  setDataPayload (component) {
+  setDataPayload(component) {
     var payload = ''
     if (component === 'attachment') {
       payload = {
@@ -521,7 +498,7 @@ class ChatBox extends React.Component {
     return payload
   }
 
-  onEnter (e) {
+  onEnter(e) {
     var isUrl = getmetaurl(this.state.textAreaValue)
     if (e.which === 13) {
       e.preventDefault()
@@ -539,12 +516,12 @@ class ChatBox extends React.Component {
           this.props.sendAttachment(data, this.handleSendAttachment)
           data.format = 'convos'
           this.props.userChat.push(data)
-          this.setState({uploaded: false})
+          this.setState({ uploaded: false })
         } else if (isUrl !== null && isUrl !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
           this.props.sendChatMessage(data, this.props.fetchOpenSessions)
-          this.setState({textAreaValue: '', displayUrlMeta: false})
+          this.setState({ textAreaValue: '', displayUrlMeta: false })
           this.removeUrlMeta()
           data.format = 'convos'
           this.props.userChat.push(data)
@@ -552,47 +529,47 @@ class ChatBox extends React.Component {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
           this.props.sendChatMessage(data, this.props.fetchOpenSessions)
-          this.setState({textAreaValue: ''})
+          this.setState({ textAreaValue: '' })
           data.format = 'convos'
           this.props.userChat.push(data)
         }
         this.newMessage = true
-        this.setState({scrolling: true})
+        this.setState({ scrolling: true })
         this.props.updatePendingSession(this.props.currentSession, false)
       }
     }
   }
 
-  handleSendAttachment (res) {
+  handleSendAttachment(res) {
     if (res.status === 'success') {
       this.resetFileComponent()
     }
   }
 
-  handleRemove (res) {
+  handleRemove(res) {
     if (res.status === 'success') {
       this.resetFileComponent()
     }
     if (res.status === 'failed') {
-      this.setState({uploaded: true, removeFileDescription: res.description})
+      this.setState({ uploaded: true, removeFileDescription: res.description })
     }
   }
 
-  setComponentType (file) {
+  setComponentType(file) {
     if (file.type.match('image.*')) {
-      this.setState({componentType: 'image'})
+      this.setState({ componentType: 'image' })
     } else if (file.type.match('audio.*')) {
-      this.setState({componentType: 'audio'})
+      this.setState({ componentType: 'audio' })
     } else if (file.type.match('video.*')) {
-      this.setState({componentType: 'video'})
+      this.setState({ componentType: 'video' })
     } else if (file.type.match('application.*') || file.type.match('text.*')) {
-      this.setState({componentType: 'file'})
+      this.setState({ componentType: 'file' })
     } else {
-      this.setState({componentType: 'Not allowed'})
+      this.setState({ componentType: 'Not allowed' })
     }
   }
 
-  onFileChange (e) {
+  onFileChange(e) {
     var files = e.target.files
     console.log('e.target.files', e.target.files)
     var file = e.target.files[files.length - 1]
@@ -615,13 +592,13 @@ class ChatBox extends React.Component {
         fileData.append('filesize', file.size)
         fileData.append('componentType', this.state.componentType)
         console.log('file', file)
-        this.setState({uploadDescription: 'File is uploading..'})
+        this.setState({ uploadDescription: 'File is uploading..' })
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
     }
     this.textInput.focus()
   }
-  handleUpload (res) {
+  handleUpload(res) {
     if (res.status === 'failed') {
       this.setState({
         uploaded: false,
@@ -634,11 +611,11 @@ class ChatBox extends React.Component {
       })
     }
     if (res.status === 'success') {
-      this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
+      this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url })
     }
   }
 
-  onTestURLVideo (url) {
+  onTestURLVideo(url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)
 
@@ -646,7 +623,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  onTestURLAudio (url) {
+  onTestURLAudio(url) {
     var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
     var truef = AUDIO_EXTENSIONS.test(url)
 
@@ -654,13 +631,13 @@ class ChatBox extends React.Component {
     }
   }
 
-  scrollToTop () {
+  scrollToTop() {
     console.log('scrollToTop')
-    this.top.scrollIntoView({behavior: 'instant'})
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps chatbox.js')
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js')
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
     }
@@ -674,20 +651,20 @@ class ChatBox extends React.Component {
     this.getDisabledValue()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
-        this.setState({displayUrlMeta: false})
+        this.setState({ displayUrlMeta: false })
       }
-      this.setState({urlmeta: nextProps.urlMeta})
+      this.setState({ urlmeta: nextProps.urlMeta })
     }
   }
 
-  setEmoji (emoji) {
+  setEmoji(emoji) {
     this.setState({
       textAreaValue: this.state.textAreaValue + emoji.native,
       showEmojiPicker: false
     })
   }
 
-  componentDidUpdate (nextProps) {
+  componentDidUpdate(nextProps) {
     if (this.newMessage) {
       console.log('componentDidUpdate newMessage')
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
@@ -707,21 +684,21 @@ class ChatBox extends React.Component {
     }
   }
 
-  createGallery (cards) {
+  createGallery(cards) {
     var temp = []
 
     for (var i = 0; i < cards.length; i++) {
       temp.push({
         elemnet: (<div>
-          <div style={{width: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
-            <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-              <a href={cards[i].image_url} target='_blank'>
-                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].image_url} />
+          <div style={{ width: 200, borderRadius: '10px' }} className='ui-block hoverbordersolid'>
+            <div style={{ backgroundColor: '#F2F3F8', padding: '5px' }} className='cardimageblock'>
+              <a href={cards[i].image_url} target='_blank' rel='noopener noreferrer'>
+                <img alt='' style={{ maxWidth: 180, borderRadius: '5px' }} src={cards[i].image_url} />
               </a>
             </div>
-            <div style={{marginTop: '10px', padding: '5px'}}>
-              <div style={{textAlign: 'left', fontWeight: 'bold'}}>{cards[i].title}</div>
-              <div style={{textAlign: 'left', color: '#ccc'}}>{cards[i].subtitle}</div>
+            <div style={{ marginTop: '10px', padding: '5px' }}>
+              <div style={{ textAlign: 'left', fontWeight: 'bold' }}>{cards[i].title}</div>
+              <div style={{ textAlign: 'left', color: '#ccc' }}>{cards[i].subtitle}</div>
             </div>
           </div>
         </div>),
@@ -735,15 +712,15 @@ class ChatBox extends React.Component {
     )
   }
 
-  geturl (payload) {
+  geturl(payload) {
     return `https://maps.googleapis.com/maps/api/staticmap?center=${payload.coordinates.lat},${payload.coordinates.long}&zoom=13&scale=false&size=400x200&maptype=roadmap&format=png&key=AIzaSyDDTb4NWqigQmW_qCVmSAkmZIIs3tp1x8Q&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7Clabel:1%7C${payload.coordinates.lat},${payload.coordinates.long}`
   }
 
-  getmainURL (payload) {
+  getmainURL(payload) {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
 
-  handleAgentsForResolved (teamAgents) {
+  handleAgentsForResolved(teamAgents) {
     let agentIds = []
     console.log('teamAgents', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
@@ -755,7 +732,7 @@ class ChatBox extends React.Component {
     if (agentIds.length > 0) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been marked resolved by ${this.props.user.name}.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
+        category: { type: 'chat_session', id: this.props.currentSession._id },
         agentIds: agentIds,
         companyId: this.props.currentSession.companyId
       }
@@ -763,7 +740,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  handleAgentsForReopen (teamAgents) {
+  handleAgentsForReopen(teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId._id !== this.props.user._id) {
@@ -773,7 +750,7 @@ class ChatBox extends React.Component {
     if (agentIds.length > 0) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been reopened by ${this.props.user.name}.`,
-        category: {type: 'chat_session', id: this.props.currentSession._id},
+        category: { type: 'chat_session', id: this.props.currentSession._id },
         agentIds: agentIds,
         companyId: this.props.currentSession.companyId
       }
@@ -781,7 +758,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  changeStatus (e, status, id) {
+  changeStatus(e, status, id) {
     if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'resolved') {
       this.msg.error('You can not resolve chat session. Only assigned agent can resolve it.')
     } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'new') {
@@ -791,12 +768,12 @@ class ChatBox extends React.Component {
     } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
       this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
     } else {
-      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox)
+      this.props.changeStatus({ _id: id, status: status }, this.props.changeActiveSessionFromChatbox)
       if (status === 'resolved' && this.props.currentSession.is_assigned) {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
             message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been marked resolved by ${this.props.user.name}.`,
-            category: {type: 'chat_session', id: this.props.currentSession._id},
+            category: { type: 'chat_session', id: this.props.currentSession._id },
             agentIds: [this.props.currentSession.assigned_to.id],
             companyId: this.props.currentSession.companyId
           }
@@ -808,7 +785,7 @@ class ChatBox extends React.Component {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
             message: `Session of subscriber ${this.props.currentSession.firstName + ' ' + this.props.currentSession.lastName} has been reopened by ${this.props.user.name}.`,
-            category: {type: 'chat_session', id: this.props.currentSession._id},
+            category: { type: 'chat_session', id: this.props.currentSession._id },
             agentIds: [this.props.currentSession.assigned_to.id],
             companyId: this.props.currentSession.companyId
           }
@@ -819,14 +796,14 @@ class ChatBox extends React.Component {
       }
     }
   }
-  handleStart (stream) {
+  handleStart(stream) {
     this.setState({
       recording: true
     })
 
     console.log('Recording Started.')
   }
-  handleStop (blob) {
+  handleStop(blob) {
     console.log('blob', blob)
     this.setState({
       recording: false
@@ -856,115 +833,109 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
-        <Popover placement='right' className='subscriberPopover' isOpen={this.state.isShowingModal} target='resolve_session_in_checkbox' toggle={this.closeDialog}>
-            <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
-            <PopoverBody>
-              <div className='row' style={{ minWidth: '250px' }}>
-                <div className='col-12'>
-                  <p>Are you sure you want to resolve this chat session?</p>
-                  <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.changeStatus(e, 'resolved', this.props.currentSession._id)
-                    this.closeDialog()
-                  }}>
-                    Yes
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="pendingResponse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    {this.state.pendingResponseValue ? 'Add ' : 'Remove '}Pending Response
+  									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+  											</span>
                   </button>
                 </div>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={this.closeDialog}>
-                    No
-                  </button>
+                <div style={{ color: 'black' }} className="modal-body">
+                  <p>{this.state.pendingResponseValue ? 'Are you sure you want to mark this session as pending response?' : 'Are you sure you want to remove this session as pending response?'}</p>
+                  <div style={{ width: '100%', textAlign: 'center' }}>
+                    <div style={{ display: 'inline-block', padding: '5px' }}>
+                      <button className='btn btn-primary' onClick={(e) => {
+                        this.props.removePending(this.props.currentSession, this.state.pendingResponseValue)
+                        this.closeDialogPending()
+                      }}
+                        data-dismiss='modal'>
+                        Yes
+                    </button>
+                    </div>
+                    <div style={{ display: 'inline-block', padding: '5px' }}>
+                      <button className='btn btn-primary' data-dismiss='modal'>
+                        No
+                    </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-                </div>
-              </div>
-            </PopoverBody>
-          </Popover>
-        {
-          this.state.isShowingModalPending &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogPending}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogPending}>
-              <h3>{this.state.pendingResponseValue ? 'Add ' : 'Remove '}Pending Response</h3>
-              <p>{this.state.pendingResponseValue ? 'Are you sure you want to mark this session as pending response?' : 'Are you sure you want to remove this session as pending response?'}</p>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.props.removePending(this.props.currentSession, this.state.pendingResponseValue)
-                    this.closeDialogPending()
-                  }}>
-                    Yes
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="voiceRecording" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Voice Recordings
+  									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+  											</span>
                   </button>
                 </div>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={this.closeDialogPending}>
-                    No
-                  </button>
-                </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalRecording &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogRecording}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogRecording}>
-              {/*  <div ref='app'>
-                <h3>Audio Recorder</h3>
-                <MediaCapturer
-                constraints={{ audio: true }}
-                mimeType='audio/webm'
-                timeSlice={10}
-                onStart={this.handleStart}
-                onStop={this.onStop}
-                onError={this.handleError}
-                render={({ start, stop, pause, resume }) =>
-                <div>
-                <button onClick={start}>Start</button>
-                <button onClick={stop}>Stop</button>
-                </div>
-                } />
-                </div> */}
-              <h3>Voice Recording</h3>
-              <div>
-                <ReactMic style={{width: '450px'}}
-                  width= '450'
-                  record={this.state.record}
-                  className='sound-wave'
+                <div style={{ color: 'black' }} className="modal-body">
+                  {/*  <div ref='app'>
+                  <h3>Audio Recorder</h3>
+                  <MediaCapturer
+                  constraints={{ audio: true }}
+                  mimeType='audio/webm'
+                  timeSlice={10}
+                  onStart={this.handleStart}
                   onStop={this.onStop}
-                  strokeColor='#000000'
-                  mimeType='audio.mp3' />
-              </div>
-              <br />
-              {this.state.buttonState === 'start'
-              ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
-                <div style={{display: 'block', fontSize: '14px'}}>
-                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
-                  <a role='button' title='Record' onClick={this.startRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
-                    <div style={{backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                      <span style={{left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}>Record</span>
+                  onError={this.handleError}
+                  render={({ start, stop, pause, resume }) =>
+                  <div>
+                  <button onClick={start}>Start</button>
+                  <button onClick={stop}>Stop</button>
+                  </div>
+                  } />
+                  </div> */}
+                  <div>
+                    <ReactMic style={{ width: '450px' }}
+                      width='450'
+                      record={this.state.record}
+                      className='sound-wave'
+                      onStop={this.onStop}
+                      strokeColor='#000000'
+                      mimeType='audio.mp3' />
+                  </div>
+                  <br />
+                  {this.state.buttonState === 'start'
+                    ? <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
+                      <div style={{ display: 'block', fontSize: '14px' }}>
+                        <div style={{ height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
+                        <a href='#/' role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                          <div style={{ backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                            <span style={{ left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }}>Record</span>
+                          </div>
+                        </a>
+                      </div>
                     </div>
-                  </a>
+                    : <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
+                      <div style={{ display: 'block', fontSize: '14px' }}>
+                        <div style={{ height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
+                        <a href='#/' role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
+                          <div style={{ borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                            <span style={{ height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }} />
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
-              : <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
-                <div style={{display: 'block', fontSize: '14px'}}>
-                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
-                  <a role='button' title='Record' onClick={this.stopRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
-                    <div style={{borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}} />
-                    </div>
-                  </a>
-                </div>
-              </div>
-            }
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
+
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <ReactTooltip
           place='bottom'
@@ -1054,19 +1025,19 @@ class ChatBox extends React.Component {
               this.props.currentSession.status === 'new'
               ? <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-              : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+              : <i  style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i  id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={(e) => { this.changeStatus(e, 'resolved', this.props.currentSession._id)}} data-tip='Mark as done' className='la la-check' />
               </div>
               : <div style={{float: 'right'}}>
                 {this.props.currentSession.pendingResponse
-                ? <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
-                : <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
+                ? <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(false)} data-tip='Remove Pending Flag' className='la la-user-times' />
+                : <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={() => this.showDialogPending(true)} data-tip='Add Pending Flag' className='la la-user-plus' />
                 }
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
-                <i id='resolve_session_in_checkbox' style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
                 }} className='fa fa-envelope-open-o' />
               </div>
@@ -1134,8 +1105,9 @@ class ChatBox extends React.Component {
                                                   />
                                                 </div>
                                                 : att.type === 'image'
-                                                ? <a key={index} href={att.payload.url} target='_blank'>
+                                                ? <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                   <img
+                                                    alt=''
                                                     src={att.payload.url}
                                                     style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
                                                   />
@@ -1145,8 +1117,8 @@ class ChatBox extends React.Component {
                                                   <tbody>
                                                     <tr>
                                                       <td>
-                                                        <a href={this.getmainURL(att.payload)} target='_blank'>
-                                                          <img style={{width: '200px'}} src={this.geturl(att.payload)} />
+                                                        <a href={this.getmainURL(att.payload)} target='_blank' rel='noopener noreferrer'>
+                                                          <img alt='' style={{width: '200px'}} src={this.geturl(att.payload)} />
                                                         </a>
                                                       </td>
                                                     </tr>
@@ -1158,7 +1130,7 @@ class ChatBox extends React.Component {
                                                   </tbody>
                                                 </table>
                                                 : att.type === 'file' &&
-                                                <a key={index} href={att.payload.url} target='_blank'>
+                                                <a key={index} href={att.payload.url} target='_blank' rel='noopener noreferrer'>
                                                   <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                                                 </a>
                                               ))
@@ -1187,7 +1159,7 @@ class ChatBox extends React.Component {
                                                       </td>
                                                       <td style={{width: '70%'}}>
                                                         <div>
-                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                             <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
@@ -1202,13 +1174,13 @@ class ChatBox extends React.Component {
                                                         <div style={{width: 45, height: 45}}>
                                                           {
                                                             msg.url_meta.image &&
-                                                            <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                            <img alt='' src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
                                                           }
                                                         </div>
                                                       </td>
                                                       <td>
                                                         <div>
-                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                          <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                             <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
@@ -1310,7 +1282,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
+                                            <a download={msg.payload.fileName} target='_blank' rel='noopener noreferrer' href={msg.payload.fileurl.url} >
                                               <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                             </a>
                                           </div>
@@ -1331,8 +1303,8 @@ class ChatBox extends React.Component {
                                                 <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                                   {
                                                     msg.payload.image_url &&
-                                                    <a href={msg.payload.image_url} target='_blank'>
-                                                      <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
+                                                    <a href={msg.payload.image_url} target='_blank' rel='noopener noreferrer'>
+                                                      <img alt='' style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.image_url} />
                                                     </a>
                                                   }
                                                 </div>
@@ -1346,7 +1318,7 @@ class ChatBox extends React.Component {
                                                 {
                                                   msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                                   msg.payload.buttons.map(b => (
-                                                    <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                    <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
                                                       {b.type === 'element_share' ? 'Share' : b.title}
                                                     </a>
                                                   ))
@@ -1374,8 +1346,8 @@ class ChatBox extends React.Component {
                                                       <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                                         {
                                                           card.image_url &&
-                                                          <a href={card.image_url} target='_blank'>
-                                                            <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
+                                                          <a href={card.image_url} target='_blank' rel='noopener noreferrer'>
+                                                            <img alt='' style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
                                                           </a>
                                                         }
                                                       </div>
@@ -1389,8 +1361,8 @@ class ChatBox extends React.Component {
                                                       {
                                                         card.buttons && card.buttons.length > 0 &&
                                                         card.buttons.map(b => (
-                                                          <a href={b.url} target='_blank' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
-                                                            {b.type == 'element_share' ? 'Share' : b.title}
+                                                          <a href={b.url} target='_blank' rel='noopener noreferrer' style={{borderColor: '#36a3f7', width: '100%', marginTop: '5px'}} className='btn btn-outline-info btn-sm'>
+                                                            {b.type === 'element_share' ? 'Share' : b.title}
                                                           </a>
                                                         ))
                                                       }
@@ -1443,7 +1415,7 @@ class ChatBox extends React.Component {
                                                             {
                                                               list.image_url &&
                                                               <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '80%', minWidth: '80%', marginLeft: '20%'}} >
-                                                                <img src={list.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
+                                                                <img alt='' src={list.image_url} style={{maxWidth: '100%', maxHeight: '100%'}} />
                                                               </div>
                                                             }
                                                           </div>
@@ -1484,6 +1456,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl.url}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                               />
@@ -1501,6 +1474,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1518,6 +1492,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1535,6 +1510,7 @@ class ChatBox extends React.Component {
                                               {this.getRepliedByMsg(msg)}
                                             </div>
                                             <img
+                                              alt=''
                                               src={msg.payload.fileurl}
                                               style={{maxWidth: '150px', maxHeight: '85px'}}
                                             />
@@ -1632,7 +1608,7 @@ class ChatBox extends React.Component {
                                                           </td>
                                                           <td style={{width: '70%'}}>
                                                             <div>
-                                                              <a href={msg.url_meta.url} target='_blank'>
+                                                              <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                 <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                               </a>
                                                               <br />
@@ -1647,13 +1623,13 @@ class ChatBox extends React.Component {
                                                             <div style={{width: 45, height: 45}}>
                                                               {
                                                                 msg.url_meta.image &&
-                                                                <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                                <img alt='' src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
                                                               }
                                                             </div>
                                                           </td>
                                                           <td>
                                                             <div>
-                                                              <a href={msg.url_meta.url} target='_blank'>
+                                                              <a href={msg.url_meta.url} target='_blank' rel='noopener noreferrer'>
                                                                 <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                               </a>
                                                               <br />
@@ -1684,7 +1660,7 @@ class ChatBox extends React.Component {
                                               {
                                                 validURL(msg.payload.text)
                                                 ? <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
-                                                  <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                  <a style={{color: 'white'}} href={msg.payload.text} target='_blank' rel='noopener noreferrer'>
                                                     <p>{msg.payload.text}</p>
                                                   </a>
                                                 </div>
@@ -1732,6 +1708,7 @@ class ChatBox extends React.Component {
                                                 key={i}
                                                 href={b.url}
                                                 target='_blank'
+                                                rel='noopener noreferrer'
                                                 style={{
                                                   margin: '3px 3px -4px 3px',
                                                   borderRadius: msg.payload.buttons.length === i + 1 ? '0px 0px 10px 10px' : 0,
@@ -1740,7 +1717,7 @@ class ChatBox extends React.Component {
                                                 }}
                                                 className='btn btn-outline-primary btn-block'
                                               >
-                                                {b.type == 'element_share' ? 'Share' : b.title}
+                                                {b.type === 'element_share' ? 'Share' : b.title}
                                               </a>
                                             ))
                                           }
@@ -1776,7 +1753,6 @@ class ChatBox extends React.Component {
                           showSkinTones={false}
                           custom={[]}
                           autoFocus={false}
-                          showPreview={false}
                           onClick={(emoji, event) => this.setEmoji(emoji)}
                         />
                       </div>
@@ -1805,7 +1781,7 @@ class ChatBox extends React.Component {
                       <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
-                      <a className='m-messenger__form-attachment'>
+                      <a href='#/' className='m-messenger__form-attachment'>
                         <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
                       </a>
                     </div>
@@ -1955,7 +1931,7 @@ class ChatBox extends React.Component {
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
                     <div className='align-center'>
-                      <center><Halogen.RingLoader color='#716aca' /></center>
+                      <center><RingLoader color='#716aca' /></center>
                     </div>
                   }
                   {
@@ -1978,7 +1954,7 @@ class ChatBox extends React.Component {
                                  </td>
                                  <td style={{width: '70%'}}>
                                    <div>
-                                     <a href={this.state.urlmeta.url} target='_blank'>
+                                     <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                        <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
                                      </a>
                                      <br />
@@ -1993,13 +1969,13 @@ class ChatBox extends React.Component {
                                   <div style={{width: 45, height: 45}}>
                                     {
                                       this.state.urlmeta.image &&
-                                        <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
+                                        <img alt='' src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
                                     }
                                   </div>
                                 </td>
                                 <td>
                                   <div>
-                                    <a href={this.state.urlmeta.url} target='_blank'>
+                                    <a href={this.state.urlmeta.url} target='_blank' rel='noopener noreferrer'>
                                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
                                     </a>
                                     <br />
@@ -2030,7 +2006,7 @@ class ChatBox extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log(state)
   return {
     updateSessionTimeStamp: (state.liveChat.updateSessionTimeStamp),
@@ -2047,7 +2023,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchOpenSessions: fetchOpenSessions,
     fetchUserChats: (fetchUserChats),

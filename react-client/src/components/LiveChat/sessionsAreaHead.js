@@ -235,7 +235,7 @@ class SessionsAreaHead extends React.Component {
             <div className='m-portlet__head-tools'>
               <ul className='m-portlet__nav'>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                  <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
                     <i onClick={this.showDropDown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
                   </a>
                   {
@@ -252,7 +252,7 @@ class SessionsAreaHead extends React.Component {
                                 </span>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.sortValue === 1
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -265,7 +265,7 @@ class SessionsAreaHead extends React.Component {
                                 </a>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.sortValue === -1
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -283,7 +283,7 @@ class SessionsAreaHead extends React.Component {
                                 </span>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={() => this.handleUnreadFilter(this.state.unreadMessages ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.handleUnreadFilter(this.state.unreadMessages ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.unreadMessages
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -296,7 +296,7 @@ class SessionsAreaHead extends React.Component {
                                 </a>
                               </li>
                               <li className='m-nav__item'>
-                                <a onClick={() => this.handlePendingFilter(this.state.pendingResponse ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.handlePendingFilter(this.state.pendingResponse ? false : true)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   {
                                     this.state.pendingResponse
                                     ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -311,7 +311,7 @@ class SessionsAreaHead extends React.Component {
                               {
                                 this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.handlePageFilter(page._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a href='#/' onClick={() => this.handlePageFilter(page._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       {
                                         page._id === this.state.pageValue
                                         ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
@@ -327,7 +327,7 @@ class SessionsAreaHead extends React.Component {
                               }
                             { (this.state.pageValue !== '' || this.state.unreadMessages !== '' || this.state.pendingResponse !== '') &&
                             <li className='m-nav__item'>
-                              <a onClick={this.hideDropDown} style={{borderColor: '#f4516c', color: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                              <a href='#/' onClick={this.hideDropDown} style={{borderColor: '#f4516c', color: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                     Remove Filters
                               </a>
                             </li>

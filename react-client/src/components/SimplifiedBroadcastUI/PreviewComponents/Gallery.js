@@ -74,7 +74,7 @@ class Gallery extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        { this.props.module  && this.props.module !== 'commentcapture' &&
+        { this.props.module !== 'commentcapture' &&
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
@@ -89,14 +89,14 @@ class Gallery extends React.Component {
                 <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', margin: 'auto', transform: index === this.state.selectedIndex-1 ? 'translate3d(62%, 0, 0)' : index === this.state.selectedIndex+1 ? 'translate3d(-20%, 0, 0' : ''}} className={"carousel-item carousel-item-preview " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
+                        <img src={card.image_url} alt='' style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
                     <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.subtitle}</p>
                     <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.default_action && card.default_action.url}</p>
                     {
-                        card.buttons.map((button, index) => {
+                        this.props.module !== 'commentcapture' && card.buttons.map((button, index) => {
                             return (
                             <div>
                                 <hr style={{marginTop: !card.title && !card.subtitle && index === 0 ? '50px' : ''}}/>
@@ -106,22 +106,22 @@ class Gallery extends React.Component {
                         })
                     }
                 </div>
-            ))                   
+            ))
             }
             </div>
             {
-            this.state.cards.length > 1 && 
+            this.state.cards.length > 1 &&
                 <div>
                   {
-                    this.state.selectedIndex > 0 && 
-                    <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" role="button" >
+                    this.state.selectedIndex > 0 &&
+                    <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" role="button" >
                       <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                       <span className="sr-only">Previous</span>
                     </a>
                   }
                   {
                     this.state.selectedIndex < this.state.cards.length-1 &&
-                    <a onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" role="button" data-slide="next">
+                    <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" role="button" data-slide="next">
                     <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                     <span className="sr-only">Next</span>
                 </a>

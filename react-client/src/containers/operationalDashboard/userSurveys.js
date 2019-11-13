@@ -4,7 +4,6 @@ import { loadSurveysList, saveSurveyInformation } from '../../redux/actions/back
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { Link } from 'react-router'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 const moment = extendMoment(Moment)
@@ -84,7 +83,7 @@ class SurveysInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
@@ -126,7 +125,8 @@ class SurveysInfo extends React.Component {
   filterByDays (val) {
     var data = []
     var index = 0
-    this.props.surveys.map((survey) => {
+    for(let a = 0; a < this.props.surveys.length; a++) {
+      let survey = this.props.surveys[a]
       let surveyDate = moment(survey.datetime, 'YYYY-MM-DD')
       const end = moment(moment(), 'YYYY-MM-DD')
       const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
@@ -135,12 +135,15 @@ class SurveysInfo extends React.Component {
         data[index] = survey
         index = index + 1
       }
-    })
+    }
     this.displayData(0, data)
     this.setState({ totalLength: data.length })
   }
   onSurveyClick (e, survey) {
     this.props.saveSurveyInformation(survey)
+    this.props.history.push({
+      pathname: '/surveyDetails'
+    })
   }
 
   render () {
@@ -229,9 +232,9 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '150px'}}>
-                                    <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    <button onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View Survey
-                                  </Link></span>
+                                  </button></span>
                                 </td>
                               </tr>
                             ))
@@ -240,7 +243,7 @@ class SurveysInfo extends React.Component {
                       </table>
                       <ReactPaginate previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

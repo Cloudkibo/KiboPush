@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import AlertContainer from 'react-alert'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 
 const styles = {
   sessionStyle: {
@@ -22,7 +21,8 @@ class SessionItem extends React.Component {
     this.state = {
       unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
       disabledValue: false,
-      isShowingModal: false
+      isShowingModal: false,
+      showingQuickAction: false
     }
     this.changeStatus = this.changeStatus.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
@@ -31,7 +31,20 @@ class SessionItem extends React.Component {
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
+    this.showQuickAction = this.showQuickAction.bind(this)
+    this.hideQuickAction = this.hideQuickAction.bind(this)
   }
+
+  showQuickAction (e) {
+    console.log('in session item')
+    this.setState({showingQuickAction: true})
+  }
+
+  hideQuickAction (e) {
+    console.log('exit session item')
+    this.setState({showingQuickAction: false})
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -140,7 +153,7 @@ class SessionItem extends React.Component {
     }
   }
 
-  componentWillReceiveProps () {
+  UNSAFE_componentWillReceiveProps () {
     this.setState({
       unreadCount: this.props.session.unreadCount !== 0 ? this.props.session.unreadCount : null,
     })
@@ -156,57 +169,54 @@ class SessionItem extends React.Component {
     return (
       <div key={this.props.session._id}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Popover placement='left' className='subscriberPopover' isOpen={this.state.isShowingModal} target={'resolve_session'+this.props.session._id} toggle={this.closeDialog}>
-            <PopoverHeader><label>Resolve Chat Session</label></PopoverHeader>
-            <PopoverBody>
-              <div className='row' style={{ minWidth: '250px' }}>
-                <div className='col-12'>
-                  <p>Are you sure you want to resolve this chat session?</p>
-                  <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={(e) => {
-                    this.changeStatus(e, 'resolved', this.props.activeSession._id)
-                    this.closeDialog()
-                  }}>
-                    Yes
-                  </button>
-                </div>
-                <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={this.closeDialog}>
-                    No
-                  </button>
-                </div>
-              </div>
-                </div>
-              </div>
-            </PopoverBody>
-          </Popover>
-        <div style={this.props.session._id === (this.props.activeSession !== {} && this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.props.changeActiveSession(this.props.session)} className='m-widget4__item'>
+
+        <div style={this.props.session._id === (this.props.activeSession !== {} && this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onMouseEnter={this.showQuickAction} onMouseLeave={this.hideQuickAction} onClick={() => this.props.changeActiveSession(this.props.session)} className='m-widget4__item'>
           <div className='m-widget4__img m-widget4__img--pic'>
             <img onError={(e) => this.props.profilePicError(e, this.props.session)} style={{width: '56px', height: '56px'}} src={this.props.session.profilePic} alt='' />
           </div>
           <div className='m-widget4__info'>
-            <span className='m-widget4__title'>
-              {this.props.subscriberName}
+            <div style={{marginBottom: '-10px'}} className='row'>
+              <div className='col-10'>
+                <span className='m-widget4__title'>
+                  <span style={{marginRight: '5px'}}>
 
+                    {this.props.subscriberName}
+                  </span>
+                  <div style={{display: 'inline-block'}}>
+                    {
+                      (this.props.session.unreadCount && this.props.session.unreadCount > 0) ?
+                      <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em', marginRight: '2px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                        {this.props.session.unreadCount}
+                      </a>
+                      : null
+                    }
 
-              <div style={{display: 'inline-block'}}>
+                    {
+                      this.props.session.pendingResponse &&
+                      <a href='#/' style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                        pending
+                      </a>
+                    }
+                  </div>
+                </span>
+              </div>
+              <div className='col-2'>
                 {
-                  (this.props.session.unreadCount && this.props.session.unreadCount > 0) ? 
-                  <a style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                    {this.props.session.unreadCount}
-                  </a>
-                  : null
-                }
-
-                {
-                  this.props.session.pendingResponse &&
-                  <a style={{backgroundColor: '#c4c5d6', color: '#000000', fontSize: '0.7em'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                    pending
-                  </a>
+                  this.state.showingQuickAction && 
+                  <span title={this.props.session.status === 'new' ? 'Mark as resolved' : 'Reopen session'}>
+                  {
+                    this.props.session.status === 'new'
+                    ?
+                    <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={(e) => 
+                      this.changeStatus(e, 'resolved', this.props.session._id)} data-tip='Mark as done' className='la la-check' />
+                    :
+                      <i id={'resolve_session'+this.props.session._id} style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
+                          this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
+                  }
+                  </span>
                 }
               </div>
-            </span>
+            </div>
             <br />
             {
               this.props.session.lastPayload && ((!this.props.session.lastPayload.componentType && this.props.session.lastPayload.text) || (this.props.session.lastPayload.componentType && this.props.session.lastPayload.componentType === 'text'))
@@ -255,14 +265,6 @@ class SessionItem extends React.Component {
             <br />
             { this.props.session.pageId
             ? <span className='m-widget4__sub'>
-                {
-                  this.props.session.status === 'new'
-                  ? 
-                  <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
-                  : 
-                    <i id={'resolve_session'+this.props.session._id} style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
-                        this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
-                }
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
               {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i className='fa fa-calendar' />&nbsp;&nbsp;
@@ -272,14 +274,6 @@ class SessionItem extends React.Component {
               }
             </span>
             : <span className='m-widget4__sub'>
-                {
-                  this.props.session.status === 'new'
-                  ? 
-                  <i  id='resolve_session' style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
-                  : 
-                    <i id='resolve_session' style={{ marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
-                        this.changeStatus(e, 'new', this.props.session._id)}} className='fa fa-envelope-open-o' />
-                }
             {
               this.props.session.last_activity_time &&
               moment(this.props.session.last_activity_time).fromNow()

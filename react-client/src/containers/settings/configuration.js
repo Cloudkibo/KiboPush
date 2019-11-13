@@ -4,29 +4,20 @@ import { updatePlatformSettings, updatePlatformWhatsApp, disconnect } from '../.
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { browserHistory, Link } from 'react-router'
 
 class Webhook extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isShowingModal: false,
-      isShowingModalWapp: false,
       SID: '',
       token: '',
       SIDWapp: '',
       tokenWapp: '',
       number: '',
       code: '',
-      isShowingModalDisconnect: false,
       type: ''
     }
-    this.closeDialog = this.closeDialog.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialogWapp = this.closeDialogWapp.bind(this)
-    this.showDialogWapp = this.showDialogWapp.bind(this)
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
     this.updateTokenWapp = this.updateTokenWapp.bind(this)
@@ -38,21 +29,16 @@ class Webhook extends React.Component {
     this.clearFields = this.clearFields.bind(this)
     this.disconnect = this.disconnect.bind(this)
     this.showDialogDisconnect = this.showDialogDisconnect.bind(this)
-    this.closeDialogDisconnect = this.closeDialogDisconnect.bind(this)
 
     props.getAutomatedOptions()
   }
 
   showDialogDisconnect (type) {
-    this.setState({isShowingModalDisconnect: true, type: type})
+    this.setState({type: type})
   }
 
-  closeDialogDisconnect (type) {
-    this.setState({isShowingModalDisconnect: false, type: ''})
-  }
-
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
       this.setState({SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken})
     }
@@ -64,17 +50,17 @@ class Webhook extends React.Component {
       })
     }
     if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'sms'
       })
     } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.twilioWhatsApp) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'whatsApp'
       })
     } else if (nextProps.user && nextProps.user.platform === 'messenger' && !nextProps.user.facebookInfo) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/integrations',
         state: 'messenger'
       })
@@ -82,24 +68,7 @@ class Webhook extends React.Component {
   }
 
   disconnect () {
-    this.setState({isShowingModalDisconnect: false})
     this.props.disconnect({type: this.state.type})
-  }
-
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
-  showDialogWapp () {
-    this.setState({isShowingModalWapp: true})
-  }
-
-  closeDialogWapp () {
-    this.setState({isShowingModalWapp: false})
   }
 
   updateNumber (e) {
@@ -127,7 +96,6 @@ class Webhook extends React.Component {
   }
 
   submit () {
-    this.setState({isShowingModal: false})
     this.props.updatePlatformSettings({twilio: {
       accountSID: this.state.SID,
       authToken: this.state.token
@@ -145,7 +113,6 @@ class Webhook extends React.Component {
     } else if (this.state.code === '') {
       this.msg.error('Sandbox code cannot be empty')
     } else {
-      this.setState({isShowingModalWapp: false})
       this.props.updatePlatformWhatsApp({
         accountSID: this.state.SIDWapp,
         authToken: this.state.tokenWapp,
@@ -186,7 +153,122 @@ class Webhook extends React.Component {
     }
     console.log('this.state.SID', this.state.SID)
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+      <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Disconnect from Twilio
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='m-form'>
+                  <span>{`Are you sure you want to disconnect from Twilio? You won't be able to send ${this.state.type} broadcasts.`}</span>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                    <div className='m-form__actions' style={{ 'float': 'right' }}>
+                      <button className='btn btn-danger' data-dismiss="modal" aria-label="Close"
+                        onClick={this.disconnect}> Disconnect
+                  </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Connect with Twilio
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='m-form'>
+                  <span>Please enter your Twilio credentials here:</span>
+                  <div className='form-group m-form__group'>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>Twilio Account SID</label>
+                      <input className='form-control' value={this.state.SID} onChange={(e) => this.updateSID(e)} />
+                    </div>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>Twilio Auth Token:</label>
+                      <input className='form-control' value={this.state.token} onChange={(e) => this.updateToken(e)} />
+                    </div>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                    <div className='m-form__actions' style={{ 'float': 'right' }}>
+                      <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
+                        onClick={this.submit}> Submit
+                  </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connectWapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Connect with Twilio WhatsApp
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='m-form'>
+                  <span>Please enter your Twilio credentials here:</span>
+                  <div className='form-group m-form__group'>
+
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>Twilio Account SID</label>
+                      <input className='form-control' value={this.state.SIDWapp} onChange={(e) => this.updateSIDWapp(e)} />
+                    </div>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>Twilio Auth Token:</label>
+                      <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
+                    </div>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>WhatsApp Sandbox Number:</label>
+                      <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                    </div>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>Sandbox Code:</label>
+                      <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
+                    </div>
+                    <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                    <div className='m-form__actions' style={{ 'float': 'right' }}>
+                      <button className='btn btn-primary'
+                        onClick={this.submitWapp} data-dismiss='modal'> Submit
+                  </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <div id='target' >
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
@@ -208,97 +290,6 @@ class Webhook extends React.Component {
                   <div>
                     <div>Connect your business identity:</div>
                     <div className='m-portlet__body'>
-                      {
-                        this.state.isShowingModalDisconnect &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDisconnect}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDisconnect}>
-                            <h3>Disconnect from Twilio</h3>
-                            <div className='m-form'>
-                              <span>{`Are you sure you want to disconnect from Twilio? You won't be able to send ${this.state.type} broadcasts.`}</span>
-                              <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                                <div className='m-form__actions' style={{'float': 'right'}}>
-                                  <button className='btn btn-danger'
-                                    onClick={this.disconnect}> Disconnect
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Connect with Twilio</h3>
-                            <div className='m-form'>
-                              <span>Please enter your Twilio credentials here:</span>
-                              <div className='form-group m-form__group'>
-
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Twilio Account SID</label>
-                                  <input className='form-control' value={this.state.SID} onChange={(e) => this.updateSID(e)} />
-                                </div>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Twilio Auth Token:</label>
-                                  <input className='form-control' value={this.state.token} onChange={(e) => this.updateToken(e)} />
-                                </div>
-                              </div>
-                              <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                                <div className='m-form__actions' style={{'float': 'right'}}>
-                                  <button className='btn btn-primary'
-                                    onClick={this.submit}> Submit
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalWapp &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogWapp}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogWapp}>
-                            <h3>Connect with Twilio WhatsApp</h3>
-                            <div className='m-form'>
-                              <span>Please enter your Twilio credentials here:</span>
-                              <div className='form-group m-form__group'>
-
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Twilio Account SID</label>
-                                  <input className='form-control' value={this.state.SIDWapp} onChange={(e) => this.updateSIDWapp(e)} />
-                                </div>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Twilio Auth Token:</label>
-                                  <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
-                                </div>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>WhatsApp Sandbox Number:</label>
-                                  <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
-                                </div>
-                                <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Sandbox Code:</label>
-                                  <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
-                                </div>
-                                <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank'>here</a></span>
-                              </div>
-                              <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                                <div className='m-form__actions' style={{'float': 'right'}}>
-                                  <button className='btn btn-primary'
-                                    onClick={this.submitWapp}> Submit
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -317,13 +308,13 @@ class Webhook extends React.Component {
                                         <br />
                                       </div>
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialog}>
+                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} data-toggle="modal" data-target="#connect">
                                           {this.props.automated_options && this.props.automated_options.twilio ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
                                       {this.props.automated_options && this.props.automated_options.twilio &&
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} onClick={() => { this.showDialogDisconnect('sms')} }>
+                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms')} }>
                                           Disconnect
                                         </button>
                                       </div>
@@ -340,13 +331,13 @@ class Webhook extends React.Component {
                                         <br />
                                       </div>
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={this.showDialogWapp}>
+                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} data-toggle="modal" data-target="#connectWapp">
                                           {this.props.automated_options && this.props.automated_options.twilioWhatsApp ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
                                       {this.props.automated_options && this.props.automated_options.twilioWhatsApp &&
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} onClick={() => {this.showDialogDisconnect('whatsApp')}}>
+                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} data-toggle="modal" data-target="#disconnect" onClick={() => {this.showDialogDisconnect('whatsApp')}}>
                                           Disconnect
                                         </button>
                                       </div>
@@ -367,6 +358,7 @@ class Webhook extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }

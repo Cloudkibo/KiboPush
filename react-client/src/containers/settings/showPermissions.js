@@ -17,14 +17,14 @@ class ShowPermissions extends React.Component {
     this.onChangeHandel = this.onChangeHandel.bind(this)
     this.sendToServer = this.sendToServer.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getPermissions()
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Permissions'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
   }
 
   sendToServer () {
@@ -140,9 +140,9 @@ class ShowPermissions extends React.Component {
                 { (this.props.permissions.length > 1)
                  ? <div className='m-widget4'>
                    {
-                      !this.state.memberPermissions && this.props.permissions && this.props.permissions.map((permission, index) => {
-                        if (index > 0) {
-                          return (<div className='m-widget4__item'>
+                      !this.state.memberPermissions && this.props.permissions && this.props.permissions.map((permission, index) => (
+                        index > 0 && (
+                          <div className='m-widget4__item'>
                             <div className='m-widget4__info'>
                               <span className='m-widget4__title'>
                                 {permission.userId && permission.userId.name ? permission.userId.name : ''}
@@ -153,18 +153,17 @@ class ShowPermissions extends React.Component {
                               </span>
                             </div>
                             <div className='m-widget4__ext'>
-                              <a onClick={() => { this.showMemberPermission(index) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                              <a href='#/' onClick={() => { this.showMemberPermission(index) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                               View and Update
                               </a>
                             </div>
                           </div>)
-                        }
-                      })
+                      ))
                     }
                    {
-                      this.state.memberPermissions && Object.keys(this.state.currentPermissions).map((key, index) => {
-                        if (index > 0) {
-                          return (<div className='m-widget4__item'>
+                      this.state.memberPermissions && Object.keys(this.state.currentPermissions).map((key, index) => (
+                        index > 0 && (
+                          <div className='m-widget4__item'>
                             <div className='m-widget4__info'>
                               <span className='m-widget4__title'>
                                 { key }
@@ -177,18 +176,17 @@ class ShowPermissions extends React.Component {
                                   {this.state.currentPermissions[key] ? 'Permitted' : 'Not Permitted'}
                                 </button>
                                 <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                  <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
+                                  <a href='#/' className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
                                     Permitted
                                   </a>
-                                  <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
+                                  <a href='#/' className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
                                     Not Permitted
                                   </a>
                                 </div>
                               </div>
                             </div>
                           </div>)
-                        }
-                      })
+                      ))
                     }
                    {
                       this.state.memberPermissions &&
@@ -200,7 +198,7 @@ class ShowPermissions extends React.Component {
                         </div>
 
                         <div className='m-widget4__ext'>
-                          <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-lg btn-primary' onClick={() => { this.sendToServer() }}>
+                          <a href='#/' className='m-btn m-btn--pill m-btn--hover-brand btn btn-lg btn-primary' onClick={() => { this.sendToServer() }}>
                             Update
                           </a>
                         </div>

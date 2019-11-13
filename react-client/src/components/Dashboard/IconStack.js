@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class IconStack extends React.Component {
   render () {
@@ -12,7 +12,7 @@ class IconStack extends React.Component {
       <Link to={{pathname: this.props.path, state: this.props.state}} style={{color: '#575962'}}>
         <div className='m-widget21__item' style={{display: 'flex'}}>
           <span className='m-widget21__icon'>
-            <a className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}>
+            <a href='#/' className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}>
               <i className={`${this.props.icon} m--font-light`} />
             </a>
           </span>

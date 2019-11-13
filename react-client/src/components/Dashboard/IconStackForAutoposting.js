@@ -4,14 +4,13 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
 
 class IconStackForAutoposting extends React.Component {
   render () {
     return (
         <div className='m-widget21__item' style={{display: 'flex'}}>
           <span className='m-widget21__icon'>
-            <a className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}
+            <a href='#/' className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}
             style={{marginTop: '10px', width: '60px', height: '60px'}}>
               <i className={`${this.props.icon} m--font-light`} style={{fontSize: 'x-large'}} />
             </a>

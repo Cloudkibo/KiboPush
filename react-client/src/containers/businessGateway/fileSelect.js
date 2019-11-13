@@ -2,7 +2,6 @@ import React from 'react'
 import Files from 'react-files'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
@@ -56,7 +55,7 @@ class FileSelect extends React.Component {
     })
     if (e.currentTarget.value === 'phoneNumber') {
       if (this.state.subscriberIdColumn !== '') {
-        var dict_copy = this.state.dict
+        let dict_copy = this.state.dict
         dict_copy[this.state.subscriberIdColumn.value] = false
         this.setState({
           subscriberIdColumn: '',
@@ -65,7 +64,7 @@ class FileSelect extends React.Component {
       }
     } else if (e.currentTarget.value === 'subscriberId') {
       if (this.state.phoneColumn !== '') {
-        var dict_copy = this.state.dict
+        let dict_copy = this.state.dict
         dict_copy[this.state.phoneColumn.value] = false
         this.setState({
           phoneColumn: '',
@@ -110,6 +109,7 @@ class FileSelect extends React.Component {
       showFileColumns: true,
       dict: checkList
     })
+    this.refs.file.click()
     if (this.props.customersInfo) {
       if (this.props.customersInfo.phoneColumn !== '') {
         this.setState({
@@ -267,6 +267,7 @@ class FileSelect extends React.Component {
             showFileColumns: true,
             fileContent: results.data
           })
+          this.refs.file.click()
         }
         console.log('columnsArray:', columnsArray)
         console.log('fileContent:', results.data)
@@ -338,13 +339,22 @@ class FileSelect extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showFileColumns &&
-          <ModalContainer style={{width: '750px', top: '100px', overflow: 'hidden'}}
-            onClose={this.closeDialogFileColumns}>
-            <ModalDialog style={{width: '750px', top: '100px', overflow: 'hidden'}}
-              onClose={this.closeDialogFileColumns}>
-              <div style={{overflowX: 'hidden', overflowY: 'scroll', width: '720px', height: '400px'}}>
+        <a href='#/' style={{ display: 'none' }} ref='file' data-toggle="modal" data-target="#file">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    File Columns
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div style={{overflowX: 'hidden', overflowY: 'scroll', width: '720px', height: '400px'}}>
                 <div className='form-group m-form__group row' >
                   <div className='radio-buttons' style={{marginLeft: '37px'}}>
                     <div className='radio'>
@@ -423,7 +433,7 @@ class FileSelect extends React.Component {
                 }
                 </div>
                 <div className='row' style={{margin: '20px', float: 'right'}}>
-                  <button style={{marginRight: '10px'}}
+                  <button data-dismiss="modal" aria-label="Close" style={{marginRight: '10px'}}
                     className='btn btn-secondary'
                     onClick={() => {
                       this.setState({
@@ -436,6 +446,8 @@ class FileSelect extends React.Component {
                     }}>Cancel
                   </button>
                   <button
+                    data-dismiss="modal"
+                    aria-label="Close"
                     className='btn btn-primary'
                     disabled={!this.state.enableSaveColumns}
                     onClick={() => {
@@ -444,9 +456,10 @@ class FileSelect extends React.Component {
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='form-group m-form__group row'>
           <label className='col-2 col-form-label'>
             Change Page

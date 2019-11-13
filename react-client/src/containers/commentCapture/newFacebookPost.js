@@ -11,12 +11,11 @@ import { Picker } from 'emoji-mart'
 import { createCommentCapture, editCommentCapture, uploadAttachment, saveCurrentPost } from '../../redux/actions/commentCapture.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
-import Halogen from 'halogen'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { isFacebookPageUrl } from '../../utility/utils'
 import LinkCarousel from '../../components/SimplifiedBroadcastUI/LinkCarousel'
 import Preview from './preview'
+import ViewMessage from '../../components/ViewMessage/viewMessage'
 
 const styles = {
   iconclass: {
@@ -42,7 +41,6 @@ class FacebookPosts extends React.Component {
       attachments: [],
       selectedPage: {},
       showEmojiPicker: false,
-      autoReply: '',
       includedKeywords: '',
       excludedKeywords: '',
       disabled: true,
@@ -57,20 +55,18 @@ class FacebookPosts extends React.Component {
       selectedRadio: 'existing',
       postUrl: '',
       title: '',
-      showPost: false,
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
-      openLinkCarousel: false,
       links:[],
-      cards: []
+      cards: [],
+      isShowingLinkCarousel: false
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
-    this.replyChange = this.replyChange.bind(this)
     this.includedKeywordsChange = this.includedKeywordsChange.bind(this)
     this.excludedKeywordsChange = this.excludedKeywordsChange.bind(this)
     this.reset = this.reset.bind(this)
@@ -82,7 +78,6 @@ class FacebookPosts extends React.Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.validateFile = this.validateFile.bind(this)
-    this.previewPost = this.previewPost.bind(this)
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
@@ -95,15 +90,22 @@ class FacebookPosts extends React.Component {
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.createPayload = this.createPayload.bind(this)
     this.setCommentCapture = this.setCommentCapture.bind(this)
-    this.openLinkCarousel = this.openLinkCarousel.bind(this)
     this.saveLinks = this.saveLinks.bind(this)
     this.removeLinkCarousel = this.removeLinkCarousel.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
+  closeModal () {
+    this.refs.linkCarousel.click()
+    this.setState({
+      isShowingLinkCarousel: false
+    })
+  }
+
   saveLinks (links, cards) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -115,16 +117,16 @@ class FacebookPosts extends React.Component {
     }
     this.setState({
       postType: 'links',
-      openLinkCarousel: false,
       cards: cardArray,
       links: links,
-      attachments:[]
+      attachments:[],
+      isShowingLinkCarousel: false
     })
+    this.refs.linkCarousel.click()
   }
   removeLinkCarousel () {
     this.setState({
       postType: '',
-      openLinkCarousel: false,
       cards: [],
       links: [],
       attachments:[]
@@ -139,7 +141,7 @@ class FacebookPosts extends React.Component {
     if (this.state.secondReplyOption === 'reply') {
       secondReply['action'] = 'reply'
       secondReply['payload'] = this.props.currentPost && this.props.currentPost.secondReply ? this.props.currentPost.secondReply.payload : []
-    } 
+    }
     if (this.state.secondReplyOption === 'sequence') {
       secondReply['action'] = 'subscribe'
       secondReply['sequenceId'] = this.state.sequenceValue
@@ -149,16 +151,16 @@ class FacebookPosts extends React.Component {
       facebookPost.push({componentType: 'text', text: this.state.postText})
     }
     if (this.state.postType === 'links') {
-      for (var i = 0; i < this.state.links.length; i++) {
+      for (let i = 0; i < this.state.links.length; i++) {
         facebookPost.push({componentType: 'link', url: this.state.links[i].url, card: this.state.cards[i]})
       }
     }
     if (this.state.attachments.length > 0) {
-      for (var i = 0; i < this.state.attachments.length; i++) {
+      for (let i = 0; i < this.state.attachments.length; i++) {
         facebookPost.push(this.state.attachments[i])
       }
     }
-       
+
     payload = {
       pageId: this.state.selectedPage._id,
       postId: this.props.currentPost ? this.props.currentPost._id : null,
@@ -166,7 +168,7 @@ class FacebookPosts extends React.Component {
       payload: this.state.selectedRadio === 'new' ? facebookPost: [],
       post_id: this.props.currentPost ? this.props.currentPost.post_id : '',
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
-      reply: this.state.autoReply,
+      reply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       captureOption: this.state.selectedRadio,
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
@@ -176,10 +178,14 @@ class FacebookPosts extends React.Component {
 
     return payload
   }
-  openMessageBuilder () { 
+  openMessageBuilder (openMode) {
     var payload = this.createPayload()
     console.log('Current post', payload)
     this.props.saveCurrentPost(payload)
+    this.props.history.push({
+      pathname: '/commentCaptureReply',
+      state: {mode: openMode}
+    })
   }
 
   isValidFacebookUrl (e) {
@@ -211,7 +217,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: e.currentTarget.value,
       title: e.currentTarget.value,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -225,7 +231,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: e.currentTarget.value,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -242,7 +248,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl:  e.currentTarget.value,
       postText: this.state.postText,
       attachments: this.state.attachments,
@@ -257,7 +263,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '') && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1) && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -265,9 +271,9 @@ class FacebookPosts extends React.Component {
         this.setState({
           disabled: true
         })
-      } 
+      }
     } else if(data.selectedRadio === 'existing') {
-      if (data.title !== ''&& data.title.length > 2 && data.autoReply !== '' && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
+      if (data.title !== ''&& data.title.length > 2 && data.autoReply.length < 1 && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
         this.setState({
           disabled: false
         })
@@ -275,9 +281,9 @@ class FacebookPosts extends React.Component {
         this.setState({
           disabled: true
         })
-      } 
+      }
     } else {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply !== '')) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1)) {
         this.setState({
           disabled: false
         })
@@ -306,7 +312,7 @@ class FacebookPosts extends React.Component {
     if (this.props.pages) {
       this.setCommentCapture()
     }
-    
+
   }
   setCommentCapture () {
     var selectedPage = this.props.pages[0]
@@ -373,7 +379,7 @@ class FacebookPosts extends React.Component {
       }
       this.setState({
         // postText: this.props.currentPost.payload,
-        autoReply: this.props.currentPost.reply,
+        autoReply: this.props.currentPost.reply ? this.props.currentPost.reply : [],
         includedKeywords: this.props.currentPost.includedKeywords.join(),
         excludedKeywords: this.props.currentPost.excludedKeywords.join(),
         postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
@@ -392,7 +398,7 @@ class FacebookPosts extends React.Component {
           postUrl: ''
         })
       }
-      if (!this.props.currentPost.reply || this.props.currentPost.reply === '' || !this.props.currentPost.title || this.props.currentPost.title === '' ) {
+      if (!this.props.currentPost.reply || this.props.currentPost.reply.length < 1 || !this.props.currentPost.title || this.props.currentPost.title === '' ) {
         disable = true
       }
       this.setState({
@@ -407,16 +413,7 @@ class FacebookPosts extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log(' componentWillReceiveProps called')
   }
-  previewPost () {
-    this.setState({
-      showPost: true
-    })
-  }
-  openLinkCarousel () {
-    this.setState({
-      openLinkCarousel: true
-    })
-  }
+
   removeAttachment (attachment) {
     var id = attachment.id
    // var facebookPost = this.state.facebookPost
@@ -438,7 +435,7 @@ class FacebookPosts extends React.Component {
       this.validationCommentCapture({
         selectedRadio: this.state.selectedRadio,
         title: this.state.title,
-        autoReply: this.state.autoReply,
+        autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
         postUrl: this.state.postUrl,
         postText: this.state.postText,
         attachments: attachments,
@@ -488,7 +485,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText,
       attachments: attachments,
@@ -532,12 +529,11 @@ class FacebookPosts extends React.Component {
     }
     this.props.editCommentCapture(payload, this.msg, this.handleEdit)
   }
-  
+
   reset (postId, showSuccessMessage) {
     this.setState({
       postText: '',
       showEmojiPicker: false,
-      autoReply: '',
       includedKeywords: '',
       excludedKeywords: '',
       disabled: true,
@@ -611,7 +607,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText:  e.target.value,
       attachments: this.state.attachments,
@@ -622,25 +618,12 @@ class FacebookPosts extends React.Component {
      // facebookPost: facebookPost
     })
   }
-  replyChange (e) {
-    this.validationCommentCapture({
-      selectedRadio: this.state.selectedRadio,
-      title: this.state.title,
-      autoReply: e.target.value,
-      postUrl: this.state.postUrl,
-      postText: this.state.postText,
-      attachments: this.state.attachments,
-      cards: this.state.cards
-    })
-    this.setState({
-      autoReply: e.target.value
-    })
-  }
+
   setEmoji (emoji) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
-      autoReply: this.state.autoReply,
+      autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
       postText: this.state.postText + emoji.native,
       attachments: this.state.attachments,
@@ -717,63 +700,6 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
-        {
-          this.state.showPost &&
-          <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({showPost: false}) }}>
-            <ModalDialog style={{width: '500px', top: '100px'}}
-              onClose={() => { this.setState({showPost: false}) }}>
-                <Preview 
-                selectedPage={this.state.selectedPage}
-                postType={this.state.postType}
-                attachments={this.state.attachments}
-                cards={this.state.cards}
-                postText={this.state.postText}
-                edited={false}
-                />
-            </ModalDialog>
-          </ModalContainer>
-        }
-         {
-          this.state.openLinkCarousel &&
-          <ModalContainer style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({openLinkCarousel: false}) }}>
-            <ModalDialog style={{width: '500px', top: '100px'}}
-              onClose={() => { this.setState({openLinkCarousel: false}) }}>
-                <LinkCarousel
-                  pages={[this.state.selectedPage._id]}
-                  module='commentcapture'
-                  edited={false}
-                  links={this.state.links}
-                  cards={this.state.cards}
-                  saveLinks={this.saveLinks}
-                  closeModal={() => {this.setState({openLinkCarousel: false})}}
-                />
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.showSuccessMessage &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <p>Congratulations! Your post has been posted successfully on your Facebook Page.</p>
-              <p>Please <a href={`https://facebook.com/${this.state.postId}`} target='_blank' style={{cursor: 'pointer'}}>Click Here</a> to view your Facebook Page Post.</p>
-              <p>The people who comment on this post will receive the reply that you set. </p>
-          </ModalDialog>
-          </ModalContainer>
-        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -818,9 +744,9 @@ class FacebookPosts extends React.Component {
                                   })
                                 }
                               }} maxLength='25'/>
-                            { !this.state.titleLengthValid && 
+                            { !this.state.titleLengthValid &&
                             <label htmlFor='title' className='form-control-label'>Title should be atleast 3 characters long</label>
-                            }    
+                            }
                           </div>
                       </div>
                     </div>
@@ -928,7 +854,7 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12'>
                           { this.state.isEdit === 'false'
-                        ? <div style={{ border: '2px solid lightgray', borderRadius: '15px', padding: '10px'}}> 
+                        ? <div style={{ border: '2px solid lightgray', borderRadius: '15px', padding: '10px'}}>
                             <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
                               <textarea
                                 className='form-control m-input m-input--solid'
@@ -946,7 +872,7 @@ class FacebookPosts extends React.Component {
                                         <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                            <img src={attachment.url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -966,23 +892,23 @@ class FacebookPosts extends React.Component {
                                     this.state.cards.map((card, i) => (
                                       <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
                                           { card.image_url &&
-                                            <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                            <img src={card.image_url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           }
                                           <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
                                           <span style={{fontSize: '8px'}}>{card.title}</span>
-                                      </div>                             
+                                      </div>
                                     ))
                                     }
                                   </div>
                               }
                               { this.state.cards.length > 0 &&  this.state.postType === 'links' &&
                                 <span className='pull-right' style={{marginTop: '-80px', marginRight: '10px'}}>
-                                  <span onClick={() => this.removeLinkCarousel()} style={{marginTop: '10px', cursor: 'pointer'}}>❌</span>
+                                  <span onClick={() => this.removeLinkCarousel()} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></span>
                                 </span>
                               }
                               { (this.state.attachments.length > 0 ||  this.state.links.length > 0) &&
                               <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
+                                <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.refs.previewModal.click()}}>See How It Looks?</span>
                               </span>
                               }
                               <span id='emogiPicker' style={{height: '150px'}} className='m-input-icon__icon m-input-icon__icon--right'>
@@ -1035,7 +961,11 @@ class FacebookPosts extends React.Component {
                               </button>
                             </div>
                             <div className='col-4'>
-                              <button type='button' style={{width: '100%'}} onClick={() => {this.openLinkCarousel()}}className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                              <button type='button' style={{width: '100%'}} onClick={() => {
+                                this.setState({
+                                  isShowingLinkCarousel: true
+                                })
+                                this.refs.linkCarousel.click()}}className='btn m-btn--pill m-btn--air btn-outline-primary'>
                                 <i className='fa fa-link' style={{cursor: 'pointer'}}/>  { this.state.cards.length < 1 ? 'Create Link Carousel' : 'Edit Link Carousel' }
                               </button>
                             </div>
@@ -1057,7 +987,7 @@ class FacebookPosts extends React.Component {
                                   <div className='col-2'>
                                     <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                       { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                        <img src={attachment.url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                       </div>
                                       }
                                       { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -1077,26 +1007,26 @@ class FacebookPosts extends React.Component {
                                 this.state.cards.map((card, i) => (
                                   <div className='col-2' style={{border:'1px dashed', padding:'2px', textAlign: 'center'}}>
                                       { card.image_url &&
-                                        <img src={card.image_url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                        <img src={card.image_url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                       }
                                       <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '2px'}} />
                                       <span style={{fontSize: '8px'}}>{card.title}</span>
-                                  </div>                             
+                                  </div>
                                 ))
                                 }
                               </div>
                             }
                             <span className='pull-right' style={{marginTop: '-30px', marginRight: '10px'}}>
-                              <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.previewPost()}}>See How It Looks?</span>
+                              <span style={{color:'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={() => {this.refs.previewModal.click()}}>See How It Looks?</span>
                             </span>
-                            
+
                         </div>
                         }
                         </div>
                       </div>
                     </div>
                     }
-                    {this.state.selectedRadio === 'existing' && 
+                    {this.state.selectedRadio === 'existing' &&
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-12'>
@@ -1104,7 +1034,7 @@ class FacebookPosts extends React.Component {
                         </div>
                         <div className='col-12'>
                           <p>
-                            Copy paste the Post Url here. View <a href='https://kibopush.com/comment-capture/' target='_blank'>user guide</a> to know how to copy correct post url 
+                            Copy paste the Post Url here. View <a href='https://kibopush.com/comment-capture/' target='_blank' rel='noopener noreferrer'>user guide</a> to know how to copy correct post url
                           </p>
                         </div>
                         { this.state.isEdit === 'false'
@@ -1113,7 +1043,7 @@ class FacebookPosts extends React.Component {
                             className='form-control form-control-danger m-input'
                             id='postUrl'
                             value={this.state.postUrl}
-                            onChange={(e) => {this.handlePostUrlChange(e)}} 
+                            onChange={(e) => {this.handlePostUrlChange(e)}}
                             onBlur={(e) => {this.isValidFacebookUrl(e)}}/>
                           { !this.state.isCorrectUrl &&
                             <label className='form-control-label' htmlFor='postUrl'>Invalid Facebook Post Url</label>
@@ -1135,29 +1065,30 @@ class FacebookPosts extends React.Component {
                         <div className='col-3'>
                           <label className='col-form-label'>Bot Configuration</label>
                         </div>
-                        <div className='col-12'>
-                          <p>
-                            Create a reply that will be sent to people who comment on your Facebook Page Post
-                          </p>
-                        </div>
                         { this.state.isEdit === 'false'
                         ? <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Your reply to the commentor goes here...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            onChange={this.replyChange} />
+                            <p>
+                            Create a reply that will be sent to people who comment on your Facebook Page Post
+                            </p>
+                            {
+                              this.props.currentPost && this.props.currentPost.reply && this.props.currentPost.reply.length > 0
+                              ? <button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('reply')}}>
+                                Edit Reply
+                              </button>
+                              :<button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('reply')}}>
+                                Create Reply
+                              </button>
+                            }
                         </div>
                         : <div className='col-12'>
-                          <textarea
-                            className='form-control m-input m-input--solid'
-                            id='replyTextArea' rows='3'
-                            placeholder='Create a reply that will be sent to people who comment on your Facebook Page Post...'
-                            style={{height: '100px', resize: 'none'}}
-                            value={this.state.autoReply}
-                            disabled />
+                            <p>
+                              Preview reply that will be sent to people who comment on your Facebook Page Post
+                            </p>
+                            <button state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {
+                             this.refs.viewMessageModal.click()
+                            }}>
+                              Preview Reply
+                            </button >
                         </div>
                       }
                       </div>
@@ -1196,10 +1127,10 @@ class FacebookPosts extends React.Component {
                         <div className='row' style={{marginLeft: '10px', marginTop: '10px'}}>
                           <div className='col-12'>
                             {
-                              this.state.secondReplyOption === 'reply' && 
-                            <Link to='ccSecondReply' style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                              this.state.secondReplyOption === 'reply' &&
+                            <button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('secondReply')}}>
                               Show Message Builder
-                            </Link >
+                            </button >
                             }
                             {
                                this.state.secondReplyOption === 'sequence' &&
@@ -1304,6 +1235,67 @@ class FacebookPosts extends React.Component {
                 </div>
               </div>
             </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='viewMessageModal' data-toggle="modal" data-target="#viewMessageModal">viewMessageModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="viewMessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content" style={{width: '450px'}}>
+                <div style={{ display: 'block' }} className="modal-header">
+                    <h5 className='modal-title' id='exampleModalLabel'>
+                      Reply Message
+                    </h5>
+                    <button style={{opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                      <span aria-hidden='true'>
+                        &times;
+                      </span>
+                    </button>
+                </div>
+                <div style={{ maxHeight: '600px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                  <ViewMessage payload={this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : []} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='previewModal' data-toggle="modal" data-target="#previewModal">previewModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content" style={{width: '500px'}}>
+                <div style={{ display: 'block' }} className="modal-header">
+                    <h5 className='modal-title' id='exampleModalLabel'>
+                      Preview Post
+                    </h5>
+                    <button style={{opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                      <span aria-hidden='true'>
+                        &times;
+                      </span>
+                    </button>
+                </div>
+                <div style={{ maxHeight: '500px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                  <Preview
+                  selectedPage={this.state.selectedPage}
+                  postType={this.state.postType}
+                  attachments={this.state.attachments}
+                  cards={this.state.cards}
+                  postText={this.state.postText}
+                  edited={false}
+                  />
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='linkCarousel' data-toggle="modal" data-target="#linkCarousel">Link Carousel Modal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="linkCarousel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
+            {this.state.isShowingLinkCarousel && <LinkCarousel
+              pages={[this.state.selectedPage._id]}
+              module='commentcapture'
+              edited={false}
+              links={this.state.links}
+              cards={this.state.cards}
+              saveLinks={this.saveLinks} 
+              closeModal= {this.closeModal} 
+              showCloseModalAlertDialog={this.closeModal}/>}
           </div>
         </div>
       </div>

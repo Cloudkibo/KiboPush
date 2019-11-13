@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Notification from 'react-web-notification'
 
 class Header extends React.Component {
@@ -28,14 +28,14 @@ class Header extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    browserHistory.push({
+    this.props.history.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
     })
     this.setState({ignore: true})
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ignore: false})
     }
@@ -51,16 +51,16 @@ class Header extends React.Component {
       console.log('FS identify Executed')
     }
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.getuserdetails()
   }
 
   render () {
     let liveChatLink = '';
     let hostname = window.location.hostname;
-    if (hostname == 'skiboengage.cloudkibo.com') {
+    if (hostname === 'skiboengage.cloudkibo.com') {
       liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
-    } else if (hostname == 'kiboengage.cloudkibo.com') {
+    } else if (hostname === 'kiboengage.cloudkibo.com') {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
     console.log('this.props.otherPages in header', this.props.otherPages)
@@ -100,7 +100,7 @@ class Header extends React.Component {
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
                   {this.props.user && this.props.user.facebookInfo && this.props.otherPages &&
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                      <a href='#' className='m-nav__link m-dropdown__toggle'>
+                      <a href='#/' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                         <span className='m-nav__link-icon'>
                           <i className='flaticon-share' />
@@ -175,7 +175,7 @@ class Header extends React.Component {
                     </li>
                   }
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                      <a href='#' className='m-nav__link m-dropdown__toggle'>
+                      <a href='#/' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <div style={{display: 'inline-block', marginRight: '5px'}}>
                             <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
@@ -215,7 +215,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__item'>
                                 { window.location.hostname.toLowerCase().includes('kiboengage') ?
-                                    <a href={liveChatLink} target='_blank' className='m-nav__link'>
+                                    <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>Messages</span>
                                     </a>
@@ -240,7 +240,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                  <a href='#/' onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                     Logout
                                   </a>
                                 </li>
@@ -252,7 +252,7 @@ class Header extends React.Component {
                     </li>
 
                     <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                      <a href='https://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li>
                   </ul>
                 </div>

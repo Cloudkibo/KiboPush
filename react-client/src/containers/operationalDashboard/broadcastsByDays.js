@@ -4,7 +4,6 @@ import { loadBroadcastsByDays } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { browserHistory } from 'react-router'
 
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
@@ -76,8 +75,8 @@ class BroadcastsInfo extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in broadcastbydays', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in broadcastbydays', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -116,7 +115,7 @@ class BroadcastsInfo extends React.Component {
     // }
   }
   onBroadcastClick (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/viewBroadcastDetail`,
       state: {title: broadcast.title, payload: broadcast.payload, data: broadcast}
     })
@@ -142,7 +141,7 @@ class BroadcastsInfo extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
                   <li className='m-portlet__nav-item'>
-                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                    <a href='#/' data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
                       {this.state.showBroadcasts
                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
@@ -247,7 +246,7 @@ class BroadcastsInfo extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a>...</a>}
+                      breakLabel={<a href='#/'>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}

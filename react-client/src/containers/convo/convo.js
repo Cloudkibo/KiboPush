@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
@@ -16,7 +15,6 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -31,13 +29,10 @@ class Convo extends React.Component {
       broadcastsData: [],
       totalLength: 0,
       filterValue: '',
-      isShowingModal: false,
-      isShowingZeroModal: true,
       selectedDays: '0',
       searchValue: '',
       filter: false,
       pageNumber: 0,
-      isShowingModalPro: false,
       pageValue: '',
       messageType:''
     }
@@ -49,25 +44,14 @@ class Convo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.onMessageTypeFilter = this.onMessageTypeFilter.bind(this)
     this.showDialog = this.showDialog.bind(this)
-    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
-    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoTemplates = this.gotoTemplates.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
-    this.showProDialog = this.showProDialog.bind(this)
-    this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
   }
-  showProDialog () {
-    this.setState({isShowingModalPro: true})
-  }
-  closeProDialog () {
-    this.setState({isShowingModalPro: false})
-  }
   goToSettings () {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/settings`,
       state: {module: 'pro'}
     })
@@ -95,19 +79,7 @@ class Convo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialog () {
-    this.setState({isShowingModal: true, pageValue: ''})
-  }
-
-  showZeroSubDialog () {
-    this.setState({isShowingZeroModal: true})
-  }
-
-  closeZeroSubDialog () {
-    this.setState({isShowingZeroModal: false})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
+    this.setState({pageValue: ''})
   }
   componentDidMount () {
     this.scrollToTop()
@@ -197,14 +169,14 @@ class Convo extends React.Component {
   }
 
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.state.pageValue}
     })
   }
 
   gotoTemplates () {
-    browserHistory.push(
+    this.props.history.push(
       {
         pathname: '/showTemplateBroadcasts',
         state: {pages: this.state.pageValue}
@@ -212,7 +184,7 @@ class Convo extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    if (this.props.pages && this.state.isShowingModal && this.state.pageValue === '') {
+    if (this.props.pages && this.state.pageValue === '') {
       let options = []
       if (this.props.pages) {
         for (var i = 0; i < this.props.pages.length; i++) {
@@ -223,7 +195,7 @@ class Convo extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
     }
@@ -245,6 +217,11 @@ class Convo extends React.Component {
         alertMessage: '',
         type: ''
       })
+    }
+    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+      (nextProps.pages && nextProps.pages.length === 0))
+    ) {
+      this.refs.zeroModal.click()
     }
   }
   initializePageSelect (pageOptions) {
@@ -335,45 +312,145 @@ class Convo extends React.Component {
         <SubscriptionPermissionALert />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false, top: 100}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false, top: 100}) }}>
-              <div>
+           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Broadcast Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='p3BPp3fHBBc'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
               />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModalPro &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeProDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeProDialog}>
-              <h3>Upgrade to Pro</h3>
-              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Upgrade to Pro
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
                     Upgrade to Pro
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Create Broadcast
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+								  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div className='form-group m-form__group'>
+                    <select id='selectPages' style={{ minWidth: '100%' }} />
+                  </div>
+                  <br />
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button
+                      style={{ color: 'white' }}
+                      disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                      onClick={this.gotoCreate}
+                      className='btn btn-primary'
+                      data-dismiss='modal'>
+                      Create New Broadcast
+                    </button>
+                  </div>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                    <button
+                      disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                      onClick={this.gotoTemplates}
+                      className='btn btn-primary'
+                      data-dismiss='modal'>
+                      Use Template
+                    </button>
+                    { /* add paid plan check later
+                      : <button onClick={this.showProDialog} className='btn btn-primary'>
+                        Use Template&nbsp;&nbsp;&nbsp;
+                        <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                           <span style={{color: '#34bfa3'}}>PRO</span>
+                          </span>
+                        </button>
+                      */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='zeroModal' data-toggle="modal" data-target="#zeroModal">ZeroModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="zeroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                {(this.props.pages && this.props.pages.length === 0)
+                  ? <AlertMessageModal type='page' />
+                  : <AlertMessageModal type='subscriber' />
+                }
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <div>
+                  <YouTube
+                    videoId='9kY3Fmj_tbM'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -393,8 +470,8 @@ class Convo extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -409,7 +486,7 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribersCount === 0} onClick={this.showDialog}>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribersCount === 0}  data-toggle="modal" data-target="#create" onClick={this.showDialog}>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -424,69 +501,9 @@ class Convo extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Create Broadcast</h3>
-                            <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
-                            <div style={{width: '100%', textAlign: 'center'}}>
-                              <div className='form-group m-form__group'>
-                                <select id='selectPages' style={{minWidth: '100%'}} />
-                              </div>
-                              <br />
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button style={{color: 'white'}} disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
-                                  Create New Broadcast
-                                </button>
-                              </div>
-                              <div style={{display: 'inline-block', padding: '5px'}}>
-                                {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                                <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
-                                  Use Template
-                                </button>
-                                { /* add paid plan check later
-                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
-                                  Use Template&nbsp;&nbsp;&nbsp;
-                                  <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                                    <span style={{color: '#34bfa3'}}>PRO</span>
-                                  </span>
-                                </button>
-                                */}
-                              </div>
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+
                     </div>
                   </div>
-                  {
-                    this.state.isShowingZeroModal && ((this.props.subscribersCount === 0) || (this.props.pages && this.props.pages.length === 0)) &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeZeroSubDialog}>
-                      <ModalDialog style={{width: '700px', top: '75px'}}
-                        onClose={this.closeZeroSubDialog}>
-                        {(this.props.pages && this.props.pages.length === 0)
-                        ? <AlertMessageModal type='page' />
-                      : <AlertMessageModal type='subscriber' />
-                        }
-                        <div>
-                          <YouTube
-                            videoId='9kY3Fmj_tbM'
-                            opts={{
-                              height: '390',
-                              width: '640',
-                              playerVars: {
-                                autoplay: 0
-                              }
-                            }}
-                          />
-                        </div>
-                      </ModalDialog>
-                    </ModalContainer>
-                    }
                   <div className='form-row'>
                     {/* <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
@@ -530,7 +547,7 @@ class Convo extends React.Component {
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                     </div>
-                    
+
                     </div> */}
 
                 <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
@@ -602,7 +619,7 @@ class Convo extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}

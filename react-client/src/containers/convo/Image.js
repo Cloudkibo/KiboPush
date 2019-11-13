@@ -13,7 +13,7 @@ import {
   sendbroadcast,
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
-import Halogen from 'halogen'
+import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
@@ -124,7 +124,7 @@ class Image extends React.Component {
         <div className='ui-block hoverborder' style={(this.state.imgWidth ? {minHeight: (this.state.imgHeight + 25) + 'px', minWidth: (this.state.imgWidth + 25) + 'px'} : {minHeight: 100, maxWidth: 400, padding: 25})}>
           {
           this.state.loading
-          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : <div>
             <input
               ref={el => { this.file = el }}
@@ -140,13 +140,13 @@ class Image extends React.Component {
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+              : <img alt='' onLoad={this.onImgLoad} ref={el => { this.image = el }} style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
-              <a href={this.state.imgSrc} target='_blank' download>
+              <a href={this.state.imgSrc} target='_blank' rel='noopener noreferrer' download>
                 <h6><i className='fa fa-file-image-o' /><strong> Download Image </strong></h6>
               </a>
             </div>

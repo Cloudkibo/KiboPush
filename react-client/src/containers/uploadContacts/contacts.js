@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { loadContactsList, loadWhatsAppContactsList, editSubscriber } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class Contact extends React.Component {
@@ -171,7 +170,7 @@ class Contact extends React.Component {
     document.title = `${title} | Subscribers`
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.contacts && nextProps.count) {
       this.displayData(0, nextProps.contacts)
       this.setState({ totalLength: nextProps.count })
@@ -200,24 +199,32 @@ class Contact extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.isShowingModalEdit &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeEdit}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeEdit}>
-              <h3>Edit Subscriber</h3>
-              <br />
-              <p>Subscriber Name:</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="editSubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Subscriber
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Subscriber Name:</p>
               <input className='form-control m-input' onChange={this.changeName} value={this.state.name} />
               <br />
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
-                onClick={this.editSubscriber}>Save
+                onClick={this.editSubscriber}
+                data-dismiss='modal'>Save
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -231,7 +238,7 @@ class Contact extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding subscribers? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding subscribers? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -284,14 +291,14 @@ class Contact extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='pic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img className='m--img-rounded m--marginless m--img-centered' width='60' height='60' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg' /></span></td>
+                            <td data-field='pic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img alt='' className='m--img-rounded m--marginless m--img-centered' width='60' height='60' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg' /></span></td>
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
                             <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
                             {this.props.user.platform === 'whatsApp' &&
                               <td data-field='actions' className='m-datatable__cell'>
                                 <span style={{width: '100px'}}>
-                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} onClick={() => this.showEdit(contact)}>
+                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)}>
                                     Edit
                                   </button>
                                 </span>
@@ -306,7 +313,7 @@ class Contact extends React.Component {
                       <ReactPaginate
                         previousLabel={'previous'}
                         nextLabel={'next'}
-                        breakLabel={<a>...</a>}
+                        breakLabel={<a href='#/'>...</a>}
                         breakClassName={'break-me'}
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={1}

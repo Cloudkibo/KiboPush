@@ -220,7 +220,7 @@ class InitialState extends React.Component {
                   </div>
                   : <span>
                   <i className='fa fa-remove' style={{float:"right"}} onClick={this.removeImage}></i>
-                  <img style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
+                  <img alt='' style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
                 </span>
                   }
                 </div>

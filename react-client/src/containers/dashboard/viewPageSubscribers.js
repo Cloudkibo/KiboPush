@@ -4,7 +4,7 @@ import { loadPageSubscribersList, allLocales } from '../../redux/actions/dashboa
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class ViewPageSubscribers extends React.Component {
   constructor (props, context) {
@@ -82,7 +82,7 @@ class ViewPageSubscribers extends React.Component {
     this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pageSubscribers && nextProps.count) {
       this.displayData(0, nextProps.pageSubscribers)
       this.setState({ totalLength: nextProps.count })
@@ -377,7 +377,7 @@ class ViewPageSubscribers extends React.Component {
                             </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
-                              breakLabel={<a>...</a>}
+                              breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
                               pageCount={Math.ceil(this.state.totalLength / 10)}
                               marginPagesDisplayed={2}

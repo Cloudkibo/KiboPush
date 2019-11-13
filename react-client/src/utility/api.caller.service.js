@@ -5,7 +5,6 @@
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 import auth from './auth.service'
-import { browserHistory } from 'react-router'
 import { getAccountsUrl } from './utils'
 
 export const API_URL = '/api'
@@ -41,7 +40,7 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
   }).then(response => {
     if (response.statusText === 'Unauthorized') {
       auth.logout()
-      browserHistory.push('/')
+      this.props.history.push('/')
       return Promise.reject(response.statusText)
     }
     return response

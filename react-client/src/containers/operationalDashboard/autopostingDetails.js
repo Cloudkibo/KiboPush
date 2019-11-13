@@ -4,7 +4,7 @@ class AutopostingDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
   }
-  
+
   render () {
     console.log("Props Received to Autposting", this.props)
     return (
@@ -26,7 +26,7 @@ class AutopostingDetails extends React.Component {
                 <div className='col-xl-4'>
                   <div className='m-widget21__item'>
                     <span className='m-widget21__icon'>
-                      <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                      <a href='#/' className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                         <i className='fa flaticon-user-ok m--font-light' />
                       </a>
                     </span>
@@ -44,7 +44,7 @@ class AutopostingDetails extends React.Component {
                 <div className='col-xl-4'>
                   <div className='m-widget21__item'>
                     <span className='m-widget21__icon'>
-                      <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                      <a href='#/' className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                         <i className='fa fa-thumbs-o-up m--font-light' />
                       </a>
                     </span>
@@ -62,7 +62,7 @@ class AutopostingDetails extends React.Component {
                 <div className='col-xl-4'>
                   <div className='m-widget21__item'>
                     <span className='m-widget21__icon'>
-                      <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                      <a href='#/' className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                         <i className='fa flaticon-users m--font-light' />
                       </a>
                     </span>

@@ -10,7 +10,6 @@ import { uploadNumbers, uploadFile } from '../../redux/actions/uploadContacts.ac
 import Files from 'react-files'
 import Papa from 'papaparse'
 import Select from 'react-select'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
 class UploadContacts extends React.Component {
@@ -260,6 +259,7 @@ class UploadContacts extends React.Component {
             showFileColumns: true,
             fileContent: results.data
           })
+          this.refs.fileInfo.click()
         }
       }
     })
@@ -338,11 +338,22 @@ class UploadContacts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showFileColumns &&
-          <ModalContainer style={{width: '680px'}}>
-            <ModalDialog style={{width: '680px'}}>
-              <div className='form-group m-form__group row'>
+        <a href='#/' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#fileInfo">fileInfo</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    File Information
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='form-group m-form__group row'>
                 <label className='col-lg-12 col-form-label'>
                   Select column for customer names
                 </label>
@@ -416,12 +427,14 @@ class UploadContacts extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.saveColumns()
-                  }} disabled={this.state.phoneColumn === '' || this.state.nameColumn === ''}>Save
+                  }} disabled={this.state.phoneColumn === '' || this.state.nameColumn === ''}
+                  data-dismiss='modal'>Save
                 </button>
               </center>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -435,7 +448,7 @@ class UploadContacts extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to upload contacts? Here is the <a href='https://kibopush.com/twilio/' target='_blank'>documentation</a>.
+              Need help in understanding how to upload contacts? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -463,7 +476,7 @@ class UploadContacts extends React.Component {
                               <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                             </span>
                             <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                            {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Edit Columns</button>}
+                            {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} data-toggle="modal" data-target="#fileInfo" onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Edit Columns</button>}
                           </div>
                           <span className='m-form__help'>
                             {

@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
 import { savePageInformation, saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { fetchTopPages } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -32,18 +31,18 @@ class top10pages extends React.Component {
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/pageSubscribers`,
       state: {module: 'top10pages'}
     })
   }
   goToBroadcasts (user) {
     this.props.saveUserInformation(user)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/userDetails`,
       state: user
     })
-    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
+    // this.props.history.push(`/viewsurveydetail/${survey._id}`)
   }
   showData () {
     let table = []
@@ -57,7 +56,7 @@ class top10pages extends React.Component {
             <div className='m-widget5__content'>
               <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
                 href={'http://m.me/' + this.props.pagesData[i].page.pageId}
-                target='_blank'>
+                target='_blank' rel='noopener noreferrer'>
                 {this.props.pagesData[i].page.pageName}
               </a>
               <div className='m-widget5__info'>
@@ -93,9 +92,9 @@ class top10pages extends React.Component {
 
               <br />
               <span className='m-widget5__votes'>
-                <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                <a href='#/' style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                  Subscribers
-               </Link>
+               </a>
               </span>
             </div>
           </div>
@@ -109,7 +108,7 @@ class top10pages extends React.Component {
             <div className='m-widget5__content'>
               <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
                 href={'http://m.me/' + this.props.pagesData[i + 1].page.pageId}
-                target='_blank'>
+                target='_blank' rel='noopener noreferrer'>
                 {this.props.pagesData[i + 1].page.pageName}
               </a>
               <div className='m-widget5__info'>
@@ -146,9 +145,9 @@ class top10pages extends React.Component {
 
                 <br />
                 <span className='m-widget5__votes'>
-                  <Link style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                  <a href='#/' style={{marginTop: '30px'}} onClick={(e) => { let pageSelected = this.props.pagesData[i + 1].page; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                   Subscribers
-                </Link>
+                </a>
                 </span>
 
             </div>

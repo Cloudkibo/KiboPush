@@ -9,22 +9,27 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import Tabs from './tabs'
-import {updateSponsoredMessage} from '../../redux/actions/sponsoredMessaging.actions'
+import {updateSponsoredMessage, saveDraft } from '../../redux/actions/sponsoredMessaging.actions'
 
 
 class CreateSponsoredMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isEdit: false
+      isEdit: false,
+      editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {}
+    }
+    if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
+      this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
     }
     this.onEdit = this.onEdit.bind(this)
     this.onSend = this.onSend.bind(this)
   }
+
   componentDidMount () {
-    console.log('this.props.location.state', this.props.location.state)
     if (this.props.location.state && this.props.location.state.module === 'edit') {
       this.setState({isEdit: true})
+      this.setState({editSponsoredMessage: this.props.location.state.sponsoredMessage})
     }
     const hostname = window.location.hostname
     let title = ''
@@ -40,10 +45,14 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onEdit () {
-   
+    if(this.props.location.state && this.props.location.state.module === 'edit') {
+      this.props.saveDraft(this.state.editSponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+    } else {
+      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+    }
   }
   onSend () {
-   
+
   }
   setStatus (value) {
   }
@@ -69,7 +78,7 @@ class CreateSponsoredMessage extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-12 col-lg-12 col-sm-12'>
-                    <Tabs />
+                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage}/>
                     </div>
                   </div>
                 </div>
@@ -91,7 +100,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateSponsoredMessage:updateSponsoredMessage
+    updateSponsoredMessage:updateSponsoredMessage,
+    saveDraft: saveDraft
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSponsoredMessage)

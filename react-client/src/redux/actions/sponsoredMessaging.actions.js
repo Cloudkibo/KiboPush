@@ -1,6 +1,5 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import { createBrotliCompress } from 'zlib';
 
 export function showAllSponsoredMessages (data) {
     return {
@@ -35,14 +34,40 @@ export function fetchSponsoredMessages (){
     }
 }
 
-export function updateSponsoredMessage(sponsoredMessage, key, value){
-    return (dispatch) => {
-        let temp = sponsoredMessage
-        temp[key] = value
-        dispatch(showUpdatedData(temp))
-    }
+export function saveDraft(id, data, msg) {
+  console.log('saveDraft', data)
+  return (dispatch) => {
+      callApi(`sponsoredmessaging/update/${id}`, 'post', data)
+        .then(res => {
+          console.log('response from saveDraft', res)
+          if(res.status === 'success'){
+            msg.success('Information saved successfully')
+            dispatch(fetchSponsoredMessages())
+          } else {
+            msg.error('Failed to save Information')
+          }
+      })
+  }
 }
 
+export function updateSponsoredMessage(sponsoredMessage, key, value){
+  console.log('value in updateSponoredmessage',value)
+  if(key) {
+    let temp = sponsoredMessage
+    if(key === 'payload') {
+      value = value.broadcast
+    }
+    return (dispatch) => {
+      temp[key] = value
+        dispatch(showUpdatedData(temp))
+    }
+  } else {
+    return (dispatch) => {
+      dispatch(showUpdatedData(sponsoredMessage))
+    }
+  }
+
+}
 export function createSponsoredMessage(cb, data){
     return (dispatch) => {
         callApi('sponsoredmessaging','post', data)
@@ -71,5 +96,3 @@ export function deleteSponsoredMessage(id, msg){
         })
     }
 }
-
-

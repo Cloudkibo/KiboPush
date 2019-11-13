@@ -5,7 +5,6 @@
 
 import React from 'react'
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class SubscriberSummary extends React.Component {
   constructor (props, context) {
@@ -55,6 +54,7 @@ class SubscriberSummary extends React.Component {
   changeDays (days) {
     if (days === 'other') {
       this.setState({isShowingModal: true})
+      this.refs.report.click()
     } else {
       this.setState({days: days})
       this.props.loadSubscriberSummary({days: days})
@@ -71,13 +71,22 @@ class SubscriberSummary extends React.Component {
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <div className='form-group m-form__group row' style={{padding: '30px'}}>
+                <a href='#/' style={{ display: 'none' }} ref='report' data-toggle="modal" data-target="#report">report</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="report" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Summary
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='form-group m-form__group row' style={{padding: '30px'}}>
                 <span htmlFor='example-text-input' className='col-form-label'>
                   Show records for last:&nbsp;&nbsp;
                 </span>
@@ -90,21 +99,22 @@ class SubscriberSummary extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.showReport()}>
+                  <button className='btn btn-primary' onClick={() => this.showReport()} data-dismiss='modal'>
                     Show Report
                   </button>
                 </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='m-portlet__nav'>
                 <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                   <span>{this.state.days === 'all' ? 'Show records for' : 'Show records for last'}</span>&nbsp;&nbsp;
-                  <a onClick={this.showDaysDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                  <a href='#/' onClick={this.showDaysDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                     {this.state.days === 'all' ? 'All' : this.state.days}
                   </a>&nbsp;&nbsp;
                   <span className='m-nav__link-text'>
@@ -119,35 +129,35 @@ class SubscriberSummary extends React.Component {
                           <div className='m-dropdown__content'>
                             <ul className='m-nav'>
                               <li key={10} className='m-nav__item'>
-                                <a onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     Last 10
                                   </span>
                                 </a>
                               </li>
                               <li key={30} className='m-nav__item'>
-                                <a onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     Last 30
                                   </span>
                                 </a>
                               </li>
                               <li key={90} className='m-nav__item'>
-                                <a onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     Last 90
                                   </span>
                                 </a>
                               </li>
                               <li key={'all'} className='m-nav__item'>
-                                <a onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
                                 </a>
                               </li>
                               <li key={'other'} className='m-nav__item'>
-                                <a onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <a href='#/' onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                   <span className='m-nav__link-text'>
                                     Other
                                   </span>
@@ -155,7 +165,7 @@ class SubscriberSummary extends React.Component {
                               </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <a href='#/' onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
                                 </a>
                               </li>

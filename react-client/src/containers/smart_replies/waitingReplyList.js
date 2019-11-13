@@ -2,7 +2,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
@@ -53,7 +53,7 @@ class WaitingReplyList extends React.Component {
     document.title = `${title} | Waiting Reply List`
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.waitingReplyList) {
       nextProps.waitingReplyList.sort(function (a, b) {
         return new Date(b.datetime) - new Date(a.datetime)
@@ -416,7 +416,7 @@ class WaitingReplyList extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={1}

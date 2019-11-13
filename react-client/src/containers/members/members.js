@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
   loadMembersList,
@@ -12,7 +12,6 @@ import {
 } from '../../redux/actions/members.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 
@@ -36,7 +35,7 @@ class Members extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.members) {
       console.log('members', nextProps.members)
       this.displayData(0, nextProps.members)
@@ -128,27 +127,34 @@ class Members extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px', top: 100}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px', top: 100}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Dashboard Video Tutorial
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
                 <YouTube
                   videoId='o0RZ_XlUqgo'
                   opts={{
                     height: '390',
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
+                      autoplay: 0
                     }
                   }}
                 />
+                </div>
               </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+            </div>
+          </div>
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-subheader '>
@@ -158,24 +164,32 @@ class Members extends React.Component {
             </div>
           </div>
         </div>
-        {
-          this.state.isShowingModalDelete &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialogDelete}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialogDelete}>
-              <h3>Delete Member</h3>
-              <p>Are you sure you want to delete this member?</p>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Member
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to delete this member?</p>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.removeMember(this.state.deleteid)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
-            </ModalDialog>
-          </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <div className='m-content'>
           <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
@@ -184,8 +198,8 @@ class Members extends React.Component {
              <i className='flaticon-exclamation m--font-brand' />
            </div>
             <div className='m-alert__text'>
-              Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank'>documentation</a>.
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Need help in understanding members? Here is the <a href='https://kibopush.com/invite-members/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
            </div>
           </div>
           <div className='m-portlet m-portlet--mobile'>
@@ -331,7 +345,7 @@ class Members extends React.Component {
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(
                                        this.state.totalLength / 4)}

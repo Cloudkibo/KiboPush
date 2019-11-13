@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { createTeam } from '../../redux/actions/teams.actions'
@@ -64,7 +64,7 @@ class CreateTeam extends React.Component {
 
     document.title = `${title} | Create Team`;
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
   }
   createTeam () {
@@ -92,7 +92,7 @@ class CreateTeam extends React.Component {
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: 'whatsApp'})
       }
-      browserHistory.push({
+      this.props.history.push({
         pathname: `/teams`
       })
     }
@@ -251,7 +251,7 @@ class CreateTeam extends React.Component {
                       }
                       <br />
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
-                        <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                        <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Agents
                         </a>
                         {
@@ -270,7 +270,7 @@ class CreateTeam extends React.Component {
                                       {
                                         this.props.members.map((member, i) => (
                                           <li className='m-nav__item'>
-                                            <a onClick={() => this.changeAgent(member.userId.name)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            <a href='#/' onClick={() => this.changeAgent(member.userId.name)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                               { this.exists(member.userId.name) === true
                                               ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                 <i className='la la-check' /> {member.userId.name}
@@ -283,7 +283,7 @@ class CreateTeam extends React.Component {
                                         ))
                                       }
                                       <li className='m-nav__item'>
-                                        <a onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        <a href='#/' onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                           { this.state.agentIds.length === this.props.members.length
                                           ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                             <i className='la la-check' />All
@@ -323,7 +323,7 @@ class CreateTeam extends React.Component {
                       }
                       <br />
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
-                        <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                        <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Pages
                         </a>
                         {
@@ -342,7 +342,7 @@ class CreateTeam extends React.Component {
                                       {
                                         this.props.pages.map((page, i) => (
                                           <li className='m-nav__item'>
-                                            <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            <a href='#/' onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                               { this.existsPage(page.pageName) === true
                                               ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                 <i className='la la-check' /> {page.pageName}
@@ -355,7 +355,7 @@ class CreateTeam extends React.Component {
                                         ))
                                       }
                                       <li className='m-nav__item'>
-                                        <a onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        <a href='#/' onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                           { this.state.pageIds.length === this.props.pages.length
                                           ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                             <i className='la la-check' /> All

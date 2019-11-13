@@ -19,7 +19,7 @@ class Preview extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.landingPage.currentTab === 'initialState' || nextProps.landingPage.currentTab === 'setup') {
       this.setState({backgroundColor: nextProps.landingPage.initialState.backgroundColor})
     } else if (nextProps.landingPage.currentTab === 'submittedState' && nextProps.landingPage.submittedState.state && nextProps.landingPage.submittedState.state.backgroundColor) {

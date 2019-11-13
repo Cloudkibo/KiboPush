@@ -9,7 +9,6 @@
   import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
   import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
   import AlertContainer from 'react-alert'
-  import { browserHistory } from 'react-router'
   import { validateFields } from '../../containers/convo/utility'
 
   class LandingPageMessage extends React.Component {
@@ -17,8 +16,8 @@
       super(props, context)
       this.state = {
         buttonActions: ['open website', 'open webview'],
-        broadcast: this.props.landingPage.optInMessage ? this.props.landingPage.optInMessage : [],
-        pageId: this.props.pages.filter((page) => page.pageId === this.props.landingPage.pageId)[0]._id,
+        broadcast: props.landingPage.optInMessage ? props.landingPage.optInMessage : [],
+        pageId: props.pages.filter((page) => page.pageId === props.landingPage.pageId)[0]._id,
         convoTitle: 'Landing Page Opt-In Message'
       }
       this.saveMessage = this.saveMessage.bind(this)
@@ -58,12 +57,12 @@
         this.props.landingPage.pageId = this.props.landingPages[0].pageId
         this.props.landingPage._id = this.props.landingPages[0]._id
         this.props.landingPage.currentTab = 'optInActions'
-        browserHistory.push({
+        this.props.history.push({
           pathname: `/editLandingPage`,
           state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
         })
       } else {
-        browserHistory.push({
+        this.props.history.push({
           pathname: `/createLandingPage`,
           state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
         })

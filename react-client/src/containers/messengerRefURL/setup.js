@@ -30,7 +30,7 @@ class SetUp extends React.Component {
         <div className='form-group m-form__group m--margin-top-10'>
           <span>Your messenger Ref URL: </span>
           <div className='form-control m-input m-input--air' readOnly style={{backgroundColor: 'white'}}>
-            <a href={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`} target='_blank'>{`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}</a>
+            <a href={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`} target='_blank' rel='noopener noreferrer'>{`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}</a>
           </div>
         </div>
         <CopyToClipboard text={`https://m.me/${this.props.messengerRefURL.pageId}?ref=${this.props.messengerRefURL.ref_parameter}`}

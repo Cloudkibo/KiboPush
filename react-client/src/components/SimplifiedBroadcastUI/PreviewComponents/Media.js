@@ -20,8 +20,8 @@ class Media extends React.Component {
   edit () {
     if (this.props.youtubeLink) {
       this.props.editComponent('video', {
-        edit: true, 
-        youtubeLink:this.props.youtubeLink, 
+        edit: true,
+        youtubeLink:this.props.youtubeLink,
         videoLink:this.props.videoLink,
         buttonActions:this.props.buttonActions,
         file:this.state.media,
@@ -31,7 +31,7 @@ class Media extends React.Component {
     } else {
       this.props.editComponent('media', {
         edit: true,
-        buttonActions: this.props.buttonActions, 
+        buttonActions: this.props.buttonActions,
         file:this.state.media,
         imgSrc:this.state.imgSrc,
         buttons:this.state.buttons,
@@ -90,7 +90,7 @@ class Media extends React.Component {
           {
               this.state.imgSrc &&
               <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
-                <img src={this.state.imgSrc} style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
+                <img src={this.state.imgSrc} alt='' style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
               </div>
           }
           {

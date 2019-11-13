@@ -9,7 +9,7 @@ import {
 import { loadSubscribersList, allLocales } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
@@ -81,7 +81,7 @@ class CreateSubList extends React.Component {
       this.setState({ lists: options })
       this.initializeListSelect(options)
       if (options.length === 0) {
-        this.state.selectedRadio = 'segmentAll'
+        this.setState({selectedRadio: 'segmentAll'})
       }
     }
     if (this.props.currentList) {
@@ -98,7 +98,7 @@ class CreateSubList extends React.Component {
     document.title = `${title} | Create Sublist`
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.subscribers) {
       this.setState({ allSubscribers: nextProps.subscribers })
     }

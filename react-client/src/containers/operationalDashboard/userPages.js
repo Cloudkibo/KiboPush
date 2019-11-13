@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { savePageInformation } from '../../redux/actions/backdoor.actions'
@@ -31,6 +30,7 @@ class PagesInfo extends React.Component {
     this.props.search(value, 'pages')
   }
   render () {
+    console.log('this.userPages', this.props.pages)
     return (
       <div className='row'>
         <div
@@ -69,6 +69,10 @@ class PagesInfo extends React.Component {
                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                              <span style={{width: '150px'}}>Pages</span>
                            </th>
+                           <th data-field='Approved'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Permission</span>
+                           </th>
                            <th data-field='likes'
                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                              <span style={{width: '150px'}}>Likes</span>
@@ -97,7 +101,15 @@ class PagesInfo extends React.Component {
                                <a
                                  style={{width: '150px', display: 'block'}}
                                  href={'http://m.me/' + page.pageId}
-                                 target='_blank'>{page.pageName}</a>
+                                 target='_blank'
+                                 rel='noopener noreferrer'>
+                                 {page.pageName}
+                                 </a>
+                             </td>
+                             <td data-field='Approved'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.isApproved ? 'true' : 'false'}</span>
                              </td>
                              <td data-field='likes'
                                className='m-datatable__cell'>
@@ -118,9 +130,9 @@ class PagesInfo extends React.Component {
                                className='m-datatable__cell'>
                                <span
                                  style={{width: '150px'}}>
-                                 <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
+                                 <a href='#/' onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
                                  See Subscribers
-                               </Link>
+                               </a>
                                </span>
                              </td>
                            </tr>
@@ -130,7 +142,7 @@ class PagesInfo extends React.Component {
                      </table>
                      <ReactPaginate previousLabel={'previous'}
                        nextLabel={'next'}
-                       breakLabel={<a>...</a>}
+                       breakLabel={<a href='#/'>...</a>}
                        breakClassName={'break-me'}
                        pageCount={Math.ceil(this.props.length / 10)}
                        marginPagesDisplayed={1}

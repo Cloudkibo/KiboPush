@@ -129,9 +129,9 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
+                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
                     {
-                      this.props.location.state.module === 'edit' ? <Preview selectedmessengerRefURL={this.props.location.state.messengerRefURL} /> : <Preview />
+                      this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} /> : <Preview />
                     }
                   </div>
                 </div>

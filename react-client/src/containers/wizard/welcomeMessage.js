@@ -13,7 +13,7 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -21,7 +21,6 @@ import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -51,15 +50,7 @@ class EditTemplate extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
   }
-  componentWillReceiveProps (nextprops) {
-    if (nextprops.pages) {
-      for (var i = 0; i < nextprops.pages.length; i++) {
-        if (this.state.pageValue=== nextprops.pages[i]._id) {
-          this.setState({welcomeMessage: nextprops.pages[i].isWelcomeMessageEnabled, broadcast: nextprops.pages[i].welcomeMessage})
-          break
-        }
-      }
-    }
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (this.state.pageValue === '') {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
@@ -165,23 +156,31 @@ class EditTemplate extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        {
-          this.state.showPreview &&
-          <ModalContainer style={{top: '100px'}}
-            onClose={this.closePreviewDialog}>
-            <ModalDialog style={{top: '100px'}}
-              onClose={this.closePreviewDialog}>
-              <h3>Welcome Message Preview</h3>
-              <ViewMessage user={this.props.user} payload={this.state.broadcast} />
-            </ModalDialog>
-          </ModalContainer>
-        }
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                Welcome Message Preview
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+										</span>
+                </button>
+              </div>
+              <div style={{color: 'black'}} className="modal-body">
+              {  this.state.showPreview && <ViewMessage user={this.props.user} payload={this.state.broadcast} />}
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='3' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
+                  <Sidebar history={this.props.history} step='3' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -243,7 +242,7 @@ class EditTemplate extends React.Component {
                           }
                         </div>
                         <div className='col-lg-6 m--align-right'>
-                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                          <a href='#/' className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                           <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
                         </div>
                       </div>

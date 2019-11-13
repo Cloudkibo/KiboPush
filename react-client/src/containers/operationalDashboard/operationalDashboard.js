@@ -14,7 +14,6 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
-import { Link, browserHistory } from 'react-router'
 import Popover from 'react-simple-popover'
 import {
   loadUsersList,
@@ -47,7 +46,6 @@ import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import AutopostingDetails from './autopostingDetails'
 import auth from '../../utility/auth.service'
 
 class OperationalDashboard extends React.Component {
@@ -114,7 +112,7 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/dashboard`
     })
   }
@@ -188,8 +186,8 @@ class OperationalDashboard extends React.Component {
       this.props.loadSurveysGraphData(defaultVal)
     }
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in backdoor', nextProps)
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps in backdoor', nextProps)
     if (nextProps.users && nextProps.count) {
       console.log('in nextProps.users')
       this.displayData(0, nextProps.users)
@@ -425,13 +423,15 @@ class OperationalDashboard extends React.Component {
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
           { this.props.platformStats &&
-            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} />
+            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} history={this.props.history} location={this.props.location} />
           }
           <div className='row'>
-            <AutopostingSummary backdoor={true} />
+            <AutopostingSummary backdoor={true} history={this.props.history} location={this.props.location} />
           </div>
           <div className='row'>
             <Reports
+              history={this.props.history}
+              location={this.props.location}
               iconClassName={'fa fa-line-chart'}
               title={'Reports'}
               lineChartData={this.state.chartData}
@@ -442,7 +442,7 @@ class OperationalDashboard extends React.Component {
               />
           </div>
           <div className='row'>
-            <Top10pages pagesData={this.props.toppages} />
+            <Top10pages pagesData={this.props.toppages} history={this.props.history} location={this.props.location} />
             <div className='col-xl-12'>
               <div className='m-portlet m-portlet--full-height '>
                 <div className='m-portlet__head'>
@@ -463,7 +463,7 @@ class OperationalDashboard extends React.Component {
                       </li>
                       <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                         <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
-                          <Link onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </Link>
+                          <a href='#/' onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </a>
                           <Popover
                             style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                             placement='bottom'
@@ -497,11 +497,11 @@ class OperationalDashboard extends React.Component {
                               <div>
                                 <label style={{color: '#716aca'}}>Actions:</label>
                                 <br />
-                                <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                <i className='la la-download' />&nbsp;<a href='#/' onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
                                 Download Data
                               </a>
                                 <br />
-                                <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                <i className='la la-envelope-o' />&nbsp;<a href='#/' onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
                                 Send Weekly Email
                               </a>
                                 <br />
@@ -599,7 +599,7 @@ class OperationalDashboard extends React.Component {
                                 {this.state.usersData.length < this.props.count &&
                                 <center>
                                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                  <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                  <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
                                 </center>
                                 }
                               </div>
@@ -613,11 +613,11 @@ class OperationalDashboard extends React.Component {
               </div>
             </div>
           </div>
-          <CompanyInfo />
-          <BroadcastsByDays />
-          <SurveysByDays />
-          <PollsByDays />
-          <UniquePages />
+          <CompanyInfo history={this.props.history} location={this.props.location} />
+          <BroadcastsByDays history={this.props.history} location={this.props.location} />
+          <SurveysByDays history={this.props.history} location={this.props.location} />
+          <PollsByDays history={this.props.history} location={this.props.location} />
+          <UniquePages history={this.props.history} location={this.props.location} />
         </div>
       </div>
     )

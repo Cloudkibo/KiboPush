@@ -1,9 +1,10 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+
 class ShowTemplates extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -45,7 +46,7 @@ class ShowTemplates extends React.Component {
   hideDropDown () {
     this.setState({showDropDown: false})
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
@@ -83,7 +84,7 @@ class ShowTemplates extends React.Component {
     })
   }
   gotoCreate (broadcast) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/createBroadcast`,
       state: {module: 'convo', pages: this.props.location.state.pages}
     })

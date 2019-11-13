@@ -7,12 +7,11 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './header'
 import Sidebar from './sidebar'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from '../autoposting/addChannel'
 import ListItem from '../autoposting/ListItem'
-import YouTube from 'react-youtube'
+// import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import {getCurrentProduct} from '../../utility/utils'
@@ -73,7 +72,7 @@ class Autoposting extends React.Component {
       showWordPressGuide: false
     })
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
@@ -95,6 +94,7 @@ class Autoposting extends React.Component {
   }
 
   showDialogDelete () {
+    this.refs.delete.click()
     this.setState({isShowingModalDelete: true})
   }
 
@@ -119,14 +119,22 @@ class Autoposting extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        {
-        this.state.showWordPressGuide &&
-        <ModalContainer style={{width: '500px', top: '80px'}}
-          onClose={this.closeGuide}>
-          <ModalDialog style={{width: '500px', top: '80px'}}
-            onClose={this.closeGuide}>
-            <h4>Guielines for integrating WordPress blogs</h4>
-            <div className='panel-group accordion' id='accordion1'>
+        <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Guidelines for integrating WordPress blogs
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <div className='panel-group accordion' id='accordion1'>
               <div className='panel panel-default'>
                 <div className='panel-heading guidelines-heading'>
                   <h4 className='panel-title'>
@@ -190,41 +198,67 @@ class Autoposting extends React.Component {
                 </div>
               </div>
             </div>
-          </ModalDialog>
-        </ModalContainer>
-        }
+                </div>
+              </div>
+            </div>
+          </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-                <YouTube
-                  videoId='vXN_lF7ivJY'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 1
-                    }
-                  }}
-                />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
 
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Feed
+									          </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											        </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <AddChannel onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete Integration
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this integration?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteautoposting(this.state.deleteid)
+                    this.closeDialogDelete()
+                  }} data-dismiss='modal'>Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='4' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
+                  <Sidebar history={this.props.history} step='4' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -244,41 +278,13 @@ class Autoposting extends React.Component {
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div
                           className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.isShowingModal &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialog}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialog}>
-                                <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} msg={this.msg} />
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                          {
-                            this.state.isShowingModalDelete &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialogDelete}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialogDelete}>
-                                <h3>Delete Integration</h3>
-                                <p>Are you sure you want to delete this integration?</p>
-                                <button style={{float: 'right'}}
-                                  className='btn btn-primary btn-sm'
-                                  onClick={() => {
-                                    this.props.deleteautoposting(this.state.deleteid)
-                                    this.closeDialogDelete()
-                                  }}>Delete
-                                </button>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
                         </div>
                       </div>
                       {this.props.autopostingData && this.props.autopostingData.length > 0 &&
                       <div className='row' >
                         <div className='col-lg-6 m--align-left' />
                         <div className='col-lg-6 m--align-right'>
-                          <button className='btn btn-primary' onClick={this.showDialog}>
+                          <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
                             <i className='fa fa-plus' style={{marginRight: '10px'}} />
                             <span>Add Feeds</span>
                           </button>
@@ -301,7 +307,7 @@ class Autoposting extends React.Component {
                                   : <div>
                                     <br /><br /><br /><br />
                                     <center>
-                                      <button className='btn btn-primary' onClick={this.showDialog}>
+                                      <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
                                         <i className='fa fa-plus' style={{marginRight: '10px'}} />
                                         <span>Add Feeds</span>
                                       </button>

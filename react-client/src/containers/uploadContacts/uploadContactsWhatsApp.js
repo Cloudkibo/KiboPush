@@ -42,7 +42,7 @@ class UploadContacts extends React.Component {
                 <div className='m-portlet__body'>
                   In order to send broadcasts and have chat with your whatsApp customers, you need to make them subscribers of your whatsapp sanbox. In order to do so, please follow the instructions below:
                   <br /><br />
-                  <b>1. Setup Webhook:</b> Go to <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank'>https://www.twilio.com/console/sms/whatsapp/sandbox</a>. Set this URL <i>https://webhook.cloudkibo.com/webhooks/twilio/receiveWhatsApp</i> in When the message comes in field.
+                  <b>1. Setup Webhook:</b> Go to <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>https://www.twilio.com/console/sms/whatsapp/sandbox</a>. Set this URL <i>https://webhook.cloudkibo.com/webhooks/twilio/receiveWhatsApp</i> in When the message comes in field.
                   <br /><br />
                   <b>2. Connect to sandbox:</b> Ask your customers to send a whatsApp message to your sandbox number {this.props.automated_options.twilioWhatsApp.sandboxNumber} with code <i>{this.props.automated_options.twilioWhatsApp.sandboxCode}</i>.
                   <br /><br />

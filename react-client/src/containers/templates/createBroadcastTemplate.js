@@ -8,8 +8,7 @@ import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, delete
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { Link } from 'react-router-dom'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateBroadcastTemplate extends React.Component {
@@ -58,7 +57,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.setState(broadcast)
   }
 
-  componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
@@ -170,13 +169,41 @@ class CreateBroadcastTemplate extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add Category
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <input className='form-control'
+                  placeholder='Enter category' ref='newCategory' />
+                <br />
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.closeAddCategoryDialog()
+                    this.saveCategory()
+                  }} data-dismiss='modal'>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-exclamation m--font-brand' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
+              Need help in understanding how to create template broadcasts? Here is the <a href='https://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>
@@ -194,26 +221,6 @@ class CreateBroadcastTemplate extends React.Component {
                     </div>
                   </div>
                 </div>
-                {
-                  this.state.showAddCategoryDialog &&
-                  <ModalContainer style={{width: '500px'}}
-                    onClose={this.closeAddCategoryDialog}>
-                    <ModalDialog style={{width: '500px'}}
-                      onClose={this.closeAddCategoryDialog}>
-                      <h3>Add Category</h3>
-                      <input className='form-control'
-                        placeholder='Enter category' ref='newCategory' />
-                      <br />
-                      <button style={{float: 'right'}}
-                        className='btn btn-primary btn-sm'
-                        onClick={() => {
-                          this.closeAddCategoryDialog()
-                          this.saveCategory()
-                        }}>Save
-                      </button>
-                    </ModalDialog>
-                  </ModalContainer>
-                }
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
@@ -223,7 +230,7 @@ class CreateBroadcastTemplate extends React.Component {
                       <select id='selectCategory' />
                     </div>
                     <div className='col-1'>
-                      <button onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
+                      <button data-toggle="modal" data-target="#modal" onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
                         Add category
                       </button>
                     </div>

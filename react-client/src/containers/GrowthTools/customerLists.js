@@ -7,9 +7,8 @@ import {
   loadCustomerListsNew, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import ReactPaginate from 'react-paginate'
 
@@ -47,7 +46,7 @@ class CustomerLists extends React.Component {
     this.setState({editName: e.target.value})
   }
   saveCurrentList (list) {
-    browserHistory.push({
+    this.props.history.push({
       pathname: `/customerListDetails`,
       state: {module: 'customerList'}
     })
@@ -94,7 +93,7 @@ class CustomerLists extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps.customerLists', nextProps.customerLists)
     if (nextProps.customerLists && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
@@ -122,6 +121,33 @@ class CustomerLists extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Delete List
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this List?</p>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteList(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  }}
+                  data-dismiss='modal'>Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
@@ -141,24 +167,6 @@ class CustomerLists extends React.Component {
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <h3>Delete List</h3>
-                            <p>Are you sure you want to delete this List?</p>
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.props.deleteList(this.state.deleteid, this.msg)
-                                this.closeDialogDelete()
-                              }}>Delete
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
                     </div>
                   </div>
                   { this.props.customerLists && this.props.customerLists.length > 0
@@ -203,7 +211,8 @@ class CustomerLists extends React.Component {
                                     </button>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.showDialogDelete(list._id)}>
+                                      onClick={() => this.showDialogDelete(list._id)}
+                                      data-toggle="modal" data-target="#delete">
                                       Delete
                                     </button>
                                   </span>
@@ -216,7 +225,7 @@ class CustomerLists extends React.Component {
                       <div className='pagination'>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
-                          breakLabel={<a>...</a>}
+                          breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}

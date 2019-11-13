@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
-import AudioModal from '../AudioModal'
 
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor

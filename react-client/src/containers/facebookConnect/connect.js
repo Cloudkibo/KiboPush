@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import auth from '../../utility/auth.service'
 import { skip } from '../../redux/actions/signup.actions'
 import $ from 'jquery'
@@ -15,21 +15,21 @@ class Connect extends React.Component {
     super(props, context)
     this.skip = this.skip.bind(this)
   }
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillUnmount () {
+  UNSAFE_componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer') {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
-      browserHistory.push({
+      this.props.history.push({
         pathname: '/dashboard'
       })
     }
@@ -61,8 +61,8 @@ class Connect extends React.Component {
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
-                    <a href='#'>
-                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                    <a href='#/'>
+                      <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   {
@@ -100,7 +100,7 @@ class Connect extends React.Component {
                   this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <a onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
+                    <a href='#/' onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
                   </div>
                 }
               </div>
