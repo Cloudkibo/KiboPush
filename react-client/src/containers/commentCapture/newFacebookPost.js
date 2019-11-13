@@ -263,7 +263,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1) && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length > 0) && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -273,7 +273,7 @@ class FacebookPosts extends React.Component {
         })
       }
     } else if(data.selectedRadio === 'existing') {
-      if (data.title !== ''&& data.title.length > 2 && data.autoReply.length < 1 && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
+      if (data.title !== ''&& data.title.length > 2 && data.autoReply.length > 0 && data.postUrl !== '' &&  isFacebookPageUrl(data.postUrl)) {
         this.setState({
           disabled: false
         })
@@ -283,7 +283,7 @@ class FacebookPosts extends React.Component {
         })
       }
     } else {
-      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length < 1)) {
+      if (data.title !== '' && data.title.length > 2 && (data.autoReply.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -383,7 +383,7 @@ class FacebookPosts extends React.Component {
         includedKeywords: this.props.currentPost.includedKeywords.join(),
         excludedKeywords: this.props.currentPost.excludedKeywords.join(),
         postUrl: this.props.currentPost.post_id ? `https://facebook.com/${this.props.currentPost.post_id}`: '',
-        title: this.props.currentPost.title ? this.props.currentPost.title : 'Comment Capture'
+        title: this.props.currentPost.title ? this.props.currentPost.title : ''
       })
       if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
         this.setState({
