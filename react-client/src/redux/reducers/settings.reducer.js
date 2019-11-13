@@ -84,6 +84,10 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         response: action.data
       })
+    case ActionTypes.GET_INTEGRATIONS:
+      return Object.assign({}, state, {
+        integrations: action.data
+      })
     default:
       return state
   }

@@ -3,6 +3,13 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
+export function showIntegrations (data) {
+  return {
+    type: ActionTypes.GET_INTEGRATIONS,
+    data
+  }
+}
+
 export function enableSuccess (data) {
   return {
     type: ActionTypes.ENABLE_SUCCESS,
@@ -509,6 +516,24 @@ export function updatePlatformWhatsApp (data, msg, clearFields) {
           if (clearFields) {
             dispatch(clearFields())
           }
+        }
+      })
+  }
+}
+export function getIntegrations () {
+  return (dispatch) => {
+    callApi('integrations')
+      .then(res => {
+        dispatch(showIntegrations(res.payload))
+      })
+  }
+}
+export function updateIntegration (id, body) {
+  return (dispatch) => {
+    callApi(`integrations/update/${id}`, 'post', body)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getIntegrations())
         }
       })
   }
