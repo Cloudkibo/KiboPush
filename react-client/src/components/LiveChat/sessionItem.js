@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import AlertContainer from 'react-alert'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 
 const styles = {
   sessionStyle: {
