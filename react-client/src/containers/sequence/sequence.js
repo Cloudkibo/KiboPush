@@ -395,7 +395,7 @@ class Sequence extends React.Component {
                 onClick={() => {
                   this.props.deleteSequence(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
                 </div>
               </div>
@@ -425,7 +425,8 @@ class Sequence extends React.Component {
                 </div>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
-                  onClick={() => this.gotoCreate()}>Create
+                  onClick={() => this.gotoCreate()}
+                  data-dismiss='modal'>Create
               </button>
               </div>
             </div>
@@ -433,7 +434,7 @@ class Sequence extends React.Component {
         </div>
 
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="trigger" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
@@ -519,8 +520,8 @@ class Sequence extends React.Component {
                 </div>*/}
               </div>
 
-              <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
-              <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
+              <button data-dismiss="modal" className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
+              <button data-dismiss="modal" style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
                 </div>
               </div>
             </div>

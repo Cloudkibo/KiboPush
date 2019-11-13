@@ -869,7 +869,7 @@ class Header extends React.Component {
                     onClick={() => {
                     this.props.disconnectFacebook()
                     this.logout()
-                    }}>Yes
+                  }} data-dismiss='modal'>Yes
                   </button>
                 </div>
               </div>

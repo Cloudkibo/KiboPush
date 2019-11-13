@@ -233,7 +233,7 @@ class Teams extends React.Component {
                 onClick={() => {
                   this.props.deleteTeam(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
-                }}>Delete
+                }} data-dismiss='modal'>Delete
               </button>
                 </div>
               </div>

@@ -129,7 +129,7 @@ class Category extends React.Component {
                   onClick={() => {
                     this.closeDialogCreate()
                     this.saveCategory()
-                  }} >Save
+                  }} data-dsmiss='modal'>Save
                 </button>
               </div>
             </div>
@@ -157,7 +157,7 @@ class Category extends React.Component {
                   onClick={() => {
                     this.closeDialogEdit()
                     this.editCategory()
-                  }}>Save
+                  }} data-dismiss='modal'>Save
                 </button>
               </div>
             </div>
@@ -183,7 +183,7 @@ class Category extends React.Component {
                   onClick={() => {
                     this.props.deleteCategory(this.state.deleteid, this.msg)
                     this.closeDialogDelete()
-                  }}>Delete
+                  }} data-dismiss='modal'>Delete
                 </button>
               </div>
             </div>

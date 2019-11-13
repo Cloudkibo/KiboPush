@@ -492,7 +492,7 @@ class Poll extends React.Component {
                         <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
                         <div style={{ width: '100%', textAlign: 'center' }}>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
-                            <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                            <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                               Create New Poll
                                 </button>
                           </div>
@@ -515,7 +515,7 @@ class Poll extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="subscriptionPermission" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                       <div style={{ display: 'block' }} className="modal-header">
@@ -638,6 +638,8 @@ class Poll extends React.Component {
                                     {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                                       ? <button className='btn btn-primary btn-sm'
                                         style={{ float: 'left', margin: 2 }}
+                                        data-toggle='modal'
+                                        data-target='#delete'
                                         onClick={() => this.showDialogDelete(poll._id)}>
                                         Delete
                               </button>
@@ -645,11 +647,15 @@ class Poll extends React.Component {
                                         {poll.sent === 0
                                           ? <button className='btn btn-primary btn-sm'
                                             style={{ float: 'left', margin: 2 }}
+                                            data-toggle='modal'
+                                            data-target='#delete'
                                             onClick={() => this.showDialogDelete(poll._id)}>
                                             Delete
                             </button>
                                           : <button className='btn btn-primary btn-sm' disabled
                                             style={{ float: 'left', margin: 2 }}
+                                            data-toggle='modal'
+                                            data-target='#delete'
                                             onClick={() => this.showDialogDelete(poll._id)}>
                                             Delete
                             </button>

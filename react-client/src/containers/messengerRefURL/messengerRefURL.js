@@ -177,7 +177,7 @@ class MessengerRefURL extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                  <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                     Create
                   </button>
                 </div>

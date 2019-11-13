@@ -357,7 +357,7 @@ class Convo extends React.Component {
                 <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
                     Upgrade to Pro
                   </button>
                 </div>
@@ -387,13 +387,22 @@ class Convo extends React.Component {
                   </div>
                   <br />
                   <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button style={{ color: 'white' }} disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
+                    <button
+                      style={{ color: 'white' }}
+                      disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                      onClick={this.gotoCreate}
+                      className='btn btn-primary'
+                      data-dismiss='modal'>
                       Create New Broadcast
                     </button>
                   </div>
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                    <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
+                    <button
+                      disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                      onClick={this.gotoTemplates}
+                      className='btn btn-primary'
+                      data-dismiss='modal'>
                       Use Template
                     </button>
                     { /* add paid plan check later

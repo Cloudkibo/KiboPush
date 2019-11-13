@@ -55,6 +55,7 @@ class Autoposting extends React.Component {
     }
   }
   viewGuide () {
+    this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
@@ -95,7 +96,7 @@ class Autoposting extends React.Component {
         <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
@@ -214,14 +215,14 @@ class Autoposting extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Add Feed
 									          </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button ref='addFeedClose' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
                     &times;
 											        </span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel msg={this.msg} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} />
+                <AddChannel addFeedClose={this.refs.addFeedClose} msg={this.msg} openGuidelines={this.viewGuide} />
               </div>
             </div>
           </div>
