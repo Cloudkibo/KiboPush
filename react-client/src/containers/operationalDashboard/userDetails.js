@@ -232,10 +232,10 @@ class UserDetails extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
-          <BroadcastsInfo userID={this.props.location.state._id} />
-          <SurveysInfo userID={this.props.location.state._id} />
-          <PollsInfo userID={this.props.location.state._id} />
+          <PagesInfo history={this.props.history} location={this.props.location} pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
+          <BroadcastsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
+          <SurveysInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
+          <PollsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
           <div style={{'overflow': 'auto'}}>
             <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
             </Link>

@@ -100,7 +100,7 @@ class Tab extends React.Component {
     }
   }
   render () {
-    console.log('render in tabs', this.props.landingPage)
+    console.log('render in tabs', this.props)
     return (
       <div>
         <ul className='nav nav-tabs'>
@@ -122,17 +122,19 @@ class Tab extends React.Component {
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <InitialState initialState={this.props.landingPage.initialState} handleNext={this.handleNext} handleBack={this.handleBack} />
+            <InitialState history={this.props.history} location={this.props.location} initialState={this.props.landingPage.initialState} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_2'>
-            <SubmittedState handleNext={this.handleNext} handleBack={this.handleBack} />
+            <SubmittedState history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
-            <OptInActions optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
+            <OptInActions history={this.props.history} location={this.props.location} optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
           </div>
           { this.props.module === 'edit' &&
           <div className='tab-pane' id='tab_4'>
             <Setup
+              history={this.props.history}
+              location={this.props.location}
               handleNext={this.handleNext}
               handleBack={this.handleBack}
               module={this.props.module}

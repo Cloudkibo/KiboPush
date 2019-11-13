@@ -190,14 +190,14 @@ class MessengerAds extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <a href='#/' onClick={this.gotoCreate} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <button onClick={this.gotoCreate} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
                           Create New
                         </span>
                       </span>
-                    </a>
+                    </button>
                   </div>
                 </div>
                 <div className='m-portlet__body'>

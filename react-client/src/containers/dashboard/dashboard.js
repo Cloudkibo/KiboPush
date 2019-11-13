@@ -620,7 +620,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               {
-              this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com')
+              this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost'))
               ? <ProgressBoxKiboEngage
                 lineChartData={this.state.chartData}
                 pages={this.props.pages}
@@ -643,7 +643,7 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
-            {url.includes('kiboengage.cloudkibo.com') &&
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <AutopostingSummary />
               </div>

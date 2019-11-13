@@ -27,10 +27,10 @@ class OptInActions extends React.Component {
     return (
       <div className='form-group m-form__group'>
         <div className='menuDiv m-input-icon m-input-icon--right'>
-          <input onClick={this.editMessage} readonly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
-          <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
+          <input readonly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
+          <button className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
             <i className='fa fa-edit' />
-          </a>
+          </button>
         </div>
         <div style={{marginTop: '50px'}}>
           <Footer page='optInActions' handleNext={this.props.handleNext} handleBack={this.props.handleBack} module={this.props.module} component='optInAction' />

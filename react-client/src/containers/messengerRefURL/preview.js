@@ -21,7 +21,7 @@ class Preview extends React.Component {
       <div className='col-md-6 col-lg-6 col-sm-6'>
         <div style={{paddingLeft: '50px'}}>
           {
-          this.props.selectedmessengerRefURL === undefined ? <ViewMessage payload={this.props.messengerRefURL.reply} /> : <ViewMessage payload={this.props.selectedmessengerRefURL.reply} />
+          this.props.selectedmessengerRefURL === undefined ? <ViewMessage history={this.props.history} location={this.props.location} payload={this.props.messengerRefURL.reply} /> : <ViewMessage payload={this.props.selectedmessengerRefURL.reply} />
         }
         </div>
       </div>

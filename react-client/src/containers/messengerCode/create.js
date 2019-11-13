@@ -82,7 +82,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs module={this.props.location.state.module} selectedPage={this.props.location.state.messengerCode.pageId} />
+                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} selectedPage={this.props.location.state.messengerCode.pageId} />
                   </div>
                 </div>
               </div>

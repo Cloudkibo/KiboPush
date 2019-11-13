@@ -58,9 +58,9 @@ class FacebookPosts extends React.Component {
       titleLengthValid: true,
       secondReplyOption: 'reply',
       sequenceValue: '',
-      openLinkCarousel: false,
       links:[],
-      cards: []
+      cards: [],
+      isShowingLinkCarousel: false
     }
     props.fetchAllSequence()
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
@@ -90,10 +90,17 @@ class FacebookPosts extends React.Component {
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.createPayload = this.createPayload.bind(this)
     this.setCommentCapture = this.setCommentCapture.bind(this)
-    this.openLinkCarousel = this.openLinkCarousel.bind(this)
     this.saveLinks = this.saveLinks.bind(this)
     this.removeLinkCarousel = this.removeLinkCarousel.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
+  closeModal () {
+    this.refs.linkCarousel.click()
+    this.setState({
+      isShowingLinkCarousel: false
+    })
+  }
+
   saveLinks (links, cards) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
@@ -110,16 +117,16 @@ class FacebookPosts extends React.Component {
     }
     this.setState({
       postType: 'links',
-      openLinkCarousel: false,
       cards: cardArray,
       links: links,
-      attachments:[]
+      attachments:[],
+      isShowingLinkCarousel: false
     })
+    this.refs.linkCarousel.click()
   }
   removeLinkCarousel () {
     this.setState({
       postType: '',
-      openLinkCarousel: false,
       cards: [],
       links: [],
       attachments:[]
@@ -171,10 +178,14 @@ class FacebookPosts extends React.Component {
 
     return payload
   }
-  openMessageBuilder () {
+  openMessageBuilder (openMode) {
     var payload = this.createPayload()
     console.log('Current post', payload)
     this.props.saveCurrentPost(payload)
+    this.props.history.push({
+      pathname: '/commentCaptureReply',
+      state: {mode: openMode}
+    })
   }
 
   isValidFacebookUrl (e) {
@@ -403,11 +414,6 @@ class FacebookPosts extends React.Component {
     console.log(' componentWillReceiveProps called')
   }
 
-  openLinkCarousel () {
-    this.setState({
-      openLinkCarousel: true
-    })
-  }
   removeAttachment (attachment) {
     var id = attachment.id
    // var facebookPost = this.state.facebookPost
@@ -694,18 +700,6 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-         {
-          this.state.openLinkCarousel &&
-            <LinkCarousel
-              pages={[this.state.selectedPage._id]}
-              module='commentcapture'
-              edited={false}
-              links={this.state.links}
-              cards={this.state.cards}
-              saveLinks={this.saveLinks}
-              closeModal={() => {this.setState({openLinkCarousel: false})}}
-            />
-        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
@@ -967,7 +961,11 @@ class FacebookPosts extends React.Component {
                               </button>
                             </div>
                             <div className='col-4'>
-                              <button type='button' style={{width: '100%'}} onClick={() => {this.openLinkCarousel()}}className='btn m-btn--pill m-btn--air btn-outline-primary'>
+                              <button type='button' style={{width: '100%'}} onClick={() => {
+                                this.setState({
+                                  isShowingLinkCarousel: true
+                                })
+                                this.refs.linkCarousel.click()}}className='btn m-btn--pill m-btn--air btn-outline-primary'>
                                 <i className='fa fa-link' style={{cursor: 'pointer'}}/>  { this.state.cards.length < 1 ? 'Create Link Carousel' : 'Edit Link Carousel' }
                               </button>
                             </div>
@@ -1067,21 +1065,19 @@ class FacebookPosts extends React.Component {
                         <div className='col-3'>
                           <label className='col-form-label'>Bot Configuration</label>
                         </div>
-                        <div className='col-12'>
-                          <p>
-                            Create a reply that will be sent to people who comment on your Facebook Page Post
-                          </p>
-                        </div>
                         { this.state.isEdit === 'false'
                         ? <div className='col-12'>
+                            <p>
+                            Create a reply that will be sent to people who comment on your Facebook Page Post
+                            </p>
                             {
                               this.props.currentPost && this.props.currentPost.reply && this.props.currentPost.reply.length > 0
-                              ? <Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                              ? <button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('reply')}}>
                                 Edit Reply
-                              </Link>
-                              :<Link to='commentCaptureReply' state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                              </button>
+                              :<button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('reply')}}>
                                 Create Reply
-                              </Link>
+                              </button>
                             }
                         </div>
                         : <div className='col-12'>
@@ -1132,9 +1128,9 @@ class FacebookPosts extends React.Component {
                           <div className='col-12'>
                             {
                               this.state.secondReplyOption === 'reply' &&
-                            <Link to='commentCaptureReply' state={{mode: 'secondReply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={this.openMessageBuilder}>
+                            <button style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {this.openMessageBuilder('secondReply')}}>
                               Show Message Builder
-                            </Link >
+                            </button >
                             }
                             {
                                this.state.secondReplyOption === 'sequence' &&
@@ -1286,6 +1282,20 @@ class FacebookPosts extends React.Component {
                   </div>
               </div>
             </div>
+          </div>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='linkCarousel' data-toggle="modal" data-target="#linkCarousel">Link Carousel Modal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="linkCarousel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
+            {this.state.isShowingLinkCarousel && <LinkCarousel
+              pages={[this.state.selectedPage._id]}
+              module='commentcapture'
+              edited={false}
+              links={this.state.links}
+              cards={this.state.cards}
+              saveLinks={this.saveLinks} 
+              closeModal= {this.closeModal} 
+              showCloseModalAlertDialog={this.closeModal}/>}
           </div>
         </div>
       </div>

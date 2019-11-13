@@ -27,21 +27,22 @@ class OptInActions extends React.Component {
         })
     }
     render() {
+      console.log('optInActions props', this.props)
         return (
             <div className= 'row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                         <div className='form-group m-form__group'>
                             <span>Opt-In Message: </span>
                             <div className='menuDiv m-input-icon m-input-icon--right' style={{ marginTop: '10px' }}>
-                                <input onClick={this.editMessage} readOnly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
-                                <a className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
+                                <input readOnly type='text' className='form-control m-input menuInput' value='Opt-In Message' />
+                                <button className='btn btn-circle btn-icon-only btn-default m-input-icon__icon m-input-icon__icon--right' title='Edit Message' onClick={this.editMessage} href='#/'>
                                     <i className='fa fa-edit' />
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                        <Preview />
+                        <Preview history={this.props.history} location={this.props.location} />
                     </div>
             </div>
         )

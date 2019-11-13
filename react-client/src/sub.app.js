@@ -66,18 +66,18 @@ class App extends Component {
         {
           auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
-             <Header />
+             <Header history={this.props.history} location={this.props.location} />
              {
                this.state.showContent &&
                <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                 <Sidebar />
+                 <Sidebar history={this.props.history} location={this.props.location} />
                  { this.props.children }
                </div>
              }
            </div>
            : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
            ? <div>
-             <SimpleHeader />
+             <SimpleHeader history={this.props.history} location={this.props.location} />
              {
                this.state.showContent &&
                <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
