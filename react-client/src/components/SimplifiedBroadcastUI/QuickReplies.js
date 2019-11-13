@@ -371,7 +371,7 @@ class QuickReplies extends React.Component {
         <div className='no-drag'>
             
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Warning</h5>
