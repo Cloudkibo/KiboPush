@@ -105,6 +105,9 @@ class PollResult extends React.Component {
         backcolors.push(colors[j])
         vals.push(nextprops.responses[j].value)
       }
+      console.log('colors', backcolors)
+      console.log('counts', counts)
+      console.log('value', vals)
       if (radarChart !== null) {
         // eslint-disable-next-line camelcase
         var ctx_rc = radarChart.getContext('2d')

@@ -94,6 +94,7 @@ class SurveyDetails extends React.Component {
   }
 
   render () {
+    console.log('this.props.survey in surveyDetails', this.props.location.state.data)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
@@ -103,9 +104,32 @@ class SurveyDetails extends React.Component {
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-                      <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.survey[0].title}</h3>
-                      <p><b>Description: </b>{this.props.survey[0].description}</p>
+                  <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Title: {this.props.survey[0].title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body' style={{'display': 'flex'}}>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        { this.props.location.state.data.sent}
+                        <h5>
+                          Survey Sent So Far
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.props.location.state.data.responded}
+                        <h5>
+                          Survey Respones
+                        </h5>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -120,6 +144,7 @@ class SurveyDetails extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='col-xl-12'>
                     <h4>Survey Questions</h4>
+                    {this.props.responses && this.props.responses.length > 0 ?
                     <ul className='list-group'>
                       {
                         this.props.questions &&
@@ -132,28 +157,23 @@ class SurveyDetails extends React.Component {
                             >
                               <strong>Q. {c.statement}</strong>
                             </li>
-                            {this.props.responses && this.props.responses.length > 0
-                            ? <Response
+                             <Response
                                 history={this.props.history}
                                 location={this.props.location}
                                 responses={ this.props.responses.filter(
-                                    (d) => d.questionId._id === c._id)
+                                    (d) => d.questionId === c._id)
                                 }
                                 question={c}
                               />
-                            : <ol>
-                              {c.options.map((c,index) => (
-                                <li style={{marginLeft: '30px'}}
-                                  key={index}
-                                >{c}
-                                </li>
-                                  ))}
-                            </ol>
-                          }
                           </div>
                         ))
                       }
                     </ul>
+                    : <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+
+                    <h5> Currently there are no responses for this Survey.</h5>
+                    </div>
+                    }
                   </div>
                 </div>
               </div>
