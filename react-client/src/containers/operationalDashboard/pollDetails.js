@@ -80,6 +80,7 @@ class ViewPollDetail extends React.Component {
   handlePageClick (data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.pollDetails) {
       let pollResponses = nextProps.pollDetails.pollResponses
@@ -119,6 +120,7 @@ class ViewPollDetail extends React.Component {
   }
   drawPieChart (colors, counts, value) {
     var radarChart = document.getElementById('radar-chart')
+    console.log('radarChart', radarChart)
     if (radarChart !== null) {
       // eslint-disable-next-line camelcase
       var ctx_rc = radarChart.getContext('2d')
@@ -245,16 +247,19 @@ class ViewPollDetail extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='ui-block-content'>
-                  {this.state.totalResponses ?
+                  
+                   {
+                     this.state.totalResponses === 0 &&
+                     <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+
+                     <h5> Currently there are no responses for this poll.</h5>
+                     </div>
+                   }
                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
                     }}>
                       <canvas id='radar-chart' width={250} height={170} />
-                    </div>  :
-                    <div className='col-xl-12 col-lg-12 col-md-30 col-sm-30 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                    </div>  
 
-                    <h5> Currently there are no responses for this poll.</h5>
-                    </div>
-                  }
                   </div>
                 </div>
               </div>
