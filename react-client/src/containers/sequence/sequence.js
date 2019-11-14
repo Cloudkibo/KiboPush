@@ -146,7 +146,7 @@ class Sequence extends React.Component {
   showDialogTrigger (sequence) {
     let sequenceList = []
     for(let a = 0; a < this.state.sequencesData.length; a++) {
-      let sequence2 = this.state.sequencesData[0]
+      let sequence2 = this.state.sequencesData[a]
       if (sequence.sequence._id !== sequence2.sequence._id) {
         sequenceList.push(sequence2)
       }
@@ -370,6 +370,7 @@ class Sequence extends React.Component {
       time: 3000,
       transition: 'scale'
     }
+    console.log('in render', this.state.sequenceList)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -469,7 +470,7 @@ class Sequence extends React.Component {
                      When subscriber has seen all the messages of specific sequence
                     {
                       this.state.isShowSequenceDropDown && this.state.sequenceList.length > 0 &&
-                      <select className='form-control m-input' onChange={this.handleSequenceDropdown1} value={this.state.selectedDropdownVal} defaultValue={this.state.selectedDropdownVal} >
+                      <select className='form-control m-input' onChange={this.handleSequenceDropdown1} value={this.state.selectedDropdownVal} >
 
                         {
                           this.state.sequenceList.map(function (sequence) {
@@ -489,7 +490,10 @@ class Sequence extends React.Component {
                      When subscriber unsubscribes from specific sequence
                     {
                       this.state.isShowSequenceDropDownUnsub && this.state.sequenceList.length > 0 &&
-                      <select className='form-control m-input' onChange={this.handleSequenceDropdown2} value={this.state.unsubscribeToSequence}
+                      <select 
+                        className='form-control m-input' 
+                        onChange={this.handleSequenceDropdown2} 
+                        value={this.state.unsubscribeToSequence}
                       >
                         {
                           this.state.sequenceList.map(function (sequence) {
