@@ -19,6 +19,12 @@ export function updateAutopostingSummary (data) {
     data
   }
 }
+export function updateIntegrationsSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_INTEGRATIONS_SUMMARY,
+    data
+  }
+}
 export function updateAllLocales (data) {
   console.log('Data Fetched From Subscribers', data)
   return {
@@ -125,6 +131,15 @@ export function loadAutopostingSummary (data) {
       .then(res => {
         console.log('response from loadAutopostingSummary', res)
         dispatch(updateAutopostingSummary(res.payload))
+      })
+  }
+}
+export function loadIntegrationsSummary () {
+  return (dispatch) => {
+    callApi(`dashboard/integrationsData`)
+      .then(res => {
+        console.log('response from loadIntegrationsSummary', res)
+        dispatch(updateIntegrationsSummary(res.payload))
       })
   }
 }

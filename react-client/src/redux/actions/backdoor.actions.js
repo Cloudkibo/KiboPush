@@ -539,6 +539,21 @@ export function loadAutopostingSummaryForBackdoor (data) {
       })
   }
 }
+export function updateIntegrationsSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_INTEGRATIONS_SUMMARY,
+    data
+  }
+}
+export function loadIntegrationsSummaryForBackdoor () {
+  return (dispatch) => {
+    callApi(`backdoor/integrationsData`)
+      .then(res => {
+        console.log('response from loadIntegrationsSummaryForBackdoor', res)
+        dispatch(updateIntegrationsSummary(res.payload))
+      })
+  }
+}
 export function updatePageUsers (data) {
   return {
     type: ActionTypes.UPDATE_PAGE_USERS,
