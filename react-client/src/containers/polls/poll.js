@@ -3,7 +3,6 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -498,9 +497,12 @@ class Poll extends React.Component {
                           </div>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
                             {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                            <Link to='/showTemplatePolls' className='btn btn-primary'>
+                            <button 
+                              onClick={() => this.props.history.push({pathname: '/showTemplatePolls'})}
+                              className='btn btn-primary'
+                              data-dismiss='modal'>
                               Use Template
-                                </Link>
+                                </button>
                             {/* add paid plan check later
                                   : <button data-toggle="modal" data-target="#upgrade" className='btn btn-primary'>
                                   Use Template&nbsp;&nbsp;&nbsp;
