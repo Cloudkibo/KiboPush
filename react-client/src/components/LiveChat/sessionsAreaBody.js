@@ -30,7 +30,7 @@ class SessionsAreaBody extends React.Component {
                   this.props.openSessions && this.props.openSessions.length > 0
                   ? (this.props.openSessions.map((session,i) => (
                     <SESSIONITEM key={i}
-                    changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
+                      changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
                       sendNotifications={this.props.sendNotifications}
                       changeStatus={this.props.changeStatus}
                       fetchTeamAgents={this.props.fetchTeamAgents}
@@ -59,9 +59,12 @@ class SessionsAreaBody extends React.Component {
                   this.props.closeSessions && this.props.closeSessions.length > 0
                   ? (this.props.closeSessions.map((session,i) => (
                     <SESSIONITEM key={i}
+                      changeActiveSessionFromChatbox={this.props.changeActiveSessionFromChatbox}
                       sendNotifications={this.props.sendNotifications}
                       changeStatus={this.props.changeStatus}
+                      fetchTeamAgents={this.props.fetchTeamAgents}
                       subscriberName={session.name ? session.name : (session.firstName ? session.firstName+ ' '+session.lastName: '')}
+                      profilePicError={this.props.profilePicError}
                       session={session}
                       activeSession={this.props.activeSession}
                       changeActiveSession={this.props.changeActiveSession}
