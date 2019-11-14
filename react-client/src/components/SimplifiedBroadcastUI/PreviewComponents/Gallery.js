@@ -89,7 +89,7 @@ class Gallery extends React.Component {
                 <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '175px', margin: 'auto', transform: index === this.state.selectedIndex-1 ? 'translate3d(62%, 0, 0)' : index === this.state.selectedIndex+1 ? 'translate3d(-20%, 0, 0' : ''}} className={"carousel-item carousel-item-preview " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} alt='' style={{maxHeight: '120px', maxWidth: '175px', padding: '10px', margin: '-10px'}} />
+                        <img src={card.image_url} alt='' style={{objectFit: 'cover', minHeight: '115px', minWidth: '170px', maxHeight: '120px', maxWidth: '175px', paddingTop: '10px', margin: '-10px', width: '100%', height: '100%'}} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>

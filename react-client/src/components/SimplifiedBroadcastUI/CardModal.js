@@ -534,7 +534,7 @@ class CardModal extends React.Component {
                           <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
                             {
                               card.component.image_url &&
-                              <img alt='' src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
+                              <img alt='' src={card.component.image_url} style={{objectFit: 'cover', minHeight: '175px', maxHeight: '180px', maxWidth: '300px', paddingBottom: '15px', paddingTop: '30px', margin: '-25px', width: '100%', height: '100%' }} />
                             }
                             <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
                             <h6 style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
