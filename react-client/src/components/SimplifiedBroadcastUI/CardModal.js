@@ -437,7 +437,7 @@ class CardModal extends React.Component {
                   this.state.cards.map((card, index) => {
                     console.log(`AddCard ${index + 1}`, card)
                     return (
-                      <div className="panel-group" id="accordion">
+                      <div key={index} className="panel-group" id="accordion">
                         <div className="panel panel-default">
                           <div id={`panel-heading${index + 1}`} className="panel-heading">
                             <h4 className="panel-title" style={{ fontSize: '22px' }}>
@@ -469,27 +469,6 @@ class CardModal extends React.Component {
                       </div>
                     )
                   })
-                }
-
-                {
-                    this.state.cards.map((card, index) => {
-                        console.log(`AddCard ${index+1}`, card)
-                        return (<AddCard
-                          edit={this.props.edit}
-                          buttonActions={this.state.buttonActions}
-                          buttonLimit={this.buttonLimit}
-                          index={card.id-1}
-                          onlyCard={this.state.cards.length}
-                          cardComponent
-                          errorMsg={'*At least one card is required'}
-                          replyWithMessage={this.props.replyWithMessage}
-                          card={card}
-                          addCard={this.addCard}
-                          ref={(ref) => { this.cardComponents[card.id-1] = ref }}
-                          closeCard={() => { this.closeCard(card.id) }}
-                          id={card.id}
-                          updateStatus={(status) => { this.updateCardStatus(status, card.id) }} />)
-                    })
                 }
                 {
                   (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{ minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
