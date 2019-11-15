@@ -98,6 +98,8 @@ class GenericMessage extends React.Component {
   }
 
   componentDidMount () {
+    window.closeAddComponentModal = this.closeAddComponentModal.bind(this)
+
     console.log('genericMessage props in componentDidMount', this.props)
     if (this.state.broadcast && this.state.broadcast.length > 0) {
       this.initializeList(this.state.broadcast)
@@ -167,6 +169,9 @@ class GenericMessage extends React.Component {
     } else {
       this.setState({isShowingAddComponentModal: true, componentType, editData})
       this.refs.singleModal.click()
+      // $(document).on('hide.bs.modal','#singleModal', function () {
+      //   alert('hi');
+      // })
     }
   }
 
@@ -807,7 +812,9 @@ class GenericMessage extends React.Component {
       transition: 'scale'
     }
 
-    return (<div className='m-grid__item m-grid__item--fluid m-wrapper'>
+    return (
+    <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+     
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
@@ -851,9 +858,9 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
-                    <a href='#/' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
-
-                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    
+                    <a href='#/' id='single' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden='true'>
                       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
                         {this.state.isShowingAddComponentModal && this.openModal()}
                       </div>
