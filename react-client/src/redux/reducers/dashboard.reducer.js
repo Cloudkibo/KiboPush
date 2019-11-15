@@ -67,6 +67,10 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         autopostingSummary: action.data
       })
+    case ActionTypes.UPDATE_INTEGRATIONS_SUMMARY:
+      return Object.assign({}, state, {
+        integrationsSummary: action.data
+      })
     default:
       return state
   }
