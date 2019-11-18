@@ -186,7 +186,8 @@ class CreatePoll extends React.Component {
       segmentationLocale: targeting.localeValue,
       segmentationTags: targeting.tagValue,
       isList: targeting.isList ? true : false,
-      segmentationList: targeting.listSelected
+      segmentationList: targeting.listSelected,
+      segmentationPoll: targeting.pollValue
   }
   this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
