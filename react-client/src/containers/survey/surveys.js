@@ -13,7 +13,6 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
@@ -448,15 +447,19 @@ class Survey extends React.Component {
                         <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
                         <div style={{ width: '100%', textAlign: 'center' }}>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
-                            <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                            <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
                               Create New Survey
-                                </button>
+                            </button>
                           </div>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
                             {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                            <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                            <button
+                              onClick={() => this.props.history.push({pathname: '/showTemplateSurveys'})}
+                              className='btn btn-primary'
+                              data-dismiss='modal'
+                            >
                               Use Template
-                                </Link>
+                            </button>
                             {/*: <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>

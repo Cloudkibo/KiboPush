@@ -21,6 +21,7 @@ import Configuration from './configuration'
 import AlertContainer from 'react-alert'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
+import Integrations from './integrations'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -61,6 +62,7 @@ class Settings extends React.Component {
     this.setReset = this.setReset.bind(this)
     this.setResetPass = this.setResetPass.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
+    this.setIntegrations = this.setIntegrations.bind(this)
     this.setAPI = this.setAPI.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -184,6 +186,11 @@ class Settings extends React.Component {
   setConfiguration () {
     this.setState({
       openTab: 'configuration'
+    })
+  }
+  setIntegrations () {
+    this.setState({
+      openTab: 'integrations'
     })
   }
   setPermissions () {
@@ -587,6 +594,12 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-network' />
+                        <span className='m-nav__link-text'>Integrations</span>
+                      </a>
+                    </li>
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
@@ -862,6 +875,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'configuration' &&
               <Configuration />
+            }
+            { this.state.openTab === 'integrations' &&
+              <Integrations />
             }
           </div>
         </div>

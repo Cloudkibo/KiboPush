@@ -11,6 +11,7 @@ import Top10pages from './top10pages'
 import UniquePages from './uniquePages'
 import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
+import IntegrationsSummary from '../dashboard/integrationsSummary'
 import CompanyInfo from './companyInfo'
 //  import ListItem from './ListItem'
 import moment from 'moment'
@@ -427,6 +428,9 @@ class OperationalDashboard extends React.Component {
           }
           <div className='row'>
             <AutopostingSummary backdoor={true} history={this.props.history} location={this.props.location} />
+          </div>
+          <div className='row'>
+            <IntegrationsSummary backdoor={true} history={this.props.history} location={this.props.location} />
           </div>
           <div className='row'>
             <Reports

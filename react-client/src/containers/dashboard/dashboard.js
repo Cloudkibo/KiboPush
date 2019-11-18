@@ -13,6 +13,7 @@ import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEng
 import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import SubscriberSummary from './subscriberSummary'
 import AutopostingSummary from './autopostingSummary'
+import IntegrationsSummary from './integrationsSummary'
 import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
@@ -646,6 +647,11 @@ class Dashboard extends React.Component {
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <AutopostingSummary />
+              </div>
+            }
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+              <div className='row'>
+                <IntegrationsSummary />
               </div>
             }
             {/*
