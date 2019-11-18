@@ -147,7 +147,7 @@ class Image extends React.Component {
               </div>
               : <div className='align-center' style={{padding: '5px'}}>
                 <img src={this.state.imgSrc} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40, maxWidth: '100%'}} alt='Text' />
-                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file ? this.state.file.fileName.length > 30 ?  this.state.file.fileName.slice(0,25)+'...' : this.state.file.fileName : 'Image'}</h6>
+                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', overflowWrap: 'break-word'}}>{this.state.file ? this.state.file.fileName : 'Image'}</h6>
               </div>
           }
           </div>
