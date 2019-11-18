@@ -120,8 +120,7 @@ class CardModal extends React.Component {
           buttons: []
         }
       })
-      this.setState({ selectedIndex: (cards.length - 1), cards, numOfElements: this.state.numOfElements + 1, disabled: true, edited: true }, () => {
-        this.setState({ closeAdditionalCardsModal: false })
+      this.setState({ closeAdditionalCardsModal: false, selectedIndex: (cards.length - 1), cards, numOfElements: this.state.numOfElements + 1, disabled: true, edited: true }, () => {
         this.scrollToTop(`panel-heading${this.state.cards.length}`)
       })
     }
@@ -297,6 +296,7 @@ class CardModal extends React.Component {
           }
         }
         if (requirements.length === 0) {
+          console.log('0 requirments')
           this.showAdditionalCardsModal()
           if(!this.state.closeAdditionalCardsModal) {
             this.refs.addCard.click()
@@ -312,8 +312,9 @@ class CardModal extends React.Component {
   }
 
   closeAdditionalCardsModal() {
-    this.setState({ closeAdditionalCardsModal: true })
-    this.refs.addCard.click()
+    this.setState({ closeAdditionalCardsModal: true }, () => {
+      this.refs.addCard.click()
+    })
   }
 
   closeCard(id) {
@@ -392,7 +393,7 @@ class CardModal extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Warning
 							  </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={() => {
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} data-dismiss="modal" type="button" className="close" onClick={() => {
                     this.closeAdditionalCardsModal()}} aria-label="Close">
                   <span aria-hidden="true">
                     &times;
@@ -404,8 +405,8 @@ class CardModal extends React.Component {
                 <button style={{ float: 'right', marginLeft: '10px' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.closeAdditionalCardsModal()
                     this.addElement()
+                    this.closeAdditionalCardsModal()
                   }}>Yes
                 </button>
                 <button style={{ float: 'right' }}
@@ -437,7 +438,7 @@ class CardModal extends React.Component {
                   this.state.cards.map((card, index) => {
                     console.log(`AddCard ${index + 1}`, card)
                     return (
-                      <div key={index} className="panel-group" id="accordion">
+                      <div className="panel-group" id="accordion">
                         <div className="panel panel-default">
                           <div id={`panel-heading${index + 1}`} className="panel-heading">
                             <h4 className="panel-title" style={{ fontSize: '22px' }}>
@@ -513,7 +514,7 @@ class CardModal extends React.Component {
                           <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
                             {
                               card.component.image_url &&
-                              <img alt='' src={card.component.image_url} style={{objectFit: 'cover', minHeight: '170px', maxHeight: '170px', maxWidth: '300px', paddingBottom: '11px', paddingTop: '29px', margin: '-25px', width: '100%', height: '100%' }} />
+                              <img alt='' src={card.component.image_url} style={{ maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px' }} />
                             }
                             <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
                             <h6 style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
