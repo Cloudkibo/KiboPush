@@ -10,6 +10,7 @@ import {
   fetchUserChats,
   uploadAttachment,
   deletefile,
+  uploadRecording,
   sendAttachment,
   sendChatMessage,
   fetchUrlMeta,
@@ -294,8 +295,7 @@ class ChatBox extends React.Component {
   }
 
   onStop(recordedBlob) {
-    // this.closeDialogRecording()
-    var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', { type: 'audio/mp3', lastModified: Date.now() })
+    var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -310,8 +310,9 @@ class ChatBox extends React.Component {
       fileData.append('filesize', file.size)
       fileData.append('componentType', 'audio')
       this.setState({ uploadDescription: 'File is uploading..' })
-      this.props.uploadAttachment(fileData, this.handleUpload)
+      this.props.uploadRecording(fileData, this.handleUpload)
     }
+    this.refs.voiceRecording.click()
     this.textInput.focus()
   }
 
@@ -593,7 +594,7 @@ class ChatBox extends React.Component {
         fileData.append('componentType', this.state.componentType)
         console.log('file', file)
         this.setState({ uploadDescription: 'File is uploading..' })
-        this.props.uploadAttachment(fileData, this.handleUpload)
+        this.props.uploadAttachment(fileData,this.handleUpload)
       }
     }
     this.textInput.focus()
@@ -868,7 +869,7 @@ class ChatBox extends React.Component {
               </div>
             </div>
           </div>
-
+          <a href='#/' style={{ display: 'none' }} ref='voiceRecording' data-toggle="modal" data-target="#voiceRecording">Link Carousel Modal</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="voiceRecording" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -905,8 +906,8 @@ class ChatBox extends React.Component {
                       record={this.state.record}
                       className='sound-wave'
                       onStop={this.onStop}
-                      strokeColor='#000000'
-                      mimeType='audio.mp3' />
+                      strokeColor='#000000' 
+                      mimeType="audio/wav"/>
                   </div>
                   <br />
                   {this.state.buttonState === 'start'
@@ -1854,7 +1855,7 @@ class ChatBox extends React.Component {
                       }
                     </div>
                     <div id='recordingDiv' ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
-                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                      <i onClick={() => {this.refs.voiceRecording.click()}} style={styles.iconclass}>
                         <i style={{
                           fontSize: '20px',
                           position: 'absolute',
@@ -2029,6 +2030,7 @@ function mapDispatchToProps(dispatch) {
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
     deletefile: (deletefile),
+    uploadRecording: (uploadRecording),
     sendAttachment: (sendAttachment),
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
