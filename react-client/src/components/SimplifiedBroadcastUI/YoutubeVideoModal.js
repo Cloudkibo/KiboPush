@@ -329,7 +329,7 @@ class YoutubeVideoModal extends React.Component {
               >
                   Cancel
                 </button>
-                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle)} onClick={() => this.handleDone()} className='btn btn-primary'
+                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle) || this.state.loading} onClick={() => this.handleDone()} className='btn btn-primary'
                  >
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
