@@ -594,7 +594,7 @@ class ChatBox extends React.Component {
         fileData.append('componentType', this.state.componentType)
         console.log('file', file)
         this.setState({ uploadDescription: 'File is uploading..' })
-        this.props.uploadRecording(fileData,this.handleUpload)
+        this.props.uploadAttachment(fileData,this.handleUpload)
       }
     }
     this.textInput.focus()
