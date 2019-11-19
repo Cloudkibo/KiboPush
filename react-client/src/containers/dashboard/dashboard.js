@@ -621,7 +621,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               {
-              this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost'))
+              this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
               ? <ProgressBoxKiboEngage
                 lineChartData={this.state.chartData}
                 pages={this.props.pages}
