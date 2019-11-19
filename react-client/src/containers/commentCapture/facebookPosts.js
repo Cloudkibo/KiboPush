@@ -310,15 +310,10 @@ class FacebookPosts extends React.Component {
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                              {post.post_id &&
-                                <span>
-                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
-                                      View
-                                  </a>
-                                  <br />
-                                </span>
-                              }
-                                <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                              <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                    View
+                                </Link>
+                                <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                       <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
