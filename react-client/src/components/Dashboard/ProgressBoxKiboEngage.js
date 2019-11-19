@@ -37,19 +37,19 @@ class ProgressBox extends React.Component {
     this.setState({showDaysDropDown: false})
   }
   calculateProgressRates () {
-    var progressRates = {}
-    if (this.props.selectedPage) {
-      progressRates.unsubscribeRate = (this.props.selectedPage.unsubscribes && this.props.selectedPage.subscribers) ? (this.props.selectedPage.unsubscribes / (this.props.selectedPage.unsubscribes + this.props.selectedPage.subscribers) * 100).toFixed(1) + '%' : '0%'
-    } else {
-      progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
-    }
+    // var progressRates = {}
+    // if (this.props.selectedPage) {
+    //   progressRates.unsubscribeRate = (this.props.selectedPage.unsubscribes && this.props.selectedPage.subscribers) ? (this.props.selectedPage.unsubscribes / (this.props.selectedPage.unsubscribes + this.props.selectedPage.subscribers) * 100).toFixed(1) + '%' : '0%'
+    // } else {
+    //   progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
+    // }
 
-    progressRates.broadcastSeenConvertRate = this.props.data.broadcast.broadcastSentCount !== 0 ? ((this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100).toFixed(1) + '%' : '0%'
-    progressRates.pollSeenConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
-    progressRates.pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
-    progressRates.surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
-    progressRates.surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
-    return progressRates
+    // progressRates.broadcastSeenConvertRate = this.props.data.broadcast.broadcastSentCount !== 0 ? ((this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100).toFixed(1) + '%' : '0%'
+    // progressRates.pollSeenConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
+    // progressRates.pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
+    // progressRates.surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
+    // progressRates.surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
+    // return progressRates
   }
 
   render () {
@@ -172,13 +172,13 @@ class ProgressBox extends React.Component {
                     path='/broadcasts'
                     state={{}}
                     icon='flaticon-paper-plane'
-                    title={this.props.data.broadcast.broadcastSentCount !== null ? this.props.data.broadcast.broadcastSentCount : 0}
+                    // title={this.props.data.broadcast.broadcastSentCount !== null ? this.props.data.broadcast.broadcastSentCount : 0}
                     subtitle='Broadcasts'
                     iconStyle='success'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
-                    rate={rates.broadcastSeenConvertRate}
+                    // rate={rates.broadcastSeenConvertRate}
                     label='Seen rate'
                     progressStyle='success'
                   />
@@ -188,19 +188,19 @@ class ProgressBox extends React.Component {
                     path='/poll'
                     state={{}}
                     icon='flaticon-graphic-2'
-                    title={this.props.data.poll.pollSentCount !== null ? this.props.data.poll.pollSentCount : 0}
+                    // title={this.props.data.poll.pollSentCount !== null ? this.props.data.poll.pollSentCount : 0}
                     subtitle='Polls'
                     iconStyle='danger'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
-                    rate={rates.pollSeenConvertRate}
+                    // rate={rates.pollSeenConvertRate}
                     label='Seen rate'
                     progressStyle='danger'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
-                    rate={rates.pollResponseConvertRate}
+                    // rate={rates.pollResponseConvertRate}
                     label='Response rate'
                     progressStyle='danger'
                   />
@@ -210,19 +210,19 @@ class ProgressBox extends React.Component {
                     path='/surveys'
                     state={{}}
                     icon='flaticon-statistics'
-                    title={this.props.data.survey.surveySentCount !== null ? this.props.data.survey.surveySentCount : 0}
+                    // title={this.props.data.survey.surveySentCount !== null ? this.props.data.survey.surveySentCount : 0}
                     subtitle='Surveys'
                     iconStyle='accent'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
-                    rate={rates.surveySeenConvertRate}
+                    // rate={rates.surveySeenConvertRate}
                     label='Seen rate'
                     progressStyle='accent'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
-                    rate={rates.surveyResponseConvertRate}
+                    // rate={rates.surveyResponseConvertRate}
                     label='Response rate'
                     progressStyle='accent'
                   />

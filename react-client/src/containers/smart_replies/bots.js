@@ -13,7 +13,7 @@ import AlertMessage from '../../components/alertMessages/alertMessage'
 import YouTube from 'react-youtube'
 
 class Bot extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     props.loadBotsList()
     props.loadMyPagesList()
     super(props, context)
@@ -57,10 +57,10 @@ class Bot extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
   }
 
-  componentDidMount () {
-    const hostname =  window.location.hostname;
+  componentDidMount() {
+    const hostname = window.location.hostname;
     let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage';
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat';
@@ -69,31 +69,31 @@ class Bot extends React.Component {
     document.title = `${title} | Bots`;
   }
 
-  showDialog () {
+  showDialog() {
     if (this.state.pages.length === 0) {
       this.msg.error('You have already added bots on all pages.')
       return
     }
-    this.setState({isShowingModal: true})
+    this.setState({ isShowingModal: true })
   }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
+  closeDialog() {
+    this.setState({ isShowingModal: false })
   }
-  showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
-  }
-
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
-  }
-  UNSAFE_componentWillMount () {
-   // this.props.loadSubscribersList()
-  //  document.title('KiboPush | Poll')
+  showDialogDelete(id) {
+    this.setState({ isShowingModalDelete: true })
+    this.setState({ deleteid: id })
   }
 
-  displayData (n, bots) {
+  closeDialogDelete() {
+    this.setState({ isShowingModalDelete: false })
+  }
+  UNSAFE_componentWillMount() {
+    // this.props.loadSubscribersList()
+    //  document.title('KiboPush | Poll')
+  }
+
+  displayData(n, bots) {
     let offset = n * 10
     let data = []
     let limit
@@ -107,10 +107,10 @@ class Bot extends React.Component {
       data[index] = bots[i]
       index++
     }
-    this.setState({botsData: data})
+    this.setState({ botsData: data })
   }
 
-  handlePageClick (data) {
+  handlePageClick(data) {
     // this.setState({pageSelected: data.selected})
     // if (data.selected === 0) {
     //   this.props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
@@ -120,13 +120,13 @@ class Bot extends React.Component {
     this.displayData(data.selected, this.props.bots)
   }
 
-  updateName (e) {
+  updateName(e) {
     var name = e.target.value.replace('-', '')
-    this.setState({name: name, error: false})
+    this.setState({ name: name, error: false })
   }
 
-  searchBot (event) {
-    this.setState({searchValue: event.target.value})
+  searchBot(event) {
+    this.setState({ searchValue: event.target.value })
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
       // this.setState({filter: true})
@@ -149,8 +149,8 @@ class Bot extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
 
-  onFilter (e) {
-    this.setState({filterValue: e.target.value})
+  onFilter(e) {
+    this.setState({ filterValue: e.target.value })
     var filtered = []
     if (e.target.value && e.target.value !== 'all' && this.state.searchValue === '') {
       // this.setState({filter: true})
@@ -175,7 +175,7 @@ class Bot extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
@@ -189,9 +189,9 @@ class Bot extends React.Component {
         total = total + nextProps.bots[i].hitCount + nextProps.bots[i].missCount
         notResponded = notResponded + nextProps.bots[i].missCount
       }
-      this.setState({responded: responded, total: total, notResponded: notResponded})
+      this.setState({ responded: responded, total: total, notResponded: notResponded })
     } else {
-      this.setState({botsData: [], totalLength: 0})
+      this.setState({ botsData: [], totalLength: 0 })
     }
     if (nextProps.pages && nextProps.pages.length > 0 && nextProps.bots) {
       // this.state.pageSelected = nextProps.pages[0]._id
@@ -199,7 +199,7 @@ class Bot extends React.Component {
     }
   }
 
-  updateAllowedPages (pages, bots) {
+  updateAllowedPages(pages, bots) {
     var temp = pages.filter((page) => {
       for (let i = 0; i < bots.length; i++) {
         // console.log('Comparing the two', bots[i].pageId._id, page._id, bots[i].pageId._id === page._id)
@@ -210,19 +210,19 @@ class Bot extends React.Component {
       return true
     })
     // console.log('Updating the allowed pages', temp)
-    this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
+    this.setState({ pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : [] })
   }
 
-  changePage (e) {
-    this.setState({pageSelected: e.target.value})
+  changePage(e) {
+    this.setState({ pageSelected: e.target.value })
   }
 
-  changeStatus (e) {
+  changeStatus(e) {
     console.log('e.target.value', e.target.value)
-    this.setState({isActive: e.target.value})
+    this.setState({ isActive: e.target.value })
   }
 
-  gotoView (bot) {
+  gotoView(bot) {
     this.props.history.push({
       pathname: `/viewBot`,
       state: bot
@@ -230,7 +230,7 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoEdit (bot) {
+  gotoEdit(bot) {
     this.props.history.push({
       pathname: `/editBot`,
       state: bot
@@ -238,7 +238,7 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoWaitingReply (bot) {
+  gotoWaitingReply(bot) {
     this.props.history.push({
       pathname: `/WaitingReplyList`,
       state: bot
@@ -246,7 +246,7 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoUnansweredQueries (bot) {
+  gotoUnansweredQueries(bot) {
     console.log('going to unanswered queries')
     this.props.history.push({
       pathname: `/UnansweredQueries`,
@@ -255,28 +255,28 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  showDropdown () {
-    this.setState({showDropDown: true})
+  showDropdown() {
+    this.setState({ showDropDown: true })
   }
 
-  hideDropDown () {
-    this.setState({showDropDown: false})
+  hideDropDown() {
+    this.setState({ showDropDown: false })
   }
 
-  gotoCreate () {
+  gotoCreate() {
     if (this.state.name === '') {
-      this.setState({error: true})
+      this.setState({ error: true })
     } else {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
-      this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
+      this.props.createBot({ botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive })
       this.props.history.push({
         pathname: `/createBot`
       })
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -288,19 +288,19 @@ class Bot extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
-              <div className="modal-content" style={{width: '687px', top: '100'}}>
-              <div style={{ display: 'block'}} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Dashboard Video Tutorial
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Dashboard Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
 											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <YouTube
                   videoId='dhLolxFQPkE'
                   opts={{
@@ -311,10 +311,10 @@ class Bot extends React.Component {
                     }
                   }}
                 />
-                </div>
               </div>
             </div>
           </div>
+        </div>
 
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -360,7 +360,7 @@ class Bot extends React.Component {
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
                     <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}
-                    data-dismiss='modal'>
+                      data-dismiss='modal'>
                       Create
                     </button>
                   </div>
@@ -413,22 +413,22 @@ class Bot extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding bots? Here is the <a href='https://kibopush.com/smart-replies/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/'  data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
             </div>
           </div>
 
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+          {/* <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
               Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
             </div>
-          </div>
+          </div> */}
           <div className='row'>
             <div className='col-xl-12'>
               <div className='row m-row--full-height'>
-                <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                <div className='col-sm-4 col-md-4 col-lg-4' style={{ height: 'fit-content' }}>
                   <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
                     <div className='m-portlet__body'>
                       <div className='m-widget26'>
@@ -441,7 +441,7 @@ class Bot extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                <div className='col-sm-4 col-md-4 col-lg-4' style={{ height: 'fit-content' }}>
                   <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
                     <div className='m-portlet__body'>
                       <div className='m-widget26'>
@@ -454,8 +454,8 @@ class Bot extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
-                  <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                <div className='col-sm-4 col-md-4 col-lg-4' style={{ height: 'fit-content' }}>
+                  <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger'>
                     <div className='m-portlet__body'>
                       <div className='m-widget26'>
                         <div className='m-widget26__number'>{this.state.notResponded}
@@ -477,35 +477,35 @@ class Bot extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Bots
+                        Smart Agents
                       </h3>
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.pages && this.props.pages.length === 0
-                      ? <div>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} >
-                          <span>
-                            <i className='la la-plus' />
+                        ? <div>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} >
                             <span>
-                              Create New
+                              <i className='la la-plus' />
+                              <span>
+                                Create New
                             </span>
-                          </span>
-                        </button>
-                      </div>
-                      : <div>
-                        {this.props.user && this.props.user.role !== 'agent' &&
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog}>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Create New
                             </span>
-                          </span>
-                        </button>
-                      }
-                      </div>
+                          </button>
+                        </div>
+                        : <div>
+                          {this.props.user && this.props.user.role !== 'agent' &&
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog}>
+                              <span>
+                                <i className='la la-plus' />
+                                <span>
+                                  Create New
+                            </span>
+                              </span>
+                            </button>
+                          }
+                        </div>
                     }
                   </div>
                 </div>
@@ -520,12 +520,11 @@ class Bot extends React.Component {
                         <span><i className='la la-search' /></span>
                       </span>
                     </div>
-                    <div style={{margin: '5px'}} className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
-                      <div className='m-form__label'>
+                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center' style={{ margin: '10px' }}>
+                      {/* <div className='m-form__label'>
                         <label>Pages:&nbsp;&nbsp;</label>
-                      </div>
-                      <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
+                      </div> */}
+                      <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
                         <option value='' disabled>Filter by Pages...</option>
                         {
                           this.props.pages && this.props.pages.length > 0 &&
@@ -536,205 +535,310 @@ class Bot extends React.Component {
                         <option value='all'>All</option>
                       </select>
                     </div>
-                  </div>
-                  <br />
-                  { this.state.botsData && this.state.botsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflow: 'inherit'}}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='name'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Name</span>
-                          </th>
-                          <th data-field='page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Page</span>
-                          </th>
-                          <th data-field='status'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Status</span>
-                          </th>
-                          <th data-field='status'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Answered Queries</span>
-                          </th>
-                          <th data-field='status'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Unanswered Queries</span>
-                          </th>
-                          <th data-field='actions'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '250px'}}>Actions</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                      {/* <div className='m-form__label'>
+                        <label>Pages:&nbsp;&nbsp;</label>
+                      </div> */}
+                      <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
+                        <option value='' disabled>Filter by Status...</option>
                         {
-                        this.state.botsData.map((bot, i) => (
-                          <tr key={i} data-row={i}
-                            className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px'}}>
-                            <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName ? bot.botName.split('-').join(' ') : ''}</span></td>
-                            <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
-                            <td data-field='page' className='m-datatable__cell'>
-                              {bot.isActive === 'true'
-                                ? <span style={{width: '125px'}}>Active</span>
-                                : <span style={{width: '125px'}}>Disabled</span>
-                              }
-                            </td>
-                            <td data-field='page' className='m-datatable__cell'>
-                              { (bot.hitCount)
-                                ? <span style={{width: '125px'}}>{ bot.hitCount}</span>
-                                : <span style={{width: '125px'}}>0</span>
-                              }
-                            </td>
-                            <td data-field='page' className='m-datatable__cell'>
-                              { (bot.missCount)
-                                ? <span style={{width: '125px'}}>{ bot.missCount}</span>
-                                : <span style={{width: '125px'}}>0</span>
-                              }
-                            </td>
-                            <td data-field='actions' className='m-datatable__cell'>
-                              {this.props.user && this.props.user.role !== 'agent'
-                              ? <span style={{width: '250px', overflow: 'inherit', paddingLeft: '65px'}}>
-
-                                <div style={{paddingLeft: 0}} className='col-md-2'>
-                                  <div className='m-portlet__head-tools'>
-                                    <ul className='m-portlet__nav'>
-                                      <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                        <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                                          <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
-                                        </a>
-                                        {
-                                          /* This is dropdown of possible actions for a bot */
-                                          this.state.showDropDown &&
-                                          <div className='m-dropdown__wrapper'>
-                                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                            <div className='m-dropdown__inner'>
-                                              <div className='m-dropdown__body'>
-                                                <div className='m-dropdown__content'>
-                                                  <ul className='m-nav'>
-                                                    <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a href='#/' onClick={() => this.gotoView(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                        {
-                                                          <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                            View
-                                                          </span>
-                                                        }
-                                                      </a>
-                                                    </li>
-                                                    <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a href='#/' onClick={() => this.gotoEdit(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                        {
-                                                          <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                            Edit
-                                                          </span>
-                                                        }
-                                                      </a>
-                                                    </li>
-                                                    <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a href='#/' onClick={() => this.showDialogDelete(bot._id)} data-toggle="modal" data-target="#delete" className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                        {
-                                                          <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                            Delete
-                                                          </span>
-                                                        }
-                                                      </a>
-                                                    </li>
-                                                    <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a href='#/' onClick={() => this.gotoWaitingReply(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                        {
-                                                          <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                            Waiting Subscribers
-                                                          </span>
-                                                        }
-                                                      </a>
-                                                    </li>
-                                                    <li className='m-nav__item' style={{ margin: '10px' }}>
-                                                      <a href='#/' onClick={() => this.gotoUnansweredQueries(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                        {
-                                                          <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                            Unanswered Queries
-                                                          </span>
-                                                        }
-                                                      </a>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        }
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                              </span>
-                              : <span style={{width: '250px'}}>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(bot)}>
-                                  View
-                                </button>
-                              </span>
-                            }
-                            </td>
-                            <hr />
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a href='#/'>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                          this.props.pages && this.props.pages.length > 0 &&
+                          this.props.pages.map((page, i) => (
+                            <option key={i} value={page._id}>{page.pageName}</option>
+                          ))
+                        }
+                        <option value='all'>All</option>
+                      </select>
                     </div>
                   </div>
-                  : <span>
-                    <p> No data to display </p>
-                  </span>
-                }
+                      <br />
+  <div className="m-widget5">
+    <div className="m-widget5__item">
+	    <div className="m-widget5__pic">
+        <img 
+          className="m-widget7__img" 
+          src="https://pakwired.com/wp-content/uploads/2019/10/Homeshopping-Logo.jpg" 
+          alt=""
+          style={{borderRadius:'65px', width:'68px', height: '68px'}} />
+	    </div>
+	    <div className="m-widget5__content">
+		    <h4 className="m-widget5__title" style={{marginTop: '10px'}}>
+			    HomeShoping.PK
+		    </h4>
+		    <div className="m-widget5__info">
+			    <span className="m-widget5__info-label" style={{marginRight: '5px'}}>
+				    Page:
+			    </span>
+			    <span className="m-widget5__info-author-name">
+				    KiboEngage
+			    </span>
+		    </div>
+	    </div>
+      <div 
+        className="m-widget5__stats1"
+        style={{
+          textAlign: 'center',
+          width: '7.1rem',
+          paddingLeft: '0px'
+        }}>
+		    <span className="m-widget5__number">
+			    500
+		    </span>
+		    <br />
+		    <span className="m-widget5__sales">
+			    Responded
+		    </span>
+	    </div>
+      <div 
+        className="m-widget5__stats2"  
+        style={{
+          textAlign: 'center', 
+          width: '11.7rem', 
+          paddingLeft: '0px'
+        }}>
+		    <span className="m-widget5__number">
+			    1046
+		    </span>
+		    <br />
+		    <span className="m-widget5__votes">
+			    Not Responded
+		    </span>
+	    </div>
+      <div 
+        className="m-widget6__stats4"
+        style={{
+          textAlign: 'center',
+          width: '7.1rem',
+          color: 'red',
+          paddingLeft: '0px'
+        }}>
+		    <span className="m-widget5__votes m-switch m-switch--outline m-switch--icon m-switch--success">
+						<label>
+							<input type="checkbox" checked="checked" name="" />
+							<span></span>
+						</label>
+		    </span>
+	    </div>
+      <div 
+        className="m-widget5__stats3"  
+        style={{
+          textAlign: 'center',
+          width: '7.1rem',
+          color: 'red',
+          paddingLeft: '0px'
+        }}>
+		    <span className="m-widget5__number">
+          <i 
+            className='la la-trash-o' 
+            style={{
+              fontSize: '26px',
+              paddingLeft: '0px'
+              }} />
+		    </span>
+		    <br />
+		    <span className="m-widget5__votes">
+			    Delete
+		    </span>
+	    </div>
+    </div>
+  </div>
+                      {this.state.botsData && this.state.botsData.length > 0
+                        ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                          <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflow: 'inherit' }}>
+                            <thead className='m-datatable__head'>
+                              <tr className='m-datatable__row'
+                                style={{ height: '53px' }}>
+                                <th data-field='name'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '125px' }}>Name</span>
+                                </th>
+                                <th data-field='page'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '125px' }}>Page</span>
+                                </th>
+                                <th data-field='status'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '125px' }}>Status</span>
+                                </th>
+                                <th data-field='status'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '125px' }}>Answered Queries</span>
+                                </th>
+                                <th data-field='status'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '125px' }}>Unanswered Queries</span>
+                                </th>
+                                <th data-field='actions'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{ width: '250px' }}>Actions</span>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
+                              {
+                                this.state.botsData.map((bot, i) => (
+                                  <tr key={i} data-row={i}
+                                    className='m-datatable__row m-datatable__row--even'
+                                    style={{ height: '55px' }}>
+                                    <td data-field='name' className='m-datatable__cell'><span style={{ width: '125px' }}>{bot.botName ? bot.botName.split('-').join(' ') : ''}</span></td>
+                                    <td data-field='page' className='m-datatable__cell'><span style={{ width: '125px' }}>{bot.pageId.pageName}</span></td>
+                                    <td data-field='page' className='m-datatable__cell'>
+                                      {bot.isActive === 'true'
+                                        ? <span style={{ width: '125px' }}>Active</span>
+                                        : <span style={{ width: '125px' }}>Disabled</span>
+                                      }
+                                    </td>
+                                    <td data-field='page' className='m-datatable__cell'>
+                                      {(bot.hitCount)
+                                        ? <span style={{ width: '125px' }}>{bot.hitCount}</span>
+                                        : <span style={{ width: '125px' }}>0</span>
+                                      }
+                                    </td>
+                                    <td data-field='page' className='m-datatable__cell'>
+                                      {(bot.missCount)
+                                        ? <span style={{ width: '125px' }}>{bot.missCount}</span>
+                                        : <span style={{ width: '125px' }}>0</span>
+                                      }
+                                    </td>
+                                    <td data-field='actions' className='m-datatable__cell'>
+                                      {this.props.user && this.props.user.role !== 'agent'
+                                        ? <span style={{ width: '250px', overflow: 'inherit', paddingLeft: '65px' }}>
+
+                                          <div style={{ paddingLeft: 0 }} className='col-md-2'>
+                                            <div className='m-portlet__head-tools'>
+                                              <ul className='m-portlet__nav'>
+                                                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                                  <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                                    <i onClick={this.showDropdown} style={{ cursor: 'pointer', fontSize: '40px' }} className='la la-ellipsis-h' />
+                                                  </a>
+                                                  {
+                                                    /* This is dropdown of possible actions for a bot */
+                                                    this.state.showDropDown &&
+                                                    <div className='m-dropdown__wrapper'>
+                                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                                      <div className='m-dropdown__inner'>
+                                                        <div className='m-dropdown__body'>
+                                                          <div className='m-dropdown__content'>
+                                                            <ul className='m-nav'>
+                                                              <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                                <a href='#/' onClick={() => this.gotoView(bot._id)} className='m-nav__link' style={{ cursor: 'pointer' }}>
+                                                                  {
+                                                                    <span style={{ fontWeight: 600 }} className='m-nav__link-text'>
+                                                                      View
+                                                          </span>
+                                                                  }
+                                                                </a>
+                                                              </li>
+                                                              <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                                <a href='#/' onClick={() => this.gotoEdit(bot._id)} className='m-nav__link' style={{ cursor: 'pointer' }}>
+                                                                  {
+                                                                    <span style={{ fontWeight: 600 }} className='m-nav__link-text'>
+                                                                      Edit
+                                                          </span>
+                                                                  }
+                                                                </a>
+                                                              </li>
+                                                              <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                                <a href='#/' onClick={() => this.showDialogDelete(bot._id)} data-toggle="modal" data-target="#delete" className='m-nav__link' style={{ cursor: 'pointer' }}>
+                                                                  {
+                                                                    <span style={{ fontWeight: 600 }} className='m-nav__link-text'>
+                                                                      Delete
+                                                          </span>
+                                                                  }
+                                                                </a>
+                                                              </li>
+                                                              <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                                <a href='#/' onClick={() => this.gotoWaitingReply(bot._id)} className='m-nav__link' style={{ cursor: 'pointer' }}>
+                                                                  {
+                                                                    <span style={{ fontWeight: 600 }} className='m-nav__link-text'>
+                                                                      Waiting Subscribers
+                                                          </span>
+                                                                  }
+                                                                </a>
+                                                              </li>
+                                                              <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                                <a href='#/' onClick={() => this.gotoUnansweredQueries(bot._id)} className='m-nav__link' style={{ cursor: 'pointer' }}>
+                                                                  {
+                                                                    <span style={{ fontWeight: 600 }} className='m-nav__link-text'>
+                                                                      Unanswered Queries
+                                                          </span>
+                                                                  }
+                                                                </a>
+                                                              </li>
+                                                            </ul>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  }
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </span>
+                                        : <span style={{ width: '250px' }}>
+                                          <button className='btn btn-primary btn-sm'
+                                            style={{ float: 'left', margin: 2 }}
+                                            onClick={() => this.gotoView(bot)}>
+                                            View
+                                </button>
+                                        </span>
+                                      }
+                                    </td>
+                                    <hr />
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
+                          <div className='pagination'>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a href='#/'>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'} />
+                          </div>
+                        </div>
+                        : <span>
+                          <p> No data to display </p>
+                        </span>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    )
-  }
-}
-
-function mapStateToProps (state) {
-  console.log('state', state)
+          )
+        }
+      }
+      
+function mapStateToProps(state) {
+            console.log('state', state)
   return {
-    pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user),
-    bots: (state.botsInfo.bots),
-    count: (state.botsInfo.count),
-    analytics: (state.botsInfo.analytics)
-  }
-}
-
-function mapDispatchToProps (dispatch) {
+            pages: (state.pagesInfo.pages),
+          user: (state.basicInfo.user),
+          bots: (state.botsInfo.bots),
+          count: (state.botsInfo.count),
+          analytics: (state.botsInfo.analytics)
+        }
+      }
+      
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      loadBotsList: loadBotsList,
-      loadMyPagesList: loadMyPagesList,
-      createBot: createBot,
-      deleteBot: deleteBot,
-      loadAnalytics: loadAnalytics
-    },
-    dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Bot)
+            loadBotsList: loadBotsList,
+          loadMyPagesList: loadMyPagesList,
+          createBot: createBot,
+          deleteBot: deleteBot,
+          loadAnalytics: loadAnalytics
+        },
+        dispatch)
+    }
+    export default connect(mapStateToProps, mapDispatchToProps)(Bot)
