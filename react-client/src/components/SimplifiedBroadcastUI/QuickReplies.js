@@ -582,6 +582,9 @@ class QuickReplies extends React.Component {
                             </button>
 
                         </div>
+                        <div className='m-alert__text' style={{fontSize: '0.9em', marginTop: '25px', marginLeft: '15px'}}>
+                            Need help in understanding quick replies? Here is the <a href='http://kibopush.com/quick-replies/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                        </div>
 
                     </div>
                 </PopoverBody>
