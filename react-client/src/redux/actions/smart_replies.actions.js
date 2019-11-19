@@ -143,7 +143,7 @@ export function editBot (data, msg) {
 
 export function updateStatus (data) {
   return (dispatch) => {
-    callApi('bots/updateStatus', 'post', data)
+    callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadBotsList())
