@@ -265,6 +265,22 @@ export function fetchUserChats (sessionid, data, handleFunction) {
       })
   }
 }
+export function uploadRecording (fileData, handleUpload) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/broadcasts/uploadRecording`, {
+      method: 'post',
+      body: fileData,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('respone', res)
+      handleUpload(res)
+    })
+  }
+}
 
 export function uploadAttachment (fileData, handleUpload) {
   return (dispatch) => {

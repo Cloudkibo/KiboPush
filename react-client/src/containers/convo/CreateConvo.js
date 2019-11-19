@@ -279,7 +279,7 @@ class CreateConvo extends React.Component {
     console.log('this.state.locationPages', this.state.locationPages)
     console.log('this.props.pages', this.props.pages)
     // var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
-    if (this.props.subscribersCount === 0) {
+    if (this.state.subscriberCount === 0) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       // let tagIDs = []
@@ -304,7 +304,7 @@ class CreateConvo extends React.Component {
         segmentationList: this.state.listSelected,
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        subscribersCount: this.props.subscribersCount,
+        subscribersCount: this.state.subscriberCount,
         messageType: this.state.messageType
       }
       for (let i = 0; i < data.payload.length; i++) {
