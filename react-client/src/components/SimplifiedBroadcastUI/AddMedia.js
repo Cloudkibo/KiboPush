@@ -270,7 +270,6 @@ class Media extends React.Component {
               ref='file'
               type='file'
               name='user[image]'
-              multiple='true'
               accept='image/*, video/*'
               title=' '
               maxFileSize={this.props.module && this.props.module === 'whatsapp' ? 5000000 : 10000000}
