@@ -169,10 +169,8 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      $(document).on('hide.bs.modal','#singleModal', function () {
-        if (window.closeAddComponentModal) {
-          window.closeAddComponentModal()
-        }
+      $(document).on('hide.bs.modal', '#singleModal', function () {
+        document.body.style.overflow = 'auto'
       })
     </script>
   </body>

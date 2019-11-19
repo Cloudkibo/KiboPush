@@ -98,8 +98,6 @@ class GenericMessage extends React.Component {
   }
 
   componentDidMount () {
-    window.closeAddComponentModal = this.closeAddComponentModal.bind(this)
-
     console.log('genericMessage props in componentDidMount', this.props)
     if (this.state.broadcast && this.state.broadcast.length > 0) {
       this.initializeList(this.state.broadcast)
@@ -176,7 +174,7 @@ class GenericMessage extends React.Component {
   }
 
   closeAddComponentModal () {
-    document.body.style.overflow = 'auto'
+    // document.body.style.overflow = 'auto'
     this.setState({isShowingAddComponentModal: false, editData: null})
     this.refs.singleModal.click()
   }
