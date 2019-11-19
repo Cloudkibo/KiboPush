@@ -257,7 +257,8 @@ class CardModal extends React.Component {
   }
 /* eslint-disable */
   getRequirements() {
-    return this.cardComponents.map((card, index) => {
+    let cardComponents = this.cardComponents.filter(card => card && card.props)
+    return cardComponents.map((card, index) => {
       console.log(`cardComponent ${index}`, card)
 
       if (card && card.props) {
@@ -295,12 +296,9 @@ class CardModal extends React.Component {
             )
           }
         }
-        if (requirements.length === 0) {
+        if (requirements.length === 0 && index === cardComponents.length-1) {
           console.log('0 requirments')
-          this.showAdditionalCardsModal()
-          if(!this.state.closeAdditionalCardsModal) {
-            this.refs.addCard.click()
-          }
+          this.refs.addCard.click()
         }
       }
     })
@@ -312,9 +310,7 @@ class CardModal extends React.Component {
   }
 
   closeAdditionalCardsModal() {
-    this.setState({ closeAdditionalCardsModal: true }, () => {
-      this.refs.addCard.click()
-    })
+    this.refs.addCard.click()
   }
 
   closeCard(id) {
