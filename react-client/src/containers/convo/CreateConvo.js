@@ -18,15 +18,13 @@ import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router-dom'
 // import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
-import Targeting from './Targeting'
-import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
-
+import BASICBUILDER from './builder/basicBuilder'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -56,7 +54,9 @@ class CreateConvo extends React.Component {
       loadScript: true,
       messageType: '',
       subscriberCount: 0,
-      locationPages: this.props.location.state ? this.props.location.state.pages : []
+      locationPages: this.props.location.state ? this.props.location.state.pages : [],
+      showBuilderDropdown: false,
+      builderValue: 'basic'
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -74,6 +74,28 @@ class CreateConvo extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
+    this.toggleBuilderDropdown = this.toggleBuilderDropdown.bind(this)
+    this.switchBuilder = this.switchBuilder.bind(this)
+    this.closeBuilderDropdown = this.closeBuilderDropdown.bind(this)
+  }
+
+  toggleBuilderDropdown () {
+    this.setState({
+      showBuilderDropdown: !this.state.showBuilderDropdown
+    })
+  }
+
+  closeBuilderDropdown (flag) {
+    flag && this.setState({
+      showBuilderDropdown: false
+    })
+  }
+
+  switchBuilder (value) {
+    this.setState({
+      builderValue: value,
+      showBuilderDropdown: false
+    })
   }
 
   handleChange (state) {
@@ -234,6 +256,20 @@ class CreateConvo extends React.Component {
     document.title = `${title} | Create Broadcast`
     this.scrollToTop()
     this.initTab()
+
+    document.getElementById('builder-dropdown').addEventListener('click', () => {
+      this.close = false
+    })
+    document.getElementById('builder-dropdown-area').addEventListener('click', () => {
+      this.close = false
+    })
+    document.addEventListener('click', () => {
+      if (this.state.showBuilderDropdown && this.close) {
+        this.closeBuilderDropdown(true)
+      } else if (!this.close) {
+        this.close = true
+      }
+    })
 
     var compProp = this.props
     var comp = this
@@ -529,99 +565,97 @@ class CreateConvo extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-content'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-exclamation m--font-brand' />
-            </div>
-            <div className='m-alert__text'>
-              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              <br />
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
-
-              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
-            </div>
+        <div style={{margin: '30px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+          <div className='m-alert__icon'>
+            <i className='flaticon-exclamation m--font-brand' />
           </div>
-          <div className='row'>
-            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Create Broadcast
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <div className='row'>
-                    <div className='col-12'>
-                      {
-                        this.state.tabActive === 'broadcast' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
-                            Reset
-                          </button>
-                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
-                            Next
-                          </button>
-                        </div>
-                      }
-                      {
-                        this.state.tabActive === 'target' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
-                            Previous
-                          </button>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
-                            Test
-                          </button>
-                          <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
-                            Send
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <div className='row'>
-                    <div className='col-12'>
-                      <ul className='nav nav-tabs'>
-                        <li>
-                          <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
-                        </li>
-                        <li>
-                          {this.state.broadcast.length > 0
-                            ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                            : <a href='#/'>Targeting</a>
-                          }
-                        </li>
+          <div className='m-alert__text'>
+            Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+            <br />
+            View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
 
-                      </ul>
-                      <div className='tab-content'>
-                        <div className='tab-pane fade active in' id='tab_1'>
-                          <GenericMessage
-                            broadcast={this.state.broadcast}
-                            handleChange={this.handleChange}
-                            setReset={reset => { this.reset = reset }}
-                            convoTitle={this.state.convoTitle}
-                            titleEditable
-                            pageId={this.state.pageId.pageId}
-                            pages={this.props.location.state && this.state.locationPages}
-                            buttonActions={this.state.buttonActions} />
-                        </div>
-                        <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} subscriberCount={this.state.subscriberCount} resetTarget={this.state.resetTarget} page={this.state.pageId} component='broadcast' />
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
           </div>
         </div>
+        <div className="m-subheader ">
+					<div className="d-flex align-items-center">
+						<div className="mr-auto">
+							<h3 className="m-subheader__title ">
+								Create Broadcast
+							</h3>
+						</div>
+            {
+              this.state.tabActive === 'broadcast' &&
+              <div className='pull-right'>
+                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
+                  Reset
+                </button>
+                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.onNext}>
+                  Next
+                </button>
+              </div>
+            }
+            {
+              this.state.tabActive === 'target' &&
+              <div className='pull-right'>
+                <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                  Previous
+                </button>
+                <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
+                  Test
+                </button>
+                <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
+                  Send
+                </button>
+              </div>
+            }
+						<div id='builder-dropdown'>
+							<span onClick={this.toggleBuilderDropdown} className="m-subheader__daterange" id="m_dashboard_daterangepicker">
+								<span className="m-subheader__daterange-label">
+									<span className="m-subheader__daterange-date m--font-brand">
+                    {this.state.builderValue === 'basic' ? 'Basic Builder' : 'Flow Builder'}
+                  </span>
+								</span>
+								<a href="#/" className="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+									<i className="la la-angle-down"></i>
+								</a>
+							</span>
+						</div>
+            <div id='builder-dropdown-area'>
+              {
+                this.state.showBuilderDropdown &&
+                <div className="daterangepicker dropdown-menu ltr opensleft" style={{display: 'block', top: '350px', right: '30.0002px', left: 'auto'}}>
+                  <div className="ranges">
+                    <ul>
+                      <li onClick={() => this.switchBuilder('basic')} data-range-key="basic">Basic Builder</li>
+                      <li onClick={() => this.switchBuilder('flow')} data-range-key="flow">Flow Builder</li>
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
+					</div>
+				</div>
+        {
+          this.state.builderValue === 'basic'
+          ? <BASICBUILDER
+            broadcast={this.state.broadcast}
+            onBroadcastClick={this.onBroadcastClick}
+            onTargetClick={this.onTargetClick}
+            handleChange={this.handleChange}
+            setReset={reset => { this.reset = reset }}
+            convoTitle={this.state.convoTitle}
+            pageId={this.state.pageId}
+            location={this.props.location}
+            locationPages={this.state.locationPages}
+            buttonActions={this.state.buttonActions}
+            handleTargetValue={this.handleTargetValue}
+            subscriberCount={this.state.subscriberCount}
+            resetTarget={this.state.resetTarget}
+          />
+          : this.state.builderValue === 'flow' &&
+          null
+        }
       </div>
     )
   }
