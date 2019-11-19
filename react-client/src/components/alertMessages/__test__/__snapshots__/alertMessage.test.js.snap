@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot for type page 1`] = `
+<div
+  data-testid="alertMessage"
+>
+  <div
+    className="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show"
+    role="alert"
+  >
+    <div
+      className="m-alert__icon"
+    >
+      <i
+        className="flaticon-exclamation-1"
+        style={
+          Object {
+            "color": "white",
+          }
+        }
+      />
+      <span />
+    </div>
+    <div
+      className="m-alert__text"
+    >
+      <strong>
+        0 Pages Connected! 
+      </strong>
+      You have no pages connected. Please connect your facebook page to use this feature.  
+    </div>
+  </div>
+</div>
+`;
+
+exports[`matches snapshot for type subscriber 1`] = `
+<div
+  data-testid="alertMessage"
+>
+  <div
+    className="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show"
+    role="alert"
+  >
+    <div
+      className="m-alert__icon"
+    >
+      <i
+        className="flaticon-exclamation-1"
+        style={
+          Object {
+            "color": "white",
+          }
+        }
+      />
+      <span />
+    </div>
+    <div
+      className="m-alert__text"
+    >
+      <strong>
+        0 Subscribers! 
+      </strong>
+      Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+    </div>
+  </div>
+</div>
+`;
