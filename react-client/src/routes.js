@@ -97,6 +97,7 @@ import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import CommentCaptureEdit from './containers/commentCapture/editMessage'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
+import PostResult from './containers/commentCapture/viewPostResult'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
 import MessengerCode from './containers/messengerCode/messengerCode'
@@ -302,6 +303,7 @@ const Routes = () => (
     <Route path='/editMessageCodeMessage' component={createMessageForCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/editPost' component={FacebookPost} onEnter={requireAuth} />
+    <Route path='/PostResult' component={PostResult} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
     <Route path='/plans' component={Plans} onEnter={requireAuth} />

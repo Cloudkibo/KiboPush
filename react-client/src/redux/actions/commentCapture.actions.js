@@ -19,6 +19,14 @@ export function showAllPostsAnalytics (data) {
     data
   }
 }
+
+export function showSinglePostsAnalytics (data) {
+  console.log('Data Fetched From single PostsAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_SinglePostsAnalytics,
+    data
+  }
+}
 export function saveCurrentPost (data) {
   console.log('Actions for saving currentPost')
   return {
@@ -47,13 +55,19 @@ export function fetchPostsAnalytics () {
         dispatch(showAllPostsAnalytics(res.payload))
       } else {
         console.log('Error in fetchPostsAnalytics Posts', res)
-        let data = {
-          totalComments: 10,
-          conversions: 10,
-          totalRepliesSent: 10,
-          waitingConversions: 10
-        }
-        dispatch(showAllPostsAnalytics(data))
+      }
+    })
+  }
+}
+
+export function fetchCurrentPostsAnalytics (postId) {
+  console.log('Actions for loading all fetchCurrentPostsAnalytics')
+  return (dispatch) => {
+    callApi(`post/singlePostsAnalytics${postId}`).then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showSinglePostsAnalytics(res.payload))
+      } else {
+        console.log('Error in singlePostsAnalytics ', res)
       }
     })
   }

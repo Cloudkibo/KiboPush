@@ -275,6 +275,7 @@ export const SHOW_SUBSCRIBER_SEQUENCE = 'SHOW_SUBSCRIBER_SEQUENCE'
 // constants for Comment Capture
 export const SHOW_FACEBOOK_POSTS = 'SHOW_FACEBOOK_POSTS'
 export const SHOW_AllPostsAnalytics = 'SHOW_AllPostsAnalytics'
+export const SHOW_SinglePostsAnalytics = 'SHOW_SinglePostsAnalytics'
 export const CURRENT_POST = 'CURRENT_POST'
 
 //  constants for Plans
