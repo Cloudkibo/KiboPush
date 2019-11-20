@@ -8,12 +8,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts, deletePost, saveCurrentPost
+  fetchAllPosts, deletePost, saveCurrentPost, fetchPostsAnalytics
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import CardBoxesContainer from './CardBoxesContainer'
 
 class FacebookPosts extends React.Component {
   constructor(props, context) {
@@ -25,6 +26,7 @@ class FacebookPosts extends React.Component {
       deleteid: '',
     }
     props.fetchAllPosts()
+    props.fetchPostsAnalytics()
     props.saveCurrentPost(null)
     this.displayData = this.displayData.bind(this)
     this.onEdit = this.onEdit.bind(this)
@@ -232,6 +234,11 @@ class FacebookPosts extends React.Component {
             </div>
           </div>
           <div className='row'>
+              {
+                <CardBoxesContainer data= {this.props.allPostsAnalytics} />
+              }
+            </div>
+          <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
@@ -270,15 +277,19 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Track Comments From</span>
+                            <span style={{width: '150px'}}>Tracking</span>
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Comments Count</span>
+                            <span style={{width: '100px'}}>Comments</span>
+                          </th>
+                          <th data-field='conversions'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Conversions</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Date Created</span>
+                            <span style={{width: '100px'}}>Date</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -295,13 +306,14 @@ class FacebookPosts extends React.Component {
                             <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
+                            <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversions ? post.conversions : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
                               {post.post_id &&
                                 <span>
                                   <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
-                                      View on FB
+                                      View
                                   </a>
                                   <br />
                                 </span>
@@ -352,7 +364,8 @@ class FacebookPosts extends React.Component {
 function mapStateToProps(state) {
   console.log(state)
   return {
-    posts: (state.postsInfo.posts)
+    posts: (state.postsInfo.posts),
+    allPostsAnalytics: (state.postsInfo.allPostsAnalytics)
   }
 }
 
@@ -360,7 +373,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,
-    saveCurrentPost: saveCurrentPost
+    saveCurrentPost: saveCurrentPost,
+    fetchPostsAnalytics: fetchPostsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)

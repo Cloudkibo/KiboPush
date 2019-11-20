@@ -11,6 +11,14 @@ export function showAllPosts (data) {
     data: data.reverse()
   }
 }
+
+export function showAllPostsAnalytics (data) {
+  console.log('Data Fetched From PostsAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_AllPostsAnalytics,
+    data
+  }
+}
 export function saveCurrentPost (data) {
   console.log('Actions for saving currentPost')
   return {
@@ -27,6 +35,25 @@ export function fetchAllPosts () {
         dispatch(showAllPosts(res.payload))
       } else {
         console.log('Error in loading Posts', res)
+      }
+    })
+  }
+}
+export function fetchPostsAnalytics () {
+  console.log('Actions for loading all fetchPostsAnalytics')
+  return (dispatch) => {
+    callApi('post/fetchPostsAnalytics').then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showAllPostsAnalytics(res.payload))
+      } else {
+        console.log('Error in fetchPostsAnalytics Posts', res)
+        let data = {
+          totalComments: 10,
+          conversions: 10,
+          totalRepliesSent: 10,
+          waitingConversions: 10
+        }
+        dispatch(showAllPostsAnalytics(data))
       }
     })
   }
