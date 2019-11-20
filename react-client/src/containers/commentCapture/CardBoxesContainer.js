@@ -47,7 +47,7 @@ class CardBoxesContainer extends React.Component {
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
-                style='danger'
+                style='info'
                 value={(this.props.data && this.props.data.totalRepliesSent) ? this.props.data.totalRepliesSent : 0}
                 label='Total Replies Sent'
                 id='totalRepliesSent'
@@ -58,7 +58,7 @@ class CardBoxesContainer extends React.Component {
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
-                style='success'
+                style='warning'
                 value={(this.props.data && this.props.data.waitingConversions) ? this.props.data.waitingConversions : 0}
                 label='Waiting Conversion'
                 id='waitingConversion'

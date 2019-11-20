@@ -14,6 +14,10 @@ export function postsInfo (state = {}, action) {
       return Object.assign({}, state, {
         allPostsAnalytics: action.data
       })
+      case ActionTypes.SHOW_SinglePostsAnalytics:
+      return Object.assign({}, state, {
+        CurrentPostsAnalytics: action.data
+      })
     default:
       return state
   }

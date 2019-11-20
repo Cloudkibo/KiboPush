@@ -30,6 +30,7 @@ class FacebookPosts extends React.Component {
     props.saveCurrentPost(null)
     this.displayData = this.displayData.bind(this)
     this.onEdit = this.onEdit.bind(this)
+    this.onView = this.onView.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
     this.getPostText = this.getPostText.bind(this)
@@ -79,6 +80,13 @@ class FacebookPosts extends React.Component {
   }
   onEdit(post) {
     this.props.saveCurrentPost(post)
+  }
+  onView(post) {
+    this.props.saveCurrentPost(post)
+    this.props.history.push({
+      pathname: `/PostResult`,
+      state: post
+    })
   }
   displayData(n, posts, searchValue) {
     console.log('searchVal', searchValue)
@@ -310,9 +318,12 @@ class FacebookPosts extends React.Component {
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                              <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                              {/* <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     View
-                                </Link>
+                                </Link> */}
+                                <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }}  onClick={() => this.onView(post)}>
+                                    View
+                                </button>
                                 <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
