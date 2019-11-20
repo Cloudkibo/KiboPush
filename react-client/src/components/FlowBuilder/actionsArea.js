@@ -1,7 +1,7 @@
 import React from "react"
 // import PropTypes from 'prop-types'
 
-class ComponentsArea extends React.Component {
+class ActionsArea extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
@@ -15,15 +15,15 @@ class ComponentsArea extends React.Component {
           type="button"
           className="btn m-btn--pill btn-outline-info btn-sm m-btn m-btn--custom"
         >
-          + Add Component
+          + Add Action
         </button>
       </div>
     )
   }
 }
 
-ComponentsArea.propTypes = {
+ActionsArea.propTypes = {
 
 }
 
-export default ComponentsArea
+export default ActionsArea
