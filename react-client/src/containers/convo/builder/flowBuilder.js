@@ -7,11 +7,22 @@ import { FlowChartWithState, INodeInnerDefaultProps } from "@mrblenny/react-flow
 // import PropTypes from 'prop-types'
 import { chartSimple } from './chartSimple'
 import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
+import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
+import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
+import SIDEBAR from '../../../components/FlowBuilder/sidebar'
 
 const NodeInnerCustom = ({ node, config } = INodeInnerDefaultProps) => {
   if (node.type === 'starting_step') {
     return (
       <STARTINGSTEP />
+    )
+  } else if (node.type === 'component_block') {
+    return (
+      <COMPONENTSBLOCK />
+    )
+  } else if (node.type === 'action_block') {
+    return (
+      <ACTIONBLOCK />
     )
   } else {
     return (
@@ -31,12 +42,19 @@ class FlowBuilder extends React.Component {
   render () {
     return (
       <div className='m-content'>
-        <FlowChartWithState
-          initialValue={chartSimple}
-          Components={ {
-            NodeInner: NodeInnerCustom
-          }}
-        />
+        <div className='row'>
+          <div className='col-10'>
+            <FlowChartWithState
+              initialValue={chartSimple}
+              Components={ {
+                NodeInner: NodeInnerCustom
+              }}
+            />
+          </div>
+          <div className='col-2'>
+            <SIDEBAR />
+          </div>
+        </div>
       </div>
     )
   }
