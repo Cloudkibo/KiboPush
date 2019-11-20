@@ -36,8 +36,10 @@ class Button extends React.Component {
       errorMsg:'',
       customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
       customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
-      googleIntegration: '',
-      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : ''
+      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
+    	spreadSheet: this.props.button && this.props.button.payload ? this.props.button.payload.spreadSheet : '',
+    	worksheet: this.props.button && this.props.button.payload ? this.props.button.payload.worksheet : '',
+    	mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
     }
 
     props.fetchAllSequence()
@@ -71,7 +73,7 @@ class Button extends React.Component {
     this.closeCustomField = this.closeCustomField.bind(this)
     this.showGoogleSheets = this.showGoogleSheets.bind(this)
     this.closeGoogleSheets = this.closeGoogleSheets.bind(this)
-    this.updateGoogleAction = this.updateGoogleAction.bind(this)
+    this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
 
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
@@ -83,6 +85,20 @@ class Button extends React.Component {
     if (resp.status === 'success') {
       console.log('fetched whitelisted domains', resp.payload)
       this.setState({whitelistedDomains: resp.payload})
+    }
+  }
+
+  componentDidMount () {
+    console.log('in componentDidMount of button', this.props.button)
+    if (this.props.button && this.props.button.payload && typeof this.props.button.payload === 'string') {
+      let buttonPayload = JSON.parse(this.props.button.payload)
+      if (buttonPayload.googleSheetAction) {
+        this.setState({spreadSheet: buttonPayload.spreadSheet,
+          worksheet: buttonPayload.worksheet,
+          mapping: buttonPayload.mapping,
+          googleSheetAction: buttonPayload.googleSheetAction,
+          openGoogleSheets: true, openCreateMessage: false})
+      }
     }
   }
 
@@ -382,6 +398,19 @@ class Button extends React.Component {
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.openGoogleSheets) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'google_sheets',
+          googleSheetAction: this.state.googleSheetAction,
+          spreadSheet: this.state.spreadSheet,
+        	worksheet: this.state.worksheet,
+        	mapping: this.state.mapping
+        })
+      }
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 
@@ -505,18 +534,39 @@ class Button extends React.Component {
     }
   }
 
-  updateGoogleAction (googleSheetAction) {
-    this.setState({googleSheetAction: googleSheetAction})
-    let buttonData = {title: this.state.title, visible: true, googleSheetAction: googleSheetAction, index: this.props.index}
-    if (this.state.googleSheetAction) {
+  saveGoogleSheet (googleSheetPayload) {
+    console.log('saveGoogleSheet', googleSheetPayload)
+    this.setState({googleSheetAction: googleSheetPayload.googleSheetAction,
+      spreadSheet: googleSheetPayload.spreadSheet,
+      worksheet: googleSheetPayload.worksheet,
+      mapping: googleSheetPayload.mapping})
+    let buttonData = {title: this.state.title, visible: true,
+      googleSheetAction: googleSheetPayload.googleSheetAction,
+	    spreadSheet: googleSheetPayload.spreadSheet,
+    	worksheet: googleSheetPayload.worksheet,
+    	mapping: googleSheetPayload.mapping,
+      index: this.props.index}
+    if (googleSheetPayload.googleSheetAction !== '' &&
+      googleSheetPayload.spreadSheet !== '' &&
+      googleSheetPayload.worksheet !== '' &&
+      googleSheetPayload.mapping !== '' &&
+      this.state.title !== ''
+  ) {
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+        this.props.updateButtonStatus({buttonDisabled: false}, buttonData)
       }
     }
   }
 
   removeGoogleAction () {
-    this.setState({googleSheetAction: '', buttonDisabled: true})
+    this.setState({
+      googleSheetAction: '',
+	    spreadSheet: '',
+    	worksheet: '',
+    	mapping: '',
+      buttonDisabled: true
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -533,7 +583,6 @@ class Button extends React.Component {
   }
 
   render () {
-
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
@@ -717,9 +766,13 @@ class Button extends React.Component {
                       <h7 className='card-header'>Google Sheets <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeGoogleSheets} /></h7>
                       <div style={{padding: '10px'}} className='card-block'>
                         <GoogleSheetActions
-                          updateGoogleAction={this.updateGoogleAction}
+                          saveGoogleSheet={this.saveGoogleSheet}
+                          removeGoogleAction={this.removeGoogleAction}
                           googleSheetAction={this.state.googleSheetAction}
-                          removeGoogleAction={this.removeGoogleAction} />
+                          worksheet={this.state.worksheet}
+                          spreadSheet={this.state.spreadSheet}
+                          mapping={this.state.mapping}
+                          />
                       </div>
                     </div>
                   }

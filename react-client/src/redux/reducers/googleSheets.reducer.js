@@ -14,6 +14,11 @@ export function googleSheetsInfo (state = {}, action) {
       return Object.assign({}, state, {
         columns: action.data
       })
+    case ActionTypes.EMPTY_FIELDS:
+      return Object.assign({}, state, {
+        worksheets: undefined,
+        columns: undefined
+      })
     default:
       return state
   }

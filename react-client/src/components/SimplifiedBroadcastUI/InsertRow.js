@@ -3,45 +3,120 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchWorksheets, fetchColumns } from '../../redux/actions/googleSheets.actions'
 import { RingLoader } from 'halogenium'
+import AlertContainer from 'react-alert'
 
 class InsertRow extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      spreadSheetValue: '',
-      workSheetValue: '',
+      spreadSheetValue: props.spreadsheet !== '' ? props.spreadsheet : '',
+      workSheetValue: props.worksheet !== '' ? props.worksheet : '',
       loadingWorkSheet: false,
-      loadingColumns: false
+      loadingColumns: false,
+      mappingData: props.mapping !== '' ? props.mapping : '',
+      buttonDisabled: props.spreadsheet !== '' && props.worksheet !== '' && props.mapping !== '' ? false : true,
+      mappingDataValues: ''
     }
-
+    console.log('constructor called')
     this.onSpreadSheetChange = this.onSpreadSheetChange.bind(this)
     this.onWorkSheetChange = this.onWorkSheetChange.bind(this)
     this.showMappingData = this.showMappingData.bind(this)
+    this.updateMappingData = this.updateMappingData.bind(this)
+    this.save = this.save.bind(this)
+  }
 
+  componentDidMount () {
+    console.log('in componentDidMount of insert_row', this.props)
+    if (this.props.mapping !== '') {
+      let mappingDataValues = [].concat(this.props.mapping)
+      for (let i = 0; i < this.props.mapping.length; i++) {
+        if (this.props.mapping[i].kiboPushColumn) {
+          mappingDataValues[i] = this.props.mapping[i].kiboPushColumn
+        } else if (this.props.mapping[i].customFieldColumn) {
+          mappingDataValues[i] = this.props.mapping[i].customFieldColumn
+        } else {
+          mappingDataValues[i] = ''
+        }
+      }
+      console.log('temp mappingDataValues', mappingDataValues)
+      this.setState({mappingDataValues: mappingDataValues})
+    }
+    if (this.props.spreadsheet) {
+      this.setState({loadingWorkSheet: true})
+      this.props.fetchWorksheets({spreadsheetId: this.props.spreadsheet})
+    }
+    if (this.props.worksheet) {
+      this.setState({loadingColumns: true})
+      this.props.fetchColumns({spreadsheetId: this.props.spreadsheet, sheetId: this.props.worksheet})
+    }
+  }
+
+  save () {
+    if (this.state.spreadSheetValue === '' || this.state.workSheetValue === '') {
+      this.msg.error('Please fill all the required fields')
+    } else {
+      this.props.save(this.state.spreadSheetValue, this.state.workSheetValue, this.state.mappingData)
+    }
+  }
+
+  updateMappingData (e, index) {
+    console.log('this.state.mappingData', this.state.mappingData)
+    let data = this.state.mappingData
+    let dataValues = this.state.mappingDataValues
+    if (e.target.value !== '') {
+      if (e.target.value.match(/^[0-9a-fA-F]{24}$/)) {
+        data[index].customFieldColumn = e.target.value
+      } else {
+        data[index].kiboPushColumn = e.target.value
+      }
+      dataValues[index] = e.target.value
+      this.setState({mappingData: data, mappingDataValues: dataValues})
+    }
+    console.log('data in updateMappingData', data)
   }
 
   onSpreadSheetChange (event) {
     this.setState({spreadSheetValue: event.target.value, loadingWorkSheet: true})
-    this.props.fetchWorksheets()
+    this.props.fetchWorksheets({spreadsheetId: event.target.value})
+    if (event.target.value !== '' && this.state.workSheetValue !== '') {
+      this.setState({buttonDisabled: false})
+    }
   }
 
   onWorkSheetChange (event) {
     this.setState({workSheetValue: event.target.value, loadingColumns: true})
-    this.props.fetchColumns()
+    this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
+    if (event.target.value !== '' && this.state.spreadSheetValue !== '') {
+      this.setState({buttonDisabled: false})
+    }
+  }
+
+  componentWillMount () {
+    console.log('componentWillMount of insert_row', this.props)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of insert_row', this.props)
     if (nextProps.worksheets && nextProps.worksheets.length > 0) {
       this.setState({loadingWorkSheet: false})
     }
     if (nextProps.columns && nextProps.columns.googleSheetColumns && nextProps.columns.googleSheetColumns.length > 0) {
       this.setState({loadingColumns: false})
+      let mappingData = []
+      let mappingDataValues = []
+      for (let i = 0; i < nextProps.columns.googleSheetColumns.length; i++) {
+        mappingData.push({googleSheetColumn: nextProps.columns.googleSheetColumns[i]})
+        mappingDataValues.push('')
+      }
+      console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
+      if (this.state.mappingData === '') {
+        this.setState({mappingDataValues: mappingDataValues, mappingData: mappingData})
+      }
     }
   }
 
   showMappingData (googleSheetColumns, kiboPushColumns, customFieldColumns) {
-    console.log('this.props.columns', this.props.columns)
-    console.log('kiboPushColumns', kiboPushColumns)
+    console.log('mappingDataValues', this.state.mappingDataValues)
     let content = []
     content.push(
       <div className='row'>
@@ -60,19 +135,22 @@ class InsertRow extends React.Component {
         <div>
         <div className='row'>
           <div className='col-6'>
-            <select className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}}>
+            <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingData(e, i)}>
+              <option key='' value='' disabled>Select a Field...</option>
               <optgroup label='System Fields'>
                 {kiboPushColumns.map((kibopush, i) => (
-                    <option key={i} value={kibopush}>{kibopush}</option>
+                    <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
                   ))
                 }
               </optgroup>
-              <optgroup label='Custom Fields'>
+              {customFieldColumns.length > 0 &&
+                <optgroup label='Custom Fields'>
                 {customFieldColumns.map((custom, i) => (
-                    <option key={i} value={custom}>{custom}</option>
+                    <option key={i} value={custom.customFieldId}>{custom.title}</option>
                   ))
                 }
               </optgroup>
+              }
               </select>
           </div>
           <div className='col-1'>
@@ -92,8 +170,18 @@ class InsertRow extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
+    console.log('this.props in insert_row', this.props)
+    console.log('this.state.mappingData in render', this.state.mappingData)
     return (
       <div className="modal-content" style={{ width: '687px', top: '100' }}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
             Edit Google Sheets Actions
@@ -109,14 +197,16 @@ class InsertRow extends React.Component {
           <span style={{color: '#575962'}}>The first row of the table is used for your column titles. You could easily match KiboPush subscriber data with your columns by titles names.</span>
           <br /><br />
         <label style={{fontWeight: 'normal'}}>Spreadsheet:</label>
-          <select className='form-control m-input m-input--square' value={this.state.spreadSheetValue} onChange={this.onSpreadSheetChange}>
-            <option key='' value='' disabled>Select a Spreadsheet...</option>
-            {
-              this.props.spreadSheets.map((spreadSheet, i) => (
-                <option key={i} value={spreadSheet}>{spreadSheet}</option>
-              ))
-            }
-          </select>
+          {this.props.spreadsheets && this.props.spreadsheets.length > 0 &&
+            <select className='form-control m-input m-input--square' value={this.state.spreadSheetValue} onChange={this.onSpreadSheetChange}>
+              <option key='' value='' disabled>Select a Spreadsheet...</option>
+              {
+                this.props.spreadsheets.map((spreadSheet, i) => (
+                  <option key={i} value={spreadSheet.spreadsheetId}>{spreadSheet.title}</option>
+                ))
+              }
+            </select>
+          }
           <br />
           {this.state.loadingWorkSheet
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
@@ -126,7 +216,7 @@ class InsertRow extends React.Component {
               <option key='' value='' disabled>Select a Worksheet...</option>
               {
                 this.props.worksheets.map((worksheet, i) => (
-                  <option key={i} value={worksheet}>{worksheet}</option>
+                  <option key={i} value={worksheet.sheetId}>{worksheet.title}</option>
                 ))
               }
             </select>
@@ -142,7 +232,7 @@ class InsertRow extends React.Component {
           }
       </div>
       <div className="m-portlet__foot m-portlet__foot--fit">
-        <button className="btn btn-primary" style={{float: 'right', margin: '10px'}}>Save</button>
+        <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
       </div>
     </div>
     )
@@ -150,10 +240,10 @@ class InsertRow extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     worksheets: (state.googleSheetsInfo.worksheets),
-    columns: (state.googleSheetsInfo.columns)
+    columns: (state.googleSheetsInfo.columns),
+    spreadsheets: (state.googleSheetsInfo.spreadsheets)
   }
 }
 
