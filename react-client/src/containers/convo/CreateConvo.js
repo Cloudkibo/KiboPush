@@ -31,10 +31,11 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'create message'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
+      linkedMessages: null,
       pageValue: [],
       genderValue: [],
       localeValue: [],
@@ -99,6 +100,7 @@ class CreateConvo extends React.Component {
   }
 
   handleChange (state) {
+    console.log('handleChange in CreateConvo', state)
     this.setState(state)
   }
 
@@ -245,6 +247,7 @@ class CreateConvo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
+    console.log('componentDidMount for CreateConvo', this.state)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -640,6 +643,7 @@ class CreateConvo extends React.Component {
           this.state.builderValue === 'basic'
           ? <BASICBUILDER
             broadcast={this.state.broadcast}
+            linkedMessages={this.state.linkedMessages}
             onBroadcastClick={this.onBroadcastClick}
             onTargetClick={this.onTargetClick}
             handleChange={this.handleChange}
