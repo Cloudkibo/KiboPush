@@ -25,6 +25,7 @@ import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import BASICBUILDER from './builder/basicBuilder'
+import FLOWBUILDER from './builder/flowBuilder'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -654,7 +655,7 @@ class CreateConvo extends React.Component {
             resetTarget={this.state.resetTarget}
           />
           : this.state.builderValue === 'flow' &&
-          null
+          <FLOWBUILDER />
         }
       </div>
     )
