@@ -4,11 +4,14 @@ import CardBoxesContainer from './CardBoxesContainer'
 import { handleDate } from '../../utility/utils'
 import { fetchCurrentPostsAnalytics} from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router-dom'
 
 class PostResult extends React.Component {
     constructor(props, context) {
       super(props, context)
       this.state = {
+        pageName: this.props.pages.filter((page) => page._id === this.props.location.state.pageId)[0].pageName
+
       }
       this.props.fetchCurrentPostsAnalytics(this.props.location.state.post_id)
 
@@ -86,7 +89,7 @@ render() {
                         <h3 className='m-widget1__title'>Page</h3>
                       </div>
                       <div className='col m--align-left'>
-                        <span >XYZ</span>
+                        <span >{this.state.pageName}</span>
                       </div>
                     </div>
                   </div>
@@ -131,19 +134,23 @@ render() {
                     </div>
                   </div>
             </div>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+              <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
+            </div>
           </div>
+
           </div>
         </div>
     )
   }
 }
 function mapStateToProps(state) {
-    console.log(state)
     return {
       posts: (state.postsInfo.posts),
       currentPost: (state.postsInfo.currentPost),
       allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
-      CurrentPostsAnalytics: (state.postsInfo.CurrentPostsAnalytics)
+      CurrentPostsAnalytics: (state.postsInfo.CurrentPostsAnalytics),
+      pages: (state.pagesInfo.pages)
     }
   }
 function mapDispatchToProps(dispatch) {

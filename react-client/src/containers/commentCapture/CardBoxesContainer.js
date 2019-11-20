@@ -21,7 +21,11 @@ class CardBoxesContainer extends React.Component {
       <div className='col-xl-12'>
         <div className='row m-row--full-height'>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalComments'>
-            <span>Number of Total Comments of All Posts</span>
+            {
+              this.props.singlePostResult ?
+              <span>Number of Total Comments of Post</span>:
+              <span>Number of Total Comments of All Posts</span>
+            }
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3'  style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -32,7 +36,11 @@ class CardBoxesContainer extends React.Component {
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='conversions'>
-            <span>Number of Total Conversions of All Posts</span>
+            {
+              this.props.singlePostResult ?
+              <span>Number of Total Conversions of Post</span>:
+              <span>Number of Total Conversions of All Posts</span>
+            }
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -43,7 +51,11 @@ class CardBoxesContainer extends React.Component {
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalRepliesSent'>
-            <span>Number of Total Replies Sent of All Posts</span>
+            {
+              this.props.singlePostResult ?
+              <span>Number of Total Replies Sent of Post</span>:
+              <span>Number of Total Replies Sent of All Posts</span>
+            }
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -54,7 +66,12 @@ class CardBoxesContainer extends React.Component {
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='waitingConversion'>
-            <span>Number of waitingConversions of All Posts</span>
+            {
+              this.props.singlePostResult ?
+              <span>Number of waitingConversions of Post</span>:
+              <span>Number of waitingConversions of All Posts</span>
+            }
+
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox

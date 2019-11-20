@@ -55,13 +55,6 @@ export function fetchPostsAnalytics () {
         dispatch(showAllPostsAnalytics(res.payload))
       } else {
         console.log('Error in fetchPostsAnalytics Posts', res)
-        let data = {
-          totalComments: 10,
-          conversions: 10,
-          totalRepliesSent: 10,
-          waitingConversions: 10
-        }
-        dispatch(showAllPostsAnalytics(data))
       }
     })
   }
@@ -75,14 +68,6 @@ export function fetchCurrentPostsAnalytics (postId) {
         dispatch(showSinglePostsAnalytics(res.payload))
       } else {
         console.log('Error in singlePostsAnalytics ', res)
-        let data = {
-          totalComments: 20,
-          conversions: 20,
-          totalRepliesSent: 20,
-          waitingConversions: 20,
-          negativeMatch: 20
-        }
-        dispatch(showSinglePostsAnalytics(data))
       }
     })
   }
