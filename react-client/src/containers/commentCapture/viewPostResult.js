@@ -93,6 +93,8 @@ render() {
                       </div>
                     </div>
                   </div>
+                  {
+                  this.props.currentPost.post_id && this.props.currentPost.post_id !== '' &&
                   <div className='m-widget1__item'>
                     <div className='row m-row--no-padding align-items-center'>
                       <div className='col'>
@@ -105,6 +107,7 @@ render() {
                       </div>
                     </div>
                   </div>
+                  }
                   <div className='m-widget1__item'>
                     <div className='row m-row--no-padding align-items-center'>
                       <div className='col'>
