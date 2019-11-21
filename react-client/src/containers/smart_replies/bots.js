@@ -289,14 +289,6 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoUnansweredQueries(bot) {
-    console.log('going to unanswered queries')
-    this.props.history.push({
-      pathname: `/UnansweredQueries`,
-      state: bot
-    })
-    // this.props.history.push(`/pollResult/${poll._id}`)
-  }
 
   showDropdown() {
     this.setState({ showDropDown: true })
@@ -320,7 +312,7 @@ class Bot extends React.Component {
     if(status === 'success') {
       this.refs.create.click()
        this.props.history.push({
-        pathname: `/intents`
+        pathname: `/intents`,
       })
     }
   }
