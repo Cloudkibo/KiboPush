@@ -170,11 +170,11 @@ class BasicBuilder extends React.Component {
               <div className='m-portlet__body'>
                 <div className='row'>
                   <div className='col-12'>
-                    <ul className='nav nav-tabs'>
-
-
-
-                      { this.state.linkedMessages.map((message, index) => 
+                    {
+                      this.props.showTabs && 
+                      <ul className='nav nav-tabs'>
+                      { 
+                        this.state.linkedMessages.map((message, index) => 
                         <li>
                           <a href='#/' className={'broadcastTabs' + (this.state.currentId === message.id ? ' active' : '')} onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
                             {message.title}
@@ -182,39 +182,19 @@ class BasicBuilder extends React.Component {
                         </li>
                         )
                       }
-                      {/* <li>
-                        <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.props.onBroadcastClick}>Broadcast </a>
-                      </li>
-                      <li>
-                        {this.props.broadcast.length > 0
-                          ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.props.onTargetClick}>Targeting </a>
-                          : <a href='#/'>Targeting</a>
-                        }
-                      </li> */}
-                    </ul>
+                      </ul>
+                    }
                     <div className='tab-content'>
                       <div className='tab-pane fade active in' id='tab_1'>
-                        {/* <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none', maxWidth: '90%', marginLeft: '5%'}}>
-                            { this.state.linkedMessages.map((message, index) => (
-                              <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
-                                <a href='#/' onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
-                                  {message.title}
-                                </a>
-                                { (index < this.state.linkedMessages.length - 1) &&
-                                  <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px'}} />
-                                }
-                              </li>))
-                            }
-                          </ul> */}
-                              <GenericMessage
-                                broadcast={this.props.broadcast}
-                                handleChange={this.handleChange}
-                                setReset={this.props.reset}
-                                convoTitle={this.props.convoTitle}
-                                titleEditable
-                                pageId={this.props.pageId.pageId}
-                                pages={this.props.location.state && this.props.locationPages}
-                                buttonActions={this.props.buttonActions} />
+                        <GenericMessage
+                          broadcast={this.props.broadcast}
+                          handleChange={this.handleChange}
+                          setReset={this.props.reset}
+                          convoTitle={this.props.convoTitle}
+                          titleEditable
+                          pageId={this.props.pageId.pageId}
+                          pages={this.props.location.state && this.props.locationPages}
+                          buttonActions={this.props.buttonActions} />
                       </div>
                       <div className='tab-pane' id='tab_2'>
                         <Targeting
@@ -251,7 +231,8 @@ BasicBuilder.propTypes = {
   'buttonActions': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
-  'resetTarget': PropTypes.bool.isRequired
+  'resetTarget': PropTypes.bool.isRequired,
+  'showTabs': PropTypes.bool.isRequired
 }
 
 export default BasicBuilder

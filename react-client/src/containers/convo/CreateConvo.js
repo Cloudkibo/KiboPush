@@ -643,6 +643,7 @@ class CreateConvo extends React.Component {
         {
           this.state.builderValue === 'basic'
           ? <BASICBUILDER
+            showTabs={this.state.tabActive === 'broadcast'}
             broadcast={this.state.broadcast}
             linkedMessages={this.state.linkedMessages}
             onBroadcastClick={this.onBroadcastClick}
