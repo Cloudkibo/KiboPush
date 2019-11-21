@@ -37,6 +37,7 @@ class CreateConvo extends React.Component {
       stayOpen: false,
       disabled: false,
       linkedMessages: null,
+      unlinkedMessages: null,
       pageValue: [],
       genderValue: [],
       localeValue: [],
@@ -413,7 +414,7 @@ class CreateConvo extends React.Component {
       var data = {
         platform: 'facebook',
         self: true,
-        payload: this.state.broadcast,
+        payload: this.state.linkedMessages[0].messageContent,
         title: this.state.convoTitle,
         isSegmented: isSegmentedValue,
         segmentationPageIds: this.state.locationPages,
@@ -424,7 +425,8 @@ class CreateConvo extends React.Component {
         segmentationList: this.state.listSelected,
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        messageType: this.state.messageType
+        messageType: this.state.messageType,
+        linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -591,10 +593,10 @@ class CreateConvo extends React.Component {
             {
               this.state.tabActive === 'broadcast' &&
               <div className='pull-right'>
-                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
+                <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.reset}>
                   Reset
                 </button>
-                <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.onNext}>
+                <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.onNext}>
                   Next
                 </button>
               </div>
@@ -605,7 +607,7 @@ class CreateConvo extends React.Component {
                 <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                   Previous
                 </button>
-                <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
+                <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.linkedMessages && this.state.linkedMessages[0].length === 0)) ? true : null} onClick={this.testConvo}>
                   Test
                 </button>
                 <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
