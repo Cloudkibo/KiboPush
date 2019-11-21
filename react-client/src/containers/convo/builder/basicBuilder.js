@@ -10,9 +10,11 @@ import GenericMessage from '../../../components/SimplifiedBroadcastUI/GenericMes
 class BasicBuilder extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let currentId = new Date().getTime()
     this.state = {
-      linkedMessages: this.props.linkedMessages ? this.props.linkedMessages : [{title: this.props.convoTitle, id: 1}],
-      currentId: 1
+      linkedMessages: this.props.linkedMessages ? this.props.linkedMessages : [{title: this.props.convoTitle, id: currentId, messageContent: []}],
+      unlinkedMessages: this.props.unLinkedMessages ? this.props.unLinkedMessages : [],
+      currentId
     }
     this.handleChange = this.handleChange.bind(this)
     this.addLinkedMessage = this.addLinkedMessage.bind(this)
@@ -24,6 +26,7 @@ class BasicBuilder extends React.Component {
 
   componentDidMount () {
     console.log('componentDidMount for BasicBuilder', this.state)
+    this.props.handleChange({linkedMessages: this.state.linkedMessages, unLinkedMessages: this.state.unlinkedMessages})
   }
 
   handleChange (broadcast, event) {
@@ -52,12 +55,16 @@ class BasicBuilder extends React.Component {
           }
         }
       }
-      this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages})
+      this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unLinkedMessages: this.state.unlinkedMessages})
     }
   }
 
   removeLinkedMessages (deletePayload) {
     let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
+    deletePayload = deletePayload.map(payload => {
+      return JSON.parse(payload).blockUniqueId
+    })
     for (let i = 0; i < deletePayload.length; i++) {
       for (let j = linkedMessages.length-1; j >= 0; j--) {
         if (linkedMessages[j].id === deletePayload[i]) {
@@ -78,17 +85,18 @@ class BasicBuilder extends React.Component {
               }
             }
           }
-          linkedMessages.splice(j, 1)
+          unlinkedMessages = unlinkedMessages.concat(linkedMessages.splice(j, 1))
         }
       }
     }
-    this.setState({linkedMessages})
+    this.setState({linkedMessages, unlinkedMessages})
   }
 
   addDeletePayloads (deletePayload, buttons) {
     for (let k = 0; k < buttons.length; k++) {
-      if (buttons[k].type === 'postback' && Number.isInteger(buttons[k].payload)) {
-        deletePayload.push(buttons[k].payload)
+      let buttonPayload = JSON.parse(buttons[k].payload)
+      if (buttons[k].type === 'postback' && buttonPayload.blockUniqueId) {
+        deletePayload.push(buttonPayload.blockUniqueId)
       }
     }
   }
@@ -107,8 +115,9 @@ class BasicBuilder extends React.Component {
 
   editLinkedMessage (button) {
     let linkedMessages = this.state.linkedMessages
+    let buttonPayload = JSON.parse(button.payload)
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
-      if (linkedMessages[i].id === button.payload) {
+      if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
         // linkedMessages[i].title = button.title
         linkedMessages[i].linkedButton = button
       }
@@ -117,11 +126,12 @@ class BasicBuilder extends React.Component {
   }
 
   changeMessage (id) {
-    let messageIndex = this.state.linkedMessages.findIndex(m => m.id === id) 
+    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+    let messageIndex = messages.findIndex(m => m.id === id) 
     if (messageIndex > -1) {
       console.log('changing message', this.state.linkedMessages[messageIndex])
       this.setState({currentId: id}, () => {
-        this.props.handleChange({broadcast: this.state.linkedMessages[messageIndex].messageContent, convoTitle: this.state.linkedMessages[messageIndex].title})
+        this.props.handleChange({broadcast: messages[messageIndex].messageContent, convoTitle: messages[messageIndex].title})
       })
     }
   }
@@ -148,13 +158,17 @@ class BasicBuilder extends React.Component {
   }
 
   addLinkedMessage (button) {
+    let id = new Date().getTime()
     let data = {
-      id: this.state.linkedMessages.length + 1,
+      id,
       title: button.title,
       messageContent: [],
       linkedButton: button
     }
-    button.payload = this.state.linkedMessages.length + 1
+    button.payload = JSON.stringify({
+      blockUniqueId: id,
+      action: 'send_message_block'
+    })
     let linkedMessages = this.state.linkedMessages
     linkedMessages.push(data)
     this.setState({linkedMessages})
@@ -175,8 +189,17 @@ class BasicBuilder extends React.Component {
                       <ul className='nav nav-tabs'>
                       { 
                         this.state.linkedMessages.map((message, index) => 
-                        <li>
+                        <li key={message.id}>
                           <a href='#/' className={'broadcastTabs' + (this.state.currentId === message.id ? ' active' : '')} onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
+                            {message.title}
+                          </a>
+                        </li>
+                        )
+                      }
+                      { 
+                        this.state.unlinkedMessages.map((message, index) => 
+                        <li key={message.id}>
+                          <a href='#/' className={'broadcastTabs' + (this.state.currentId === message.id ? ' active' : '')} onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px', color: 'red'}}>
                             {message.title}
                           </a>
                         </li>
