@@ -16,7 +16,9 @@ class GoogleSheetActions extends React.Component {
       spreadSheet: '',
       worksheet: '',
     	mapping: '',
-      showModal: false
+      showModal: false,
+      lookUpValue: '',
+      lookUpColumn: ''
     }
 
     props.fetchSpreadSheets()
@@ -29,7 +31,7 @@ class GoogleSheetActions extends React.Component {
   componentDidMount () {
     console.log('in componentDidMount of googleSheetAction', this.props)
     if (this.props.googleSheetAction !== '' && this.props.mapping !== '' && this.props.worksheet && this.props.spreadSheet) {
-      this.setState({mapping: this.props.mapping, spreadSheet: this.props.spreadSheet, worksheet: this.props.worksheet})
+      this.setState({mapping: this.props.mapping, spreadSheet: this.props.spreadSheet, worksheet: this.props.worksheet, lookUpValue: this.props.lookUpValue, lookUpColumn: this.props.lookUpColumn})
       this.updateGoogleAction(this.props.googleSheetAction, true)
     }
   }
@@ -40,25 +42,31 @@ class GoogleSheetActions extends React.Component {
     worksheet: '',
     mapping: '',
     title: '',
-    description: ''
+    description: '',
+    lookUpColumn: '',
+    lookUpValue: ''
     })
     this.props.emptyFields()
     this.props.removeGoogleAction()
   }
 
-  save (spreadSheetValue, workSheetValue, mappingData) {
+  save (spreadSheetValue, workSheetValue, mappingData, lookUpColumn, lookUpValue) {
     console.log('mappingData in save', mappingData)
     this.refs.ActionModal.click()
     this.setState({spreadSheet: spreadSheetValue,
     worksheet: workSheetValue,
     mapping: mappingData,
+    lookUpColumn: lookUpColumn,
+    lookUpValue: lookUpValue,
     showModal: false
   })
     this.props.saveGoogleSheet({
       googleSheetAction: this.state.googleSheetAction,
       spreadSheet: spreadSheetValue,
     	worksheet: workSheetValue,
-    	mapping: mappingData
+    	mapping: mappingData,
+      lookUpColumn: lookUpColumn,
+      lookUpValue: lookUpValue
     })
   }
 
@@ -81,9 +89,16 @@ class GoogleSheetActions extends React.Component {
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
     	  mapping={this.state.mapping}
-      />)
-      // 'update_row': (<UpdateRow save={this.save} />),
-      // 'get_row_by_value': (<GetRowByValue save={this.save} />)
+      />),
+      'update_row': (<UpdateRow save={this.save}
+        save={this.save}
+        spreadsheet={this.state.spreadSheet}
+    	  worksheet={this.state.worksheet}
+    	  mapping={this.state.mapping}
+        lookUpValue={this.state.lookUpValue}
+        lookUpColumn={this.state.lookUpColumn}
+        />),
+      'get_row_by_value': (<GetRowByValue save={this.save} />)
     }
     return modals[this.state.googleSheetAction]
   }

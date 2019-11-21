@@ -40,6 +40,8 @@ class Button extends React.Component {
     	spreadSheet: this.props.button && this.props.button.payload ? this.props.button.payload.spreadSheet : '',
     	worksheet: this.props.button && this.props.button.payload ? this.props.button.payload.worksheet : '',
     	mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
+      lookUpValue: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpValue : '',
+      lookUpColumn: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpColumn : ''
     }
 
     props.fetchAllSequence()
@@ -97,6 +99,8 @@ class Button extends React.Component {
           worksheet: buttonPayload.worksheet,
           mapping: buttonPayload.mapping,
           googleSheetAction: buttonPayload.googleSheetAction,
+          lookUpValue: buttonPayload.lookUpValue,
+          lookUpColumn: buttonPayload.lookUpColumn,
           openGoogleSheets: true, openCreateMessage: false})
       }
     }
@@ -313,6 +317,22 @@ class Button extends React.Component {
         }
         this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
       }
+    } else if (this.state.openGoogleSheets) {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'google_sheets',
+          googleSheetAction: this.state.googleSheetAction,
+          spreadSheet: this.state.spreadSheet,
+        	worksheet: this.state.worksheet,
+        	mapping: this.state.mapping,
+          lookUpValue: this.state.lookUpValue,
+          lookUpColumn: this.state.lookUpColumn
+        })
+      }
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
@@ -407,7 +427,9 @@ class Button extends React.Component {
           googleSheetAction: this.state.googleSheetAction,
           spreadSheet: this.state.spreadSheet,
         	worksheet: this.state.worksheet,
-        	mapping: this.state.mapping
+        	mapping: this.state.mapping,
+          lookUpValue: this.state.lookUpValue,
+          lookUpColumn: this.state.lookUpColumn
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
@@ -539,12 +561,17 @@ class Button extends React.Component {
     this.setState({googleSheetAction: googleSheetPayload.googleSheetAction,
       spreadSheet: googleSheetPayload.spreadSheet,
       worksheet: googleSheetPayload.worksheet,
-      mapping: googleSheetPayload.mapping})
+      mapping: googleSheetPayload.mapping,
+      lookUpValue: googleSheetPayload.lookUpValue,
+      lookUpColumn: googleSheetPayload.lookUpColumn
+    })
     let buttonData = {title: this.state.title, visible: true,
       googleSheetAction: googleSheetPayload.googleSheetAction,
 	    spreadSheet: googleSheetPayload.spreadSheet,
     	worksheet: googleSheetPayload.worksheet,
     	mapping: googleSheetPayload.mapping,
+      lookUpValue: googleSheetPayload.lookUpValue,
+      lookUpColumn: googleSheetPayload.lookUpColumn,
       index: this.props.index}
     if (googleSheetPayload.googleSheetAction !== '' &&
       googleSheetPayload.spreadSheet !== '' &&
@@ -565,7 +592,9 @@ class Button extends React.Component {
 	    spreadSheet: '',
     	worksheet: '',
     	mapping: '',
-      buttonDisabled: true
+      buttonDisabled: true,
+      lookUpValue: '',
+      lookUpColumn: ''
     })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
@@ -772,6 +801,8 @@ class Button extends React.Component {
                           worksheet={this.state.worksheet}
                           spreadSheet={this.state.spreadSheet}
                           mapping={this.state.mapping}
+                          lookUpValue={this.state.lookUpValue}
+                          lookUpColumn={this.state.lookUpColumn}
                           />
                       </div>
                     </div>
