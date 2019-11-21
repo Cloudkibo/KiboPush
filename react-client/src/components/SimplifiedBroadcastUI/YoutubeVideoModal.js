@@ -12,7 +12,7 @@ import YouTube from 'react-youtube'
 class YoutubeVideoModal extends React.Component {
   constructor(props) {
     super(props)
-    console.log('YoutubeVideoModal props', props)
+    console.log('YoutubeVideoModal props in constructor', props)
     this.state = {
       buttons: props.buttons.map(button => { return { visible: true, title: button.title } }),
       numOfCurrentButtons: 0,
@@ -43,7 +43,7 @@ class YoutubeVideoModal extends React.Component {
 
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
-    this.setState({ disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null }, () => {
+    this.setState({ buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null }, () => {
       this.validateYoutubeUrl()
     })
   }
@@ -199,26 +199,28 @@ class YoutubeVideoModal extends React.Component {
     this.props.closeModal()
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
-      numOfCurrentButtons: 0,
-      disabled: nextProps.edit ? false : true,
-      buttonDisabled: false,
-      buttonLimit: 3,
-      buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'],
-      file: nextProps.file ? this.props.file : '',
-      link: nextProps.youtubeLink ? nextProps.youtubeLink : '',
-      videoLink: nextProps.videoLink ? nextProps.videoLink : '',
-      videoTitle: nextProps.videoTitle ? nextProps.videoTitle : '',
-      videoDescription: nextProps.videoDescription ? nextProps.videoDescription : '',
-      loading: false,
-      videoId: nextProps.videoId ? nextProps.videoId : null,
-    })
-  }
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   console.log('componentWillRecieveProps YoutubeVideoModal')
+  //   this.setState({
+  //     buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
+  //     numOfCurrentButtons: 0,
+  //     disabled: nextProps.edit ? false : true,
+  //     buttonDisabled: false,
+  //     buttonLimit: 3,
+  //     buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'],
+  //     file: nextProps.file ? this.props.file : '',
+  //     link: nextProps.youtubeLink ? nextProps.youtubeLink : '',
+  //     videoLink: nextProps.videoLink ? nextProps.videoLink : '',
+  //     videoTitle: nextProps.videoTitle ? nextProps.videoTitle : '',
+  //     videoDescription: nextProps.videoDescription ? nextProps.videoDescription : '',
+  //     loading: false,
+  //     videoId: nextProps.videoId ? nextProps.videoId : null,
+  //   })
+  // }
 
   render() {
     console.log('video link', this.state.link)
+    console.log('YoutubeVideoModal props in render', this.props)
     let visibleButtons = this.state.buttons.filter(button => button.visible)
     return (
       <div className="modal-content" style={{width: '72vw'}}>
@@ -244,6 +246,7 @@ class YoutubeVideoModal extends React.Component {
                 this.state.file && this.props.module !== 'whatsapp' &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
+                  disabled={this.state.disabled}
                   buttons={this.state.buttons}
                   finalButtons={this.props.buttons}
                   buttonLimit={this.state.buttonLimit}
@@ -329,7 +332,7 @@ class YoutubeVideoModal extends React.Component {
               >
                   Cancel
                 </button>
-                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle)} onClick={() => this.handleDone()} className='btn btn-primary'
+                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle) || this.state.loading} onClick={() => this.handleDone()} className='btn btn-primary'
                  >
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>

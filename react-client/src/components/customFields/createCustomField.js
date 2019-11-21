@@ -51,7 +51,9 @@ class CreateCustomField extends React.Component {
       this.setState({closeModal: '', name: '', type: '', description: ''})
     } else {
       this.msg.error(res.description)
-      this.setState({closeModal: ''})
+      this.setState({closeModal: 'modal'})
+      document.getElementById('create').click()
+      this.setState({closeModal: '', name: '', type: '', description: ''})
     }
   }
 
