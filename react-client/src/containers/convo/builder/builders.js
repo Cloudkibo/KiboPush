@@ -933,6 +933,12 @@ class Builders extends React.Component {
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
           showDialog={this.showDialog}
+          hiddenComponents={this.state.hiddenComponents}
+          showAddComponentModal={this.showAddComponentModal}
+          list={this.state.list}
+          module={this.props.module}
+          noDefaultHeight={this.props.noDefaultHeight}
+          getItems={this.getItems}
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER />
@@ -966,7 +972,8 @@ Builders.propTypes = {
   'locationPages': PropTypes.object.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
-  'resetTarget': PropTypes.bool.isRequired
+  'resetTarget': PropTypes.bool.isRequired,
+  'noDefaultHeight': PropTypes.bool.isRequired
 }
 
 Builders.defaultProps = {

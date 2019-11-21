@@ -325,6 +325,7 @@ class Button extends React.Component {
         title: this.state.title,
         payload: null
       }
+      console.log('creating new message block button', data)
       this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
