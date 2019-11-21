@@ -109,7 +109,7 @@ class BasicBuilder extends React.Component {
     let linkedMessages = this.state.linkedMessages
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === button.payload) {
-        linkedMessages[i].title = button.title
+        // linkedMessages[i].title = button.title
         linkedMessages[i].linkedButton = button
       }
     }
@@ -131,7 +131,7 @@ class BasicBuilder extends React.Component {
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === this.state.currentId) {
         linkedMessages[i].title = title
-        linkedMessages[i].linkedButton.title = title
+        // linkedMessages[i].linkedButton.title = title
       }
     }
     this.setState({linkedMessages})
@@ -171,7 +171,18 @@ class BasicBuilder extends React.Component {
                 <div className='row'>
                   <div className='col-12'>
                     <ul className='nav nav-tabs'>
-                      <li>
+
+
+
+                      { this.state.linkedMessages.map((message, index) => 
+                        <li>
+                          <a href='#/' className={'broadcastTabs' + (this.state.currentId === message.id ? ' active' : '')} onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
+                            {message.title}
+                          </a>
+                        </li>
+                        )
+                      }
+                      {/* <li>
                         <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.props.onBroadcastClick}>Broadcast </a>
                       </li>
                       <li>
@@ -179,12 +190,11 @@ class BasicBuilder extends React.Component {
                           ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.props.onTargetClick}>Targeting </a>
                           : <a href='#/'>Targeting</a>
                         }
-                      </li>
-
+                      </li> */}
                     </ul>
                     <div className='tab-content'>
                       <div className='tab-pane fade active in' id='tab_1'>
-                        <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none', maxWidth: '90%', marginLeft: '5%'}}>
+                        {/* <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none', maxWidth: '90%', marginLeft: '5%'}}>
                             { this.state.linkedMessages.map((message, index) => (
                               <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
                                 <a href='#/' onClick={() => this.changeMessage(message.id)} id={'tab-' + message.id} className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
@@ -195,7 +205,7 @@ class BasicBuilder extends React.Component {
                                 }
                               </li>))
                             }
-                          </ul>
+                          </ul> */}
                               <GenericMessage
                                 broadcast={this.props.broadcast}
                                 handleChange={this.handleChange}
