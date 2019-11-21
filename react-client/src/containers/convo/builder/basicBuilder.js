@@ -117,7 +117,7 @@ class BasicBuilder extends React.Component {
   }
 
   changeMessage (id) {
-    let messageIndex = this.state.linkedMessages.findIndex(m => m.id === id) 
+    let messageIndex = this.state.linkedMessages.findIndex(m => m.id === id)
     if (messageIndex > -1) {
       console.log('changing message', this.state.linkedMessages[messageIndex])
       this.setState({currentId: id}, () => {
@@ -204,7 +204,8 @@ class BasicBuilder extends React.Component {
                                 titleEditable
                                 pageId={this.props.pageId.pageId}
                                 pages={this.props.location.state && this.props.locationPages}
-                                buttonActions={this.props.buttonActions} />
+                                buttonActions={this.props.buttonActions}
+                              />
                       </div>
                       <div className='tab-pane' id='tab_2'>
                         <Targeting

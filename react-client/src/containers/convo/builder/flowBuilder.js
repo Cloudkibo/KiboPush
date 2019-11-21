@@ -43,7 +43,7 @@ class FlowBuilder extends React.Component {
     return (
       <div className='m-content'>
         <div className='row'>
-          <div className='col-10'>
+          <div className='col-9'>
             <FlowChartWithState
               initialValue={chartSimple}
               Components={ {
@@ -51,7 +51,7 @@ class FlowBuilder extends React.Component {
               }}
             />
           </div>
-          <div className='col-2'>
+          <div className='col-3'>
             <SIDEBAR />
           </div>
         </div>

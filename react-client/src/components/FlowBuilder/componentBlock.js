@@ -10,28 +10,16 @@ class ComponentBlock extends React.Component {
 
   render () {
     return (
-      <div style={{border: '1px solid #ccc', margin: '0px', borderRadius: '4px'}} className="m-portlet m-portlet--creative m-portlet--bordered-semi">
-        <div className="m-portlet__head">
-          <div className="m-portlet__head-caption">
-            <div className="m-portlet__head-title">
-              <h2
-                style={{
-                  width: '208px',
-                  marginLeft: '-30px',
-                  background: '#ccc',
-                  boxShadow: 'none'
-                }}
-                className="m-portlet__head-label"
-              >
-                <span style={{textAlign: 'center'}}>
-                  <i className="flaticon-paper-plane"></i> Message Block
-                </span>
-              </h2>
-            </div>
-          </div>
+      <div style={{borderRadius: '4px'}} className='card'>
+        <div style={{background: '#ccc'}} className='card-header'>
+          <h6 style={{marginTop: '10px'}}>
+            <i className="flaticon-paper-plane"></i> Message Block
+          </h6>
         </div>
-        <div style={{marginTop: '-35px'}} className="m-portlet__body">
-          <COMPONENTSAREA />
+        <div style={{border: '1px solid #ccc'}} className='card-body'>
+          <COMPONENTSAREA
+            targetId='message-block-add-component'
+          />
         </div>
       </div>
     )
