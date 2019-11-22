@@ -60,6 +60,8 @@ class Bot extends React.Component {
     this.showDropdown = this.showDropdown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.onPasswordChange = this.onPasswordChange.bind(this)
+    this.handleResponseCreate = this.handleResponseCreate.bind(this)
+    this.handleResponseDelete = this.handleResponseDelete.bind(this)
   }
 
   componentDidMount() {
@@ -265,7 +267,7 @@ class Bot extends React.Component {
 
   gotoView(bot) {
     this.props.history.push({
-      pathname: `/viewBot`,
+      pathname: `/intents`,
       state: bot
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
@@ -287,14 +289,6 @@ class Bot extends React.Component {
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
 
-  gotoUnansweredQueries(bot) {
-    console.log('going to unanswered queries')
-    this.props.history.push({
-      pathname: `/UnansweredQueries`,
-      state: bot
-    })
-    // this.props.history.push(`/pollResult/${poll._id}`)
-  }
 
   showDropdown() {
     this.setState({ showDropDown: true })
@@ -311,15 +305,15 @@ class Bot extends React.Component {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
       this.props.createBot({ botName: botName, pageId: this.state.pageSelected }, this.msg, this.handleResponseCreate)
-      // this.props.history.push({
-      //   pathname: `/createBot`
-      // })
     }
   }
 
   handleResponseCreate (status) {
     if(status === 'success') {
       this.refs.create.click()
+       this.props.history.push({
+        pathname: `/intents`,
+      })
     }
   }
 
