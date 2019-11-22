@@ -24,8 +24,7 @@ import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/a
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
-import BASICBUILDER from './builder/basicBuilder'
-import FLOWBUILDER from './builder/flowBuilder'
+import BUILDER from '../../components/SimplifiedBroadcastUI/builder/builders'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -71,8 +70,6 @@ class CreateConvo extends React.Component {
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
-    this.onTargetClick = this.onTargetClick.bind(this)
-    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
@@ -182,33 +179,6 @@ class CreateConvo extends React.Component {
     $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
-  }
-  onBroadcastClick () {
-    /* eslint-disable */
-    $('#tab_1').addClass('active')
-    $('#tab_2').removeClass('active')
-    $('#titleBroadcast').addClass('active')
-    $('#titleTarget').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
-  }
-  onTargetClick (e) {
-    if (validateFields(this.state.broadcast, this.msg)) {
-      /* eslint-disable */
-        $('#tab_1').removeClass('active')
-        $('#tab_2').addClass('active')
-        $('#titleBroadcast').removeClass('active')
-        $('#titleTarget').addClass('active')
-        /* eslint-enable */
-      this.setState({tabActive: 'target', resetTarget: false})
-
-      const payload = {
-        pageId: this.state.pageId._id,
-        segmented: false,
-        isList: false,
-      }
-      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
-    }
   }
 
   loadsdk (fbAppId) {
@@ -443,7 +413,7 @@ class CreateConvo extends React.Component {
 
   render () {
     console.log('pageid', this.state.pageId.pageId)
-    console.log('appid',this.props.fbAppId)
+    console.log('state in create convo', this.state)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -642,28 +612,23 @@ class CreateConvo extends React.Component {
             </div>
 					</div>
 				</div>
-        {
-          this.state.builderValue === 'basic'
-          ? <BASICBUILDER
-            showTabs={this.state.tabActive === 'broadcast'}
-            broadcast={this.state.broadcast}
-            linkedMessages={this.state.linkedMessages}
-            onBroadcastClick={this.onBroadcastClick}
-            onTargetClick={this.onTargetClick}
-            handleChange={this.handleChange}
-            setReset={reset => { this.reset = reset }}
-            convoTitle={this.state.convoTitle}
-            pageId={this.state.pageId}
-            location={this.props.location}
-            locationPages={this.state.locationPages}
-            buttonActions={this.state.buttonActions}
-            handleTargetValue={this.handleTargetValue}
-            subscriberCount={this.state.subscriberCount}
-            resetTarget={this.state.resetTarget}
-          />
-          : this.state.builderValue === 'flow' &&
-          <FLOWBUILDER />
-        }
+        <BUILDER
+          convoTitle={this.state.convoTitle}
+          handleChange={this.handleChange}
+          setReset={reset => { this.reset = reset }}
+          broadcast={this.state.broadcast}
+          pageId={this.state.pageId}
+          buttonActions={this.state.buttonActions}
+          builderValue={this.state.builderValue}
+          location={this.props.location}
+          locationPages={this.state.locationPages}
+          handleTargetValue={this.handleTargetValue}
+          subscriberCount={this.state.subscriberCount}
+          resetTarget={this.state.resetTarget}
+          linkedMessages={this.state.linkedMessages}
+          showTabs={this.state.tabActive === 'broadcast'}
+          unlinkedMessages={this.state.unlinkedMessages}
+        />
       </div>
     )
   }

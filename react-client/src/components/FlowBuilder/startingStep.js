@@ -1,29 +1,40 @@
 import React from "react"
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import COMPONENTSAREA from './componentsArea'
 
 class StartingStep extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
+    this.getItems = this.getItems.bind(this)
+  }
+
+  getItems () {
+    let items = []
+    for (let i = 0; i < this.props.linkedMessages[0].messageContent.length; i++) {
+      let component = this.props.getComponent(this.props.linkedMessages[0].messageContent[i]).component
+      items.push({content: component})
+    }
+    if (items.length > 0) {
+      items.push(this.props.getQuickReplies())
+    }
+    return items
   }
 
   render () {
     return (
-      <div style={{border: '1px solid #34bfa3', margin: '0px', borderRadius: '4px'}} className="m-portlet m-portlet--creative m-portlet--bordered-semi">
-        <div className="m-portlet__head">
-          <div className="m-portlet__head-caption">
-            <div className="m-portlet__head-title">
-              <h2 style={{width: '208px', marginLeft: '-30px'}} className="m-portlet__head-label m-portlet__head-label--success">
-                <span style={{textAlign: 'center'}}>
-                  Starting Step
-                </span>
-              </h2>
-            </div>
-          </div>
+      <div style={{borderRadius: '4px'}} className='card'>
+        <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
+          <h6 style={{marginTop: '10px'}}>
+            Starting Step
+          </h6>
         </div>
-        <div style={{marginTop: '-35px'}} className="m-portlet__body">
-          <COMPONENTSAREA />
+        <div style={{border: '1px solid #34bfa3'}} className='card-body'>
+          <COMPONENTSAREA
+            targetId='starting-step-add-component'
+            showAddComponentModal={this.props.showAddComponentModal}
+            getItems={this.getItems}
+          />
         </div>
       </div>
     )
@@ -31,7 +42,11 @@ class StartingStep extends React.Component {
 }
 
 StartingStep.propTypes = {
-
+  'showAddComponentModal': PropTypes.func.isRequired,
+  'getQuickReplies': PropTypes.func.isRequired,
+  'getComponent': PropTypes.func.isRequired,
+  'linkedMessages': PropTypes.array.isRequired,
+  'unlinkedMessages': PropTypes.array.isRequired
 }
 
 export default StartingStep
