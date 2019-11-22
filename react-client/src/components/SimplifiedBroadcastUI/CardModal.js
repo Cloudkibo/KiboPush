@@ -46,7 +46,6 @@ class CardModal extends React.Component {
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
-      closeAdditionalCardsModal: true,
       messengerAdPayloads
     }
 
@@ -71,7 +70,7 @@ class CardModal extends React.Component {
     console.log('CardModal state in constructor', this.state)
     console.log('CardModal props in constructor', this.props)
     this.finalCards = []
-    this.showingAdditionalCardsModal = false
+    this.additionalCardsModalTrigger = true
     this.handleDone = this.handleDone.bind(this)
     this.addElement = this.addElement.bind(this)
     this.updateCardStatus = this.updateCardStatus.bind(this)
@@ -91,6 +90,7 @@ class CardModal extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount CardModal props', this.props)
     //Improve Later
     let that = this
     $('#carouselExampleControls').on('slide.bs.carousel', function (e) {
@@ -101,8 +101,8 @@ class CardModal extends React.Component {
       console.log(from + ' => ' + to);
       that.setState({ selectedIndex: to })
     })
-    if (!this.props.edit) {
-      this.setState({ closeAdditionalCardsModal: false })
+    if (this.props.edit) {
+      this.additionalCardsModalTrigger = false
     }
   }
 
@@ -120,9 +120,9 @@ class CardModal extends React.Component {
           buttons: []
         }
       })
-      this.setState({ selectedIndex: (cards.length - 1), cards, numOfElements: this.state.numOfElements + 1, disabled: true, edited: true }, () => {
-        this.setState({ closeAdditionalCardsModal: false })
+      this.setState({selectedIndex: (cards.length - 1), cards, numOfElements: this.state.numOfElements + 1, disabled: true, edited: true }, () => {
         this.scrollToTop(`panel-heading${this.state.cards.length}`)
+        this.additionalCardsModalTrigger = true
       })
     }
   }
@@ -258,7 +258,8 @@ class CardModal extends React.Component {
   }
 /* eslint-disable */
   getRequirements() {
-    return this.cardComponents.map((card, index) => {
+    let cardComponents = this.cardComponents.filter(card => card && card.props)
+    return cardComponents.map((card, index) => {
       console.log(`cardComponent ${index}`, card)
 
       if (card && card.props) {
@@ -296,9 +297,9 @@ class CardModal extends React.Component {
             )
           }
         }
-        if (requirements.length === 0) {
-          this.showAdditionalCardsModal()
-          if(!this.state.closeAdditionalCardsModal) {
+        if (requirements.length === 0 && index === cardComponents.length-1) {
+          console.log('0 requirments')
+          if (this.additionalCardsModalTrigger) {
             this.refs.addCard.click()
           }
         }
@@ -308,11 +309,10 @@ class CardModal extends React.Component {
 /* eslint-enable */
 
   showAdditionalCardsModal() {
-    this.showingAdditionalCardsModal = true
+    this.additionalCardsModalTrigger = true
   }
 
   closeAdditionalCardsModal() {
-    this.setState({ closeAdditionalCardsModal: true })
     this.refs.addCard.click()
   }
 
@@ -344,7 +344,8 @@ class CardModal extends React.Component {
     }
     console.log('remaining cards after closing card', cards)
     let selectedIndex = cards.length - 1
-    this.setState({ closeAdditionalCardsModal: true, cards, numOfElements: this.state.numOfElements - 1, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled })
+    this.additionalCardsModalTrigger = false
+    this.setState({ cards, numOfElements: this.state.numOfElements - 1, selectedIndex, edited: true, disabled, buttonDisabled, actionDisabled })
   }
 
   addCard(card) {
@@ -404,14 +405,16 @@ class CardModal extends React.Component {
                 <button style={{ float: 'right', marginLeft: '10px' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.closeAdditionalCardsModal()
                     this.addElement()
+                    this.closeAdditionalCardsModal()
+                    this.additionalCardsModalTrigger = true
                   }}>Yes
                 </button>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.closeAdditionalCardsModal()
+                    this.additionalCardsModalTrigger = false
                   }}>Cancel
                 </button>
               </div>
@@ -437,7 +440,7 @@ class CardModal extends React.Component {
                   this.state.cards.map((card, index) => {
                     console.log(`AddCard ${index + 1}`, card)
                     return (
-                      <div key={index} className="panel-group" id="accordion">
+                      <div className="panel-group" id="accordion">
                         <div className="panel panel-default">
                           <div id={`panel-heading${index + 1}`} className="panel-heading">
                             <h4 className="panel-title" style={{ fontSize: '22px' }}>

@@ -4,11 +4,11 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 class AlertMessage extends React.Component {
   render () {
     return (
-      <div>
+      <div data-testid='alertMessage'>
         {this.props.type === 'page'
         ? <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
           <div className='m-alert__icon'>
@@ -19,7 +19,7 @@ class AlertMessage extends React.Component {
             <strong>
             0 Pages Connected!&nbsp;
             </strong>
-            You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{cursor: 'pointer'}} to='/addPages' >Connect Page</Link>
+            You have no pages connected. Please connect your facebook page to use this feature.&nbsp; {/* <Link style={{cursor: 'pointer'}} to='/addPages' >Connect Page</Link> */}
           </div>
         </div>
         : this.props.type === 'subscriber' &&
@@ -33,7 +33,7 @@ class AlertMessage extends React.Component {
             0 Subscribers!&nbsp;
             </strong>
             Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-            To invite subscribers click <Link to='/invitesubscribers' style={{cursor: 'pointer'}}> here </Link>
+            { /* To invite subscribers click <Link to='/invitesubscribers' style={{cursor: 'pointer'}}> here </Link> */}
           </div>
         </div>
         }

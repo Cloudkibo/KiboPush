@@ -210,7 +210,8 @@ class AddSurvey extends React.Component {
       segmentationLocale: targeting.localeValue,
       segmentationTags: targeting.tagValue,
       isList: targeting.isList ? true : false,
-      segmentationList: targeting.listSelected
+      segmentationList: targeting.listSelected,
+      segmentationSurvey: targeting.surveyValue
   }
   this.props.getSubscriberCount(payload, this.handleSubscriberCount)
   }
