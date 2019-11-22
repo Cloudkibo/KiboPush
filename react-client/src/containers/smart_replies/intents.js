@@ -8,18 +8,24 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { editBot, botDetails } from '../../redux/actions/smart_replies.actions'
+import {loadBotIntents} from '../../redux/actions/smart_replies_intents.actions'
 
 
 class Intents extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      // bots state
       id: '',
       botName: '',
       page: '',
       isActive: '',
-      payload: [],
       renameBot: '',
+      // intents state
+      intents: '',
+      questions: [''],
+      answer: [],
+      //other state
       disableRenameButton: true,
     }
     this.renameBot = this.renameBot.bind(this)
@@ -27,9 +33,42 @@ class Intents extends React.Component {
     this.handleEditResponse = this.handleEditResponse.bind(this)
     this.gotoUnansweredQueries = this.gotoUnansweredQueries.bind(this)
     this.gotoWaitingReply = this.gotoWaitingReply.bind(this)
+    this.addQuestion = this.addQuestion.bind(this)
+    this.removeQuestion = this.removeQuestion.bind(this)
+    this.changeQuestion = this.changeQuestion.bind(this)
   }
 
-  gotoWaitingReply () {
+  changeQuestion(event, index) {
+    let questions = this.state.questions
+    for (let i = 0; i < questions.length; i++) {
+      if (index === i) {
+        questions[i] = event.target.value
+      }
+    }
+    this.setState({ questions: questions })
+  }
+
+  removeQuestion(index) {
+    let tempQuestions = this.state.questions
+    for (let i = 0; i < tempQuestions.length; i++) {
+      if (i === index) {
+        tempQuestions.splice(i, 1)
+      }
+    }
+    this.setState({
+      questions: tempQuestions
+    })
+  }
+
+  addQuestion() {
+    let questions = this.state.questions
+    questions.push('')
+    this.setState({
+      questions: questions
+    })
+  }
+
+  gotoWaitingReply() {
     this.props.history.push({
       pathname: `/WaitingReplyList`,
       state: this.state.id
@@ -70,7 +109,10 @@ class Intents extends React.Component {
       if (botName) {
         botName = botName.split('-').join(' ')
       }
-      this.setState({ id: nextProps.showBotDetails._id, botName: botName, page: nextProps.showBotDetails.pageId, isActive: nextProps.showBotDetails.isActive, payload: nextProps.showBotDetails.payload })
+      this.setState({ id: nextProps.showBotDetails._id, botName: botName, page: nextProps.showBotDetails.pageId, isActive: nextProps.showBotDetails.isActive })
+    }
+    if(nextProps.botIntents && nextProps.botIntents.length > 0) {
+      this.setState({intents: nextProps.botIntents.intents})
     }
   }
 
@@ -85,6 +127,7 @@ class Intents extends React.Component {
     document.title = `${title} | Create Bot`;
     if (this.props.location.state) {
       this.props.botDetails(this.props.location.state)
+      this.props.loadBotIntents(this.props.location.state)
     }
   }
 
@@ -183,11 +226,14 @@ class Intents extends React.Component {
                     <a href='#/'
                       style={{ margin: '0px 16px 0px 0px' }}
                       onClick={this.gotoWaitingReply}>Waiting Subscribers</a>
-                    <button
-                      type="button"
-                      class="btn btn-brand m-btn m-btn--custom">
-                      <i className="fa fa-plus"></i> New Intent
-										</button>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
+                          New Intent
+                        </span>
+                      </span>
+                    </button>
                   </span>
                 </div>
                 <hr />
@@ -198,31 +244,83 @@ class Intents extends React.Component {
                         style={{ background: 'white', borderColor: '#ccc' }}>
                         <i class="fa fa-search"></i>
                       </span>
-                      <input style={{ borderLeft: 'none' }} type="text" className="form-control m-input" placeholder="Email" aria-describedby="basic-addon1" />
+                      <input style={{ borderLeft: 'none' }} type="text" className="form-control m-input" placeholder="Search..." aria-describedby="basic-addon1" />
                     </div>
-                    <div class="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{padding: '20px 44px 0px 44px'}}>
+                    <div class="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
                       <div className='panel-group accordion' id='accordion1'>
                         <div className='panel panel-default'>
                           <div className='panel-heading guidelines-heading'>
                             <h4 className='panel-title'>
-                              <a 
-                                className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' 
+                              <a
+                                className='guidelines-link accordion-toggle accordion-toggle-styled collapsed'
                                 data-toggle='collapse'
-                                data-parent='#accordion1' 
-                                href='#collapse_1' 
+                                data-parent='#accordion1'
+                                href='#collapse_1'
                                 aria-expanded='false'>
-                                  Intent Name A
+                                Intent Name A
                                   <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
-                                    style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
-                                    data-toggle='modal' data-target='#renameIntent'></i>
+                                  style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
+                                  data-toggle='modal' data-target='#renameIntent'></i>
                               </a>
                             </h4>
                           </div>
-                          <div id='collapse_1' className='panel-collapse collapse show' aria-expanded='true' style={{ height: '87px' }}>
+                          <div id='collapse_1' className='panel-collapse collapse show' aria-expanded='true'>
                             <div className='panel-body'>
                               <p>Enter several variations of same  question to train the bot.</p>
-                              <div class="col-md-8 col-lg-8 col-xl-8" style={{borderRight: '1px solid #ddd'}} >
-                                
+                              <div className='row'>
+                                <div class="col-md-8 col-lg-8 col-xl-8" style={{ borderRight: '1px solid #ddd' }}>
+                                  {
+                                    this.state.questions.map((question, i) => (
+                                      <div data-row={i}>
+                                        <div className="input-group" >
+                                          <input type="text"
+                                            className="form-control form-control-danger"
+                                            value={question}
+                                            placeholder="Enter New Question Here..."
+                                            onChange={(e) => this.changeQuestion(e, i)} />
+                                          <span className="input-group-btn">
+                                            <button disabled={this.state.questions.length < 2} onClick={() => this.removeQuestion(i)} className="btn btn-danger m-btn m-btn--icon">
+                                              <i className="la la-close"></i>
+                                            </button>
+                                          </span>
+                                        </div>
+                                        <br />
+                                      </div>
+                                    ))
+                                  }
+                                  <br />
+                                  <button onClick={this.addQuestion} className="btn btn btn-primary m-btn m-btn--icon">
+                                    <span>
+                                      <i className="la la-plus"></i>
+                                      <span>
+                                        Add
+									                    </span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-xl-4" style={{textAlign: 'center'}}>
+                                  <button 
+                                    className="btn btn btn-primary m-btn m-btn--icon"
+                                    style={{position: 'relative', top: '50%'}}>
+                                    <span>
+                                      <i className="la la-plus"></i>
+                                      <span>
+                                        Set Answer
+									                  </span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="col-md-12 col-lg-12 col-xl-12" 
+                                  style={{textAlign: 'right', margin: '20px 0px 10px -10px'}}>
+                                  <button
+                                    className="btn btn btn-secondary" style={{marginRight: '10px'}}>
+                                      Delete
+                                  </button>
+                                  <button
+                                    className="btn btn btn-primary">
+                                      Save
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -246,7 +344,8 @@ class Intents extends React.Component {
 function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
-    showBotDetails: (state.botsInfo.botDetails)
+    showBotDetails: (state.botsInfo.botDetails),
+    botIntents: (state.botIntentsInfo.botIntents)
   }
 }
 
@@ -254,7 +353,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       botDetails: botDetails,
-      editBot: editBot
+      editBot: editBot,
+      loadBotIntents: loadBotIntents
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Intents)
