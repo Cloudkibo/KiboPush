@@ -217,7 +217,7 @@ class UpdateRow extends React.Component {
         </div>
         <div style={{ textAlign: 'left' }} className="modal-body">
           <h6>Google Sheets: Update Row</h6><br />
-          <span style={{color: '#575962'}}>The first row of the table is used for your column titles. You could easily match KiboPush subscriber data with your columns by titles names.</span>
+          <span style={{color: '#575962'}}>The first row of the table is used for your column titles. In case two or more matches with lookup value, the first row will be updated. Please note, if the match won't be found we'll insert a new row to your spreadsheet.</span>
           <br /><br />
         <label style={{fontWeight: 'normal'}}>Spreadsheet:</label>
           {this.props.spreadsheets && this.props.spreadsheets.length > 0 &&

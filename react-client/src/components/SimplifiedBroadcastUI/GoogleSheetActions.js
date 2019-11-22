@@ -91,14 +91,18 @@ class GoogleSheetActions extends React.Component {
     	  mapping={this.state.mapping}
       />),
       'update_row': (<UpdateRow save={this.save}
-        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
     	  mapping={this.state.mapping}
         lookUpValue={this.state.lookUpValue}
         lookUpColumn={this.state.lookUpColumn}
         />),
-      'get_row_by_value': (<GetRowByValue save={this.save} />)
+      'get_row_by_value': (<GetRowByValue save={this.save}
+        spreadsheet={this.state.spreadSheet}
+    	  worksheet={this.state.worksheet}
+    	  mapping={this.state.mapping}
+        lookUpValue={this.state.lookUpValue}
+        lookUpColumn={this.state.lookUpColumn} />)
     }
     return modals[this.state.googleSheetAction]
   }
