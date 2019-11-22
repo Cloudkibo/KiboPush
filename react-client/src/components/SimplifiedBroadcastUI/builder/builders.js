@@ -2,47 +2,50 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
+import PropTypes from 'prop-types'
 
-import { loadTags } from '../../redux/actions/tags.actions'
-import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { loadBroadcastsList } from '../../redux/actions/templates.actions'
+import { loadTags } from '../../../redux/actions/tags.actions'
+import { fetchAllSequence } from '../../../redux/actions/sequence.action'
+import { loadBroadcastsList } from '../../../redux/actions/templates.actions'
+
 import BASICBUILDER from './basicBuilder'
 import FLOWBUILDER from './flowBuilder'
 
-// import Image from './PreviewComponents/Image'
-import Audio from './PreviewComponents/Audio'
-import File from './PreviewComponents/File'
-import Text from './PreviewComponents/Text'
-import Card from './PreviewComponents/Card'
-import Gallery from './PreviewComponents/Gallery'
-import Media from './PreviewComponents/Media'
-import AlertContainer from 'react-alert'
-import DragSortableList from 'react-drag-sortable'
-import GenericMessageComponents from './GenericMessageComponents'
-import PropTypes from 'prop-types'
-import TextModal from './TextModal'
-import CardModal from './CardModal'
-import ImageModal from './ImageModal'
-import FileModal from './FileModal'
-import AudioModal from './AudioModal'
-import MediaModal from './MediaModal'
-import YoutubeVideoModal from './YoutubeVideoModal'
-import LinkCarousel from './LinkCarousel';
-import QuickReplies from './QuickReplies'
+import Audio from '../PreviewComponents/Audio'
+import File from '../PreviewComponents/File'
+import Text from '../PreviewComponents/Text'
+import Card from '../PreviewComponents/Card'
+import Gallery from '../PreviewComponents/Gallery'
+import Media from '../PreviewComponents/Media'
+
+import TextModal from '../TextModal'
+import CardModal from '../CardModal'
+import ImageModal from '../ImageModal'
+import FileModal from '../FileModal'
+import AudioModal from '../AudioModal'
+import MediaModal from '../MediaModal'
+import LinkCarousel from '../LinkCarousel'
+import QuickReplies from '../QuickReplies'
+import YoutubeVideoModal from '../YoutubeVideoModal'
 
 class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
+    let currentId = new Date().getTime()
     this.state = {
       list: [],
       quickReplies: [],
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
-      pageId: this.props.pageId,
+      pageId: this.props.pageId.pageId,
       hiddenComponents: hiddenComponents,
-      componentType: ''
+      componentType: '',
+      linkedMessages: this.props.linkedMessages ? this.props.linkedMessages : [{title: this.props.convoTitle, id: currentId, messageContent: []}],
+      unlinkedMessages: this.props.unlinkedMessages ? this.props.unlinkedMessages : [],
+      currentId
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -70,6 +73,17 @@ class Builders extends React.Component {
     this.updateQuickReplies = this.updateQuickReplies.bind(this)
     this.appendQuickRepliesToEnd = this.appendQuickRepliesToEnd.bind(this)
     this.getItems = this.getItems.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.createLinkedMessagesFromButtons = this.createLinkedMessagesFromButtons.bind(this)
+    this.removeLinkedMessages = this.removeLinkedMessages.bind(this)
+    this.addDeletePayloads = this.addDeletePayloads.bind(this)
+    this.addLinkedMessage = this.addLinkedMessage.bind(this)
+    this.editLinkedMessage = this.editLinkedMessage.bind(this)
+    this.updateLinkedMessagesPayload = this.updateLinkedMessagesPayload.bind(this)
+    this.updateLinkedMessagesTitle = this.updateLinkedMessagesTitle.bind(this)
+    this.changeMessage = this.changeMessage.bind(this)
+    this.getQuickReplies = this.getQuickReplies.bind(this)
+
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -80,12 +94,160 @@ class Builders extends React.Component {
     console.log('genericMessage props in constructor', this.props)
   }
 
+  changeMessage (id) {
+    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+    let messageIndex = messages.findIndex(m => m.id === id)
+    if (messageIndex > -1) {
+      console.log('changing message', this.state.linkedMessages[messageIndex])
+      this.setState({currentId: id}, () => {
+        let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
+        let list = filteredData.length > 0 ? filteredData[0].messageContent : []
+        this.initializeList(list)
+        this.handleChange({broadcast: messages[messageIndex].messageContent, convoTitle: messages[messageIndex].title})
+      })
+    }
+  }
+
+  updateLinkedMessagesPayload (broadcast) {
+    let linkedMessages = this.state.linkedMessages
+    for (let i = linkedMessages.length-1 ; i >= 0; i--) {
+      if (linkedMessages[i].id === this.state.currentId) {
+        linkedMessages[i].messageContent = broadcast
+      }
+    }
+    this.setState({linkedMessages})
+  }
+
+  editLinkedMessage (button) {
+    let linkedMessages = this.state.linkedMessages
+    let buttonPayload = JSON.parse(button.payload)
+    for (let i = linkedMessages.length-1 ; i >= 0; i--) {
+      if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
+        // linkedMessages[i].title = button.title
+        linkedMessages[i].linkedButton = button
+      }
+    }
+    this.setState({linkedMessages})
+  }
+
+  updateLinkedMessagesTitle (title) {
+    let linkedMessages = this.state.linkedMessages
+    for (let i = linkedMessages.length-1 ; i >= 0; i--) {
+      if (linkedMessages[i].id === this.state.currentId) {
+        linkedMessages[i].title = title
+        // linkedMessages[i].linkedButton.title = title
+      }
+    }
+    this.setState({linkedMessages})
+  }
+
+  handleChange (broadcast, event) {
+    console.log('handleChange broadcast in basicBuilder', broadcast)
+    console.log('handleChange event in basciBuilder', event)
+    if (broadcast.convoTitle) {
+      this.updateLinkedMessagesTitle(broadcast.convoTitle)
+      this.props.handleChange({convoTitle: broadcast.convoTitle, linkedMessages: this.state.linkedMessages})
+    } else {
+      broadcast = broadcast.broadcast
+      if (event && event.deletePayload) {
+        console.log('deletePayload', event)
+        this.removeLinkedMessages(event.deletePayload)
+      }
+      this.updateLinkedMessagesPayload (broadcast)
+      for (let i = 0; i < broadcast.length; i++) {
+        let broadcastComponent = broadcast[i]
+        console.log('broadcastComponent', broadcastComponent)
+        if (broadcastComponent.buttons) {
+          this.createLinkedMessagesFromButtons(broadcastComponent.buttons)
+        }
+        if (broadcastComponent.cards) {
+          for (let j = 0; j < broadcastComponent.cards.length; j++) {
+            let card = broadcastComponent.cards[j]
+            this.createLinkedMessagesFromButtons(card.buttons)
+          }
+        }
+      }
+      this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
+    }
+  }
+
+  createLinkedMessagesFromButtons(buttons) {
+    for (let j = 0; j < buttons.length; j++) {
+      let button = buttons[j]
+      if (button.type === 'postback' && button.payload === null) {
+        console.log('found create new message button')
+        this.addLinkedMessage(button)
+      } else {
+        this.editLinkedMessage(button)
+      }
+    }
+  }
+
+  removeLinkedMessages (deletePayload) {
+    let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
+    deletePayload = deletePayload.map(payload => {
+      return JSON.parse(payload).blockUniqueId
+    })
+    for (let i = 0; i < deletePayload.length; i++) {
+      for (let j = linkedMessages.length-1; j >= 0; j--) {
+        if (linkedMessages[j].id === deletePayload[i]) {
+          console.log(`deleting linkedMessage ${j}`, linkedMessages)
+
+          for (let m = 0; m < linkedMessages[j].messageContent.length; m++) {
+            let component = linkedMessages[j].messageContent[m]
+            if (component.buttons) {
+              let buttons = component.buttons
+              this.addDeletePayloads(deletePayload, buttons)
+            }
+            if (component.cards) {
+              let cards = component.cards
+              for (let k = 0; k < cards.length; k++) {
+                if (cards[k].buttons) {
+                  this.addDeletePayloads(deletePayload, cards[k].buttons)
+                }
+              }
+            }
+          }
+          unlinkedMessages = unlinkedMessages.concat(linkedMessages.splice(j, 1))
+        }
+      }
+    }
+    this.setState({linkedMessages, unlinkedMessages})
+  }
+
+  addDeletePayloads (deletePayload, buttons) {
+    for (let k = 0; k < buttons.length; k++) {
+      let buttonPayload = JSON.parse(buttons[k].payload)
+      if (buttons[k].type === 'postback' && buttonPayload.blockUniqueId) {
+        deletePayload.push(buttonPayload.blockUniqueId)
+      }
+    }
+  }
+
+  addLinkedMessage (button) {
+    let id = new Date().getTime() + Math.floor(Math.random() * 100)
+    let data = {
+      id,
+      title: button.title,
+      messageContent: [],
+      linkedButton: button
+    }
+    button.payload = JSON.stringify({
+      blockUniqueId: id,
+      action: 'send_message_block'
+    })
+    let linkedMessages = this.state.linkedMessages
+    linkedMessages.push(data)
+    this.setState({linkedMessages})
+  }
+
   updateQuickReplies (quickReplies) {
     console.log('updateQuickReplies', quickReplies)
     let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
     console.log('broadcast after updating quick replies', broadcast)
     this.setState({quickReplies, broadcast})
-    this.props.handleChange({broadcast})
+    this.handleChange({broadcast})
   }
 
   appendQuickRepliesToEnd (broadcast, quickReplies) {
@@ -100,21 +262,22 @@ class Builders extends React.Component {
   }
 
   componentDidMount () {
-    console.log('genericMessage props in componentDidMount', this.props)
+    console.log('componentDidMount for Builder', this.state)
+    this.props.handleChange({linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
     if (this.state.broadcast && this.state.broadcast.length > 0) {
-      this.initializeList(this.state.broadcast)
+      this.initializeList(this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
     }
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (this.props.convoTitle !== nextProps.convoTitle) {
-      this.setState({convoTitle: nextProps.convoTitle})
-    }
-    if (this.props.broadcast !== nextProps.broadcast) {
-      this.initializeList(nextProps.broadcast)
-    }
-  }
+  // UNSAFE_componentWillReceiveProps (nextProps) {
+  //   if (this.props.convoTitle !== nextProps.convoTitle) {
+  //     this.setState({convoTitle: nextProps.convoTitle})
+  //   }
+  //   if (this.props.broadcast !== nextProps.broadcast) {
+  //     this.initializeList(this.props.linkedMessages.concat(this.props.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
+  //   }
+  // }
 
   initializeList (broadcast) {
     console.log('initializeList', broadcast)
@@ -124,7 +287,7 @@ class Builders extends React.Component {
       temp.push({content: component})
     }
     this.setState({list: temp, broadcast})
-    this.props.handleChange({broadcast})
+    this.handleChange({broadcast})
   }
 
   scrollToTop () {
@@ -198,7 +361,7 @@ class Builders extends React.Component {
     console.log('renaming title')
     this.setState({convoTitle: this.titleConvo.value})
     this.closeDialog()
-    this.props.handleChange({convoTitle: this.titleConvo.value})
+    this.handleChange({convoTitle: this.titleConvo.value})
   }
 
   handleText (obj) {
@@ -229,7 +392,7 @@ class Builders extends React.Component {
     console.log('handleText temp', temp)
     console.log('handleText state', this.state)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   handleCard (obj) {
@@ -277,7 +440,7 @@ class Builders extends React.Component {
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   handleMedia (obj) {
@@ -319,7 +482,7 @@ class Builders extends React.Component {
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   handleGallery (obj) {
@@ -347,7 +510,7 @@ class Builders extends React.Component {
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   handleImage (obj) {
@@ -367,7 +530,7 @@ class Builders extends React.Component {
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   handleFile (obj) {
@@ -386,7 +549,7 @@ class Builders extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    this.props.handleChange({broadcast: temp}, obj)
+    this.handleChange({broadcast: temp}, obj)
   }
 
   removeComponent (obj) {
@@ -399,12 +562,12 @@ class Builders extends React.Component {
       this.setState({quickReplies: []})
     }
     this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2}, obj)
+    this.handleChange({broadcast: temp2}, obj)
   }
 
   newConvo () {
     this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
-    this.props.handleChange({broadcast: []})
+    this.handleChange({broadcast: []})
   }
 
   addComponent (componentDetails, edit) {
@@ -458,7 +621,7 @@ class Builders extends React.Component {
         pages={this.props.pages}
         buttonActions={this.props.buttonActions}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent}
@@ -471,7 +634,7 @@ class Builders extends React.Component {
         pages={this.props.pages}
         buttonActions={this.props.buttonActions}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -481,7 +644,7 @@ class Builders extends React.Component {
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -491,7 +654,7 @@ class Builders extends React.Component {
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
         pages={this.props.pages}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -500,7 +663,7 @@ class Builders extends React.Component {
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
-        pages={this.props.pages} pageId={this.props.pageId}
+        pages={this.props.pages} pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -513,7 +676,7 @@ class Builders extends React.Component {
         noButtons={this.props.noButtons}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -526,7 +689,7 @@ class Builders extends React.Component {
         buttonActions={this.props.buttonActions}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
@@ -538,7 +701,7 @@ class Builders extends React.Component {
         pages={this.props.pages}
         buttonActions={this.props.buttonActions}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
+        pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />)
@@ -794,9 +957,31 @@ class Builders extends React.Component {
     return components[broadcast.componentType]
   }
 
+  getQuickReplies () {
+    return {
+      content:
+        <QuickReplies
+          sequences={this.props.sequences}
+          broadcasts={this.props.broadcasts}
+          tags={this.props.tags}
+          quickReplies={this.state.quickReplies}
+          updateQuickReplies={this.updateQuickReplies}
+        />
+    }
+  }
+
   getItems () {
     if (this.state.list.length > 0) {
-      return this.state.list.concat([{content: <QuickReplies sequences={this.props.sequences} broadcasts={this.props.broadcasts} tags={this.props.tags} quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
+      return this.state.list.concat([{
+        content:
+          <QuickReplies
+            sequences={this.props.sequences}
+            broadcasts={this.props.broadcasts}
+            tags={this.props.tags}
+            quickReplies={this.state.quickReplies}
+            updateQuickReplies={this.updateQuickReplies}
+          />
+      }])
     } else {
       return this.state.list
     }
@@ -918,17 +1103,12 @@ class Builders extends React.Component {
       {
         this.props.builderValue === 'basic'
         ? <BASICBUILDER
-          broadcast={this.props.broadcast}
-          linkedMessages={this.props.linkedMessages}
-          onBroadcastClick={this.props.onBroadcastClick}
-          onTargetClick={this.props.onTargetClick}
-          handleChange={this.handleChange}
-          setReset={this.props.setReset}
-          convoTitle={this.props.convoTitle}
+          linkedMessages={this.state.linkedMessages}
+          unlinkedMessages={this.state.unlinkedMessages}
+          currentId={this.state.currentId}
+          changeMessage={this.changeMessage}
+          convoTitle={this.state.convoTitle}
           pageId={this.props.pageId}
-          location={this.props.location}
-          locationPages={this.props.locationPages}
-          buttonActions={this.props.buttonActions}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
@@ -939,9 +1119,21 @@ class Builders extends React.Component {
           module={this.props.module}
           noDefaultHeight={this.props.noDefaultHeight}
           getItems={this.getItems}
+          titleEditable={this.props.titleEditable}
+          showTabs={this.props.showTabs}
         />
         : this.props.builderValue === 'flow' &&
-        <FLOWBUILDER />
+        <FLOWBUILDER
+          showAddComponentModal={this.showAddComponentModal}
+          linkedMessages={this.state.linkedMessages}
+          unlinkedMessages={this.state.unlinkedMessages}
+          getQuickReplies={this.getQuickReplies}
+          getComponent={this.getComponent}
+          handleTargetValue={this.props.handleTargetValue}
+          subscriberCount={this.props.subscriberCount}
+          resetTarget={this.props.resetTarget}
+          pageId={this.props.pageId}
+        />
       }
 
     </div>
@@ -964,16 +1156,15 @@ Builders.propTypes = {
   'hideUserOptions': PropTypes.bool,
   'componentLimit': PropTypes.number,
   'builderValue': PropTypes.string.isRequired,
-  'linkedMessages': PropTypes.array.isRequired,
-  'onBroadcastClick': PropTypes.func.isRequired,
-  'onTargetClick': PropTypes.func.isRequired,
-  'handleChange': PropTypes.func.isRequired,
   'location': PropTypes.object.isRequired,
   'locationPages': PropTypes.object.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
-  'noDefaultHeight': PropTypes.bool.isRequired
+  'noDefaultHeight': PropTypes.bool,
+  'linkedMessages': PropTypes.array,
+  'showTabs': PropTypes.bool.isRequired,
+  'unlinkedMessages': PropTypes.array
 }
 
 Builders.defaultProps = {

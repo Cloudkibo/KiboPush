@@ -1,8 +1,7 @@
 import React from "react"
 import PropTypes from 'prop-types'
+import DragSortableList from 'react-drag-sortable'
 import COMPONENTSPOPOVER from './componentsPopover'
-import Audio from '../SimplifiedBroadcastUI/PreviewComponents/Audio'
-import AudioModal from '../SimplifiedBroadcastUI/AudioModal'
 
 class ComponentsArea extends React.Component {
   constructor (props, context) {
@@ -25,11 +24,21 @@ class ComponentsArea extends React.Component {
   render () {
     return (
       <div>
+
         <COMPONENTSPOPOVER
           showPopover={this.state.showComponentsPopover}
           togglePopover={this.toggleComponentsPopover}
           targetId={this.props.targetId}
+          showAddComponentModal={this.props.showAddComponentModal}
         />
+
+        <DragSortableList
+          style={{overflowY: 'scroll', height: '75vh'}}
+          items={this.props.getItems()}
+          dropBackTransitionDuration={0.3}
+          type='vertical'
+        />
+
         <button
           id={this.props.targetId}
           onClick={this.showComponentsPopover}
@@ -45,7 +54,9 @@ class ComponentsArea extends React.Component {
 }
 
 ComponentsArea.propTypes = {
-  'targetId': PropTypes.string.isRequired
+  'targetId': PropTypes.string.isRequired,
+  'showAddComponentModal': PropTypes.func.isRequired,
+  'getItems': PropTypes.func.isRequired
 }
 
 export default ComponentsArea

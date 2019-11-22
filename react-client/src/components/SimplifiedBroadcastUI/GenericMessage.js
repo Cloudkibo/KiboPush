@@ -1,32 +1,7 @@
 import React from 'react'
-
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-
-import { loadTags } from '../../redux/actions/tags.actions'
-import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { loadBroadcastsList } from '../../redux/actions/templates.actions'
-
-// import Image from './PreviewComponents/Image'
-import Audio from './PreviewComponents/Audio'
-import File from './PreviewComponents/File'
-import Text from './PreviewComponents/Text'
-import Card from './PreviewComponents/Card'
-import Gallery from './PreviewComponents/Gallery'
-import Media from './PreviewComponents/Media'
-import AlertContainer from 'react-alert'
 import DragSortableList from 'react-drag-sortable'
 import GenericMessageComponents from './GenericMessageComponents'
 import PropTypes from 'prop-types'
-import TextModal from './TextModal'
-import CardModal from './CardModal'
-import ImageModal from './ImageModal'
-import FileModal from './FileModal'
-import AudioModal from './AudioModal'
-import MediaModal from './MediaModal'
-import YoutubeVideoModal from './YoutubeVideoModal'
-import LinkCarousel from './LinkCarousel';
-import QuickReplies from './QuickReplies'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
