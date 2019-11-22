@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import CardBoxesContainer from './CardBoxesContainer'
+import Comments from './comments'
 import { handleDate } from '../../utility/utils'
 import { fetchCurrentPostsAnalytics} from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
@@ -136,6 +137,9 @@ render() {
                       <canvas id='radar-chart' width={250} height={170}  />
                     </div>
                   </div>
+            </div>
+            <div className='col-12'>
+              <Comments />
             </div>
             <div className='m-form m-form--label-align-right m--margin-bottom-30'>
               <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>

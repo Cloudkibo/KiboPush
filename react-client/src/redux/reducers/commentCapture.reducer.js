@@ -6,6 +6,10 @@ export function postsInfo (state = {}, action) {
       return Object.assign({}, state, {
         posts: action.data
       })
+    case ActionTypes.SHOW_POST_COMMENTS:
+        return Object.assign({}, state, {
+          comments: action.data
+        })
     case ActionTypes.CURRENT_POST:
       return Object.assign({}, state, {
         currentPost: action.data

@@ -12,6 +12,14 @@ export function showAllPosts (data) {
   }
 }
 
+export function showAllComments (data) {
+  console.log('Data Fetched From comments', data)
+  return {
+    type: ActionTypes.SHOW_POST_COMMENTS,
+    data: data
+  }
+}
+
 export function showAllPostsAnalytics (data) {
   console.log('Data Fetched From PostsAnalytics', data)
   return {
@@ -59,7 +67,19 @@ export function fetchPostsAnalytics () {
     })
   }
 }
-
+export function fetchComments (data) {
+  console.log('Actions for loading all post comments')
+  return (dispatch) => {
+    callApi('post/getComments', 'post', data)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(showAllComments(res.payload))
+        } else {
+          console.log('Error in fetching comments', res)
+        }
+    })
+  }
+}
 export function fetchCurrentPostsAnalytics (postId) {
   console.log('Actions for loading all fetchCurrentPostsAnalytics')
   return (dispatch) => {
