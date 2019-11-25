@@ -27,9 +27,9 @@ class ComponentBlock extends React.Component {
 
   render () {
     return (
-      <div style={{borderRadius: '4px'}} className='card'>
+      <div style={{borderRadius: '4px', width: '300px'}} className='card'>
         <div style={{background: '#ccc'}} className='card-header'>
-          <h6 style={{marginTop: '10px'}}>
+          <h6 style={{marginTop: '10px', textAlign: 'center'}}>
             <i className="flaticon-paper-plane"></i> Message Block
           </h6>
         </div>

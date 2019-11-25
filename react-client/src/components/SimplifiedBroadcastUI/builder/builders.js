@@ -192,6 +192,7 @@ class Builders extends React.Component {
       if (payload && typeof payload === 'string') {
         return JSON.parse(payload).blockUniqueId
       }
+      return null
     }).filter(payload => !!payload)
     for (let i = 0; i < deletePayload.length; i++) {
       for (let j = linkedMessages.length-1; j >= 0; j--) {

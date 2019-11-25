@@ -23,9 +23,9 @@ class StartingStep extends React.Component {
 
   render () {
     return (
-      <div style={{borderRadius: '4px'}} className='card'>
+      <div style={{borderRadius: '4px', width: '300px'}} className='card'>
         <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
-          <h6 style={{marginTop: '10px'}}>
+          <h6 style={{textAlign: 'center', marginTop: '10px'}}>
             Starting Step
           </h6>
         </div>

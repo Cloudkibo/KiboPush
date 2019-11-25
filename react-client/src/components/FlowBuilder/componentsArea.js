@@ -42,7 +42,7 @@ class ComponentsArea extends React.Component {
         <button
           id={this.props.targetId}
           onClick={this.showComponentsPopover}
-          style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
+          style={{border: '1px dashed #36a3f7', cursor: 'pointer', marginLeft: '22%', marginRight: '22%'}}
           type="button"
           className="btn m-btn--pill btn-outline-info btn-sm m-btn m-btn--custom"
         >
