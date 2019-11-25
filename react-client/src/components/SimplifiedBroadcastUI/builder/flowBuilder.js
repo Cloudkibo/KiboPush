@@ -157,8 +157,6 @@ class FlowBuilder extends React.Component {
 
 FlowBuilder.propTypes = {
   'showAddComponentModal': PropTypes.func.isRequired,
-  'getQuickReplies': PropTypes.func.isRequired,
-  'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,

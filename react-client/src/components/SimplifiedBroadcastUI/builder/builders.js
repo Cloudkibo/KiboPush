@@ -1188,8 +1188,6 @@ class Builders extends React.Component {
           showAddComponentModal={this.showAddComponentModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}
-          getQuickReplies={this.getQuickReplies}
-          getComponent={this.getComponent}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
