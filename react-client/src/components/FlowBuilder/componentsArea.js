@@ -34,7 +34,7 @@ class ComponentsArea extends React.Component {
 
         <DragSortableList
           style={{overflowY: 'scroll', height: '75vh'}}
-          items={this.props.getItems()}
+          items={this.props.items}
           dropBackTransitionDuration={0.3}
           type='vertical'
         />
@@ -56,7 +56,7 @@ class ComponentsArea extends React.Component {
 ComponentsArea.propTypes = {
   'targetId': PropTypes.string.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
-  'getItems': PropTypes.func.isRequired
+  'items': PropTypes.array.isRequired
 }
 
 export default ComponentsArea
