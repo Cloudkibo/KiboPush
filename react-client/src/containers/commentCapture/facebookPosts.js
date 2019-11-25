@@ -314,7 +314,7 @@ class FacebookPosts extends React.Component {
                             <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
-                            <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversions ? post.conversions : '0'}</span></td>
+                            <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversionCount ? post.conversionCount : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
