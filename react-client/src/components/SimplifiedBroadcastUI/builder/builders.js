@@ -178,7 +178,9 @@ class Builders extends React.Component {
         console.log('found create new message button')
         this.addLinkedMessage(button)
       } else {
-        this.editLinkedMessage(button)
+        if (typeof button.payload === 'string') {
+          this.editLinkedMessage(button)
+        }
       }
     }
   }
@@ -187,8 +189,10 @@ class Builders extends React.Component {
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     deletePayload = deletePayload.map(payload => {
-      return JSON.parse(payload).blockUniqueId
-    })
+      if (payload && typeof payload === 'string') {
+        return JSON.parse(payload).blockUniqueId
+      }
+    }).filter(payload => !!payload)
     for (let i = 0; i < deletePayload.length; i++) {
       for (let j = linkedMessages.length-1; j >= 0; j--) {
         if (linkedMessages[j].id === deletePayload[i]) {
