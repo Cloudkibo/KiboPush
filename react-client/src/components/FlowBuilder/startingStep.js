@@ -5,8 +5,15 @@ import COMPONENTSAREA from './componentsArea'
 class StartingStep extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      items: [],
+      quickReplies: null
+    }
     this.getItems = this.getItems.bind(this)
+  }
+
+  componentDidMount () {
+    this.getItems()
   }
 
   getItems () {
@@ -16,9 +23,19 @@ class StartingStep extends React.Component {
       items.push({content: component})
     }
     if (items.length > 0) {
-      items.push(this.props.getQuickReplies())
+      if (!this.state.quickReplies) {
+        let quickReplies = this.props.getQuickReplies()
+        this.setState({quickReplies})
+        items.push(quickReplies)
+      } else {
+        items.push(this.state.quickReplies)
+      }
     }
-    return items
+    this.setState({items})
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    this.getItems()
   }
 
   render () {
@@ -33,7 +50,7 @@ class StartingStep extends React.Component {
           <COMPONENTSAREA
             targetId='starting-step-add-component'
             showAddComponentModal={this.props.showAddComponentModal}
-            getItems={this.getItems}
+            items={this.state.items}
           />
         </div>
       </div>

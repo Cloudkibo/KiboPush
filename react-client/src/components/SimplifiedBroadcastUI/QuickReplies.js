@@ -15,13 +15,13 @@ class QuickReplies extends React.Component {
     this.state = {
         actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field'],
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
-        addingQuickReply: false,
+        addingQuickReply: this.props.addingQuickReply ? this.props.addingQuickReply : false,
         image_url: '',
         addingAction: false,
         currentTitle: '',
         currentActions: [],
         customFields: [],
-        index: -1,
+        index: this.props.index ? this.props.index : -1,
         editing: false,
         currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
@@ -53,6 +53,15 @@ class QuickReplies extends React.Component {
     console.log('quickReplies constructor')
   }
 
+  componentDidMount () {
+    console.log('componentDidMount quickReplies', this.state)
+    if (this.state.index === -1) {
+        document.getElementById('closeQuickReplyYes').addEventListener('click', () => {
+            this.removeQuickReply()
+        }) 
+    }
+  }
+
   closeQuickReply () {
       if (!this.state.editing) {
           this.toggleAddQuickReply()
@@ -76,9 +85,9 @@ class QuickReplies extends React.Component {
       if (this.state.index > -1) {
           quickReplies.splice(this.state.index, 1)
       }
-      this.setState({addingQuickReply: false, index: -1, quickReplies, title: '', image_url: '', currentActions: [], currentSlideIndex: 0}, () => {
+      this.setState({addingQuickReply: false, index: -1, quickReplies, currentTitle: '', image_url: '', currentActions: [], currentSlideIndex: 0, editing: false}, () => {
         if (this.props.updateQuickReplies) {
-            this.props.updateQuickReplies(this.state.quickReplies)
+            this.props.updateQuickReplies(this.state.quickReplies, -1)
         }
       })
   }
@@ -93,6 +102,31 @@ class QuickReplies extends React.Component {
         image_url: this.state.quickReplies[index].image_url,
         index: index,
         editing: true
+    }, () => {
+        if (this.props.updateQuickReplies) {
+            this.props.updateQuickReplies(this.state.quickReplies, index)
+                .then(() => {
+                    if (this.state.index > -1) {
+                        let deleteQuickReplyYes = document.getElementById('deleteQuickReplyYes')
+                        if (deleteQuickReplyYes.getAttribute('listener') !== 'true') {
+                            document.getElementById('deleteQuickReplyYes').addEventListener('click', (e) => {
+                                const elementClicked = e.target
+                                elementClicked.setAttribute('listener', 'true')
+                                this.removeQuickReply()
+                            }) 
+                        }
+                        let deleteQuickReplyNo = document.getElementById('deleteQuickReplyNo')
+                
+                        if (deleteQuickReplyNo.getAttribute('listener') !== 'true') {
+                            deleteQuickReplyNo.addEventListener('click', (e) => {
+                                const elementClicked = e.target
+                                elementClicked.setAttribute('listener', 'true')
+                                this.toggleAddQuickReply()
+                            }) 
+                        }
+                    }
+                })
+        }
     })
   }
 
@@ -137,9 +171,9 @@ class QuickReplies extends React.Component {
         quickReplies.push(quickReply)
       }
 
-      this.setState({quickReplies, index: -1, addingQuickReply: false}, () => {
+      this.setState({quickReplies, index: -1, addingQuickReply: false, currentTitle: '', image_url: '', addingAction: false, currentActions: [], editing: false }, () => {
         if (this.props.updateQuickReplies) {
-            this.props.updateQuickReplies(this.state.quickReplies)
+            this.props.updateQuickReplies(this.state.quickReplies, -1)
         }
       })
   }
@@ -340,12 +374,14 @@ class QuickReplies extends React.Component {
   }
 
   toggleAddQuickReply () {
+      console.log('toggleAddQuickReply', this.state)
       if (!this.state.addingAction) {
-        this.setState({addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
+        this.setState({index: -1, addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
       }
   }
 
   addQuickReply () {
+      console.log('adding quick reply')
       this.setState({addingQuickReply: true})
   }
 
@@ -370,7 +406,7 @@ class QuickReplies extends React.Component {
     return (
         <div className='no-drag'>
             
-            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            {/* <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
@@ -413,7 +449,7 @@ class QuickReplies extends React.Component {
                         }
                     </div>
                 </div>
-            </div>
+            </div> */}
             
             <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
             {this.state.quickReplies.length > 0 &&
