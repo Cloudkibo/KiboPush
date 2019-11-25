@@ -8,7 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts, deletePost, saveCurrentPost, fetchPostsAnalytics
+  fetchAllPosts, deletePost, saveCurrentPost, fetchPostsAnalytics,
+  resetComments
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
@@ -28,6 +29,7 @@ class FacebookPosts extends React.Component {
     props.fetchAllPosts()
     props.fetchPostsAnalytics()
     props.saveCurrentPost(null)
+    props.resetComments(null)
     this.displayData = this.displayData.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.onView = this.onView.bind(this)
@@ -380,7 +382,8 @@ function mapDispatchToProps(dispatch) {
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,
     saveCurrentPost: saveCurrentPost,
-    fetchPostsAnalytics: fetchPostsAnalytics
+    fetchPostsAnalytics: fetchPostsAnalytics,
+    resetComments: resetComments
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)

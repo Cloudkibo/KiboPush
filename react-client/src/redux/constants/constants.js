@@ -278,6 +278,9 @@ export const SHOW_POST_COMMENTS = 'SHOW_POST_COMMENTS'
 export const SHOW_AllPostsAnalytics = 'SHOW_AllPostsAnalytics'
 export const SHOW_SinglePostsAnalytics = 'SHOW_SinglePostsAnalytics'
 export const CURRENT_POST = 'CURRENT_POST'
+export const SAVE_COMMENT_REPLIES = 'SAVE_COMMENT_REPLIES'
+export const SHOW_COMMENTS_REPLIES = 'SHOW_COMMENTS_REPLIES'
+export const RESET_COMMENTS = 'RESET_COMMENTS'
 
 //  constants for Plans
 export const FETCH_ALL_PLANS = 'FETCH_ALL_PLANS'

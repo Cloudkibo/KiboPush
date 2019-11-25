@@ -1,4 +1,5 @@
 import * as ActionTypes from '../constants/constants'
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants'
 
 export function postsInfo (state = {}, action) {
   switch (action.type) {
@@ -7,9 +8,26 @@ export function postsInfo (state = {}, action) {
         posts: action.data
       })
     case ActionTypes.SHOW_POST_COMMENTS:
-        return Object.assign({}, state, {
-          comments: action.data
-        })
+      return Object.assign({}, state, {
+        comments: state.comments? [...state.comments, ...action.comments] : action.comments,
+        commentsCount: action.commentCount
+      })
+    case ActionTypes.SHOW_COMMENTS_REPLIES:
+      return Object.assign({}, state, {
+        commentReplies: state.commentReplies ? [...state.commentReplies, ...action.commentReplies] : action.commentReplies,
+        repliesCount: action.repliesCount
+      })
+    case ActionTypes.SAVE_COMMENT_REPLIES:
+      return Object.assign({}, state, {
+        commentReplies: action.data
+      })
+    case ActionTypes.RESET_COMMENTS:
+      return Object.assign({}, state, {
+        commentReplies: action.data,
+        comments: action.data,
+        commentsCount:action.data,
+        repliesCount: action.data
+      })
     case ActionTypes.CURRENT_POST:
       return Object.assign({}, state, {
         currentPost: action.data

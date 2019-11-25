@@ -11,19 +11,46 @@ export function showAllPosts (data) {
     data: data.reverse()
   }
 }
-
+export function saveCommentReplies (data) {
+  return {
+    type: ActionTypes.SAVE_COMMENT_REPLIES,
+    data: data
+  }
+}
 export function showAllComments (data) {
   console.log('Data Fetched From comments', data)
   return {
     type: ActionTypes.SHOW_POST_COMMENTS,
-    data: data
+    comments: data.comments,
+    commentCount: data.count
   }
 }
-
+export function resetComments (data) {
+  console.log('Data Fetched From comments', data)
+  return {
+    type: ActionTypes.RESET_COMMENTS,
+    data: null
+  }
+}
+export function showAllReplies (data) {
+  console.log('Data Fetched From replies', data)
+  return {
+    type: ActionTypes.SHOW_COMMENTS_REPLIES,
+    commentReplies: data.replies,
+    repliesCount: data.count
+  }
+}
 export function showAllPostsAnalytics (data) {
   console.log('Data Fetched From PostsAnalytics', data)
   return {
     type: ActionTypes.SHOW_AllPostsAnalytics,
+    data
+  }
+}
+export function showSinglePostsAnalytics (data) {
+  console.log('Data Fetched From PostsAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_SinglePostsAnalytics,
     data
   }
 }
@@ -51,8 +78,8 @@ export function fetchPostsAnalytics () {
   console.log('Actions for loading all fetchPostsAnalytics')
   return (dispatch) => {
     callApi('post/fetchPostsAnalytics').then(res => {
-      if (res.status === 'success' && res.payload) {
-        dispatch(showAllPostsAnalytics(res.payload))
+      if (res.status === 'success' && res.payload && res.payload.length > 0) {
+        dispatch(showAllPostsAnalytics(res.payload[0]))
       } else {
         console.log('Error in fetchPostsAnalytics Posts', res)
       }
@@ -69,6 +96,31 @@ export function fetchComments (data) {
         } else {
           console.log('Error in fetching comments', res)
         }
+    })
+  }
+}
+export function fetchCommentReplies (data) {
+  console.log('Actions for loading all post comment replies')
+  return (dispatch) => {
+    callApi('post/getRepliesToComment', 'post', data)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(showAllReplies(res.payload))
+        } else {
+          console.log('Error in fetching comment replies', res)
+        }
+    })
+  }
+}
+export function fetchCurrentPostsAnalytics (postId) {
+  console.log('Actions for loading all fetchCurrentPostsAnalytics')
+  return (dispatch) => {
+    callApi(`post/singlePostsAnalytics${postId}`).then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showSinglePostsAnalytics(res.payload))
+      } else {
+        console.log('Error in singlePostsAnalytics ', res)
+      }
     })
   }
 }
