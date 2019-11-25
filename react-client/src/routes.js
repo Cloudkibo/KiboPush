@@ -88,6 +88,7 @@ import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
 import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 import CreateBot from './containers/smart_replies/createBot'
+import intents from './containers/smart_replies/intents'
 import EditBot from './containers/smart_replies/editBot'
 import ViewBot from './containers/smart_replies/viewBot'
 import Sequence from './containers/sequence/sequence'
@@ -285,6 +286,7 @@ const Routes = () => (
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
     <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
+    <Route path='/intents' component={intents} onEnter={requireAuth} />
     <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
     <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
     <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />

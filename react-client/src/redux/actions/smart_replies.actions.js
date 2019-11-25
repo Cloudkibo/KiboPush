@@ -126,17 +126,18 @@ export function createBot (data, msg, cb) {
   }
 }
 
-export function editBot (data, msg) {
+export function editBot (data, msg, cb) {
   return (dispatch) => {
-    console.log('Creating Bot', data)
     callApi('bots/edit', 'post', data)
       .then(res => {
         console.log('response from server: ', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
+          msg.success(res.payload)
         } else {
-          msg.error(JSON.stringify(res.payload))
+          msg.error(res.payload)
         }
+        cb(res.status)
       })
   }
 }
