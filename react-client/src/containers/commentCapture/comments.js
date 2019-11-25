@@ -93,6 +93,10 @@ class Comments extends React.Component {
         </div>
         <div className='col-12' style={{maxHeight: '500px', overflowY: 'scroll'}}>
         {
+        !this.props.comments || (this.props.comments && this.props.comments.length < 1) &&
+        <span>This post has no comments</span>
+        }
+        {
           this.props.comments && this.props.comments.map((comment, index) => (
           <div className='m-widget3' key={index}>
             <div className='m-widget3__item'>
@@ -130,6 +134,11 @@ class Comments extends React.Component {
                       Component Not Supported 
                     </span>
                   ))                 
+                  }
+                  { (!this.props.currentPost.payload  || this.props.currentPost.payload.length < 1) && (!this.props.currentPost.post_id || this.props.currentPost.post_id === '') &&
+                    <span key={index}style={{display: 'block', marginTop: '10px'}}>
+                        <a href={comment.postFbLink} style={{marginLeft: '10px'}} >{comment.postFbLink}</a>
+                    </span>
                   }
                   <br/>
                   <span className='m-widget3__time' style={{marginLeft: '10px'}}>
