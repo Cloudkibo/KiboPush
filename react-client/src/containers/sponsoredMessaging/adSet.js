@@ -13,16 +13,17 @@ class adSet extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      page: this.props.pages[0].pageId,
+      page: (this.props.pageId && this.props.adSetPayload.adset_name)? this.props.pageId :this.props.pages[0].pageId,
       ad_set_payload: {
         adset_name: (this.props.adSetPayload && this.props.adSetPayload.adset_name)? this.props.adSetPayload.adset_name : '' ,
-        gender: (this.props.adSetPayload && this.props.adSetPayload.gender)? this.props.adSetPayload.gender : 'male',
+        gender: (this.props.adSetPayload && this.props.adSetPayload.gender)? this.props.adSetPayload.gender : 'all',
         min_age:  (this.props.adSetPayload && this.props.adSetPayload.min_age)? this.props.adSetPayload.min_age : 18,
         max_age:  (this.props.adSetPayload && this.props.adSetPayload.max_age)? this.props.adSetPayload.max_age : 65,
         budget:  (this.props.adSetPayload && this.props.adSetPayload.budget)? this.props.adSetPayload.budget : {
           type: 'daily_budget',
-          amount:''
-        }
+          amount: 0
+        },
+        bidAmount: (this.props.adSetPayload && this.props.adSetPayload.bidAmount) ? this.props.adSetPayload.bidAmount : 0
       },
     }
     this.handleName = this.handleName.bind(this)
@@ -31,7 +32,15 @@ class adSet extends React.Component {
     this.handleBudget = this.handleBudget.bind(this)
     this.handlePage = this.handlePage.bind(this)
     this.handleGender = this.handleGender.bind(this)
-    this.props.updateSponsoredMessage(this.props.sponsoredMessage,'pageId',this.state.page)
+    this.handleBidAmount = this.handleBidAmount.bind(this)
+
+  }
+
+  handleBidAmount (e) {
+    let temp = this.state.ad_set_payload
+    temp.bidAmount = e.target.value
+    this.setState({ad_set_payload: temp})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
 
   }
 
@@ -89,6 +98,10 @@ class adSet extends React.Component {
     this.props.updateSponsoredMessage(this.props.sponsoredMessage,'ad_set_payload',temp)
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    this.props.updateSponsoredMessage(nextProps.sponsoredMessage,'pageId',nextProps.pages[0].pageId)
+  }
+
   renderOptions (length){
     let optarray = []
     for(let i=18; i <=length; i++){
@@ -113,13 +126,13 @@ class adSet extends React.Component {
           <div onChange={this.handleGender}>
             <label>Gender:</label>
             <div className="radio">
+              <label><input type="radio" name="gender" value='all' checked={ this.state.ad_set_payload.gender === 'all'} />all</label>
+            </div>
+            <div className="radio">
             <label><input type="radio" name="gender" value='male' checked={ this.state.ad_set_payload.gender === 'male'}/>Male</label>
             </div>
             <div className="radio">
               <label><input type="radio" name="gender" value='female' checked={ this.state.ad_set_payload.gender === 'female'} />Female</label>
-            </div>
-            <div className="radio">
-              <label><input type="radio" name="gender" value='other' checked={ this.state.ad_set_payload.gender === 'other'} />Other</label>
             </div>
           </div>
         <br />
@@ -128,7 +141,7 @@ class adSet extends React.Component {
         <br/>
         <div className='row'>
         <div className='col-sm-2'>
-        <select className="form-control" id="min_age" value={this.state.ad_set_payload.min_age} onChange={this.handleAge}>
+        <select className="form-control" type='number' id="min_age" value={this.state.ad_set_payload.min_age} onChange={this.handleAge}>
           {this.renderOptions(65)}
         </select>
         </div>
@@ -153,10 +166,19 @@ class adSet extends React.Component {
           </select>
           </div>
           <div className='col-sm-4'>
-              <input className='form-control' id ='budget_amount' value={this.state.ad_set_payload.budget.amount} onChange={this.handleBudget} />
+              <input className='form-control' type='number' id ='budget_amount' value={this.state.ad_set_payload.budget.amount} onChange={this.handleBudget} />
               <label className='text-muted small' hidden = { this.state.ad_set_payload.budget.amount === '' ? true : false }>Rs. {this.state.ad_set_payload.budget.amount} PKR</label>
           </div>
         </div>
+      </div>
+      <div>
+      <label>Bid Control:</label>
+      <div className='row'>
+          <div className='col-sm-12'>
+          <input className='form-control' type='number' id ='bid_amount' value={this.state.ad_set_payload.bidAmount} onChange={this.handleBidAmount} />
+          <label className='text-muted small' hidden = { this.state.ad_set_payload.bidAmount === '' ? true : false }>Rs. {this.state.ad_set_payload.bidAmount} PKR</label>
+          </div>
+      </div>
       </div>
       <br/>
       <div>
