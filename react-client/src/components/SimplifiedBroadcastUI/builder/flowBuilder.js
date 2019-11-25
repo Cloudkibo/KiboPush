@@ -83,6 +83,7 @@ class FlowBuilder extends React.Component {
             getComponent={this.props.getComponent}
             linkedMessages={this.props.linkedMessages}
             unlinkedMessages={this.props.unlinkedMessages}
+            items={this.props.items}
           />
         )
       } else if (node.type === 'component_block') {
@@ -163,7 +164,8 @@ FlowBuilder.propTypes = {
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.func.isRequired,
-  'pageId': PropTypes.object.isRequired
+  'pageId': PropTypes.object.isRequired,
+  'items': PropTypes.array.isRequired
 }
 
 export default FlowBuilder

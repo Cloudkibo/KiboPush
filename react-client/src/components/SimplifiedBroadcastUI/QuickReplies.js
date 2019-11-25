@@ -21,7 +21,7 @@ class QuickReplies extends React.Component {
         currentTitle: '',
         currentActions: [],
         customFields: [],
-        index: this.props.index ? this.props.index : -1,
+        index: -1,
         editing: false,
         currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
@@ -56,9 +56,12 @@ class QuickReplies extends React.Component {
   componentDidMount () {
     console.log('componentDidMount quickReplies', this.state)
     if (this.state.index === -1) {
-        document.getElementById('closeQuickReplyYes').addEventListener('click', () => {
-            this.removeQuickReply()
-        }) 
+        let closeQuickReplyYes = document.getElementById('closeQuickReplyYes')
+        if (closeQuickReplyYes) {
+            document.getElementById('closeQuickReplyYes').addEventListener('click', () => {
+                this.removeQuickReply()
+            }) 
+        }
     }
   }
 
@@ -108,8 +111,8 @@ class QuickReplies extends React.Component {
                 .then(() => {
                     if (this.state.index > -1) {
                         let deleteQuickReplyYes = document.getElementById('deleteQuickReplyYes')
-                        if (deleteQuickReplyYes.getAttribute('listener') !== 'true') {
-                            document.getElementById('deleteQuickReplyYes').addEventListener('click', (e) => {
+                        if (deleteQuickReplyYes && deleteQuickReplyYes.getAttribute('listener') !== 'true') {
+                            deleteQuickReplyYes.addEventListener('click', (e) => {
                                 const elementClicked = e.target
                                 elementClicked.setAttribute('listener', 'true')
                                 this.removeQuickReply()
@@ -117,7 +120,7 @@ class QuickReplies extends React.Component {
                         }
                         let deleteQuickReplyNo = document.getElementById('deleteQuickReplyNo')
                 
-                        if (deleteQuickReplyNo.getAttribute('listener') !== 'true') {
+                        if (deleteQuickReplyNo && deleteQuickReplyNo.getAttribute('listener') !== 'true') {
                             deleteQuickReplyNo.addEventListener('click', (e) => {
                                 const elementClicked = e.target
                                 elementClicked.setAttribute('listener', 'true')
@@ -376,7 +379,7 @@ class QuickReplies extends React.Component {
   toggleAddQuickReply () {
       console.log('toggleAddQuickReply', this.state)
       if (!this.state.addingAction) {
-        this.setState({index: -1, addingQuickReply: !this.state.addingQuickReply, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
+        this.setState({index: -1, addingQuickReply: false, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
       }
   }
 
