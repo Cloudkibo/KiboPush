@@ -68,9 +68,9 @@ export function updateSponsoredMessage(sponsoredMessage, key, value){
   }
 
 }
-export function createSponsoredMessage(cb, data){
+export function createSponsoredMessage(cb){
     return (dispatch) => {
-        callApi('sponsoredmessaging','post', data)
+        callApi('sponsoredmessaging','post')
         .then(res => {
           if(res.status === 'success'){
                 cb()
@@ -95,4 +95,17 @@ export function deleteSponsoredMessage(id, msg){
             }
         })
     }
+}
+
+export function send(data) {
+  return (dispatch) => {
+    callApi(`sponsoredmessaging/send/${data._id}`, 'post', {ad_account_id: data.ad_account_id})
+      .then(res => {
+        if(res.status === 'success') {
+          dispatch(fetchSponsoredMessages())
+        } else {
+          console.log(res)
+        }
+      })
+   }
 }
