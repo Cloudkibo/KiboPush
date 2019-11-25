@@ -43,11 +43,14 @@ class FlowBuilder extends React.Component {
         x: 25,
         y: 50
       },
-      ports: {}
+      ports: {},
+      properties: {
+        id: messages[0].id
+      }
     }
     console.log('messages', messages)
     for (let i = 1; i < messages.length; i++) {
-      positionX = positionX + 300
+      positionX = positionX + 400
       chartSimple['nodes'][`${messages[i].id}`] = {
         id: `${messages[i].id}`,
         type: "component_block",
@@ -55,7 +58,15 @@ class FlowBuilder extends React.Component {
           x: positionX,
           y: positionY
         },
-        ports: {}
+        ports: {
+          port1: {
+            id: 'port1',
+            type: 'input'
+          }
+        },
+        properties: {
+          id: messages[i].id
+        }
       }
       console.log('chartSimple', chartSimple)
     }
@@ -75,6 +86,7 @@ class FlowBuilder extends React.Component {
           />
         )
       } else if (node.type === 'component_block') {
+        console.log('nodeId', node.id)
         return (
           <COMPONENTSBLOCK
             showAddComponentModal={this.props.showAddComponentModal}
@@ -82,12 +94,14 @@ class FlowBuilder extends React.Component {
             getComponent={this.props.getComponent}
             linkedMessages={this.props.linkedMessages}
             unlinkedMessages={this.props.unlinkedMessages}
-            currentId={node.id}
+            currentId={node.properties.id}
           />
         )
       } else if (node.type === 'action_block') {
         return (
-          <ACTIONBLOCK />
+          <ACTIONBLOCK
+            currentId={node.properties.id}
+          />
         )
       } else {
         return (
@@ -115,7 +129,9 @@ class FlowBuilder extends React.Component {
                 />
               </div>
               <div className='col-3'>
-                <SIDEBAR />
+                <SIDEBAR
+                  unlinkedMessages={this.props.unlinkedMessages}
+                />
               </div>
             </div>
           </div>

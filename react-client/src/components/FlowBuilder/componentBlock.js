@@ -35,7 +35,7 @@ class ComponentBlock extends React.Component {
         </div>
         <div style={{border: '1px solid #ccc'}} className='card-body'>
           <COMPONENTSAREA
-            targetId='message-block-add-component'
+            currentId={this.props.currentId}
             showAddComponentModal={this.props.showAddComponentModal}
             getItems={this.getItems}
           />

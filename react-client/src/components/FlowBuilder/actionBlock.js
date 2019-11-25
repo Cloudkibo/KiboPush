@@ -1,5 +1,5 @@
 import React from "react"
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import ACTIONSAREA from './actionsArea'
 
 class ActionBlock extends React.Component {
@@ -17,7 +17,9 @@ class ActionBlock extends React.Component {
           </h6>
         </div>
         <div style={{border: '1px solid #ccc'}} className='card-body'>
-          <ACTIONSAREA />
+          <ACTIONSAREA
+            currentId={this.props.currentId}
+          />
         </div>
       </div>
     )
@@ -25,7 +27,7 @@ class ActionBlock extends React.Component {
 }
 
 ActionBlock.propTypes = {
-
+  'currentId': PropTypes.string.isRequired
 }
 
 export default ActionBlock

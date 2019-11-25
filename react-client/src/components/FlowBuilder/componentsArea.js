@@ -28,7 +28,7 @@ class ComponentsArea extends React.Component {
         <COMPONENTSPOPOVER
           showPopover={this.state.showComponentsPopover}
           togglePopover={this.toggleComponentsPopover}
-          targetId={this.props.targetId}
+          targetId={`message-${this.props.currentId}`}
           showAddComponentModal={this.props.showAddComponentModal}
         />
 
@@ -40,7 +40,7 @@ class ComponentsArea extends React.Component {
         />
 
         <button
-          id={this.props.targetId}
+          id={`message-${this.props.currentId}`}
           onClick={this.showComponentsPopover}
           style={{border: '1px dashed #36a3f7', cursor: 'pointer', marginLeft: '22%', marginRight: '22%'}}
           type="button"
@@ -54,7 +54,7 @@ class ComponentsArea extends React.Component {
 }
 
 ComponentsArea.propTypes = {
-  'targetId': PropTypes.string.isRequired,
+  'currentId': PropTypes.string.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
   'getItems': PropTypes.func.isRequired
 }
