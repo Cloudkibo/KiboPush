@@ -83,7 +83,7 @@ export function fetchComments (data) {
 export function fetchCurrentPostsAnalytics (postId) {
   console.log('Actions for loading all fetchCurrentPostsAnalytics')
   return (dispatch) => {
-    callApi(`post/singlePostsAnalytics${postId}`).then(res => {
+    callApi(`post/singlePostsAnalytics/${postId}`).then(res => {
       if (res.status === 'success' && res.payload) {
         dispatch(showSinglePostsAnalytics(res.payload))
       } else {
