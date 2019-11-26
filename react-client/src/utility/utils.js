@@ -16,6 +16,28 @@ export function handleDate (d) {
     return c.toDateString() + ' ' + formatAMPM(c)
   }
 }
+export function formatDateTime (x) {
+  var today = new Date()
+  var n = new Date(x)
+  var days = ['SUN', 'MON', 'TUES', 'WED', 'THU', 'FRI', 'SAT']
+  var month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+  var s = ''
+  if (today.getFullYear() === n.getFullYear()) {
+    if (today.getMonth() === n.getMonth()) {
+      if (today.getDay() === n.getDay()) {
+        s = formatAMPM(n)
+      } else {
+        s = days[n.getDay()] + ', ' + formatAMPM(n)
+      }
+    } else {
+      s = month[n.getMonth()] + ' ' + n.getDate() + 'TH, ' + formatAMPM(n)
+    }
+  } else {
+    s = (n.getMonth() + 1) + '/' + n.getDate() + '/' + n.getFullYear() + ' ' + formatAMPM(n)
+  }
+
+  return s
+}
 
 export function getCurrentProduct () {
   const hostname = window.location.hostname

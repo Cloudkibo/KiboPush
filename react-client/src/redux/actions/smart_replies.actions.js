@@ -111,8 +111,7 @@ export function loadBotsListNew (data) {
   }
 }
 
-export function createBot (data, msg) {
-  console.log('createBot data', data)
+export function createBot (data, msg, cb) {
   return (dispatch) => {
     callApi('bots/create', 'post', data)
       .then(res => {
@@ -120,30 +119,32 @@ export function createBot (data, msg) {
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
         } else {
-          msg.error(res.description)
+          msg.error(res.payload)
         }
+        cb(res.status)
       })
   }
 }
 
-export function editBot (data, msg) {
+export function editBot (data, msg, cb) {
   return (dispatch) => {
-    console.log('Creating Bot', data)
     callApi('bots/edit', 'post', data)
       .then(res => {
         console.log('response from server: ', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
+          msg.success(res.payload)
         } else {
-          msg.error(JSON.stringify(res.payload))
+          msg.error(res.payload)
         }
+        cb(res.status)
       })
   }
 }
 
 export function updateStatus (data) {
   return (dispatch) => {
-    callApi('bots/updateStatus', 'post', data)
+    callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadBotsList())
@@ -152,15 +153,19 @@ export function updateStatus (data) {
   }
 }
 
-export function deleteBot (id, msg) {
+export function deleteBot (id, password, msg, cb) {
   return (dispatch) => {
-    callApi('bots/delete/', 'post', {botId: id})
+    callApi('bots/delete/', 'post', {botId: id, password: password})
       .then(res => {
         console.log('response from deleteBot', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
           msg.success('Bot deleted successfully')
         }
+         else {
+          msg.error(res.payload)
+         }
+         cb(res.status)
       })
   }
 }

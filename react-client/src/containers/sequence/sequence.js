@@ -543,7 +543,7 @@ class Sequence extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sequence Messaging? Here is the <a href='#/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Sequence Messaging? Here is the <a href='https://kibopush.com/sequence-messaging/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>

@@ -164,7 +164,7 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate, {status:'draft'});}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate)}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -182,7 +182,7 @@ class sponsoredMessaging extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='page'
+                          <th data-field='id'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Id</span>
                           </th>
@@ -200,13 +200,15 @@ class sponsoredMessaging extends React.Component {
                         {
                         this.state.sponsoredMessages.map((sponsoredMessage, i) => (
                           <tr data-row={i}
-                            className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px'}} key={i}>
-                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sponsoredMessage._id}</span></td>
+                            className="m-datatable__row m-datatable__row--even" key={i}>
+                            <td data-field='id' className='m-datatable__cell--center m-datatable__cell'>
+                              <span style={{width: '150px'}}>{sponsoredMessage._id}</span>
+                            </td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{sponsoredMessage.status}</span></td>
+                              <span style={{width: '100px'}}>{sponsoredMessage.status}</span>
+                            </td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '400px'}}>
+                              <span style={{width: '290px'}}>
                                 <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessagingInsights'>
                                     Insights
                                 </ Link>

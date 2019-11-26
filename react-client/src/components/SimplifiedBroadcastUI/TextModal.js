@@ -157,6 +157,7 @@ class TextModal extends React.Component {
                   updateButtonStatus={this.updateButtonStatus}
                   addComponent={(buttons) => this.addComponent(buttons)}
                   disabled={!this.state.text}
+                  module = {this.props.module}
                 />
               }
             </div>
