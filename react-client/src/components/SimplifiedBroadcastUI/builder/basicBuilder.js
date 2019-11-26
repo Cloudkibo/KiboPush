@@ -56,7 +56,7 @@ class BasicBuilder extends React.Component {
                           list={this.props.list}
                           module={this.props.module}
                           noDefaultHeight={this.props.noDefaultHeight}
-                          getItems={this.props.getItems}
+                          getItems={() => this.props.getItems(this.props.currentId)}
                         />
                       </div>
                       <div className='tab-pane' id='tab_2'>

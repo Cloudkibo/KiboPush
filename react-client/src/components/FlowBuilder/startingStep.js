@@ -47,7 +47,7 @@ class StartingStep extends React.Component {
           <COMPONENTSAREA
             targetId='starting-step-add-component'
             showAddComponentModal={this.props.showAddComponentModal}
-            items={this.props.items}
+            items={this.props.getItems(this.props.currentId)}
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ StartingStep.propTypes = {
   'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
-  'items': PropTypes.array.isRequired
+  'getItems': PropTypes.func.isRequired
 }
 
 export default StartingStep

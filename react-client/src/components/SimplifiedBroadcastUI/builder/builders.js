@@ -34,8 +34,12 @@ class Builders extends React.Component {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     let currentId = new Date().getTime()
+    let lists = {
+    }
+    lists[currentId] = []
     this.state = {
       list: [],
+      lists,
       quickReplies: [],
       quickRepliesComponent: null,
       broadcast: this.props.broadcast.slice(),
@@ -49,6 +53,7 @@ class Builders extends React.Component {
       currentId,
       quickRepliesIndex: -1
     }
+    console.log('Builders constructor state', this.state)
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -97,27 +102,37 @@ class Builders extends React.Component {
   }
 
   changeMessage (id) {
-    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
-    let messageIndex = messages.findIndex(m => m.id === id)
-    if (messageIndex > -1) {
-      console.log('changing message', this.state.linkedMessages[messageIndex])
-      this.setState({currentId: id}, () => {
-        let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
-        let list = filteredData.length > 0 ? filteredData[0].messageContent : []
-        this.initializeList(list)
-        this.handleChange({broadcast: messages[messageIndex].messageContent, convoTitle: messages[messageIndex].title})
-      })
+    if (this.state.currentId !== id) {
+      let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+      let messageIndex = messages.findIndex(m => m.id === id)
+      if (messageIndex > -1) {
+        console.log('changing message', this.state.linkedMessages[messageIndex])
+        this.setState({currentId: id}, () => {
+          let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
+          let list = filteredData.length > 0 ? filteredData[0].messageContent : []
+          this.initializeList(list)
+          this.handleChange({broadcast: messages[messageIndex].messageContent, convoTitle: messages[messageIndex].title})
+        })
+      }
     }
   }
 
   updateLinkedMessagesPayload (broadcast) {
     let linkedMessages = this.state.linkedMessages
+    let lists = this.state.lists
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === this.state.currentId) {
         linkedMessages[i].messageContent = broadcast
+        let temp = []
+        for (let j = 0; j < broadcast.length; j++) {
+          let component = this.getComponent(broadcast[j]).component
+          temp.push({content: component})
+        }
+        lists[this.state.currentId] = temp
+        console.log('lists updated', lists)
       }
     }
-    this.setState({linkedMessages})
+    this.setState({linkedMessages, lists})
   }
 
   editLinkedMessage (button) {
@@ -245,16 +260,19 @@ class Builders extends React.Component {
       action: 'send_message_block'
     })
     let linkedMessages = this.state.linkedMessages
+    let lists = this.state.lists
     linkedMessages.push(data)
-    this.setState({linkedMessages})
+    lists[id] = []
+    this.setState({linkedMessages, lists})
   }
 
   updateQuickReplies (quickReplies, quickRepliesIndex) {
     return new Promise ((resolve, reject) => {
       console.log('updateQuickReplies', quickReplies)
-
+      let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+      let currentMessage = messages.filter((m) => m.id.toString() === this.state.currentId.toString())
       console.log('updateQuickReplies quickRepliesIndex', quickRepliesIndex)
-      let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
+      let broadcast = this.appendQuickRepliesToEnd(currentMessage.messageContent, quickReplies)
       console.log('broadcast after updating quick replies', broadcast)
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
@@ -341,7 +359,7 @@ class Builders extends React.Component {
     console.log('showAddComponentModal editData', editData)
     console.log('component limit', this.props.componentLimit)
     document.body.style.overflow = 'hidden'
-    if (!editData && this.props.componentLimit && this.state.list.length === this.props.componentLimit) {
+    if (!editData && this.props.componentLimit && this.state.lists[this.state.currentId].length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
       this.setState({isShowingAddComponentModal: true, componentType, editData})
@@ -568,7 +586,7 @@ class Builders extends React.Component {
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
-    var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
+    var temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
@@ -609,16 +627,16 @@ class Builders extends React.Component {
   }
 
   updateList (component) {
-    let temp = this.state.list
-    let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
+    let lists = this.state.lists
+    let componentIndex = lists[this.state.currentId].findIndex(item => item.content.props.id === component.component.props.id)
     if (componentIndex < 0) {
-      console.log('adding new component')
-      console.log({list: [...temp, {content: component.component}]})
-      this.setState({list: [...temp, {content: component.component}]})
+      console.log('adding new component', this.state.currentId)
+      lists[this.state.currentId] = [...lists[this.state.currentId], {content: component.component}]
+      this.setState({lists})
     } else {
       console.log('editing exisiting component')
-      temp[componentIndex] = {content: component.component}
-      this.setState({list: temp})
+      lists[this.state.currentId][componentIndex] = {content: component.component}
+      this.setState({lists})
     }
   }
 
@@ -971,21 +989,22 @@ class Builders extends React.Component {
     return components[broadcast.componentType]
   }
 
-  getQuickReplies () {
+  getQuickReplies (quickReplies) {
     return {
       content:
         <QuickReplies
           sequences={this.props.sequences}
           broadcasts={this.props.broadcasts}
           tags={this.props.tags}
-          quickReplies={this.state.quickReplies}
+          quickReplies={quickReplies}
           updateQuickReplies={this.updateQuickReplies}
         />
     }
   }
 
-  getItems () {
-    if (this.state.list.length > 0) {
+  getItems (id) {
+    console.log('getItems', id)
+    if (this.state.lists[id].length > 0) {
       if (!this.state.quickRepliesComponent) {
         let quickRepliesComponent = {
           content:
@@ -997,13 +1016,14 @@ class Builders extends React.Component {
               updateQuickReplies={this.updateQuickReplies}
             />
         }
-        this.setState({quickRepliesComponent})
-        return this.state.list.concat([quickRepliesComponent])
+        //this.setState({quickRepliesComponent})
+        console.log('returning getItems', this.state.lists[id].concat([quickRepliesComponent]))
+        return this.state.lists[id].concat([quickRepliesComponent])
       } else {
-        return this.state.list.concat(this.state.quickRepliesComponent)
+        return this.state.lists[id].concat(this.state.quickRepliesComponent)
       }
     } else {
-      return this.state.list
+      return this.state.lists[id]
     }
   }
 
@@ -1191,8 +1211,11 @@ class Builders extends React.Component {
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
+          getQuickReplies={this.getQuickReplies}
+          getComponent={this.getComponent}
           pageId={this.props.pageId}
-          items={this.getItems()}
+          getItems={this.getItems}
+          changeMessage={this.changeMessage}
         />
       }
 
