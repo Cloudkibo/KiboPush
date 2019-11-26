@@ -80,7 +80,11 @@ export function fetchPostsAnalytics () {
     callApi('post/fetchPostsAnalytics').then(res => {
       if (res.status === 'success' && res.payload && res.payload.length > 0) {
         dispatch(showAllPostsAnalytics(res.payload[0]))
-      } else {
+      }
+      else if (res.status === 'success') {
+        dispatch(showAllPostsAnalytics(res.payload))
+      }
+      else {
         console.log('Error in fetchPostsAnalytics Posts', res)
       }
     })
@@ -131,6 +135,7 @@ export function deletePost (id, msg) {
       if (res.status === 'success') {
         msg.success('Post has been deleted')
         dispatch(fetchAllPosts(res.payload))
+        dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
       }
