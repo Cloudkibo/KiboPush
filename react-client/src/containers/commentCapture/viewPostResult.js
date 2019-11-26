@@ -40,6 +40,7 @@ componentDidMount() {
               waitingConversions: waitingConversions,
               negativeMatch: negativeMatch
             }
+    this.setState({CurrentPostsAnalytics: CurrentPostsAnalytics})
     if(conversions !==0 || waitingConversions !==0 || negativeMatch !==0 )
     {
       var radarChart = document.getElementById('radar-chart')
