@@ -46,13 +46,15 @@ class adCreative extends React.Component {
             <input className='form-control m-input m-input--air' value={this.state.ad_account_id} onChange={this.handleadAccountId} />
         </div>
           <GenericMessage
-            hiddenComponents={[]}
+            module = 'sponsorMessaging'
+            hiddenComponents={['media','audio','file','video']}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             pageId={this.props.sponsoredMessage.pageId}
             convoTitle={this.state.convoTitle}
             titleEditable
             buttonActions={this.state.buttonActions} />
+            
         <div>
           <Footer page={this.props.page} handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
         </div>
