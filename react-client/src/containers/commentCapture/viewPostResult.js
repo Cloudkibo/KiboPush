@@ -81,64 +81,6 @@ componentDidMount() {
       }
     }
   }
-
-//   UNSAFE_componentWillReceiveProps(nextProps) {
-//     console.log('UNSAFE_componentWillReceiveProps nextProps', nextProps.currentPost)
-//     console.log('this.props.currentPost', this.props.currentPost.currentPost)
-//     if(this.props.currentPost !== nextProps.currentPost) { 
-//       let conversions = nextProps.currentPost.conversionCount
-//       let waitingConversions = nextProps.positiveMatchCount-nextProps.currentPost.conversionCount
-//       let negativeMatch = nextProps.currentPost.count-nextProps.currentPost.positiveMatchCount
-//       let CurrentPostsAnalytics = {
-//         totalComments: nextProps.currentPost.count,
-//         conversions: conversions,
-//         totalRepliesSent: nextProps.currentPost.positiveMatchCount,
-//         waitingConversions: waitingConversions,
-//         negativeMatch: negativeMatch
-//       }
-//       this.setState({ CurrentPostsAnalytics: CurrentPostsAnalytics })
-//       if(conversions !==0 || waitingConversions !==0 || negativeMatch !==0 )
-//       {
-//         var radarChart = document.getElementById('radar-chart')
-//         var counts = []
-//         var vals = []
-//         var colors = ['#34bfa3','#ffb822', '#f4516c']
-//         var values = ['conversion', 'waiting','Negative Match' ]
-//         var backcolors = []
-//         counts.push(conversions)
-//         backcolors.push(colors[0])
-//         vals.push(values[0])
-
-//         counts.push(waitingConversions)
-//         backcolors.push(colors[1])
-//         vals.push(values[1])
-
-//         counts.push(negativeMatch)
-//         backcolors.push(colors[2])
-//         vals.push(values[2])
-
-//         if (radarChart !== null) {
-//         // eslint-disable-next-line camelcase
-//         var ctx_rc = radarChart.getContext('2d')
-
-//         // eslint-disable-next-line camelcase
-//         var data_rc = {
-//             datasets: [
-//             {
-//                 data: counts,
-//                 backgroundColor: backcolors
-//             }],
-//             labels: vals
-//         }
-//         // eslint-disable-next-line no-unused-vars,no-undef
-//         var radarChartEl = new Chart(ctx_rc, {
-//             type: 'pie',
-//             data: data_rc
-//         })
-//         }
-//       }
-//     }
-// }
 render() {
     return (
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
