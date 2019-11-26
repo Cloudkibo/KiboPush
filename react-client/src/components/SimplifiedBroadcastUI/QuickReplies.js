@@ -23,7 +23,7 @@ class QuickReplies extends React.Component {
         customFields: [],
         index: -1,
         editing: false,
-        currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
+        currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
     }
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
@@ -490,12 +490,12 @@ class QuickReplies extends React.Component {
 
             {
                 this.state.quickReplies.length < 10 &&
-                <button id='addQuickReply' onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                <button id={'addQuickReply'+this.props.currentId} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target='addQuickReply'>
+            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>

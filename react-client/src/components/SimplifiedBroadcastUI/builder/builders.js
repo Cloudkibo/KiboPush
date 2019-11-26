@@ -37,11 +37,12 @@ class Builders extends React.Component {
     let lists = {
     }
     lists[currentId] = []
+    let quickReplies = {}
+    quickReplies[currentId] = []
     this.state = {
-      list: [],
       lists,
-      quickReplies: [],
-      quickRepliesComponent: null,
+      quickReplies,
+      quickRepliesComponents: {},
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -90,6 +91,7 @@ class Builders extends React.Component {
     this.updateLinkedMessagesTitle = this.updateLinkedMessagesTitle.bind(this)
     this.changeMessage = this.changeMessage.bind(this)
     this.getQuickReplies = this.getQuickReplies.bind(this)
+    this.getCurrentMessage = this.getCurrentMessage.bind(this)
 
     if (props.setReset) {
       props.setReset(this.reset)
@@ -99,6 +101,15 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  getCurrentMessage () {
+    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+    let messageIndex = messages.findIndex(m => m.id === this.state.currentId)
+    if (messageIndex > -1) {
+      return messages[messageIndex]
+    } 
+    return null
   }
 
   changeMessage (id) {
@@ -260,20 +271,24 @@ class Builders extends React.Component {
       action: 'send_message_block'
     })
     let linkedMessages = this.state.linkedMessages
+    let quickReplies = this.state.quickReplies
     let lists = this.state.lists
     linkedMessages.push(data)
     lists[id] = []
-    this.setState({linkedMessages, lists})
+    quickReplies[id] = []
+    this.setState({linkedMessages, lists, quickReplies})
   }
 
-  updateQuickReplies (quickReplies, quickRepliesIndex) {
+  updateQuickReplies (quickRepliesValue, quickRepliesIndex) {
     return new Promise ((resolve, reject) => {
-      console.log('updateQuickReplies', quickReplies)
-      let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
-      let currentMessage = messages.filter((m) => m.id.toString() === this.state.currentId.toString())
+      console.log('updateQuickReplies', quickRepliesValue)
+      let quickReplies = this.state.quickReplies
+      let currentMessage = this.getCurrentMessage()
       console.log('updateQuickReplies quickRepliesIndex', quickRepliesIndex)
-      let broadcast = this.appendQuickRepliesToEnd(currentMessage.messageContent, quickReplies)
+      console.log('currentMessage', currentMessage)
+      let broadcast = this.appendQuickRepliesToEnd(currentMessage.messageContent, quickRepliesValue)
       console.log('broadcast after updating quick replies', broadcast)
+      quickReplies[this.state.currentId] = quickRepliesValue
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
       })
@@ -335,7 +350,7 @@ class Builders extends React.Component {
   }
 
   showResetAlertDialog () {
-    if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
+    if (this.state.broadcast.length > 0 || this.state.lists[this.state.currentId].length > 0) {
       this.setState({isShowingModalResetAlert: true})
       this.refs.resetModal.click()
     }
@@ -398,7 +413,8 @@ class Builders extends React.Component {
 
   handleText (obj) {
     console.log('handleText', obj)
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
+    console.log('handleText temp', temp)
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
@@ -420,7 +436,7 @@ class Builders extends React.Component {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
     }
-    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     console.log('handleText temp', temp)
     console.log('handleText state', this.state)
     this.setState({broadcast: temp})
@@ -435,7 +451,7 @@ class Builders extends React.Component {
       }
       return
     }
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
@@ -469,7 +485,7 @@ class Builders extends React.Component {
       temp.push(obj)
     }
 
-    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     console.log('temp handleCard', temp)
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
@@ -490,7 +506,7 @@ class Builders extends React.Component {
         return
       }
     }
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
@@ -512,14 +528,14 @@ class Builders extends React.Component {
       temp.push(obj)
     }
 
-    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
   }
 
   handleGallery (obj) {
     console.log('handleGallery', obj)
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
     var isPresent = false
     if (obj.cards) {
       obj.cards.forEach((d) => {
@@ -540,13 +556,13 @@ class Builders extends React.Component {
       temp.push(obj)
     }
 
-    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
   }
 
   handleImage (obj) {
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
@@ -560,13 +576,13 @@ class Builders extends React.Component {
       temp.push(obj)
     }
 
-    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
   }
 
   handleFile (obj) {
-    var temp = this.state.broadcast
+    var temp = this.getCurrentMessage().messageContent
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
       let data = temp[a]
@@ -580,6 +596,7 @@ class Builders extends React.Component {
       temp.push(obj)
     }
 
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
   }
@@ -587,11 +604,13 @@ class Builders extends React.Component {
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
     var temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
-    var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    var temp2 = this.getCurrentMessage().messageContent.filter((component) => { return (component.id !== obj.id) })
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
-      this.setState({quickReplies: []})
+      let quickReplies = this.state.quickReplies
+      quickReplies[this.state.currentId] = []
+      this.setState({quickReplies})
     }
     this.setState({list: temp, broadcast: temp2})
     this.handleChange({broadcast: temp2}, obj)
@@ -1005,22 +1024,24 @@ class Builders extends React.Component {
   getItems (id) {
     console.log('getItems', id)
     if (this.state.lists[id].length > 0) {
-      if (!this.state.quickRepliesComponent) {
-        let quickRepliesComponent = {
+      if (!this.state.quickRepliesComponents[id]) {
+        let quickRepliesComponents = this.state.quickRepliesComponents
+        quickRepliesComponents[id] = {
           content:
             <QuickReplies
               sequences={this.props.sequences}
               broadcasts={this.props.broadcasts}
               tags={this.props.tags}
-              quickReplies={this.state.quickReplies}
+              quickReplies={this.state.quickReplies[id]}
               updateQuickReplies={this.updateQuickReplies}
+              currentId={this.state.currentId}
             />
         }
-        //this.setState({quickRepliesComponent})
-        console.log('returning getItems', this.state.lists[id].concat([quickRepliesComponent]))
-        return this.state.lists[id].concat([quickRepliesComponent])
+        this.setState({quickRepliesComponents})
+        console.log('returning getItems', this.state.lists[id].concat([quickRepliesComponents[id]]))
+        return this.state.lists[id].concat([quickRepliesComponents[id]])
       } else {
-        return this.state.lists[id].concat(this.state.quickRepliesComponent)
+        return this.state.lists[id].concat([this.state.quickRepliesComponents[id]])
       }
     } else {
       return this.state.lists[id]
@@ -1196,10 +1217,10 @@ class Builders extends React.Component {
           showDialog={this.showDialog}
           hiddenComponents={this.state.hiddenComponents}
           showAddComponentModal={this.showAddComponentModal}
-          list={this.state.list}
           module={this.props.module}
           noDefaultHeight={this.props.noDefaultHeight}
           getItems={this.getItems}
+          list={this.state.lists[this.state.currentId]}
           titleEditable={this.props.titleEditable}
           showTabs={this.props.showTabs}
         />
