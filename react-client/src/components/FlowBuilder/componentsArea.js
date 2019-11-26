@@ -54,7 +54,7 @@ class ComponentsArea extends React.Component {
 }
 
 ComponentsArea.propTypes = {
-  'currentId': PropTypes.string.isRequired,
+  'currentId': PropTypes.string,
   'showAddComponentModal': PropTypes.func.isRequired,
   'items': PropTypes.array.isRequired
 }

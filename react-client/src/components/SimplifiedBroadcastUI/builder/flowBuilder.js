@@ -10,16 +10,25 @@ import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
 import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
 import SIDEBAR from '../../../components/FlowBuilder/sidebar'
 import Targeting from '../../../containers/convo/Targeting'
+import ReactFullScreenElement from "react-fullscreen-element"
+import Sticky from 'react-sticky-el'
 
 class FlowBuilder extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      fullScreen: false
+    }
 
     this.getNodeInner = this.getNodeInner.bind(this)
     this.getChartData = this.getChartData.bind(this)
+    this.toggleFullScreen = this.toggleFullScreen.bind(this)
 
     this.NodeInnerCustom = this.getNodeInner()
+  }
+
+  toggleFullScreen () {
+    this.setState({fullScreen: !this.state.fullScreen})
   }
 
   getChartData = () => {
@@ -119,9 +128,14 @@ class FlowBuilder extends React.Component {
     return (
       <div className='m-content'>
         <div className='tab-content'>
-          <div className='tab-pane fade active in' id='tab_1'>
-            <div className='row'>
-              <div className='col-9'>
+          <ReactFullScreenElement fullScreen={this.state.fullScreen}>
+            <div style={{background: 'white'}} className='tab-pane fade active in' id='tab_1'>
+              <SIDEBAR
+                unlinkedMessages={this.props.unlinkedMessages}
+                toggleFullScreen={this.toggleFullScreen}
+                fullScreen={this.state.fullScreen}
+              />
+              <div style={{border: '1px solid #ccc', overflow: 'hidden'}}>
                 <FlowChartWithState
                   initialValue={this.getChartData()}
                   Components={ {
@@ -129,13 +143,8 @@ class FlowBuilder extends React.Component {
                   }}
                 />
               </div>
-              <div className='col-3'>
-                <SIDEBAR
-                  unlinkedMessages={this.props.unlinkedMessages}
-                />
-              </div>
             </div>
-          </div>
+          </ReactFullScreenElement>
           <div className='tab-pane' id='tab_2'>
             <div className='m-portlet m-portlet--mobile'>
               <div className='m-portlet__body'>

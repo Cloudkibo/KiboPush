@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from 'prop-types'
 import SIDEBARITEM from './sidebarItem'
 import { REACT_FLOW_CHART } from "@mrblenny/react-flow-chart"
+import { UncontrolledTooltip } from 'reactstrap'
 
 class Sidebar extends React.Component {
   constructor (props, context) {
@@ -60,23 +61,60 @@ class Sidebar extends React.Component {
 
   render () {
     return (
-      <div className='card'>
-        <div style={{background: '#716aca', color: 'white'}} className='card-header'>
-          <h6 style={{lineHeight: 1.5}}>
-            Drag and drop items to add
-          </h6>
-        </div>
-        <div style={{padding: '0px', border: '1px solid #716aca'}} className='card-body'>
-          <SIDEBARITEM
-            name='Message Block'
-            type='component_block'
-            onDrag={this.onDragMessageBlock}
-          />
-          <SIDEBARITEM
-            name='Actions Block'
-            type='action_block'
-            onDrag={this.onDragActionBlock}
-          />
+      <div id='flowBuilderHeader' style={{maxWidth: '100vw'}}>
+
+        <UncontrolledTooltip placement='bottom' target='add-block'>
+          <span>Drag and drop to add</span>
+        </UncontrolledTooltip>
+
+        <UncontrolledTooltip placement='bottom' target='zoom-in'>
+          <span>Zoom In</span>
+        </UncontrolledTooltip>
+
+        <UncontrolledTooltip placement='bottom' target='zoom-out'>
+          <span>Zoom Out</span>
+        </UncontrolledTooltip>
+
+        <UncontrolledTooltip placement='bottom' target='reset'>
+          <span>Reset</span>
+        </UncontrolledTooltip>
+
+        <UncontrolledTooltip placement='bottom' target='expand'>
+          <span>{this.props.fullScreen ? 'Compress' : 'Expand'}</span>
+        </UncontrolledTooltip>
+
+        <div style={{marginBottom: '0px', border: '1px solid #ccc'}} class="m-portlet m-portlet--tabs col-md-12">
+          <div style={{padding: '0px', height: '4rem'}} class="m-portlet__head">
+            <div class="m-portlet__head-caption m--font-boldest">
+              <SIDEBARITEM
+                name='Add New Message Block'
+                onDrag={this.onDragMessageBlock}
+              />
+              <div className='pull-right'>
+                <i
+                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  className='fa fa-search-plus'
+                  id='zoom-in'
+                />
+                <i
+                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  className='fa fa-search-minus'
+                  id='zoom-out'
+                />
+                <i
+                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  className='fa fa-undo'
+                  id='reset'
+                />
+                <i
+                  style={{margin: '7px', fontSize: '1.5rem', cursor: 'pointer'}}
+                  className={this.props.fullScreen ? 'fa fa-compress' : 'fa fa-expand'}
+                  id='expand'
+                  onClick={this.props.toggleFullScreen}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -84,7 +122,9 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.propTypes = {
-  'unlinkedMessages': PropTypes.array.isRequired
+  'unlinkedMessages': PropTypes.array.isRequired,
+  'toggleFullScreen': PropTypes.func.isRequired,
+  'fullScreen': PropTypes.bool.isRequired
 }
 
 export default Sidebar

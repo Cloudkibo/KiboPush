@@ -542,7 +542,7 @@ class CreateConvo extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{margin: '30px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+        <div style={{margin: '15px 30px 0px 30px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible' role='alert'>
           <div className='m-alert__icon'>
             <i className='flaticon-exclamation m--font-brand' />
           </div>
