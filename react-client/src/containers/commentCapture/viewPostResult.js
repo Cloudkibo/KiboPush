@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from './CardBoxesContainer'
 import Comments from './comments'
 import { handleDate } from '../../utility/utils'
-import { fetchCurrentPostsAnalytics, fetchComments} from '../../redux/actions/commentCapture.actions'
+import {fetchComments} from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 
@@ -27,30 +27,36 @@ class PostResult extends React.Component {
         postId: props.currentPost._id,
         sort_value: -1
       })
-    this.props.fetchCurrentPostsAnalytics(this.props.currentPost.post_id)
-
     }
 componentDidMount() {
+  console.log('ComponentDidMount called in ', this.props.currentPost)
     let conversions = this.props.currentPost.conversionCount
     let waitingConversions = this.props.currentPost.positiveMatchCount-this.props.currentPost.conversionCount
     let negativeMatch = this.props.currentPost.count-this.props.currentPost.positiveMatchCount
+    let CurrentPostsAnalytics = {
+              totalComments: this.props.currentPost.count,
+              conversions: conversions,
+              totalRepliesSent: this.props.currentPost.positiveMatchCount,
+              waitingConversions: waitingConversions,
+              negativeMatch: negativeMatch
+            }
     if(conversions !==0 || waitingConversions !==0 || negativeMatch !==0 )
     {
       var radarChart = document.getElementById('radar-chart')
       var counts = []
       var vals = []
-      var colors = ['#00ff00','#0000ff', '#FF0000']
+      var colors = ['#34bfa3','#ffb822', '#f4516c']
       var values = ['conversion', 'waiting','Negative Match' ]
       var backcolors = []
-      counts.push(this.props.currentPost.conversionCount)
+      counts.push(conversions)
       backcolors.push(colors[0])
       vals.push(values[0])
 
-      counts.push(this.props.currentPost.conversionCount-this.props.currentPost.positiveMatchCount)
+      counts.push(waitingConversions)
       backcolors.push(colors[1])
       vals.push(values[1])
 
-      counts.push(this.props.currentPost.count-this.props.currentPost.positiveMatchCount)
+      counts.push(negativeMatch)
       backcolors.push(colors[2])
       vals.push(values[2])
 
@@ -91,7 +97,6 @@ render() {
                     <CardBoxesContainer data= {this.state.CurrentPostsAnalytics} singlePostResult= {true} />
                     }
                 </div>
-            </div>
             <div className='m-portlet m-portlet--full-height '>
             <div className='m-portlet__body'>
             <div className='row'>
@@ -160,6 +165,7 @@ render() {
           </div>
 
           </div>
+          </div>
         </div>
     )
   }
@@ -175,9 +181,8 @@ function mapStateToProps(state) {
   }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-      fetchComments: fetchComments,
-      fetchCurrentPostsAnalytics: fetchCurrentPostsAnalytics
-    }, dispatch)
+      fetchComments: fetchComments
+        }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostResult)

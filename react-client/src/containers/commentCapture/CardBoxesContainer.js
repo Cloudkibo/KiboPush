@@ -46,7 +46,7 @@ class CardBoxesContainer extends React.Component {
               <CardBox
                 style='success'
                 value={(this.props.data && this.props.data.conversions) ? this.props.data.conversions : 0}
-                label='Conversions'
+                label='Total Conversions'
                 id='conversions'
               />
           </div>
