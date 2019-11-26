@@ -10,7 +10,7 @@ import {fetchComments, fetchCommentReplies, saveCommentReplies
 } from '../../redux/actions/commentCapture.actions'
 import { formatDateTime } from '../../utility/utils'
 import ReactPlayer from 'react-player'
-import { getmetaurl } from '../liveChat/utilities'
+
 
 class Comments extends React.Component {
   constructor (props, context) {
