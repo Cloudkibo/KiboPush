@@ -39,7 +39,10 @@ class Integrations extends React.Component {
     if (id) {
       this.props.updateIntegration(id, {enabled: true})
     } else {
-      this.props.createIntegration()
+      this.props.history.push({
+        pathname: '/api/sheetsIntegrations/auth'
+      })
+      // this.props.createIntegration()
     }
   }
 
