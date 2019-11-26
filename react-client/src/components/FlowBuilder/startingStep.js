@@ -6,34 +6,7 @@ class StartingStep extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
-    // this.getItems = this.getItems.bind(this)
   }
-
-  // componentDidMount () {
-  //   this.getItems()
-  // }
-
-  // getItems () {
-  //   let items = []
-  //   for (let i = 0; i < this.props.linkedMessages[0].messageContent.length; i++) {
-  //     let component = this.props.getComponent(this.props.linkedMessages[0].messageContent[i]).component
-  //     items.push({content: component})
-  //   }
-  //   if (items.length > 0) {
-  //     if (!this.state.quickReplies) {
-  //       let quickReplies = this.props.getQuickReplies()
-  //       this.setState({quickReplies})
-  //       items.push(quickReplies)
-  //     } else {
-  //       items.push(this.state.quickReplies)
-  //     }
-  //   }
-  //   this.setState({items})
-  // }
-
-  // UNSAFE_componentWillReceiveProps (nextProps) {
-  //   this.getItems()
-  // }
 
   render () {
     return (
@@ -57,7 +30,6 @@ class StartingStep extends React.Component {
 
 StartingStep.propTypes = {
   'showAddComponentModal': PropTypes.func.isRequired,
-  'getQuickReplies': PropTypes.func.isRequired,
   'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,

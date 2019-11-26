@@ -79,7 +79,6 @@ class FlowBuilder extends React.Component {
         return (
           <STARTINGSTEP
             showAddComponentModal={this.props.showAddComponentModal}
-            getQuickReplies={this.props.getQuickReplies}
             getComponent={this.props.getComponent}
             linkedMessages={this.props.linkedMessages}
             unlinkedMessages={this.props.unlinkedMessages}
@@ -92,7 +91,6 @@ class FlowBuilder extends React.Component {
         return (
           <COMPONENTSBLOCK
             showAddComponentModal={this.props.showAddComponentModal}
-            getQuickReplies={this.props.getQuickReplies}
             getComponent={this.props.getComponent}
             linkedMessages={this.props.linkedMessages}
             unlinkedMessages={this.props.unlinkedMessages}

@@ -1232,7 +1232,6 @@ class Builders extends React.Component {
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
-          getQuickReplies={this.getQuickReplies}
           getComponent={this.getComponent}
           pageId={this.props.pageId}
           getItems={this.getItems}
