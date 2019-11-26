@@ -84,6 +84,7 @@ class FlowBuilder extends React.Component {
             unlinkedMessages={this.props.unlinkedMessages}
             getItems={this.props.getItems}
             currentId={node.properties.id}
+            changeMessage={this.props.changeMessage}
           />
         )
       } else if (node.type === 'component_block') {

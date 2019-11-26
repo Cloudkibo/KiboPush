@@ -1023,28 +1023,35 @@ class Builders extends React.Component {
 
   getItems (id) {
     console.log('getItems', id)
-    if (this.state.lists[id].length > 0) {
-      if (!this.state.quickRepliesComponents[id]) {
-        let quickRepliesComponents = this.state.quickRepliesComponents
-        quickRepliesComponents[id] = {
-          content:
-            <QuickReplies
-              sequences={this.props.sequences}
-              broadcasts={this.props.broadcasts}
-              tags={this.props.tags}
-              quickReplies={this.state.quickReplies[id]}
-              updateQuickReplies={this.updateQuickReplies}
-              currentId={this.state.currentId}
-            />
-        }
-        this.setState({quickRepliesComponents})
-        console.log('returning getItems', this.state.lists[id].concat([quickRepliesComponents[id]]))
-        return this.state.lists[id].concat([quickRepliesComponents[id]])
-      } else {
-        return this.state.lists[id].concat([this.state.quickRepliesComponents[id]])
-      }
+    if (!this.state.lists[id]) {
+      let lists = this.state.lists
+      lists[id] = []
+      this.setState({lists})
+      return []
     } else {
-      return this.state.lists[id]
+      if (this.state.lists[id].length > 0) {
+        if (!this.state.quickRepliesComponents[id]) {
+          let quickRepliesComponents = this.state.quickRepliesComponents
+          quickRepliesComponents[id] = {
+            content:
+              <QuickReplies
+                sequences={this.props.sequences}
+                broadcasts={this.props.broadcasts}
+                tags={this.props.tags}
+                quickReplies={this.state.quickReplies[id]}
+                updateQuickReplies={this.updateQuickReplies}
+                currentId={this.state.currentId}
+              />
+          }
+          this.setState({quickRepliesComponents})
+          console.log('returning getItems', this.state.lists[id].concat([quickRepliesComponents[id]]))
+          return this.state.lists[id].concat([quickRepliesComponents[id]])
+        } else {
+          return this.state.lists[id].concat([this.state.quickRepliesComponents[id]])
+        }
+      } else {
+        return this.state.lists[id]
+      }
     }
   }
 

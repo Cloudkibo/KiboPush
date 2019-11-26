@@ -10,7 +10,7 @@ class StartingStep extends React.Component {
 
   render () {
     return (
-      <div style={{borderRadius: '4px', width: '300px'}} className='card'>
+      <div style={{borderRadius: '4px', width: '300px'}} className='card' onMouseEnter={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
           <h6 style={{textAlign: 'center', marginTop: '10px'}}>
             Starting Step
@@ -29,11 +29,13 @@ class StartingStep extends React.Component {
 }
 
 StartingStep.propTypes = {
+  'currentId': PropTypes.string.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
   'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
-  'getItems': PropTypes.func.isRequired
+  'getItems': PropTypes.func.isRequired,
+  'changeMessage': PropTypes.func.isRequired
 }
 
 export default StartingStep
