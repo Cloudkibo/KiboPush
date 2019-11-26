@@ -140,7 +140,7 @@ class Builders extends React.Component {
         // linkedMessages[i].linkedButton.title = title
       }
     }
-    this.setState({linkedMessages})
+    this.setState({linkedMessages, convoTitle: title})
   }
 
   handleChange (broadcast, event) {
