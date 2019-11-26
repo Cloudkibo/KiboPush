@@ -115,9 +115,9 @@ class Integrations extends React.Component {
                                    ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.disconnect(integration._id)}>
                                      Disconnect
                                    </button>
-                                   : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={() => this.connect(integration._id)}>
+                                   : <a href='/api/sheetsIntegrations/auth' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                                    Connect
-                                 </button>
+                                 </a>
                                  }
 						                   </span>
                               <span className='m-widget4__ext'>

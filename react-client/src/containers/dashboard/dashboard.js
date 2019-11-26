@@ -649,11 +649,11 @@ class Dashboard extends React.Component {
                 <AutopostingSummary />
               </div>
             }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+            {/*(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <IntegrationsSummary />
               </div>
-            }
+            */}
             {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
