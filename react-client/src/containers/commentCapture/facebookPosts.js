@@ -8,12 +8,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts, deletePost, saveCurrentPost
+  fetchAllPosts, deletePost, saveCurrentPost, fetchPostsAnalytics,
+  resetComments
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import CardBoxesContainer from './CardBoxesContainer'
 
 class FacebookPosts extends React.Component {
   constructor(props, context) {
@@ -25,9 +27,12 @@ class FacebookPosts extends React.Component {
       deleteid: '',
     }
     props.fetchAllPosts()
+    props.fetchPostsAnalytics()
     props.saveCurrentPost(null)
+    props.resetComments(null)
     this.displayData = this.displayData.bind(this)
     this.onEdit = this.onEdit.bind(this)
+    this.onView = this.onView.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
     this.getPostText = this.getPostText.bind(this)
@@ -77,6 +82,13 @@ class FacebookPosts extends React.Component {
   }
   onEdit(post) {
     this.props.saveCurrentPost(post)
+  }
+  onView(post) {
+    this.props.saveCurrentPost(post)
+    this.props.history.push({
+      pathname: `/PostResult`,
+      state: post
+    })
   }
   displayData(n, posts, searchValue) {
     console.log('searchVal', searchValue)
@@ -232,6 +244,11 @@ class FacebookPosts extends React.Component {
             </div>
           </div>
           <div className='row'>
+              {
+                <CardBoxesContainer data= {this.props.allPostsAnalytics} />
+              }
+            </div>
+          <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
@@ -270,15 +287,19 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Track Comments From</span>
+                            <span style={{width: '150px'}}>Tracking</span>
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Comments Count</span>
+                            <span style={{width: '100px'}}>Comments</span>
+                          </th>
+                          <th data-field='conversions'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Conversions</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Date Created</span>
+                            <span style={{width: '100px'}}>Date</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -295,18 +316,17 @@ class FacebookPosts extends React.Component {
                             <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
+                            <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversionCount ? post.conversionCount : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                              {post.post_id &&
-                                <span>
-                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
-                                      View on FB
-                                  </a>
-                                  <br />
-                                </span>
-                              }
-                                <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                              {/* <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                    View
+                                </Link> */}
+                                <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }}  onClick={() => this.onView(post)}>
+                                    View
+                                </button>
+                                <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                       <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
@@ -352,7 +372,8 @@ class FacebookPosts extends React.Component {
 function mapStateToProps(state) {
   console.log(state)
   return {
-    posts: (state.postsInfo.posts)
+    posts: (state.postsInfo.posts),
+    allPostsAnalytics: (state.postsInfo.allPostsAnalytics)
   }
 }
 
@@ -360,7 +381,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,
-    saveCurrentPost: saveCurrentPost
+    saveCurrentPost: saveCurrentPost,
+    fetchPostsAnalytics: fetchPostsAnalytics,
+    resetComments: resetComments
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)
