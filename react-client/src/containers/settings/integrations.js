@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getIntegrations, updateIntegration } from '../../redux/actions/settings.actions'
+import { getIntegrations, updateIntegration, createIntegration } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -38,6 +38,8 @@ class Integrations extends React.Component {
   connect (id) {
     if (id) {
       this.props.updateIntegration(id, {enabled: true})
+    } else {
+      this.props.createIntegration()
     }
   }
 
@@ -142,7 +144,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getIntegrations: getIntegrations,
-    updateIntegration: updateIntegration
+    updateIntegration: updateIntegration,
+    createIntegration
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)
