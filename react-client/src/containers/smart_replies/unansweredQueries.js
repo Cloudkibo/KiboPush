@@ -2,7 +2,6 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
@@ -27,9 +26,17 @@ class UnansweredQueries extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getDateAndTime = this.getDateAndTime.bind(this)
+    this.backToIntents = this.backToIntents.bind(this)
     props.loadUnansweredQuestions(this.props.location.state)
     props.loadMyPagesList()
     props.allLocales()
+  }
+
+  backToIntents () {
+    this.props.history.push({
+      pathname: '/intents',
+      state: this.props.location.state
+    })
   }
 
   componentDidMount () {
@@ -206,9 +213,9 @@ class UnansweredQueries extends React.Component {
             </div>
             <div className='m-portlet__foot m-portlet__foot--fit'>
               <div className='m-form__actions m-form__actions' style={{ padding: '30px' }}>
-                <Link to='/bots' className='btn btn-primary'>
-                  Back
-                    </Link>
+                <a href='#/'
+                  onClick={this.backToIntents}
+                  className='btn btn-primary'>Back</a>
               </div>
             </div>
           </div>

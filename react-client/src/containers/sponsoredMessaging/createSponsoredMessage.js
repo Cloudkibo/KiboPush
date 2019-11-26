@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import Tabs from './tabs'
-import {updateSponsoredMessage, saveDraft } from '../../redux/actions/sponsoredMessaging.actions'
+import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 
 
 class CreateSponsoredMessage extends React.Component {
@@ -17,7 +17,8 @@ class CreateSponsoredMessage extends React.Component {
     super(props, context)
     this.state = {
       isEdit: false,
-      editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {}
+      editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
+      sendDisabled: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -52,7 +53,7 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onSend () {
-
+    this.props.send(this.props.sponsoredMessage)
   }
   setStatus (value) {
   }
@@ -74,6 +75,7 @@ class CreateSponsoredMessage extends React.Component {
                 <Header onSend={this.onSend}
                   onEdit={this.onEdit}
                   isEdit={this.state.isEdit}
+                  sendDisabled = {this.state.sendDisabled}
                 />
                 <div className='m-portlet__body'>
                   <div className='row'>
@@ -101,7 +103,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updateSponsoredMessage:updateSponsoredMessage,
-    saveDraft: saveDraft
+    saveDraft: saveDraft,
+    send: send
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSponsoredMessage)

@@ -19,8 +19,10 @@ const initialState = {
             min_age:'',
             max_age:'',
             gender:'',
-            budget: {}
+            budget: {},
+            bidAmount: 0
         },
+        ad_name: '',
         payload: []
     }
 }
