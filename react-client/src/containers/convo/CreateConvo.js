@@ -304,7 +304,7 @@ class CreateConvo extends React.Component {
       console.log('payload before', this.state.broadcast)
       var data = {
         platform: 'facebook',
-        payload: this.state.broadcast,
+        payload: this.state.linkedMessages[0].messageContent,
         isSegmented: isSegmentedValue,
         segmentationPageIds: this.state.locationPages,
         segmentationLocale: this.state.localeValue,
@@ -316,7 +316,8 @@ class CreateConvo extends React.Component {
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
         subscribersCount: this.state.subscriberCount,
-        messageType: this.state.messageType
+        messageType: this.state.messageType,
+        linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -426,7 +427,7 @@ class CreateConvo extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <a href='#/' style={{ display: 'none' }} ref='reconnect' data-toggle="modal" data-target="#reconnect">reconnect</a>

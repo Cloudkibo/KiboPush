@@ -37,6 +37,7 @@ class Builders extends React.Component {
     this.state = {
       list: [],
       quickReplies: [],
+      quickRepliesComponent: null,
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -139,7 +140,7 @@ class Builders extends React.Component {
         // linkedMessages[i].linkedButton.title = title
       }
     }
-    this.setState({linkedMessages})
+    this.setState({linkedMessages, convoTitle: title})
   }
 
   handleChange (broadcast, event) {
@@ -985,17 +986,22 @@ class Builders extends React.Component {
 
   getItems () {
     if (this.state.list.length > 0) {
-      return this.state.list.concat([{
-        content:
-          <QuickReplies
-            index={this.state.quickRepliesIndex}
-            sequences={this.props.sequences}
-            broadcasts={this.props.broadcasts}
-            tags={this.props.tags}
-            quickReplies={this.state.quickReplies}
-            updateQuickReplies={this.updateQuickReplies}
-          />
-      }])
+      if (!this.state.quickRepliesComponent) {
+        let quickRepliesComponent = {
+          content:
+            <QuickReplies
+              sequences={this.props.sequences}
+              broadcasts={this.props.broadcasts}
+              tags={this.props.tags}
+              quickReplies={this.state.quickReplies}
+              updateQuickReplies={this.updateQuickReplies}
+            />
+        }
+        this.setState({quickRepliesComponent})
+        return this.state.list.concat([quickRepliesComponent])
+      } else {
+        return this.state.list.concat(this.state.quickRepliesComponent)
+      }
     } else {
       return this.state.list
     }
@@ -1182,12 +1188,11 @@ class Builders extends React.Component {
           showAddComponentModal={this.showAddComponentModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}
-          getQuickReplies={this.getQuickReplies}
-          getComponent={this.getComponent}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
           resetTarget={this.props.resetTarget}
           pageId={this.props.pageId}
+          items={this.getItems()}
         />
       }
 
