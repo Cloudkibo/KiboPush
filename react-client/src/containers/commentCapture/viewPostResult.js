@@ -16,7 +16,7 @@ class PostResult extends React.Component {
           totalComments: this.props.currentPost.count,
           conversions: this.props.currentPost.conversionCount,
           totalRepliesSent: this.props.currentPost.positiveMatchCount,
-          waitingConversions: this.props.currentPost.positiveMatchCount-this.props.currentPost.conversionCount,
+          waitingConversions: this.props.currentPost.waitingReply,
           negativeMatch: this.props.currentPost.count-this.props.currentPost.positiveMatchCount
         }
       }
@@ -31,7 +31,7 @@ class PostResult extends React.Component {
 componentDidMount() {
   console.log('ComponentDidMount called in ', this.props.currentPost)
     let conversions = this.props.currentPost.conversionCount
-    let waitingConversions = this.props.currentPost.positiveMatchCount-this.props.currentPost.conversionCount
+    let waitingConversions = this.props.currentPost.waitingReply
     let negativeMatch = this.props.currentPost.count-this.props.currentPost.positiveMatchCount
     let CurrentPostsAnalytics = {
               totalComments: this.props.currentPost.count,
