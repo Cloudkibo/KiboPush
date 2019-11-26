@@ -11,7 +11,6 @@ import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
 import SIDEBAR from '../../../components/FlowBuilder/sidebar'
 import Targeting from '../../../containers/convo/Targeting'
 import ReactFullScreenElement from "react-fullscreen-element"
-import Sticky from 'react-sticky-el'
 
 class FlowBuilder extends React.Component {
   constructor (props, context) {
