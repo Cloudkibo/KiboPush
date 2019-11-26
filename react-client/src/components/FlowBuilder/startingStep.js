@@ -6,38 +6,11 @@ class StartingStep extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
-    // this.getItems = this.getItems.bind(this)
   }
-
-  // componentDidMount () {
-  //   this.getItems()
-  // }
-
-  // getItems () {
-  //   let items = []
-  //   for (let i = 0; i < this.props.linkedMessages[0].messageContent.length; i++) {
-  //     let component = this.props.getComponent(this.props.linkedMessages[0].messageContent[i]).component
-  //     items.push({content: component})
-  //   }
-  //   if (items.length > 0) {
-  //     if (!this.state.quickReplies) {
-  //       let quickReplies = this.props.getQuickReplies()
-  //       this.setState({quickReplies})
-  //       items.push(quickReplies)
-  //     } else {
-  //       items.push(this.state.quickReplies)
-  //     }
-  //   }
-  //   this.setState({items})
-  // }
-
-  // UNSAFE_componentWillReceiveProps (nextProps) {
-  //   this.getItems()
-  // }
 
   render () {
     return (
-      <div style={{borderRadius: '4px', width: '300px'}} className='card'>
+      <div style={{borderRadius: '4px', width: '300px'}} className='card' onMouseEnter={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
           <h6 style={{textAlign: 'center', marginTop: '10px'}}>
             Starting Step
@@ -47,7 +20,7 @@ class StartingStep extends React.Component {
           <COMPONENTSAREA
             targetId='starting-step-add-component'
             showAddComponentModal={this.props.showAddComponentModal}
-            items={this.props.items}
+            items={this.props.getItems(this.props.currentId)}
           />
         </div>
       </div>
@@ -56,12 +29,13 @@ class StartingStep extends React.Component {
 }
 
 StartingStep.propTypes = {
+  'currentId': PropTypes.string.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
-  'getQuickReplies': PropTypes.func.isRequired,
   'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
-  'items': PropTypes.array.isRequired
+  'getItems': PropTypes.func.isRequired,
+  'changeMessage': PropTypes.func.isRequired
 }
 
 export default StartingStep
