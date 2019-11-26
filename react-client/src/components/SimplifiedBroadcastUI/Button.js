@@ -358,7 +358,7 @@ class Button extends React.Component {
         url: this.state.url, // User defined link,
         title: this.state.title, // User defined label
         module: {
-          type: this.props.module,
+          type: this.props.module ? this.props.module : 'broadcast',
           id: ''// messageId
         }
       }

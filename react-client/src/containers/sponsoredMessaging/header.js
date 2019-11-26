@@ -24,7 +24,10 @@ class Header extends React.Component {
           <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
             <span>Save Draft</span>
           </button>
-            <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={this.props.onSend}>
+            <button 
+              className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' 
+              style={{marginLeft: '5px'}} onClick={this.props.onSend}
+              disabled= {this.props.sendDisabled}>
               <span>Send</span>
             </button>
         </div>

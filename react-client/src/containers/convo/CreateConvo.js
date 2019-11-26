@@ -601,6 +601,7 @@ class CreateConvo extends React.Component {
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
                           <GenericMessage
+                            module = {this.props.location.state.module}
                             broadcast={this.state.broadcast}
                             handleChange={this.handleChange}
                             setReset={reset => { this.reset = reset }}
