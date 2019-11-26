@@ -10,8 +10,7 @@ import {fetchComments, fetchCommentReplies, saveCommentReplies
 } from '../../redux/actions/commentCapture.actions'
 import { formatDateTime } from '../../utility/utils'
 import ReactPlayer from 'react-player'
-import { thisExpression } from '@babel/types'
-// import MediaCapturer from 'react-multimedia-capture'
+
 
 class Comments extends React.Component {
   constructor (props, context) {
@@ -93,13 +92,13 @@ class Comments extends React.Component {
         </div>
         <div className='col-12' style={{maxHeight: '500px', overflowY: 'scroll'}}>
         {
-        !this.props.comments || (this.props.comments && this.props.comments.length < 1) &&
+        (!this.props.comments || this.props.comments.length < 1) &&
         <span>This post has no comments</span>
         }
         {
           this.props.comments && this.props.comments.map((comment, index) => (
           <div className='m-widget3' key={index}>
-            <div className='m-widget3__item'>
+            <div className='m-widget3__item' style={{borderBottom: 'none'}}>
               <div className='m-widget3__header'>
                 <div className='m-widget3__user-img' style={{marginRight: '10px'}}>
                   <img alt='' className='m-widget3__img' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'/>
@@ -129,6 +128,10 @@ class Comments extends React.Component {
                       width='150px'
                       height='150px'
                       onPlay={this.onTestURLVideo(component.url)} />
+                    </span>
+                    :component.componentType === 'sticker'
+                    ?<span key={index} style={{marginLeft: '5px',display: 'block'}}>
+                        <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
                     </span>
                     : <span key={index} style={{marginLeft: '5px'}}>
                       Component Not Supported 
