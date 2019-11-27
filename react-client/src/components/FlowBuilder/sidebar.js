@@ -92,19 +92,22 @@ class Sidebar extends React.Component {
               />
               <div className='pull-right'>
                 <i
-                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  style={{margin: '7px', fontSize: '1.5rem', cursor: 'pointer'}}
                   className='fa fa-search-plus'
                   id='zoom-in'
+                  onClick={() => this.props.zoomIn(0.1)}
                 />
                 <i
-                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  style={{margin: '7px', fontSize: '1.5rem', cursor: 'pointer'}}
                   className='fa fa-search-minus'
                   id='zoom-out'
+                  onClick={() => this.props.zoomOut(0.1)}
                 />
                 <i
-                  style={{margin: '7px', fontSize: '1.5rem'}}
+                  style={{margin: '7px', fontSize: '1.5rem', cursor: 'pointer'}}
                   className='fa fa-undo'
                   id='reset'
+                  onClick={this.props.resetTransform}
                 />
                 <i
                   style={{margin: '7px', fontSize: '1.5rem', cursor: 'pointer'}}
@@ -124,7 +127,10 @@ class Sidebar extends React.Component {
 Sidebar.propTypes = {
   'unlinkedMessages': PropTypes.array.isRequired,
   'toggleFullScreen': PropTypes.func.isRequired,
-  'fullScreen': PropTypes.bool.isRequired
+  'fullScreen': PropTypes.bool.isRequired,
+  'zoomIn': PropTypes.func.isRequired,
+  'zoomOut': PropTypes.func.isRequired,
+  'resetTarget': PropTypes.func.isRequired
 }
 
 export default Sidebar
