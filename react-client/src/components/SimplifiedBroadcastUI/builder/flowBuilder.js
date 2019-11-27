@@ -3,7 +3,7 @@
  */
 
 import React from "react"
-import { FlowChartWithState, INodeInnerDefaultProps } from "@mrblenny/react-flow-chart"
+import { FlowChartWithState, INodeInnerDefaultProps, IPortDefaultProps } from "@mrblenny/react-flow-chart"
 import PropTypes from 'prop-types'
 import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
 import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
@@ -16,14 +16,59 @@ class FlowBuilder extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      fullScreen: false
+      fullScreen: false,
+      scale: 1,
+      maxScale: 2,
+      minScale: 0.5
     }
 
     this.getNodeInner = this.getNodeInner.bind(this)
+    this.getPortOuter = this.getPortOuter.bind(this)
+    this.getPortInner = this.getPortInner.bind(this)
     this.getChartData = this.getChartData.bind(this)
     this.toggleFullScreen = this.toggleFullScreen.bind(this)
+    this.zoomIn = this.zoomIn.bind(this)
+    this.zoomOut = this.zoomOut.bind(this)
+    this.resetTransform = this.resetTransform.bind(this)
 
     this.NodeInnerCustom = this.getNodeInner()
+    this.PortOuter = this.getPortOuter()
+    this.PortInner = this.getPortInner()
+  }
+
+  resetTransform () {
+    this.setState({scale: 1})
+    const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(1)`
+    }
+  }
+
+  zoomIn (step) {
+    let newScale = this.state.scale + step
+    console.log(newScale)
+    if (newScale <= this.state.maxScale) {
+      this.setState({
+        scale: newScale
+      })
+      const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
+      for (let i = 0; i < children.length; i++) {
+        children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(${newScale})`
+      }
+    }
+  }
+
+  zoomOut (step) {
+    let newScale = this.state.scale - step
+    if (newScale >= this.state.minScale) {
+      this.setState({
+        scale: newScale
+      })
+      const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
+      for (let i = 0; i < children.length; i++) {
+        children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(${newScale})`
+      }
+    }
   }
 
   toggleFullScreen () {
@@ -82,6 +127,49 @@ class FlowBuilder extends React.Component {
     return chartSimple
   }
 
+  getPortOuter = () => {
+    const PortOuter = () => (
+      <div style={{
+        width: '24px',
+        height: '24px',
+        background: 'cornflowerblue',
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        transform: `scale(${this.state.scale}, ${this.state.scale})`
+      }} />
+    )
+    return PortOuter
+  }
+
+  getPortInner = () => {
+    const PortInner = (props = IPortDefaultProps) => (
+      <div style={{
+        width: '24px',
+        height: '24px',
+        borderRadius: '50%',
+        background: 'white',
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        transform: `scale(${this.state.scale}, ${this.state.scale})`
+      }}>
+        <div style={{
+          width: '12px',
+          height: '12px',
+          borderRadius: '50%',
+          background: 'grey',
+          cursor: 'pointer'
+        }}>
+
+        </div>
+      </div>
+    )
+    return PortInner
+  }
+
   getNodeInner = () => {
     const NodeInnerCustom = ({ node, config } = INodeInnerDefaultProps) => {
       if (node.type === 'starting_step') {
@@ -132,23 +220,28 @@ class FlowBuilder extends React.Component {
     return (
       <div className='m-content'>
         <div className='tab-content'>
-          <ReactFullScreenElement fullScreen={this.state.fullScreen}>
-            <div style={{background: 'white'}} className='tab-pane fade active in' id='tab_1'>
-              <SIDEBAR
-                unlinkedMessages={this.props.unlinkedMessages}
-                toggleFullScreen={this.toggleFullScreen}
-                fullScreen={this.state.fullScreen}
-              />
-              <div style={{border: '1px solid #ccc', overflow: 'hidden'}}>
-                <FlowChartWithState
-                  initialValue={this.getChartData()}
-                  Components={ {
-                    NodeInner: this.getNodeInner()
-                  }}
+          <div className='tab-pane fade active in' id='tab_1'>
+            <ReactFullScreenElement fullScreen={this.state.fullScreen}>
+              <div style={{background: 'white'}}>
+                <SIDEBAR
+                  unlinkedMessages={this.props.unlinkedMessages}
+                  toggleFullScreen={this.toggleFullScreen}
+                  fullScreen={this.state.fullScreen}
+                  zoomIn={this.zoomIn}
+                  zoomOut={this.zoomOut}
+                  resetTransform={this.resetTransform}
                 />
+                <div id='flowBuilderChart' style={{border: '1px solid #ccc', overflow: 'hidden'}}>
+                  <FlowChartWithState
+                    initialValue={this.getChartData()}
+                    Components={ {
+                      NodeInner: this.NodeInnerCustom
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          </ReactFullScreenElement>
+            </ReactFullScreenElement>
+          </div>
           <div className='tab-pane' id='tab_2'>
             <div className='m-portlet m-portlet--mobile'>
               <div className='m-portlet__body'>
