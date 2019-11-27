@@ -31,6 +31,7 @@ class FlowBuilder extends React.Component {
   }
 
   getChartData = () => {
+    console.log('getting chart data')
     const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
     let chartSimple = {
       offset: {
@@ -76,8 +77,8 @@ class FlowBuilder extends React.Component {
           id: messages[i].id
         }
       }
-      console.log('chartSimple', chartSimple)
     }
+    console.log('chartSimple', chartSimple)
     return chartSimple
   }
 
@@ -106,6 +107,7 @@ class FlowBuilder extends React.Component {
             currentId={node.properties.id}
             changeMessage={this.props.changeMessage}
             getItems={this.props.getItems}
+            removeMessage={this.props.removeMessage}
           />
         )
       } else if (node.type === 'action_block') {
@@ -126,6 +128,7 @@ class FlowBuilder extends React.Component {
   }
 
   render () {
+    console.log('rendering flow builder', this.props)
     return (
       <div className='m-content'>
         <div className='tab-content'>
@@ -140,7 +143,7 @@ class FlowBuilder extends React.Component {
                 <FlowChartWithState
                   initialValue={this.getChartData()}
                   Components={ {
-                    NodeInner: this.NodeInnerCustom
+                    NodeInner: this.getNodeInner()
                   }}
                 />
               </div>
@@ -171,12 +174,12 @@ FlowBuilder.propTypes = {
   'unlinkedMessages': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
-  'resetTarget': PropTypes.func.isRequired,
+  'resetTarget': PropTypes.bool,
   'pageId': PropTypes.object.isRequired,
   'getItems': PropTypes.func.isRequired,
-  'getComponent': PropTypes.func.isRequired,
-  'getQuickReplies': PropTypes.func.isRequired,
-  'changeMessage': PropTypes.func.isRequired
+  'changeMessage': PropTypes.func.isRequired,
+  'removeMessage': PropTypes.func.isRequired,
+  'currentId': PropTypes.number
 }
 
 export default FlowBuilder
