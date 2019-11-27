@@ -190,12 +190,12 @@
 
       function myFunction() {
         var header = document.getElementById("flowBuilderHeader");
-        var sticky = header.offsetTop;
-        if (!width) {
+        if (!width && header) {
           width = header.offsetWidth
         }
         console.log('header width', width)
         if (header) {
+          var sticky = header.offsetTop;
           if (window.pageYOffset > sticky) {
             header.classList.remove("stickyFullScreen");
             header.classList.add("sticky");
