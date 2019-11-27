@@ -16,6 +16,13 @@ export function handleDate (d) {
     return c.toDateString() + ' ' + formatAMPM(c)
   }
 }
+export function getMetaUrls (text) {
+  /* eslint-disable */
+  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  /* eslint-enable */
+  var testUrl = text.match(urlRegex)
+  return testUrl
+}
 export function formatDateTime (x) {
   var today = new Date()
   var n = new Date(x)
