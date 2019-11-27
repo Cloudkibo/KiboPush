@@ -108,6 +108,7 @@ class CreateConvo extends React.Component {
     if (validateFields(this.state.broadcast, this.msg)) {
       /* eslint-disable */
         $('#tab_1').removeClass('active')
+        $('#tab_1').addClass('hide')
         $('#tab_2').addClass('active')
         $('#titleBroadcast').removeClass('active')
         $('#titleTarget').addClass('active')
@@ -129,6 +130,7 @@ class CreateConvo extends React.Component {
   onPrevious () {
     /* eslint-disable */
     $('#tab_1').addClass('active')
+    $('#tab_1').removeClass('hide')
     $('#tab_2').removeClass('active')
     $('#titleBroadcast').addClass('active')
     $('#titleTarget').removeClass('active')
