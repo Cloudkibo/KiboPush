@@ -33,7 +33,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'google sheets'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
@@ -601,6 +601,7 @@ class CreateConvo extends React.Component {
                       <div className='tab-content'>
                         <div className='tab-pane fade active in' id='tab_1'>
                           <GenericMessage
+                            module = {this.props.location.state.module}
                             broadcast={this.state.broadcast}
                             handleChange={this.handleChange}
                             setReset={reset => { this.reset = reset }}

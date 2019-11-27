@@ -1,5 +1,4 @@
 import * as ActionTypes from '../constants/constants'
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants'
 
 export function postsInfo (state = {}, action) {
   switch (action.type) {

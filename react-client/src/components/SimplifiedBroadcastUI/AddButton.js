@@ -200,6 +200,7 @@ class AddButton extends React.Component {
                     replyWithMessage={this.props.replyWithMessage}
                     onAdd={this.onAddButton}
                     disabled={this.props.disabled}
+                    module = {this.props.module}
                     />
                 )
             ))

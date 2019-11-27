@@ -3,12 +3,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { getIntegrations } from '../../redux/actions/settings.actions'
 import { addButton, editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import { loadCustomFields} from '../../redux/actions/customFields.actions'
 import CustomFields from '../customFields/customfields'
+import GoogleSheetActions from './GoogleSheetActions'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -22,6 +24,7 @@ class Button extends React.Component {
       openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
       openCustomField: this.props.button ? this.props.button.openCustomField : false,
+      openGoogleSheets: this.props.button ? this.props.button.openGoogleSheets : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
@@ -32,10 +35,13 @@ class Button extends React.Component {
       buttonDisabled: this.props.button ? false : true,
       errorMsg:'',
       customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
-      customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : ''
+      customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
+      googleIntegration: '',
+      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : ''
     }
 
     props.fetchAllSequence()
+    props.getIntegrations()
     props.loadCustomFields()
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -62,6 +68,11 @@ class Button extends React.Component {
     this.resetButton = this.resetButton.bind(this)
     this.handleFetch = this.handleFetch.bind(this)
     this.showCustomField = this.showCustomField.bind(this)
+    this.closeCustomField = this.closeCustomField.bind(this)
+    this.showGoogleSheets = this.showGoogleSheets.bind(this)
+    this.closeGoogleSheets = this.closeGoogleSheets.bind(this)
+    this.updateGoogleAction = this.updateGoogleAction.bind(this)
+    this.removeGoogleAction = this.removeGoogleAction.bind(this)
 
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
@@ -96,6 +107,12 @@ class Button extends React.Component {
     if (nextProps.scrollTo) {
       document.getElementById(this.buttonId).scrollIntoView({ behavior: 'smooth' })
     }
+    if (nextProps.integrations && nextProps.integrations.length > 0) {
+      let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+      if (googleIntegration && googleIntegration.length > 0) {
+        this.setState({googleIntegration: googleIntegration[0]})
+      }
+    }
   }
 
 
@@ -118,6 +135,10 @@ class Button extends React.Component {
 
   showCustomField () {
     this.setState({openCustomField: true})
+  }
+
+  showGoogleSheets () {
+    this.setState({openGoogleSheets: true})
   }
 
   showWebsite () {
@@ -159,8 +180,22 @@ class Button extends React.Component {
     }
   }
 
+  closeCustomField () {
+    this.setState({openCustomField: false, customFieldId: '', buttonDisabled: true, customFieldValue: ''})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
   closeUnsubscribe () {
     this.setState({openUnsubscribe: false, sequenceValue: '', buttonDisabled: true})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
+  closeGoogleSheets () {
+    this.setState({openGoogleSheets: false, buttonDisabled: true})
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -287,7 +322,7 @@ class Button extends React.Component {
         url: this.state.url, // User defined link,
         title: this.state.title, // User defined label
         module: {
-          type: this.props.module,
+          type: this.props.module ? this.props.module : 'broadcast',
           id: ''// messageId
         }
       }
@@ -470,6 +505,23 @@ class Button extends React.Component {
     }
   }
 
+  updateGoogleAction (googleSheetAction) {
+    this.setState({googleSheetAction: googleSheetAction})
+    let buttonData = {title: this.state.title, visible: true, googleSheetAction: googleSheetAction, index: this.props.index}
+    if (this.state.googleSheetAction) {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+      }
+    }
+  }
+
+  removeGoogleAction () {
+    this.setState({googleSheetAction: '', buttonDisabled: true})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
   updateCustomFieldValue (event) {
     this.setState({customFieldValue: event.target.value})
     let buttonData = {title: this.state.title, visible: true, customFieldValue: this.state.customFieldValue, customFieldId: event.target.value, index: this.props.index}
@@ -493,7 +545,7 @@ class Button extends React.Component {
 
           <div style={{marginTop: '30px'}}>
             {
-                  !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage &&
+                  !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage && !this.state.openGoogleSheets &&
                   <div>
                     <h6 style={{color: 'red'}}>Select one of the below actions:</h6>
                     {
@@ -533,7 +585,13 @@ class Button extends React.Component {
                     { (this.props.buttonActions.indexOf('set custom field') > -1) &&
                        this.props.customFields && this.props.customFields.length > 0 &&
                        <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showCustomField}>
-                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' /> Set Custom Field</h7>
+                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-pencil-square-o' /> Set Custom Field</h7>
+                       </div>
+                    }
+                    { (this.props.buttonActions.indexOf('google sheets') > -1) &&
+                       this.state.googleIntegration !== '' &&
+                       <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showGoogleSheets}>
+                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-file-excel-o' /> Google Sheets</h7>
                        </div>
                     }
                   </div>
@@ -550,7 +608,7 @@ class Button extends React.Component {
                 {
                   this.state.openCustomField &&
                   <div className='card'>
-                    <h7 className='card-header'>Set custom field <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                    <h7 className='card-header'>Set custom field <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeCustomField} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <select value={this.state.customFieldId ? this.state.customFieldId : ''} style={{borderColor: !this.state.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event)}>
                         <option value={''} disabled>Select a custom field</option>
@@ -653,6 +711,18 @@ class Button extends React.Component {
                     </div>
                   </div>
                 }
+                {
+                    this.state.openGoogleSheets &&
+                    <div className='card'>
+                      <h7 className='card-header'>Google Sheets <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeGoogleSheets} /></h7>
+                      <div style={{padding: '10px'}} className='card-block'>
+                        <GoogleSheetActions
+                          updateGoogleAction={this.updateGoogleAction}
+                          googleSheetAction={this.state.googleSheetAction}
+                          removeGoogleAction={this.removeGoogleAction} />
+                      </div>
+                    </div>
+                  }
           </div>
         </div>
       </div>
@@ -664,7 +734,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sequences: (state.sequenceInfo.sequences),
-    customFields: (state.customFieldInfo.customFields)
+    customFields: (state.customFieldInfo.customFields),
+    integrations: (state.settingsInfo.integrations)
   }
 }
 
@@ -675,7 +746,8 @@ function mapDispatchToProps (dispatch) {
     editButton: editButton,
     addButton: addButton,
    checkWhitelistedDomains: checkWhitelistedDomains,
-   fetchWhiteListedDomains
+   fetchWhiteListedDomains,
+   getIntegrations
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Button)
