@@ -29,7 +29,7 @@ class StartingStep extends React.Component {
 }
 
 StartingStep.propTypes = {
-  'currentId': PropTypes.string.isRequired,
+  'currentId': PropTypes.number.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
   'getComponent': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,

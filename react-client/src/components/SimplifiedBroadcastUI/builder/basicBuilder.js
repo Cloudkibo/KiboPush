@@ -92,11 +92,11 @@ BasicBuilder.propTypes = {
   'hiddenComponents': PropTypes.array.isRequired,
   'showAddComponentModal': PropTypes.func.isRequired,
   'list': PropTypes.array.isRequired,
-  'noDefaultHeight': PropTypes.bool.isRequired,
+  'noDefaultHeight': PropTypes.bool,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
   'currentId': PropTypes.number.isRequired,
-  'changeMessage': PropTypes.number.isRequired,
+  'changeMessage': PropTypes.func.isRequired,
   'titleEditable': PropTypes.bool,
   'module': PropTypes.string,
   'getItems': PropTypes.func.isRequired

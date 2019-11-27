@@ -92,6 +92,7 @@ class Builders extends React.Component {
     this.changeMessage = this.changeMessage.bind(this)
     this.getQuickReplies = this.getQuickReplies.bind(this)
     this.getCurrentMessage = this.getCurrentMessage.bind(this)
+    this.removeMessage = this.removeMessage.bind(this)
 
     if (props.setReset) {
       props.setReset(this.reset)
@@ -619,6 +620,40 @@ class Builders extends React.Component {
   newConvo () {
     this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
     this.handleChange({broadcast: []})
+  }
+
+  removeMessage () {
+    console.log('removing message', this.state.currentId)
+    let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
+    let lists = this.state.lists
+    let quickReplies = this.state.quickReplies
+    let quickRepliesComponents = this.state.quickRepliesComponents
+
+    let messageFound = false
+    for (let i = 0; i < linkedMessages.length; i++) {
+      if (linkedMessages[i].id === this.state.currentId) {
+        messageFound = true
+        linkedMessages.splice(i,1)
+        delete lists[this.state.currentId]
+        delete quickReplies[this.state.currentId]
+        delete quickRepliesComponents[this.state.currentId]
+        break
+      }
+    }
+    if (!messageFound) {
+      for (let i = 0; i < unlinkedMessages.length; i++) {
+        if (unlinkedMessages[i].id === this.state.currentId) {
+          messageFound = true
+          unlinkedMessages.splice(i,1)
+          delete lists[this.state.currentId]
+          delete quickReplies[this.state.currentId]
+          delete quickRepliesComponents[this.state.currentId]
+          break
+        }
+      }
+    }
+    this.setState({currentId: linkedMessages[0].id, linkedMessages, unlinkedMessages, lists, quickReplies, quickRepliesComponents})
   }
 
   addComponent (componentDetails, edit) {
@@ -1230,6 +1265,7 @@ class Builders extends React.Component {
           list={this.state.lists[this.state.currentId]}
           titleEditable={this.props.titleEditable}
           showTabs={this.props.showTabs}
+          removeMessage={this.removeMessage}
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
@@ -1243,6 +1279,7 @@ class Builders extends React.Component {
           pageId={this.props.pageId}
           getItems={this.getItems}
           changeMessage={this.changeMessage}
+          removeMessage={this.removeMessage}
         />
       }
 
