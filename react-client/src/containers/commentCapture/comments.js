@@ -34,7 +34,6 @@ class Comments extends React.Component {
   }
   handleText(text, index) {
     let urls = getMetaUrls(text)
-    let content = []
     if (urls && urls.length > 0) {
       for (let i = 0; i < urls.length && i < 10; i++) {
         text = text.replace(urls[i], '<a href='+ urls[i]+'>'+ urls[i]+ '</a>')
