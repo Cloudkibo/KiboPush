@@ -10,7 +10,7 @@ class StartingStep extends React.Component {
 
   render () {
     return (
-      <div style={{borderRadius: '4px', width: '300px'}} className='card' onMouseEnter={() => this.props.changeMessage(this.props.currentId)}>
+      <div style={{borderRadius: '4px', width: '300px'}} className='card' onClick={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
           <h6 style={{textAlign: 'center', marginTop: '10px'}}>
             Starting Step

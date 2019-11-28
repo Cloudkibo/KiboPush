@@ -305,15 +305,13 @@ class FlowBuilder extends React.Component {
       newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
     ) {
       console.log('updating chart link added', this.props)
-      debugger;
       let componentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
-      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
+      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
       let index = this.props.unlinkedMessages.findIndex((lm) => lm.id.toString() === componentId.toString())
 
       // this.props.unlinkedMessages[index].id --> blockUniqueId
       this.props.linkedMessages.push(this.props.unlinkedMessages[index])
-
-      //this.updateButtonPayload(fromComponentId, this.props.linkedMessages[index].id)
+      this.updateButtonPayload(fromComponentId, this.props.linkedMessages[this.props.linkedMessages.length-1].id)
       this.props.unlinkedMessages.splice(index, 1)
       console.log('messages updated', this.props) 
       this.linkAdded = false
@@ -322,6 +320,7 @@ class FlowBuilder extends React.Component {
 
   updateButtonPayload (buttonId, blockUniqueId) {
     console.log('updateButtonPayload', this.props)
+    debugger;
     let messages = this.props.linkedMessages
     for (let i = 0; i < messages.length; i++) {
       let message = messages[i]
@@ -330,11 +329,11 @@ class FlowBuilder extends React.Component {
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
-            if (button.id === buttonId) {
-              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = {
+            if (button.id.toString() === buttonId.toString()) {
+              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
                 action: 'send_message_block',
                 blockUniqueId: blockUniqueId
-              }
+              })
               return
             }
           }
@@ -350,11 +349,11 @@ class FlowBuilder extends React.Component {
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
-            if (button.id === buttonId) {
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = {
+            if (button.id.toString() === buttonId.toString()) {
+              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
                 action: 'send_message_block',
                 blockUniqueId: blockUniqueId
-              }
+              })
               return
             }
           }
