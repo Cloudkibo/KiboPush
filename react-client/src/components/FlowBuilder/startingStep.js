@@ -21,6 +21,7 @@ class StartingStep extends React.Component {
             targetId='starting-step-add-component'
             showAddComponentModal={this.props.showAddComponentModal}
             items={this.props.getItems(this.props.currentId)}
+            changeMessage={this.props.changeMessage}
           />
         </div>
       </div>
