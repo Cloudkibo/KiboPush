@@ -3,7 +3,7 @@
  */
 
 import React from "react"
-import { FlowChartWithState, INodeInnerDefaultProps, IPortDefaultProps } from "@mrblenny/react-flow-chart"
+import { FlowChart, INodeInnerDefaultProps, IPortDefaultProps, actions } from "@mrblenny/react-flow-chart"
 import PropTypes from 'prop-types'
 import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
 import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
@@ -11,21 +11,25 @@ import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
 import SIDEBAR from '../../../components/FlowBuilder/sidebar'
 import Targeting from '../../../containers/convo/Targeting'
 import ReactFullScreenElement from "react-fullscreen-element"
+import { mapValues, cloneDeep } from 'lodash'
 
 class FlowBuilder extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.getChartData = this.getChartData.bind(this)
     this.state = {
       fullScreen: false,
       scale: 1,
       maxScale: 2,
-      minScale: 0.5
+      minScale: 0.5,
+      chart: this.getChartData(),
+      prevChart: {},
+      selected: {}
     }
 
     this.getNodeInner = this.getNodeInner.bind(this)
     this.getPortOuter = this.getPortOuter.bind(this)
     this.getPortInner = this.getPortInner.bind(this)
-    this.getChartData = this.getChartData.bind(this)
     this.toggleFullScreen = this.toggleFullScreen.bind(this)
     this.zoomIn = this.zoomIn.bind(this)
     this.zoomOut = this.zoomOut.bind(this)
@@ -35,6 +39,9 @@ class FlowBuilder extends React.Component {
     this.NodeInnerCustom = this.getNodeInner()
     this.PortOuter = this.getPortOuter()
     this.PortInner = this.getPortInner()
+    this.updateChart = this.updateChart.bind(this)
+    this.linkAdded = false
+    this.deleteButtonPayload = this.deleteButtonPayload.bind(this)
   }
 
   resetTransform () {
@@ -102,18 +109,18 @@ class FlowBuilder extends React.Component {
         for (let j = 0; j < components[i].buttons.length; j++) {
           let payload = JSON.parse(components[i].buttons[j].payload)
           console.log('parsed payload', payload)
-          ports[`port${components[i].id+ (j + 1)}`] = {
-            id: `port${components[i].id + (j + 1)}`,
+          ports[`${components[i].buttons[j].id}`] = {
+            id: `${components[i].buttons[j].id}`,
             type: 'input'
           }
-          if (payload.action === 'send_message_block') {
+          if (payload && payload.action === 'send_message_block') {
             console.log('adding link')
             let linkId = Math.floor(Math.random() * 100)
             links[`${linkId}`] = {
               id: `${linkId}`,
               from: {
                 nodeId: `${message.id}`,
-                portId: `port${components[i].id + (j + 1)}`
+                portId: `${components[i].buttons[j].id}`
               },
               to: {
                 nodeId: `${payload.blockUniqueId}`,
@@ -275,8 +282,152 @@ class FlowBuilder extends React.Component {
     return NodeInnerCustom
   }
 
+  updateChart (chartValue) {
+    let prevChart = cloneDeep(this.state.chart)
+    console.log('previous chart', prevChart)
+    let newChart = chartValue(this.state.chart)
+    console.log('chart updated', newChart)
+    this.setState({
+      chart: newChart,
+      prevChart
+    })
+
+    let linksKeys = Object.keys(newChart.links)
+    if (linksKeys.length > Object.keys(prevChart.links).length) {
+      this.linkAdded = true
+    }
+    console.log('linkedAdded', this.linkAdded)
+    console.log(linksKeys)
+    if (
+      this.linkAdded && 
+      newChart.links[linksKeys[linksKeys.length - 1]] &&
+      newChart.links[linksKeys[linksKeys.length - 1]].to && 
+      newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
+    ) {
+      console.log('updating chart link added', this.props)
+      debugger;
+      let componentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
+      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
+      let index = this.props.unlinkedMessages.findIndex((lm) => lm.id.toString() === componentId.toString())
+
+      // this.props.unlinkedMessages[index].id --> blockUniqueId
+      this.props.linkedMessages.push(this.props.unlinkedMessages[index])
+
+      //this.updateButtonPayload(fromComponentId, this.props.linkedMessages[index].id)
+      this.props.unlinkedMessages.splice(index, 1)
+      console.log('messages updated', this.props) 
+      this.linkAdded = false
+    }
+  }
+
+  updateButtonPayload (buttonId, blockUniqueId) {
+    console.log('updateButtonPayload', this.props)
+    let messages = this.props.linkedMessages
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.id === buttonId) {
+              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = {
+                action: 'send_message_block',
+                blockUniqueId: blockUniqueId
+              }
+              return
+            }
+          }
+        }
+      }
+    }
+
+    messages = this.props.unlinkedMessages
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.id === buttonId) {
+              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = {
+                action: 'send_message_block',
+                blockUniqueId: blockUniqueId
+              }
+              return
+            }
+          }
+        }
+      }
+    }
+  }
+
+  componentDidMount () {
+    document.addEventListener('keydown', (e) => {
+      if (e.keyCode === 46 || e.keyCode === 8) {
+        console.log('key pressed in flow builder', this.state)
+        if (this.state.prevChart.selected.type === 'link') {
+          console.log('deleting link', this.props)
+          let linkId = this.state.prevChart.selected.id
+          let toComponentId = this.state.prevChart.links[linkId].to.nodeId
+          // let fromComponenetId = this.state.prevChart.links[linkId].from.nodeId
+
+          // // update button payload
+          // debugger;
+          
+
+          let index = this.props.linkedMessages.findIndex((lm) => lm.id.toString() === toComponentId.toString())
+          //this.props.linkedMessages[index].linkedButton.payload = null
+          this.deleteButtonPayload(toComponentId)
+          this.props.unlinkedMessages.push(this.props.linkedMessages[index])
+          this.props.linkedMessages.splice(index, 1)
+          console.log('messages updated', this.props) 
+        }
+      }
+    })
+  }
+
+  deleteButtonPayload (blockUniqueId) {
+    console.log('deleteButtonPayload', this.props)
+    let messages = this.props.linkedMessages
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let buttonPayload = JSON.parse(component.buttons[k].payload)
+            if (buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
+              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = null
+              return
+            }
+          }
+        }
+      }
+    }
+
+    messages = this.props.unlinkedMessages
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let buttonPayload = JSON.parse(component.buttons[k].payload)
+            if (buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
+              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = null
+              return
+            }
+          }
+        }
+      }
+    }
+  }
+
   render () {
     console.log('rendering flow builder', this.props)
+    const stateActions = mapValues(actions, (func) => (...args) => this.updateChart(func(...args)))
     return (
       <div className='m-content'>
         <div className='tab-content'>
@@ -292,11 +443,12 @@ class FlowBuilder extends React.Component {
                   resetTransform={this.resetTransform}
                 />
                 <div id='flowBuilderChart' style={{border: '1px solid #ccc', overflow: 'hidden'}}>
-                  <FlowChartWithState
-                    initialValue={this.getChartData()}
+                  <FlowChart
+                    chart={this.state.chart}
                     Components={ {
                       NodeInner: this.NodeInnerCustom
                     }}
+                    callbacks={stateActions}
                   />
                 </div>
               </div>

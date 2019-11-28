@@ -321,6 +321,7 @@ class Button extends React.Component {
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: null

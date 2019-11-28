@@ -6,9 +6,12 @@ import { actions } from "@mrblenny/react-flow-chart"
 class ComponentBlock extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+    let messageIndex = messages.findIndex(m => m.id === this.props.currentId)
     this.state = {
       items: [],
-      quickReplies: null
+      quickReplies: null,
+      title: messages[messageIndex].title
     }
     console.log('component block actions', actions)
     this.removeMessage = this.removeMessage.bind(this)
@@ -27,7 +30,7 @@ class ComponentBlock extends React.Component {
       <div id={'componentBlock'+this.props.currentId} style={{borderRadius: '4px', width: '300px'}} className='card' onMouseEnter={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#ccc'}} className='card-header'>
           <h6 style={{marginTop: '10px', textAlign: 'center'}}>
-            <i className="flaticon-paper-plane"></i> Message Block
+            <i className="flaticon-paper-plane"></i> {this.state.title}
 
             <span role='img' aria-label='times' style={{float: 'right', cursor: 'pointer'}} onClick={this.removeMessage}>❌</span>
           </h6>
