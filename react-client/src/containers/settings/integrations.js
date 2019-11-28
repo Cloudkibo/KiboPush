@@ -11,17 +11,27 @@ class Integrations extends React.Component {
     super(props, context)
     this.state = {
       integrations: [
-        {name: 'Google Sheets',
+        {
+          name: 'Google Sheets',
           icon: 'fa fa-file-excel-o',
           enabled: false,
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        {name: 'DialogFlow',
+        {
+          name: 'DialogFlow',
           icon: 'fa fa-cube',
           enabled: false,
           description: 'This integration can help you link DailogFlow Agent with Facebook Page',
-          color: 'orange'}
+          color: 'orange'
+        },
+        { 
+          name: 'Hubspot',
+          icon: 'fa fa-transgender-alt',
+          enabled: false,
+          description: 'This integration can help you save data from KiboPush to HubSpot or vice versa',
+          color: 'orangered'
+        }
       ],
     }
 
@@ -115,7 +125,7 @@ class Integrations extends React.Component {
                                    ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.disconnect(integration._id)}>
                                      Disconnect
                                    </button>
-                                   : <a href='/api/sheetsIntegrations/auth' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                                   : <a href= {integration.name === 'Hubspot'? '/api/hubspotIntegrations/auth':'/api/sheetsIntegrations/auth'} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                                    Connect
                                  </a>
                                  }
