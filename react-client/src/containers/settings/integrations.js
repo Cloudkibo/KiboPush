@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getIntegrations, updateIntegration } from '../../redux/actions/settings.actions'
+import { getIntegrations, updateIntegration, createIntegration } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -38,6 +38,11 @@ class Integrations extends React.Component {
   connect (id) {
     if (id) {
       this.props.updateIntegration(id, {enabled: true})
+    } else {
+      this.props.history.push({
+        pathname: '/api/sheetsIntegrations/auth'
+      })
+      // this.props.createIntegration()
     }
   }
 
@@ -110,9 +115,9 @@ class Integrations extends React.Component {
                                    ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.disconnect(integration._id)}>
                                      Disconnect
                                    </button>
-                                   : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} onClick={() => this.connect(integration._id)}>
+                                   : <a href='/api/sheetsIntegrations/auth' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                                    Connect
-                                 </button>
+                                 </a>
                                  }
 						                   </span>
                               <span className='m-widget4__ext'>
@@ -142,7 +147,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getIntegrations: getIntegrations,
-    updateIntegration: updateIntegration
+    updateIntegration: updateIntegration,
+    createIntegration
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)

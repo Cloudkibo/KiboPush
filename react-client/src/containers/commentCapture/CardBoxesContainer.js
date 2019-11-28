@@ -31,7 +31,7 @@ class CardBoxesContainer extends React.Component {
               <CardBox
                 style='brand'
                 value={(this.props.data && this.props.data.totalComments) ? this.props.data.totalComments : 0}
-                label='Total Comments'
+                label= {this.props.singlePostResult ? 'Total User Comments' : 'Total Users Comments'}
                 id='totalComments'
               />
           </div>
@@ -46,7 +46,7 @@ class CardBoxesContainer extends React.Component {
               <CardBox
                 style='success'
                 value={(this.props.data && this.props.data.conversions) ? this.props.data.conversions : 0}
-                label='Conversions'
+                label='Total Conversions'
                 id='conversions'
               />
           </div>
