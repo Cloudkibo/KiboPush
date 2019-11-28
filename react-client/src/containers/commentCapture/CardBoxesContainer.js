@@ -23,24 +23,20 @@ class CardBoxesContainer extends React.Component {
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalComments'>
             {
               this.props.singlePostResult ?
-              <span>Number of Total Comments of Post</span>:
-              <span>Number of Total Comments of All Posts</span>
+              <span> Number of comments received on the post by the users</span>:
+              <span> Number of comments received on the posts by the users</span>
             }
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3'  style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
                 style='brand'
                 value={(this.props.data && this.props.data.totalComments) ? this.props.data.totalComments : 0}
-                label= {this.props.singlePostResult ? 'Total User Comments' : 'Total Users Comments'}
+                label='Total Users Comments'
                 id='totalComments'
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='conversions'>
-            {
-              this.props.singlePostResult ?
-              <span>Number of Total Conversions of Post</span>:
-              <span>Number of Total Conversions of All Posts</span>
-            }
+            <span>Number of users who subscribed using comment capture</span>  
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -51,11 +47,7 @@ class CardBoxesContainer extends React.Component {
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalRepliesSent'>
-            {
-              this.props.singlePostResult ?
-              <span>Number of Total Replies Sent of Post</span>:
-              <span>Number of Total Replies Sent of All Posts</span>
-            }
+            <span>Number of comments for which an auto reply was sent in messenger</span>
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -66,11 +58,7 @@ class CardBoxesContainer extends React.Component {
               />
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='waitingConversion'>
-            {
-              this.props.singlePostResult ?
-              <span>Number of waitingConversions of Post</span>:
-              <span>Number of waitingConversions of All Posts</span>
-            }
+          <span> Number of commentors who have yet not responded to the auto reply in messenger</span>
 
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
@@ -83,7 +71,7 @@ class CardBoxesContainer extends React.Component {
           </div>
           {this.props.singlePostResult &&
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='negativeMatch'>
-            <span>Number of Negative Match of Post</span>
+            <span>Number of comments for which an auto reply was not sent in the messenger</span>
           </UncontrolledTooltip>
           }
           {this.props.singlePostResult &&
