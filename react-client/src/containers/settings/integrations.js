@@ -11,22 +11,27 @@ class Integrations extends React.Component {
     super(props, context)
     this.state = {
       integrations: [
-        {name: 'Google Sheets',
+        {
+          name: 'Google Sheets',
           icon: 'fa fa-file-excel-o',
           enabled: false,
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        {name: 'DialogFlow',
+        {
+          name: 'DialogFlow',
           icon: 'fa fa-cube',
           enabled: false,
           description: 'This integration can help you link DailogFlow Agent with Facebook Page',
-          color: 'orange'},
-          {name: 'Hubspot',
+          color: 'orange'
+        },
+        { 
+          name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
           enabled: false,
           description: 'This integration can help you save data from KiboPush to HubSpot or vice versa',
-          color: 'orangered'}
+          color: 'orangered'
+        }
       ],
     }
 
