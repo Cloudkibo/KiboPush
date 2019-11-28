@@ -30,6 +30,7 @@ class FlowBuilder extends React.Component {
     this.zoomIn = this.zoomIn.bind(this)
     this.zoomOut = this.zoomOut.bind(this)
     this.resetTransform = this.resetTransform.bind(this)
+    this.getPortsNLinks = this.getPortsNLinks.bind(this)
 
     this.NodeInnerCustom = this.getNodeInner()
     this.PortOuter = this.getPortOuter()
@@ -75,9 +76,61 @@ class FlowBuilder extends React.Component {
     this.setState({fullScreen: !this.state.fullScreen})
   }
 
+  // links: {
+  //   link1: {
+  //     id: 'link1',
+  //     from: {
+  //       nodeId: 'node1',
+  //       portId: 'port2',
+  //     },
+  //     to: {
+  //       nodeId: 'node2',
+  //       portId: 'port1',
+  //     },
+  //     properties: {
+  //       label: 'example link label',
+  //     },
+  //   },
+
+  getPortsNLinks (message) {
+    let components = message.messageContent
+    console.log('getPortsNLinks', components)
+    let ports = {}
+    let links = {}
+    for (let i = 0; i < components.length; i++) {
+      if (components[i].buttons) {
+        for (let j = 0; j < components[i].buttons.length; j++) {
+          let payload = JSON.parse(components[i].buttons[j].payload)
+          console.log('parsed payload', payload)
+          ports[`port${components[i].id+ (j + 1)}`] = {
+            id: `port${components[i].id + (j + 1)}`,
+            type: 'input'
+          }
+          if (payload.action === 'send_message_block') {
+            console.log('adding link')
+            let linkId = Math.floor(Math.random() * 100)
+            links[`${linkId}`] = {
+              id: `${linkId}`,
+              from: {
+                nodeId: `${message.id}`,
+                portId: `port${components[i].id + (j + 1)}`
+              },
+              to: {
+                nodeId: `${payload.blockUniqueId}`,
+                portId: 'port0'
+              }
+            }
+          }
+        }
+      }
+    }
+    return {ports, links}
+  }
+
   getChartData = () => {
     console.log('getting chart data')
     const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+    let {ports, links} = this.getPortsNLinks(messages[0])
     let chartSimple = {
       offset: {
         x: 0,
@@ -97,13 +150,16 @@ class FlowBuilder extends React.Component {
         x: 25,
         y: 50
       },
-      ports: {},
+      ports: ports,
       properties: {
         id: messages[0].id
       }
     }
+
     console.log('messages', messages)
     for (let i = 1; i < messages.length; i++) {
+      let portsNLinks = this.getPortsNLinks(messages[i])
+      links = Object.assign(links, portsNLinks.links)
       positionX = positionX + 400
       chartSimple['nodes'][`${messages[i].id}`] = {
         id: `${messages[i].id}`,
@@ -112,17 +168,21 @@ class FlowBuilder extends React.Component {
           x: positionX,
           y: positionY
         },
-        ports: {
-          port1: {
-            id: 'port1',
-            type: 'input'
+        ports: Object.assign({
+          port0: {
+            id: 'port0',
+            type: 'left',
+            properties: {
+              custom: 'property',
+            }
           }
-        },
+        }, portsNLinks.ports),
         properties: {
           id: messages[i].id
         }
       }
     }
+    chartSimple['links'] = links
     console.log('chartSimple', chartSimple)
     return chartSimple
   }

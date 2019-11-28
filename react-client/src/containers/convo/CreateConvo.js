@@ -100,7 +100,14 @@ class CreateConvo extends React.Component {
 
   handleChange (state) {
     console.log('handleChange in CreateConvo', state)
-    this.setState(state)
+    // if (this.state.builderValue === 'flow') {
+    //   this.setState({builderValue: 'basic'}, () => {
+    //     state.builderValue = 'flow'
+    //     this.setState(state)
+    //   })
+    // } else {
+      this.setState(state)
+    // }
   }
 
   onNext (e) {

@@ -30,9 +30,12 @@ class Sidebar extends React.Component {
     let chartData = {
       type: 'component_block',
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'input'
+        port0: {
+          id: 'port0',
+          type: 'left',
+          properties: {
+            custom: 'property'
+          }
         }
       },
       properties: {

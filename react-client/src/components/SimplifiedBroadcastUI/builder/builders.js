@@ -52,7 +52,8 @@ class Builders extends React.Component {
       linkedMessages: this.props.linkedMessages ? this.props.linkedMessages : [{title: this.props.convoTitle, id: currentId, messageContent: []}],
       unlinkedMessages: this.props.unlinkedMessages ? this.props.unlinkedMessages : [],
       currentId,
-      quickRepliesIndex: -1
+      quickRepliesIndex: -1,
+      editingFlowBuilder: false
     }
     console.log('Builders constructor state', this.state)
     this.defaultTitle = this.props.convoTitle
@@ -144,7 +145,21 @@ class Builders extends React.Component {
         console.log('lists updated', lists)
       }
     }
-    this.setState({linkedMessages, lists})
+
+    let unlinkedMessages = this.state.unlinkedMessages
+    for (let i = unlinkedMessages.length-1 ; i >= 0; i--) {
+      if (unlinkedMessages[i].id === this.state.currentId) {
+        unlinkedMessages[i].messageContent = broadcast
+        let temp = []
+        for (let j = 0; j < broadcast.length; j++) {
+          let component = this.getComponent(broadcast[j]).component
+          temp.push({content: component})
+        }
+        lists[this.state.currentId] = temp
+        console.log('lists updated', lists)
+      }
+    }
+    this.setState({linkedMessages, unlinkedMessages, lists})
   }
 
   editLinkedMessage (button) {
@@ -197,6 +212,7 @@ class Builders extends React.Component {
         }
       }
       this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
+
     }
   }
 
@@ -223,6 +239,7 @@ class Builders extends React.Component {
       }
       return null
     }).filter(payload => !!payload)
+    console.log('removeLinkedMessages', deletePayload)
     for (let i = 0; i < deletePayload.length; i++) {
       for (let j = linkedMessages.length-1; j >= 0; j--) {
         if (linkedMessages[j].id === deletePayload[i]) {
