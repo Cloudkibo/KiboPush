@@ -157,7 +157,7 @@ class Comments extends React.Component {
                   }
                   <br/>
                   <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                    {comment.dateTime ? formatDateTime(comment.datetime): formatDateTime(Date.now())}
+                    {comment.datetime && formatDateTime(comment.datetime) }
                     {this.repliesCount(comment) < 1 && comment.childCommentCount > 0 && <span>
                     <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.getCommentReplies(comment._id, true)}}><i className='fa fa-reply' /> {comment.childCommentCount} {comment.childCommentCount > 1 ? 'replies' : 'reply' }</a>
                     </span>
@@ -212,7 +212,7 @@ class Comments extends React.Component {
                       }
                      <br/>
                       <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                        {reply.dateTime ? formatDateTime(reply.datetime): formatDateTime(Date.now())}
+                        {reply.datetime && formatDateTime(reply.datetime)}
                       </span>
                     </div>
                   </div>
@@ -231,7 +231,7 @@ class Comments extends React.Component {
           </div>
           ))
         }
-        {this.props.commentsCount && this.props.commentsCount > this.props.comments.length && <span>
+        { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
           <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</a>
         </span>
         }
