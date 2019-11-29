@@ -287,7 +287,7 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Tracking</span>
+                            <span style={{width: '150px'}}>Type</span>
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
