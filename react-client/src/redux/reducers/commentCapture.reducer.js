@@ -4,7 +4,8 @@ export function postsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.SHOW_FACEBOOK_POSTS:
       return Object.assign({}, state, {
-        posts: action.data
+        posts: action.posts,
+        postsCount: action.postsCount
       })
     case ActionTypes.SHOW_POST_COMMENTS:
       return Object.assign({}, state, {
