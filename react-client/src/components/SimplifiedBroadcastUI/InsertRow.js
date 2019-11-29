@@ -11,6 +11,7 @@ class InsertRow extends React.Component {
     this.state = {
       spreadSheetValue: props.spreadsheet !== '' ? props.spreadsheet : '',
       workSheetValue: props.worksheet !== '' ? props.worksheet : '',
+      workSheetName: props.worksheetName !== '' ? props.worksheetName : '',
       loadingWorkSheet: false,
       loadingColumns: false,
       mappingData: props.mapping !== '' ? props.mapping : '',
@@ -55,7 +56,7 @@ class InsertRow extends React.Component {
     if (this.state.spreadSheetValue === '' || this.state.workSheetValue === '') {
       this.msg.error('Please fill all the required fields')
     } else {
-      this.props.save(this.state.spreadSheetValue, this.state.workSheetValue, this.state.mappingData)
+      this.props.save(this.state.spreadSheetValue, this.state.workSheetValue, this.state.workSheetName, this.state.mappingData)
     }
   }
 
@@ -84,7 +85,8 @@ class InsertRow extends React.Component {
   }
 
   onWorkSheetChange (event) {
-    this.setState({workSheetValue: event.target.value, loadingColumns: true})
+    let worksheetName = this.props.worksheets.filter(worksheet => worksheet.sheetId.toString() === event.target.value)
+    this.setState({workSheetValue: event.target.value, workSheetName: worksheetName[0].title, loadingColumns: true})
     this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
     if (event.target.value !== '' && this.state.spreadSheetValue !== '') {
       this.setState({buttonDisabled: false})
@@ -96,7 +98,7 @@ class InsertRow extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('in UNSAFE_componentWillReceiveProps of insert_row', this.props)
+    console.log('in UNSAFE_componentWillReceiveProps of insert_row', nextProps)
     if (nextProps.worksheets && nextProps.worksheets.length > 0) {
       this.setState({loadingWorkSheet: false})
     }
@@ -202,7 +204,7 @@ class InsertRow extends React.Component {
               <option key='' value='' disabled>Select a Spreadsheet...</option>
               {
                 this.props.spreadsheets.map((spreadSheet, i) => (
-                  <option key={i} value={spreadSheet.spreadsheetId}>{spreadSheet.title}</option>
+                  <option key={i} value={spreadSheet.id}>{spreadSheet.name}</option>
                 ))
               }
             </select>
@@ -216,7 +218,7 @@ class InsertRow extends React.Component {
               <option key='' value='' disabled>Select a Worksheet...</option>
               {
                 this.props.worksheets.map((worksheet, i) => (
-                  <option key={i} value={worksheet.sheetId}>{worksheet.title}</option>
+                  <option key={i} value={worksheet.sheetId.toString()}>{worksheet.title}</option>
                 ))
               }
             </select>

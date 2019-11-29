@@ -39,6 +39,7 @@ class Button extends React.Component {
       googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
     	spreadSheet: this.props.button && this.props.button.payload ? this.props.button.payload.spreadSheet : '',
     	worksheet: this.props.button && this.props.button.payload ? this.props.button.payload.worksheet : '',
+      worksheetName: this.props.button && this.props.button.payload ? this.props.button.payload.worksheetName : '',
     	mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
       lookUpValue: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpValue : '',
       lookUpColumn: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpColumn : ''
@@ -94,9 +95,11 @@ class Button extends React.Component {
     console.log('in componentDidMount of button', this.props.button)
     if (this.props.button && this.props.button.payload && typeof this.props.button.payload === 'string') {
       let buttonPayload = JSON.parse(this.props.button.payload)
+      console.log('button payload for work', buttonPayload)
       if (buttonPayload.googleSheetAction) {
         this.setState({spreadSheet: buttonPayload.spreadSheet,
           worksheet: buttonPayload.worksheet,
+          worksheetName: buttonPayload.worksheetName,
           mapping: buttonPayload.mapping,
           googleSheetAction: buttonPayload.googleSheetAction,
           lookUpValue: buttonPayload.lookUpValue,
@@ -215,7 +218,17 @@ class Button extends React.Component {
   }
 
   closeGoogleSheets () {
-    this.setState({openGoogleSheets: false, buttonDisabled: true})
+    this.setState({
+      googleSheetAction: '',
+	    spreadSheet: '',
+    	worksheet: '',
+      worksheetName: '',
+    	mapping: '',
+      buttonDisabled: true,
+      lookUpValue: '',
+      lookUpColumn: '',
+      openGoogleSheets: false
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -327,6 +340,7 @@ class Button extends React.Component {
           googleSheetAction: this.state.googleSheetAction,
           spreadSheet: this.state.spreadSheet,
         	worksheet: this.state.worksheet,
+          worksheetName: this.state.worksheetName,
         	mapping: this.state.mapping,
           lookUpValue: this.state.lookUpValue,
           lookUpColumn: this.state.lookUpColumn
@@ -427,6 +441,7 @@ class Button extends React.Component {
           googleSheetAction: this.state.googleSheetAction,
           spreadSheet: this.state.spreadSheet,
         	worksheet: this.state.worksheet,
+          worksheetName: this.state.worksheetName,
         	mapping: this.state.mapping,
           lookUpValue: this.state.lookUpValue,
           lookUpColumn: this.state.lookUpColumn
@@ -561,6 +576,7 @@ class Button extends React.Component {
     this.setState({googleSheetAction: googleSheetPayload.googleSheetAction,
       spreadSheet: googleSheetPayload.spreadSheet,
       worksheet: googleSheetPayload.worksheet,
+      worksheetName: googleSheetPayload.worksheetName,
       mapping: googleSheetPayload.mapping,
       lookUpValue: googleSheetPayload.lookUpValue,
       lookUpColumn: googleSheetPayload.lookUpColumn
@@ -569,6 +585,7 @@ class Button extends React.Component {
       googleSheetAction: googleSheetPayload.googleSheetAction,
 	    spreadSheet: googleSheetPayload.spreadSheet,
     	worksheet: googleSheetPayload.worksheet,
+      worksheetName: googleSheetPayload.worksheetName,
     	mapping: googleSheetPayload.mapping,
       lookUpValue: googleSheetPayload.lookUpValue,
       lookUpColumn: googleSheetPayload.lookUpColumn,
@@ -591,6 +608,7 @@ class Button extends React.Component {
       googleSheetAction: '',
 	    spreadSheet: '',
     	worksheet: '',
+      worksheetName: '',
     	mapping: '',
       buttonDisabled: true,
       lookUpValue: '',
@@ -799,6 +817,7 @@ class Button extends React.Component {
                           removeGoogleAction={this.removeGoogleAction}
                           googleSheetAction={this.state.googleSheetAction}
                           worksheet={this.state.worksheet}
+                          worksheetName={this.state.worksheetName}
                           spreadSheet={this.state.spreadSheet}
                           mapping={this.state.mapping}
                           lookUpValue={this.state.lookUpValue}
