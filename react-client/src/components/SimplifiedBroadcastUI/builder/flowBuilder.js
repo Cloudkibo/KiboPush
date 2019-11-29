@@ -305,14 +305,21 @@ class FlowBuilder extends React.Component {
       newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
     ) {
       console.log('updating chart link added', this.props)
-      let componentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
-      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
-      let index = this.props.unlinkedMessages.findIndex((lm) => lm.id.toString() === componentId.toString())
+      debugger;
+      let toComponentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
+      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
+      let fromButtonId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
+      let toIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === toComponentId.toString())
+      let fromIndex = this.props.linkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
 
-      // this.props.unlinkedMessages[index].id --> blockUniqueId
-      this.props.linkedMessages.push(this.props.unlinkedMessages[index])
-      this.updateButtonPayload(fromComponentId, this.props.linkedMessages[this.props.linkedMessages.length-1].id)
-      this.props.unlinkedMessages.splice(index, 1)
+      if (fromIndex > -1) {
+        this.props.linkedMessages.push(this.props.unlinkedMessages[toIndex])
+        this.updateButtonPayload(fromButtonId, this.props.linkedMessages[this.props.linkedMessages.length-1].id)
+        this.props.unlinkedMessages.splice(toIndex, 1)
+      } else {
+        fromIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
+        this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
+      }
       console.log('messages updated', this.props) 
       this.linkAdded = false
     }
@@ -320,7 +327,6 @@ class FlowBuilder extends React.Component {
 
   updateButtonPayload (buttonId, blockUniqueId) {
     console.log('updateButtonPayload', this.props)
-    debugger;
     let messages = this.props.linkedMessages
     for (let i = 0; i < messages.length; i++) {
       let message = messages[i]
