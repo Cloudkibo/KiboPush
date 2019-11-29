@@ -18,7 +18,7 @@ class ComponentBlock extends React.Component {
   }
 
   removeMessage (e) {
-    let element = document.getElementById('componentBlock'+this.props.currentId)
+    let element = document.getElementById('flowBuilderCard-'+this.props.currentId)
     console.log('removing message', element)
     element.click()
     element.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 46, bubbles: true, cancelable: true}))
@@ -27,7 +27,7 @@ class ComponentBlock extends React.Component {
 
   render () {
     return (
-      <div id={'componentBlock'+this.props.currentId} style={{borderRadius: '4px', width: '300px'}} className='card' onClick={() => this.props.changeMessage(this.props.currentId)}>
+      <div id={'flowBuilderCard-'+this.props.currentId} style={{borderRadius: '4px', width: '300px'}} className='card' onClick={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#ccc'}} className='card-header'>
           <h6 style={{marginTop: '10px', textAlign: 'center'}}>
             <i className="flaticon-paper-plane"></i> {this.state.title}

@@ -237,6 +237,7 @@ class Button extends React.Component {
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: this.props.button.payload ? this.props.button.payload : null

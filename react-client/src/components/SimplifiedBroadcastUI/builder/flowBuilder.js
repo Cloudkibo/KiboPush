@@ -12,6 +12,7 @@ import SIDEBAR from '../../../components/FlowBuilder/sidebar'
 import Targeting from '../../../containers/convo/Targeting'
 import ReactFullScreenElement from "react-fullscreen-element"
 import { mapValues, cloneDeep } from 'lodash'
+import { UncontrolledTooltip } from 'reactstrap'
 
 class FlowBuilder extends React.Component {
   constructor (props, context) {
@@ -42,6 +43,114 @@ class FlowBuilder extends React.Component {
     this.updateChart = this.updateChart.bind(this)
     this.linkAdded = false
     this.deleteButtonPayload = this.deleteButtonPayload.bind(this)
+    this.getElements = this.getElements.bind(this)
+    this.getTooltips = this.getTooltips.bind(this)
+  }
+
+  getTooltips () {
+    let buttons = {}
+    let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+    for (let i = 0; i < messages.length; i++) {
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            buttons[button.id] = button.title
+          }
+        }
+      }
+    }
+    console.log('addTooltips buttons', buttons)
+
+
+    let buttonIds = Object.keys(buttons)
+    let tooltips = []
+    for (let i = 0; i < buttonIds.length; i++) {
+      let port = document.querySelector(`[data-port-id='${buttonIds[i]}']`)
+      if (port) {
+        console.log('port found', port)
+        port.id = `port-${buttonIds[i]}`
+        tooltips.push(
+          (        
+          <UncontrolledTooltip placement='bottom' target={`port-${buttonIds[i]}`}>
+            <span>{buttons[buttonIds[i]]}</span>
+          </UncontrolledTooltip>)
+        )
+      }
+    }
+    console.log('returning tooltips', tooltips)
+    return tooltips
+  }
+
+  getElements () {
+    let buttonIds = []
+    let messageCardIds = []
+
+    let elements = {}
+
+    let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+    for (let i = 0; i < messages.length; i++) {
+      messageCardIds.push(messages[i].id)
+      elements[messages[i].id] = []
+      let message = messages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            elements[messages[i].id].push(button.id)
+          }
+        }
+      }
+    }
+
+    console.log('elements', elements)
+    let buttonPositions = {}
+
+    let elementKeys = Object.keys(elements)
+    for (let i = 0; i < elementKeys.length; i++) {
+      let card = document.getElementById('flowBuilderCard-'+ elementKeys[i])
+      if (card) {
+        let buttons = elements[elementKeys[i]]
+        if (buttons.length > 0) {
+          let cardDimensions = card.getBoundingClientRect()
+          for (let j = 0; j < buttons.length; j++) {
+            let buttonElement = document.getElementById('button-'+buttons[j])
+            if (buttonElement) {
+              let buttonDimensions = buttonElement.getBoundingClientRect()
+              console.log(`cardDimensions ${i}`, cardDimensions)
+              console.log(`buttonDimensions ${j}`, buttonDimensions)
+              buttonPositions[buttons[j]] = {
+                y: (buttonDimensions.top - cardDimensions.top),
+                x: (buttonDimensions.left - cardDimensions.left)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    console.log('buttonPositions', buttonPositions)
+    let buttonPositionKeys = Object.keys(buttonPositions)
+    for (let i = 0; i < buttonPositionKeys.length; i++) {
+      let key = buttonPositionKeys[i]
+      let port = document.querySelector(`[data-port-id='${key}']`)
+      if (port) {
+        let portElement = port.parentElement
+        console.log('portElement', portElement)
+        portElement.style.top = `-${buttonPositions[key].y}px`
+        portElement.style.left = `${buttonPositions[key].x}px`
+        console.log('set portElement style', portElement.style)
+        console.log('new position', buttonPositions[key])        
+      }
+    }
+
+    let linkElements = document.getElementsByTagName('svg')
+    for (let i = 0; i < linkElements.length; i++) {
+      linkElements[i].style['z-index'] = 1
+    }
   }
 
   resetTransform () {
@@ -111,7 +220,7 @@ class FlowBuilder extends React.Component {
           console.log('parsed payload', payload)
           ports[`${components[i].buttons[j].id}`] = {
             id: `${components[i].buttons[j].id}`,
-            type: 'input'
+            type: 'right'
           }
           if (payload && payload.action === 'send_message_block') {
             console.log('adding link')
@@ -283,6 +392,7 @@ class FlowBuilder extends React.Component {
   }
 
   updateChart (chartValue) {
+    //this.getElements()
     let prevChart = cloneDeep(this.state.chart)
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
@@ -295,6 +405,8 @@ class FlowBuilder extends React.Component {
     let linksKeys = Object.keys(newChart.links)
     if (linksKeys.length > Object.keys(prevChart.links).length) {
       this.linkAdded = true
+    } else {
+      this.linkAdded = false
     }
     console.log('linkedAdded', this.linkAdded)
     console.log(linksKeys)
@@ -302,7 +414,8 @@ class FlowBuilder extends React.Component {
       this.linkAdded && 
       newChart.links[linksKeys[linksKeys.length - 1]] &&
       newChart.links[linksKeys[linksKeys.length - 1]].to && 
-      newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
+      newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId &&
+      newChart.links[linksKeys[linksKeys.length - 1]].from.portId !== 'port0'
     ) {
       console.log('updating chart link added', this.props)
       debugger;
@@ -437,6 +550,9 @@ class FlowBuilder extends React.Component {
       <div className='m-content'>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
+            <div>
+              {this.getTooltips()}
+            </div>
             <ReactFullScreenElement fullScreen={this.state.fullScreen}>
               <div style={{background: 'white'}}>
                 <SIDEBAR
