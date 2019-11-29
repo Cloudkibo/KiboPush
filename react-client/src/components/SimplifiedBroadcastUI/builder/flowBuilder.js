@@ -45,6 +45,17 @@ class FlowBuilder extends React.Component {
     this.deleteButtonPayload = this.deleteButtonPayload.bind(this)
     this.getElements = this.getElements.bind(this)
     this.getTooltips = this.getTooltips.bind(this)
+    this.fixInvalidNodes = this.fixInvalidNodes.bind(this)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillRecieveProps nextProps', nextProps)
+    if (nextProps.linkedMessages.concat(nextProps.unlinkedMessages).length > Object.keys(this.state.chart.nodes).length) {
+      this.setState({
+        chart: this.getChartData(),
+        prevChart: {}
+      })
+    }
   }
 
   getTooltips () {
@@ -86,9 +97,7 @@ class FlowBuilder extends React.Component {
   }
 
   getElements () {
-    let buttonIds = []
     let messageCardIds = []
-
     let elements = {}
 
     let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
@@ -388,11 +397,58 @@ class FlowBuilder extends React.Component {
     return NodeInnerCustom
   }
 
+  fixInvalidNodes(chart) {
+    let nodeKeys = Object.keys(chart.nodes)
+    for (let i = 0; i < nodeKeys.length; i++) {
+      let validNode = false
+      let key = nodeKeys[i]
+      for (let j = 0; j < this.props.linkedMessages.length; j++) {
+        let messageId = this.props.linkedMessages[j].id
+        if (messageId.toString() === key.toString()) {
+          validNode = true
+          break
+        }
+      }
+      if (!validNode) {
+        for (let j = 0; j < this.props.unlinkedMessages.length; j++) {
+          let messageId = this.props.unlinkedMessages[j].id
+          if (messageId.toString() === key.toString()) {
+            validNode = true
+            break
+          }
+        }
+      }
+      if (validNode) {
+        validNode = false
+      } else {
+        for (let m = 0; m < this.props.unlinkedMessages.length; m++) {
+          let validMessage = false
+          for (let n = 0; n < nodeKeys.length; n++) {
+            if (this.props.unlinkedMessages[m].id.toString() === nodeKeys[n].toString()) {
+              validMessage = true
+              break
+            }
+          }
+          if (validMessage) {
+            validMessage = false
+          } else {
+            let unmatchedId = this.props.unlinkedMessages[m].id
+            let node = chart.nodes[nodeKeys[i]]
+            node.id = unmatchedId
+            chart.nodes[unmatchedId] = node
+            delete chart.nodes[nodeKeys[i]]
+          }
+        }
+      }
+    }
+  }
+
   updateChart (chartValue) {
     //this.getElements()
     let prevChart = cloneDeep(this.state.chart)
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
+    this.fixInvalidNodes(newChart)
     console.log('chart updated', newChart)
     let linksKeys = Object.keys(newChart.links)
     if (linksKeys.length > Object.keys(prevChart.links).length) {

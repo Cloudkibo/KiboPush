@@ -20,6 +20,7 @@ class Sidebar extends React.Component {
   }
 
   onDragMessageBlock (event) {
+    console.log('onDragMessageBlock event', event)
     let id = new Date().getTime() + Math.floor(Math.random() * 100)
     let data = {
       id,
