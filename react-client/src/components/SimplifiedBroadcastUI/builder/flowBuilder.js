@@ -81,6 +81,7 @@ class FlowBuilder extends React.Component {
       }
     }
     console.log('returning tooltips', tooltips)
+
     return tooltips
   }
 
@@ -147,10 +148,6 @@ class FlowBuilder extends React.Component {
       }
     }
 
-    let linkElements = document.getElementsByTagName('svg')
-    for (let i = 0; i < linkElements.length; i++) {
-      linkElements[i].style['z-index'] = 1
-    }
   }
 
   resetTransform () {
@@ -405,37 +402,56 @@ class FlowBuilder extends React.Component {
     let linksKeys = Object.keys(newChart.links)
     if (linksKeys.length > Object.keys(prevChart.links).length) {
       this.linkAdded = true
-    } else {
-      this.linkAdded = false
     }
-    console.log('linkedAdded', this.linkAdded)
+    console.log('linkAdded', this.linkAdded)
     console.log(linksKeys)
-    if (
-      this.linkAdded && 
-      newChart.links[linksKeys[linksKeys.length - 1]] &&
-      newChart.links[linksKeys[linksKeys.length - 1]].to && 
-      newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId &&
-      newChart.links[linksKeys[linksKeys.length - 1]].from.portId !== 'port0'
-    ) {
-      console.log('updating chart link added', this.props)
-      debugger;
-      let toComponentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
-      let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
-      let fromButtonId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
-      let toIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === toComponentId.toString())
-      let fromIndex = this.props.linkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
-
-      if (fromIndex > -1) {
-        this.props.linkedMessages.push(this.props.unlinkedMessages[toIndex])
-        this.updateButtonPayload(fromButtonId, this.props.linkedMessages[this.props.linkedMessages.length-1].id)
-        this.props.unlinkedMessages.splice(toIndex, 1)
-      } else {
-        fromIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
-        this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
+    if (this.linkAdded) {
+      if (
+        newChart.links[linksKeys[linksKeys.length - 1]] &&
+        newChart.links[linksKeys[linksKeys.length - 1]].to && 
+        newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId &&
+        newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
+        newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
+      ) {
+        console.log('updating chart link added', this.props)
+        debugger;
+        let toComponentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
+        let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
+        let fromButtonId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
+        let toIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === toComponentId.toString())
+        let fromIndex = this.props.linkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
+  
+        if (fromIndex > -1) {
+          let addPayload = [this.props.unlinkedMessages[toIndex].id]
+          this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
+          for (let i = 0; i < addPayload.length; i++) {
+            let messageIndex = this.props.unlinkedMessages.findIndex(m => m.id === addPayload[i])
+            let message = this.props.unlinkedMessages[messageIndex]
+            for (let j = 0; j < message.messageContent.length; j++) {
+              let messageContent = message.messageContent[j]
+              if (messageContent.buttons) {
+                for (let k = 0; k < messageContent.buttons.length; k++) {
+                  let button = messageContent.buttons[k]
+                  let payload = JSON.parse(button.payload)
+                  if (payload.blockUniqueId) {
+                    addPayload.push(payload.blockUniqueId)
+                  }
+                }
+              }
+            }
+            this.props.linkedMessages.push(this.props.unlinkedMessages[messageIndex])
+            this.props.unlinkedMessages.splice(messageIndex, 1)
+          }
+        } else {
+          fromIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
+          this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
+        }
+        console.log('messages updated', this.props) 
+        this.linkAdded = false
       }
-      console.log('messages updated', this.props) 
-      this.linkAdded = false
+
     }
+
   }
 
   updateButtonPayload (buttonId, blockUniqueId) {
@@ -488,19 +504,29 @@ class FlowBuilder extends React.Component {
         if (this.state.prevChart.selected.type === 'link') {
           console.log('deleting link', this.props)
           let linkId = this.state.prevChart.selected.id
-          let toComponentId = this.state.prevChart.links[linkId].to.nodeId
-          // let fromComponenetId = this.state.prevChart.links[linkId].from.nodeId
-
-          // // update button payload
-          // debugger;
-          
+          let toComponentId = this.state.prevChart.links[linkId].to.nodeId          
 
           let index = this.props.linkedMessages.findIndex((lm) => lm.id.toString() === toComponentId.toString())
-          //this.props.linkedMessages[index].linkedButton.payload = null
+          let deletePayload = [this.props.linkedMessages[index].id]
           this.deleteButtonPayload(toComponentId)
-          this.props.unlinkedMessages.push(this.props.linkedMessages[index])
-          this.props.linkedMessages.splice(index, 1)
-          console.log('messages updated', this.props) 
+          for (let i = 0; i < deletePayload.length; i++) {
+            let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
+            let message = this.props.linkedMessages[messageIndex]
+            for (let j = 0; j < message.messageContent.length; j++) {
+              let messageContent = message.messageContent[j]
+              if (messageContent.buttons) {
+                for (let k = 0; k < messageContent.buttons.length; k++) {
+                  let button = messageContent.buttons[k]
+                  let payload = JSON.parse(button.payload)
+                  if (payload.blockUniqueId) {
+                    deletePayload.push(payload.blockUniqueId)
+                  }
+                }
+              }
+            }
+            this.props.unlinkedMessages.push(this.props.linkedMessages[messageIndex])
+            this.props.linkedMessages.splice(messageIndex, 1)
+          }
         }
       }
     })
