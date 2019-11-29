@@ -11,6 +11,7 @@ import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import { loadCustomFields} from '../../redux/actions/customFields.actions'
 import CustomFields from '../customFields/customfields'
 import GoogleSheetActions from './GoogleSheetActions'
+import HubspotActions from './hubspot/HubspotActions'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -25,6 +26,7 @@ class Button extends React.Component {
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
       openCustomField: this.props.button ? this.props.button.openCustomField : false,
       openGoogleSheets: this.props.button ? this.props.button.openGoogleSheets : false,
+      openHubspot: this.props.button ? this.props.button.openHubspot : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
@@ -37,7 +39,10 @@ class Button extends React.Component {
       customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
       customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
       googleIntegration: '',
-      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : ''
+      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
+      hubspotIntegration : '',
+      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload. hubspotAction : '',
+
     }
 
     props.fetchAllSequence()
@@ -73,7 +78,10 @@ class Button extends React.Component {
     this.closeGoogleSheets = this.closeGoogleSheets.bind(this)
     this.updateGoogleAction = this.updateGoogleAction.bind(this)
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
-
+    this.showHubspot= this.showHubspot.bind(this)
+    this.updateHubspotAction = this.updateHubspotAction.bind(this)
+    this.removeHubspotAction = this.removeHubspotAction.bind(this)
+    this.closeHubspot =this.closeHubspot.bind(this)
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
   }
@@ -109,8 +117,12 @@ class Button extends React.Component {
     }
     if (nextProps.integrations && nextProps.integrations.length > 0) {
       let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+      let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
       if (googleIntegration && googleIntegration.length > 0) {
         this.setState({googleIntegration: googleIntegration[0]})
+      }
+      if (hubspotIntegration && hubspotIntegration.length > 0) {
+        this.setState({hubspotIntegration: hubspotIntegration[0]})
       }
     }
   }
@@ -139,6 +151,10 @@ class Button extends React.Component {
 
   showGoogleSheets () {
     this.setState({openGoogleSheets: true})
+  }
+
+  showHubspot () {
+    this.setState({openHubspot: true})
   }
 
   showWebsite () {
@@ -200,6 +216,14 @@ class Button extends React.Component {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
   }
+
+  closeHubspot () {
+    this.setState({openHubspot: false, buttonDisabled: true})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
 
   onSequenceChange (e) {
     if (this.state.title !== '') {
@@ -515,8 +539,24 @@ class Button extends React.Component {
     }
   }
 
+  updateHubspotAction (hubspotAction) {
+    this.setState({hubspotAction: hubspotAction})
+    let buttonData = {title: this.state.title, visible: true, hubspotAction: hubspotAction, index: this.props.index}
+    if (this.state.hubspotAction) {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+      }
+    }
+  }
   removeGoogleAction () {
     this.setState({googleSheetAction: '', buttonDisabled: true})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({buttonDisabled: true})
+    }
+  }
+
+  removeHubspotAction () {
+    this.setState({hubspotAction: '', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -545,7 +585,7 @@ class Button extends React.Component {
 
           <div style={{marginTop: '30px'}}>
             {
-                  !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage && !this.state.openGoogleSheets &&
+                  !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage && !this.state.openGoogleSheets && !this.state.openHubspot &&
                   <div>
                     <h6 style={{color: 'red'}}>Select one of the below actions:</h6>
                     {
@@ -592,6 +632,12 @@ class Button extends React.Component {
                        this.state.googleIntegration !== '' &&
                        <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showGoogleSheets}>
                          <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-file-excel-o' /> Google Sheets</h7>
+                       </div>
+                    }
+                    { (this.props.buttonActions.indexOf('hubspot') > -1) &&
+                      //  this.state.hubspotIntegration !== '' &&
+                       <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showHubspot}>
+                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-transgender-alt' /> Hubspot</h7>
                        </div>
                     }
                   </div>
@@ -720,6 +766,18 @@ class Button extends React.Component {
                           updateGoogleAction={this.updateGoogleAction}
                           googleSheetAction={this.state.googleSheetAction}
                           removeGoogleAction={this.removeGoogleAction} />
+                      </div>
+                    </div>
+                  }
+                  {
+                    this.state.openHubspot &&
+                    <div className='card'>
+                      <h7 className='card-header'>Hubspot <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeHubspot} /></h7>
+                      <div style={{padding: '10px'}} className='card-block'>
+                        <HubspotActions
+                          updateHubspotAction={this.updateHubspotAction}
+                          hubspotAction={this.state.hubspotAction}
+                          removeHubspotAction={this.removeHubspotAction} />
                       </div>
                     </div>
                   }
