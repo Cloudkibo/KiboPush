@@ -394,11 +394,6 @@ class FlowBuilder extends React.Component {
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
     console.log('chart updated', newChart)
-    this.setState({
-      chart: newChart,
-      prevChart
-    })
-
     let linksKeys = Object.keys(newChart.links)
     if (linksKeys.length > Object.keys(prevChart.links).length) {
       this.linkAdded = true
@@ -410,11 +405,17 @@ class FlowBuilder extends React.Component {
         newChart.links[linksKeys[linksKeys.length - 1]] &&
         newChart.links[linksKeys[linksKeys.length - 1]].to && 
         newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId &&
+        newChart.links[linksKeys[linksKeys.length - 1]].from &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
       ) {
         console.log('updating chart link added', this.props)
         debugger;
+        if (newChart.links[linksKeys[linksKeys.length - 1]].from.portId === 'port0') {
+          let temp = cloneDeep(newChart.links[linksKeys[linksKeys.length - 1]].from)
+          newChart.links[linksKeys[linksKeys.length - 1]].from = newChart.links[linksKeys[linksKeys.length - 1]].to
+          newChart.links[linksKeys[linksKeys.length - 1]].to = temp
+        }
         let toComponentId = newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId
         let fromComponentId = newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
         let fromButtonId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
@@ -449,9 +450,12 @@ class FlowBuilder extends React.Component {
         console.log('messages updated', this.props) 
         this.linkAdded = false
       }
-
     }
-
+    console.log('newChart', newChart)
+    this.setState({
+      chart: newChart,
+      prevChart
+    })
   }
 
   updateButtonPayload (buttonId, blockUniqueId) {
