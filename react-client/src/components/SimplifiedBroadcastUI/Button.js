@@ -38,13 +38,11 @@ class Button extends React.Component {
       errorMsg:'',
       customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
       customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
-      googleIntegration: '',
+      googleIntegration:'',
       googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
-      hubspotIntegration : '',
-      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload. hubspotAction : '',
-
+      hubspotIntegration:'',
+      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : ''
     }
-
     props.fetchAllSequence()
     props.getIntegrations()
     props.loadCustomFields()
