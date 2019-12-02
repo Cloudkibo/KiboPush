@@ -4,7 +4,7 @@
 
 import React from "react"
 import { FlowChart, INodeInnerDefaultProps, IPortDefaultProps, actions } from "@mrblenny/react-flow-chart"
-import PropTypes from 'prop-types'
+import PropTypes, { element } from 'prop-types'
 import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
 import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
 import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
@@ -46,6 +46,8 @@ class FlowBuilder extends React.Component {
     this.getElements = this.getElements.bind(this)
     this.getTooltips = this.getTooltips.bind(this)
     this.fixInvalidNodes = this.fixInvalidNodes.bind(this)
+    this.updatePortPositions = this.updatePortPositions.bind(this)
+    this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -96,6 +98,27 @@ class FlowBuilder extends React.Component {
     return tooltips
   }
 
+  getPortContainerPositions (elements, elementKey, componentKeys) {
+   // debugger;
+    let card = document.getElementById('flowBuilderCard-'+ elementKey)
+    if (card) {
+      let buttons = elements[elementKey][componentKeys[0]]
+      if (buttons.length > 0) {
+        let cardDimensions = card.getBoundingClientRect()
+        let buttonElement = document.getElementById('button-'+buttons[0])
+        if (buttonElement) {
+          let buttonDimensions = buttonElement.getBoundingClientRect()
+          console.log(`cardDimensions`, cardDimensions)
+          console.log(`buttonDimensions`, buttonDimensions)
+          return {
+            y: (buttonDimensions.top - cardDimensions.top) + (buttonDimensions.height / 2),
+            x: (buttonDimensions.left - cardDimensions.left) + buttonDimensions.width,
+          }
+        }
+      }
+    }
+  }
+
   getElements () {
     let messageCardIds = []
     let elements = {}
@@ -103,59 +126,93 @@ class FlowBuilder extends React.Component {
     let messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
     for (let i = 0; i < messages.length; i++) {
       messageCardIds.push(messages[i].id)
-      elements[messages[i].id] = []
+      elements[messages[i].id] = {}
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        elements[messages[i].id][component.id] = []
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
-            elements[messages[i].id].push(button.id)
+            elements[messages[i].id][component.id].push(button.id)
           }
         }
       }
     }
 
     console.log('elements', elements)
-    let buttonPositions = {}
 
     let elementKeys = Object.keys(elements)
+    let portContainerPosition = {}
+
     for (let i = 0; i < elementKeys.length; i++) {
+      let componentKeys = Object.keys(elements[elementKeys[i]])
+      if (componentKeys.length > 0) {
+        portContainerPosition = this.getPortContainerPositions(elements, elementKeys[i], componentKeys)
+      }
       let card = document.getElementById('flowBuilderCard-'+ elementKeys[i])
+      let broadcastComponents = []
       if (card) {
-        let buttons = elements[elementKeys[i]]
-        if (buttons.length > 0) {
-          let cardDimensions = card.getBoundingClientRect()
-          for (let j = 0; j < buttons.length; j++) {
-            let buttonElement = document.getElementById('button-'+buttons[j])
-            if (buttonElement) {
-              let buttonDimensions = buttonElement.getBoundingClientRect()
-              console.log(`cardDimensions ${i}`, cardDimensions)
-              console.log(`buttonDimensions ${j}`, buttonDimensions)
-              buttonPositions[buttons[j]] = {
-                y: (buttonDimensions.top - cardDimensions.top),
-                x: (buttonDimensions.left - cardDimensions.left)
+        broadcastComponents = card.getElementsByClassName('broadcastContent')
+        console.log('broadcastComponents', broadcastComponents)
+      }
+      for (let j = 0; j < componentKeys.length; j++) {
+        let componentHeight = 0
+        if (broadcastComponents[j]) {
+          componentHeight = broadcastComponents[j].getBoundingClientRect().height
+        }
+        let buttons = elements[elementKeys[i]][componentKeys[j]]
+        for (let k = 0; k < buttons.length; k++) {
+          let buttonElement = document.getElementById('button-'+buttons[k])
+          if (buttonElement) {
+            let port = document.querySelector(`[data-port-id='${buttons[k]}']`)
+            if (port) {
+              if (j === 0) {
+                let portElement = port.parentElement
+                portElement.style['justify-content'] = 'initial'
+                portElement.style['height'] = 'auto'
+                portElement.style.top = `${portContainerPosition.y}px`
+                portElement.style.left = `${portContainerPosition.x}px`
               }
+              let top = j === 0 ? 0 : 50
+              let height = j > 0 ? componentHeight+28 : 0
+              console.log('height', height)
+              if (k === 0) {
+                port.style.margin = `${-12 + top + height}px 0px 0px`
+              } else {
+                port.style.margin = `${15}px 0px 0px`
+              } 
             }
           }
         }
       }
     }
 
-    console.log('buttonPositions', buttonPositions)
-    let buttonPositionKeys = Object.keys(buttonPositions)
-    for (let i = 0; i < buttonPositionKeys.length; i++) {
-      let key = buttonPositionKeys[i]
-      let port = document.querySelector(`[data-port-id='${key}']`)
-      if (port) {
-        let portElement = port.parentElement
-        console.log('portElement', portElement)
-        portElement.style.top = `-${buttonPositions[key].y}px`
-        portElement.style.left = `${buttonPositions[key].x}px`
-        console.log('set portElement style', portElement.style)
-        console.log('new position', buttonPositions[key])        
-      }
-    }
+    // for (let i = 0; i < elementKeys.length; i++) {
+    //   let card = document.getElementById('flowBuilderCard-'+ elementKeys[i])
+    //   if (card) {
+    //     let buttons = elements[elementKeys[i]]
+    //     if (buttons.length > 0) {
+    //       for (let j = 0; j < buttons.length; j++) {
+    //         let buttonElement = document.getElementById('button-'+buttons[j])
+    //         if (buttonElement) {
+    //           let port = document.querySelector(`[data-port-id='${buttons[j]}']`)
+    //           if (port) {
+    //             if (j == 0) {
+    //               port.style.margin = '-12px 0px 0px'
+    //               let portElement = port.parentElement
+    //               portElement.style['justify-content'] = 'initial'
+    //               portElement.style.top = `${portContainerPosition.y}px`
+    //               portElement.style.left = `${portContainerPosition.x}px`
+    //             } else {
+    //               port.style.margin = '15px 0px 0px'
+    //             } 
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
   }
 
@@ -226,7 +283,11 @@ class FlowBuilder extends React.Component {
           console.log('parsed payload', payload)
           ports[`${components[i].buttons[j].id}`] = {
             id: `${components[i].buttons[j].id}`,
-            type: 'right'
+            type: 'right',
+            position: {
+              x: 300,
+              y: 170 + (i*10)
+            }
           }
           if (payload && payload.action === 'send_message_block') {
             console.log('adding link')
@@ -294,6 +355,10 @@ class FlowBuilder extends React.Component {
           port0: {
             id: 'port0',
             type: 'left',
+            position: {
+              x: 0,
+              y: 170
+            },
             properties: {
               custom: 'property',
             }
@@ -443,11 +508,28 @@ class FlowBuilder extends React.Component {
     }
   }
 
+  updatePortPositions (chart) {
+    let nodes = chart.nodes
+    let nodeKeys = Object.keys(nodes)
+    for (let i = 0; i < nodeKeys.length; i++) {
+      let nodeKey = nodeKeys[i]
+      let portKeys = Object.keys(nodes[nodeKey].ports)
+      for (let j = 0; j < portKeys.length; j++) {
+        let portKey = portKeys[j]
+        if (chart.nodes[nodeKey].ports[portKey].type !== 'left') {
+          chart.nodes[nodeKey].ports[portKey].position.x = 261 + 12
+        }
+      }
+    }
+  }
+
   updateChart (chartValue) {
     //this.getElements()
     let prevChart = cloneDeep(this.state.chart)
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
+    this.updatePortPositions(newChart)
+    this.getElements()
     this.fixInvalidNodes(newChart)
     console.log('chart updated', newChart)
     let linksKeys = Object.keys(newChart.links)
@@ -466,7 +548,7 @@ class FlowBuilder extends React.Component {
         newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
       ) {
         console.log('updating chart link added', this.props)
-        debugger;
+        // debugger;
         if (newChart.links[linksKeys[linksKeys.length - 1]].from.portId === 'port0') {
           let temp = cloneDeep(newChart.links[linksKeys[linksKeys.length - 1]].from)
           newChart.links[linksKeys[linksKeys.length - 1]].from = newChart.links[linksKeys[linksKeys.length - 1]].to
@@ -478,7 +560,7 @@ class FlowBuilder extends React.Component {
         let toIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === toComponentId.toString())
         let fromIndex = this.props.linkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
   
-        if (fromIndex > -1) {
+        if (fromIndex > -1 && toIndex > -1) {
           let addPayload = [this.props.unlinkedMessages[toIndex].id]
           this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
           for (let i = 0; i < addPayload.length; i++) {
@@ -499,7 +581,7 @@ class FlowBuilder extends React.Component {
             this.props.linkedMessages.push(this.props.unlinkedMessages[messageIndex])
             this.props.unlinkedMessages.splice(messageIndex, 1)
           }
-        } else {
+        } else if (toIndex > -1) {
           fromIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
           this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
         }
@@ -565,27 +647,30 @@ class FlowBuilder extends React.Component {
           console.log('deleting link', this.props)
           let linkId = this.state.prevChart.selected.id
           let toComponentId = this.state.prevChart.links[linkId].to.nodeId          
+          this.deleteButtonPayload(toComponentId)
 
           let index = this.props.linkedMessages.findIndex((lm) => lm.id.toString() === toComponentId.toString())
-          let deletePayload = [this.props.linkedMessages[index].id]
-          this.deleteButtonPayload(toComponentId)
-          for (let i = 0; i < deletePayload.length; i++) {
-            let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
-            let message = this.props.linkedMessages[messageIndex]
-            for (let j = 0; j < message.messageContent.length; j++) {
-              let messageContent = message.messageContent[j]
-              if (messageContent.buttons) {
-                for (let k = 0; k < messageContent.buttons.length; k++) {
-                  let button = messageContent.buttons[k]
-                  let payload = JSON.parse(button.payload)
-                  if (payload.blockUniqueId) {
-                    deletePayload.push(payload.blockUniqueId)
+          if (index > -1) {
+            let deletePayload = [this.props.linkedMessages[index].id]
+            for (let i = 0; i < deletePayload.length; i++) {
+              let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
+              let message = this.props.linkedMessages[messageIndex]
+              for (let j = 0; j < message.messageContent.length; j++) {
+                let messageContent = message.messageContent[j]
+                if (messageContent.buttons) {
+                  for (let k = 0; k < messageContent.buttons.length; k++) {
+                    // debugger;
+                    let button = messageContent.buttons[k]
+                    let payload = JSON.parse(button.payload)
+                    if (payload && payload.blockUniqueId) {
+                      deletePayload.push(payload.blockUniqueId)
+                    }
                   }
                 }
               }
+              this.props.unlinkedMessages.push(this.props.linkedMessages[messageIndex])
+              this.props.linkedMessages.splice(messageIndex, 1)
             }
-            this.props.unlinkedMessages.push(this.props.linkedMessages[messageIndex])
-            this.props.linkedMessages.splice(messageIndex, 1)
           }
         }
       }
