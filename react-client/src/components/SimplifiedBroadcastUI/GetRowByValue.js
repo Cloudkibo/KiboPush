@@ -211,7 +211,7 @@ class UpdateRow extends React.Component {
           <h5 className="modal-title" id="exampleModalLabel">
             Edit Google Sheets Actions
             </h5>
-          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close">
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
             <span aria-hidden="true">
               &times;
                 </span>
