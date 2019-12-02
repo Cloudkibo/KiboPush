@@ -1,7 +1,10 @@
 import React from 'react'
 import AlertContainer from 'react-alert'
-
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import SubmitForm from './submitForm'
+import {fetchhubSpotForms, emptyFields} from '../../../redux/actions/hubSpot.actions'
+
 class HubspotAction extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -9,33 +12,67 @@ class HubspotAction extends React.Component {
       title: '',
       description: '',
       hubspotAction: '',
+      hubSpotForm: '' ,
+      mapping: '',
       showModal: false
 
     }
+    props.fetchhubSpotForms()
     this.updateHubspotAction = this.updateHubspotAction.bind(this)
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.openModal = this.openModal.bind(this)
     this.closeModal =  this.closeModal.bind(this)
-
+    this.save = this.save.bind(this)
   }
+
+  save (hubSpotForm, mappingData) {
+    console.log('mappingData in save', mappingData)
+    console.log('hubSpotForm in save', hubSpotForm)
+    this.refs.ActionModal.click()
+    this.setState({
+    hubSpotForm: hubSpotForm,
+    mapping: mappingData,
+    showModal: false
+  })
+    this.props.savehubSpotForm({
+      hubspotAction: this.state.hubspotAction,
+      hubSpotForm: hubSpotForm,
+      mapping: mappingData,
+    })
+  }
+  
   closeModal () {
     this.refs.ActionModal.click()
+}
+
+componentDidMount () {
+  console.log('in componentDidMount of Hubspot Action', this.props)
+  if (this.props.hubspotAction!== '' && this.props.hubSpotForm !== '' && this.props.mapping !== '') {
+    this.setState({mapping: this.props.mapping, hubSpotForm: this.props.hubSpotForm})
+    this.updateHubspotAction(this.props.hubSpotForm, true)
+  }
 }
   removeHubspotAction () {
     console.log('in remove removeHubspotAction')
     this.setState({
     title: '',
-    description: ''
+    description: '',
+    hubspotAction: '',
+    hubSpotForm: '' ,
+    mapping: '',
     })
+    this.props.emptyFields()
     this.props.removeHubspotAction()
   }
   openModal () {
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'Submit_data': (<SubmitForm />)
+      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>)
     }
     return modals[this.state.hubspotAction]
   }
+
+  
   updateHubspotAction (hubspotAction, dontShow) {
     console.log('updateHubspotAction', !(dontShow))
     this.setState({hubspotAction: hubspotAction, showModal: !(dontShow)})
@@ -117,4 +154,16 @@ class HubspotAction extends React.Component {
   }
 }
 
-export default HubspotAction
+function mapStateToProps (state) {
+  return {
+    hubSpotForms: (state.hubSpotInfo.hubSpotForms)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    fetchhubSpotForms,
+    emptyFields
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(HubspotAction)

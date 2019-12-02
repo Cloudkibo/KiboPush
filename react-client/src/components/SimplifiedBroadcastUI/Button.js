@@ -41,7 +41,10 @@ class Button extends React.Component {
       googleIntegration:'',
       googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
       hubspotIntegration:'',
-      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : ''
+      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : '',
+      mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
+      hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.hubSpotForm : '',
+
     }
     props.fetchAllSequence()
     props.getIntegrations()
@@ -80,6 +83,7 @@ class Button extends React.Component {
     this.updateHubspotAction = this.updateHubspotAction.bind(this)
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.closeHubspot =this.closeHubspot.bind(this)
+    this.savehubSpotForm= this.savehubSpotForm.bind(this)
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
   }
@@ -89,6 +93,30 @@ class Button extends React.Component {
     if (resp.status === 'success') {
       console.log('fetched whitelisted domains', resp.payload)
       this.setState({whitelistedDomains: resp.payload})
+    }
+  }
+
+  savehubSpotForm(hubSpotFormPayload) {
+    console.log('hubSpotFormPayload', hubSpotFormPayload)
+    this.setState({
+      hubspotAction: hubSpotFormPayload.hubspotAction,
+      hubSpotForm: hubSpotFormPayload.hubSpotForm,
+      mapping: hubSpotFormPayload.mapping
+    })
+    let buttonData = {title: this.state.title, visible: true,
+      hubspotAction: hubSpotFormPayload.hubspotAction,
+      hubSpotForm: hubSpotFormPayload.hubSpotForm,
+      mapping: hubSpotFormPayload.mapping,
+      index: this.props.index}
+    if (hubSpotFormPayload.hubspotAction !== '' &&
+    hubSpotFormPayload.hubSpotForm !== '' &&
+    hubSpotFormPayload.mapping !== '' &&
+      this.state.title !== ''
+  ) {
+      this.setState({buttonDisabled: false})
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({buttonDisabled: false}, buttonData)
+      }
     }
   }
 
@@ -319,6 +347,19 @@ class Button extends React.Component {
         }
         this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
       }
+    } else if (this.state.openHubspot) {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'hubspot',
+          hubspotAction: this.state.hubspotAction,
+          hubSpotForm: this.state.hubSpotForm,
+          mapping: this.state.mapping
+        })
+      }
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
@@ -332,8 +373,10 @@ class Button extends React.Component {
         webview_height_ratio: this.state.webviewsize,
         pageId: this.props.pageId
       }
+      
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     }
+    
   }
 
   handleDone () {
@@ -401,6 +444,19 @@ class Button extends React.Component {
           action: 'set_custom_field',
           customFieldId: this.state.customFieldId,
           customFieldValue: this.state.customFieldValue
+        })
+      }
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.openHubspot) {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'hubspot',
+          hubspotAction: this.state.hubspotAction,
+          hubSpotForm: this.state.hubSpotForm,
+          mapping: this.state.mapping
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
@@ -554,7 +610,7 @@ class Button extends React.Component {
   }
 
   removeHubspotAction () {
-    this.setState({hubspotAction: '', buttonDisabled: true})
+    this.setState({hubspotAction: '', mapping: '', buttonDisabled: true})
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -773,9 +829,12 @@ class Button extends React.Component {
                       <h7 className='card-header'>Hubspot <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeHubspot} /></h7>
                       <div style={{padding: '10px'}} className='card-block'>
                         <HubspotActions
-                          updateHubspotAction={this.updateHubspotAction}
+                          savehubSpotForm={this.savehubSpotForm}
                           hubspotAction={this.state.hubspotAction}
-                          removeHubspotAction={this.removeHubspotAction} />
+                          removeHubspotAction={this.removeHubspotAction} 
+                          hubSpotForm = {this.state.hubSpotForm}
+                          mapping={this.state.mapping}
+                          />
                       </div>
                     </div>
                   }
