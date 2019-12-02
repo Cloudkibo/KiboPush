@@ -20,6 +20,7 @@ class Sidebar extends React.Component {
   }
 
   onDragMessageBlock (event) {
+    console.log('onDragMessageBlock event', event)
     let id = new Date().getTime() + Math.floor(Math.random() * 100)
     let data = {
       id,
@@ -30,9 +31,12 @@ class Sidebar extends React.Component {
     let chartData = {
       type: 'component_block',
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'input'
+        port0: {
+          id: 'port0',
+          type: 'left',
+          properties: {
+            custom: 'property'
+          }
         }
       },
       properties: {

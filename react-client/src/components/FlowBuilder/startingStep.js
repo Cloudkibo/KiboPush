@@ -10,7 +10,7 @@ class StartingStep extends React.Component {
 
   render () {
     return (
-      <div style={{borderRadius: '4px', width: '300px'}} className='card' onMouseEnter={() => this.props.changeMessage(this.props.currentId)}>
+      <div id={`flowBuilderCard-${this.props.currentId}`} style={{borderRadius: '4px', width: '300px'}} className='card' onClick={() => this.props.changeMessage(this.props.currentId)}>
         <div style={{background: '#34bfa3', color: 'white'}} className='card-header'>
           <h6 style={{textAlign: 'center', marginTop: '10px'}}>
             Starting Step
@@ -21,6 +21,7 @@ class StartingStep extends React.Component {
             targetId='starting-step-add-component'
             showAddComponentModal={this.props.showAddComponentModal}
             items={this.props.getItems(this.props.currentId)}
+            changeMessage={this.props.changeMessage}
           />
         </div>
       </div>

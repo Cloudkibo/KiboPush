@@ -14,11 +14,15 @@ class ComponentsArea extends React.Component {
   }
 
   showComponentsPopover () {
-    this.setState({showComponentsPopover: true})
+    this.setState({showComponentsPopover: true}, () => {
+      this.props.changeMessage(this.props.currentId)
+    })
   }
 
   toggleComponentsPopover () {
-    this.setState({showComponentsPopover: !this.state.showComponentsPopover})
+    this.setState({showComponentsPopover: !this.state.showComponentsPopover}, () => {
+      this.props.changeMessage(this.props.currentId)
+    })
   }
 
   render () {
@@ -56,7 +60,8 @@ class ComponentsArea extends React.Component {
 ComponentsArea.propTypes = {
   'currentId': PropTypes.string,
   'showAddComponentModal': PropTypes.func.isRequired,
-  'items': PropTypes.array.isRequired
+  'items': PropTypes.array.isRequired,
+  'changeMessage': PropTypes.func.isRequired
 }
 
 export default ComponentsArea
