@@ -10,7 +10,7 @@ import {fetchComments, fetchCommentReplies, saveCommentReplies
 } from '../../redux/actions/commentCapture.actions'
 import { formatDateTime } from '../../utility/utils'
 import ReactPlayer from 'react-player'
-
+import { getMetaUrls } from '../../utility/utils'
 
 class Comments extends React.Component {
   constructor (props, context) {
@@ -23,6 +23,7 @@ class Comments extends React.Component {
     this.repliesCount = this.repliesCount.bind(this)
     this.showReplies = this.showReplies.bind(this)
     this.hideCommentReplies = this.hideCommentReplies.bind(this)
+    this.handleText = this.handleText.bind(this)
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -31,6 +32,16 @@ class Comments extends React.Component {
     if (truef === false) {
     }
   }
+  handleText(text, index) {
+    let urls = getMetaUrls(text)
+    if (urls && urls.length > 0) {
+      for (let i = 0; i < urls.length && i < 10; i++) {
+        text = text.replace(urls[i], '<a href='+ urls[i]+'>'+ urls[i]+ '</a>')
+      }
+    }
+    return {__html:text}
+  } 
+
    repliesCount (comment) {
     var repliesCount = 0
     if (this.props.commentReplies) {
@@ -84,6 +95,7 @@ class Comments extends React.Component {
       sort_value: -1
     })
   }
+
   render () {
     return (
       <div className='row'>
@@ -109,8 +121,7 @@ class Comments extends React.Component {
                   </span>
                   {comment.commentPayload.map((component, index) => (
                     component.componentType === 'text'
-                    ? <span style={{marginLeft: '5px'}} key={index}>
-                      { component.text }
+                    ? <span style={{marginLeft: '5px'}} dangerouslySetInnerHTML={ this.handleText(component.text, index)} key={index}>
                     </span>
                     : component.componentType === 'image'
                     ? <span key={index} style={{marginLeft: '5px', display: 'block'}}>
@@ -145,7 +156,7 @@ class Comments extends React.Component {
                   }
                   <br/>
                   <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                    {comment.dateTime ? formatDateTime(comment.datetime): formatDateTime(Date.now())}
+                    {comment.datetime && formatDateTime(comment.datetime) }
                     {this.repliesCount(comment) < 1 && comment.childCommentCount > 0 && <span>
                     <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.getCommentReplies(comment._id, true)}}><i className='fa fa-reply' /> {comment.childCommentCount} {comment.childCommentCount > 1 ? 'replies' : 'reply' }</a>
                     </span>
@@ -200,7 +211,7 @@ class Comments extends React.Component {
                       }
                      <br/>
                       <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                        {reply.dateTime ? formatDateTime(reply.datetime): formatDateTime(Date.now())}
+                        {reply.datetime && formatDateTime(reply.datetime)}
                       </span>
                     </div>
                   </div>
@@ -219,7 +230,7 @@ class Comments extends React.Component {
           </div>
           ))
         }
-        {this.props.commentsCount && this.props.commentsCount > this.props.comments.length && <span>
+        { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
           <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</a>
         </span>
         }

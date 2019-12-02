@@ -8,7 +8,8 @@ export function showAllPosts (data) {
   console.log('Data Fetched From posts', data)
   return {
     type: ActionTypes.SHOW_FACEBOOK_POSTS,
-    data: data.reverse()
+    posts: data.posts ? data.posts : [],
+    postsCount: data.count
   }
 }
 export function saveCommentReplies (data) {
@@ -62,10 +63,11 @@ export function saveCurrentPost (data) {
   }
 }
 
-export function fetchAllPosts () {
+export function fetchAllPosts (data) {
   console.log('Actions for loading all facebook Posts')
   return (dispatch) => {
-    callApi('post').then(res => {
+    callApi('post', 'post', data)
+    .then(res => {
       if (res.status === 'success' && res.payload) {
         dispatch(showAllPosts(res.payload))
       } else {

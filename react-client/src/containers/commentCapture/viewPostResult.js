@@ -6,6 +6,9 @@ import { handleDate } from '../../utility/utils'
 import {fetchComments} from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
+import fileDownload from 'js-file-download'
+
+var json2csv = require('json2csv')
 
 class PostResult extends React.Component {
     constructor(props, context) {
@@ -26,6 +29,48 @@ class PostResult extends React.Component {
         number_of_records: 10,
         postId: props.currentPost._id,
         sort_value: -1
+      })
+      this.exportAnalytics = this.exportAnalytics.bind(this)
+      this.prepareExportData = this.prepareExportData.bind(this)
+    }
+    prepareExportData () {
+      var data = []
+      var analytics = {}
+      if (this.props.currentPost) {
+        analytics = {
+          'Page': this.state.pageName,
+          'Title': this.props.currentPost.title,
+          'Type': this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
+          'Date Created': handleDate(this.props.currentPost.datetime),
+          'Total Users comments': this.props.currentPost.count,
+          'Total Conversions': this.props.currentPost.conversionCount,
+          'Total Replies Sent': this.props.currentPost.positiveMatchCount,
+          'Waiting Conversions': this.props.currentPost.waitingReply,
+          'Negative Match': this.props.currentPost.count-this.props.currentPost.positiveMatchCount,
+        }
+      }
+      if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
+        analytics['Post Link'] = `https://facebook.com/${this.props.currentPost.post_id}`  
+      }
+      data.push(analytics)
+      return data
+    }
+    exportAnalytics () {
+      var data = this.prepareExportData()
+      var info = data
+      var keys = []
+      var val = info[0]
+  
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          console.log('call file download function')
+          fileDownload(csv, 'CommentCaptureAnalytics.csv')
+        }
       })
     }
 componentDidMount() {
@@ -166,6 +211,18 @@ render() {
           </div>
 
           </div>
+          <div className='row'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportAnalytics}>
+                <span>
+                  <i className='fa fa-download' />
+                  <span>
+                    Export Records in CSV File
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
           </div>
         </div>
     )
@@ -175,6 +232,7 @@ function mapStateToProps(state) {
     return {
       posts: (state.postsInfo.posts),
       comments: (state.postsInfo.comments),
+      commentsCount: (state.postsInfo.commentsCount),
       currentPost: (state.postsInfo.currentPost),
       allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
       pages: (state.pagesInfo.pages)
