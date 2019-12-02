@@ -398,3 +398,8 @@ export const CREATE_SPONSORED_MESSAGE = 'CREATE_SPONSORED_MESSAGE'
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
+
+// constants for hubSpot
+export const SHOW_hubSpotForm = 'SHOW_hubSpotForm'
+export const SHOW_hubspot_form_COLUMNS = 'SHOW_hubspot_form_COLUMNS'
+export const EMPTY_hubspotForm_FIELDS = 'EMPTY_hubspotForm_FIELDS'
