@@ -8,12 +8,13 @@ import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import CustomFields from '../customFields/customfields'
+import GoogleSheetActions from './GoogleSheetActions'
 
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field'],
+        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field', 'google sheets'],
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
         addingQuickReply: false,
         image_url: '',
@@ -307,6 +308,12 @@ class QuickReplies extends React.Component {
                 </button>
             </div>
         )
+    } else if (action.includes('google')) {
+        return (
+            <div>
+              <GoogleSheetActions />
+            </div>
+        )
     }
   }
 
@@ -369,7 +376,7 @@ class QuickReplies extends React.Component {
     };
     return (
         <div className='no-drag'>
-            
+
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -405,7 +412,7 @@ class QuickReplies extends React.Component {
                                 <button style={{ float: 'right' }}
                                     onClick={() => {
                                         this.toggleAddQuickReply()
-                                    }} 
+                                    }}
                                     className='btn btn-primary btn-sm'
                                     data-dismiss='modal'>No
                                 </button>
@@ -414,7 +421,7 @@ class QuickReplies extends React.Component {
                     </div>
                 </div>
             </div>
-            
+
             <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
             {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>

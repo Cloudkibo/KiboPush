@@ -113,44 +113,7 @@ class GoogleSheetActions extends React.Component {
     return modals[this.state.googleSheetAction]
   }
   render () {
-    console.log('this.state.googleSheetAction', this.state.googleSheetAction)
-    console.log('this.state.showModal', this.state.showModal)
-    return (
-      <div>
-        {/*<i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.props.removeGoogleAction} /></h6>*/}
-        { this.state.title !== ''
-        ? <div>
-          <div className='google-sheet-close-icon' onClick={this.removeGoogleAction}></div>
-          <div className='ui-block'
-            style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer', backgroundColor: 'rgba(0,0,0,.07)'}}
-            onClick={() => this.updateGoogleAction(this.state.googleSheetAction)} data-toggle='modal' data-target='#ActionModal' >
-            <h6>{this.state.title}
-            </h6>
-            <span style={{color: '#676c7b'}}>{this.state.description}</span>
-          </div>
-        </div>
-        : <div>
-          <span>Select one of the Actions below:</span>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateGoogleAction('insert_row')} data-toggle='modal' data-target='#ActionModal'>
-              <h6>Insert Row</h6>
-              <span style={{color: '#676c7b'}}>Send KiboPush Data to Google Sheets</span>
-            </div>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateGoogleAction('get_row_by_value')} data-toggle='modal' data-target='#ActionModal' >
-              <h6>Get Row by Value</h6>
-              <span style={{color: '#676c7b'}}>Return Google Sheets Data to KiboPush</span>
-            </div>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateGoogleAction('update_row')} data-toggle='modal' data-target='#ActionModal' >
-              <h6>Update Row</h6>
-            <span style={{color: '#676c7b'}}>Update Google Sheets with KiboPush Data</span>
-          </div>
-        </div>
-    }
+    <div>
     <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
     <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className='modal-dialog modal-lg' role='document'>

@@ -811,7 +811,7 @@ class GenericMessage extends React.Component {
 
     return (
     <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-     
+
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
@@ -855,7 +855,6 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
-                    
                     <a href='#/' id='single' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden='true'>
                       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">
