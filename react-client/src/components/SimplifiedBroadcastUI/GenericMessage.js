@@ -85,6 +85,7 @@ class GenericMessage extends React.Component {
   }
 
   toggleGSModal (value, content) {
+    console.log('show toggleGSModal called in genericMessage')
     this.setState({showGSModal: value})
     this.GSModalContent = content
   }

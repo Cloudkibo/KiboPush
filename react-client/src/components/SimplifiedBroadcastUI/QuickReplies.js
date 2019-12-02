@@ -24,7 +24,8 @@ class QuickReplies extends React.Component {
         customFields: [],
         index: -1,
         editing: false,
-        currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
+        currentSlideIndex: this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
+        showGSModal: false
     }
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
@@ -52,7 +53,20 @@ class QuickReplies extends React.Component {
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.closeQuickReply = this.closeQuickReply.bind(this)
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
-    console.log('quickReplies constructor')
+    this.toggleGSModal = this.toggleGSModal.bind(this)
+    this.closeGSModal = this.closeGSModal.bind(this)
+
+    this.GSModalContent = null
+  }
+
+  toggleGSModal (value, content) {
+    this.setState({showGSModal: value})
+    this.GSModalContent = content
+  }
+
+  closeGSModal () {
+    this.setState({showGSModal: false})
+    this.refs.ActionModalGS.click()
   }
 
   closeQuickReply () {
@@ -350,8 +364,9 @@ class QuickReplies extends React.Component {
                 mapping={this.state.currentActions[index].mapping}
                 lookUpValue={this.state.currentActions[index].lookUpValue}
                 lookUpColumn={this.state.currentActions[index].lookUpColumn}
-                toggleGSModal={this.props.toggleGSModal}
-                closeGSModal={this.props.closeGSModal}
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                GSModalTarget='ActionModalGS'
                 index={index}
                 />
             </div>
@@ -420,6 +435,13 @@ class QuickReplies extends React.Component {
     };
     return (
         <div className='no-drag'>
+
+          <a href='#/' style={{ display: 'none' }} ref='ActionModalGS' data-toggle='modal' data-target='#ActionModalGS'>ActionModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModalGS' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+            <div style={{ transform: 'translate(0, 0)'}} className='modal-dialog modal-lg' role='document'>
+              {this.state.showGSModal && this.GSModalContent}
+            </div>
+          </div>
 
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">

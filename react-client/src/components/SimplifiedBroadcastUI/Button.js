@@ -824,6 +824,7 @@ class Button extends React.Component {
                           lookUpColumn={this.state.lookUpColumn}
                           toggleGSModal={this.props.toggleGSModal}
                           closeGSModal={this.props.closeGSModal}
+                          GSModalTarget='ActionModal'
                           />
                       </div>
                     </div>
