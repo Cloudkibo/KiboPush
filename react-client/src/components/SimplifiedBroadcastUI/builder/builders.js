@@ -115,19 +115,23 @@ class Builders extends React.Component {
   }
 
   changeMessage (id) {
-    if (this.state.currentId !== id) {
-      let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
-      let messageIndex = messages.findIndex(m => m.id === id)
-      if (messageIndex > -1) {
-        console.log('changing message', this.state.linkedMessages[messageIndex])
-        this.setState({currentId: id}, () => {
-          let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
-          let list = filteredData.length > 0 ? filteredData[0].messageContent : []
-          this.initializeList(list)
-          this.handleChange({broadcast: messages[messageIndex].messageContent, convoTitle: messages[messageIndex].title})
-        })
+    return new Promise ((resolve, reject) => {
+      if (this.state.currentId !== id) {
+        let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+        let messageIndex = messages.findIndex(m => m.id === id)
+        if (messageIndex > -1) {
+          console.log('changing message', this.state.linkedMessages[messageIndex])
+          this.setState({currentId: id}, () => {
+            // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
+            // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
+            // this.initializeList(list)
+            this.handleChange({convoTitle: messages[messageIndex].title}, {changingMessage: true})
+            this.handleChange({broadcast: messages[messageIndex].messageContent}, {changingMessage: true}) 
+            resolve()
+          })
+        }
       }
-    }
+    })
   }
 
   updateLinkedMessagesPayload (broadcast) {
@@ -192,31 +196,33 @@ class Builders extends React.Component {
       this.updateLinkedMessagesTitle(broadcast.convoTitle)
       this.props.handleChange({convoTitle: broadcast.convoTitle, linkedMessages: this.state.linkedMessages})
     } else {
-      broadcast = broadcast.broadcast
-      if (event && event.deletePayload) {
-        console.log('deletePayload', event)
-        this.removeLinkedMessages(event.deletePayload)
-      }
-      this.updateLinkedMessagesPayload (broadcast)
-      for (let i = 0; i < broadcast.length; i++) {
-        let broadcastComponent = broadcast[i]
-        console.log('broadcastComponent', broadcastComponent)
-        if (broadcastComponent.buttons) {
-          this.createLinkedMessagesFromButtons(broadcastComponent.buttons)
+      if (!event.changingMessage) {
+        broadcast = broadcast.broadcast
+        if (event && event.deletePayload) {
+          console.log('deletePayload', event)
+          this.removeLinkedMessages(event.deletePayload)
         }
-        if (broadcastComponent.cards) {
-          for (let j = 0; j < broadcastComponent.cards.length; j++) {
-            let card = broadcastComponent.cards[j]
-            this.createLinkedMessagesFromButtons(card.buttons)
+        this.updateLinkedMessagesPayload (broadcast)
+        for (let i = 0; i < broadcast.length; i++) {
+          let broadcastComponent = broadcast[i]
+          console.log('broadcastComponent', broadcastComponent)
+          if (broadcastComponent.buttons) {
+            this.createLinkedMessagesFromButtons(broadcastComponent)
+          }
+          if (broadcastComponent.cards) {
+            for (let j = 0; j < broadcastComponent.cards.length; j++) {
+              let card = broadcastComponent.cards[j]
+              this.createLinkedMessagesFromButtons(card.buttons)
+            }
           }
         }
+        this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
       }
-      this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
-
     }
   }
 
-  createLinkedMessagesFromButtons(buttons) {
+  createLinkedMessagesFromButtons(broadcastComponent) {
+    let buttons = broadcastComponent.buttons
     for (let j = 0; j < buttons.length; j++) {
       let button = buttons[j]
       if (button.type === 'postback' && button.payload === null) {
@@ -260,7 +266,8 @@ class Builders extends React.Component {
               }
             }
           }
-          unlinkedMessages = unlinkedMessages.concat(linkedMessages.splice(j, 1))
+          unlinkedMessages.push(linkedMessages[j])
+          linkedMessages.splice(j, 1)
         }
       }
     }
@@ -289,9 +296,37 @@ class Builders extends React.Component {
       action: 'send_message_block'
     })
     let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
     let quickReplies = this.state.quickReplies
     let lists = this.state.lists
-    linkedMessages.push(data)
+
+    // debugger;
+    let buttonFound = false
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let message = linkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let messageContent = message.messageContent[j]
+        for (let k = 0; k < messageContent.buttons.length; k++) {
+          let buttonId = messageContent.buttons[k].id
+          if (buttonId === button.id) {
+            buttonFound = true
+            break
+          }
+        }
+        if (buttonFound) {
+          break
+        }
+      }
+      if (buttonFound) {
+        break
+      }
+    }
+
+    if (buttonFound) {
+      linkedMessages.push(data)
+    } else {
+      unlinkedMessages.push(data)
+    }
     lists[id] = []
     quickReplies[id] = []
     this.setState({linkedMessages, lists, quickReplies})
@@ -310,7 +345,7 @@ class Builders extends React.Component {
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
       })
-      this.handleChange({broadcast})
+      this.handleChange({broadcast}, {})
     })
 
   }
@@ -352,7 +387,7 @@ class Builders extends React.Component {
       temp.push({content: component})
     }
     this.setState({list: temp, broadcast})
-    this.handleChange({broadcast})
+    this.handleChange({broadcast}, {})
   }
 
   scrollToTop () {
@@ -426,7 +461,7 @@ class Builders extends React.Component {
     console.log('renaming title')
     this.setState({convoTitle: this.titleConvo.value})
     this.closeDialog()
-    this.handleChange({convoTitle: this.titleConvo.value})
+    this.handleChange({convoTitle: this.titleConvo.value}, {})
   }
 
   handleText (obj) {
@@ -1286,6 +1321,7 @@ class Builders extends React.Component {
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
+          rerenderFlowBuilder={this.props.rerenderFlowBuilder}
           showAddComponentModal={this.showAddComponentModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}

@@ -21,8 +21,10 @@ class ComponentBlock extends React.Component {
     let element = document.getElementById('flowBuilderCard-'+this.props.currentId)
     console.log('removing message', element)
     element.click()
-    element.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 46, bubbles: true, cancelable: true}))
-    this.props.removeMessage()
+    setTimeout(() => {
+      element.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 46, bubbles: true, cancelable: true}))
+      this.props.removeMessage()
+    }, 100)
   }
 
   render () {

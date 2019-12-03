@@ -77,6 +77,7 @@ class CreateConvo extends React.Component {
     this.toggleBuilderDropdown = this.toggleBuilderDropdown.bind(this)
     this.switchBuilder = this.switchBuilder.bind(this)
     this.closeBuilderDropdown = this.closeBuilderDropdown.bind(this)
+    this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
   }
 
   toggleBuilderDropdown () {
@@ -108,6 +109,12 @@ class CreateConvo extends React.Component {
     // } else {
       this.setState(state)
     // }
+  }
+
+  rerenderFlowBuilder () {
+    this.setState({builderValue: 'basic'}, () => {
+      this.setState({builderValue: 'flow'})
+    })
   }
 
   onNext (e) {
@@ -621,6 +628,7 @@ class CreateConvo extends React.Component {
 					</div>
 				</div>
         <BUILDER
+          rerenderFlowBuilder={this.rerenderFlowBuilder}
           convoTitle={this.state.convoTitle}
           handleChange={this.handleChange}
           setReset={reset => { this.reset = reset }}
