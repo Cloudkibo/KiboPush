@@ -158,6 +158,8 @@ class TextModal extends React.Component {
                   addComponent={(buttons) => this.addComponent(buttons)}
                   disabled={!this.state.text}
                   module = {this.props.module}
+                  toggleGSModal={this.props.toggleGSModal}
+                  closeGSModal={this.props.closeGSModal}
                 />
               }
             </div>
