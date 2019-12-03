@@ -265,6 +265,10 @@ export const APPLY_BOT_TEMPLATE = 'APPLY_BOT_TEMPLATE'
 export const SHOW_WAITING_REPLY_LIST = 'SHOW_WAITING_REPLY_LIST'
 export const SHOW_UNANSWERED_QUERIES = 'SHOW_UNANSWERED_QUERIES'
 
+// constants for bots intents
+export const SHOW_BOT_INTENTS = 'SHOW_BOT_INTENTS'
+export const SHOW_CREATED_INTENT = 'SHOW_CREATED_INTENT'
+
 // constants for Sequence
 export const SHOW_ALL_SEQUENCE = 'SHOW_ALL_SEQUENCE'
 export const SHOW_ALL_SEQUENCE_NEW = 'SHOW_ALL_SEQUENCE_NEW'
@@ -274,7 +278,13 @@ export const SHOW_SUBSCRIBER_SEQUENCE = 'SHOW_SUBSCRIBER_SEQUENCE'
 
 // constants for Comment Capture
 export const SHOW_FACEBOOK_POSTS = 'SHOW_FACEBOOK_POSTS'
+export const SHOW_POST_COMMENTS = 'SHOW_POST_COMMENTS'
+export const SHOW_AllPostsAnalytics = 'SHOW_AllPostsAnalytics'
+export const SHOW_SinglePostsAnalytics = 'SHOW_SinglePostsAnalytics'
 export const CURRENT_POST = 'CURRENT_POST'
+export const SAVE_COMMENT_REPLIES = 'SAVE_COMMENT_REPLIES'
+export const SHOW_COMMENTS_REPLIES = 'SHOW_COMMENTS_REPLIES'
+export const RESET_COMMENTS = 'RESET_COMMENTS'
 
 //  constants for Plans
 export const FETCH_ALL_PLANS = 'FETCH_ALL_PLANS'
@@ -388,3 +398,9 @@ export const CREATE_SPONSORED_MESSAGE = 'CREATE_SPONSORED_MESSAGE'
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
+
+// constants for google sheets
+export const SHOW_WORKSHEETS = 'SHOW_WORKSHEETS'
+export const SHOW_SPREADSHEETS = 'SHOW_SPREADSHEETS'
+export const SHOW_COLUMNS = 'SHOW_COLUMNS'
+export const EMPTY_FIELDS = 'EMPTY_FIELDS'

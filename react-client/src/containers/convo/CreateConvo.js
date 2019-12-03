@@ -31,7 +31,7 @@ class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'create message'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'create message', 'google sheets'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
@@ -564,7 +564,6 @@ class CreateConvo extends React.Component {
             Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             <br />
             View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
-
             &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
           </div>
         </div>

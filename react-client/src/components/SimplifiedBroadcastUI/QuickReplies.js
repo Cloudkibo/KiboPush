@@ -8,12 +8,13 @@ import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import CustomFields from '../customFields/customfields'
+import GoogleSheetActions from './GoogleSheetActions'
 
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field'],
+        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field', 'google sheets'],
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
         addingQuickReply: this.props.addingQuickReply ? this.props.addingQuickReply : false,
         image_url: '',
@@ -23,7 +24,8 @@ class QuickReplies extends React.Component {
         customFields: [],
         index: -1,
         editing: false,
-        currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0
+        currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
+        showGSModal: false
     }
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
@@ -50,7 +52,21 @@ class QuickReplies extends React.Component {
     this.updateCustomFieldValue = this.updateCustomFieldValue.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.closeQuickReply = this.closeQuickReply.bind(this)
-    console.log('quickReplies constructor')
+    this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+    this.toggleGSModal = this.toggleGSModal.bind(this)
+    this.closeGSModal = this.closeGSModal.bind(this)
+
+    this.GSModalContent = null
+  }
+
+  toggleGSModal (value, content) {
+    this.setState({showGSModal: value})
+    this.GSModalContent = content
+  }
+
+  closeGSModal () {
+    this.setState({showGSModal: false})
+    this.refs.ActionModalGS.click()
   }
 
   componentDidMount () {
@@ -60,7 +76,7 @@ class QuickReplies extends React.Component {
         if (closeQuickReplyYes) {
             document.getElementById('closeQuickReplyYes').addEventListener('click', () => {
                 this.removeQuickReply()
-            }) 
+            })
         }
     }
   }
@@ -116,16 +132,16 @@ class QuickReplies extends React.Component {
                                 const elementClicked = e.target
                                 elementClicked.setAttribute('listener', 'true')
                                 this.removeQuickReply()
-                            }) 
+                            })
                         }
                         let deleteQuickReplyNo = document.getElementById('deleteQuickReplyNo')
-                
+
                         if (deleteQuickReplyNo && deleteQuickReplyNo.getAttribute('listener') !== 'true') {
                             deleteQuickReplyNo.addEventListener('click', (e) => {
                                 const elementClicked = e.target
                                 elementClicked.setAttribute('listener', 'true')
                                 this.toggleAddQuickReply()
-                            }) 
+                            })
                         }
                     }
                 })
@@ -134,6 +150,7 @@ class QuickReplies extends React.Component {
   }
 
   disableSave () {
+    console.log('in disableSave', this.state.currentActions)
       if (!this.state.currentTitle || this.state.addingAction) {
           return true
       }
@@ -141,10 +158,13 @@ class QuickReplies extends React.Component {
           if (!this.state.currentActions[i].action) {
               return true
           }
-          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId) {
+          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId  && !this.state.currentActions[i].googleSheetAction) {
               return true
           }
           if (this.state.currentActions[i].customFieldId && !this.state.currentActions[i].customFieldValue) {
+              return true
+          }
+          if (this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].worksheet && !this.state.currentActions[i].worksheetName) {
               return true
           }
       }
@@ -207,7 +227,7 @@ class QuickReplies extends React.Component {
   }
 
   checkIfEdited () {
-    if (!this.state.currentTitle !== '' || this.state.image_url ||                this.state.currentActions.length > 0) {
+    if (!this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
         this.setState({editing: true})
     } else {
         this.setState({editing: false})
@@ -224,6 +244,30 @@ class QuickReplies extends React.Component {
       this.setState({currentActions}, () => {
         this.checkIfEdited()
     })
+  }
+
+  removeGoogleAction (index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].googleSheetAction = ''
+    currentActions[index].spreadSheet = ''
+    currentActions[index].worksheet = ''
+    currentActions[index].worksheetName = ''
+    currentActions[index].mapping = ''
+    currentActions[index].lookUpValue = ''
+    currentActions[index].lookUpColumn = ''
+    this.setState({currentActions})
+  }
+
+  saveGoogleSheet (googleSheetPayload, index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].googleSheetAction = googleSheetPayload.googleSheetAction
+    currentActions[index].spreadSheet = googleSheetPayload.spreadSheet
+    currentActions[index].worksheet = googleSheetPayload.worksheet
+    currentActions[index].worksheetName = googleSheetPayload.worksheetName
+    currentActions[index].mapping = googleSheetPayload.mapping
+    currentActions[index].lookUpValue = googleSheetPayload.lookUpValue
+    currentActions[index].lookUpColumn = googleSheetPayload.lookUpColumn
+    this.setState({currentActions})
   }
 
   updateCustomField (event, index) {
@@ -344,6 +388,26 @@ class QuickReplies extends React.Component {
                 </button>
             </div>
         )
+    } else if (action.includes('google')) {
+        return (
+            <div>
+              <GoogleSheetActions
+                saveGoogleSheet={this.saveGoogleSheet}
+                removeGoogleAction={this.removeGoogleAction}
+                googleSheetAction={this.state.currentActions[index].googleSheetAction}
+                worksheet={this.state.currentActions[index].worksheet}
+                worksheetName={this.state.currentActions[index].worksheetName}
+                spreadSheet={this.state.currentActions[index].spreadSheet}
+                mapping={this.state.currentActions[index].mapping}
+                lookUpValue={this.state.currentActions[index].lookUpValue}
+                lookUpColumn={this.state.currentActions[index].lookUpColumn}
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                GSModalTarget='ActionModalGS'
+                index={index}
+                />
+            </div>
+        )
     }
   }
 
@@ -396,6 +460,8 @@ class QuickReplies extends React.Component {
     console.log('quickReplies props', this.props)
     console.log('quickReplies state', this.state)
     console.log('currentSlideIndex', this.state.currentSlideIndex)
+    console.log('this.state.currentActions', this.state.currentActions)
+    console.log(this.state.addingQuickReply, this.state.addingQuickReply)
     let settings = {
         dots: false,
         infinite: false,
@@ -408,8 +474,15 @@ class QuickReplies extends React.Component {
     };
     return (
         <div className='no-drag'>
-            
-            {/* <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+          <a href='#/' style={{ display: 'none' }} ref='ActionModalGS' data-toggle='modal' data-target='#ActionModalGS'>ActionModal</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModalGS' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+            <div style={{ transform: 'translate(0, 0)'}} className='modal-dialog modal-lg' role='document'>
+              {this.state.showGSModal && this.GSModalContent}
+            </div>
+          </div>
+
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
@@ -444,7 +517,7 @@ class QuickReplies extends React.Component {
                                 <button style={{ float: 'right' }}
                                     onClick={() => {
                                         this.toggleAddQuickReply()
-                                    }} 
+                                    }}
                                     className='btn btn-primary btn-sm'
                                     data-dismiss='modal'>No
                                 </button>
@@ -452,8 +525,8 @@ class QuickReplies extends React.Component {
                         }
                     </div>
                 </div>
-            </div> */}
-            
+            </div>
+
             <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
             {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>

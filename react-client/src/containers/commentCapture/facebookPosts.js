@@ -8,12 +8,15 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts, deletePost, saveCurrentPost
+  fetchAllPosts, deletePost, saveCurrentPost, fetchPostsAnalytics,
+  resetComments
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router-dom'
 import { handleDate } from '../../utility/utils'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import CardBoxesContainer from './CardBoxesContainer'
+import moment from 'moment'
 
 class FacebookPosts extends React.Component {
   constructor(props, context) {
@@ -23,17 +26,100 @@ class FacebookPosts extends React.Component {
       totalLength: 0,
       searchValue: '',
       deleteid: '',
+      captureType: '',
+      filter: false,
+      pageNumber: 0,
+      startDate: '',
+      endDate: '',
+      dateRangeWarning: ''
     }
-    props.fetchAllPosts()
+    props.fetchAllPosts({last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      search_value: '',
+      type_value: '',
+      startDate: '',
+      endDate: ''})
+    props.fetchPostsAnalytics()
     props.saveCurrentPost(null)
+    props.resetComments(null)
     this.displayData = this.displayData.bind(this)
+    this.onTypeFilter = this.onTypeFilter.bind(this)
     this.onEdit = this.onEdit.bind(this)
+    this.onView = this.onView.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
     this.getPostText = this.getPostText.bind(this)
+    this.changeDateFrom = this.changeDateFrom.bind(this)
+    this.changeDateTo = this.changeDateTo.bind(this)
+    this.validDateRange = this.validDateRange.bind(this)
+  }
+  validDateRange (startDate, endDate) {
+    var valid = false
+    if (startDate === '' && endDate === '') {
+       valid = true
+       this.setState({
+        dateRangeWarning: ''
+      })
+    } else if (startDate === '' && endDate !== '') {
+      this.setState({
+        dateRangeWarning: 'Select start date to apply filter'
+      })
+      valid = false
+    } else if (startDate !== '' && endDate === '') {
+      this.setState({
+        dateRangeWarning: 'Select end date to apply filter'
+      })
+      valid = false
+    } else if (moment(startDate).isAfter(endDate)) {
+      this.setState({
+        dateRangeWarning: 'Incorrect Range'
+      })
+      valid = false
+    } else {
+      this.setState({
+        dateRangeWarning: ''
+      })
+      valid = true
+    }
+    return valid
+  }
+  changeDateTo (e) {
+    this.setState({
+      endDate: e.target.value
+    })
+    if (this.validDateRange(this.state.startDate, e.target.value)) {
+      this.setState({pageNumber: 0})
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: this.state.startDate, endDate: e.target.value})
+    } else {
+      this.setState({pageNumber: 0})
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+    }
+  }
+  changeDateFrom (e) {
+    this.setState({
+      startDate: e.target.value
+    })
+    if (this.validDateRange(e.target.value, this.state.endDate)) {
+      this.setState({pageNumber: 0})
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: e.target.value, endDate: this.state.endDate})
+    } else {
+      this.setState({pageNumber: 0})
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+    }
   }
   showDialogDelete(id) {
     this.setState({ deleteid: id })
+  }
+  onTypeFilter (e) {
+    console.log('e.target type', e.target.value)
+    this.setState({captureType: e.target.value, pageNumber: 0})
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({pageNumber: 0})
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+    } else {
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: '', startDate: '', endDate: ''})
+    }
   }
   componentDidMount() {
     $('#sidebarDiv').removeClass('hideSideBar')
@@ -78,17 +164,14 @@ class FacebookPosts extends React.Component {
   onEdit(post) {
     this.props.saveCurrentPost(post)
   }
-  displayData(n, posts, searchValue) {
-    console.log('searchVal', searchValue)
-    var searchVal = ''
-    if (searchValue && searchValue === 'empty') {
-      searchValue = ''
-    } else if (searchValue) {
-      searchVal = searchValue
-    } else {
-      searchVal = this.state.searchValue
-    }
-    console.log('in display data', searchVal)
+  onView(post) {
+    this.props.saveCurrentPost(post)
+    this.props.history.push({
+      pathname: `/PostResult`,
+      state: post
+    })
+  }
+  displayData (n, posts) {
     let offset = n * 10
     let data = []
     let limit
@@ -98,54 +181,71 @@ class FacebookPosts extends React.Component {
     } else {
       limit = offset + 10
     }
-    console.log('offset', offset)
     for (var i = offset; i < limit; i++) {
-      if (searchVal !== '') {
-        let postTitle = posts[i].title
-        if (postTitle.toLowerCase().includes(searchVal.toLowerCase())) {
-          data[index] = posts[i]
-          index++
-        }
-      } else {
-        data[index] = posts[i]
-        index++
-      }
+      data[index] = posts[i]
+      index++
     }
-    this.setState({ postsData: data })
+    this.setState({postsData: data})
   }
 
   handlePageClick(data) {
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.fetchAllPosts({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: this.state.captureType === 'all' ? '' : this.state.captureType,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate
+      })
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.fetchAllPosts({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        search_value: this.state.searchValue,
+        type_value: this.state.captureType === 'all' ? '' : this.state.captureType,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate
+      })
+    } else {
+      this.props.allBroadcasts({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        search_value: this.state.searchValue,
+        type_value: this.state.captureType === 'all' ? '' : this.state.captureType,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate
+      })
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.posts)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.posts) {
       this.displayData(0, nextProps.posts)
-      this.setState({ totalLength: nextProps.posts.length })
+    }
+    if (nextProps.postsCount) {
+      this.setState({ totalLength: nextProps.postsCount })
     }
   }
 
   searchPosts(event) {
-    console.log('event.target.value', event.target.value)
     this.setState({
-      searchValue: event.target.value
+      searchValue: event.target.value, pageNumber:0
     })
-    var filtered = []
     if (event.target.value !== '') {
-      for (let i = 0; i < this.props.posts.length; i++) {
-        if (this.props.posts[i].title) {
-          let postTitle = this.props.posts[i].title
-          if (postTitle.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.props.posts[i])
-          }
-        }
-      }
-      this.displayData(0, filtered, event.target.value)
-      this.setState({ totalLength: filtered.length })
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), type_value: this.state.captureType, startDate: '', endDate: ''})
     } else {
-      filtered = this.props.posts
-      this.displayData(0, filtered, 'empty')
-      this.setState({ totalLength: filtered.length })
+      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', type_value: this.state.captureType, startDate: '', endDate: ''})
     }
   }
 
@@ -232,6 +332,11 @@ class FacebookPosts extends React.Component {
             </div>
           </div>
           <div className='row'>
+              {
+                <CardBoxesContainer data= {this.props.allPostsAnalytics} />
+              }
+            </div>
+          <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
@@ -255,8 +360,45 @@ class FacebookPosts extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='form-row'>
-                    <div style={{ display: 'inline-block' }} className='form-group col-md-3'>
-                      <input type='text' placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
+                    <div style={{ display: 'inline-block' }} className='col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.captureType} onChange={this.onTypeFilter}>
+                        <option value='' disabled>Filter by Type...</option>
+                        <option value='any'>Any Post</option>
+                        <option value='existing'>Existing Post</option>
+                        <option value='new'>New post</option>
+                        <option value='all'>All</option>
+                      </select>
+                    </div>
+                    <div className='col-md-9' style={{ display: 'inherit' }}>
+                      <label style={{marginTop: '7px', marginLeft: '30px'}} class="col-md-3 col-lg-3 col-sm-12">
+                        Filter by Date
+                      </label>
+                      <span style={{marginTop: '7px', marginRight: '10px'}}>From:</span>
+                      <div className='col-md-3'>
+                        <input className='form-control m-input'
+                          onChange={(e) => this.changeDateFrom(e)}
+                          value={this.state.startDate}
+                          id='text'
+                          placeholder='Value'
+                          max= {moment().format('YYYY-MM-DD')}
+                          type='date'/>
+                        { this.state.dateRangeWarning !== '' &&<span style={{color: '#ffb822'}}className='m-form__help'>
+                          {this.state.dateRangeWarning}
+                        </span> }
+                      </div>
+                      <span style={{marginTop: '7px', marginLeft: '10px',marginRight: '10px'}}>To:</span>
+                      <input className='form-control col-md-3 m-input'
+                        onChange={(e) => this.changeDateTo(e)}
+                        value={this.state.endDate}
+                        id='text'
+                        placeholder='Value'
+                        max= {moment().format('YYYY-MM-DD')}
+                        type='date'/>
+                    </div>
+                  </div>
+                  <div className='form-row'>
+                    <div style={{ display: 'inline-block', marginTop: '20px', marginBottom: '20px' }} className='col-md-12'>
+                      <input type='text' style={{width: '50%'}} placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
                     </div>
                     { this.state.postsData && this.state.postsData.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -270,15 +412,19 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Track Comments From</span>
+                            <span style={{width: '150px'}}>Type</span>
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Comments Count</span>
+                            <span style={{width: '100px'}}>Comments</span>
+                          </th>
+                          <th data-field='conversions'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Conversions</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Date Created</span>
+                            <span style={{width: '100px'}}>Date</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -295,18 +441,17 @@ class FacebookPosts extends React.Component {
                             <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
+                            <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversionCount ? post.conversionCount : '0'}</span></td>
                             <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                              {post.post_id &&
-                                <span>
-                                  <a href={`https://facebook.com/${post.post_id}`} className='btn btn-primary btn-sm' target='_blank' rel='noopener noreferrer' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
-                                      View on FB
-                                  </a>
-                                  <br />
-                                </span>
-                              }
-                                <Link to='/editPost' state={{mode: 'edit'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                              {/* <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                    View
+                                </Link> */}
+                                <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }}  onClick={() => this.onView(post)}>
+                                    View
+                                </button>
+                                <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
                                       <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
@@ -328,6 +473,7 @@ class FacebookPosts extends React.Component {
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
+                            forcePage={this.state.pageNumber}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
@@ -352,7 +498,9 @@ class FacebookPosts extends React.Component {
 function mapStateToProps(state) {
   console.log(state)
   return {
-    posts: (state.postsInfo.posts)
+    posts: (state.postsInfo.posts),
+    postsCount: (state.postsInfo.postsCount),
+    allPostsAnalytics: (state.postsInfo.allPostsAnalytics)
   }
 }
 
@@ -360,7 +508,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAllPosts: fetchAllPosts,
     deletePost: deletePost,
-    saveCurrentPost: saveCurrentPost
+    saveCurrentPost: saveCurrentPost,
+    fetchPostsAnalytics: fetchPostsAnalytics,
+    resetComments: resetComments
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)

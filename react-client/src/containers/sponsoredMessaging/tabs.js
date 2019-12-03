@@ -112,10 +112,10 @@ class Tab extends React.Component {
             <AdCampaign campaignName={this.props.editSponsoredMessage.campaign_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_2'>
-            <Adset adSetPayload={this.props.editSponsoredMessage.ad_set_payload} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <Adset adSetPayload={this.props.editSponsoredMessage.ad_set_payload} pageId={this.props.editSponsoredMessage.pageId} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_3'>
-            <AdCreative adAccountId={this.props.editSponsoredMessage.ad_account_id} payload={this.props.editSponsoredMessage.payload} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCreative adAccountId={this.props.editSponsoredMessage.ad_account_id} payload={this.props.editSponsoredMessage.payload} ad_name={this.props.editSponsoredMessage.ad_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
         </div>
       </div>

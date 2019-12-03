@@ -45,7 +45,8 @@ import {whatsAppChatInfo} from './whatsAppChat.reducer'
 import {whatsAppBroadcastsInfo} from './whatsAppBroadcasts.reducer'
 import {smsWhatsAppDashboardInfo} from './smsWhatsAppDashboard.reducer'
 import {sponsoredMessagingInfo} from './sponsoredMessaging.reducer'
-
+import {googleSheetsInfo} from './googleSheets.reducer'
+import {botIntentsInfo} from './smat_replies_intnets.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -92,7 +93,9 @@ const appReducer = combineReducers({
   whatsAppBroadcastsInfo,
   whatsAppChatInfo,
   smsWhatsAppDashboardInfo,
-  sponsoredMessagingInfo
+  sponsoredMessagingInfo,
+  botIntentsInfo,
+  googleSheetsInfo
 })
 
 export default appReducer

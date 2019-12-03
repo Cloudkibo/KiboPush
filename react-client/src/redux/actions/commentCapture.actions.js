@@ -8,7 +8,51 @@ export function showAllPosts (data) {
   console.log('Data Fetched From posts', data)
   return {
     type: ActionTypes.SHOW_FACEBOOK_POSTS,
-    data: data.reverse()
+    posts: data.posts ? data.posts : [],
+    postsCount: data.count
+  }
+}
+export function saveCommentReplies (data) {
+  return {
+    type: ActionTypes.SAVE_COMMENT_REPLIES,
+    data: data
+  }
+}
+export function showAllComments (data) {
+  console.log('Data Fetched From comments', data)
+  return {
+    type: ActionTypes.SHOW_POST_COMMENTS,
+    comments: data.comments,
+    commentCount: data.count
+  }
+}
+export function resetComments (data) {
+  console.log('Data Fetched From comments', data)
+  return {
+    type: ActionTypes.RESET_COMMENTS,
+    data: null
+  }
+}
+export function showAllReplies (data) {
+  console.log('Data Fetched From replies', data)
+  return {
+    type: ActionTypes.SHOW_COMMENTS_REPLIES,
+    commentReplies: data.replies,
+    repliesCount: data.count
+  }
+}
+export function showAllPostsAnalytics (data) {
+  console.log('Data Fetched From PostsAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_AllPostsAnalytics,
+    data
+  }
+}
+export function showSinglePostsAnalytics (data) {
+  console.log('Data Fetched From PostsAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_SinglePostsAnalytics,
+    data
   }
 }
 export function saveCurrentPost (data) {
@@ -19,14 +63,82 @@ export function saveCurrentPost (data) {
   }
 }
 
-export function fetchAllPosts () {
+export function fetchAllPosts (data) {
   console.log('Actions for loading all facebook Posts')
   return (dispatch) => {
-    callApi('post').then(res => {
+    callApi('post', 'post', data)
+    .then(res => {
       if (res.status === 'success' && res.payload) {
         dispatch(showAllPosts(res.payload))
       } else {
         console.log('Error in loading Posts', res)
+      }
+    })
+  }
+}
+export function fetchExportCommentsData (data,msg,handle) {
+  console.log('Fetching export comments data')
+  return (dispatch) => {
+    callApi(`post/fetchAllComments`, 'post', data)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        handle((res.payload))
+      } else {
+        msg.error('Unable to fetch data')
+      }
+    })
+  }
+}
+export function fetchPostsAnalytics () {
+  console.log('Actions for loading all fetchPostsAnalytics')
+  return (dispatch) => {
+    callApi('post/fetchPostsAnalytics').then(res => {
+      if (res.status === 'success' && res.payload && res.payload.length > 0) {
+        dispatch(showAllPostsAnalytics(res.payload[0]))
+      }
+      else if (res.status === 'success') {
+        dispatch(showAllPostsAnalytics(res.payload))
+      }
+      else {
+        console.log('Error in fetchPostsAnalytics Posts', res)
+      }
+    })
+  }
+}
+export function fetchComments (data) {
+  console.log('Actions for loading all post comments')
+  return (dispatch) => {
+    callApi('post/getComments', 'post', data)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(showAllComments(res.payload))
+        } else {
+          console.log('Error in fetching comments', res)
+        }
+    })
+  }
+}
+export function fetchCommentReplies (data) {
+  console.log('Actions for loading all post comment replies')
+  return (dispatch) => {
+    callApi('post/getRepliesToComment', 'post', data)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(showAllReplies(res.payload))
+        } else {
+          console.log('Error in fetching comment replies', res)
+        }
+    })
+  }
+}
+export function fetchCurrentPostsAnalytics (postId) {
+  console.log('Actions for loading all fetchCurrentPostsAnalytics')
+  return (dispatch) => {
+    callApi(`post/singlePostsAnalytics${postId}`).then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showSinglePostsAnalytics(res.payload))
+      } else {
+        console.log('Error in singlePostsAnalytics ', res)
       }
     })
   }
@@ -36,8 +148,10 @@ export function deletePost (id, msg) {
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
+        var data = {last_id: 'none',number_of_records: 10,first_page: 'first',search_value: '',type_value: '',startDate: '',endDate: ''}
         msg.success('Post has been deleted')
-        dispatch(fetchAllPosts(res.payload))
+        dispatch(fetchAllPosts(data))
+        dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
       }

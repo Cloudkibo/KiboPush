@@ -528,6 +528,14 @@ export function getIntegrations () {
       })
   }
 }
+export function createIntegration () {
+  console.log('createIntegration called')
+  return (dispatch) => {
+    callApi('sheetsIntegrations/auth')
+      .then(res => {
+      })
+  }
+}
 export function updateIntegration (id, body) {
   return (dispatch) => {
     callApi(`integrations/update/${id}`, 'post', body)

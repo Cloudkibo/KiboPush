@@ -464,6 +464,8 @@ class CardModal extends React.Component {
                                 closeCard={() => { this.closeCard(card.id) }}
                                 id={card.id}
                                 updateStatus={(status) => { this.updateCardStatus(status, card.id) }}
+                                toggleGSModal={this.props.toggleGSModal}
+                                closeGSModal={this.props.closeGSModal}
                                 disabled={this.state.disabled || this.state.actionDisabled}
                               />
                             </div>
