@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from './CardBoxesContainer'
 import Comments from './comments'
 import { handleDate } from '../../utility/utils'
-import {fetchComments} from '../../redux/actions/commentCapture.actions'
+import {fetchComments , fetchExportCommentsData } from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
+import AlertContainer from 'react-alert'
 
 var json2csv = require('json2csv')
 
@@ -31,9 +32,10 @@ class PostResult extends React.Component {
         sort_value: -1
       })
       this.exportAnalytics = this.exportAnalytics.bind(this)
-      this.prepareExportData = this.prepareExportData.bind(this)
+      this.prepareExportSummary = this.prepareExportSummary.bind(this)
+      this.exportComments = this.exportComments.bind(this)
     }
-    prepareExportData () {
+    prepareExportSummary () {
       var data = []
       var analytics = {}
       if (this.props.currentPost) {
@@ -56,7 +58,7 @@ class PostResult extends React.Component {
       return data
     }
     exportAnalytics () {
-      var data = this.prepareExportData()
+      var data = this.prepareExportSummary()
       var info = data
       var keys = []
       var val = info[0]
@@ -71,6 +73,50 @@ class PostResult extends React.Component {
           console.log('call file download function')
           fileDownload(csv, 'CommentCaptureAnalytics.csv')
         }
+      })
+    }
+    prepareExportComments (comments) {
+      var payload = []
+      for(var i = 0; i < comments.length; i++) {
+        var commentObj = {}
+        var content = []
+        commentObj['Comment Id'] = comments[i]._id
+        commentObj['Sender Name'] = comments[i].senderName
+        commentObj['Replies Count'] = comments[i].childCommentCount
+        commentObj['Facebook Link'] = comments[i].postFbLink
+  
+        for(var j=0; j < comments[i].commentPayload.length; j++) {
+          if (comments[i].commentPayload[j].componentType === 'text') {
+            content.push(comments[i].commentPayload[j].text)
+          } else {
+            content.push(comments[i].commentPayload[j].url)
+          }
+        }
+        commentObj['Comment'] = content
+        commentObj['Reply for Comment(Id)'] = comments[i].parentId
+        commentObj['Created Date'] = comments[i].datetime
+        payload.push(commentObj)
+      }
+      return payload
+    }
+    exportComments () {
+      this.props.fetchExportCommentsData({postId: this.props.currentPost._id},this.msg,(comments) => {
+      var data = this.prepareExportComments(comments)
+      var info = data
+      var keys = []
+      var val = info[0]
+  
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      json2csv({ data: data, fields: keys, unwindPath: ['Comment']}, function (err, csv) {
+        if (err) {
+        } else {
+          console.log('call file download function')
+          fileDownload(csv, 'CommentCaptureComments.csv')
+        }
+      })
       })
     }
 componentDidMount() {
@@ -128,8 +174,16 @@ componentDidMount() {
     }
   }
 render() {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
             <div className='m-subheader '>
                 <div className='d-flex align-items-center'>
                     <div className='mr-auto'>
@@ -217,7 +271,15 @@ render() {
                 <span>
                   <i className='fa fa-download' />
                   <span>
-                    Export Records in CSV File
+                    Export Summary in CSV File
+                  </span>
+                </span>
+              </button>
+              <button style={{marginRight: '10px'}} className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportComments}>
+                <span>
+                  <i className='fa fa-download' />
+                  <span>
+                    Export Comments in CSV File
                   </span>
                 </span>
               </button>
@@ -240,7 +302,8 @@ function mapStateToProps(state) {
   }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-      fetchComments: fetchComments
+      fetchComments: fetchComments,
+      fetchExportCommentsData: fetchExportCommentsData
         }, dispatch)
 }
 

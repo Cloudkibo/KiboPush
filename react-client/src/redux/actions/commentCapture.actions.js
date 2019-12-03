@@ -76,6 +76,19 @@ export function fetchAllPosts (data) {
     })
   }
 }
+export function fetchExportCommentsData (data,msg,handle) {
+  console.log('Fetching export comments data')
+  return (dispatch) => {
+    callApi(`post/fetchAllComments`, 'post', data)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        handle((res.payload))
+      } else {
+        msg.error('Unable to fetch data')
+      }
+    })
+  }
+}
 export function fetchPostsAnalytics () {
   console.log('Actions for loading all fetchPostsAnalytics')
   return (dispatch) => {
@@ -135,8 +148,9 @@ export function deletePost (id, msg) {
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
+        var data = {last_id: 'none',number_of_records: 10,first_page: 'first',search_value: '',type_value: '',startDate: '',endDate: ''}
         msg.success('Post has been deleted')
-        dispatch(fetchAllPosts(res.payload))
+        dispatch(fetchAllPosts(data))
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
