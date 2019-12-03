@@ -3,6 +3,7 @@ import AlertContainer from 'react-alert'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import SubmitForm from './submitForm'
+import GetContactForm from './getContactForm'
 import {fetchhubSpotForms, emptyFields} from '../../../redux/actions/hubSpot.actions'
 
 class HubspotAction extends React.Component {
@@ -14,7 +15,8 @@ class HubspotAction extends React.Component {
       hubspotAction: '',
       hubSpotForm: '' ,
       mapping: '',
-      showModal: false
+      showModal: false,
+      identityFieldValue: ''
 
     }
     props.fetchhubSpotForms()
@@ -25,19 +27,21 @@ class HubspotAction extends React.Component {
     this.save = this.save.bind(this)
   }
 
-  save (hubSpotForm, mappingData) {
+  save (hubSpotForm, mappingData, identityFieldValue) {
     console.log('mappingData in save', mappingData)
     console.log('hubSpotForm in save', hubSpotForm)
     this.refs.ActionModal.click()
     this.setState({
     hubSpotForm: hubSpotForm,
     mapping: mappingData,
+    identityFieldValue: identityFieldValue,
     showModal: false
   })
     this.props.savehubSpotForm({
       hubspotAction: this.state.hubspotAction,
       hubSpotForm: hubSpotForm,
       mapping: mappingData,
+      identityFieldValue: identityFieldValue
     })
   }
   
@@ -49,7 +53,12 @@ componentDidMount () {
   console.log('in componentDidMount of Hubspot Action', this.props)
   if (this.props.hubspotAction!== '' && this.props.hubSpotForm !== '' && this.props.mapping !== '') {
     this.setState({mapping: this.props.mapping, hubSpotForm: this.props.hubSpotForm})
-    this.updateHubspotAction(this.props.hubSpotForm, true)
+    this.updateHubspotAction(this.props.hubspotAction, true)
+  }
+
+  if (this.props.hubspotAction!== '' && this.props.identityFieldValue !== '' && this.props.mapping !== '') {
+    this.setState({mapping: this.props.mapping, identityFieldValue: this.props.identityFieldValue})
+    this.updateHubspotAction(this.props.hubspotAction, true)
   }
 }
   removeHubspotAction () {
@@ -67,7 +76,8 @@ componentDidMount () {
   openModal () {
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>)
+      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>),
+      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>)
     }
     return modals[this.state.hubspotAction]
   }

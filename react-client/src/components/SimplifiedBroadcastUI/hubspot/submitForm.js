@@ -10,7 +10,8 @@ class submitForm extends React.Component {
             hubspotFormValue: props.hubSpotForm !== '' ? props.hubSpotForm : '',
             mappingData: props.mapping !== '' ? props.mapping : '',
             mappingDataValues: '',
-            loadingColumns: false
+            loadingColumns: false,
+            buttonDisabled: true
           }
           this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
           this.updateMappingData = this.updateMappingData.bind(this)
@@ -62,11 +63,10 @@ class submitForm extends React.Component {
       console.log('data in updateMappingData', data)
     }
     onhubspotFormChange (event) {
-        this.setState({hubspotFormValue: event.target.value})
-        this.props.fetchColumns({hubspotFormId: event.target.value , loadingColumns: true})
+        this.setState({hubspotFormValue: event.target.value, buttonDisabled: false, loadingColumns: true})
+        this.props.fetchColumns({hubspotFormId: event.target.value})
         // this.props.fetchWorksheets({spreadsheetId: event.target.value})
         // if (event.target.value !== '' && this.state.workSheetValue !== '') {
-        //   this.setState({buttonDisabled: false})
         // }
       }
       UNSAFE_componentWillReceiveProps (nextProps) {
@@ -126,7 +126,7 @@ class submitForm extends React.Component {
               </div>
               <div className='col-1'>
                 <center>
-                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large'}} />
+                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ? 'black': 'blue'}} />
                 </center>
               </div>
               <div className='col-5'>
