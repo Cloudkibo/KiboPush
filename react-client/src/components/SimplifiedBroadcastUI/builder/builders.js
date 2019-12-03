@@ -115,20 +115,23 @@ class Builders extends React.Component {
   }
 
   changeMessage (id) {
-    if (this.state.currentId !== id) {
-      let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
-      let messageIndex = messages.findIndex(m => m.id === id)
-      if (messageIndex > -1) {
-        console.log('changing message', this.state.linkedMessages[messageIndex])
-        this.setState({currentId: id}, () => {
-          let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
-          let list = filteredData.length > 0 ? filteredData[0].messageContent : []
-          //this.initializeList(list)
-          this.handleChange({convoTitle: messages[messageIndex].title})
-          this.handleChange({broadcast: messages[messageIndex].messageContent}, {changingMessage: true}) 
-        })
+    return new Promise ((resolve, reject) => {
+      if (this.state.currentId !== id) {
+        let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+        let messageIndex = messages.findIndex(m => m.id === id)
+        if (messageIndex > -1) {
+          console.log('changing message', this.state.linkedMessages[messageIndex])
+          this.setState({currentId: id}, () => {
+            // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
+            // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
+            // this.initializeList(list)
+            this.handleChange({convoTitle: messages[messageIndex].title}, {changingMessage: true})
+            this.handleChange({broadcast: messages[messageIndex].messageContent}, {changingMessage: true}) 
+            resolve()
+          })
+        }
       }
-    }
+    })
   }
 
   updateLinkedMessagesPayload (broadcast) {
@@ -263,7 +266,8 @@ class Builders extends React.Component {
               }
             }
           }
-          unlinkedMessages = unlinkedMessages.concat(linkedMessages.splice(j, 1))
+          unlinkedMessages.push(linkedMessages[j])
+          linkedMessages.splice(j, 1)
         }
       }
     }
@@ -341,7 +345,7 @@ class Builders extends React.Component {
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
       })
-      this.handleChange({broadcast})
+      this.handleChange({broadcast}, {})
     })
 
   }
@@ -383,7 +387,7 @@ class Builders extends React.Component {
       temp.push({content: component})
     }
     this.setState({list: temp, broadcast})
-    this.handleChange({broadcast})
+    this.handleChange({broadcast}, {})
   }
 
   scrollToTop () {
@@ -457,7 +461,7 @@ class Builders extends React.Component {
     console.log('renaming title')
     this.setState({convoTitle: this.titleConvo.value})
     this.closeDialog()
-    this.handleChange({convoTitle: this.titleConvo.value})
+    this.handleChange({convoTitle: this.titleConvo.value}, {})
   }
 
   handleText (obj) {
@@ -1317,6 +1321,7 @@ class Builders extends React.Component {
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
+          rerenderFlowBuilder={this.props.rerenderFlowBuilder}
           showAddComponentModal={this.showAddComponentModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}

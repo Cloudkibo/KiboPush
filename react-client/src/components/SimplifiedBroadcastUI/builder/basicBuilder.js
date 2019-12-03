@@ -5,7 +5,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Targeting from '../../../containers/convo/Targeting'
-import GenericMessage from '../GenericMessage'
+import GenericMessage from '../MessageContainer'
 
 class BasicBuilder extends React.Component {
   constructor (props, context) {

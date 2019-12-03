@@ -4,7 +4,7 @@
 
 import React from "react"
 import { FlowChart, INodeInnerDefaultProps, IPortDefaultProps, actions } from "@mrblenny/react-flow-chart"
-import PropTypes, { element } from 'prop-types'
+import PropTypes from 'prop-types'
 import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
 import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
 import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
@@ -48,15 +48,21 @@ class FlowBuilder extends React.Component {
     this.fixInvalidNodes = this.fixInvalidNodes.bind(this)
     this.updatePortPositions = this.updatePortPositions.bind(this)
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
+    this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
+
+    this.updateZIndex = true
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('componentWillRecieveProps nextProps', nextProps)
     if (nextProps.linkedMessages.concat(nextProps.unlinkedMessages).length > Object.keys(this.state.chart.nodes).length) {
-      this.setState({
-        chart: this.getChartData(),
-        prevChart: {}
-      })
+      this.props.rerenderFlowBuilder()
+      // this.setState({
+      //   chart: this.getChartData(),
+      //   prevChart: {}
+      // }, () => {
+      //   this.updateZIndex = true
+      // })
     }
   }
 
@@ -187,33 +193,6 @@ class FlowBuilder extends React.Component {
         }
       }
     }
-
-    // for (let i = 0; i < elementKeys.length; i++) {
-    //   let card = document.getElementById('flowBuilderCard-'+ elementKeys[i])
-    //   if (card) {
-    //     let buttons = elements[elementKeys[i]]
-    //     if (buttons.length > 0) {
-    //       for (let j = 0; j < buttons.length; j++) {
-    //         let buttonElement = document.getElementById('button-'+buttons[j])
-    //         if (buttonElement) {
-    //           let port = document.querySelector(`[data-port-id='${buttons[j]}']`)
-    //           if (port) {
-    //             if (j == 0) {
-    //               port.style.margin = '-12px 0px 0px'
-    //               let portElement = port.parentElement
-    //               portElement.style['justify-content'] = 'initial'
-    //               portElement.style.top = `${portContainerPosition.y}px`
-    //               portElement.style.left = `${portContainerPosition.x}px`
-    //             } else {
-    //               port.style.margin = '15px 0px 0px'
-    //             } 
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
   }
 
   resetTransform () {
@@ -279,28 +258,26 @@ class FlowBuilder extends React.Component {
     for (let i = 0; i < components.length; i++) {
       if (components[i].buttons) {
         for (let j = 0; j < components[i].buttons.length; j++) {
-          let payload = JSON.parse(components[i].buttons[j].payload)
-          console.log('parsed payload', payload)
-          ports[`${components[i].buttons[j].id}`] = {
-            id: `${components[i].buttons[j].id}`,
-            type: 'right',
-            position: {
-              x: 300,
-              y: 170 + (i*10)
+          if (typeof components[i].buttons[j].payload === "string") {
+            let payload = JSON.parse(components[i].buttons[j].payload)
+            console.log('parsed payload', payload)
+            ports[`${components[i].buttons[j].id}`] = {
+              id: `${components[i].buttons[j].id}`,
+              type: 'right'
             }
-          }
-          if (payload && payload.action === 'send_message_block') {
-            console.log('adding link')
-            let linkId = Math.floor(Math.random() * 100)
-            links[`${linkId}`] = {
-              id: `${linkId}`,
-              from: {
-                nodeId: `${message.id}`,
-                portId: `${components[i].buttons[j].id}`
-              },
-              to: {
-                nodeId: `${payload.blockUniqueId}`,
-                portId: 'port0'
+            if (payload && payload.action === 'send_message_block') {
+              console.log('adding link')
+              let linkId = Math.floor(Math.random() * 100)
+              links[`${linkId}`] = {
+                id: `${linkId}`,
+                from: {
+                  nodeId: `${message.id}`,
+                  portId: `${components[i].buttons[j].id}`
+                },
+                to: {
+                  nodeId: `${payload.blockUniqueId}`,
+                  portId: 'port0'
+                }
               }
             }
           }
@@ -354,14 +331,7 @@ class FlowBuilder extends React.Component {
         ports: Object.assign({
           port0: {
             id: 'port0',
-            type: 'left',
-            position: {
-              x: 0,
-              y: 170
-            },
-            properties: {
-              custom: 'property',
-            }
+            type: 'left'
           }
         }, portsNLinks.ports),
         properties: {
@@ -517,18 +487,52 @@ class FlowBuilder extends React.Component {
       for (let j = 0; j < portKeys.length; j++) {
         let portKey = portKeys[j]
         if (chart.nodes[nodeKey].ports[portKey].type !== 'left') {
-          chart.nodes[nodeKey].ports[portKey].position.x = 261 + 12
+          let port = document.getElementById(`port-${portKey}`)
+          if (port) {
+            let portParent = port.parentElement
+            let parentTop = portParent.style.top
+            let portTop = port.style.marginTop
+            let positionY = parseInt(parentTop.substr(0, parentTop.length - 2))
+            if (j !== 0) {
+              positionY = positionY + (j * (24 + parseInt(portTop.substr(0, portTop.length - 2))))
+            }
+            chart.nodes[nodeKey].ports[portKey].position = {
+              x: 261 + 12, // x distance from card = 261; half of port height = 12
+              y: positionY
+            }
+          }
+        } else {
+          let flowBuilderCard = document.getElementById(`flowBuilderCard-${nodeKey}`)
+          if (flowBuilderCard) {
+            let cardHeight = flowBuilderCard.getBoundingClientRect().height
+            chart.nodes[nodeKey].ports[portKey].position = {
+              x: 0,
+              y: (cardHeight/2) 
+            }
+          }
         }
       }
     }
   }
 
+  updateSvgZIndex () {
+    if (this.updateZIndex) {
+      // debugger;
+      let svgElements = document.getElementsByTagName('svg')
+      if (svgElements.length > 0) {
+        for (let i = 0; i < svgElements.length; i++) {
+          svgElements[i].style['z-index'] = 1
+        }
+        this.updateZIndex = false
+      }
+    }
+  }
+
   updateChart (chartValue) {
-    //this.getElements()
     let prevChart = cloneDeep(this.state.chart)
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
-    this.updatePortPositions(newChart)
+    //this.updatePortPositions(newChart)
     this.getElements()
     this.fixInvalidNodes(newChart)
     console.log('chart updated', newChart)
@@ -547,6 +551,7 @@ class FlowBuilder extends React.Component {
         newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
       ) {
+        this.updateZIndex = true
         console.log('updating chart link added', this.props)
         // debugger;
         if (newChart.links[linksKeys[linksKeys.length - 1]].from.portId === 'port0') {
@@ -571,9 +576,11 @@ class FlowBuilder extends React.Component {
               if (messageContent.buttons) {
                 for (let k = 0; k < messageContent.buttons.length; k++) {
                   let button = messageContent.buttons[k]
-                  let payload = JSON.parse(button.payload)
-                  if (payload.blockUniqueId) {
-                    addPayload.push(payload.blockUniqueId)
+                  if (typeof button.payload === 'string') {
+                    let payload = JSON.parse(button.payload)
+                    if (payload.blockUniqueId) {
+                      addPayload.push(payload.blockUniqueId)
+                    }
                   }
                 }
               }
@@ -661,9 +668,11 @@ class FlowBuilder extends React.Component {
                   for (let k = 0; k < messageContent.buttons.length; k++) {
                     // debugger;
                     let button = messageContent.buttons[k]
-                    let payload = JSON.parse(button.payload)
-                    if (payload && payload.blockUniqueId) {
-                      deletePayload.push(payload.blockUniqueId)
+                    if (typeof button.payload === 'string') {
+                      let payload = JSON.parse(button.payload)
+                      if (payload && payload.blockUniqueId) {
+                        deletePayload.push(payload.blockUniqueId)
+                      }
                     }
                   }
                 }
@@ -686,10 +695,12 @@ class FlowBuilder extends React.Component {
         let component = message.messageContent[j]
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
-            let buttonPayload = JSON.parse(component.buttons[k].payload)
-            if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = null
-              return
+            if (typeof component.buttons[k].payload === 'string') {
+              let buttonPayload = JSON.parse(component.buttons[k].payload)
+              if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
+                this.props.linkedMessages[i].messageContent[j].buttons[k].payload = null
+                return
+              }
             }
           }
         }
@@ -703,10 +714,12 @@ class FlowBuilder extends React.Component {
         let component = message.messageContent[j]
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
-            let buttonPayload = JSON.parse(component.buttons[k].payload)
-            if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = null
-              return
+            if (typeof component.buttons[k].payload === 'string') {
+              let buttonPayload = JSON.parse(component.buttons[k].payload)
+              if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
+                this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = null
+                return
+              }
             }
           }
         }
@@ -716,14 +729,15 @@ class FlowBuilder extends React.Component {
 
   render () {
     console.log('rendering flow builder', this.props)
+    this.updateSvgZIndex()
     const stateActions = mapValues(actions, (func) => (...args) => this.updateChart(func(...args)))
     return (
       <div className='m-content'>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <div>
+            {/* <div>
               {this.getTooltips()}
-            </div>
+            </div> */}
             <ReactFullScreenElement fullScreen={this.state.fullScreen}>
               <div style={{background: 'white'}}>
                 <SIDEBAR
@@ -776,7 +790,8 @@ FlowBuilder.propTypes = {
   'getItems': PropTypes.func.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
-  'currentId': PropTypes.number
+  'currentId': PropTypes.number,
+  'rerenderFlowBuilder': PropTypes.func.isRequired
 }
 
 export default FlowBuilder
