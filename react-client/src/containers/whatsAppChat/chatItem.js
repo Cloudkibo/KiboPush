@@ -165,7 +165,7 @@ class ChatItem extends React.Component {
       </div>)
     } else if (msg.payload.componentType === 'text' && msg.url_meta){
       let metaUrl = getmetaurl(msg.payload.text)
-      let text = msg.payload.text.replace(metaUrl, <a />)
+      let text = msg.payload.text.replace(metaUrl, '')
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
           {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg)}

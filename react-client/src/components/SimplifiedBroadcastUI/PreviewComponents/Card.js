@@ -155,18 +155,20 @@ class Card extends React.Component {
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '200px', marginLeft: '15px'}} >
-          {
-            this.state.imgSrc &&
-            <img src={this.state.imgSrc} style={{objectFit: 'cover', maxHeight: '110px', maxWidth: '200px', minHeight: '110px', paddingTop: '5px', minWidth: '195px', margin: '-10px', width: '100%', height: '100%'}} alt='' />
-          }
-          <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
-          <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
-          <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
-          <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
+          <div className='broadcastContent'>
+            {
+              this.state.imgSrc &&
+              <img src={this.state.imgSrc} style={{objectFit: 'cover', maxHeight: '110px', maxWidth: '200px', minHeight: '110px', paddingTop: '5px', minWidth: '95%', margin: '-10px', width: '100%', height: '100%'}} alt='' />
+            }
+            <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
+            <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
+            <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
+            <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
+          </div>
           {
             this.state.buttons.map(button => {
               return (
-                <div>
+                <div id={`button-${button.id}`}>
                   <hr />
                   <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                 </div>

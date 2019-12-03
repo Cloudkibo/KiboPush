@@ -33,6 +33,7 @@ class Gallery extends React.Component {
   }
 
   updateSelectedIndex (index) {
+    console.log('updateSelectedIndex', index)
     this.setState({selectedIndex: index})
   }
 

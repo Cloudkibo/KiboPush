@@ -305,6 +305,7 @@ class Button extends React.Component {
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: this.props.button.payload ? this.props.button.payload : null
@@ -406,10 +407,12 @@ class Button extends React.Component {
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: null
       }
+      console.log('creating new message block button', data)
       this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
