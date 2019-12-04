@@ -14,6 +14,7 @@ class adInsights extends React.Component {
     super(props, context)
     this.state = {
   }
+  console.log(this.props.location.state)
 }
 
   render () {

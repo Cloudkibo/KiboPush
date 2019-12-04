@@ -47,7 +47,7 @@ class adCreative extends React.Component {
         </div>
           <GenericMessage
             module = 'sponsorMessaging'
-            hiddenComponents={['media','audio','file','video']}
+            hiddenComponents={['audio','file','video', 'card', 'link']}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             pageId={this.props.sponsoredMessage.pageId}
