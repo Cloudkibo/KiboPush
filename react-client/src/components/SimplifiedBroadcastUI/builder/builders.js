@@ -212,7 +212,7 @@ class Builders extends React.Component {
           if (broadcastComponent.cards) {
             for (let j = 0; j < broadcastComponent.cards.length; j++) {
               let card = broadcastComponent.cards[j]
-              this.createLinkedMessagesFromButtons(card.buttons)
+              this.createLinkedMessagesFromButtons(card)
             }
           }
         }
@@ -306,8 +306,16 @@ class Builders extends React.Component {
       let message = linkedMessages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let messageContent = message.messageContent[j]
-        for (let k = 0; k < messageContent.buttons.length; k++) {
-          let buttonId = messageContent.buttons[k].id
+        let buttons = []
+        if (messageContent.cards) {
+          for (let m = 0;  m < messageContent.cards.length; m++) {
+            buttons = buttons.concat(messageContent.cards[m].buttons)
+          }
+        } else {
+          buttons = messageContent.buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          let buttonId = buttons[k].id
           if (buttonId === button.id) {
             buttonFound = true
             break
