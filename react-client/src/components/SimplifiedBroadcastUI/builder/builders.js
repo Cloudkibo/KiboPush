@@ -141,7 +141,7 @@ class Builders extends React.Component {
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === this.state.currentId) {
         linkedMessages[i].messageContent = broadcast
-        if (!lists[this.state.currentId]) {
+        if (lists[this.state.currentId].length !== linkedMessages[i].messageContent.length) {
           let temp = []
           for (let j = 0; j < broadcast.length; j++) {
             let component = this.getComponent(broadcast[j]).component

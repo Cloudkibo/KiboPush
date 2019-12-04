@@ -89,7 +89,7 @@ class CreateConvo extends React.Component {
       for (let j = 0; j < messageContent.length; j++) {
         let buttons = []
         if (messageContent[j].cards) {
-          for (let m = 0;  m < messageContent.cards[j].length; m++) {
+          for (let m = 0;  m < messageContent[j].cards.length; m++) {
             buttons = buttons.concat(messageContent[j].cards[m].buttons)
           }
         } else if (messageContent[j].buttons) {
