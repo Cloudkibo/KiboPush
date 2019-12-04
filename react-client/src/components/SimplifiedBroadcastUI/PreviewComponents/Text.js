@@ -110,7 +110,7 @@ class Text extends React.Component {
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div id={`button-${button.id}`} className='bubble recipient' style={{width: '200px', maxWidth: '200px', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF'}}>{button.title}</div>
+                  <div id={`button-${button.id}`} className='bubble recipient' style={{width: '200px', maxWidth: '200px', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: !button.type ? '1px solid red' : '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF'}}>{button.title}</div>
                 )
               })
           }

@@ -347,7 +347,6 @@ class Builders extends React.Component {
       })
       this.handleChange({broadcast}, {})
     })
-
   }
 
   appendQuickRepliesToEnd (broadcast, quickReplies) {
@@ -369,15 +368,6 @@ class Builders extends React.Component {
     }
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
-
-  // UNSAFE_componentWillReceiveProps (nextProps) {
-  //   if (this.props.convoTitle !== nextProps.convoTitle) {
-  //     this.setState({convoTitle: nextProps.convoTitle})
-  //   }
-  //   if (this.props.broadcast !== nextProps.broadcast) {
-  //     this.initializeList(this.props.linkedMessages.concat(this.props.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
-  //   }
-  // }
 
   initializeList (broadcast) {
     console.log('initializeList', broadcast)
@@ -671,7 +661,7 @@ class Builders extends React.Component {
 
   newConvo () {
     this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
-    this.handleChange({broadcast: []})
+    this.handleChange({broadcast: []}, {})
   }
 
   removeMessage () {
