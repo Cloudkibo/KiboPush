@@ -79,6 +79,27 @@ class CreateConvo extends React.Component {
     this.closeBuilderDropdown = this.closeBuilderDropdown.bind(this)
     this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
     this.isBroadcastInvalid = this.isBroadcastInvalid.bind(this)
+    this.deleteButtonIds = this.deleteButtonIds.bind(this)
+  }
+
+
+  deleteButtonIds (linkedMessages) {
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        let buttons = []
+        if (messageContent[j].cards) {
+          for (let m = 0;  m < messageContent.cards.length; m++) {
+            buttons = buttons.concat(messageContent.cards[m].buttons)
+          }
+        } else if (messageContent[j].buttons) {
+          buttons = messageContent[j].buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          delete buttons[k].id
+        }
+      }
+    }
   }
 
   toggleBuilderDropdown () {
@@ -317,6 +338,7 @@ class CreateConvo extends React.Component {
       //   }
       // }
       console.log('payload before', this.state.broadcast)
+      this.deleteButtonIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
         payload: this.state.linkedMessages[0].messageContent,
