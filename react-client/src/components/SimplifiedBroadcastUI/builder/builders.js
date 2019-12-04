@@ -110,8 +110,9 @@ class Builders extends React.Component {
     let messageIndex = messages.findIndex(m => m.id === this.state.currentId)
     if (messageIndex > -1) {
       return messages[messageIndex]
+    } else {
+      return null
     }
-    return null
   }
 
   changeMessage (id) {
@@ -975,7 +976,7 @@ class Builders extends React.Component {
           editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
-          file={broadcast.file ? broadcast.file : null}
+          file={broadcast.file ? broadcast.file : {fileurl: broadcast.fileurl}}
           handleFile={this.handleFile}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
@@ -994,7 +995,7 @@ class Builders extends React.Component {
           editComponent={this.showAddComponentModal}
           pages={this.props.pages}
           key={componentId}
-          file={broadcast.file ? broadcast.file : null}
+          file={broadcast.file ? broadcast.file : {fileurl: broadcast.fileurl}}
           handleFile={this.handleFile}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}

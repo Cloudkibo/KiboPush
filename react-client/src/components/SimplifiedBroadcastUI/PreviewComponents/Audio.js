@@ -23,22 +23,22 @@ class Audio extends React.Component {
   }
 
   componentDidMount () {
-    // if (this.props.file && this.props.file !== '') {
-    //   if (this.props.pages) {
-    //     this.props.uploadTemplate({pages: this.props.pages,
-    //       url: this.props.file.fileurl.url,
-    //       componentType: 'audio',
-    //       id: this.props.file.fileurl.id,
-    //       name: this.props.file.fileurl.name
-    //     }, {
-    //       id: this.props.id,
-    //       componentType: 'audio',
-    //       fileName: this.props.file.fileName,
-    //       type: this.props.file.type,
-    //       size: this.props.file.size
-    //     }, this.props.handleFile, this.setLoading)
-    //   }
-    // }
+    if (this.props.file && this.props.file !== '') {
+      if (this.props.pages) {
+        this.props.uploadTemplate({pages: this.props.pages,
+          url: this.props.file.fileurl.url,
+          componentType: 'audio',
+          id: this.props.file.fileurl.id,
+          name: this.props.file.fileurl.name
+        }, {
+          id: this.props.id,
+          componentType: 'audio',
+          fileName: this.props.file.fileName,
+          type: this.props.file.type,
+          size: this.props.file.size
+        }, this.props.handleFile, this.setLoading)
+      }
+    }
   }
 
   render () {
