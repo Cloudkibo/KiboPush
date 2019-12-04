@@ -11,7 +11,7 @@ class submitForm extends React.Component {
             mappingData: props.mapping !== '' ? props.mapping : '',
             mappingDataValues: '',
             loadingColumns: false,
-            buttonDisabled: true
+            buttonDisabled:  props.hubSpotForm !== '' ? false : true
           }
           this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
           this.updateMappingData = this.updateMappingData.bind(this)
@@ -32,8 +32,20 @@ class submitForm extends React.Component {
             mappingDataValues[i] = ''
           }
         }
+
+        
         console.log('temp mappingDataValues', mappingDataValues)
         this.setState({mappingDataValues: mappingDataValues})
+    }
+
+    if (this.props.columns && this.props.columns.hubSpotFormColumns && this.props.columns.hubSpotFormColumns.length > 0) {
+      let mappingDataValues = []
+      for (let i = 0; i < this.props.columns.hubSpotFormColumns.length; i++) {
+        mappingDataValues.push('')
+      }
+      if (this.state.mappingData === '') {
+        this.setState({mappingDataValues: mappingDataValues})
+      }
     }
   }
 
@@ -43,7 +55,7 @@ class submitForm extends React.Component {
       if (this.state.hubspotFormValue === '' ) {
         this.msg.error('Please fill all the required fields')
       } else {
-        this.props.save(this.state.hubspotFormValue, this.state.mappingData)
+        this.props.save(this.state.hubspotFormValue, this.state.mappingData, '')
       }
     }
 
@@ -159,9 +171,9 @@ class submitForm extends React.Component {
             </select>
           }
           <br />
-          {this.state.loadingColumns
+          {this.state.loadingColumns 
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : (this.props.columns && this.props.columns.hubSpotFormColumns.length > 0 &&
+          : this.state.hubspotFormValue !== '' && (this.props.columns && this.props.columns.hubSpotFormColumns.length > 0 &&
             this.showMappingData(this.props.columns.hubSpotFormColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }

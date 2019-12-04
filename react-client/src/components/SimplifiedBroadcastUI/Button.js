@@ -26,13 +26,13 @@ class Button extends React.Component {
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
       openCustomField: this.props.button ? this.props.button.openCustomField : false,
       openGoogleSheets: this.props.button ? this.props.button.openGoogleSheets : false,
-      openHubspot: this.props.button ? this.props.button.openHubspot : false,
+      openHubspot: this.props.button && this.props.button.payload.action === 'hubspot' ? true : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload) : false,
+      openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload && this.props.button.payload.action !== 'hubspot') : false,
       showSequenceMessage: true,
       buttonDisabled: this.props.button ? false : true,
       errorMsg:'',
@@ -44,7 +44,7 @@ class Button extends React.Component {
       hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : '',
       mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
       hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.hubSpotForm : '',
-
+      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityFieldValue : ''
     }
     props.fetchAllSequence()
     props.getIntegrations()
@@ -101,18 +101,16 @@ class Button extends React.Component {
     this.setState({
       hubspotAction: hubSpotFormPayload.hubspotAction,
       hubSpotForm: hubSpotFormPayload.hubSpotForm,
-      mapping: hubSpotFormPayload.mapping
+      mapping: hubSpotFormPayload.mapping,
+      identityFieldValue: hubSpotFormPayload.identityFieldValue
     })
     let buttonData = {title: this.state.title, visible: true,
       hubspotAction: hubSpotFormPayload.hubspotAction,
       hubSpotForm: hubSpotFormPayload.hubSpotForm,
       mapping: hubSpotFormPayload.mapping,
+      identityFieldValue: hubSpotFormPayload.identityFieldValue,
       index: this.props.index}
-    if (hubSpotFormPayload.hubspotAction !== '' &&
-    hubSpotFormPayload.hubSpotForm !== '' &&
-    hubSpotFormPayload.mapping !== '' &&
-      this.state.title !== ''
-  ) {
+    if ((hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.hubSpotForm !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '') || (hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.identityFieldValue !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '')) {
       this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({buttonDisabled: false}, buttonData)
@@ -356,7 +354,9 @@ class Button extends React.Component {
           action: 'hubspot',
           hubspotAction: this.state.hubspotAction,
           hubSpotForm: this.state.hubSpotForm,
-          mapping: this.state.mapping
+          mapping: this.state.mapping,
+          identityFieldValue: this.state.identityFieldValue
+
         })
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
@@ -456,7 +456,8 @@ class Button extends React.Component {
           action: 'hubspot',
           hubspotAction: this.state.hubspotAction,
           hubSpotForm: this.state.hubSpotForm,
-          mapping: this.state.mapping
+          mapping: this.state.mapping,
+          identityFieldValue: this.state.identityFieldValue
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
@@ -834,6 +835,8 @@ class Button extends React.Component {
                           removeHubspotAction={this.removeHubspotAction} 
                           hubSpotForm = {this.state.hubSpotForm}
                           mapping={this.state.mapping}
+                          identityFieldValue= {this.state.identityFieldValue}
+                          index= {this.props.index}
                           />
                       </div>
                     </div>

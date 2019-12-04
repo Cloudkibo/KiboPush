@@ -11,8 +11,8 @@ class GetContactForm extends React.Component {
           identityFieldValue: props.identityFieldValue !== '' ? props.identityFieldValue : '',
           mappingData: props.mapping !== '' ? props.mapping : '',
           mappingDataValues: '',
-          showColumns: false,
-          buttonDisabled: true
+          showColumns: props.identityFieldValue !== '' ? true : false,
+          buttonDisabled:  props.identityFieldValue !== '' ? false : true
         }
         this.onidentityFieldValueChange = this.onidentityFieldValueChange.bind(this)
         this.showMappingData = this.showMappingData.bind(this)
@@ -62,7 +62,7 @@ class GetContactForm extends React.Component {
     if (this.state.identityFieldValue === '' ) {
       this.msg.error('Please fill all the required fields')
     } else {
-      this.props.save('',this.state.mappingData,this.state.hubspotFormValue)
+      this.props.save('',this.state.mappingData, this.state.identityFieldValue)
     }
   }
 
@@ -169,7 +169,7 @@ class GetContactForm extends React.Component {
 }
 function mapStateToProps (state) {
     return {
-      columns: (state.hubSpotInfo.columns),
+      columns: (state.hubSpotInfo.Hubspotcolumns),
     }
   }
   function mapDispatchToProps (dispatch) {

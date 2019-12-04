@@ -14,6 +14,13 @@ export function showhubSpotForm (data) {
     }
   }
 
+  export function showHubspotColumns (data) {
+    return {
+      type: ActionTypes.SHOW_showHubspotColumns,
+      data
+    }
+  }
+
   export function emptyFields () {
     return {
       type: ActionTypes.EMPTY_hubspotForm_FIELDS
@@ -77,7 +84,7 @@ export function showhubSpotForm (data) {
         .then(res => {
           console.log('response from fetchColumns', res)
           if (res.status === 'success') {
-            dispatch(showColumns(res.payload))
+            dispatch(showHubspotColumns(res.payload))
           }
          var data = {
             customFieldColumns: [
@@ -86,7 +93,7 @@ export function showhubSpotForm (data) {
             ],
             hubSpotColumns: ["Milestone Name", "Link", "Design Document", "Remaining Issues", "Customer Feature", "Priority"]
           }
-          dispatch(showColumns(data))
+          dispatch(showHubspotColumns(data))
         })
     }
   }
