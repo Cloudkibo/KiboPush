@@ -635,8 +635,7 @@ class CreateConvo extends React.Component {
           pageId={this.state.pageId}
           buttonActions={this.state.buttonActions}
           builderValue={this.state.builderValue}
-          location={this.props.location}
-          locationPages={this.state.locationPages}
+          pages={this.props.location.state && this.state.locationPages}
           handleTargetValue={this.handleTargetValue}
           subscriberCount={this.state.subscriberCount}
           resetTarget={this.state.resetTarget}
