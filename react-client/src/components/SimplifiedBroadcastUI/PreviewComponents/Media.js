@@ -89,13 +89,13 @@ class Media extends React.Component {
         <div className='ui-block' style={{maxWidth: '250px'}} >
           {
               this.state.imgSrc &&
-              <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
+              <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
                 <img src={this.state.imgSrc} alt='' style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
               </div>
           }
           {
             (this.state.media && !this.state.imgSrc) &&
-            <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
+            <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
                 <source src={this.state.media.fileurl.url} type='audio/mpeg' />
               </video>
@@ -104,7 +104,7 @@ class Media extends React.Component {
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
+                  <div id={`button-${button.id}`} style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
                     <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                   </div>
                 )
