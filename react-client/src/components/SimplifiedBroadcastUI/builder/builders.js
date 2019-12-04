@@ -110,7 +110,7 @@ class Builders extends React.Component {
     let messageIndex = messages.findIndex(m => m.id === this.state.currentId)
     if (messageIndex > -1) {
       return messages[messageIndex]
-    } 
+    }
     return null
   }
 
@@ -126,7 +126,7 @@ class Builders extends React.Component {
             // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
             // this.initializeList(list)
             this.handleChange({convoTitle: messages[messageIndex].title}, {changingMessage: true})
-            this.handleChange({broadcast: messages[messageIndex].messageContent}, {changingMessage: true}) 
+            this.handleChange({broadcast: messages[messageIndex].messageContent}, {changingMessage: true})
             resolve()
           })
         }
@@ -1157,7 +1157,7 @@ class Builders extends React.Component {
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
-        
+
         <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: '9999' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -1356,8 +1356,6 @@ Builders.propTypes = {
   'hideUserOptions': PropTypes.bool,
   'componentLimit': PropTypes.number,
   'builderValue': PropTypes.string.isRequired,
-  'location': PropTypes.object.isRequired,
-  'locationPages': PropTypes.object.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
