@@ -41,15 +41,15 @@ class Media extends React.Component {
   }
 
   componentDidMount () {
-    // this.props.handleMedia({id: this.props.id,
-    //   componentType: 'media',
-    //   mediaType: this.props.media.mediaType,
-    //   fileurl: this.props.media.fileurl,
-    //   image_url: this.props.media.image_url,
-    //   fileName: this.props.media.fileName,
-    //   type: this.props.media.type,
-    //   size: this.props.media.size,
-    //   buttons: this.state.buttons})
+    this.props.handleMedia({id: this.props.id,
+      componentType: 'media',
+      mediaType: this.props.media.mediaType,
+      fileurl: this.props.media.fileurl,
+      image_url: this.props.media.image_url,
+      fileName: this.props.media.fileName,
+      type: this.props.media.type,
+      size: this.props.media.size,
+      buttons: this.state.buttons})
   }
 
   updateMediaDetails (mediaProps, image, video) {

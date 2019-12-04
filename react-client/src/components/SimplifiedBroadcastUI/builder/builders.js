@@ -141,13 +141,15 @@ class Builders extends React.Component {
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === this.state.currentId) {
         linkedMessages[i].messageContent = broadcast
-        let temp = []
-        for (let j = 0; j < broadcast.length; j++) {
-          let component = this.getComponent(broadcast[j]).component
-          temp.push({content: component})
+        if (!lists[this.state.currentId]) {
+          let temp = []
+          for (let j = 0; j < broadcast.length; j++) {
+            let component = this.getComponent(broadcast[j]).component
+            temp.push({content: component})
+          }
+          lists[this.state.currentId] = temp
+          console.log('lists updated', lists)
         }
-        lists[this.state.currentId] = temp
-        console.log('lists updated', lists)
       }
     }
 
@@ -155,13 +157,15 @@ class Builders extends React.Component {
     for (let i = unlinkedMessages.length-1 ; i >= 0; i--) {
       if (unlinkedMessages[i].id === this.state.currentId) {
         unlinkedMessages[i].messageContent = broadcast
-        let temp = []
-        for (let j = 0; j < broadcast.length; j++) {
-          let component = this.getComponent(broadcast[j]).component
-          temp.push({content: component})
+        if (!lists[this.state.currentId]) {
+          let temp = []
+          for (let j = 0; j < broadcast.length; j++) {
+            let component = this.getComponent(broadcast[j]).component
+            temp.push({content: component})
+          }
+          lists[this.state.currentId] = temp
+          console.log('lists updated', lists)
         }
-        lists[this.state.currentId] = temp
-        console.log('lists updated', lists)
       }
     }
     this.setState({linkedMessages, unlinkedMessages, lists})
