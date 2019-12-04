@@ -78,6 +78,7 @@ class CreateConvo extends React.Component {
     this.switchBuilder = this.switchBuilder.bind(this)
     this.closeBuilderDropdown = this.closeBuilderDropdown.bind(this)
     this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
+    this.isBroadcastInvalid = this.isBroadcastInvalid.bind(this)
   }
 
   toggleBuilderDropdown () {
@@ -348,6 +349,32 @@ class CreateConvo extends React.Component {
       this.msg.info('Sending broadcast.... You will be notified when it is sent.')
     }
   }
+  
+  isBroadcastInvalid () {
+    let linkedMessages = this.state.linkedMessages
+    if (!linkedMessages || linkedMessages[0].messageContent.length === 0) {
+      return true
+    }
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        let buttons = []
+        if (messageContent[j].cards) {
+          for (let m = 0;  m < messageContent.cards.length; m++) {
+            buttons = buttons.concat(messageContent.cards[m].buttons)
+          }
+        } else if (messageContent[j].buttons) {
+          buttons = messageContent[j].buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          if (!buttons[k].type) {
+            return true
+          }
+        }
+      }
+    }
+    return null
+  }
 
   testConvo () {
     if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
@@ -580,7 +607,7 @@ class CreateConvo extends React.Component {
                 <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.reset}>
                   Reset
                 </button>
-                <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.onNext}>
+                <button className='btn btn-primary' disabled={this.isBroadcastInvalid()} onClick={this.onNext}>
                   Next
                 </button>
               </div>

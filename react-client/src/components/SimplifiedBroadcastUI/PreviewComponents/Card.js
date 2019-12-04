@@ -168,8 +168,8 @@ class Card extends React.Component {
           {
             this.state.buttons.map(button => {
               return (
-                <div id={`button-${button.id}`}>
-                  <hr />
+                <div id={`button-${button.id}`} style={{border: !button.type ? 'solid 1px red' : '1px solid rgba(0,0,0,.1)'}}  >
+                  {/* <hr /> */}
                   <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                 </div>
               )
