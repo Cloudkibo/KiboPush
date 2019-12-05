@@ -702,6 +702,7 @@ class Builders extends React.Component {
       linkedMessages: [{title: this.props.convoTitle, id: currentId, messageContent: []}],
       unlinkedMessages: []
     })
+    this.handleChange({convoTitle: this.defaultTitle}, {})
     this.handleChange({broadcast: []}, {})
   }
 
