@@ -91,6 +91,13 @@ export function showhubSpotForm (data) {
               {customFieldId: "5d821e0da7701b67a00cc384", title: "city"},
               {customFieldId: "5dcbe92681520826fa652ab3", title: "zameen"}
             ],
+            kiboPushColumns: [
+              {fieldName: "firstName", title: "First Name"},
+              {fieldName: "lastName", title: "Last Name"},
+              {fieldName: "fullName", title: "Full Name"},
+              {fieldName: "locale", title: "Locale"},
+              {fieldName: "timezone", title: "Timezone"}
+            ],
             hubSpotColumns: ["Milestone Name", "Link", "Design Document", "Remaining Issues", "Customer Feature", "Priority"]
           }
           dispatch(showHubspotColumns(data))

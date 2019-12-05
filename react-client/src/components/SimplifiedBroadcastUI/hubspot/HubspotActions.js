@@ -2,6 +2,7 @@ import React from 'react'
 import AlertContainer from 'react-alert'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import CreateContact from './createContact'
 import SubmitForm from './submitForm'
 import GetContactForm from './getContactForm'
 import {fetchhubSpotForms, emptyFields} from '../../../redux/actions/hubSpot.actions'
@@ -80,8 +81,10 @@ componentDidMount () {
     this.actionModal.click()
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>),
-      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>)
+      'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>),
+      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>),
+      'Create/Update_Contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>)
+
     }
     return modals[this.state.hubspotAction]
   }
@@ -90,10 +93,10 @@ componentDidMount () {
   updateHubspotAction (hubspotAction, dontShow) {
     console.log('updateHubspotAction', !(dontShow))
     this.setState({hubspotAction: hubspotAction, showModal: !(dontShow)})
-    let title = hubspotAction === 'Submit_data' ? 'Submit data to a form'
+    let title = hubspotAction === 'submit_form' ? 'Submit data to a form'
           : hubspotAction === 'Create/Update_Contact' ? 'Create/Update Contact Properties'
           : hubspotAction === 'Get_Contact' ? 'Get Contact Properties' : ''
-    let description = hubspotAction === 'Submit_data' ? 'Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.'
+    let description = hubspotAction === 'submit_form' ? 'Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.'
           : hubspotAction === 'Create/Update_Contact' ? 'Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.'
           : hubspotAction === 'Get_Contact' ? 'Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.' : ''
     console.log('title value', title)
@@ -125,7 +128,7 @@ componentDidMount () {
           <span>Select one of the Actions below:</span>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Submit_data')} data-toggle='modal' data-target='#ActionModal'>
+              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target='#ActionModal'>
               <h6>Submit data to a form</h6>
               <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
             </div>
