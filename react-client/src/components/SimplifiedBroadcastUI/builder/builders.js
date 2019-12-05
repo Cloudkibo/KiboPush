@@ -1324,6 +1324,7 @@ class Builders extends React.Component {
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
+          currentId={this.state.currentId}
           rerenderFlowBuilder={this.props.rerenderFlowBuilder}
           showAddComponentModal={this.showAddComponentModal}
           linkedMessages={this.state.linkedMessages}

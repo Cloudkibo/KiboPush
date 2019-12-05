@@ -23,7 +23,7 @@ class ComponentBlock extends React.Component {
     element.click()
     setTimeout(() => {
       element.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 46, bubbles: true, cancelable: true}))
-      this.props.removeMessage()
+      // this.props.removeMessage()
     }, 100)
   }
 

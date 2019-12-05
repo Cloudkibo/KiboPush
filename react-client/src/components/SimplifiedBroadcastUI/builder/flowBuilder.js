@@ -50,6 +50,7 @@ class FlowBuilder extends React.Component {
     this.updatePortPositions = this.updatePortPositions.bind(this)
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
+    this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
 
     this.updateZIndex = true
   }
@@ -579,10 +580,44 @@ class FlowBuilder extends React.Component {
     }
   }
 
+  validateDeletedNodes(prevChart, newChart) {
+    console.log('checkIfDeletedNodesValid newChart', newChart)
+    // debugger;
+    let newChartNodes = Object.keys(newChart.nodes)
+    let startingStepExists = false
+    for (let i = 0; i < newChartNodes.length; i++) {
+      if (newChart.nodes[newChartNodes[i]].type === 'starting_step') {
+        startingStepExists = true
+        break
+      }
+    }
+    if (!startingStepExists) {
+      let prevChartNodes = Object.keys(prevChart.nodes)
+      for (let i = 0; i < prevChartNodes.length; i++) {
+        if (prevChart.nodes[prevChartNodes[i]].type === 'starting_step') {
+          let startingStepId = prevChartNodes[i]
+          newChart.nodes[startingStepId] = prevChart.nodes[startingStepId]
+          let prevChartLinks = Object.keys(prevChart.links)
+          for (let j = 0; j < prevChartLinks.length; j++) {
+            if (prevChart.links[prevChartLinks[j]].from.nodeId === startingStepId) {
+              newChart.links[prevChartLinks[j]] = prevChart.links[prevChartLinks[j]]
+              break
+            }
+          }
+          break
+        }
+      }
+    } else if (newChartNodes.length < this.props.linkedMessages.concat(this.props.unlinkedMessages).length) {
+      this.props.removeMessage(this.props.currentId)
+      this.deleteButtonPayload(this.props.currentId)
+    }
+  }
+
   updateChart (chartValue) {
     let prevChart = cloneDeep(this.state.chart)
     console.log('previous chart', prevChart)
     let newChart = chartValue(this.state.chart)
+    this.validateDeletedNodes(prevChart, newChart)
     //this.updatePortPositions(newChart)
     // this.getElements()
     this.fixInvalidNodes(newChart)
@@ -747,7 +782,7 @@ class FlowBuilder extends React.Component {
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 46 || e.keyCode === 8) {
         console.log('key pressed in flow builder', this.state)
-        if (this.state.prevChart.selected.type === 'link') {
+        if (this.state.prevChart.selected && this.state.prevChart.selected.type === 'link') {
           console.log('deleting link', this.props)
           let linkId = this.state.prevChart.selected.id
           let toComponentId = this.state.prevChart.links[linkId].to.nodeId          
@@ -930,7 +965,7 @@ FlowBuilder.propTypes = {
   'getItems': PropTypes.func.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
-  'currentId': PropTypes.number,
+  'currentId': PropTypes.number.isRequired,
   'rerenderFlowBuilder': PropTypes.func.isRequired
 }
 
