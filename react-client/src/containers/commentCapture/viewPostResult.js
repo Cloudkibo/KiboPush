@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
 import AlertContainer from 'react-alert'
-import Dotdotdot from 'react-dotdotdot'
 import PostBox from './PostBox'
 
 var json2csv = require('json2csv')

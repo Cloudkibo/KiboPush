@@ -8,12 +8,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {fetchComments, fetchCommentReplies, saveCommentReplies
 } from '../../redux/actions/commentCapture.actions'
-import { formatDateTime } from '../../utility/utils'
-import ReactPlayer from 'react-player'
 import { getMetaUrls } from '../../utility/utils'
 import CommentBox from './CommentBox'
 import ReplyBox from './ReplyBox'
-import { throwStatement } from '@babel/types'
 
 class Comments extends React.Component {
   constructor (props, context) {

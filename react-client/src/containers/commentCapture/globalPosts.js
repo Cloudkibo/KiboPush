@@ -8,8 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {fetchComments, fetchCommentReplies, saveCommentReplies, saveComments, fetchPosts
 } from '../../redux/actions/commentCapture.actions'
-import { formatDateTime } from '../../utility/utils'
-import ReactPlayer from 'react-player'
 import PostBox from './PostBox'
 import CommentBox from './CommentBox'
 import { getMetaUrls } from '../../utility/utils'
