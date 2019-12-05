@@ -629,7 +629,7 @@ class CreateConvo extends React.Component {
                 <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.reset}>
                   Reset
                 </button>
-                <button className='btn btn-primary' disabled={this.isBroadcastInvalid()} onClick={this.onNext}>
+                <button style={{marginRight: '10px'}} className='btn btn-primary' disabled={this.isBroadcastInvalid()} onClick={this.onNext}>
                   Next
                 </button>
               </div>
@@ -643,7 +643,7 @@ class CreateConvo extends React.Component {
                 <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.linkedMessages && this.state.linkedMessages[0].length === 0)) ? true : null} onClick={this.testConvo}>
                   Test
                 </button>
-                <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
+                <button style={{marginRight: '10px'}} id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
                   Send
                 </button>
               </div>

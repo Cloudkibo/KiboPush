@@ -688,7 +688,20 @@ class Builders extends React.Component {
   }
 
   newConvo () {
-    this.setState({broadcast: [], list: [], convoTitle: this.defaultTitle, quickReplies: []})
+    let currentId = new Date().getTime()
+    let lists = {}
+    lists[currentId] = []
+    let quickReplies = {}
+    quickReplies[currentId] = []
+    this.setState({
+      lists, 
+      currentId,
+      convoTitle: this.defaultTitle, 
+      quickRepliesComponents: {},
+      quickRepliesIndex: -1,
+      linkedMessages: [{title: this.props.convoTitle, id: currentId, messageContent: []}],
+      unlinkedMessages: []
+    })
     this.handleChange({broadcast: []}, {})
   }
 
