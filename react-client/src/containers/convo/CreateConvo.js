@@ -371,7 +371,7 @@ class CreateConvo extends React.Component {
       this.msg.info('Sending broadcast.... You will be notified when it is sent.')
     }
   }
-  
+
   isBroadcastInvalid () {
     let linkedMessages = this.state.linkedMessages
     if (!linkedMessages || linkedMessages[0].messageContent.length === 0) {
@@ -648,7 +648,7 @@ class CreateConvo extends React.Component {
                 </button>
               </div>
             }
-						<div id='builder-dropdown'>
+            <div style={{display: this.state.tabActive !== 'broadcast' && 'none'}} id='builder-dropdown'>
 							<span onClick={this.toggleBuilderDropdown} className="m-subheader__daterange" id="m_dashboard_daterangepicker">
 								<span className="m-subheader__daterange-label">
 									<span className="m-subheader__daterange-date m--font-brand">
@@ -692,6 +692,7 @@ class CreateConvo extends React.Component {
           showTabs={this.state.tabActive === 'broadcast'}
           unlinkedMessages={this.state.unlinkedMessages}
           switchBuilder={this.switchBuilder}
+          componentLimit={3}
         />
       </div>
     )

@@ -267,7 +267,8 @@ class FlowBuilder extends React.Component {
     let portHeight = 24
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
-      if (typeof buttons[j].payload === "string" || !buttons[j].type) {
+      let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
+      if (payload.action === 'send_message_block' || !buttons[j].type) {
         let payload = JSON.parse(buttons[j].payload)
         console.log('parsed payload', payload)
         let port = document.getElementById(`port-${buttons[j].id}`)
