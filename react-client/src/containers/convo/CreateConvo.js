@@ -691,6 +691,7 @@ class CreateConvo extends React.Component {
           linkedMessages={this.state.linkedMessages}
           showTabs={this.state.tabActive === 'broadcast'}
           unlinkedMessages={this.state.unlinkedMessages}
+          switchBuilder={this.switchBuilder}
         />
       </div>
     )

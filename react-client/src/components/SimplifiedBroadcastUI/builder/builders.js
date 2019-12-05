@@ -417,6 +417,7 @@ class Builders extends React.Component {
       this.showResetAlertDialog()
     } else {
       this.newConvo()
+      this.props.switchBuilder('basic')
     }
   }
 
@@ -1412,7 +1413,8 @@ Builders.propTypes = {
   'noDefaultHeight': PropTypes.bool,
   'linkedMessages': PropTypes.array,
   'showTabs': PropTypes.bool.isRequired,
-  'unlinkedMessages': PropTypes.array
+  'unlinkedMessages': PropTypes.array,
+  'switchBuilder': PropTypes.func.isRequired
 }
 
 Builders.defaultProps = {
