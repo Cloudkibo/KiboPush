@@ -53,9 +53,9 @@ class Builders extends React.Component {
       unlinkedMessages: this.props.unlinkedMessages ? this.props.unlinkedMessages : [],
       currentId,
       quickRepliesIndex: -1,
-      editingFlowBuilder: false
+      editingFlowBuilder: false,
+      showGSModal: false
     }
-    console.log('Builders constructor state', this.state)
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -94,6 +94,10 @@ class Builders extends React.Component {
     this.getQuickReplies = this.getQuickReplies.bind(this)
     this.getCurrentMessage = this.getCurrentMessage.bind(this)
     this.removeMessage = this.removeMessage.bind(this)
+    this.toggleGSModal = this.toggleGSModal.bind(this)
+    this.closeGSModal = this.closeGSModal.bind(this)
+
+    this.GSModalContent = null
 
     if (props.setReset) {
       props.setReset(this.reset)
@@ -103,6 +107,17 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  toggleGSModal (value, content) {
+    console.log('show toggleGSModal called in genericMessage')
+    this.setState({showGSModal: value})
+    this.GSModalContent = content
+  }
+
+  closeGSModal () {
+    this.setState({showGSModal: false})
+    this.refs.ActionModal.click()
   }
 
   getCurrentMessage () {
@@ -766,6 +781,8 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
@@ -778,6 +795,8 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
@@ -820,6 +839,8 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
@@ -833,6 +854,8 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
@@ -845,6 +868,8 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
@@ -1221,6 +1246,13 @@ class Builders extends React.Component {
               <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal'>Save</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+        <div style={{ transform: 'translate(0, 0)'}} className='modal-dialog modal-lg' role='document'>
+          {this.state.showGSModal && this.GSModalContent}
         </div>
       </div>
 
