@@ -10,7 +10,8 @@ class submitForm extends React.Component {
             hubspotFormValue: props.hubSpotForm !== '' ? props.hubSpotForm : '',
             mappingData: props.mapping !== '' ? props.mapping : '',
             mappingDataValues: '',
-            loadingColumns: false
+            loadingColumns: false,
+            buttonDisabled:  props.hubSpotForm !== '' ? false : true
           }
           this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
           this.updateMappingData = this.updateMappingData.bind(this)
@@ -31,8 +32,20 @@ class submitForm extends React.Component {
             mappingDataValues[i] = ''
           }
         }
+
+        
         console.log('temp mappingDataValues', mappingDataValues)
         this.setState({mappingDataValues: mappingDataValues})
+    }
+
+    if (this.props.columns && this.props.columns.hubSpotFormColumns && this.props.columns.hubSpotFormColumns.length > 0) {
+      let mappingDataValues = []
+      for (let i = 0; i < this.props.columns.hubSpotFormColumns.length; i++) {
+        mappingDataValues.push('')
+      }
+      if (this.state.mappingData === '') {
+        this.setState({mappingDataValues: mappingDataValues})
+      }
     }
   }
 
@@ -42,7 +55,7 @@ class submitForm extends React.Component {
       if (this.state.hubspotFormValue === '' ) {
         this.msg.error('Please fill all the required fields')
       } else {
-        this.props.save(this.state.hubspotFormValue, this.state.mappingData)
+        this.props.save(this.state.hubspotFormValue, this.state.mappingData, '')
       }
     }
 
@@ -62,11 +75,10 @@ class submitForm extends React.Component {
       console.log('data in updateMappingData', data)
     }
     onhubspotFormChange (event) {
-        this.setState({hubspotFormValue: event.target.value})
-        this.props.fetchColumns({hubspotFormId: event.target.value , loadingColumns: true})
+        this.setState({hubspotFormValue: event.target.value, buttonDisabled: false, loadingColumns: true})
+        this.props.fetchColumns({hubspotFormId: event.target.value})
         // this.props.fetchWorksheets({spreadsheetId: event.target.value})
         // if (event.target.value !== '' && this.state.workSheetValue !== '') {
-        //   this.setState({buttonDisabled: false})
         // }
       }
       UNSAFE_componentWillReceiveProps (nextProps) {
@@ -126,7 +138,7 @@ class submitForm extends React.Component {
               </div>
               <div className='col-1'>
                 <center>
-                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large'}} />
+                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ? 'black': 'blue'}} />
                 </center>
               </div>
               <div className='col-5'>
@@ -159,9 +171,9 @@ class submitForm extends React.Component {
             </select>
           }
           <br />
-          {this.state.loadingColumns
+          {this.state.loadingColumns 
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : (this.props.columns && this.props.columns.hubSpotFormColumns.length > 0 &&
+          : this.state.hubspotFormValue !== '' && (this.props.columns && this.props.columns.hubSpotFormColumns.length > 0 &&
             this.showMappingData(this.props.columns.hubSpotFormColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }

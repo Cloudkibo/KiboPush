@@ -14,6 +14,13 @@ export function showhubSpotForm (data) {
     }
   }
 
+  export function showHubspotColumns (data) {
+    return {
+      type: ActionTypes.SHOW_showHubspotColumns,
+      data
+    }
+  }
+
   export function emptyFields () {
     return {
       type: ActionTypes.EMPTY_hubspotForm_FIELDS
@@ -70,3 +77,25 @@ export function showhubSpotForm (data) {
         })
     }
   }
+
+  export function fetchHubspotColumns () {
+    return (dispatch) => {
+      callApi(`hubspotIntegrations/fetchHubspotColumns`)
+        .then(res => {
+          console.log('response from fetchColumns', res)
+          if (res.status === 'success') {
+            dispatch(showHubspotColumns(res.payload))
+          }
+         var data = {
+            customFieldColumns: [
+              {customFieldId: "5d821e0da7701b67a00cc384", title: "city"},
+              {customFieldId: "5dcbe92681520826fa652ab3", title: "zameen"}
+            ],
+            hubSpotColumns: ["Milestone Name", "Link", "Design Document", "Remaining Issues", "Customer Feature", "Priority"]
+          }
+          dispatch(showHubspotColumns(data))
+        })
+    }
+  }
+
+

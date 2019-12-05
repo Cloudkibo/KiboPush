@@ -3,6 +3,7 @@ import AlertContainer from 'react-alert'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import SubmitForm from './submitForm'
+import GetContactForm from './getContactForm'
 import {fetchhubSpotForms, emptyFields} from '../../../redux/actions/hubSpot.actions'
 
 class HubspotAction extends React.Component {
@@ -14,7 +15,8 @@ class HubspotAction extends React.Component {
       hubspotAction: '',
       hubSpotForm: '' ,
       mapping: '',
-      showModal: false
+      showModal: false,
+      identityFieldValue: ''
 
     }
     props.fetchhubSpotForms()
@@ -25,31 +27,38 @@ class HubspotAction extends React.Component {
     this.save = this.save.bind(this)
   }
 
-  save (hubSpotForm, mappingData) {
+  save (hubSpotForm, mappingData, identityFieldValue) {
     console.log('mappingData in save', mappingData)
     console.log('hubSpotForm in save', hubSpotForm)
-    this.refs.ActionModal.click()
     this.setState({
     hubSpotForm: hubSpotForm,
     mapping: mappingData,
+    identityFieldValue: identityFieldValue,
     showModal: false
   })
     this.props.savehubSpotForm({
       hubspotAction: this.state.hubspotAction,
       hubSpotForm: hubSpotForm,
       mapping: mappingData,
+      identityFieldValue: identityFieldValue
     })
+    this.closeModal()
   }
   
   closeModal () {
-    this.refs.ActionModal.click()
+    this.actionModal.click()
 }
 
 componentDidMount () {
   console.log('in componentDidMount of Hubspot Action', this.props)
   if (this.props.hubspotAction!== '' && this.props.hubSpotForm !== '' && this.props.mapping !== '') {
     this.setState({mapping: this.props.mapping, hubSpotForm: this.props.hubSpotForm})
-    this.updateHubspotAction(this.props.hubSpotForm, true)
+    this.updateHubspotAction(this.props.hubspotAction, true)
+  }
+
+  if (this.props.hubspotAction!== '' && this.props.identityFieldValue !== '' && this.props.mapping !== '') {
+    this.setState({mapping: this.props.mapping, identityFieldValue: this.props.identityFieldValue})
+    this.updateHubspotAction(this.props.hubspotAction, true)
   }
 }
   removeHubspotAction () {
@@ -60,14 +69,19 @@ componentDidMount () {
     hubspotAction: '',
     hubSpotForm: '' ,
     mapping: '',
+    identityFieldValue: '',
+    showModal: false
     })
-    this.props.emptyFields()
+    //this.props.emptyFields()
     this.props.removeHubspotAction()
   }
   openModal () {
+
+    this.actionModal.click()
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>)
+      'Submit_data': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>),
+      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>)
     }
     return modals[this.state.hubspotAction]
   }
@@ -98,7 +112,7 @@ componentDidMount () {
       <div>
         { this.state.title !== ''
         ? <div>
-        <div className='google-sheet-close-icon' style = {{position: 'inherit', float:'right'}}onClick={this.removeHubspotAction}></div>
+        <div className='google-sheet-close-icon' style = {{position: 'inherit', float:'right'}} onClick={this.removeHubspotAction}></div>
         <div className='ui-block'
           style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer', backgroundColor: 'rgba(0,0,0,.07)'}}
           onClick={() => this.updateHubspotAction(this.state.hubspotAction)} data-toggle='modal' data-target='#ActionModal' >
@@ -129,8 +143,8 @@ componentDidMount () {
           </div>
         </div>
     }
-    <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
-    <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+    <a href='#/' style={{ display: 'none' }} ref={(element) => this.actionModal = element} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>ActionModal</a>
+    <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className='modal fade' id = {`ActionModal${this.props.index}`} tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className='modal-dialog modal-lg' role='document'>
         <div className="modal-content" style={{ width: '687px', top: '100' }}>
             <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
