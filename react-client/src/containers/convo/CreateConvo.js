@@ -80,6 +80,7 @@ class CreateConvo extends React.Component {
     this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
     this.isBroadcastInvalid = this.isBroadcastInvalid.bind(this)
     this.deleteButtonIds = this.deleteButtonIds.bind(this)
+    this.checkForInvalidButtons = this.checkForInvalidButtons.bind(this)
   }
 
 
@@ -140,21 +141,23 @@ class CreateConvo extends React.Component {
   }
 
   onNext (e) {
-    console.log('in onNext', this.state.broadcast)
-    if (validateFields(this.state.broadcast, this.msg)) {
-      /* eslint-disable */
+    console.log('in onNext', this.state.linkedMessages[0])
+    if (validateFields(this.state.linkedMessages[0], this.msg)) {
+      if (!this.checkForInvalidButtons()) {
+        /* eslint-disable */
         $('#tab_1').removeClass('active')
         $('#tab_2').addClass('active')
         $('#titleBroadcast').removeClass('active')
         $('#titleTarget').addClass('active')
         /* eslint-enable */
-      this.setState({tabActive: 'target'})
-      const payload = {
-        pageId: this.state.pageId._id,
-        segmented: false,
-        isList: false,
+        this.setState({tabActive: 'target'})
+        const payload = {
+          pageId: this.state.pageId._id,
+          segmented: false,
+          isList: false,
+        }
+        this.props.getSubscriberCount(payload, this.handleSubscriberCount)
       }
-      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
     }
   }
 
@@ -396,6 +399,30 @@ class CreateConvo extends React.Component {
     //   }
     // }
     return null
+  }
+
+  checkForInvalidButtons () {
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        let buttons = []
+        if (messageContent[j].cards) {
+          for (let m = 0;  m < messageContent[j].cards.length; m++) {
+            buttons = buttons.concat(messageContent[j].cards[m].buttons)
+          }
+        } else if (messageContent[j].buttons) {
+          buttons = messageContent[j].buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          if (!buttons[k].type) {
+            this.msg.error('One or more buttons have no action')
+            return true
+          }
+        }
+      }
+    }
+    return false
   }
 
   testConvo () {

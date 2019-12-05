@@ -14,6 +14,7 @@ class BasicBuilder extends React.Component {
   }
 
   render () {
+    console.log('BasicBuilder props', this.props)
     return (
       <div className='m-content'>
         <div className='row'>

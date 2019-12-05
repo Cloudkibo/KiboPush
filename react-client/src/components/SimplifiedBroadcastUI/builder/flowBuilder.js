@@ -57,7 +57,16 @@ class FlowBuilder extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('componentWillRecieveProps nextProps', nextProps)
-    if (nextProps.linkedMessages.concat(nextProps.unlinkedMessages).length > Object.keys(this.state.chart.nodes).length) {
+    if (
+      (
+        nextProps.linkedMessages.concat(nextProps.unlinkedMessages).length >
+        Object.keys(this.state.chart.nodes).length
+      ) ||
+      (
+        (nextProps.linkedMessages.length - 1) <
+        Object.keys(this.state.chart.links).length
+      )
+    ) {
       //this.props.rerenderFlowBuilder()
       this.setState({
         chart: this.getChartData(),
@@ -330,7 +339,7 @@ class FlowBuilder extends React.Component {
       type: "starting_step",
       position: {
         x: 25,
-        y: 50
+        y: 100
       },
       ports: ports,
       properties: {
