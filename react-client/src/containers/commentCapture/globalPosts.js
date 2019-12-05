@@ -6,15 +6,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {fetchComments, fetchCommentReplies, saveCommentReplies, saveComments
+import {fetchComments, fetchCommentReplies, saveCommentReplies, saveComments, fetchPosts
 } from '../../redux/actions/commentCapture.actions'
 import { formatDateTime } from '../../utility/utils'
 import ReactPlayer from 'react-player'
+import PostBox from './PostBox'
+import CommentBox from './CommentBox'
 import { getMetaUrls } from '../../utility/utils'
-import { handleDate } from '../../utility/utils'
-import Dotdotdot from 'react-dotdotdot'
+import ReplyBox from './ReplyBox'
 
-class Comments extends React.Component {
+class GlobalPosts extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -27,6 +28,10 @@ class Comments extends React.Component {
     this.showReplies = this.showReplies.bind(this)
     this.hideCommentReplies = this.hideCommentReplies.bind(this)
     this.handleText = this.handleText.bind(this)
+    this.fetchPosts = this.fetchPosts.bind(this)
+    this.commentsCount = this.commentsCount.bind(this)
+    this.showComments = this.showComments.bind(this)
+    this.hideComments = this.hideComments.bind(this)
   }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -34,6 +39,13 @@ class Comments extends React.Component {
 
     if (truef === false) {
     }
+  }
+  fetchPosts() {
+    this.props.fetchPosts({
+      pageId: this.props.currentPost.pageId,
+      number_of_records: 10,
+      after: this.props.postsAfter
+     })
   }
   handleText(text, index) {
     let urls = getMetaUrls(text)
@@ -90,6 +102,18 @@ class Comments extends React.Component {
     }
     return showReplies
   }
+  showComments (post) {
+    var showComments = false
+    if (this.props.comments) {
+      for (var i = 0; i < this.props.comments.length; i++) {
+        if (this.props.comments[i].postFbId === post.postId) {
+          showComments = true
+          break
+        }
+      }
+    }
+    return showComments
+  }
   hideCommentReplies (commentId) {
     var replies = []
     if (this.props.commentReplies) {
@@ -101,10 +125,10 @@ class Comments extends React.Component {
     }
     this.props.saveCommentReplies(replies)
   }
-  getComments (postFbId) {
+  getComments (postFbId, isFirstPage) {
     this.props.fetchComments({
-      first_page: true,
-      last_id: this.props.comments && this.props.comments.length > 0 ? this.props.comments[this.props.comments.length - 1]._id : 'none',
+      first_page: isFirstPage,
+      last_id: !isFirstPage && this.props.comments && this.props.comments.length > 0 ? this.props.comments[this.props.comments.length - 1]._id : 'none',
       number_of_records: 10,
       postId: this.props.currentPost._id,
       post_id: postFbId,
@@ -135,157 +159,58 @@ class Comments extends React.Component {
           <div className='row'>
             <div className='col-8'>
             { this.props.globalPosts && this.props.globalPosts.map((post, index) => (
-              <div className='m-widget3'>
-                <div className='m-widget3__item' key={index} style={{width: 'auto',height: '150px',borderBottom: 'none',border:'1px solid #36a3f7', borderRadius: '25px', padding: '15px' }}>
-                  <div className='m-widget3__header'>
-                    <div className='m-widget3__user-img'>
-                      <img alt='' className='m-widget3__img' src={this.state.page.pagePic}/>
-                    </div>
-                    <div className='m-widget3__info'>
-                      <span className='m-widget3__username'>
-                        {this.state.page.pageName}
-                      </span>
-                      <br/>
-                      <span className='m-widget3__time'>
-                        {handleDate(post.datetime)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className='m-widget3__body' style={{marginLeft: '5px'}}>	
-                    { post.message && 
-                    <Dotdotdot clamp={1}>
-                      <p className='widget3__text'>
-                        {post.message}
-                      </p>
-                    </Dotdotdot>
-                    }
-                    { (!post.message || post.message === '') && post.attachments && 
-                    <p className='widget3__text'>
-                      Post has attachments
-                    </p>
-                    }
-                  </div>
-                  <div style={{float: 'right', display: 'inline'}}>
-                    { this.commentsCount(post) > 0 &&
-                     <a href="#/" style={{marginRight: '5px'}} onClick={() => {this.hideComments(post)}}><i className='fa fa-chevron-down' />Hide Comments</a>
-                    }
-                    {this.commentsCount(post) < 1 && post.commentsCount > 0 && <a href='#/' style={{marginRight: '5px'}} onClick={() => this.getComments(post.postId)}>{post.commentsCount} Comments</a>}
-                    <a href={`https://facebook.com/${post.postId}`}>View on Facebook</a>
-                  </div>
-              </div>
+              <div key={index}>
+               <PostBox 
+                  commentsCount={this.commentsCount}
+                  hideComments= {this.hideComments}
+                  getComments={this.getComments}
+                  post={post}
+                  page={this.state.page}
+               />
               { this.props.comments && this.props.comments.map((comment, index) => (
               comment.postFbId === post.postId &&
-              <div className='m-widget3' key={index}>
-                <div className='m-widget3__item' style={{borderBottom: 'none'}}>
-                  <div className='m-widget3__header'>
-                    <div className='m-widget3__user-img' style={{marginRight: '10px'}}>
-                      <img alt='' className='m-widget3__img' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'/>
-                    </div>
-                    <div className='m-widget3__info' style={{width: '400px', background: 'aliceblue', border:'1px', borderRadius: '25px', padding: '5px' }}>
-                      <span className='m-widget3__username' style={{color: 'blue', marginLeft: '10px'}}>
-                        {comment.senderName}
-                      </span>
-                      {comment.commentPayload.map((component, index) => (
-                        component.componentType === 'text'
-                        ? <span style={{marginLeft: '5px'}} dangerouslySetInnerHTML={ this.handleText(component.text, index)} key={index}>
-                        </span>
-                        : component.componentType === 'image'
-                        ? <span key={index} style={{marginLeft: '5px', display: 'block'}}>
-                          <img alt='' style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                        </span>
-                        : component.componentType === 'gif'
-                        ? <span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                          <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                        </span>
-                        : component.componentType === 'video'
-                        ? <span key={index}style={{marginLeft: '5px', display: 'block'}}>
-                        <ReactPlayer
-                          url={component.url}
-                          controls
-                          width='150px'
-                          height='150px'
-                          onPlay={this.onTestURLVideo(component.url)} />
-                        </span>
-                        :component.componentType === 'sticker'
-                        ?<span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                            <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                        </span>
-                        : <span key={index} style={{marginLeft: '5px'}}>
-                          Component Not Supported 
-                        </span>
-                      ))
-                    }
-                    <br />
-                    <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                        {comment.datetime && formatDateTime(comment.datetime) }
-                        {this.repliesCount(comment) < 1 && comment.childCommentCount > 0 && <span>
-                        <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.getCommentReplies(comment._id, true)}}><i className='fa fa-reply' /> {comment.childCommentCount} {comment.childCommentCount > 1 ? 'replies' : 'reply' }</a>
-                        </span>
-                        }
-                        { this.repliesCount(comment) > 0 && <span>
-                        <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.hideCommentReplies(comment._id)}}><i className='fa fa-chevron-down' />Hide Replies</a>
-                        </span>
-                        }
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div key={index}>
+                <CommentBox 
+                  repliesCount={this.repliesCount}
+                  getCommentReplies= {this.getCommentReplies}
+                  hideCommentReplies={this.hideCommentReplies}
+                  handleText = {this.handleText}
+                  comment={comment}
+                  onTestURLVideo={this.onTestURLVideo}
+                />
                 { this.props.commentReplies && this.props.commentReplies.map((reply, index) => (
                 reply.parentId === comment._id &&
-                <div className='m-widget3' style={{marginLeft: '25px'}}>
-                  <div className='m-widget3__item'>
-                    <div className='m-widget3__header'>
-                      <div className='m-widget3__user-img' style={{marginRight: '10px'}}>
-                        <img alt='' className='m-widget3__img' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'/>
-                      </div>
-                      <div className='m-widget3__info' style={{width: '400px', background: 'aliceblue', border:'1px', borderRadius: '25px', padding: '5px' }}>
-                        <span className='m-widget3__username' style={{color: 'blue', marginLeft: '10px'}}>
-                          {reply.senderName}
-                        </span>
-                        {reply.commentPayload.map((component, index) => (
-                          component.componentType === 'text'
-                          ? <span style={{marginLeft: '5px'}} key={index}>
-                            { component.text }
-                          </span>
-                          : component.componentType === 'image'
-                          ? <span key={index} style={{marginLeft: '5px', display: 'block'}}>
-                            <img alt='' style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                          </span>
-                          : component.componentType === 'gif'
-                          ? <span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                            <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                          </span>
-                          : component.componentType === 'video'
-                          ? <span key={index}style={{marginLeft: '5px', display: 'block'}}>
-                          <ReactPlayer
-                            url={component.url}
-                            controls
-                            width='150px'
-                            height='150px'
-                            onPlay={this.onTestURLVideo(component.url)} />
-                          </span>
-                          : <span key={index} style={{marginLeft: '5px'}}>
-                            Component Not Supported 
-                          </span>
-                        ))                 
-                        }
-                       <br/>
-                        <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                          {reply.datetime && formatDateTime(reply.datetime)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                <div index={index}>
+                  <ReplyBox reply={reply}/>
                 </div>
                 ))
               }
+                { this.showReplies(comment) && (comment.childCommentCount - this.repliesCount(comment) > 0) &&
+                  <div className='col-12'>
+                    <span>
+                      <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
+                    </span>
+                  </div>
+                }
               </div>
               ))
             }
-            {/* View more comments*/ }
+            { this.showComments(post) && (post.commentsCount - this.commentsCount(post) > 0) &&
+            <div className='col-12'>
+              <span>
+                <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={() => this.getComments(post.postId, false)}>View More Comments</a>
+              </span>
+            </div>
+            }
             </div>
             ))
-          }
+          } { this.props.postsAfter && this.props.postsAfter !== '' &&
+            <div className='col-12'>
+              <span>
+                <a href="#/" onClick={this.fetchPosts}>Show More Posts</a>
+              </span>
+            </div>
+            }
           </div>
         </div>
       </div>
@@ -303,6 +228,7 @@ function mapStateToProps(state) {
     commentsCount: (state.postsInfo.commentsCount),
     repliesCount: (state.postsInfo.repliesCount),
     globalPosts: (state.postsInfo.globalPosts),
+    postsAfter: (state.postsInfo.postsAfter),
     pages: (state.pagesInfo.pages)
   }
 }
@@ -312,7 +238,8 @@ function mapDispatchToProps(dispatch) {
     fetchComments,
     fetchCommentReplies,
     saveCommentReplies,
-    saveComments
+    saveComments,
+    fetchPosts
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Comments)
+export default connect(mapStateToProps, mapDispatchToProps)(GlobalPosts)

@@ -11,6 +11,9 @@ import {fetchComments, fetchCommentReplies, saveCommentReplies
 import { formatDateTime } from '../../utility/utils'
 import ReactPlayer from 'react-player'
 import { getMetaUrls } from '../../utility/utils'
+import CommentBox from './CommentBox'
+import ReplyBox from './ReplyBox'
+import { throwStatement } from '@babel/types'
 
 class Comments extends React.Component {
   constructor (props, context) {
@@ -116,114 +119,20 @@ class Comments extends React.Component {
         }
         {
           this.props.comments && this.props.comments.map((comment, index) => (
-          <div className='m-widget3' key={index}>
-            <div className='m-widget3__item' style={{borderBottom: 'none'}}>
-              <div className='m-widget3__header'>
-                <div className='m-widget3__user-img' style={{marginRight: '10px'}}>
-                  <img alt='' className='m-widget3__img' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'/>
-                </div>
-                <div className='m-widget3__info' style={{width: '400px', background: 'aliceblue', border:'1px', borderRadius: '25px', padding: '5px' }}>
-                  <span className='m-widget3__username' style={{color: 'blue', marginLeft: '10px'}}>
-                    {comment.senderName}
-                  </span>
-                  {comment.commentPayload.map((component, index) => (
-                    component.componentType === 'text'
-                    ? <span style={{marginLeft: '5px'}} dangerouslySetInnerHTML={ this.handleText(component.text, index)} key={index}>
-                    </span>
-                    : component.componentType === 'image'
-                    ? <span key={index} style={{marginLeft: '5px', display: 'block'}}>
-                      <img alt='' style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                    </span>
-                    : component.componentType === 'gif'
-                    ? <span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                      <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                    </span>
-                    : component.componentType === 'video'
-                    ? <span key={index}style={{marginLeft: '5px', display: 'block'}}>
-                     <ReactPlayer
-                      url={component.url}
-                      controls
-                      width='150px'
-                      height='150px'
-                      onPlay={this.onTestURLVideo(component.url)} />
-                    </span>
-                    :component.componentType === 'sticker'
-                    ?<span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                        <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                    </span>
-                    : <span key={index} style={{marginLeft: '5px'}}>
-                      Component Not Supported 
-                    </span>
-                  ))                 
-                  }
-                  { (!this.props.currentPost.payload  || this.props.currentPost.payload.length < 1) && (!this.props.currentPost.post_id || this.props.currentPost.post_id === '') &&
-                    <span key={index}style={{display: 'block', marginTop: '10px'}}>
-                        <a href={comment.postFbLink} style={{marginLeft: '10px'}} >{comment.postFbLink}</a>
-                    </span>
-                  }
-                  <br/>
-                  <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                    {comment.datetime && formatDateTime(comment.datetime) }
-                    {this.repliesCount(comment) < 1 && comment.childCommentCount > 0 && <span>
-                    <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.getCommentReplies(comment._id, true)}}><i className='fa fa-reply' /> {comment.childCommentCount} {comment.childCommentCount > 1 ? 'replies' : 'reply' }</a>
-                    </span>
-                    }
-                    { this.repliesCount(comment) > 0 && <span>
-                    <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.hideCommentReplies(comment._id)}}><i className='fa fa-chevron-down' />Hide Replies</a>
-                    </span>
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
+            <div key={index}>
+              <CommentBox 
+                  repliesCount={this.repliesCount}
+                  getCommentReplies= {this.getCommentReplies}
+                  hideCommentReplies={this.hideCommentReplies}
+                  handleText = {this.handleText}
+                  comment={comment}
+                  onTestURLVideo={this.onTestURLVideo}
+                />
             { this.props.commentReplies && this.props.commentReplies.map((reply, index) => (
               reply.parentId === comment._id &&
-              <div className='col-12'>
-              <div className='m-widget3' style={{marginLeft: '25px'}}>
-                <div className='m-widget3__item'>
-                  <div className='m-widget3__header'>
-                    <div className='m-widget3__user-img' style={{marginRight: '10px'}}>
-                      <img alt='' className='m-widget3__img' src='https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'/>
-                    </div>
-                    <div className='m-widget3__info' style={{width: '400px', background: 'aliceblue', border:'1px', borderRadius: '25px', padding: '5px' }}>
-                      <span className='m-widget3__username' style={{color: 'blue', marginLeft: '10px'}}>
-                        {reply.senderName}
-                      </span>
-                      {reply.commentPayload.map((component, index) => (
-                        component.componentType === 'text'
-                        ? <span style={{marginLeft: '5px'}} key={index}>
-                          { component.text }
-                        </span>
-                        : component.componentType === 'image'
-                        ? <span key={index} style={{marginLeft: '5px', display: 'block'}}>
-                          <img alt='' style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                        </span>
-                        : component.componentType === 'gif'
-                        ? <span key={index} style={{marginLeft: '5px',display: 'block'}}>
-                          <img alt=''  style={{width: '150px', height: '150px'}} className='m-widget3__img' src={component.url}/> 
-                        </span>
-                        : component.componentType === 'video'
-                        ? <span key={index}style={{marginLeft: '5px', display: 'block'}}>
-                        <ReactPlayer
-                          url={component.url}
-                          controls
-                          width='150px'
-                          height='150px'
-                          onPlay={this.onTestURLVideo(component.url)} />
-                        </span>
-                        : <span key={index} style={{marginLeft: '5px'}}>
-                          Component Not Supported 
-                        </span>
-                      ))                 
-                      }
-                     <br/>
-                      <span className='m-widget3__time' style={{marginLeft: '10px'}}>
-                        {reply.datetime && formatDateTime(reply.datetime)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div index={index}>
+                <ReplyBox reply={reply}
+                onTestURLVideo={this.onTestURLVideo}/>
             </div>
             ))
           }
@@ -233,7 +142,7 @@ class Comments extends React.Component {
                 <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
               </span>
             </div>
-            }
+          }
           </div>
           ))
         }

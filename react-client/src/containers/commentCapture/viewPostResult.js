@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
 import AlertContainer from 'react-alert'
 import Dotdotdot from 'react-dotdotdot'
+import PostBox from './PostBox'
 
 var json2csv = require('json2csv')
 
@@ -247,43 +248,12 @@ render() {
             <div className='m-portlet__body'>
             <div className='row'>
               <div className='col-md-6 col-lg-7 col-sm-4'>
-				  { this.state.captureType !== 'Any Post' &&
-					<div className='m-widget3'>
-						<div className='m-widget3__item' style={{width: 'auto', minHeight: '130px',borderBottom: 'none',border:'1px solid #36a3f7', borderRadius: '25px', padding: '15px' }}>
-							<div className='m-widget3__header'>
-								<div className='m-widget3__user-img'>
-									<img alt='' className='m-widget3__img' src={this.state.page.pagePic}/>
-								</div>
-								<div className='m-widget3__info'>
-									<span className='m-widget3__username'>
-										{this.state.page.pageName}
-									</span>
-									<br/>
-									<span className='m-widget3__time'>
-										{this.props.postContent && handleDate(this.props.postContent.datetime)}
-									</span>
-								</div>
-							</div>
-							<div className='m-widget3__body' style={{marginLeft: '5px', height: '50px'}}>	
-							  {this.props.postContent && this.props.postContent.message && 
-								<Dotdotdot clamp={2}>
-									<p className='widget3__text'>
-										{this.props.postContent.message}
-									</p>
-								</Dotdotdot>
-								}
-								{ this.props.postContent && (!this.props.postContent.message || this.props.postContent.message === '') && this.props.postContent.attachments && 
-								<p className='widget3__text'>
-									Post has attachments
-								</p>
-								}
-							</div>
-							<div className='m-widget3__footer' style={{textAlign: 'right'}}>
-								<a href={this.props.postContent ? this.props.postContent.postLink: `https://facebook.com/${this.props.currentPost.post_id}`}>View on Facebook</a>
-							</div>
-						</div>
-					</div>
-				}	  
+          { this.state.captureType !== 'Any Post' &&
+          <PostBox
+           post={this.props.postContent ? this.props.postContent: {}} 
+           page={this.state.page} />
+          
+				  }	  
                 <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
 					{this.state.captureType === 'Any Post' && <div className='m-widget1__item'>
 						<div className='row m-row--no-padding align-items-center'>
@@ -327,15 +297,15 @@ render() {
             </div>
           </div>
           </div>
-		  {this.state.captureType !== 'Any Post' 
-		  	? <Comments comments={this.props.comments ? this.props.comments: []}/>
-			: <GlobalPosts globalPosts={this.props.globalPosts ? this.props.globalPosts: []}/>
-		  }
+          {this.state.captureType !== 'Any Post' 
+          ? <Comments comments={this.props.comments ? this.props.comments: []}/>
+          : <GlobalPosts globalPosts={this.props.globalPosts ? this.props.globalPosts: []}/>
+          }
           <div className='row'>
-		  	<div className='m-form m-form--label-align-left m--margin-bottom-30'>
-              <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon pull-right'> Back </Link>
+            <div className='col-6'>
+              <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon'> Back </Link>
             </div>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-6'>
               <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportAnalytics}>
                 <span>
                   <i className='fa fa-download' />
@@ -352,8 +322,8 @@ render() {
                   </span>
                 </span>
               </button>
+              </div>
             </div>
-          </div>
           </div>
         </div>
     )

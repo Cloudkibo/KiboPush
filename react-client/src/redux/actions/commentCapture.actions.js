@@ -36,7 +36,7 @@ export function showAllComments (data) {
 export function showGlobalPosts (data) {
   return {
     type: ActionTypes.SHOW_GLOBAL_POSTS,
-    posts: data.posts,
+    globalPosts: data.posts,
     postsAfter: data.after
   }
 }

@@ -27,6 +27,8 @@ export function postsInfo (state = {}, action) {
       })
     case ActionTypes.RESET_COMMENTS:
       return Object.assign({}, state, {
+        globalPosts: action.data,
+        postsAfter:action.data,
         commentReplies: action.data,
         comments: action.data,
         commentsCount:action.data,
@@ -50,7 +52,7 @@ export function postsInfo (state = {}, action) {
       })
       case ActionTypes.SHOW_GLOBAL_POSTS: 
       return Object.assign({}, state, {
-        globalPosts: action.posts,
+        globalPosts: state.globalPosts ? [...state.globalPosts, ...action.globalPosts] : action.globalPosts,
         postsAfter: action.postsAfter
       })
     default:
