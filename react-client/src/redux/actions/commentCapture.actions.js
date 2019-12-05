@@ -12,9 +12,16 @@ export function showAllPosts (data) {
     postsCount: data.count
   }
 }
+
 export function saveCommentReplies (data) {
   return {
     type: ActionTypes.SAVE_COMMENT_REPLIES,
+    data: data
+  }
+}
+export function saveComments (data) {
+  return {
+    type: ActionTypes.SAVE_COMMENTS,
     data: data
   }
 }
@@ -24,6 +31,20 @@ export function showAllComments (data) {
     type: ActionTypes.SHOW_POST_COMMENTS,
     comments: data.comments,
     commentCount: data.count
+  }
+}
+export function showGlobalPosts (data) {
+  return {
+    type: ActionTypes.SHOW_GLOBAL_POSTS,
+    globalPosts: data.posts,
+    postsAfter: data.after
+  }
+}
+export function showPostData (data) {
+  console.log('Data fetched for post', data)
+  return {
+    type: ActionTypes.SHOW_POST_CONTENT,
+    postContent: data
   }
 }
 export function resetComments (data) {
@@ -72,6 +93,19 @@ export function fetchAllPosts (data) {
         dispatch(showAllPosts(res.payload))
       } else {
         console.log('Error in loading Posts', res)
+      }
+    })
+  }
+}
+export function fetchPostContent (post_id) {
+  console.log('Fetching post data')
+  return (dispatch) => {
+    callApi(`post/fetchPostData/${post_id}`)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showPostData(res.payload))
+      } else {
+        console.log('Unable to fetch post data')
       }
     })
   }
@@ -200,6 +234,22 @@ export function editCommentCapture (data, msg, handleEdit) {
           }
         }
       })
+  }
+}
+export function fetchPosts (data) {
+  console.log('Actions for fetching posts')
+  return (dispatch) => {
+    callApi(`post/fetchGlobalPostData`, 'post', data)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showGlobalPosts(res.payload))
+      } else {
+        console.log('Error in fetching posts ', res)
+      }
+    })
+    .catch(err => {
+      console.log('Error in fetching posts ', err)
+    })
   }
 }
 export function uploadAttachment (fileData, handleUpload) {
