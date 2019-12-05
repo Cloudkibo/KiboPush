@@ -99,7 +99,7 @@ class Gallery extends React.Component {
                     {
                         this.props.module !== 'commentcapture' && card.buttons.map((button, index) => {
                             return (
-                            <div id={`button-${button.id}`} style={{border: !button.type ? 'solid 1px red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
+                            <div id={`button-${button.id}`} style={{border: !button.type ? 'solid 1px red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
                                 {/* <hr style={{marginTop: !card.title && !card.subtitle && index === 0 ? '50px' : ''}}/> */}
                                 <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                             </div>
