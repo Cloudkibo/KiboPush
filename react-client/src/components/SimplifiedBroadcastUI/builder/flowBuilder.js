@@ -101,7 +101,7 @@ class FlowBuilder extends React.Component {
         console.log('port found', port)
         port.id = `port-${buttonIds[i]}`
         tooltips.push(
-          (        
+          (
           <UncontrolledTooltip placement='bottom' target={`port-${buttonIds[i]}`}>
             <span>{buttons[buttonIds[i]]}</span>
           </UncontrolledTooltip>)
@@ -196,7 +196,7 @@ class FlowBuilder extends React.Component {
                 port.style.margin = `${-12 + top + height}px 0px 0px`
               } else {
                 port.style.margin = `${15}px 0px 0px`
-              } 
+              }
             }
           }
         }
@@ -206,10 +206,8 @@ class FlowBuilder extends React.Component {
 
   resetTransform () {
     this.setState({scale: 1})
-    const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
-    for (let i = 0; i < children.length; i++) {
-      children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(1)`
-    }
+    let flowBuilderChart = document.getElementById('flowBuilderChart')
+    flowBuilderChart.style.transform = 'scale(1)'
   }
 
   zoomIn (step) {
@@ -219,10 +217,8 @@ class FlowBuilder extends React.Component {
       this.setState({
         scale: newScale
       })
-      const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
-      for (let i = 0; i < children.length; i++) {
-        children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(${newScale})`
-      }
+      let flowBuilderChart = document.getElementById('flowBuilderChart')
+      flowBuilderChart.style.transform = `scale(${newScale})`
     }
   }
 
@@ -232,32 +228,15 @@ class FlowBuilder extends React.Component {
       this.setState({
         scale: newScale
       })
-      const children = document.getElementById('flowBuilderChart').firstChild.firstChild.childNodes
-      for (let i = 0; i < children.length; i++) {
-        children[i].style.transform = `${children[i].style.transform.split(')')[0]}) scale(${newScale})`
-      }
+      let flowBuilderChart = document.getElementById('flowBuilderChart')
+      flowBuilderChart.firstChild.style.width = 'fit-content'
+      flowBuilderChart.style.transform = `scale(${newScale})`
     }
   }
 
   toggleFullScreen () {
     this.setState({fullScreen: !this.state.fullScreen})
   }
-
-  // links: {
-  //   link1: {
-  //     id: 'link1',
-  //     from: {
-  //       nodeId: 'node1',
-  //       portId: 'port2',
-  //     },
-  //     to: {
-  //       nodeId: 'node2',
-  //       portId: 'port1',
-  //     },
-  //     properties: {
-  //       label: 'example link label',
-  //     },
-  //   },
 
   getPortsNLinks (message) {
     let components = message.messageContent
@@ -559,7 +538,7 @@ class FlowBuilder extends React.Component {
             let cardHeight = flowBuilderCard.getBoundingClientRect().height
             chart.nodes[nodeKey].ports[portKey].position = {
               x: 0,
-              y: (cardHeight/2) 
+              y: (cardHeight/2)
             }
           }
         }
@@ -631,7 +610,7 @@ class FlowBuilder extends React.Component {
     if (this.linkAdded) {
       if (
         newChart.links[linksKeys[linksKeys.length - 1]] &&
-        newChart.links[linksKeys[linksKeys.length - 1]].to && 
+        newChart.links[linksKeys[linksKeys.length - 1]].to &&
         newChart.links[linksKeys[linksKeys.length - 1]].to.nodeId &&
         newChart.links[linksKeys[linksKeys.length - 1]].from &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
@@ -650,7 +629,7 @@ class FlowBuilder extends React.Component {
         let fromButtonId = newChart.links[linksKeys[linksKeys.length - 1]].from.portId
         let toIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === toComponentId.toString())
         let fromIndex = this.props.linkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
-  
+
         if (fromIndex > -1 && toIndex > -1) {
           let addPayload = [this.props.unlinkedMessages[toIndex].id]
           this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
@@ -690,7 +669,7 @@ class FlowBuilder extends React.Component {
           fromIndex = this.props.unlinkedMessages.findIndex((m) => m.id.toString() === fromComponentId.toString())
           this.updateButtonPayload(fromButtonId, this.props.unlinkedMessages[toIndex].id)
         }
-        console.log('messages updated', this.props) 
+        console.log('messages updated', this.props)
         this.linkAdded = false
       }
     }
@@ -785,7 +764,7 @@ class FlowBuilder extends React.Component {
         if (this.state.prevChart.selected && this.state.prevChart.selected.type === 'link') {
           console.log('deleting link', this.props)
           let linkId = this.state.prevChart.selected.id
-          let toComponentId = this.state.prevChart.links[linkId].to.nodeId          
+          let toComponentId = this.state.prevChart.links[linkId].to.nodeId
           this.deleteButtonPayload(toComponentId)
 
           let index = this.props.linkedMessages.findIndex((lm) => lm.id.toString() === toComponentId.toString())
@@ -914,7 +893,13 @@ class FlowBuilder extends React.Component {
               {this.getTooltips()}
             </div>
             <ReactFullScreenElement fullScreen={this.state.fullScreen}>
-              <div style={{background: 'white'}}>
+              <div
+                style={{
+                  overflow: 'hidden',
+                  border: '1px solid #ccc',
+                  background: 'white'
+                }}
+              >
                 <SIDEBAR
                   unlinkedMessages={this.props.unlinkedMessages}
                   toggleFullScreen={this.toggleFullScreen}
@@ -923,7 +908,9 @@ class FlowBuilder extends React.Component {
                   zoomOut={this.zoomOut}
                   resetTransform={this.resetTransform}
                 />
-                <div id='flowBuilderChart' style={{border: '1px solid #ccc', overflow: 'hidden'}}>
+                <div
+                  id='flowBuilderChart'
+                  style={{transformOrigin: 'left top'}}>
                   <FlowChart
                     chart={this.state.chart}
                     Components={ {
