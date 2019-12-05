@@ -417,7 +417,6 @@ class Builders extends React.Component {
       this.showResetAlertDialog()
     } else {
       this.newConvo()
-      this.props.switchBuilder('basic')
     }
   }
 
@@ -684,7 +683,9 @@ class Builders extends React.Component {
       quickReplies[this.state.currentId] = []
       this.setState({quickReplies})
     }
-    this.setState({list: temp, broadcast: temp2})
+    let lists = this.state.lists
+    lists[this.state.currentId] = temp
+    this.setState({lists})
     this.handleChange({broadcast: temp2}, obj)
   }
 
@@ -701,10 +702,15 @@ class Builders extends React.Component {
       quickRepliesComponents: {},
       quickRepliesIndex: -1,
       linkedMessages: [{title: this.props.convoTitle, id: currentId, messageContent: []}],
-      unlinkedMessages: []
+      unlinkedMessages: [],
+      isShowingModalResetAlert: false
+    }, () => {
+      this.handleChange({convoTitle: this.defaultTitle}, {})
+      this.handleChange({broadcast: []}, {})
+      if (this.props.builderValue === 'flow') {
+        this.props.rerenderFlowBuilder()
+      }
     })
-    this.handleChange({convoTitle: this.defaultTitle}, {})
-    this.handleChange({broadcast: []}, {})
   }
 
   removeMessage () {
@@ -738,7 +744,15 @@ class Builders extends React.Component {
         }
       }
     }
-    this.setState({currentId: linkedMessages[0].id, linkedMessages, unlinkedMessages, lists, quickReplies, quickRepliesComponents})
+    this.setState({
+      currentId: linkedMessages[0].id, 
+      convoTitle: linkedMessages[0].title, 
+      linkedMessages, 
+      unlinkedMessages, 
+      lists, 
+      quickReplies, 
+      quickRepliesComponents
+    })
   }
 
   addComponent (componentDetails, edit) {
@@ -1193,7 +1207,7 @@ class Builders extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-
+    console.log('builders state', this.state)
     return (
     <div>
 
@@ -1332,7 +1346,6 @@ class Builders extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.newConvo()
-                  this.closeResetAlertDialog()
                 }} data-dismiss='modal'>Yes
             </button>
               <button style={{ float: 'right' }}
