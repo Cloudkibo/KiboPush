@@ -15,6 +15,7 @@ class HubspotAction extends React.Component {
       description: '',
       hubspotAction: '',
       hubSpotForm: '' ,
+      portalId: '',
       mapping: '',
       showModal: false,
       identityFieldValue: ''
@@ -28,12 +29,13 @@ class HubspotAction extends React.Component {
     this.save = this.save.bind(this)
   }
 
-  save (hubSpotForm, mappingData, identityFieldValue) {
+  save (hubSpotForm, portalId, mappingData, identityFieldValue) {
     console.log('mappingData in save', mappingData)
     console.log('hubSpotForm in save', hubSpotForm)
     this.setState({
     hubSpotForm: hubSpotForm,
     mapping: mappingData,
+    portalId: portalId,
     identityFieldValue: identityFieldValue,
     showModal: false
   })
@@ -41,6 +43,7 @@ class HubspotAction extends React.Component {
       hubspotAction: this.state.hubspotAction,
       hubSpotForm: hubSpotForm,
       mapping: mappingData,
+      portalId: portalId,
       identityFieldValue: identityFieldValue
     })
     this.closeModal()
@@ -52,8 +55,8 @@ class HubspotAction extends React.Component {
 
 componentDidMount () {
   console.log('in componentDidMount of Hubspot Action', this.props)
-  if (this.props.hubspotAction!== '' && this.props.hubSpotForm !== '' && this.props.mapping !== '') {
-    this.setState({mapping: this.props.mapping, hubSpotForm: this.props.hubSpotForm})
+  if (this.props.hubspotAction!== '' && this.props.hubSpotForm !== '' && this.props.mapping !== '' && this.props.portalId !=='') {
+    this.setState({mapping: this.props.mapping, hubSpotForm: this.props.hubSpotForm, portalId: this.props.portalId})
     this.updateHubspotAction(this.props.hubspotAction, true)
   }
 

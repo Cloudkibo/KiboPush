@@ -43,7 +43,8 @@ class Button extends React.Component {
       hubspotIntegration:'',
       hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : '',
       mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
-      hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.hubSpotForm : '',
+      hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.formId : '',
+      portalId: this.props.button && this.props.button.payload ? this.props.button.payload.portalId : '',
       identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityFieldValue : ''
     }
     props.fetchAllSequence()
@@ -101,13 +102,15 @@ class Button extends React.Component {
     this.setState({
       hubspotAction: hubSpotFormPayload.hubspotAction,
       hubSpotForm: hubSpotFormPayload.hubSpotForm,
+      portalId: hubSpotFormPayload.portalId,
       mapping: hubSpotFormPayload.mapping,
       identityFieldValue: hubSpotFormPayload.identityFieldValue
     })
     let buttonData = {title: this.state.title, visible: true,
       hubspotAction: hubSpotFormPayload.hubspotAction,
-      hubSpotForm: hubSpotFormPayload.hubSpotForm,
+      formId: hubSpotFormPayload.hubSpotForm,
       mapping: hubSpotFormPayload.mapping,
+      portalId: hubSpotFormPayload.portalId,
       identityFieldValue: hubSpotFormPayload.identityFieldValue,
       index: this.props.index}
     if ((hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.hubSpotForm !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '') || (hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.identityFieldValue !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '')) {
@@ -353,7 +356,8 @@ class Button extends React.Component {
         payload: JSON.stringify({
           action: 'hubspot',
           hubspotAction: this.state.hubspotAction,
-          hubSpotForm: this.state.hubSpotForm,
+          formId: this.state.hubSpotForm,
+          portalId: this.state.portalId,
           mapping: this.state.mapping,
           identityFieldValue: this.state.identityFieldValue
 
@@ -455,7 +459,8 @@ class Button extends React.Component {
         payload: JSON.stringify({
           action: 'hubspot',
           hubspotAction: this.state.hubspotAction,
-          hubSpotForm: this.state.hubSpotForm,
+          formId: this.state.hubSpotForm,
+          portalId: this.state.portalId,
           mapping: this.state.mapping,
           identityFieldValue: this.state.identityFieldValue
         })
@@ -834,6 +839,7 @@ class Button extends React.Component {
                           hubspotAction={this.state.hubspotAction}
                           removeHubspotAction={this.removeHubspotAction} 
                           hubSpotForm = {this.state.hubSpotForm}
+                          portalId= {this.state.portalId}
                           mapping={this.state.mapping}
                           identityFieldValue= {this.state.identityFieldValue}
                           index= {this.props.index}

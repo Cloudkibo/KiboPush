@@ -8,6 +8,7 @@ class submitForm extends React.Component {
         super(props, context)
         this.state = {
             hubspotFormValue: props.hubSpotForm !== '' ? props.hubSpotForm : '',
+            portalId: props.portalId !== '' ? props.portalId : '',
             mappingData: props.mapping !== '' ? props.mapping : '',
             mappingDataValues: '',
             loadingColumns: false,
@@ -38,9 +39,9 @@ class submitForm extends React.Component {
         this.setState({mappingDataValues: mappingDataValues})
     }
 
-    if (this.props.columns && this.props.columns.hubSpotFormColumns && this.props.columns.hubSpotFormColumns.length > 0) {
+    if (this.props.columns && this.props.columns.hubspotColumns && this.props.columns.hubspotColumns.length > 0) {
       let mappingDataValues = []
-      for (let i = 0; i < this.props.columns.hubSpotFormColumns.length; i++) {
+      for (let i = 0; i < this.props.columns.hubspotColumns.length; i++) {
         mappingDataValues.push('')
       }
       if (this.state.mappingData === '') {
@@ -48,14 +49,13 @@ class submitForm extends React.Component {
       }
     }
   }
-
     save () {
       console.log('hubspotFormValue in this.save', this.state.hubspotFormValue)
       console.log('mappingData in this.save', this.state.mappingData)
       if (this.state.hubspotFormValue === '' ) {
         this.msg.error('Please fill all the required fields')
       } else {
-        this.props.save(this.state.hubspotFormValue, this.state.mappingData, '')
+        this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
       }
     }
 
@@ -75,20 +75,18 @@ class submitForm extends React.Component {
       console.log('data in updateMappingData', data)
     }
     onhubspotFormChange (event) {
-        this.setState({hubspotFormValue: event.target.value, buttonDisabled: false, loadingColumns: true})
-        this.props.fetchColumns({hubspotFormId: event.target.value})
-        // this.props.fetchWorksheets({spreadsheetId: event.target.value})
-        // if (event.target.value !== '' && this.state.workSheetValue !== '') {
-        // }
+      let portalId = this.props.hubSpotForms.filter(hubSpotForm => hubSpotForm.formId === event.target.value)[0].portalId
+        this.setState({hubspotFormValue: event.target.value, portalId: portalId, buttonDisabled: false, loadingColumns: true})
+        this.props.fetchColumns({formId: event.target.value})
       }
       UNSAFE_componentWillReceiveProps (nextProps) {
         console.log('in UNSAFE_componentWillReceiveProps of submit form', nextProps)
-        if (nextProps.columns && nextProps.columns.hubSpotFormColumns && nextProps.columns.hubSpotFormColumns.length > 0) {
+        if (nextProps.columns && nextProps.columns.hubspotColumns && nextProps.columns.hubspotColumns.length > 0) {
           this.setState({loadingColumns: false})
           let mappingData = []
           let mappingDataValues = []
-          for (let i = 0; i < nextProps.columns.hubSpotFormColumns.length; i++) {
-            mappingData.push({hubSpotFormColumn: nextProps.columns.hubSpotFormColumns[i]})
+          for (let i = 0; i < nextProps.columns.hubspotColumns.length; i++) {
+            mappingData.push({hubspotColumn: nextProps.columns.hubspotColumns[i]})
             mappingDataValues.push('')
           }
           console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
@@ -98,7 +96,7 @@ class submitForm extends React.Component {
         }
       }
     
-      showMappingData (hubSpotFormColumns, kiboPushColumns, customFieldColumns) {
+      showMappingData (hubspotColumns, kiboPushColumns, customFieldColumns) {
         console.log('mappingDataValues', this.state.mappingDataValues)
         let content = []
         content.push(
@@ -113,7 +111,7 @@ class submitForm extends React.Component {
             </div>
           </div>
         )
-        for (let i = 0; i < hubSpotFormColumns.length; i++) {
+        for (let i = 0; i < hubspotColumns.length; i++) {
           content.push(
             <div>
             <div className='row'>
@@ -142,7 +140,7 @@ class submitForm extends React.Component {
                 </center>
               </div>
               <div className='col-5'>
-                <input style={{height: '40px'}} type='text' className='form-control' value={hubSpotFormColumns[i]} disabled />
+                <input style={{height: '40px'}} type='text' className='form-control' value={hubspotColumns[i]} disabled />
               </div>
             </div>
             <br />
@@ -165,7 +163,7 @@ class submitForm extends React.Component {
               <option key='' value='' disabled>Select a HubSpot Form...</option>
               {
                 this.props.hubSpotForms.map((hubSpotForm, i) => (
-                  <option key={i} value={hubSpotForm.id}>{hubSpotForm.name}</option>
+                  <option key={i} value={hubSpotForm.formId}>{hubSpotForm.name}</option>
                 ))
               }
             </select>
@@ -173,8 +171,8 @@ class submitForm extends React.Component {
           <br />
           {this.state.loadingColumns 
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : this.state.hubspotFormValue !== '' && (this.props.columns && this.props.columns.hubSpotFormColumns.length > 0 &&
-            this.showMappingData(this.props.columns.hubSpotFormColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
+          : this.state.hubspotFormValue !== '' && (this.props.columns && this.props.columns.hubspotColumns.length > 0 &&
+            this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }
 

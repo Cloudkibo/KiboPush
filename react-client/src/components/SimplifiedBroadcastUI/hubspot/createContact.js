@@ -30,7 +30,12 @@ class CreateContact extends React.Component {
           mappingData.push(this.state.mappingData[i])
         }
       }
+      if (mappingData.length === 0) {
+        mappingData=''
+      }
+      this.props.save('','', mappingData, this.state.identityFieldValue)
     }
+
 
     updateKiboPushData(e, index) {
       console.log('updateKiboPushData called', e.target.value)
