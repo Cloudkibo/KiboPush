@@ -313,11 +313,8 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
-    console.log('in sendConvo', this.state.broadcast)
+    console.log('in sendConvo', this.state)
     //  this.setState({tabActive: 'broadcast'})
-    if (this.state.broadcast.length === 0) {
-      return
-    }
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -340,7 +337,7 @@ class CreateConvo extends React.Component {
       //     }
       //   }
       // }
-      console.log('payload before', this.state.broadcast)
+      console.log('payload before', this.state.linkedMessages[0].messageContent)
       this.deleteButtonIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
@@ -453,9 +450,6 @@ class CreateConvo extends React.Component {
       //   }
       // }
       //
-      if (this.state.broadcast.length === 0) {
-        return
-      }
       var isListValue = false
       if (this.state.listSelected.length > 0) {
         isListValue = true
