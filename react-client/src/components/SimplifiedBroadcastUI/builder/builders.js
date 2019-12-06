@@ -331,7 +331,7 @@ class Builders extends React.Component {
           for (let m = 0;  m < messageContent.cards.length; m++) {
             buttons = buttons.concat(messageContent.cards[m].buttons)
           }
-        } else {
+        } else if (messageContent.buttons) {
           buttons = messageContent.buttons
         }
         for (let k = 0; k < buttons.length; k++) {
