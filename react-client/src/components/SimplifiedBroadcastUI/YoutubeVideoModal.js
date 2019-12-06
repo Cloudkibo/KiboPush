@@ -254,6 +254,8 @@ class YoutubeVideoModal extends React.Component {
                   buttonActions={this.state.buttonActions}
                   ref={(ref) => { this.AddButton = ref }}
                   updateButtonStatus={this.updateButtonStatus}
+                  toggleGSModal={this.props.toggleGSModal}
+                  closeGSModal={this.props.closeGSModal}
                   addComponent={(buttons) => this.addComponent(buttons)} />
               }
             </div>

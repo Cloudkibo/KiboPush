@@ -201,6 +201,8 @@ class AddButton extends React.Component {
                     onAdd={this.onAddButton}
                     disabled={this.props.disabled}
                     module = {this.props.module}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
                     />
                 )
             ))

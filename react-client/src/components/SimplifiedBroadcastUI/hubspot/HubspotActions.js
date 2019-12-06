@@ -121,7 +121,7 @@ componentDidMount () {
         <div className='google-sheet-close-icon' style = {{position: 'inherit', float:'right'}} onClick={this.removeHubspotAction}></div>
         <div className='ui-block'
           style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer', backgroundColor: 'rgba(0,0,0,.07)'}}
-          onClick={() => this.updateHubspotAction(this.state.hubspotAction)} data-toggle='modal' data-target='#ActionModal' >
+          onClick={() => this.updateHubspotAction(this.state.hubspotAction)} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
           <h6>{this.state.title}
           </h6>
           <span style={{color: '#676c7b'}}>{this.state.description}</span>
@@ -131,19 +131,19 @@ componentDidMount () {
           <span>Select one of the Actions below:</span>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target='#ActionModal'>
+              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
               <h6>Submit data to a form</h6>
               <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Create/Update_Contact')} data-toggle='modal' data-target='#ActionModal'>
+              onClick={() => this.updateHubspotAction('Create/Update_Contact')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
               <h6>Create/Update Contact Properties</h6>
               <span style={{color: '#676c7b'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Get_Contact')} data-toggle='modal' data-target='#ActionModal'>
+              onClick={() => this.updateHubspotAction('Get_Contact')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
               <h6>Get Contact Properties</h6>
             <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
           </div>

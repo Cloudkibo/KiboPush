@@ -10,37 +10,10 @@ export function showIntegrations (data) {
   }
 }
 
-export function enableSuccess (data) {
-  return {
-    type: ActionTypes.ENABLE_SUCCESS,
-    data
-  }
-}
 
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
-    data
-  }
-}
-
-export function disableSuccess (data) {
-  return {
-    type: ActionTypes.DISABLE_SUCCESS,
-    data
-  }
-}
-
-export function resetSuccess (data) {
-  return {
-    type: ActionTypes.RESET_SUCCESS,
-    data
-  }
-}
-
-export function getAPISuccess (data) {
-  return {
-    type: ActionTypes.GET_API_SUCCESS,
     data
   }
 }
@@ -56,20 +29,6 @@ export function getUpdatedPermissionsSuccess (data) {
   return {
     type: ActionTypes.GET_UPDATED_PERMISSIONS_SUCCESS,
     data
-  }
-}
-
-export function getAPIFailure (data) {
-  return {
-    type: ActionTypes.GET_API_FAILURE,
-    data
-  }
-}
-
-export function saveSwitchState () {
-  return {
-    type: ActionTypes.SAVE_SWITCH_STATE,
-    data: 'changed'
   }
 }
 
@@ -89,55 +48,6 @@ export function showWebhookResponse (data) {
   return {
     type: ActionTypes.SHOW_WEBHOOK_RESPONSE,
     data
-  }
-}
-export function enable (API) {
-  console.log('API', API)
-  return (dispatch) => {
-    callApi('api_settings/enable', 'post', API)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('enable', res.payload)
-          dispatch(enableSuccess(res.payload))
-        }
-      })
-  }
-}
-export function disable (API) {
-  return (dispatch) => {
-    callApi('api_settings/disable', 'post', API)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('disable', res.payload)
-          dispatch(disableSuccess(res.payload))
-        }
-      })
-  }
-}
-
-export function reset (API) {
-  return (dispatch) => {
-    callApi('api_settings/reset', 'post', API)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('reset', res.payload)
-          dispatch(resetSuccess(res.payload))
-        }
-      })
-  }
-}
-
-export function getAPI (API) {
-  return (dispatch) => {
-    callApi('api_settings/', 'post', API)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('reset', res.payload)
-          dispatch(getAPISuccess(res.payload))
-        } else if (res.status === 'failed') {
-          dispatch(getAPIFailure(res.description))
-        }
-      })
   }
 }
 

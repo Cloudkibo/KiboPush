@@ -81,7 +81,7 @@ class Media extends React.Component {
           (this.state.editing) && (this.props.youtubeLink ? this.openYouTubeModal() : this.openMediaModal())
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: '20px', margin: '-15px', marginRight: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -89,13 +89,13 @@ class Media extends React.Component {
         <div className='ui-block' style={{maxWidth: '250px'}} >
           {
               this.state.imgSrc &&
-              <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
+              <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
                 <img src={this.state.imgSrc} alt='' style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
               </div>
           }
           {
             (this.state.media && !this.state.imgSrc) &&
-            <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}}>
+            <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
                 <source src={this.state.media.fileurl.url} type='audio/mpeg' />
               </video>
@@ -104,7 +104,7 @@ class Media extends React.Component {
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px', padding: '5px', paddingTop: '5%'}}>
+                  <div id={`button-${button.id}`} style={{border: !button.type ?  '1px solid red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
                     <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                   </div>
                 )

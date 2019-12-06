@@ -8,12 +8,20 @@ export function showAllPosts (data) {
   console.log('Data Fetched From posts', data)
   return {
     type: ActionTypes.SHOW_FACEBOOK_POSTS,
-    data: data.reverse()
+    posts: data.posts ? data.posts : [],
+    postsCount: data.count
   }
 }
+
 export function saveCommentReplies (data) {
   return {
     type: ActionTypes.SAVE_COMMENT_REPLIES,
+    data: data
+  }
+}
+export function saveComments (data) {
+  return {
+    type: ActionTypes.SAVE_COMMENTS,
     data: data
   }
 }
@@ -23,6 +31,20 @@ export function showAllComments (data) {
     type: ActionTypes.SHOW_POST_COMMENTS,
     comments: data.comments,
     commentCount: data.count
+  }
+}
+export function showGlobalPosts (data) {
+  return {
+    type: ActionTypes.SHOW_GLOBAL_POSTS,
+    globalPosts: data.posts,
+    postsAfter: data.after
+  }
+}
+export function showPostData (data) {
+  console.log('Data fetched for post', data)
+  return {
+    type: ActionTypes.SHOW_POST_CONTENT,
+    postContent: data
   }
 }
 export function resetComments (data) {
@@ -62,14 +84,41 @@ export function saveCurrentPost (data) {
   }
 }
 
-export function fetchAllPosts () {
+export function fetchAllPosts (data) {
   console.log('Actions for loading all facebook Posts')
   return (dispatch) => {
-    callApi('post').then(res => {
+    callApi('post', 'post', data)
+    .then(res => {
       if (res.status === 'success' && res.payload) {
         dispatch(showAllPosts(res.payload))
       } else {
         console.log('Error in loading Posts', res)
+      }
+    })
+  }
+}
+export function fetchPostContent (post_id) {
+  console.log('Fetching post data')
+  return (dispatch) => {
+    callApi(`post/fetchPostData/${post_id}`)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showPostData(res.payload))
+      } else {
+        console.log('Unable to fetch post data')
+      }
+    })
+  }
+}
+export function fetchExportCommentsData (data,msg,handle) {
+  console.log('Fetching export comments data')
+  return (dispatch) => {
+    callApi(`post/fetchAllComments`, 'post', data)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        handle((res.payload))
+      } else {
+        msg.error('Unable to fetch data')
       }
     })
   }
@@ -133,8 +182,9 @@ export function deletePost (id, msg) {
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
+        var data = {last_id: 'none',number_of_records: 10,first_page: 'first',search_value: '',type_value: '',startDate: '',endDate: ''}
         msg.success('Post has been deleted')
-        dispatch(fetchAllPosts(res.payload))
+        dispatch(fetchAllPosts(data))
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
@@ -184,6 +234,22 @@ export function editCommentCapture (data, msg, handleEdit) {
           }
         }
       })
+  }
+}
+export function fetchPosts (data) {
+  console.log('Actions for fetching posts')
+  return (dispatch) => {
+    callApi(`post/fetchGlobalPostData`, 'post', data)
+    .then(res => {
+      if (res.status === 'success' && res.payload) {
+        dispatch(showGlobalPosts(res.payload))
+      } else {
+        console.log('Error in fetching posts ', res)
+      }
+    })
+    .catch(err => {
+      console.log('Error in fetching posts ', err)
+    })
   }
 }
 export function uploadAttachment (fileData, handleUpload) {

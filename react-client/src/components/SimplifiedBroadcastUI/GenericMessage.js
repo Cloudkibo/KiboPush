@@ -40,7 +40,8 @@ class GenericMessage extends React.Component {
       convoTitle: this.props.convoTitle,
       pageId: this.props.pageId,
       hiddenComponents: hiddenComponents,
-      componentType: ''
+      componentType: '',
+      showGSModal: false
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -68,6 +69,11 @@ class GenericMessage extends React.Component {
     this.updateQuickReplies = this.updateQuickReplies.bind(this)
     this.appendQuickRepliesToEnd = this.appendQuickRepliesToEnd.bind(this)
     this.getItems = this.getItems.bind(this)
+    this.toggleGSModal = this.toggleGSModal.bind(this)
+    this.closeGSModal = this.closeGSModal.bind(this)
+
+    this.GSModalContent = null
+
     if (props.setReset) {
       props.setReset(this.reset)
     }
@@ -76,6 +82,12 @@ class GenericMessage extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  toggleGSModal (value, content) {
+    console.log('show toggleGSModal called in genericMessage')
+    this.setState({showGSModal: value})
+    this.GSModalContent = content
   }
 
   updateQuickReplies (quickReplies) {
@@ -176,6 +188,11 @@ class GenericMessage extends React.Component {
   closeAddComponentModal () {
     this.setState({isShowingAddComponentModal: false, editData: null})
     this.refs.singleModal.click()
+  }
+
+  closeGSModal () {
+    this.setState({showGSModal: false})
+    this.refs.ActionModal.click()
   }
 
   showDialog () {
@@ -460,6 +477,8 @@ class GenericMessage extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
@@ -472,6 +491,8 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
@@ -514,6 +535,8 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
@@ -527,6 +550,8 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
@@ -539,6 +564,8 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />)
     }
     return modals[this.state.componentType]
@@ -794,7 +821,18 @@ class GenericMessage extends React.Component {
 
   getItems () {
     if (this.state.list.length > 0) {
-      return this.state.list.concat([{content: <QuickReplies sequences={this.props.sequences} broadcasts={this.props.broadcasts} tags={this.props.tags} quickReplies={this.state.quickReplies} updateQuickReplies={this.updateQuickReplies} />}])
+      console.log('quick reply', this.state.list[this.state.list.length - 1])
+      return this.state.list.concat([{
+        content:
+          <QuickReplies
+            sequences={this.props.sequences}
+            toggleGSModal={this.toggleGSModal}
+            closeGSModal={this.closeGSModal}
+            broadcasts={this.props.broadcasts}
+            tags={this.props.tags}
+            quickReplies={this.state.quickReplies}
+            updateQuickReplies={this.updateQuickReplies} />
+        }])
     } else {
       return this.state.list
     }
@@ -811,7 +849,7 @@ class GenericMessage extends React.Component {
 
     return (
     <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-     
+
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
@@ -855,7 +893,13 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
-                    
+                    <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
+                    <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                      <div style={{ transform: 'translate(0, 0)'}} className='modal-dialog modal-lg' role='document'>
+                        {this.state.showGSModal && this.GSModalContent}
+                      </div>
+                    </div>
+
                     <a href='#/' id='single' style={{ display: 'none' }} ref='singleModal' data-toggle="modal" data-target="#singleModal">singleModal</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="singleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden='true'>
                       <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className="modal-dialog modal-lg" role="document">

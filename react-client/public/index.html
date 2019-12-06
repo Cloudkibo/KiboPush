@@ -109,6 +109,17 @@
       .modal-backdrop {
         z-index: -1
       }
+      .sticky {
+        position: fixed;
+        top: 70px;
+        z-index: 1;
+      }
+      .stickyFullScreen {
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+        width: 100%;
+      }
     </style>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -173,6 +184,34 @@
       $(document).on('hide.bs.modal','#singleModal', function () {
         document.body.style.overflow = 'auto'
       })
+    </script>
+    <script>
+      window.onscroll = function() {myFunction()};
+      var width;
+
+      function myFunction() {
+        var header = document.getElementById("flowBuilderHeader");
+        if (!width && header) {
+          width = header.offsetWidth
+        }
+        console.log('header width', width)
+        if (header) {
+          var sticky = header.offsetTop;
+          if (window.pageYOffset > sticky) {
+            header.classList.remove("stickyFullScreen");
+            header.classList.add("sticky");
+            header.style.width = width + 'px'
+          } else if (window.pageYOffset === 0) {
+            width = header.offsetWidth
+            header.classList.remove("sticky");
+            header.classList.add("stickyFullScreen");
+            header.style.width = ''
+          } else {
+            width = header.offsetWidth
+            header.classList.remove("sticky");
+          }
+        }
+      }
     </script>
   </body>
 </html>
