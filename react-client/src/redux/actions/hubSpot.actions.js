@@ -35,21 +35,6 @@ export function showhubSpotForm (data) {
           if (res.status === 'success') {
             dispatch(showhubSpotForm(res.payload))
           }
-          else {
-          dispatch(showhubSpotForm([
-            {
-              name:'hello1',
-              guid: '1',
-              portalId: 12                    
-            },
-            {
-              name:'hello2',
-              guid: '2',
-              portalId: 13                     
-            }
-        ]
-        ))
-      }
         })
     }
   }
@@ -63,23 +48,6 @@ export function showhubSpotForm (data) {
           if (res.status === 'success') {
             dispatch(showColumns(res.payload))
           }
-          else {
-         var data = {
-            customFieldColumns: [
-              {customFieldId: "5d821e0da7701b67a00cc384", title: "city"},
-              {customFieldId: "5dcbe92681520826fa652ab3", title: "zameen"}
-            ],
-            hubspotColumns: ["Milestone Name", "Link", "Design Document", "Remaining Issues", "Customer Feature", "Priority"],
-            kiboPushColumns: [
-              {fieldName: "firstName", title: "First Name"},
-              {fieldName: "lastName", title: "Last Name"},
-              {fieldName: "fullName", title: "Full Name"},
-              {fieldName: "locale", title: "Locale"},
-              {fieldName: "timezone", title: "Timezone"}
-            ]
-          }
-          dispatch(showColumns(data))
-        }
         })
     }
   }
