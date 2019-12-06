@@ -41,15 +41,16 @@ class Media extends React.Component {
   }
 
   componentDidMount () {
-    this.props.handleMedia({id: this.props.id,
-      componentType: 'media',
-      mediaType: this.props.media.mediaType,
-      fileurl: this.props.media.fileurl,
-      image_url: this.props.media.image_url,
-      fileName: this.props.media.fileName,
-      type: this.props.media.type,
-      size: this.props.media.size,
-      buttons: this.state.buttons})
+    console.log('Media componentDidMount')
+    // this.props.handleMedia({id: this.props.id,
+    //   componentType: 'media',
+    //   mediaType: this.props.media.mediaType,
+    //   fileurl: this.props.media.fileurl,
+    //   image_url: this.props.media.image_url,
+    //   fileName: this.props.media.fileName,
+    //   type: this.props.media.type,
+    //   size: this.props.media.size,
+    //   buttons: this.state.buttons})
   }
 
   updateMediaDetails (mediaProps, image, video) {
@@ -81,7 +82,7 @@ class Media extends React.Component {
           (this.state.editing) && (this.props.youtubeLink ? this.openYouTubeModal() : this.openMediaModal())
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: '20px', margin: '-15px', marginRight: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: '20px', margin: '-15px', marginRight: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
