@@ -18,25 +18,25 @@ import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router-dom'
 // import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
-import Targeting from './Targeting'
-import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
-
+import BUILDER from '../../components/SimplifiedBroadcastUI/builder/builders'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'google sheets'],
+      buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'create message', 'google sheets'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
+      linkedMessages: null,
+      unlinkedMessages: null,
       pageValue: [],
       genderValue: [],
       localeValue: [],
@@ -56,7 +56,9 @@ class CreateConvo extends React.Component {
       loadScript: true,
       messageType: '',
       subscriberCount: 0,
-      locationPages: this.props.location.state ? this.props.location.state.pages : []
+      locationPages: this.props.location.state ? this.props.location.state.pages : [],
+      showBuilderDropdown: false,
+      builderValue: 'basic'
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -68,34 +70,94 @@ class CreateConvo extends React.Component {
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
-    this.onTargetClick = this.onTargetClick.bind(this)
-    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
+    this.toggleBuilderDropdown = this.toggleBuilderDropdown.bind(this)
+    this.switchBuilder = this.switchBuilder.bind(this)
+    this.closeBuilderDropdown = this.closeBuilderDropdown.bind(this)
+    this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
+    this.isBroadcastInvalid = this.isBroadcastInvalid.bind(this)
+    this.deleteButtonIds = this.deleteButtonIds.bind(this)
+    this.checkForInvalidButtons = this.checkForInvalidButtons.bind(this)
+  }
+
+
+  deleteButtonIds (linkedMessages) {
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        let buttons = []
+        if (messageContent[j].cards) {
+          for (let m = 0;  m < messageContent[j].cards.length; m++) {
+            buttons = buttons.concat(messageContent[j].cards[m].buttons)
+          }
+        } else if (messageContent[j].buttons) {
+          buttons = messageContent[j].buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          delete buttons[k].id
+        }
+      }
+    }
+  }
+
+  toggleBuilderDropdown () {
+    this.setState({
+      showBuilderDropdown: !this.state.showBuilderDropdown
+    })
+  }
+
+  closeBuilderDropdown (flag) {
+    flag && this.setState({
+      showBuilderDropdown: false
+    })
+  }
+
+  switchBuilder (value) {
+    this.setState({
+      builderValue: value,
+      showBuilderDropdown: false
+    })
   }
 
   handleChange (state) {
-    this.setState(state)
+    console.log('handleChange in CreateConvo', state)
+    // if (this.state.builderValue === 'flow') {
+    //   this.setState({builderValue: 'basic'}, () => {
+    //     state.builderValue = 'flow'
+    //     this.setState(state)
+    //   })
+    // } else {
+      this.setState(state)
+    // }
+  }
+
+  rerenderFlowBuilder () {
+    this.setState({builderValue: 'basic'}, () => {
+      this.setState({builderValue: 'flow'})
+    })
   }
 
   onNext (e) {
-    console.log('in onNext', this.state.broadcast)
-    if (validateFields(this.state.broadcast, this.msg)) {
-      /* eslint-disable */
+    console.log('in onNext', this.state.linkedMessages[0])
+    if (validateFields(this.state.linkedMessages[0], this.msg)) {
+      if (!this.checkForInvalidButtons()) {
+        /* eslint-disable */
         $('#tab_1').removeClass('active')
         $('#tab_2').addClass('active')
         $('#titleBroadcast').removeClass('active')
         $('#titleTarget').addClass('active')
         /* eslint-enable */
-      this.setState({tabActive: 'target'})
-      const payload = {
-        pageId: this.state.pageId._id,
-        segmented: false,
-        isList: false,
+        this.setState({tabActive: 'target'})
+        const payload = {
+          pageId: this.state.pageId._id,
+          segmented: false,
+          isList: false,
+        }
+        this.props.getSubscriberCount(payload, this.handleSubscriberCount)
       }
-      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
     }
   }
 
@@ -157,33 +219,6 @@ class CreateConvo extends React.Component {
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
-  onBroadcastClick () {
-    /* eslint-disable */
-    $('#tab_1').addClass('active')
-    $('#tab_2').removeClass('active')
-    $('#titleBroadcast').addClass('active')
-    $('#titleTarget').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
-  }
-  onTargetClick (e) {
-    if (validateFields(this.state.broadcast, this.msg)) {
-      /* eslint-disable */
-        $('#tab_1').removeClass('active')
-        $('#tab_2').addClass('active')
-        $('#titleBroadcast').removeClass('active')
-        $('#titleTarget').addClass('active')
-        /* eslint-enable */
-      this.setState({tabActive: 'target', resetTarget: false})
-
-      const payload = {
-        pageId: this.state.pageId._id,
-        segmented: false,
-        isList: false,
-      }
-      this.props.getSubscriberCount(payload, this.handleSubscriberCount)
-    }
-  }
 
   loadsdk (fbAppId) {
     console.log('inside loadsdk', fbAppId)
@@ -223,6 +258,7 @@ class CreateConvo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
+    console.log('componentDidMount for CreateConvo', this.state)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -234,6 +270,20 @@ class CreateConvo extends React.Component {
     document.title = `${title} | Create Broadcast`
     this.scrollToTop()
     this.initTab()
+
+    document.getElementById('builder-dropdown').addEventListener('click', () => {
+      this.close = false
+    })
+    document.getElementById('builder-dropdown-area').addEventListener('click', () => {
+      this.close = false
+    })
+    document.addEventListener('click', () => {
+      if (this.state.showBuilderDropdown && this.close) {
+        this.closeBuilderDropdown(true)
+      } else if (!this.close) {
+        this.close = true
+      }
+    })
 
     var compProp = this.props
     var comp = this
@@ -263,11 +313,8 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
-    console.log('in sendConvo', this.state.broadcast)
+    console.log('in sendConvo', this.state)
     //  this.setState({tabActive: 'broadcast'})
-    if (this.state.broadcast.length === 0) {
-      return
-    }
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -290,10 +337,11 @@ class CreateConvo extends React.Component {
       //     }
       //   }
       // }
-      console.log('payload before', this.state.broadcast)
+      console.log('payload before', this.state.linkedMessages[0].messageContent)
+      this.deleteButtonIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
-        payload: this.state.broadcast,
+        payload: this.state.linkedMessages[0].messageContent,
         isSegmented: isSegmentedValue,
         segmentationPageIds: this.state.locationPages,
         segmentationLocale: this.state.localeValue,
@@ -305,7 +353,8 @@ class CreateConvo extends React.Component {
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
         subscribersCount: this.state.subscriberCount,
-        messageType: this.state.messageType
+        messageType: this.state.messageType,
+        linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -321,6 +370,56 @@ class CreateConvo extends React.Component {
       this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
       this.msg.info('Sending broadcast.... You will be notified when it is sent.')
     }
+  }
+
+  isBroadcastInvalid () {
+    let linkedMessages = this.state.linkedMessages
+    if (!linkedMessages || linkedMessages[0].messageContent.length === 0) {
+      return true
+    }
+    // for (let i = 0; i < linkedMessages.length; i++) {
+    //   let messageContent = linkedMessages[i].messageContent
+    //   for (let j = 0; j < messageContent.length; j++) {
+    //     let buttons = []
+    //     if (messageContent[j].cards) {
+    //       for (let m = 0;  m < messageContent[j].cards.length; m++) {
+    //         buttons = buttons.concat(messageContent[j].cards[m].buttons)
+    //       }
+    //     } else if (messageContent[j].buttons) {
+    //       buttons = messageContent[j].buttons
+    //     }
+    //     for (let k = 0; k < buttons.length; k++) {
+    //       if (!buttons[k].type) {
+    //         return true
+    //       }
+    //     }
+    //   }
+    // }
+    return null
+  }
+
+  checkForInvalidButtons () {
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        let buttons = []
+        if (messageContent[j].cards) {
+          for (let m = 0;  m < messageContent[j].cards.length; m++) {
+            buttons = buttons.concat(messageContent[j].cards[m].buttons)
+          }
+        } else if (messageContent[j].buttons) {
+          buttons = messageContent[j].buttons
+        }
+        for (let k = 0; k < buttons.length; k++) {
+          if (!buttons[k].type) {
+            this.msg.error('One or more buttons have no action')
+            return true
+          }
+        }
+      }
+    }
+    return false
   }
 
   testConvo () {
@@ -351,9 +450,6 @@ class CreateConvo extends React.Component {
       //   }
       // }
       //
-      if (this.state.broadcast.length === 0) {
-        return
-      }
       var isListValue = false
       if (this.state.listSelected.length > 0) {
         isListValue = true
@@ -373,7 +469,7 @@ class CreateConvo extends React.Component {
       var data = {
         platform: 'facebook',
         self: true,
-        payload: this.state.broadcast,
+        payload: this.state.linkedMessages[0].messageContent,
         title: this.state.convoTitle,
         isSegmented: isSegmentedValue,
         segmentationPageIds: this.state.locationPages,
@@ -384,7 +480,8 @@ class CreateConvo extends React.Component {
         segmentationList: this.state.listSelected,
         isList: isListValue,
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        messageType: this.state.messageType
+        messageType: this.state.messageType,
+        linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
       }
       for (let i = 0; i < data.payload.length; i++) {
         if (data.payload[i].componentType === 'list') {
@@ -401,7 +498,7 @@ class CreateConvo extends React.Component {
 
   render () {
     console.log('pageid', this.state.pageId.pageId)
-    console.log('appid',this.props.fbAppId)
+    console.log('state in create convo', this.state)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -414,7 +511,7 @@ class CreateConvo extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <SubscriptionPermissionALert />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <a href='#/' style={{ display: 'none' }} ref='reconnect' data-toggle="modal" data-target="#reconnect">reconnect</a>
@@ -529,100 +626,95 @@ class CreateConvo extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-content'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-exclamation m--font-brand' />
-            </div>
-            <div className='m-alert__text'>
-              Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              <br />
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
-
-              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
-            </div>
+        <div style={{margin: '15px 30px 0px 30px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible' role='alert'>
+          <div className='m-alert__icon'>
+            <i className='flaticon-exclamation m--font-brand' />
           </div>
-          <div className='row'>
-            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Create Broadcast
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <div className='row'>
-                    <div className='col-12'>
-                      {
-                        this.state.tabActive === 'broadcast' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
-                            Reset
-                          </button>
-                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
-                            Next
-                          </button>
-                        </div>
-                      }
-                      {
-                        this.state.tabActive === 'target' &&
-                        <div className='pull-right'>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
-                            Previous
-                          </button>
-                          <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
-                            Test
-                          </button>
-                          <button id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
-                            Send
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <div className='row'>
-                    <div className='col-12'>
-                      <ul className='nav nav-tabs'>
-                        <li>
-                          <a href='#/' id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
-                        </li>
-                        <li>
-                          {this.state.broadcast.length > 0
-                            ? <a href='#/' id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                            : <a href='#/'>Targeting</a>
-                          }
-                        </li>
-
-                      </ul>
-                      <div className='tab-content'>
-                        <div className='tab-pane fade active in' id='tab_1'>
-                          <GenericMessage
-                            module = {this.props.location.state.module}
-                            broadcast={this.state.broadcast}
-                            handleChange={this.handleChange}
-                            setReset={reset => { this.reset = reset }}
-                            convoTitle={this.state.convoTitle}
-                            titleEditable
-                            pageId={this.state.pageId.pageId}
-                            pages={this.props.location.state && this.state.locationPages}
-                            buttonActions={this.state.buttonActions} />
-                        </div>
-                        <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} subscriberCount={this.state.subscriberCount} resetTarget={this.state.resetTarget} page={this.state.pageId} component='broadcast' />
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className='m-alert__text'>
+            Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+            <br />
+            View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
+            &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
           </div>
         </div>
+        <div className="m-subheader ">
+					<div className="d-flex align-items-center">
+						<div className="mr-auto">
+							<h3 className="m-subheader__title ">
+								Create Broadcast
+							</h3>
+						</div>
+            {
+              this.state.tabActive === 'broadcast' &&
+              <div className='pull-right'>
+                <button className='btn btn-primary' disabled={(this.state.linkedMessages && this.state.linkedMessages[0].messageContent.length === 0) ? true : null} style={{marginRight: '10px'}} onClick={this.reset}>
+                  Reset
+                </button>
+                <button style={{marginRight: '10px'}} className='btn btn-primary' disabled={this.isBroadcastInvalid()} onClick={this.onNext}>
+                  Next
+                </button>
+              </div>
+            }
+            {
+              this.state.tabActive === 'target' &&
+              <div className='pull-right'>
+                <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                  Previous
+                </button>
+                <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.linkedMessages && this.state.linkedMessages[0].length === 0)) ? true : null} onClick={this.testConvo}>
+                  Test
+                </button>
+                <button style={{marginRight: '10px'}} id='send' disabled={this.state.subscriberCount === 0 ? true : false} onClick={this.sendConvo} className='btn btn-primary'>
+                  Send
+                </button>
+              </div>
+            }
+            <div style={{display: this.state.tabActive !== 'broadcast' && 'none'}} id='builder-dropdown'>
+							<span onClick={this.toggleBuilderDropdown} className="m-subheader__daterange" id="m_dashboard_daterangepicker">
+								<span className="m-subheader__daterange-label">
+									<span className="m-subheader__daterange-date m--font-brand">
+                    {this.state.builderValue === 'basic' ? 'Basic Builder' : 'Flow Builder'}
+                  </span>
+								</span>
+								<a href="#/" className="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+									<i className="la la-angle-down"></i>
+								</a>
+							</span>
+						</div>
+            <div id='builder-dropdown-area'>
+              {
+                this.state.showBuilderDropdown &&
+                <div className="daterangepicker dropdown-menu ltr opensleft" style={{display: 'block', top: '350px', right: '30.0002px', left: 'auto'}}>
+                  <div className="ranges">
+                    <ul>
+                      <li onClick={() => this.switchBuilder('basic')} data-range-key="basic">Basic Builder</li>
+                      <li onClick={() => this.switchBuilder('flow')} data-range-key="flow">Flow Builder</li>
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
+					</div>
+				</div>
+        <BUILDER
+          rerenderFlowBuilder={this.rerenderFlowBuilder}
+          convoTitle={this.state.convoTitle}
+          handleChange={this.handleChange}
+          setReset={reset => { this.reset = reset }}
+          broadcast={this.state.broadcast}
+          pageId={this.state.pageId}
+          buttonActions={this.state.buttonActions}
+          builderValue={this.state.builderValue}
+          pages={this.props.location.state && this.state.locationPages}
+          handleTargetValue={this.handleTargetValue}
+          subscriberCount={this.state.subscriberCount}
+          resetTarget={this.state.resetTarget}
+          linkedMessages={this.state.linkedMessages}
+          showTabs={this.state.tabActive === 'broadcast'}
+          unlinkedMessages={this.state.unlinkedMessages}
+          switchBuilder={this.switchBuilder}
+          componentLimit={3}
+        />
       </div>
     )
   }

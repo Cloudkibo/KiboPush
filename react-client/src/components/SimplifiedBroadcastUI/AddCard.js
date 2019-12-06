@@ -187,6 +187,8 @@ class AddCard extends React.Component {
             buttonActions={this.state.buttonActions}
             ref={(ref) => { this.AddButton = ref }}
             updateButtonStatus={this.updateStatus}
+            toggleGSModal={this.props.toggleGSModal}
+            closeGSModal={this.props.closeGSModal}
             addComponent={(buttons) => this.addCard(buttons)}
             disabled={this.props.disabled}
             />

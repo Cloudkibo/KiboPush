@@ -21,8 +21,14 @@ export function postsInfo (state = {}, action) {
       return Object.assign({}, state, {
         commentReplies: action.data
       })
+    case ActionTypes.SAVE_COMMENTS:
+      return Object.assign({}, state, {
+        comments: action.data
+      })
     case ActionTypes.RESET_COMMENTS:
       return Object.assign({}, state, {
+        globalPosts: action.data,
+        postsAfter:action.data,
         commentReplies: action.data,
         comments: action.data,
         commentsCount:action.data,
@@ -39,6 +45,15 @@ export function postsInfo (state = {}, action) {
       case ActionTypes.SHOW_SinglePostsAnalytics:
       return Object.assign({}, state, {
         CurrentPostsAnalytics: action.data
+      })
+      case ActionTypes.SHOW_POST_CONTENT: 
+      return Object.assign({}, state, {
+        postContent: action.postContent
+      })
+      case ActionTypes.SHOW_GLOBAL_POSTS: 
+      return Object.assign({}, state, {
+        globalPosts: state.globalPosts ? [...state.globalPosts, ...action.globalPosts] : action.globalPosts,
+        postsAfter: action.postsAfter
       })
     default:
       return state

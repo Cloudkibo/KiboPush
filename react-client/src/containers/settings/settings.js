@@ -6,7 +6,7 @@ import React from 'react'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset, getAPI, saveSwitchState, getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
+import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -28,8 +28,6 @@ class Settings extends React.Component {
     super(props, context)
     this.state = {
       type: 'password',
-      APIKey: '',
-      APISecret: '',
       NGPKey: '',
       NGPSecret: '',
       buttonText: 'Show',
@@ -54,16 +52,13 @@ class Settings extends React.Component {
       isDisableInput: false,
       isDisableButton: false,
       isKiboChat: false,
-      hideAPI: true
     }
     this.changeType = this.changeType.bind(this)
-    this.initializeSwitch = this.initializeSwitch.bind(this)
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
     this.setReset = this.setReset.bind(this)
     this.setResetPass = this.setResetPass.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
-    this.setAPI = this.setAPI.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
@@ -80,7 +75,6 @@ class Settings extends React.Component {
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
-    this.handleChange = this.handleChange.bind(this)
   }
   UNSAFE_componentWillMount () {
     let url = window.location.hostname
@@ -115,7 +109,6 @@ class Settings extends React.Component {
       })
     }
     this.props.getuserdetails()
-    this.props.getAPI({company_id: this.props.user._id})
     this.props.getNGP({company_id: this.props.user.companyId})
   }
   goToSettings () {
@@ -157,14 +150,6 @@ class Settings extends React.Component {
       planInfo = ''
     }
     this.setState({planInfo: planInfo})
-  }
-  setAPI () {
-    this.props.saveSwitchState()
-    this.setState({
-      openTab: 'showAPI'
-    }, () => {
-      this.initializeSwitch(this.state.buttonState)
-    })
   }
   setNGP () {
     this.setState({
@@ -260,10 +245,7 @@ class Settings extends React.Component {
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
     this.scrollToTop()
-    if (this.state.saveState === true || this.state.saveState === false) {
-      this.initializeSwitch(this.state.saveState)
-    }
-    this.initializeSwitch(this.state.buttonState)
+
     this.initializeSwitchNGP(this.state.ngpButtonState)
 
     console.log('this.state.ngpButtonState', this.state.ngpButtonState)
@@ -288,58 +270,6 @@ class Settings extends React.Component {
       this.setState({type: 'password', buttonText: 'Show'})
     }
     e.preventDefault()
-  }
-  initializeSwitch (state) {
-    console.log('initializingSwitch settings')
-    // console.log('state', state)
-    var self = this
-   /* /* eslint-disable */
-   // $("[name='switch']").bootstrapSwitch({
-      /* eslint-enable */
-     // onText: 'Enabled',
-     // offText: 'Disabled',
-     // offColor: 'danger',
-     // state: state
-    // })
-    /* eslint-disable */
-   // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
-      /* eslint-enable */
-    self.setState({buttonState: state})
-    if (state === true) {
-      self.setState({disable: false, buttonState: true})
-      self.props.enable({company_id: self.props.user._id})
-    } else {
-      self.setState({disable: true, buttonState: false})
-      self.props.disable({company_id: self.props.user._id})
-    }
-   // })
-  }
-  handleChange () {
-    console.log('Handle change function')
-   // console.log('state', state)
-  //  var self = this
-
-   /* /* eslint-disable */
-   // $("[name='switch']").bootstrapSwitch({
-      /* eslint-enable */
-     // onText: 'Enabled',
-     // offText: 'Disabled',
-     // offColor: 'danger',
-     // state: state
-    // })
-    /* eslint-disable */
-   // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
-      /* eslint-enable */
-      // self.setState({buttonState: !this.state.buttonState })
-    console.log('buttonState', this.state.buttonState)
-    if (this.state.buttonState === false) {
-      this.setState({disable: false, buttonState: true})
-      this.props.enable({company_id: this.props.user._id})
-    } else {
-      this.setState({disable: true, buttonState: false})
-      this.props.disable({company_id: this.props.user._id})
-    }
-   // })
   }
   initializeSwitchNGP (state) {
     var self = this
@@ -389,44 +319,6 @@ class Settings extends React.Component {
     if (nextProps.user && this.state.show) {
       var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
-    }
-    // if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
-    //   this.setResetPass()
-    // }
-    if (nextProps.apiEnable) {
-      if (this.state.disable === false) {
-        this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
-      }
-    }
-    if (nextProps.apiDisable) {
-      if (this.state.disable === true) {
-        this.setState({APIKey: '', APISecret: ''})
-      }
-    }
-    if (nextProps.resetData) {
-      if (this.state.disable === false) {
-        this.setState({APIKey: nextProps.resetData.app_id, APISecret: nextProps.resetData.app_secret})
-      } else {
-        this.setState({APIKey: '', APISecret: ''})
-      }
-    }
-    if (nextProps.apiSuccess) {
-      console.log('nextProps.apiSuccess', nextProps.apiSuccess)
-      console.log('this.state.count', this.state.count)
-      if (this.state.count === 1) {
-        this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
-        if (this.state.count1 !== 1) {
-          this.initializeSwitch(nextProps.apiSuccess.enabled)
-          this.setState({saveState: nextProps.apiSuccess.enabled})
-        }
-        this.setState({count: 2})
-      }
-    } else if (nextProps.apiFailure) {
-      if (this.state.firstTime === true) {
-        this.initializeSwitch(false)
-        this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
-        this.setState({saveState: false})
-      }
     }
     /*
     NGP Work Starts
@@ -564,24 +456,6 @@ class Settings extends React.Component {
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && !this.state.hideAPI &&
-                      <li className='m-nav__item'>
-                        {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                        <a href='#/' className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-share' />
-                          <span className='m-nav__link-text'>API</span>
-                        </a>
-                        {/*: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-share' />
-                          <span className='m-nav__link-text'>API&nbsp;&nbsp;&nbsp;
-                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                              <span style={{color: '#34bfa3'}}>PRO</span>
-                            </span>
-                          </span>
-                        </a>
-                      */}
-                      </li>
-                    }
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
@@ -700,77 +574,6 @@ class Settings extends React.Component {
                 </div>
               </div>
             </div>
-            { this.state.openTab === 'showAPI' && this.state.showAPIbyPlan &&
-            <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-              <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-tools'>
-                    <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                      <li className='nav-item m-tabs__item'>
-                        <span className='nav-link m-tabs__link active'>
-                          <i className='flaticon-share m--hide' />
-                          API
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='m_user_profile_tab_1'>
-                    <form className='m-form m-form--fit m-form--label-align-right'>
-                      <div className='m-portlet__body'>
-                        <div className='form-group m-form__group m--margin-top-10 m--hide'>
-                          <div className='alert m-alert m-alert--default' role='alert'>
-                            The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
-                          </div>
-                        </div>
-                        <div className='form-group m-form__group row'>
-                          <div className='col-lg-8 col-md-8 col-sm-12' />
-                          <div className='col-lg-4 col-md-4 col-sm-4'>
-                            <span className='m-switch m-switch--icon m-switch--primary'>
-                              <label>
-                                <input type='checkbox' data-switch='true' checked={this.state.buttonState} onChange={this.handleChange} />
-                                <span />
-                              </label>
-                            </span>
-                          </div>
-                        </div>
-                        <br /><br />
-                        {
-                          <div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
-                              <div className='col-7 input-group'>
-                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APIKey : ''} onChange={this.handleNGPKeyChange} />
-                              </div>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
-                                  API Secret
-                                </label>
-                              <div className='col-7 input-group'>
-                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APISecret : ''} onChange={this.handleNGPSecretChange} />
-                              </div>
-                            </div>
-                            {
-                              this.state.buttonState &&
-                                <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
-                            }
-                          </div>
-                        }
-                      </div>
-                    </form>
-                    <div className='form-group m-form__group'>
-                      <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank' rel='noopener noreferrer'>https://app.kibopush.com/docs</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='tab-pane active' id='m_user_profile_tab_2' />
-                </div>
-              </div>
-            </div>
-            }
             { this.state.openTab === 'showNGP' &&
             <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
               <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
@@ -888,32 +691,21 @@ class Settings extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    apiEnable: (state.settingsInfo.apiEnable),
-    apiDisable: (state.settingsInfo.apiDisable),
-    resetData: (state.settingsInfo.resetData),
-    apiSuccess: (state.settingsInfo.apiSuccess),
-    apiFailure: (state.settingsInfo.apiFailure),
     apiEnableNGP: (state.settingsInfo.apiEnableNGP),
     apiDisableNGP: (state.settingsInfo.apiDisableNGP),
     resetDataNGP: (state.settingsInfo.resetDataNGP),
     apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
-    apiFailureNGP: (state.settingsInfo.apiFailureNGP),
-    switchState: (state.settingsInfo.switchState)
+    apiFailureNGP: (state.settingsInfo.apiFailureNGP)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
-    enable: enable,
-    disable: disable,
-    reset: reset,
-    getAPI: getAPI,
     getNGP: getNGP,
     enableNGP: enableNGP,
     disableNGP: disableNGP,
-    saveNGP: saveNGP,
-    saveSwitchState: saveSwitchState
+    saveNGP: saveNGP
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

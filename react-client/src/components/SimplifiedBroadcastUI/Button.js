@@ -36,8 +36,13 @@ class Button extends React.Component {
       errorMsg:'',
       customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
       customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
-      googleIntegration: '',
-      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : ''
+      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
+    	spreadSheet: this.props.button && this.props.button.payload ? this.props.button.payload.spreadSheet : '',
+    	worksheet: this.props.button && this.props.button.payload ? this.props.button.payload.worksheet : '',
+      worksheetName: this.props.button && this.props.button.payload ? this.props.button.payload.worksheetName : '',
+    	mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
+      lookUpValue: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpValue : '',
+      lookUpColumn: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpColumn : ''
     }
 
     props.fetchAllSequence()
@@ -71,7 +76,7 @@ class Button extends React.Component {
     this.closeCustomField = this.closeCustomField.bind(this)
     this.showGoogleSheets = this.showGoogleSheets.bind(this)
     this.closeGoogleSheets = this.closeGoogleSheets.bind(this)
-    this.updateGoogleAction = this.updateGoogleAction.bind(this)
+    this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
 
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
@@ -83,6 +88,24 @@ class Button extends React.Component {
     if (resp.status === 'success') {
       console.log('fetched whitelisted domains', resp.payload)
       this.setState({whitelistedDomains: resp.payload})
+    }
+  }
+
+  componentDidMount () {
+    console.log('in componentDidMount of button', this.props.button)
+    if (this.props.button && this.props.button.payload && typeof this.props.button.payload === 'string') {
+      let buttonPayload = JSON.parse(this.props.button.payload)
+      console.log('button payload for work', buttonPayload)
+      if (buttonPayload.googleSheetAction) {
+        this.setState({spreadSheet: buttonPayload.spreadSheet,
+          worksheet: buttonPayload.worksheet,
+          worksheetName: buttonPayload.worksheetName,
+          mapping: buttonPayload.mapping,
+          googleSheetAction: buttonPayload.googleSheetAction,
+          lookUpValue: buttonPayload.lookUpValue,
+          lookUpColumn: buttonPayload.lookUpColumn,
+          openGoogleSheets: true, openCreateMessage: false})
+      }
     }
   }
 
@@ -195,7 +218,17 @@ class Button extends React.Component {
   }
 
   closeGoogleSheets () {
-    this.setState({openGoogleSheets: false, buttonDisabled: true})
+    this.setState({
+      googleSheetAction: '',
+	    spreadSheet: '',
+    	worksheet: '',
+      worksheetName: '',
+    	mapping: '',
+      buttonDisabled: true,
+      lookUpValue: '',
+      lookUpColumn: '',
+      openGoogleSheets: false
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -272,6 +305,7 @@ class Button extends React.Component {
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: this.props.button.payload ? this.props.button.payload : null
@@ -297,6 +331,23 @@ class Button extends React.Component {
         }
         this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
       }
+    } else if (this.state.openGoogleSheets) {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'google_sheets',
+          googleSheetAction: this.state.googleSheetAction,
+          spreadSheet: this.state.spreadSheet,
+        	worksheet: this.state.worksheet,
+          worksheetName: this.state.worksheetName,
+        	mapping: this.state.mapping,
+          lookUpValue: this.state.lookUpValue,
+          lookUpColumn: this.state.lookUpColumn
+        })
+      }
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     } else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
@@ -356,10 +407,12 @@ class Button extends React.Component {
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     } else if (this.state.openCreateMessage) {
       let data = {
+        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
         type: 'postback',
         title: this.state.title,
         payload: null
       }
+      console.log('creating new message block button', data)
       this.props.onAdd(data, this.props.index)
     } else if (this.state.webviewurl) {
       let data = {
@@ -379,6 +432,22 @@ class Button extends React.Component {
           action: 'set_custom_field',
           customFieldId: this.state.customFieldId,
           customFieldValue: this.state.customFieldValue
+        })
+      }
+      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
+    } else if (this.state.openGoogleSheets) {
+      let data = {
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify({
+          action: 'google_sheets',
+          googleSheetAction: this.state.googleSheetAction,
+          spreadSheet: this.state.spreadSheet,
+        	worksheet: this.state.worksheet,
+          worksheetName: this.state.worksheetName,
+        	mapping: this.state.mapping,
+          lookUpValue: this.state.lookUpValue,
+          lookUpColumn: this.state.lookUpColumn
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
@@ -505,18 +574,49 @@ class Button extends React.Component {
     }
   }
 
-  updateGoogleAction (googleSheetAction) {
-    this.setState({googleSheetAction: googleSheetAction})
-    let buttonData = {title: this.state.title, visible: true, googleSheetAction: googleSheetAction, index: this.props.index}
-    if (this.state.googleSheetAction) {
+  saveGoogleSheet (googleSheetPayload) {
+    console.log('saveGoogleSheet', googleSheetPayload)
+    this.setState({googleSheetAction: googleSheetPayload.googleSheetAction,
+      spreadSheet: googleSheetPayload.spreadSheet,
+      worksheet: googleSheetPayload.worksheet,
+      worksheetName: googleSheetPayload.worksheetName,
+      mapping: googleSheetPayload.mapping,
+      lookUpValue: googleSheetPayload.lookUpValue,
+      lookUpColumn: googleSheetPayload.lookUpColumn
+    })
+    let buttonData = {title: this.state.title, visible: true,
+      googleSheetAction: googleSheetPayload.googleSheetAction,
+	    spreadSheet: googleSheetPayload.spreadSheet,
+    	worksheet: googleSheetPayload.worksheet,
+      worksheetName: googleSheetPayload.worksheetName,
+    	mapping: googleSheetPayload.mapping,
+      lookUpValue: googleSheetPayload.lookUpValue,
+      lookUpColumn: googleSheetPayload.lookUpColumn,
+      index: this.props.index}
+    if (googleSheetPayload.googleSheetAction !== '' &&
+      googleSheetPayload.spreadSheet !== '' &&
+      googleSheetPayload.worksheet !== '' &&
+      googleSheetPayload.mapping !== '' &&
+      this.state.title !== ''
+  ) {
+      this.setState({buttonDisabled: false})
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({buttonDisabled: false, buttonData})
+        this.props.updateButtonStatus({buttonDisabled: false}, buttonData)
       }
     }
   }
 
   removeGoogleAction () {
-    this.setState({googleSheetAction: '', buttonDisabled: true})
+    this.setState({
+      googleSheetAction: '',
+	    spreadSheet: '',
+    	worksheet: '',
+      worksheetName: '',
+    	mapping: '',
+      buttonDisabled: true,
+      lookUpValue: '',
+      lookUpColumn: ''
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({buttonDisabled: true})
     }
@@ -533,7 +633,6 @@ class Button extends React.Component {
   }
 
   render () {
-
     return (
       <div id={this.buttonId} className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px'}} >
         <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
@@ -717,9 +816,19 @@ class Button extends React.Component {
                       <h7 className='card-header'>Google Sheets <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeGoogleSheets} /></h7>
                       <div style={{padding: '10px'}} className='card-block'>
                         <GoogleSheetActions
-                          updateGoogleAction={this.updateGoogleAction}
+                          saveGoogleSheet={this.saveGoogleSheet}
+                          removeGoogleAction={this.removeGoogleAction}
                           googleSheetAction={this.state.googleSheetAction}
-                          removeGoogleAction={this.removeGoogleAction} />
+                          worksheet={this.state.worksheet}
+                          worksheetName={this.state.worksheetName}
+                          spreadSheet={this.state.spreadSheet}
+                          mapping={this.state.mapping}
+                          lookUpValue={this.state.lookUpValue}
+                          lookUpColumn={this.state.lookUpColumn}
+                          toggleGSModal={this.props.toggleGSModal}
+                          closeGSModal={this.props.closeGSModal}
+                          GSModalTarget='ActionModal'
+                          />
                       </div>
                     </div>
                   }
