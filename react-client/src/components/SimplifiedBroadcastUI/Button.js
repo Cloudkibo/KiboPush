@@ -593,6 +593,8 @@ class Button extends React.Component {
       lookUpValue: googleSheetPayload.lookUpValue,
       lookUpColumn: googleSheetPayload.lookUpColumn,
       index: this.props.index}
+      console.log('this.state.title', this.state.title)
+      console.log('googleSheetPayload', googleSheetPayload)
     if (googleSheetPayload.googleSheetAction !== '' &&
       googleSheetPayload.spreadSheet !== '' &&
       googleSheetPayload.worksheet !== '' &&
