@@ -40,6 +40,20 @@ export function showGlobalPosts (data) {
     postsAfter: data.after
   }
 }
+export function showSearchResults (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_RESULTS,
+    searchResult: data.comments,
+    searchCount: data.count
+  }
+}
+export function resetSearchResult (data) {
+  return {
+    type: ActionTypes.RESET_SEARCH_RESULTS,
+    searchResult: data,
+    searchCount: data
+  }
+}
 export function showPostData (data) {
   console.log('Data fetched for post', data)
   return {
@@ -188,6 +202,18 @@ export function deletePost (id, msg) {
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
+      }
+    })
+  }
+}
+export function searchComments (data, msg) {
+  console.log('Actions for searching comments')
+  return (dispatch) => {
+    callApi(`post/filterComments`, 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showSearchResults(res.payload))
+      } else {
+        msg.error('Unable to fetch search results')
       }
     })
   }

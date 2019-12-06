@@ -55,6 +55,16 @@ export function postsInfo (state = {}, action) {
         globalPosts: state.globalPosts ? [...state.globalPosts, ...action.globalPosts] : action.globalPosts,
         postsAfter: action.postsAfter
       })
+      case ActionTypes.SHOW_SEARCH_RESULTS: 
+      return Object.assign({}, state, {
+        searchResult: state.searchResult ? [...state.searchResult, ...action.searchResult] : action.searchResult,
+        searchCount: action.searchCount
+      })
+      case ActionTypes.RESET_SEARCH_RESULTS: 
+      return Object.assign({}, state, {
+        searchResult: action.searchResult,
+        searchCount: action.searchCount
+      })
     default:
       return state
   }

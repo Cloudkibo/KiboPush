@@ -16,6 +16,7 @@ class Comments extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      isMenuOpened: false
     }
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.getComments = this.getComments.bind(this)
@@ -31,6 +32,10 @@ class Comments extends React.Component {
 
     if (truef === false) {
     }
+  }
+  handleClick() {
+    // toggles the menu opened state
+    this.setState({ isMenuOpened: !this.state.isMenuOpened });
   }
   handleText(text, index) {
     let urls = getMetaUrls(text)
@@ -100,57 +105,66 @@ class Comments extends React.Component {
     return (
       <div className='m-portlet m-portlet--full-height '>
         <div className='m-portlet__head'>
-            <div className='m-portlet__head-caption'>
-              <div className='m-portlet__head-title'>
-                <h3 className='m-portlet__head-text'>Comments</h3>
-              </div>
+          <div className='m-portlet__head-caption'>
+            <div className='m-portlet__head-title'>
+              <h3 className='m-portlet__head-text'>Comments</h3>
             </div>
           </div>
-      <div className='m-portlet__body'>
-        
-      <div className='row'>
-        <div className='col-12' style={{maxHeight: '500px', overflowY: 'scroll'}}>
-        {
-        (!this.props.comments || this.props.comments.length < 1) &&
-        <span>This post has no comments</span>
-        }
-        {
-          this.props.comments && this.props.comments.map((comment, index) => (
-            <div key={index}>
-              <CommentBox 
-                  repliesCount={this.repliesCount}
-                  getCommentReplies= {this.getCommentReplies}
-                  hideCommentReplies={this.hideCommentReplies}
-                  handleText = {this.handleText}
-                  comment={comment}
-                  onTestURLVideo={this.onTestURLVideo}
-                />
-            { this.props.commentReplies && this.props.commentReplies.map((reply, index) => (
-              reply.parentId === comment._id &&
-              <div index={index}>
-                <ReplyBox reply={reply}
-                onTestURLVideo={this.onTestURLVideo}/>
-            </div>
-            ))
-          }
-          { this.showReplies(comment) && (comment.childCommentCount - this.repliesCount(comment) > 0) &&
-            <div className='col-12'>
+          <div className='m-portlet__head-tools'>
+            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.comments && this.props.comments.length === 0} onClick={this.props.toggleOffCanvas}>
               <span>
-                <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
+                <i className='fa fa-more-v2' />
+                <span>
+                  Apply Filters
+                </span>
               </span>
-            </div>
-          }
+            </button>
           </div>
-          ))
-        }
-        { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
-          <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</a>
-        </span>
-        }
+        </div>
+        <div className='m-portlet__body'>        
+          <div className='row'>
+            <div className='col-12' style={{maxHeight: '500px', overflowY: 'scroll'}}>
+            {
+            (!this.props.comments || this.props.comments.length < 1) &&
+            <span>This post has no comments</span>
+            }
+            {
+              this.props.comments && this.props.comments.map((comment, index) => (
+                <div key={index}>
+                  <CommentBox 
+                      repliesCount={this.repliesCount}
+                      getCommentReplies= {this.getCommentReplies}
+                      hideCommentReplies={this.hideCommentReplies}
+                      handleText = {this.handleText}
+                      comment={comment}
+                      onTestURLVideo={this.onTestURLVideo}
+                    />
+                { this.props.commentReplies && this.props.commentReplies.map((reply, index) => (
+                  reply.parentId === comment._id &&
+                  <div index={index}>
+                    <ReplyBox reply={reply}
+                    onTestURLVideo={this.onTestURLVideo}/>
+                </div>
+                ))
+              }
+              { this.showReplies(comment) && (comment.childCommentCount - this.repliesCount(comment) > 0) &&
+                <div className='col-12'>
+                  <span>
+                    <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
+                  </span>
+                </div>
+              }
+              </div>
+              ))
+            }
+            { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
+              <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</a>
+            </span>
+            }
+            </div>
+          </div>
         </div>
       </div>
-      </div>
-    </div>
     )
   }
 }
