@@ -62,7 +62,7 @@ class GetContactForm extends React.Component {
     if (this.state.identityFieldValue === '' ) {
       this.msg.error('Please fill all the required fields')
     } else {
-      this.props.save('',this.state.mappingData, this.state.identityFieldValue)
+      this.props.save('','',this.state.mappingData, this.state.identityFieldValue)
     }
   }
 
