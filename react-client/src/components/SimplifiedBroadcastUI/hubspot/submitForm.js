@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {fetchColumns} from '../../../redux/actions/hubSpot.actions'
 import { RingLoader } from 'halogenium'
+import AlertContainer from 'react-alert'
+
 class submitForm extends React.Component {
     constructor (props, context) {
         super(props, context)
@@ -75,7 +77,7 @@ class submitForm extends React.Component {
       console.log('data in updateMappingData', data)
     }
     onhubspotFormChange (event) {
-      let portalId = this.props.hubSpotForms.filter(hubSpotForm => hubSpotForm.formId === event.target.value)[0].portalId
+      let portalId = this.props.hubSpotForms.filter(hubSpotForm => hubSpotForm.guid === event.target.value)[0].portalId
         this.setState({hubspotFormValue: event.target.value, portalId: portalId, buttonDisabled: false, loadingColumns: true})
         this.props.fetchColumns({formId: event.target.value})
       }
@@ -86,7 +88,7 @@ class submitForm extends React.Component {
           let mappingData = []
           let mappingDataValues = []
           for (let i = 0; i < nextProps.columns.hubspotColumns.length; i++) {
-            mappingData.push({hubspotColumn: nextProps.columns.hubspotColumns[i]})
+            mappingData.push({hubspotColumn: nextProps.columns.hubspotColumns[i].name})
             mappingDataValues.push('')
           }
           console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
@@ -136,11 +138,11 @@ class submitForm extends React.Component {
               </div>
               <div className='col-1'>
                 <center>
-                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ? 'black': 'blue'}} />
+                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ?  '#bfe6c0': '#419600'}} />
                 </center>
               </div>
               <div className='col-5'>
-                <input style={{height: '40px'}} type='text' className='form-control' value={hubspotColumns[i]} disabled />
+                <input style={{height: '40px'}} type='text' className='form-control' value={hubspotColumns[i].name} disabled />
               </div>
             </div>
             <br />
@@ -150,9 +152,27 @@ class submitForm extends React.Component {
         return content
       }
     render () {
+      var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
+      }
         console.log('hubspotFormValue', this.state.hubspotFormValue)
         return ( 
-        <div>
+          <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <div style={{ display: 'block' }} className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
+              Edit Google Sheets Actions
+              </h5>
+            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
+              <span aria-hidden="true">
+                &times;
+                  </span>
+            </button>
+          </div>
             <div style={{ textAlign: 'left' }} className="modal-body">
                 <h6>HubSpot: Submit data to a form</h6>
                 <span style={{color: '#575962'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
@@ -163,7 +183,7 @@ class submitForm extends React.Component {
               <option key='' value='' disabled>Select a HubSpot Form...</option>
               {
                 this.props.hubSpotForms.map((hubSpotForm, i) => (
-                  <option key={i} value={hubSpotForm.formId}>{hubSpotForm.name}</option>
+                  <option key={i} value={hubSpotForm.guid}>{hubSpotForm.name}</option>
                 ))
               }
             </select>

@@ -39,12 +39,12 @@ export function showhubSpotForm (data) {
           dispatch(showhubSpotForm([
             {
               name:'hello1',
-              formId: '1',
+              guid: '1',
               portalId: 12                    
             },
             {
               name:'hello2',
-              formId: '2',
+              guid: '2',
               portalId: 13                     
             }
         ]

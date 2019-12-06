@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { UncontrolledTooltip } from 'reactstrap'
 import {fetchHubspotColumns} from '../../../redux/actions/hubSpot.actions'
+import AlertContainer from 'react-alert'
+
 class CreateContact extends React.Component {
     constructor (props, context) {
         super(props, context)
@@ -188,9 +190,27 @@ class CreateContact extends React.Component {
         this.setState({identityFieldValue: event.target.value, showColumns: true,  buttonDisabled: false})
       }
       render () {
+        var alertOptions = {
+          offset: 14,
+          position: 'bottom right',
+          theme: 'dark',
+          time: 5000,
+          transition: 'scale'
+        }
         console.log('this.props.columns', this.props.columns)
         return ( 
-        <div>
+          <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <div style={{ display: 'block' }} className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
+              Edit Google Sheets Actions
+              </h5>
+            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
+              <span aria-hidden="true">
+                &times;
+                  </span>
+            </button>
+          </div>
             <div style={{ textAlign: 'left' }} className="modal-body">
                 <h6>HubSpot: Create/Update Contact Properties</h6>
                 <span style={{color: '#575962'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
@@ -219,7 +239,7 @@ class CreateContact extends React.Component {
         <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
         </div>
       
-            </div>
+      </div>
         )}
 }
 

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { UncontrolledTooltip } from 'reactstrap'
 import {fetchHubspotColumns} from '../../../redux/actions/hubSpot.actions'
+import AlertContainer from 'react-alert'
 
 class GetContactForm extends React.Component {
     constructor (props, context) {
@@ -106,7 +107,7 @@ class GetContactForm extends React.Component {
               </div>
             <div className='col-1'>
               <center>
-              <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ? 'black': 'blue'}} />
+              <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: this.state.mappingDataValues[i] === '' ? '#bfe6c0': '#419600'}} />
               </center>
             </div>
             <div className='col-5'>
@@ -132,9 +133,27 @@ class GetContactForm extends React.Component {
       this.setState({identityFieldValue: event.target.value, showColumns: true,  buttonDisabled: false})
     }
     render () {
+      var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
+      }
       console.log('this.props.columns', this.props.columns)
       return ( 
-      <div>
+        <div className="modal-content" style={{ width: '687px', top: '100' }}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{ display: 'block' }} className="modal-header">
+          <h5 className="modal-title" id="exampleModalLabel">
+            Edit Google Sheets Actions
+            </h5>
+          <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
+            <span aria-hidden="true">
+              &times;
+                </span>
+          </button>
+        </div>
           <div style={{ textAlign: 'left' }} className="modal-body">
               <h6>HubSpot: Get Contact Properties</h6>
               <span style={{color: '#575962'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>

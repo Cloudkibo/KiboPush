@@ -1,5 +1,4 @@
 import React from 'react'
-import AlertContainer from 'react-alert'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import CreateContact from './createContact'
@@ -50,7 +49,7 @@ class HubspotAction extends React.Component {
   }
   
   closeModal () {
-    this.actionModal.click()
+    this.props.closeGSModal()
 }
 
 componentDidMount () {
@@ -81,12 +80,11 @@ componentDidMount () {
   }
   openModal () {
 
-    this.actionModal.click()
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save}/>),
-      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>),
-      'Create/Update_Contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save}/>)
+      'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal} portalId= {this.state.portalId}/>),
+      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>),
+      'Create/Update_Contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>)
 
     }
     return modals[this.state.hubspotAction]
@@ -95,7 +93,13 @@ componentDidMount () {
   
   updateHubspotAction (hubspotAction, dontShow) {
     console.log('updateHubspotAction', !(dontShow))
-    this.setState({hubspotAction: hubspotAction, showModal: !(dontShow)})
+    this.setState({hubspotAction: hubspotAction, showModal: !(dontShow)},() => {
+      if (this.state.showModal) {
+        this.props.toggleGSModal(this.state.showModal, this.openModal())
+      } else {
+        this.props.toggleGSModal(this.state.showModal, null)
+      }
+    })
     let title = hubspotAction === 'submit_form' ? 'Submit data to a form'
           : hubspotAction === 'Create/Update_Contact' ? 'Create/Update Contact Properties'
           : hubspotAction === 'Get_Contact' ? 'Get Contact Properties' : ''
@@ -107,13 +111,6 @@ componentDidMount () {
     this.setState({title: title, description: description})
   }
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div>
         { this.state.title !== ''
@@ -121,7 +118,7 @@ componentDidMount () {
         <div className='google-sheet-close-icon' style = {{position: 'inherit', float:'right'}} onClick={this.removeHubspotAction}></div>
         <div className='ui-block'
           style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer', backgroundColor: 'rgba(0,0,0,.07)'}}
-          onClick={() => this.updateHubspotAction(this.state.hubspotAction)} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
+          onClick={() => this.updateHubspotAction(this.state.hubspotAction)} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
           <h6>{this.state.title}
           </h6>
           <span style={{color: '#676c7b'}}>{this.state.description}</span>
@@ -131,45 +128,25 @@ componentDidMount () {
           <span>Select one of the Actions below:</span>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
+              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Submit data to a form</h6>
               <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Create/Update_Contact')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
+              onClick={() => this.updateHubspotAction('Create/Update_Contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Create/Update Contact Properties</h6>
               <span style={{color: '#676c7b'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Get_Contact')} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>
+              onClick={() => this.updateHubspotAction('Get_Contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Get Contact Properties</h6>
             <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
           </div>
         </div>
     }
-    <a href='#/' style={{ display: 'none' }} ref={(element) => this.actionModal = element} data-toggle='modal' data-target={`#ActionModal${this.props.index}`}>ActionModal</a>
-    <div style={{ background: 'rgba(33, 37, 41, 0.6)', width: '72vw' }} className='modal fade' id = {`ActionModal${this.props.index}`} tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-      <div style={{ transform: 'translate(0, 0)', marginLeft: '13pc' }} className='modal-dialog modal-lg' role='document'>
-        <div className="modal-content" style={{ width: '687px', top: '100' }}>
-            <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-            <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                    Edit HubSpot Actions
-                </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close"  onClick={() => {
-                    this.closeModal()}}  aria-label="Close">
-                <span aria-hidden="true">
-                    &times;
-				    </span>
-              </button>
-            </div>
-            {this.state.showModal && this.openModal()}
-        </div>
       </div>
-    </div>
-  </div>
     )
   }
 }

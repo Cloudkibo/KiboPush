@@ -961,6 +961,9 @@ class Button extends React.Component {
                     mapping={this.state.mapping}
                     identityFieldValue={this.state.identityFieldValue}
                     index={this.props.index}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    GSModalTarget='ActionModal'
                   />
                 </div>
               </div>
