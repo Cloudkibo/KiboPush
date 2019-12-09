@@ -199,7 +199,7 @@ class MessengerRefURL extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenfer Ref URLs? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Messenfer Ref URLs? Here is the <a href='http://kibopush.com/messenger-ref-url' target='_blank' rel='noopener noreferrer'>documentation</a>.
               Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
