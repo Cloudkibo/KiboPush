@@ -8,6 +8,12 @@ export function showAllSponsoredMessages (data) {
     }
   }
 
+  export function insights (data) {
+    return {
+      data
+    }
+  }
+
 export function showUpdatedData (data) {
     return {
         type: ActionTypes.UPDATE_SPONSORED_MESSAGE,
@@ -103,6 +109,19 @@ export function send(data) {
       .then(res => {
         if(res.status === 'success') {
           dispatch(fetchSponsoredMessages())
+        } else {
+          console.log(res)
+        }
+      })
+   }
+}
+
+export function getInsights (adId) {
+  return (dispatch) => {
+    callApi(`sponsoredmessaging/insights/${adId}`, 'get')
+      .then(res => {
+        if(res.status === 'success') {
+          dispatch(insights(res.payload))
         } else {
           console.log(res)
         }
