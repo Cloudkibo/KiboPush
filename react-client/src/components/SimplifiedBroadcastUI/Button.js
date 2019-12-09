@@ -135,14 +135,21 @@ class Button extends React.Component {
       console.log('button payload for work', buttonPayload)
       if (buttonPayload.googleSheetAction) {
         this.setState({
-          spreadSheet: buttonPayload.spreadSheet,
-          worksheet: buttonPayload.worksheet,
-          worksheetName: buttonPayload.worksheetName,
           mapping: buttonPayload.mapping,
-          googleSheetAction: buttonPayload.googleSheetAction,
+          hubspotAction: buttonPayload.hubspotAction,
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
           openGoogleSheets: true, openCreateMessage: false
+        })
+      }
+      else if (buttonPayload.hubspotAction) {
+        this.setState({
+          mapping: buttonPayload.mapping,
+          googleSheetAction: buttonPayload.googleSheetAction,
+          portalId: buttonPayload.portalId,
+          identityFieldValue: buttonPayload.identityFieldValue, 
+          openHubspot: true,
+          openCreateMessage: false
         })
       }
     }
