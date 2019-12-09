@@ -135,8 +135,11 @@ class Button extends React.Component {
       console.log('button payload for work', buttonPayload)
       if (buttonPayload.googleSheetAction) {
         this.setState({
+          spreadSheet: buttonPayload.spreadSheet,
+          worksheet: buttonPayload.worksheet,
+          worksheetName: buttonPayload.worksheetName,
           mapping: buttonPayload.mapping,
-          hubspotAction: buttonPayload.hubspotAction,
+          googleSheetAction: buttonPayload.googleSheetAction,
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
           openGoogleSheets: true, openCreateMessage: false
@@ -145,7 +148,7 @@ class Button extends React.Component {
       else if (buttonPayload.hubspotAction) {
         this.setState({
           mapping: buttonPayload.mapping,
-          googleSheetAction: buttonPayload.googleSheetAction,
+          hubspotAction: buttonPayload.googleSheetAction,
           portalId: buttonPayload.portalId,
           identityFieldValue: buttonPayload.identityFieldValue, 
           openHubspot: true,
