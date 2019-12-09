@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
 import AlertContainer from 'react-alert'
 import PostBox from './PostBox'
+import FilterComments from './filterComments'
 
 var json2csv = require('json2csv')
 
@@ -17,35 +18,45 @@ class PostResult extends React.Component {
     constructor(props, context) {
       super(props, context)
       this.state = {
-		page: this.props.pages.filter((page) => page._id === this.props.currentPost.pageId)[0],
-		captureType: this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
-        CurrentPostsAnalytics: {
-          totalComments: this.props.currentPost.count,
-          conversions: this.props.currentPost.conversionCount,
-          totalRepliesSent: this.props.currentPost.positiveMatchCount,
-          waitingConversions: this.props.currentPost.waitingReply,
-          negativeMatch: this.props.currentPost.count-this.props.currentPost.positiveMatchCount
+        page: this.props.pages.filter((page) => page._id === this.props.currentPost.pageId)[0],
+        isMenuOpened: false,
+        showOffCanvas: false,
+        captureType: this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
+            CurrentPostsAnalytics: {
+              totalComments: this.props.currentPost.count,
+              conversions: this.props.currentPost.conversionCount,
+              totalRepliesSent: this.props.currentPost.positiveMatchCount,
+              waitingConversions: this.props.currentPost.waitingReply,
+              negativeMatch: this.props.currentPost.count-this.props.currentPost.positiveMatchCount
+            }
         }
-	  }
-	  if ((props.currentPost.payload && this.props.currentPost.payload.length > 0) ||  (this.props.currentPost.post_id && this.props.currentPost.post_id !== '')) {
-		props.fetchComments({
-			first_page: true,
-			last_id: 'none',
-			number_of_records: 10,
-			postId: props.currentPost._id,
-			sort_value: -1
-		})
-		props.fetchPostContent(props.currentPost._id)
-	} else {
-		props.fetchPosts({
-		 pageId: this.props.currentPost.pageId,
-		 number_of_records: 10
-		})
-	}
+        if ((props.currentPost.payload && this.props.currentPost.payload.length > 0) ||  (this.props.currentPost.post_id && this.props.currentPost.post_id !== '')) {
+        props.fetchComments({
+          first_page: true,
+          last_id: 'none',
+          number_of_records: 10,
+          postId: props.currentPost._id,
+          sort_value: -1
+        })
+        props.fetchPostContent(props.currentPost._id)
+      } else {
+        props.fetchPosts({
+        pageId: this.props.currentPost.pageId,
+        number_of_records: 10
+        })
+      }
       this.exportAnalytics = this.exportAnalytics.bind(this)
       this.prepareExportSummary = this.prepareExportSummary.bind(this)
       this.exportComments = this.exportComments.bind(this)
+      this.toggleOffCanvas = this.toggleOffCanvas.bind(this)
     }
+
+    toggleOffCanvas () {
+      this.setState({
+        showOffCanvas: !this.state.showOffCanvas
+      })
+    }
+
     prepareExportSummary () {
       var data = []
       var analytics = {}
@@ -109,34 +120,6 @@ class PostResult extends React.Component {
         payload.push(commentObj)
       }
       return payload
-       /* if (comments[i].childCommentCount > 0) {
-          var replies = []
-          for(var j = 0; j < comments.length; j++) {
-            if (comments[j].parentId === comments[i]._id) {
-              var reply = {}
-              var replyContent = []
-              reply['id'] = comments[j]._id
-              reply['sender'] = comments[j].senderName
-    
-              for(var k=0; k < comments[j].commentPayload.length; k++) {
-                if (comments[j].commentPayload[k].componentType === 'text') {
-                  replyContent.push(comments[j].commentPayload[k].text)
-                } else {
-                  replyContent.push(comments[j].commentPayload[k].url)
-                }
-              }
-              reply['comment'] = replyContent
-              reply['date'] = comments[j].datetime
-              replies.push(reply)
-            }
-          }
-          commentObj['reply'] = replies
-          payload.push(commentObj)
-        } else {
-          commentObj['Reply'] = []
-          payload.push(commentObj)
-        }
-      } */
     }
     exportComments () {
       this.props.fetchExportCommentsData({postId: this.props.currentPost._id},this.msg,(comments) => {
@@ -157,6 +140,10 @@ class PostResult extends React.Component {
         }
       })
       })
+    }
+    handleClick() {
+      // toggles the menu opened state
+      this.setState({ isMenuOpened: !this.state.isMenuOpened });
     }
 componentDidMount() {
   console.log('ComponentDidMount called in ', this.props.currentPost)
@@ -222,6 +209,11 @@ render() {
     }
     return (
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+           { this.state.showOffCanvas &&
+              <FilterComments 
+                toggleOffCanvas={this.toggleOffCanvas}
+              />
+            }
             <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
             <div className='m-subheader '>
                 <div className='d-flex align-items-center'>
@@ -253,18 +245,18 @@ render() {
            page={this.state.page} />
           
 				  }	  
-                <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
-					{this.state.captureType === 'Any Post' && <div className='m-widget1__item'>
-						<div className='row m-row--no-padding align-items-center'>
-						<div className='col'>
-							<h3 className='m-widget1__title'>Page Name</h3>
-						</div>
-						<div className='col m--align-left'>
-							<span>{this.state.page.pageName}</span>
-						</div>
-						</div>
-					</div>
-					}
+          <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
+                  {this.state.captureType === 'Any Post' && <div className='m-widget1__item'>
+                    <div className='row m-row--no-padding align-items-center'>
+                    <div className='col'>
+                      <h3 className='m-widget1__title'>Page Name</h3>
+                    </div>
+                    <div className='col m--align-left'>
+                      <span>{this.state.page.pageName}</span>
+                    </div>
+                    </div>
+                  </div>
+                  }
                   <div className='m-widget1__item'>
                     <div className='row m-row--no-padding align-items-center'>
                       <div className='col'>
@@ -297,8 +289,12 @@ render() {
           </div>
           </div>
           {this.state.captureType !== 'Any Post' 
-          ? <Comments comments={this.props.comments ? this.props.comments: []}/>
-          : <GlobalPosts globalPosts={this.props.globalPosts ? this.props.globalPosts: []}/>
+          ? <Comments 
+              comments={this.props.comments ? this.props.comments: []} 
+              toggleOffCanvas={this.toggleOffCanvas} />
+          : <GlobalPosts 
+              globalPosts={this.props.globalPosts ? this.props.globalPosts: []} 
+              toggleOffCanvas={this.toggleOffCanvas} />
           }
           <div className='row'>
             <div className='col-6'>
@@ -332,10 +328,10 @@ function mapStateToProps(state) {
     return {
 	  posts: (state.postsInfo.posts),
 	  postContent: (state.postsInfo.postContent),
-      comments: (state.postsInfo.comments),
-      commentsCount: (state.postsInfo.commentsCount),
-      currentPost: (state.postsInfo.currentPost),
-      allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
+    comments: (state.postsInfo.comments),
+    commentsCount: (state.postsInfo.commentsCount),
+    currentPost: (state.postsInfo.currentPost),
+    allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
 	  pages: (state.pagesInfo.pages),
 	  globalPosts: (state.postsInfo.globalPosts)
     }

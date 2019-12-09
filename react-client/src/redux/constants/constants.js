@@ -282,6 +282,8 @@ export const RESET_COMMENTS = 'RESET_COMMENTS'
 export const SHOW_POST_CONTENT = 'SHOW_POST_CONTENT'
 export const SHOW_GLOBAL_POSTS = 'SHOW_GLOBAL_POSTS'
 export const SAVE_COMMENTS = 'SAVE_COMMENTS'
+export const SHOW_SEARCH_RESULTS = 'SHOW_SEARCH_RESULTS'
+export const RESET_SEARCH_RESULTS = 'RESET_SEARCH_RESULTS'
 
 //  constants for Plans
 export const FETCH_ALL_PLANS = 'FETCH_ALL_PLANS'
@@ -396,6 +398,11 @@ export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
 
+// constants for hubSpot
+export const SHOW_hubSpotForm = 'SHOW_hubSpotForm'
+export const SHOW_hubspot_form_COLUMNS = 'SHOW_hubspot_form_COLUMNS'
+export const EMPTY_hubspotForm_FIELDS = 'EMPTY_hubspotForm_FIELDS'
+export const SHOW_showHubspotColumns = 'SHOW_showHubspotColumns'
 // constants for google sheets
 export const SHOW_WORKSHEETS = 'SHOW_WORKSHEETS'
 export const SHOW_SPREADSHEETS = 'SHOW_SPREADSHEETS'

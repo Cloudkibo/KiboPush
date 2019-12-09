@@ -71,6 +71,7 @@ class GoogleSheetActions extends React.Component {
       lookUpColumn: lookUpColumn,
       lookUpValue: lookUpValue
     }, this.props.index)
+    this.props.emptyFields()
   }
 
   updateGoogleAction (googleSheetAction, dontShow) {

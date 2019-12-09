@@ -152,6 +152,16 @@ class GlobalPosts extends React.Component {
               <h3 className='m-portlet__head-text'>All Posts</h3>
             </div>
           </div>
+          <div className='m-portlet__head-tools'>
+            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.globalPosts && this.props.globalPosts.length === 0} onClick={this.props.toggleOffCanvas}>
+              <span>
+                <i className='fa fa-more-v2' />
+                <span>
+                  Apply Filters
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
         <div className='m-portlet__body' style={{maxHeight: '500px', overflowY: 'scroll'}}>      
           <div className='row'>
