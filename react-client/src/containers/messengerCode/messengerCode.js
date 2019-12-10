@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { requestMessengerCode, resetState, fetchCodes, deleteCode, updateData } from '../../redux/actions/messengerCode.actions'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
@@ -23,12 +23,13 @@ class MessengerCode extends React.Component {
       isShowingCreate: false,
       isShowPreview: false,
       QRCodeToPreview: '',
-      pageSelected: {},
+      pageSelected: '',
       pagesToShow: [],
       isShowingModalDelete: false,
-      codetoDelete: ''
+      codetoDelete: '',
+      pages: []
     }
-    props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
+    props.loadMyPagesList()
     this.showCreateDialog = this.showCreateDialog.bind(this)
     this.closeCreateDialog = this.closeCreateDialog.bind(this)
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
@@ -40,7 +41,7 @@ class MessengerCode extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.onEdit = this.onEdit.bind(this)
-
+    this.updateAllowedPages = this.updateAllowedPages.bind(this)
   }
 
   showDialogDelete(id) {
@@ -52,7 +53,6 @@ class MessengerCode extends React.Component {
   }
 
   displayData(n, messengerCodes) {
-    console.log('in displayData', messengerCodes)
     let offset = n * 10
     let data = []
     let limit
@@ -75,6 +75,7 @@ class MessengerCode extends React.Component {
 
   showCreateDialog() {
     this.setState({ isShowingCreate: true })
+    this.updateAllowedPages(this.props.pages, this.props.messengerCodes)
   }
   closeCreateDialog() {
     this.setState({ isShowingCreate: false })
@@ -92,8 +93,8 @@ class MessengerCode extends React.Component {
     this.setState({ pageSelected: e.target.value })
     this.props.resetState()
     var edit = {
-      page_id: e.target.value._id,
-      pageId: e.target.value.pageId,
+      page_id: e.target.value,
+      pageId: e.target.value,
       optInMessage: this.props.messengerCode.optInMessage,
       QRCode: this.props.messengerCode.QRCode
     }
@@ -101,7 +102,6 @@ class MessengerCode extends React.Component {
   }
 
   gotoCreate() {
-    console.log('this.props.messengerCode', this.props.messengerCode)
     this.props.history.push({
       pathname: `/createMessengerCode`,
       state: { module: 'createMessage', messengerCode: this.props.messengerCode }
@@ -139,26 +139,46 @@ class MessengerCode extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextprops', nextProps)
-    if (nextProps.pages) {
-      this.setState({
-        pageSelected: nextProps.pages[0]
-      })
-      if (nextProps.messengerCodes) {
-        var tempPages = []
-        var codeIds = []
-        for(let a=0; a<nextProps.messengerCode.length; a++){
-          let code = nextProps.messengerCode[a]
-          codeIds.push(code.pageId._id)}
-        for(let a=0; a<nextProps.pages.length; a++){
-          let page = nextProps.pages[0]
-          if (!codeIds.includes(page._id)) tempPages.push(page)}
-        this.setState({ pagesToShow: tempPages })
-      }
-    }
+    // if (nextProps.pages) {
+    //   // this.setState({
+    //   //   pageSelected: nextProps.pages[0]
+    //   // })
+    //   if (nextProps.messengerCodes) {
+    //     var tempPages = []
+    //     var codeIds = []
+    //     for(let a=0; a<nextProps.messengerCode.length; a++){
+    //       let code = nextProps.messengerCode[a]
+    //       codeIds.push(code.pageId._id)}
+    //     for(let a=0; a<nextProps.pages.length; a++){
+    //       let page = nextProps.pages[0]
+    //       if (!codeIds.includes(page._id)) tempPages.push(page)}
+    //     this.setState({ pagesToShow: tempPages })
+    //   }
+    // }
     if (nextProps.messengerCodes) {
       this.displayData(0, nextProps.messengerCodes)
       this.setState({ totalLength: nextProps.messengerCodes.length })
+    }
+  }
+
+  updateAllowedPages(pages, messengerCodes) {
+    var temp = pages.filter((page) => {
+      for (let i = 0; i < messengerCodes.length; i++) {
+        if (messengerCodes[i].pageId._id === page._id) {
+          return false
+        }
+      }
+      return true
+    })
+    this.setState({ pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : ''  })
+    if (temp.length > 0) {
+      var edit = {
+        page_id: temp[0]._id,
+        pageId: temp[0]._id,
+        optInMessage: this.props.messengerCode.optInMessage,
+        QRCode: this.props.messengerCode.QRCode
+      }
+      this.props.requestMessengerCode(edit)
     }
   }
 
@@ -241,21 +261,24 @@ class MessengerCode extends React.Component {
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <div className='m-form'>
-                <div className='form-group m-form__group'>
-                  <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
-                  <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
-                    {
-                      this.props.pages.map((page, i) => (
-                        <option key={i} value={page._id}>{page.pageName}</option>
-                      ))
-                    }
-                  </select>
-                </div>
+                {this.state.pages.length > 0
+                  ? <div className='m-form'>
+                  <div className='form-group m-form__group'>
+                    <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
+                    <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
+                      {
+                        this.state.pages.length > 0 && this.state.pages.map((page, i) => (
+                          <option key={i} value={page._id}>{page.pageName}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
               </div>
-              <div style={{ width: '100%', textAlign: 'center' }}>
+              : <label className='control-label' style={{fontWeight: 'lighter', color: 'red'}}><b>Note:</b> You can only create one Mesenger Code per page and you have already created Messenger Codes for all of your connected pages. Hence, you cannot create more Messenger Codes.</label>
+          }
+            <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
-                  <button className='btn btn-primary' onClick={() => this.gotoCreate()} data-dismiss='modal'>
+                  <button className='btn btn-primary' disabled={this.state.pageSelected === ''} onClick={() => this.gotoCreate()} data-dismiss='modal'>
                     Create
                   </button>
                 </div>
@@ -320,7 +343,7 @@ class MessengerCode extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {this.state.pagesToShow.length > 0
+                    {this.props.pages && this.props.pages.length > 0
                       ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
@@ -414,7 +437,6 @@ class MessengerCode extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     messengerCodes: (state.messengerCodeInfo.messengerCodes),
@@ -425,7 +447,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    loadMyPagesListNew: loadMyPagesListNew,
+    loadMyPagesList: loadMyPagesList,
     resetState: resetState,
     requestMessengerCode: requestMessengerCode,
     fetchCodes: fetchCodes,
