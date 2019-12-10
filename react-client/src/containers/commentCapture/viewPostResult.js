@@ -4,7 +4,7 @@ import CardBoxesContainer from './CardBoxesContainer'
 import Comments from './comments'
 import GlobalPosts from './globalPosts'
 import { handleDate } from '../../utility/utils'
-import {fetchComments , fetchExportCommentsData, fetchPostContent, fetchPosts } from '../../redux/actions/commentCapture.actions'
+import {fetchComments , fetchExportCommentsData, fetchPostContent, fetchPosts, resetSearchResult } from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
@@ -52,6 +52,7 @@ class PostResult extends React.Component {
     }
 
     toggleOffCanvas () {
+      this.props.resetSearchResult(null)
       this.setState({
         showOffCanvas: !this.state.showOffCanvas
       })
@@ -340,6 +341,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
 	  fetchPosts: fetchPosts,
       fetchComments: fetchComments,
+      resetSearchResult: resetSearchResult,
 	  fetchExportCommentsData: fetchExportCommentsData,
 	  fetchPostContent: fetchPostContent
         }, dispatch)
