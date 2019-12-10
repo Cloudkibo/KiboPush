@@ -37,7 +37,8 @@ class Bot extends React.Component {
       responded: 0,
       total: 0,
       notResponded: 0,
-      password: ''
+      password: '',
+      errorMessage: ''
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -98,7 +99,7 @@ class Bot extends React.Component {
     this.props.deleteBot(this.state.deleteid, this.state.password, this.msg, this.handleResponseDelete)
     this.setState({ isShowingModalDelete: false })
   }
-  
+
   handleResponseDelete (status) {
     if(status === 'success') {
       this.refs.delete.click()
@@ -142,7 +143,7 @@ class Bot extends React.Component {
 
   updateName(e) {
     var name = e.target.value.replace('-', '')
-    this.setState({ name: name, error: false })
+    this.setState({ name: name, error: false, errorMessage: '' })
   }
 
   handleFilter (search, page, status) {
@@ -300,11 +301,16 @@ class Bot extends React.Component {
 
   gotoCreate() {
     if (this.state.name === '') {
-      this.setState({ error: true })
+      this.setState({ error: true, errorMessage: 'Please enter a name' })
+    } else if (this.state.name.length > 25) {
+      this.setState({ error: true, errorMessage: 'Name must be at most 25 charachters long' })
     } else {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
-      this.props.createBot({ botName: botName, pageId: this.state.pageSelected }, this.msg, this.handleResponseCreate)
+      this.props.createBot({
+        botName: botName,
+        pageId: this.state.pageSelected,
+      }, this.msg, this.handleResponseCreate)
     }
   }
 
@@ -375,7 +381,7 @@ class Bot extends React.Component {
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>Bot Name:</label>
                     {this.state.error &&
-                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
+                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>{this.state.errorMessage}</bold></div>
                     }
                     <input className='form-control' placeholder='Enter bot name here'
                       value={this.state.name} onChange={(e) => this.updateName(e)} />
@@ -429,9 +435,6 @@ class Bot extends React.Component {
                 <br />
                 <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>To continue, first verify it's you</label>
-                    {this.state.error &&
-                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
-                    }
                     <input className='form-control' type='password' placeholder='Enter password here'
                       value={this.state.password} onChange={this.onPasswordChange}/>
                   </div>
