@@ -83,8 +83,8 @@ componentDidMount () {
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
       'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal} portalId= {this.state.portalId}/>),
-      'Get_Contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>),
-      'Create/Update_Contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>)
+      'get_contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>),
+      'insert_update_contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>)
 
     }
     return modals[this.state.hubspotAction]
@@ -101,11 +101,11 @@ componentDidMount () {
       }
     })
     let title = hubspotAction === 'submit_form' ? 'Submit data to a form'
-          : hubspotAction === 'Create/Update_Contact' ? 'Create/Update Contact Properties'
-          : hubspotAction === 'Get_Contact' ? 'Get Contact Properties' : ''
+          : hubspotAction === 'insert_update_contact' ? 'Create/Update Contact Properties'
+          : hubspotAction === 'get_contact' ? 'Get Contact Properties' : ''
     let description = hubspotAction === 'submit_form' ? 'Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.'
-          : hubspotAction === 'Create/Update_Contact' ? 'Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.'
-          : hubspotAction === 'Get_Contact' ? 'Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.' : ''
+          : hubspotAction === 'insert_update_contact' ? 'Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.'
+          : hubspotAction === 'get_contact' ? 'Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.' : ''
     console.log('title value', title)
     console.log('description value', description)
     this.setState({title: title, description: description})
@@ -134,13 +134,13 @@ componentDidMount () {
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Create/Update_Contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+              onClick={() => this.updateHubspotAction('insert_update_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Create/Update Contact Properties</h6>
               <span style={{color: '#676c7b'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
             </div>
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('Get_Contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+              onClick={() => this.updateHubspotAction('get_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Get Contact Properties</h6>
             <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
           </div>
