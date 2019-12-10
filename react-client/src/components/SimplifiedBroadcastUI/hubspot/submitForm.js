@@ -117,7 +117,7 @@ class submitForm extends React.Component {
           content.push(
             <div>
             <div className='row'>
-              <div className='col-6' style={{display: 'inherit'}}>
+              <div className='col-6' style={{display: 'inherit', paddingRight: i === 0 ? 'none' : '22px'}}>
                 <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1', display: 'inline-block'}} onChange={(e) => this.updateMappingData(e, i)}>
                   <option key='' value='' disabled>Select a Field...</option>
                   <optgroup label='System Fields'>
