@@ -63,7 +63,7 @@ class PostResult extends React.Component {
       var analytics = {}
       if (this.props.currentPost) {
         analytics = {
-          'Page': this.state.pageName,
+          'Page': this.state.page.pageName,
           'Title': this.props.currentPost.title,
           'Type': this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
           'Date Created': handleDate(this.props.currentPost.datetime),
