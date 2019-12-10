@@ -53,7 +53,6 @@ class MessengerCode extends React.Component {
   }
 
   displayData(n, messengerCodes) {
-    console.log('in displayData', messengerCodes)
     let offset = n * 10
     let data = []
     let limit
@@ -91,7 +90,6 @@ class MessengerCode extends React.Component {
   }
 
   changePage(e) {
-    console.log('e.target.value', e.target.value)
     this.setState({ pageSelected: e.target.value })
     this.props.resetState()
     var edit = {
@@ -104,7 +102,6 @@ class MessengerCode extends React.Component {
   }
 
   gotoCreate() {
-    console.log('this.props.messengerCode', this.props.messengerCode)
     this.props.history.push({
       pathname: `/createMessengerCode`,
       state: { module: 'createMessage', messengerCode: this.props.messengerCode }
@@ -142,7 +139,6 @@ class MessengerCode extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextprops', nextProps)
     // if (nextProps.pages) {
     //   // this.setState({
     //   //   pageSelected: nextProps.pages[0]
@@ -166,18 +162,14 @@ class MessengerCode extends React.Component {
   }
 
   updateAllowedPages(pages, messengerCodes) {
-    console.log('messengerCodes got', messengerCodes)
-    console.log('pages got', pages)
     var temp = pages.filter((page) => {
       for (let i = 0; i < messengerCodes.length; i++) {
-        // console.log('Comparing the two', bots[i].pageId._id, page._id, bots[i].pageId._id === page._id)
         if (messengerCodes[i].pageId._id === page._id) {
           return false
         }
       }
       return true
     })
-    console.log('Updating the allowed pages', temp)
     this.setState({ pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : ''  })
     if (temp.length > 0) {
       var edit = {
@@ -191,7 +183,6 @@ class MessengerCode extends React.Component {
   }
 
   render() {
-    console.log('this.state.pageSelected', this.state.pageSelected)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -446,7 +437,6 @@ class MessengerCode extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     messengerCodes: (state.messengerCodeInfo.messengerCodes),
