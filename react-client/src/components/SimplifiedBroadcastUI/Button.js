@@ -145,6 +145,16 @@ class Button extends React.Component {
           openGoogleSheets: true, openCreateMessage: false
         })
       }
+      else if (buttonPayload.hubspotAction) {
+        this.setState({
+          mapping: buttonPayload.mapping,
+          hubspotAction: buttonPayload.googleSheetAction,
+          portalId: buttonPayload.portalId,
+          identityFieldValue: buttonPayload.identityFieldValue, 
+          openHubspot: true,
+          openCreateMessage: false
+        })
+      }
     }
   }
 

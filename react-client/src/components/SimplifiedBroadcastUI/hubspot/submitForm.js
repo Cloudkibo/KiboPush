@@ -54,10 +54,10 @@ class submitForm extends React.Component {
     save () {
       console.log('hubspotFormValue in this.save', this.state.hubspotFormValue)
       console.log('mappingData in this.save', this.state.mappingData)
-      if (this.state.hubspotFormValue === '' ) {
-        this.msg.error('Please fill all the required fields')
-      } else {
+      if (this.state.mappingData[0].customFieldColumn || this.state.mappingData[0].kiboPushColumn) {
         this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
+      } else {
+        this.msg.error('Please fill all the required fields')
       }
     }
 
@@ -117,8 +117,8 @@ class submitForm extends React.Component {
           content.push(
             <div>
             <div className='row'>
-              <div className='col-6'>
-                <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingData(e, i)}>
+              <div className='col-6' style={{display: 'inherit'}}>
+                <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1', display: 'inline-block'}} onChange={(e) => this.updateMappingData(e, i)}>
                   <option key='' value='' disabled>Select a Field...</option>
                   <optgroup label='System Fields'>
                     {kiboPushColumns.map((kibopush, i) => (
@@ -135,6 +135,9 @@ class submitForm extends React.Component {
                   </optgroup>
                   }
                   </select>
+                  { i === 0 &&
+                  <span style={{ color: 'red' }}> * </span>
+                  }
               </div>
               <div className='col-1'>
                 <center>
@@ -154,7 +157,7 @@ class submitForm extends React.Component {
     render () {
       var alertOptions = {
         offset: 14,
-        position: 'bottom right',
+        position: 'top right',
         theme: 'dark',
         time: 5000,
         transition: 'scale'
