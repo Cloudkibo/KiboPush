@@ -17,7 +17,10 @@ class ViewMessage extends React.Component {
   console.log('this.props.payload.jsonAdMessages', this.props.payload.jsonAdMessages)
   console.log('this.props.payload.jsonAdMessages.length', this.props.payload.jsonAdMessages.length)
 } */
-
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    let payload = (nextProps.payload && nextProps.payload.jsonAdMessages && nextProps.payload.jsonAdMessages.length !== 0) ? nextProps.payload.jsonAdMessages[0].messageContent : nextProps.payload
+    this.setState({payload: payload})
+  }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)

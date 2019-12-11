@@ -181,7 +181,7 @@ class WaitingReplyList extends React.Component {
                                 <div className='m-form__control'>
                                   <select className='custom-select' id='m_form_status' style={{width: '200px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.onGenderChange}>
                                     <option key='' value='' disabled>Filter by Gender...</option>
-                                    <option key='ALL' value=''>All</option>
+                                    <option key='' value=''>All</option>
                                     <option key='male' value='male'>Male</option>
                                     <option key='female' value='female'>Female</option>
                                     <option key='other' value='other'>Other</option>
@@ -198,7 +198,7 @@ class WaitingReplyList extends React.Component {
                                 <div className='m-form__control'>
                                   <select className='custom-select' id='m_form_type' style={{width: '200px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.onPageChange}>
                                     <option key='' value='' disabled>Filter by Page...</option>
-                                    <option key='ALL' value=''>ALL</option>
+                                    <option key='' value=''>ALL</option>
                                     {
                                       this.props.pages.map((page, i) => (
                                         <option key={i} value={page.pageId}>{page.pageName}</option>
