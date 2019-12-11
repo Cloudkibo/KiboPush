@@ -29,6 +29,7 @@ class MessengerCode extends React.Component {
       codetoDelete: '',
       pages: []
     }
+    console.log('in constructor of messenger code')
     props.loadMyPagesList()
     props.resetState()
     this.showCreateDialog = this.showCreateDialog.bind(this)
@@ -96,7 +97,11 @@ class MessengerCode extends React.Component {
     var edit = {
       page_id: e.target.value,
       pageId: e.target.value,
-      optInMessage: this.props.messengerCode.optInMessage,
+      optInMessage: [{
+        id: new Date().getTime(),
+        text: 'Welcome! Thank you for subscribing. The next post is coming soon, stay tuned!\nP.S. If you ever want to unsubscribe just type "stop".',
+        componentType: 'text'
+      }],
       QRCode: this.props.messengerCode.QRCode
     }
     this.props.requestMessengerCode(edit)
@@ -133,7 +138,11 @@ class MessengerCode extends React.Component {
     var edit = {
       page_id: this.props.pages[0]._id,
       pageId: this.props.pages[0].pageId,
-      optInMessage: this.props.messengerCode.optInMessage,
+      optInMessage: [{
+        id: new Date().getTime(),
+        text: 'Welcome! Thank you for subscribing. The next post is coming soon, stay tuned!\nP.S. If you ever want to unsubscribe just type "stop".',
+        componentType: 'text'
+      }],
       QRCode: this.props.messengerCode.QRCode
     }
     this.props.requestMessengerCode(edit)
@@ -176,7 +185,11 @@ class MessengerCode extends React.Component {
       var edit = {
         page_id: temp[0]._id,
         pageId: temp[0]._id,
-        optInMessage: this.props.messengerCode.optInMessage,
+        optInMessage: [{
+          id: new Date().getTime(),
+          text: 'Welcome! Thank you for subscribing. The next post is coming soon, stay tuned!\nP.S. If you ever want to unsubscribe just type "stop".',
+          componentType: 'text'
+        }],
         QRCode: this.props.messengerCode.QRCode
       }
       this.props.requestMessengerCode(edit)
