@@ -30,6 +30,7 @@ class MessengerCode extends React.Component {
       pages: []
     }
     props.loadMyPagesList()
+    props.resetState()
     this.showCreateDialog = this.showCreateDialog.bind(this)
     this.closeCreateDialog = this.closeCreateDialog.bind(this)
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
