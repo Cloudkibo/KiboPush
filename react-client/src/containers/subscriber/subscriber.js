@@ -1480,7 +1480,7 @@ class Subscriber extends React.Component {
                                       <option key='ALL' value='all'>ALL</option>
                                       {
                                         this.props.locales && this.props.locales.map((locale, i) => (
-                                          <option key={i} value={locale}>{locale}</option>
+                                          <option key={i} value={locale.value}>{locale.text}</option>
                                         ))
                                       }
                                     </select>{/* </div> */}
@@ -2129,16 +2129,16 @@ class Subscriber extends React.Component {
                               <div>
                                 <div className='row'>
                                   <span style={{ fontWeight: 600, marginLeft: '15px', marginTop: '15px' }}>Web Chat Plugin Information:</span>
-            
+
                                 </div>
                                 {
-                                  this.state.subscriber.siteInfo ? 
+                                  this.state.subscriber.siteInfo ?
                                   <div>
                                     <span>This is the information captured when a customer sends a message from the chat plugin installed on your website</span>
                                     <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
                                       <span><strong>Page Title</strong>: {this.state.subscriber.siteInfo.pageTitle}</span>
                                     </div>
-                                
+
                                     <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
                                       <span><strong>Page URL</strong>: {this.state.subscriber.siteInfo.fullUrl}</span>
                                     </div>
