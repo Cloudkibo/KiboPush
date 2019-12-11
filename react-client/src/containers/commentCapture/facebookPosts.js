@@ -416,7 +416,7 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Comments</span>
+                            <span style={{width: '100px'}}>User Comments</span>
                           </th>
                           <th data-field='conversions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
