@@ -11,7 +11,7 @@ export function botIntentsList(data) {
 
 export function loadBotIntents(botId) {
     return (dispatch) => {
-        callApi('intnets/query', 'post', { botId: botId })
+        callApi('intents/query', 'post', { botId: botId })
             .then(res => {
                 if (res.status === 'success') {
                     dispatch(botIntentsList(res.payload))
@@ -26,7 +26,7 @@ export function loadBotIntents(botId) {
 
 export function createIntent(data, msg, cb) {
     return (dispatch) => {
-        callApi('intent', 'post', data)
+        callApi('intents', 'post', data)
             .then(res => {
                 console.log('response from server: ', res)
                 if (res.status === 'success') {
@@ -35,7 +35,7 @@ export function createIntent(data, msg, cb) {
                 } else {
                     msg.error(res.payload)
                 }
-                cb(res.status)
+                cb(res)
             })
     }
 }
