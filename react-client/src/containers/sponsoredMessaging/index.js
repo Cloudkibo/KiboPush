@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
-import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 // import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -30,6 +29,7 @@ class sponsoredMessaging extends React.Component {
       this.showDialogDelete = this.showDialogDelete.bind(this)
       this.onEdit = this.onEdit.bind(this)
       this.gotoCreate = this.gotoCreate.bind(this)
+      this.onInsights = this.onInsights.bind(this)
   }
 
   componentDidMount () {
@@ -62,6 +62,13 @@ class sponsoredMessaging extends React.Component {
     this.props.history.push({
       pathname: '/editSponsoredMessage',
       state: {module: 'edit', sponsoredMessage: sponsoredMessage}
+    })
+  }
+
+  onInsights (sponsoredMessage) {
+    this.props.history.push({
+      pathname:'/sponsoredMessagingInsights',
+      state: {sponsoredMessage: sponsoredMessage}
     })
   }
 
@@ -209,9 +216,9 @@ class sponsoredMessaging extends React.Component {
                             </td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '290px'}}>
-                                <Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} to='/sponsoredMessagingInsights'>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
                                     Insights
-                                </ Link>
+                                </ button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                     Edit
                                 </button>

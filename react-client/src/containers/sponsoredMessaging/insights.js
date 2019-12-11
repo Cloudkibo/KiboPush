@@ -8,12 +8,20 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
+import {getInsights} from '../../redux/actions/sponsoredMessaging.actions'
+
 
 class adInsights extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
   }
+
+    this.props.getInsights(this.props.location.state.sponsoredMessage.ad_id)
+}
+
+componentDidMount () {
+  console.log('state in insights', this.props.location.state.sponsoredMessage)
 }
 
   render () {
@@ -145,6 +153,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    getInsights,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(adInsights)
