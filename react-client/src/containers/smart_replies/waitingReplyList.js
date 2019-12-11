@@ -301,7 +301,7 @@ class WaitingReplyList extends React.Component {
                                   <option key='ALL' value=''>ALL</option>
                                   {
                                     this.props.locales && this.props.locales.map((locale, i) => (
-                                      <option key={i} value={locale}>{locale}</option>
+                                      <option key={i} value={locale.value}>{locale.text}</option>
                                     ))
                                   }
                                 </select>
