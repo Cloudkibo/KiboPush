@@ -104,7 +104,6 @@ class PostResult extends React.Component {
         if ((!comments[i].parentId) || comments[i].parentId === '') {
           var commentObj = {}
           var contentComment = []
-          commentObj['Comment Id'] = comments[i]._id
           commentObj['Sender Name'] = comments[i].senderName
           commentObj['Replies Count'] = comments[i].childCommentCount
           commentObj['Facebook Link'] = comments[i].postFbLink
@@ -118,14 +117,13 @@ class PostResult extends React.Component {
           }
           commentObj['Comment'] = contentComment.join(' ')
           commentObj['Reply for Comment'] = ''
-          commentObj['Created Date'] = comments[i].datetime
+          commentObj['Created Date'] = handleDate(comments[i].datetime)
           payload.push(commentObj)
           if (comments[i].childCommentCount > 0) {
             for(var r = 0; r < comments.length; r++) {
               if (comments[i]._id === comments[r].parentId) {
                 var replyObj = {}
                 var contentReply = []
-                replyObj['Comment Id'] = comments[r]._id
                 replyObj['Sender Name'] = comments[r].senderName
                 replyObj['Replies Count'] = comments[r].childCommentCount
                 replyObj['Facebook Link'] = comments[r].postFbLink
@@ -139,7 +137,7 @@ class PostResult extends React.Component {
                 }
                 replyObj['Comment'] = contentReply.join(' ')
                 replyObj['Reply for Comment'] = contentComment.join(' ')
-                replyObj['Created Date'] = comments[r].datetime
+                replyObj['Created Date'] = handleDate(comments[r].datetime)
                 payload.push(replyObj)
               }
             }
