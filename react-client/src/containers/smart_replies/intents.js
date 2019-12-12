@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { editBot } from '../../redux/actions/smart_replies.actions'
-import { loadBotIntents, createIntent, updateIntent, trainBot } from '../../redux/actions/smart_replies_intents.actions'
+import { loadBotIntents, createIntent, updateIntent, trainBot, deleteIntnet } from '../../redux/actions/smart_replies_intents.actions'
 
 
 class Intents extends React.Component {
@@ -24,6 +24,7 @@ class Intents extends React.Component {
       gcpProjectId: '',
       // intents state
       newIntentName: '',
+      renameIntent: '',
       intents: [],
       currentIntent: null,
       //other state
@@ -45,36 +46,85 @@ class Intents extends React.Component {
     this.newIntentName = this.newIntentName.bind(this)
     this.updateIntent = this.updateIntent.bind(this)
     this.clickIntent = this.clickIntent.bind(this)
+    this.deleteIntnet = this.deleteIntnet.bind(this)
+    this.updateIntentName = this.updateIntentName.bind(this)
+    this.renameIntent = this.renameIntent.bind(this)
+    this.setAnswer = this.setAnswer.bind(this)
+    this.handleSetAnswerChange = this.handleSetAnswerChange.bind(this)
   }
 
-  clickIntent(intent, index) {
-    for (let a = 0; a < this.state.intents.length; a++) {
-      if(index !== a) {
-        document.getElementById(`collapse_${a}`).classList.remove("show")
-      }
+  setAnswer () {
+    this.props.history.push({
+      pathname: `/setAnswer`,
+      state: {page: this.state.page}
+    })
+  }
+
+  handleSetAnswerChange (message) {
+    let intent = this.state.currentIntent
+    intent.answers = message
+    this.setState({ currentIntent: intent })
+  }
+
+  renameIntent(e) {
+    this.setState({ renameIntent: e.target.value })
+  }
+
+  updateIntentName() {
+    let data = {
+      botId: this.state.id,
+      intentId: this.state.currentIntent._id,
+      name: this.state.renameIntent
     }
+    this.props.updateIntent(data, this.msg)
+  }
 
-    let temp = JSON.parse(JSON.stringify(intent))
-    this.setState({ currentIntent: temp })
+  clickIntent(intent, index, state) {
+    if (state === 'edit') {
+      let temp = JSON.parse(JSON.stringify(intent))
+      this.setState({ currentIntent: temp, renameIntent: temp.name })
+      this.refs.renameIntent.click()
+    } else {
+      for (let a = 0; a < this.state.intents.length; a++) {
+        if (this.state.intents[a]._id !== intent._id) {
+          document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
+        }
+      }
 
-    // warning modal when unsaved changes
-    // if (this.state.currentIntent) {
-    //   let tempIntent = this.props.botIntents.filter((intent) => intent._id === this.state.currentIntent._id)[0]
-    //   if (JSON.stringify(tempIntent.questions) !== JSON.stringify(this.state.currentIntent.questions)) {
-    //     console.log('true')
-    //   }
-    // }
+      let temp = JSON.parse(JSON.stringify(intent))
+      this.setState({ currentIntent: temp })
 
+      // warning modal when unsaved changes
+      // if (this.state.currentIntent) {
+      //   let tempIntent = this.props.botIntents.filter((intent) => intent._id === this.state.currentIntent._id)[0]
+      //   if (JSON.stringify(tempIntent.questions) !== JSON.stringify(this.state.currentIntent.questions)) {
+      //     console.log('true')
+      //   }
+      // }
+
+    }
+  }
+
+  deleteIntnet() {
+    console.log(this.state.currentIntent)
+    let data = {
+      intentId: this.state.currentIntent._id,
+      gcpPojectId: this.state.gcpProjectId,
+      dialogflowIntentId: this.state.currentIntent.dialogflowIntentId
+    }
+    this.props.deleteIntnet(data, this.state.id, this.msg)
+    this.setState({ currentIntent: null })
+    document.getElementById(`collapse_${this.state.intents[0]._id}`).classList.remove("show")
   }
 
   updateIntent() {
-    
+
     console.log(this.state.currentIntent)
     let data = {
       intentId: this.state.currentIntent._id,
       name: this.state.currentIntent.name,
       questions: this.state.currentIntent.questions,
-      answer: [{ componentType: "text", text: "Test broadcast"}],
+      answer: [{ componentType: "text", text: "Test broadcast" }],
       gcpPojectId: this.state.gcpProjectId,
       dialogflowIntentId: this.state.currentIntent.dialogflowIntentId
     }
@@ -161,9 +211,13 @@ class Intents extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.botIntents && nextProps.botIntents.length > 0) {
+    if (nextProps.botIntents) {
       let temp = JSON.parse(JSON.stringify(nextProps.botIntents))
       this.setState({ intents: temp })
+      if (this.state.currentIntent) {
+        let tempIntent = nextProps.botIntents.filter((intent) => intent._id === this.state.currentIntent._id)[0]
+        this.setState({ currentIntent: tempIntent })
+      }
     }
   }
 
@@ -201,6 +255,7 @@ class Intents extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log(this.state)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -221,12 +276,15 @@ class Intents extends React.Component {
               <div style={{ color: 'black' }} className="modal-body">
                 <input
                   style={{ maxWidth: '380px', float: 'left', margin: 2 }}
+                  onChange={this.renameIntent}
+                  value={this.state.renameIntent}
                   type='text'
                   className='form-control' />
                 <button
                   style={{ float: 'left', margin: 2 }}
+                  onClick={this.updateIntentName}
                   className='btn btn-primary'
-                  type='button'>
+                  type='button' data-dismiss='modal'>
                   Save
                 </button>
               </div>
@@ -252,7 +310,6 @@ class Intents extends React.Component {
                   style={{ maxWidth: '380px', float: 'left', margin: 2 }}
                   onChange={this.renameBot}
                   value={this.state.renameBot}
-                  placeholder={this.state.botName}
                   type='text'
                   className='form-control' />
                 <button
@@ -285,6 +342,7 @@ class Intents extends React.Component {
                   style={{ maxWidth: '367px', float: 'left', margin: 2 }}
                   type='text'
                   className='form-control'
+                  value={this.state.newIntentName}
                   onChange={this.newIntentName} />
                 <button
                   style={{ float: 'left', margin: 2 }}
@@ -292,6 +350,34 @@ class Intents extends React.Component {
                   type='button'
                   onClick={this.createNewIntent}>
                   Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Warning
+								</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Are you sure you want to delete this intent?</p>
+                <button style={{ float: 'right', marginLeft: '10px' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={this.deleteIntnet}
+                  data-dismiss='modal'>Yes
+                </button>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  data-dismiss='modal'>Cancel
                 </button>
               </div>
             </div>
@@ -346,25 +432,26 @@ class Intents extends React.Component {
 
                         <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
                           {this.state.intents && this.state.intents.map((intent, i) =>
-                            <div key={i} className='accordion' id={`accordion${i}`}>
+                            <div key={i} className='accordion' id={`accordion${intent._id}`}>
                               <div className='card'>
-                                <div className='card-header' id={`heading${i}`}>
+                                <div className='card-header' id={`heading${intent._id}`}>
                                   <h4 className='mb-0'>
                                     <a
+                                      href='#/'
                                       className='btn btn-link'
                                       data-toggle='collapse'
-                                      data-target={`#collapse_${i}`}
+                                      data-target={`#collapse_${intent._id}`}
                                       aria-expanded="true"
-                                      aria-controls={`#collapse_${i}`}
+                                      aria-controls={`#collapse_${intent._id}`}
                                       onClick={() => this.clickIntent(intent, i)}>
                                       {intent.name}
-                                      <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
-                                        style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
-                                        data-toggle='modal' data-target='#renameIntent'></i>
                                     </a>
+                                    <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
+                                      style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
+                                      onClick={() => this.clickIntent(intent, i, 'edit')}></i>
                                   </h4>
                                 </div>
-                                <div id={`collapse_${i}`} className='collapse' aria-labelledby={`heading${i}`} data-parent="#accordion">
+                                <div id={`collapse_${intent._id}`} className='collapse' aria-labelledby={`heading${intent._id}`} data-parent="#accordion">
                                   <div className='card-body'>
                                     <p>Enter several variations of same  question to train the bot.</p>
                                     {this.state.currentIntent &&
@@ -405,7 +492,8 @@ class Intents extends React.Component {
                                         <div className="col-md-4 col-lg-4 col-xl-4" style={{ textAlign: 'center' }}>
                                           <button
                                             className="btn btn btn-primary m-btn m-btn--icon"
-                                            style={{ position: 'relative', top: '50%' }}>
+                                            style={{ position: 'relative', top: '50%' }}
+                                            onClick={this.setAnswer}>
                                             <span>
                                               <i className="la la-plus"></i>
                                               <span>
@@ -417,7 +505,11 @@ class Intents extends React.Component {
                                         <div className="col-md-12 col-lg-12 col-xl-12"
                                           style={{ textAlign: 'right', margin: '20px 0px 10px -10px' }}>
                                           <button
-                                            className="btn btn btn-secondary" style={{ marginRight: '10px' }}>
+                                            className="btn btn btn-secondary"
+                                            style={{ marginRight: '10px' }}
+                                            data-target='#delete'
+                                            data-toggle='modal'
+                                          >
                                             Delete
                                           </button>
                                           <button
@@ -471,7 +563,8 @@ function mapDispatchToProps(dispatch) {
       loadBotIntents: loadBotIntents,
       createIntent: createIntent,
       updateIntent: updateIntent,
-      trainBot: trainBot
+      trainBot: trainBot,
+      deleteIntnet: deleteIntnet
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Intents)

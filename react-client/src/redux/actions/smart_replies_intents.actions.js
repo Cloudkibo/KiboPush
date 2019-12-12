@@ -13,6 +13,7 @@ export function loadBotIntents(botId) {
     return (dispatch) => {
         callApi('intents/query', 'post', { botId: botId })
             .then(res => {
+                console.log('load all bot Intents', res.payload)
                 if (res.status === 'success') {
                     dispatch(botIntentsList(res.payload))
                 } else {
@@ -40,7 +41,7 @@ export function createIntent(data, msg, cb) {
     }
 }
 
-export function updateIntent(data, msg, cb) {
+export function updateIntent(data, msg) {
     return (dispatch) => {
         callApi('intents/update', 'post', data)
             .then(res => {
@@ -51,24 +52,21 @@ export function updateIntent(data, msg, cb) {
                 } else {
                     msg.error(res.payload)
                 }
-                cb(res.status)
             })
     }
 }
 
-export function deleteIntnet (id, password, msg, cb) {
+export function deleteIntnet (intnentData, botId, msg) {
     return (dispatch) => {
-      callApi('intents/delete', 'post', {intentId: id})
+      callApi('intents/delete', 'post', intnentData)
         .then(res => {
-          console.log('response from delete Intent', res)
           if (res.status === 'success') {
-            dispatch(loadBotIntents(id))
-            msg.success('Intent deleted successfully')
+            dispatch(loadBotIntents(botId))
+            msg.success(res.payload)
           }
            else {
             msg.error(res.payload)
            }
-           cb(res.status)
         })
     }
   }
