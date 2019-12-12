@@ -117,7 +117,7 @@ class PostResult extends React.Component {
           }
           commentObj['Comment'] = contentComment.join(' ')
           commentObj['Reply for Comment'] = ''
-          commentObj['Created Date'] = handleDate(comments[i].datetime)
+          commentObj['Created Date'] = comments[i].datetime
           payload.push(commentObj)
           if (comments[i].childCommentCount > 0) {
             for(var r = 0; r < comments.length; r++) {
