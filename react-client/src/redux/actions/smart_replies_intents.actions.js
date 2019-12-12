@@ -11,7 +11,7 @@ export function botIntentsList(data) {
 
 export function loadBotIntents(botId) {
     return (dispatch) => {
-        callApi('intnets/query', 'post', { botId: botId })
+        callApi('intents/query', 'post', { botId: botId })
             .then(res => {
                 if (res.status === 'success') {
                     dispatch(botIntentsList(res.payload))
@@ -26,7 +26,7 @@ export function loadBotIntents(botId) {
 
 export function createIntent(data, msg, cb) {
     return (dispatch) => {
-        callApi('intent', 'post', data)
+        callApi('intents', 'post', data)
             .then(res => {
                 console.log('response from server: ', res)
                 if (res.status === 'success') {
@@ -35,14 +35,14 @@ export function createIntent(data, msg, cb) {
                 } else {
                     msg.error(res.payload)
                 }
-                cb(res.status)
+                cb(res)
             })
     }
 }
 
-export function editIntent(data, msg, cb) {
+export function updateIntent(data, msg, cb) {
     return (dispatch) => {
-        callApi('intent/edit', 'post', data)
+        callApi('intents/update', 'post', data)
             .then(res => {
                 console.log('response from server: ', res)
                 if (res.status === 'success') {
@@ -58,7 +58,7 @@ export function editIntent(data, msg, cb) {
 
 export function deleteIntnet (id, password, msg, cb) {
     return (dispatch) => {
-      callApi('intent/delete', 'post', {intentId: id})
+      callApi('intents/delete', 'post', {intentId: id})
         .then(res => {
           console.log('response from delete Intent', res)
           if (res.status === 'success') {
@@ -69,6 +69,22 @@ export function deleteIntnet (id, password, msg, cb) {
             msg.error(res.payload)
            }
            cb(res.status)
+        })
+    }
+  }
+
+  export function trainBot (intentData, botID, msg) {
+    return (dispatch) => {
+      callApi('bots/trainBot', 'post', intentData)
+        .then(res => {
+          console.log('response from trainbot', res)
+          if (res.status === 'success') {
+            dispatch(loadBotIntents(botID))
+            msg.success('Bot trained successfully')
+          }
+           else {
+            msg.error(res.payload)
+           }
         })
     }
   }

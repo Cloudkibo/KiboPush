@@ -4,7 +4,7 @@ import CardBoxesContainer from './CardBoxesContainer'
 import Comments from './comments'
 import GlobalPosts from './globalPosts'
 import { handleDate } from '../../utility/utils'
-import {fetchComments , fetchExportCommentsData, fetchPostContent, fetchPosts } from '../../redux/actions/commentCapture.actions'
+import {fetchComments , fetchExportCommentsData, fetchPostContent, fetchPosts, resetSearchResult } from '../../redux/actions/commentCapture.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
@@ -52,6 +52,7 @@ class PostResult extends React.Component {
     }
 
     toggleOffCanvas () {
+      this.props.resetSearchResult(null)
       this.setState({
         showOffCanvas: !this.state.showOffCanvas
       })
@@ -62,7 +63,7 @@ class PostResult extends React.Component {
       var analytics = {}
       if (this.props.currentPost) {
         analytics = {
-          'Page': this.state.pageName,
+          'Page': this.state.page.pageName,
           'Title': this.props.currentPost.title,
           'Type': this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
           'Date Created': handleDate(this.props.currentPost.datetime),
@@ -100,24 +101,50 @@ class PostResult extends React.Component {
     prepareExportComments (comments) {
       var payload = []
       for(var i = 0; i < comments.length; i++) {
-        var commentObj = {}
-        var content = []
-        commentObj['Comment Id'] = comments[i]._id
-        commentObj['Sender Name'] = comments[i].senderName
-        commentObj['Replies Count'] = comments[i].childCommentCount
-        commentObj['Facebook Link'] = comments[i].postFbLink
-  
-        for(var j=0; j < comments[i].commentPayload.length; j++) {
-          if (comments[i].commentPayload[j].componentType === 'text') {
-            content.push(comments[i].commentPayload[j].text)
-          } else {
-            content.push(comments[i].commentPayload[j].url)
+        if ((!comments[i].parentId) || comments[i].parentId === '') {
+          var commentObj = {}
+          var contentComment = []
+          commentObj['Comment Id'] = comments[i]._id
+          commentObj['Sender Name'] = comments[i].senderName
+          commentObj['Replies Count'] = comments[i].childCommentCount
+          commentObj['Facebook Link'] = comments[i].postFbLink
+    
+          for(var j=0; j < comments[i].commentPayload.length; j++) {
+            if (comments[i].commentPayload[j].componentType === 'text') {
+              contentComment.push(comments[i].commentPayload[j].text)
+            } else {
+              contentComment.push(comments[i].commentPayload[j].url)
+            }
+          }
+          commentObj['Comment'] = contentComment.join(' ')
+          commentObj['Reply for Comment'] = ''
+          commentObj['Created Date'] = comments[i].datetime
+          payload.push(commentObj)
+          if (comments[i].childCommentCount > 0) {
+            for(var r = 0; r < comments.length; r++) {
+              if (comments[i]._id === comments[r].parentId) {
+                var replyObj = {}
+                var contentReply = []
+                replyObj['Comment Id'] = comments[r]._id
+                replyObj['Sender Name'] = comments[r].senderName
+                replyObj['Replies Count'] = comments[r].childCommentCount
+                replyObj['Facebook Link'] = comments[r].postFbLink
+          
+                for(var k=0; k < comments[r].commentPayload.length; k++) {
+                  if (comments[r].commentPayload[k].componentType === 'text') {
+                    contentReply.push(comments[r].commentPayload[k].text)
+                  } else {
+                    contentReply.push(comments[r].commentPayload[k].url)
+                  }
+                }
+                replyObj['Comment'] = contentReply.join(' ')
+                replyObj['Reply for Comment'] = contentComment.join(' ')
+                replyObj['Created Date'] = comments[r].datetime
+                payload.push(replyObj)
+              }
+            }
           }
         }
-        commentObj['Comment'] = content
-        commentObj['Reply for Comment(Id)'] = comments[i].parentId
-        commentObj['Created Date'] = comments[i].datetime
-        payload.push(commentObj)
       }
       return payload
     }
@@ -132,7 +159,7 @@ class PostResult extends React.Component {
         var subKey = j
         keys.push(subKey)
       }
-      json2csv({ data: data, fields: keys, unwindPath: ['Comment']}, function (err, csv) {
+      json2csv({ data: data, fields: keys}, function (err, csv) {
         if (err) {
         } else {
           console.log('call file download function')
@@ -340,6 +367,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
 	  fetchPosts: fetchPosts,
       fetchComments: fetchComments,
+      resetSearchResult: resetSearchResult,
 	  fetchExportCommentsData: fetchExportCommentsData,
 	  fetchPostContent: fetchPostContent
         }, dispatch)

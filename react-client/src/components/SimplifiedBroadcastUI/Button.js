@@ -50,7 +50,7 @@ class Button extends React.Component {
       mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
       hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.formId : '',
       portalId: this.props.button && this.props.button.payload ? this.props.button.payload.portalId : '',
-      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityFieldValue : ''
+      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityCustomFieldValue : ''
     }
     props.fetchAllSequence()
     props.getIntegrations()
@@ -117,7 +117,7 @@ class Button extends React.Component {
       formId: hubSpotFormPayload.hubSpotForm,
       mapping: hubSpotFormPayload.mapping,
       portalId: hubSpotFormPayload.portalId,
-      identityFieldValue: hubSpotFormPayload.identityFieldValue,
+      identityCustomFieldValue: hubSpotFormPayload.identityFieldValue,
       index: this.props.index
     }
     if ((hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.hubSpotForm !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '') || (hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.identityFieldValue !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '')) {
@@ -143,6 +143,16 @@ class Button extends React.Component {
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
           openGoogleSheets: true, openCreateMessage: false
+        })
+      }
+      else if (buttonPayload.hubspotAction) {
+        this.setState({
+          mapping: buttonPayload.mapping,
+          hubspotAction: buttonPayload.googleSheetAction,
+          portalId: buttonPayload.portalId,
+          identityFieldValue: buttonPayload.identityCustomFieldValue, 
+          openHubspot: true,
+          openCreateMessage: false
         })
       }
     }

@@ -34,6 +34,7 @@ class FilterComment extends React.Component {
       this.handleText = this.handleText.bind(this)
       this.onTestURLVideo = this.onTestURLVideo.bind(this)
       this.loadMore = this.loadMore.bind(this)
+      this.validDateRange = this.validDateRange.bind(this)
     }
     onTestURLVideo (url) {
       var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
@@ -54,11 +55,7 @@ class FilterComment extends React.Component {
     } 
     validDateRange (startDate, endDate) {
       var valid = false
-      if (startDate === '' && endDate === '') {
-         this.setState({
-          dateRangeWarning: 'Select start and end date'
-        })
-      } else if (startDate === '' && endDate !== '') {
+      if (startDate === '' && endDate !== '') {
         this.setState({
           dateRangeWarning: 'Select start date to apply filter'
         })
@@ -83,28 +80,37 @@ class FilterComment extends React.Component {
     }
     changeDateFrom (e) {
       this.setState({
-        startDate: e.target.value
+        startDate: e.target.value,
+        dateRangeWarning: ''
       })
     }
     changeDateTo (e) {
       this.setState({
-        endDate: e.target.value
+        endDate: e.target.value,
+        dateRangeWarning: ''
       })
     }
     applyFilter () {
       this.props.resetSearchResult(null)
-      if (this.validDateRange(this.state.startDate, this.state.endDate)) {
-        var data = {
-          search_value: this.state.searchKeyword,
-          startDate: this.state.startDate,
-          endDate: this.state.endDate,
-          postId: this.props.currentPost._id,
-          first_page: true,
-          number_of_records: 10,
-          sort_value: -1,
-          last_id: 'none'
-        }
+      var data = {
+        search_value: this.state.searchKeyword,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        postId: this.props.currentPost._id,
+        first_page: true,
+        number_of_records: 10,
+        sort_value: -1,
+        last_id: 'none'
+      }
+      if (this.state.searchKeyword === '' && this.state.startDate === '' && this.state.endDate === '') {
+        this.setState({
+          dateRangeWarning: 'Search keywords or select a date range to apply filter'
+        })
+      } else if (this.state.searchKeyword !== '' || this.validDateRange(this.state.startDate, this.state.endDate)) {
         this.props.searchComments(data, this.msg)
+        this.setState({
+          dateRangeWarning: ''
+        })
       } 
     }
     loadMore () {
@@ -130,7 +136,8 @@ class FilterComment extends React.Component {
     }
     searchComments (e) {
       this.setState({
-        searchKeyword: e.target.value
+        searchKeyword: e.target.value,
+        dateRangeWarning: ''
       })
     }
     render () {
@@ -219,7 +226,7 @@ class FilterComment extends React.Component {
                         </span>
                       </div>
                       <span style={{marginTop: '10px', float:'right'}}>
-                      <a style={{textDecoration: 'underline'}} target='_blank' href={`https://facebook.com/${comment.commentFbId}`}>View on Facebook</a>
+                      <a style={{textDecoration: 'underline'}} target='_blank' rel='noopener noreferrer' href={`https://facebook.com/${comment.commentFbId}`}>View on Facebook</a>
                       </span>
                     </div>
                     <Dotdotdot clamp={2}>
@@ -244,7 +251,7 @@ class FilterComment extends React.Component {
                             width='50px'
                             height='50px'
                             onPlay={this.onTestURLVideo(component.url)} />
-                          </span>
+                          </span> 
                           :component.componentType === 'sticker'
                           ?<span key={index} style={{display: 'block'}}>
                               <img alt=''  style={{width: '50px', height: '50px'}} className='m-widget3__img' src={component.url}/> 

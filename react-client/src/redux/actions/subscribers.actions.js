@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import {localeCodeToEnglish} from '../../utility/utils'
 
 export function updateSubscribersList (data) {
   console.log('Data Fetched From Subscribers', data)
@@ -32,10 +33,13 @@ export function updateSubscribersCount (data) {
 }
 
 export function updateAllLocales (data) {
-  console.log('Data Fetched From Subscribers', data)
+  let convertedData = []
+  for (let i = 0; i < data.length; i++) {
+    convertedData.push({value: data[i], text: localeCodeToEnglish(data[i])})
+  }
   return {
     type: ActionTypes.LOAD_LOCALES_LIST,
-    data
+    data: convertedData
   }
 }
 

@@ -211,7 +211,11 @@ export function searchComments (data, msg) {
   return (dispatch) => {
     callApi(`post/filterComments`, 'post', data).then(res => {
       if (res.status === 'success') {
-        dispatch(showSearchResults(res.payload))
+        if (res.payload.comments.length < 1) {
+          msg.error('No search results found')
+        } else {
+         dispatch(showSearchResults(res.payload))
+        }
       } else {
         msg.error('Unable to fetch search results')
       }

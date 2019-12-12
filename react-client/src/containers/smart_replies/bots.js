@@ -10,6 +10,7 @@ import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import YouTube from 'react-youtube'
+import { RingLoader } from 'halogenium'
 
 class Bot extends React.Component {
   constructor(props, context) {
@@ -37,7 +38,9 @@ class Bot extends React.Component {
       responded: 0,
       total: 0,
       notResponded: 0,
-      password: ''
+      password: '',
+      errorMessage: '',
+      loader: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -95,18 +98,20 @@ class Bot extends React.Component {
   }
 
   closeDialogDelete() {
+    this.setState({loader: true})
     this.props.deleteBot(this.state.deleteid, this.state.password, this.msg, this.handleResponseDelete)
     this.setState({ isShowingModalDelete: false })
   }
-  
-  handleResponseDelete (status) {
-    if(status === 'success') {
+
+  handleResponseDelete(status) {
+    if (status === 'success') {
       this.refs.delete.click()
-      this.setState({deleteid: '', password: ''})
+      this.setState({ deleteid: '', password: '' })
     }
+    this.setState({loader: false})
   }
-  onPasswordChange (e) {
-    this.setState({password: e.target.value})
+  onPasswordChange(e) {
+    this.setState({ password: e.target.value })
   }
   UNSAFE_componentWillMount() {
     // this.props.loadSubscribersList()
@@ -142,12 +147,12 @@ class Bot extends React.Component {
 
   updateName(e) {
     var name = e.target.value.replace('-', '')
-    this.setState({ name: name, error: false })
+    this.setState({ name: name, error: false, errorMessage: '' })
   }
 
-  handleFilter (search, page, status) {
+  handleFilter(search, page, status) {
     let filtered = []
-    if (search !== '' && page === '' && status === '' ) {
+    if (search !== '' && page === '' && status === '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase())) {
           filtered.push(this.props.bots[i])
@@ -160,18 +165,18 @@ class Bot extends React.Component {
     } else if (search !== '' && page !== '' && status === '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (
-            this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
-            this.props.bots[i].pageId._id === page
-          ) {
+          this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
+          this.props.bots[i].pageId._id === page
+        ) {
           filtered.push(this.props.bots[i])
         }
       }
     } else if (search !== '' && page === '' && status !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (
-            this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
-            this.props.bots[i].isActive === status
-          ) {
+          this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
+          this.props.bots[i].isActive === status
+        ) {
           filtered.push(this.props.bots[i])
         }
       }
@@ -180,10 +185,10 @@ class Bot extends React.Component {
     } else if (search !== '' && page !== '' && status !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (
-            this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
-            this.props.bots[i].isActive === status &&
-            this.props.bots[i].pageId._id === page
-          ) {
+          this.props.bots[i].botName.toLowerCase().includes(search.toLowerCase()) &&
+          this.props.bots[i].isActive === status &&
+          this.props.bots[i].pageId._id === page
+        ) {
           filtered.push(this.props.bots[i])
         }
       }
@@ -196,16 +201,16 @@ class Bot extends React.Component {
   }
   searchBot(e) {
     this.setState({ searchValue: e.target.value })
-    this.handleFilter(e.target.value, this.state.filterValue, this.state.statusFilterValue )
+    this.handleFilter(e.target.value, this.state.filterValue, this.state.statusFilterValue)
 
   }
   onFilter(e) {
     this.setState({ filterValue: e.target.value })
-    this.handleFilter(this.state.searchValue, e.target.value, this.state.statusFilterValue )
+    this.handleFilter(this.state.searchValue, e.target.value, this.state.statusFilterValue)
   }
 
   onStatusFilter(e) {
-    this.setState({statusFilterValue: e.target.value})
+    this.setState({ statusFilterValue: e.target.value })
     this.handleFilter(this.state.searchValue, this.state.filterValue, e.target.value)
   }
 
@@ -268,7 +273,7 @@ class Bot extends React.Component {
   gotoView(bot) {
     this.props.history.push({
       pathname: `/intents`,
-      state: bot
+      state: {bot}
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
@@ -299,22 +304,30 @@ class Bot extends React.Component {
   }
 
   gotoCreate() {
+    this.setState({ loader: true })
     if (this.state.name === '') {
-      this.setState({ error: true })
+      this.setState({ error: true, errorMessage: 'Please enter a name' })
+    } else if (this.state.name.length > 25) {
+      this.setState({ error: true, errorMessage: 'Name must be at most 25 charachters long' })
     } else {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
-      this.props.createBot({ botName: botName, pageId: this.state.pageSelected }, this.msg, this.handleResponseCreate)
+      this.props.createBot({
+        botName: botName,
+        pageId: this.state.pageSelected,
+      }, this.msg, this.handleResponseCreate)
     }
   }
 
-  handleResponseCreate (status) {
-    if(status === 'success') {
+  handleResponseCreate(res) {
+    if (res.status === 'success') {
       this.refs.create.click()
-       this.props.history.push({
+      this.props.history.push({
         pathname: `/intents`,
+        state: {bot: res.payload}
       })
     }
+    this.setState({loader: false})
   }
 
   render() {
@@ -325,8 +338,19 @@ class Bot extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('render', this.state.loader)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.loader
+          &&
+          <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          </div>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -375,14 +399,14 @@ class Bot extends React.Component {
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>Bot Name:</label>
                     {this.state.error &&
-                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
+                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><strong>{this.state.errorMessage}</strong></div>
                     }
                     <input className='form-control' placeholder='Enter bot name here'
                       value={this.state.name} onChange={(e) => this.updateName(e)} />
                   </div>
                   <div className='form-group m-form__group'>
                     <label className='control-label'>Assigned to Page:</label>
-                    <select className='custom-select' id='m_form_type' style={{ width: '100%', display:'block' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
+                    <select className='custom-select' id='m_form_type' style={{ width: '100%', display: 'block' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                       {
                         this.state.pages.map((page, i) => (
                           <option key={i} value={page._id}>{page.pageName}</option>
@@ -401,7 +425,7 @@ class Bot extends React.Component {
                 <br />
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
-                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}>
+                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} id="m_blockui_4_3" onClick={() => this.gotoCreate()}>
                       Create
                     </button>
                   </div>
@@ -428,13 +452,10 @@ class Bot extends React.Component {
                 <p>Deleting the bot will remove all the data related to the bot.</p>
                 <br />
                 <div id='question' className='form-group m-form__group'>
-                    <label className='control-label'>To continue, first verify it's you</label>
-                    {this.state.error &&
-                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
-                    }
-                    <input className='form-control' type='password' placeholder='Enter password here'
-                      value={this.state.password} onChange={this.onPasswordChange}/>
-                  </div>
+                  <label className='control-label'>To continue, first verify it's you</label>
+                  <input className='form-control' type='password' placeholder='Enter password here'
+                    value={this.state.password} onChange={this.onPasswordChange} />
+                </div>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   disabled={this.state.password === ''}
@@ -563,7 +584,7 @@ class Bot extends React.Component {
                     {
                       this.props.pages && this.props.pages.length === 0
                         ? <div>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={this.showDialog} >
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} >
                             <span>
                               <i className='la la-plus' />
                               <span>
@@ -623,15 +644,15 @@ class Bot extends React.Component {
                   {this.state.botsData && this.state.botsData.length > 0
                     ? <div className="m-widget5">
                       {this.state.botsData.map((bot, i) => (
-                        <div className="m-widget5__item">
-                          <div className="m-widget5__pic" onClick={() => this.gotoView(bot._id)} style={{ cursor: 'pointer' }}>
+                        <div className="m-widget5__item" key={bot._id}>
+                          <div className="m-widget5__pic" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
                             <img
                               className="m-widget7__img"
                               src={bot.pageId.pagePic}
                               alt=""
                               style={{ borderRadius: '65px', width: '68px', height: '68px' }} />
                           </div>
-                          <div className="m-widget5__content" onClick={() => this.gotoView(bot._id)} style={{ cursor: 'pointer' }}>
+                          <div className="m-widget5__content" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
                             <h4 className="m-widget5__title" style={{ marginTop: '10px' }}>
                               {bot.botName ? bot.botName.split('-').join(' ') : ''}
                             </h4>

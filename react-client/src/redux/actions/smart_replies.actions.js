@@ -121,7 +121,7 @@ export function createBot (data, msg, cb) {
         } else {
           msg.error(res.payload)
         }
-        cb(res.status)
+        cb(res)
       })
   }
 }
