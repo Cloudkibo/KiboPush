@@ -104,7 +104,6 @@ class PostResult extends React.Component {
         if ((!comments[i].parentId) || comments[i].parentId === '') {
           var commentObj = {}
           var contentComment = []
-          commentObj['Comment Id'] = comments[i]._id
           commentObj['Sender Name'] = comments[i].senderName
           commentObj['Replies Count'] = comments[i].childCommentCount
           commentObj['Facebook Link'] = comments[i].postFbLink
@@ -125,7 +124,6 @@ class PostResult extends React.Component {
               if (comments[i]._id === comments[r].parentId) {
                 var replyObj = {}
                 var contentReply = []
-                replyObj['Comment Id'] = comments[r]._id
                 replyObj['Sender Name'] = comments[r].senderName
                 replyObj['Replies Count'] = comments[r].childCommentCount
                 replyObj['Facebook Link'] = comments[r].postFbLink
