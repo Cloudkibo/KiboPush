@@ -137,7 +137,7 @@ class PostResult extends React.Component {
                 }
                 replyObj['Comment'] = contentReply.join(' ')
                 replyObj['Reply for Comment'] = contentComment.join(' ')
-                replyObj['Created Date'] = handleDate(comments[r].datetime)
+                replyObj['Created Date'] = comments[r].datetime
                 payload.push(replyObj)
               }
             }
