@@ -47,7 +47,7 @@ class GetContactForm extends React.Component {
       let mappingData = []
       let mappingDataValues = []
       for (let i = 0; i < nextProps.columns.hubSpotColumns.length; i++) {
-        mappingData.push({hubSpotColumn: nextProps.columns.hubSpotColumns[i]})
+        mappingData.push({hubspotColumn: nextProps.columns.hubSpotColumns[i]})
         mappingDataValues.push('')
       }
       console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
