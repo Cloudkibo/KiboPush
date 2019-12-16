@@ -72,6 +72,7 @@ export function deleteIntnet (intnentData, botId, msg) {
   }
 
   export function trainBot (intentData, botID, msg) {
+      console.log('intentData', intentData)
     return (dispatch) => {
       callApi('bots/trainBot', 'post', intentData)
         .then(res => {

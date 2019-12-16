@@ -25,12 +25,9 @@ class Intents extends React.Component {
       // intents state
       newIntentName: '',
       renameIntent: '',
-      intents: [],
-      currentIntent: null,
+      currentIntent: props.location.state.currentIntentData ? props.location.state.currentIntentData : null,
       //other state
-      disableRenameButton: true,
-      errorIndex: 0,
-      errorMessage: ''
+      disableRenameButton: true
     }
 
     this.renameBot = this.renameBot.bind(this)
@@ -50,24 +47,29 @@ class Intents extends React.Component {
     this.updateIntentName = this.updateIntentName.bind(this)
     this.renameIntent = this.renameIntent.bind(this)
     this.setAnswer = this.setAnswer.bind(this)
-    this.handleSetAnswerChange = this.handleSetAnswerChange.bind(this)
   }
 
-  setAnswer () {
+  setAnswer() {
+    let bot = {
+      _id: this.state.id,
+      botName: this.state.botName,
+      pageId: this.state.page,
+      isActive: this.state.isActive,
+      gcpPojectId: this.state.gcpProjectId,
+    }
     this.props.history.push({
       pathname: `/setAnswer`,
-      state: {page: this.state.page}
+      state: { page: this.state.page, bot: bot, currentIntentData: this.state.currentIntent }
     })
-  }
-
-  handleSetAnswerChange (message) {
-    let intent = this.state.currentIntent
-    intent.answers = message
-    this.setState({ currentIntent: intent })
   }
 
   renameIntent(e) {
     this.setState({ renameIntent: e.target.value })
+    if(e.target.value === '') {
+      this.setState({disableRenameButton: true})
+    } else {
+      this.setState({disableRenameButton: false})
+    }
   }
 
   updateIntentName() {
@@ -77,17 +79,18 @@ class Intents extends React.Component {
       name: this.state.renameIntent
     }
     this.props.updateIntent(data, this.msg)
+    this.setState({disableRenameButton: true, renameIntent: ''})
   }
 
   clickIntent(intent, index, state) {
     if (state === 'edit') {
       let temp = JSON.parse(JSON.stringify(intent))
-      this.setState({ currentIntent: temp, renameIntent: temp.name })
+      this.setState({ currentIntent: temp})
       this.refs.renameIntent.click()
     } else {
-      for (let a = 0; a < this.state.intents.length; a++) {
-        if (this.state.intents[a]._id !== intent._id) {
-          document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
+      for (let a = 0; a < this.props.botIntents.length; a++) {
+        if (this.props.botIntents[a]._id !== intent._id) {
+          document.getElementById(`collapse_${this.props.botIntents[a]._id}`).classList.remove("show")
         }
       }
 
@@ -106,7 +109,6 @@ class Intents extends React.Component {
   }
 
   deleteIntnet() {
-    console.log(this.state.currentIntent)
     let data = {
       intentId: this.state.currentIntent._id,
       gcpPojectId: this.state.gcpProjectId,
@@ -114,26 +116,30 @@ class Intents extends React.Component {
     }
     this.props.deleteIntnet(data, this.state.id, this.msg)
     this.setState({ currentIntent: null })
-    document.getElementById(`collapse_${this.state.intents[0]._id}`).classList.remove("show")
+    document.getElementById(`collapse_${this.props.botIntents[0]._id}`).classList.remove("show")
   }
 
   updateIntent() {
-
-    console.log(this.state.currentIntent)
     let data = {
       intentId: this.state.currentIntent._id,
       name: this.state.currentIntent.name,
       questions: this.state.currentIntent.questions,
-      answer: [{ componentType: "text", text: "Test broadcast" }],
-      gcpPojectId: this.state.gcpProjectId,
-      dialogflowIntentId: this.state.currentIntent.dialogflowIntentId
+      answer: this.state.currentIntent.answer,
+      dialogflowIntentId: this.state.currentIntent.dialogflowIntentId,
+      gcpPojectId: this.state.gcpProjectId
     }
-    this.props.trainBot(data, this.state.id, this.msg)
-    // for (let i = 0; i < questions.length; i++) {
-    //   if (questions[i] === '') {
-    //     this.setState({ errorIndex: intent._id+i, errorMessage: 'Each question must have some text' })
-    //   }
-    // }
+    if (!data.questions || data.questions.length === 0) {
+      this.msg.error("Atleast one question is required")
+    } else if (data.questions.length > 0) {
+      for (let i = 0; i < data.questions.length; i++) {
+        if (data.questions[i] === '') {
+          this.msg.error("Each question must have some text")
+          break
+        }
+      }
+    } else if (!data.answer || data.answer.length === 0) {
+        this.msg.error("Please set the Answer")
+    } else this.props.trainBot(data, this.state.id, this.msg)
   }
 
   changeQuestion(event, index) {
@@ -192,7 +198,7 @@ class Intents extends React.Component {
 
   renameBot(e) {
     this.setState({ renameBot: e.target.value })
-    if (this.state.renameBot === '') {
+    if (e.target.value === '') {
       this.setState({ disableRenameButton: true })
     } else {
       this.setState({ disableRenameButton: false })
@@ -200,6 +206,7 @@ class Intents extends React.Component {
   }
   updateBotName() {
     this.props.editBot({ botId: this.state.id, botName: this.state.renameBot }, this.msg, this.handleEditResponse)
+    this.setState({ disableRenameButton: true })
   }
 
   handleEditResponse(status) {
@@ -207,17 +214,6 @@ class Intents extends React.Component {
       this.setState({ botName: this.state.renameBot })
       this.refs.rename.click()
       this.setState({ renameBot: '' })
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.botIntents) {
-      let temp = JSON.parse(JSON.stringify(nextProps.botIntents))
-      this.setState({ intents: temp })
-      if (this.state.currentIntent) {
-        let tempIntent = nextProps.botIntents.filter((intent) => intent._id === this.state.currentIntent._id)[0]
-        this.setState({ currentIntent: tempIntent })
-      }
     }
   }
 
@@ -231,6 +227,9 @@ class Intents extends React.Component {
       title = 'KiboChat';
     }
     document.title = `${title} | Create Bot`;
+    if(this.props.location.state.currentIntentData) {
+      document.getElementById(`collapse_${this.state.currentIntent._id}`).classList.add('show')
+    }
     if (this.props.location.state && this.props.location.state.bot) {
       let botDetails = this.props.location.state.bot
       let botName = botDetails.botName
@@ -255,7 +254,7 @@ class Intents extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log(this.state)
+    console.log('current', this.state.currentIntent)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -284,7 +283,8 @@ class Intents extends React.Component {
                   style={{ float: 'left', margin: 2 }}
                   onClick={this.updateIntentName}
                   className='btn btn-primary'
-                  type='button' data-dismiss='modal'>
+                  type='button' data-dismiss='modal'
+                  disabled={this.state.disableRenameButton}>
                   Save
                 </button>
               </div>
@@ -316,7 +316,8 @@ class Intents extends React.Component {
                   style={{ float: 'left', margin: 2 }}
                   onClick={this.updateBotName}
                   className='btn btn-primary'
-                  type='button'>
+                  type='button'
+                  disabled={this.state.disableRenameButton}>
                   Save
                 </button>
               </div>
@@ -420,9 +421,9 @@ class Intents extends React.Component {
                 <hr />
                 <div className='m-portlet__body'>
                   {
-                    this.state.intents && this.state.intents.length > 0
+                    this.props.botIntents && this.props.botIntents.length > 0
                       ? <div className='row'>
-                        <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12">
+                        <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
                           <span className="input-group-addon" id="basic-addon1"
                             style={{ background: 'white', borderColor: '#ccc' }}>
                             <i className="fa fa-search"></i>
@@ -431,7 +432,7 @@ class Intents extends React.Component {
                         </div>
 
                         <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
-                          {this.state.intents && this.state.intents.map((intent, i) =>
+                          {this.props.botIntents.map((intent, i) =>
                             <div key={i} className='accordion' id={`accordion${intent._id}`}>
                               <div className='card'>
                                 <div className='card-header' id={`heading${intent._id}`}>
@@ -461,9 +462,6 @@ class Intents extends React.Component {
                                             this.state.currentIntent.questions.map((question, b) => (
                                               <div data-row={b} key={b}>
                                                 <div className="input-group" >
-                                                  {this.state.errorIndex === intent._id + b &&
-                                                    <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><strong>{this.state.errorMessage}</strong></div>
-                                                  }
                                                   <input type="text"
                                                     className="form-control form-control-danger"
                                                     value={question}
@@ -494,12 +492,21 @@ class Intents extends React.Component {
                                             className="btn btn btn-primary m-btn m-btn--icon"
                                             style={{ position: 'relative', top: '50%' }}
                                             onClick={this.setAnswer}>
-                                            <span>
-                                              <i className="la la-plus"></i>
-                                              <span>
-                                                Set Answer
-									                            </span>
-                                            </span>
+                                            {(this.state.currentIntent.answer && this.state.currentIntent.answer.length > 0)
+                                              ? <span>
+                                                <i className="la la-plus"></i>
+                                                <span>
+                                                  Edit Answer
+									                              </span>
+                                              </span>
+                                              : <span>
+                                                <i className="la la-plus"></i>
+                                                <span>
+                                                  Set Answer
+									                              </span>
+                                              </span>
+                                            }
+
                                           </button>
                                         </div>
                                         <div className="col-md-12 col-lg-12 col-xl-12"

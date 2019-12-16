@@ -8,10 +8,23 @@ class setAnswer extends React.Component {
         super(props)
         this.state = {
             buttonActions: ['open website'],
-            broadcast: [],
+            broadcast: props.location.state.currentIntentData.answer ? props.location.state.currentIntentData.answer : [],
             convoTitle: 'Set Your Answer'
         }
         this.handleChange = this.handleChange.bind(this)
+        this.onSave = this.onSave.bind(this)
+    }
+
+    onSave() {
+        let data = this.props.location.state.currentIntentData
+        data.answer = this.state.broadcast
+        this.props.history.push({
+            pathname: `/intents`,
+            state: {
+                bot: this.props.location.state.bot,
+                currentIntentData: data
+            }
+        })
     }
 
     handleChange(broadcast) {
@@ -43,13 +56,14 @@ class setAnswer extends React.Component {
                                             <button
                                                 className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
                                                 style={{ marginLeft: '5px' }}
-                                                >
+                                            >
                                                 <span>Back</span>
                                             </button>
                                             <button
                                                 className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
                                                 style={{ marginLeft: '5px' }}
-                                                disabled={this.state.broadcast.length < 1}>
+                                                disabled={this.state.broadcast.length < 1}
+                                                onClick={this.onSave}>
                                                 <span>Save</span>
                                             </button>
                                         </div>
@@ -58,7 +72,7 @@ class setAnswer extends React.Component {
                                         <div className='row'>
                                             <div className='col-md-12 col-lg-12 col-sm-12'>
                                                 <GenericMessage
-                                                    module='sponsorMessaging'
+                                                    module='smartReplies'
                                                     broadcast={this.state.broadcast}
                                                     handleChange={this.handleChange}
                                                     pageId={this.props.location.state.page._id}
