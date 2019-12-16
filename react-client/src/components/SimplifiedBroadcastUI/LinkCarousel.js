@@ -199,7 +199,7 @@ class LinkCarouselModal extends React.Component {
                 title: data.title.length > 80 ? data.title.substring(0, 80) + '...' : data.title,
                 subtitle: data.description.length > 80 ? data.description.substring(0, 80) + '...' : data.description,
                 image_url: data.image,
-                buttons: [
+                buttons: this.props.hideWebUrl ? [] :[
                     {
                         title: 'Go to Article',
                         type: 'web_url',

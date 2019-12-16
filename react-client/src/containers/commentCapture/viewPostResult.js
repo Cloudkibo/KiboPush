@@ -295,14 +295,35 @@ render() {
                   <div className='m-widget1__item'>
                     <div className='row m-row--no-padding align-items-center'>
                       <div className='col'>
-                        <h3 className='m-widget1__title'>Comment Capture Created</h3>
+                        <h3 className='m-widget1__title'>Created Date</h3>
                       </div>
                       <div className='col m--align-left'>
                         <span>{handleDate(this.props.currentPost.datetime)}</span>
                       </div>
                     </div>
                   </div>
-
+                  <div className='m-widget1__item'>
+                    <div className='row m-row--no-padding align-items-center'>
+                      <div className='col'>
+                        <h3 className='m-widget1__title'>Included Keywords</h3>
+                        <span style={{fontSize: '9px'}}>An auto reply is sent if these keywords are used in a comment</span>
+                      </div>
+                      <div className='col m--align-left'>
+                        <span>{this.props.currentPost.includedKeywords && this.props.currentPost.includedKeywords.length > 0 ? this.props.currentPost.includedKeywords.join(',') : 'none'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-widget1__item'>
+                    <div className='row m-row--no-padding align-items-center'>
+                      <div className='col'>
+                        <h3 className='m-widget1__title'>Excluded Keywords</h3>
+                        <span style={{fontSize: '9px'}}>Reply is not sent if these keywords are used in a comment</span>
+                      </div>
+                      <div className='col m--align-left'>
+                        <span>{this.props.currentPost.excludedKeywords && this.props.currentPost.excludedKeywords.length > 0 ? this.props.currentPost.excludedKeywords.join(',') : 'none'}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className='col-md-9 col-lg-5 col-sm-9'>
@@ -322,10 +343,10 @@ render() {
               toggleOffCanvas={this.toggleOffCanvas} />
           }
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-2'>
               <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon'> Back </Link>
             </div>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-6'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-10'>
               <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportAnalytics}>
                 <span>
                   <i className='fa fa-download' />
