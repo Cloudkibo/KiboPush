@@ -408,7 +408,7 @@ class Button extends React.Component {
           formId: this.state.hubSpotForm,
           portalId: this.state.portalId,
           mapping: this.state.mapping,
-          identityFieldValue: this.state.identityFieldValue
+          identityCustomFieldValue: this.state.identityFieldValue
 
         })
       }
@@ -530,7 +530,7 @@ class Button extends React.Component {
           formId: this.state.hubSpotForm,
           portalId: this.state.portalId,
           mapping: this.state.mapping,
-          identityFieldValue: this.state.identityFieldValue
+          identityCustomFieldValue: this.state.identityFieldValue
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
