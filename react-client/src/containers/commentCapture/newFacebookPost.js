@@ -62,6 +62,7 @@ class FacebookPosts extends React.Component {
       cards: [],
       isShowingLinkCarousel: false,
       defaultReply: [{
+        'id': new Date().getTime(),
         'componentType': 'text',
         'text': 'Hey! Can we help you with something? Respond us here and we will get in touch soon.'
       }]
@@ -1057,6 +1058,11 @@ class FacebookPosts extends React.Component {
                       </div>
                     </div>
                     }
+                    { this.state.loading && 
+                    <div className='col-12'>
+                      <span style={{color:'blue', marginLeft: '15px'}}>Uploading File...</span>
+                    </div>
+                    } 
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
@@ -1292,6 +1298,7 @@ class FacebookPosts extends React.Component {
               cards={this.state.cards}
               saveLinks={this.saveLinks} 
               closeModal= {this.closeModal} 
+              hideWebUrl={true}
               showCloseModalAlertDialog={this.closeModal}/>}
           </div>
         </div>
