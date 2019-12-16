@@ -26,14 +26,14 @@ class CreateContact extends React.Component {
     }
 
     save () {
-      var mappingData = []
-      for (var i = 0; i < this.state.mappingData.length; i++) {
+      let mappingData = []
+      for (let i = 0; i < this.state.mappingData.length; i++) {
         if ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubspotColumn !== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubspotColumn !== '')) {
           mappingData.push(this.state.mappingData[i])
         }
       }
-     var mapData = []
-      for (var i = 0; i < mappingData.length; i++) {
+     let mapData = []
+      for (let i = 0; i < mappingData.length; i++) {
         if(mappingData[i].kiboPushColumn === '') {
           mapData.push({hubspotColumn: mappingData[i].hubspotColumn, customFieldColumn: mappingData[i].customFieldColumn})
         }
