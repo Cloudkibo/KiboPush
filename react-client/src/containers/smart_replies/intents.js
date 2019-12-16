@@ -24,10 +24,12 @@ class Intents extends React.Component {
       gcpProjectId: '',
       // intents state
       newIntentName: '',
+      intents: props.location.state.intents ? props.location.state.intents : [],
       renameIntent: '',
-      currentIntent: props.location.state.currentIntentData ? props.location.state.currentIntentData : null,
+      currentIntent: props.location.state.currentIntent ? props.location.state.currentIntent : null,
       //other state
-      disableRenameButton: true
+      disableRenameButton: true,
+      searchValue: props.location.state.searchValue ? props.location.state.searchValue : ''
     }
 
     this.renameBot = this.renameBot.bind(this)
@@ -47,6 +49,17 @@ class Intents extends React.Component {
     this.updateIntentName = this.updateIntentName.bind(this)
     this.renameIntent = this.renameIntent.bind(this)
     this.setAnswer = this.setAnswer.bind(this)
+    this.searchIntent = this.searchIntent.bind(this)
+  }
+
+  searchIntent(e) {
+    this.setState({ searchValue: e.target.value })
+    if (e.target.value !== '') {
+      let filtered = this.props.botIntents.filter((intent) => intent.name.toLowerCase().includes(e.target.value.toLowerCase()))
+      this.setState({ intents: filtered })
+    } else {
+      this.setState({ intents: this.props.botIntents })
+    }
   }
 
   setAnswer() {
@@ -59,16 +72,16 @@ class Intents extends React.Component {
     }
     this.props.history.push({
       pathname: `/setAnswer`,
-      state: { page: this.state.page, bot: bot, currentIntentData: this.state.currentIntent }
+      state: Object.assign(this.state, { bot })
     })
   }
 
   renameIntent(e) {
     this.setState({ renameIntent: e.target.value })
-    if(e.target.value === '') {
-      this.setState({disableRenameButton: true})
+    if (e.target.value === '') {
+      this.setState({ disableRenameButton: true })
     } else {
-      this.setState({disableRenameButton: false})
+      this.setState({ disableRenameButton: false })
     }
   }
 
@@ -79,32 +92,23 @@ class Intents extends React.Component {
       name: this.state.renameIntent
     }
     this.props.updateIntent(data, this.msg)
-    this.setState({disableRenameButton: true, renameIntent: ''})
+    this.setState({ disableRenameButton: true, renameIntent: '' })
   }
 
   clickIntent(intent, index, state) {
     if (state === 'edit') {
       let temp = JSON.parse(JSON.stringify(intent))
-      this.setState({ currentIntent: temp})
+      this.setState({ currentIntent: temp })
       this.refs.renameIntent.click()
     } else {
-      for (let a = 0; a < this.props.botIntents.length; a++) {
-        if (this.props.botIntents[a]._id !== intent._id) {
-          document.getElementById(`collapse_${this.props.botIntents[a]._id}`).classList.remove("show")
+      for (let a = 0; a < this.state.intents.length; a++) {
+        if (this.state.intents[a]._id !== intent._id) {
+          document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
         }
       }
 
       let temp = JSON.parse(JSON.stringify(intent))
       this.setState({ currentIntent: temp })
-
-      // warning modal when unsaved changes
-      // if (this.state.currentIntent) {
-      //   let tempIntent = this.props.botIntents.filter((intent) => intent._id === this.state.currentIntent._id)[0]
-      //   if (JSON.stringify(tempIntent.questions) !== JSON.stringify(this.state.currentIntent.questions)) {
-      //     console.log('true')
-      //   }
-      // }
-
     }
   }
 
@@ -116,7 +120,7 @@ class Intents extends React.Component {
     }
     this.props.deleteIntnet(data, this.state.id, this.msg)
     this.setState({ currentIntent: null })
-    document.getElementById(`collapse_${this.props.botIntents[0]._id}`).classList.remove("show")
+    document.getElementById(`collapse_${this.state.intents[0]._id}`).classList.remove("show")
   }
 
   updateIntent() {
@@ -138,7 +142,7 @@ class Intents extends React.Component {
         }
       }
     } else if (!data.answer || data.answer.length === 0) {
-        this.msg.error("Please set the Answer")
+      this.msg.error("Please set the Answer")
     } else this.props.trainBot(data, this.state.id, this.msg)
   }
 
@@ -217,6 +221,12 @@ class Intents extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.botIntents) {
+      this.setState({ intents: nextProps.botIntents })
+    }
+  }
+
   componentDidMount() {
     this.props.loadBotIntents(this.props.location.state.bot._id)
     const hostname = window.location.hostname;
@@ -227,7 +237,7 @@ class Intents extends React.Component {
       title = 'KiboChat';
     }
     document.title = `${title} | Create Bot`;
-    if(this.props.location.state.currentIntentData) {
+    if (this.props.location.state.currentIntent) {
       document.getElementById(`collapse_${this.state.currentIntent._id}`).classList.add('show')
     }
     if (this.props.location.state && this.props.location.state.bot) {
@@ -428,111 +438,127 @@ class Intents extends React.Component {
                             style={{ background: 'white', borderColor: '#ccc' }}>
                             <i className="fa fa-search"></i>
                           </span>
-                          <input style={{ borderLeft: 'none' }} type="text" className="form-control m-input" placeholder="Search..." aria-describedby="basic-addon1" />
+                          <input
+                            style={{ borderLeft: 'none' }}
+                            type="text"
+                            className="form-control m-input"
+                            placeholder="Search..."
+                            aria-describedby="basic-addon1"
+                            onChange={this.searchIntent}
+                            value={this.state.searchValue} />
                         </div>
-
-                        <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
-                          {this.props.botIntents.map((intent, i) =>
-                            <div key={i} className='accordion' id={`accordion${intent._id}`}>
-                              <div className='card'>
-                                <div className='card-header' id={`heading${intent._id}`}>
-                                  <h4 className='mb-0'>
-                                    <a
-                                      href='#/'
-                                      className='btn btn-link'
-                                      data-toggle='collapse'
-                                      data-target={`#collapse_${intent._id}`}
-                                      aria-expanded="true"
-                                      aria-controls={`#collapse_${intent._id}`}
-                                      onClick={() => this.clickIntent(intent, i)}>
-                                      {intent.name}
-                                    </a>
-                                    <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
-                                      style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
-                                      onClick={() => this.clickIntent(intent, i, 'edit')}></i>
-                                  </h4>
-                                </div>
-                                <div id={`collapse_${intent._id}`} className='collapse' aria-labelledby={`heading${intent._id}`} data-parent="#accordion">
-                                  <div className='card-body'>
-                                    <p>Enter several variations of same  question to train the bot.</p>
-                                    {this.state.currentIntent &&
-                                      <div className='row'>
-                                        <div className="col-md-8 col-lg-8 col-xl-8" style={{ borderRight: '1px solid #ddd' }}>
-                                          {this.state.currentIntent.questions.length > 0 &&
-                                            this.state.currentIntent.questions.map((question, b) => (
-                                              <div data-row={b} key={b}>
-                                                <div className="input-group" >
-                                                  <input type="text"
-                                                    className="form-control form-control-danger"
-                                                    value={question}
-                                                    placeholder="Enter New Question Here..."
-                                                    onChange={(e) => this.changeQuestion(e, b)} />
-                                                  <span className="input-group-btn">
-                                                    <button onClick={() => this.removeQuestion(b)} className="btn btn-danger m-btn m-btn--icon">
-                                                      <i className="la la-close"></i>
-                                                    </button>
+                        {
+                          this.state.intents && this.state.intents.length > 0
+                            ? <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
+                              {this.state.intents.map((intent, i) =>
+                                <div key={i} className='accordion' id={`accordion${intent._id}`}>
+                                  <div className='card'>
+                                    <div className='card-header' id={`heading${intent._id}`}>
+                                      <h4 className='mb-0'>
+                                        <a
+                                          href='#/'
+                                          className='btn btn-link'
+                                          data-toggle='collapse'
+                                          data-target={`#collapse_${intent._id}`}
+                                          aria-expanded="true"
+                                          aria-controls={`#collapse_${intent._id}`}
+                                          onClick={() => this.clickIntent(intent, i)}>
+                                          {intent.name}
+                                        </a>
+                                        <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
+                                          style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
+                                          onClick={() => this.clickIntent(intent, i, 'edit')}></i>
+                                      </h4>
+                                    </div>
+                                    <div id={`collapse_${intent._id}`} className='collapse' aria-labelledby={`heading${intent._id}`} data-parent="#accordion">
+                                      <div className='card-body'>
+                                        <p>Enter several variations of same  question to train the bot.</p>
+                                        {this.state.currentIntent &&
+                                          <div className='row'>
+                                            <div className="col-md-8 col-lg-8 col-xl-8" style={{ borderRight: '1px solid #ddd' }}>
+                                              {this.state.currentIntent.questions.length > 0 &&
+                                                this.state.currentIntent.questions.map((question, b) => (
+                                                  <div data-row={b} key={b}>
+                                                    <div className="input-group" >
+                                                      <input type="text"
+                                                        className="form-control form-control-danger"
+                                                        value={question}
+                                                        placeholder="Enter New Question Here..."
+                                                        onChange={(e) => this.changeQuestion(e, b)} />
+                                                      <span className="input-group-btn">
+                                                        <button onClick={() => this.removeQuestion(b)} className="btn btn-danger m-btn m-btn--icon">
+                                                          <i className="la la-close"></i>
+                                                        </button>
+                                                      </span>
+                                                    </div>
+                                                    <br />
+                                                  </div>
+                                                ))
+                                              }
+                                              <br />
+                                              <button onClick={this.addQuestion} className="btn btn btn-primary m-btn m-btn--icon">
+                                                <span>
+                                                  <i className="la la-plus"></i>
+                                                  <span>
+                                                    Add
+                                                </span>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div className="col-md-4 col-lg-4 col-xl-4" style={{ textAlign: 'center' }}>
+                                              <button
+                                                className="btn btn btn-primary m-btn m-btn--icon"
+                                                style={{ position: 'relative', top: '50%' }}
+                                                onClick={this.setAnswer}>
+                                                {(this.state.currentIntent.answer && this.state.currentIntent.answer.length > 0)
+                                                  ? <span>
+                                                    <i className="la la-plus"></i>
+                                                    <span>
+                                                      Edit Answer
                                                   </span>
-                                                </div>
-                                                <br />
-                                              </div>
-                                            ))
-                                          }
-                                          <br />
-                                          <button onClick={this.addQuestion} className="btn btn btn-primary m-btn m-btn--icon">
-                                            <span>
-                                              <i className="la la-plus"></i>
-                                              <span>
-                                                Add
-									                            </span>
-                                            </span>
-                                          </button>
-                                        </div>
-                                        <div className="col-md-4 col-lg-4 col-xl-4" style={{ textAlign: 'center' }}>
-                                          <button
-                                            className="btn btn btn-primary m-btn m-btn--icon"
-                                            style={{ position: 'relative', top: '50%' }}
-                                            onClick={this.setAnswer}>
-                                            {(this.state.currentIntent.answer && this.state.currentIntent.answer.length > 0)
-                                              ? <span>
-                                                <i className="la la-plus"></i>
-                                                <span>
-                                                  Edit Answer
-									                              </span>
-                                              </span>
-                                              : <span>
-                                                <i className="la la-plus"></i>
-                                                <span>
-                                                  Set Answer
-									                              </span>
-                                              </span>
-                                            }
+                                                  </span>
+                                                  : <span>
+                                                    <i className="la la-plus"></i>
+                                                    <span>
+                                                      Set Answer
+                                                  </span>
+                                                  </span>
+                                                }
 
-                                          </button>
-                                        </div>
-                                        <div className="col-md-12 col-lg-12 col-xl-12"
-                                          style={{ textAlign: 'right', margin: '20px 0px 10px -10px' }}>
-                                          <button
-                                            className="btn btn btn-secondary"
-                                            style={{ marginRight: '10px' }}
-                                            data-target='#delete'
-                                            data-toggle='modal'
-                                          >
-                                            Delete
-                                          </button>
-                                          <button
-                                            className="btn btn btn-primary" onClick={this.updateIntent}>
-                                            Save
-                                          </button>
-                                        </div>
+                                              </button>
+                                            </div>
+                                            <div className="col-md-12 col-lg-12 col-xl-12"
+                                              style={{ textAlign: 'right', margin: '20px 0px 10px -10px' }}>
+                                              <button
+                                                className="btn btn btn-secondary"
+                                                style={{ marginRight: '10px' }}
+                                                data-target='#delete'
+                                                data-toggle='modal'
+                                              >
+                                                Delete
+                                            </button>
+                                              <button
+                                                className="btn btn btn-primary" onClick={this.updateIntent}>
+                                                Save
+                                            </button>
+                                            </div>
+                                          </div>
+                                        }
                                       </div>
-                                    }
+                                    </div>
                                   </div>
+                                  <br />
                                 </div>
-                              </div>
-                              <br />
+                              )}
                             </div>
-                          )}
-                        </div>
+                            : <div className='row'>
+                              <div className="col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
+                                <span>
+                                  No Data To Display
+                              </span>
+                              </div>
+                            </div>
+                        }
                       </div>
                       : <div className='row'>
                         <div className="col-md-12 col-lg-12 col-xl-12">

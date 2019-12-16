@@ -8,7 +8,7 @@ class setAnswer extends React.Component {
         super(props)
         this.state = {
             buttonActions: ['open website'],
-            broadcast: props.location.state.currentIntentData.answer ? props.location.state.currentIntentData.answer : [],
+            broadcast: props.location.state.currentIntent.answer ? props.location.state.currentIntent.answer : [],
             convoTitle: 'Set Your Answer'
         }
         this.handleChange = this.handleChange.bind(this)
@@ -16,14 +16,11 @@ class setAnswer extends React.Component {
     }
 
     onSave() {
-        let data = this.props.location.state.currentIntentData
+        let data = this.props.location.state.currentIntent
         data.answer = this.state.broadcast
         this.props.history.push({
             pathname: `/intents`,
-            state: {
-                bot: this.props.location.state.bot,
-                currentIntentData: data
-            }
+            state: this.props.location.state
         })
     }
 
