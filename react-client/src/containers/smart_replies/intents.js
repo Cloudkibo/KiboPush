@@ -132,18 +132,18 @@ class Intents extends React.Component {
       dialogflowIntentId: this.state.currentIntent.dialogflowIntentId,
       gcpPojectId: this.state.gcpProjectId
     }
-    if (!data.questions || data.questions.length === 0) {
-      this.msg.error("Atleast one question is required")
-    } else if (data.questions.length > 0) {
-      for (let i = 0; i < data.questions.length; i++) {
-        if (data.questions[i] === '') {
-          this.msg.error("Each question must have some text")
-          break
-        }
+    console.log(data)
+    let emptyQuestion = false
+    for (let i = 0; i < data.questions.length; i++) {
+      if (data.questions[i].trim() === '') {
+        emptyQuestion = true
+        break
       }
-    } else if (!data.answer || data.answer.length === 0) {
-      this.msg.error("Please set the Answer")
-    } else this.props.trainBot(data, this.state.id, this.msg)
+    }
+    if (!data.questions || data.questions.length === 0) this.msg.error("Atleast one question is required")
+    else if (emptyQuestion) this.msg.error("Each question must have some text")
+    else if (!data.answer || data.answer.length === 0) this.msg.error("Please set the Answer")
+    else this.props.trainBot(data, this.state.id, this.msg)
   }
 
   changeQuestion(event, index) {
