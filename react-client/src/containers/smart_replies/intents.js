@@ -50,6 +50,7 @@ class Intents extends React.Component {
     this.renameIntent = this.renameIntent.bind(this)
     this.setAnswer = this.setAnswer.bind(this)
     this.searchIntent = this.searchIntent.bind(this)
+    this.handleTrainBot = this.handleTrainBot.bind(this)
   }
 
   searchIntent(e) {
@@ -143,7 +144,12 @@ class Intents extends React.Component {
     if (!data.questions || data.questions.length === 0) this.msg.error("Atleast one question is required")
     else if (emptyQuestion) this.msg.error("Each question must have some text")
     else if (!data.answer || data.answer.length === 0) this.msg.error("Please set the Answer")
-    else this.props.trainBot(data, this.state.id, this.msg)
+    else this.props.trainBot(data, this.state.id, this.msg, this.handleTrainBot)
+  }
+
+  handleTrainBot(response) {
+    let filtered = response.payload.filter((intent) => intent._id === this.state.currentIntent._id)[0]
+    this.setState({currentIntent: filtered})
   }
 
   changeQuestion(event, index) {
