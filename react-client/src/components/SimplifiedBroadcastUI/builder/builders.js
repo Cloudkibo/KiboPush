@@ -192,6 +192,7 @@ class Builders extends React.Component {
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
         // linkedMessages[i].title = button.title
+        linkedMessages[i].parentId = this.state.currentId
         linkedMessages[i].linkedButton = button
       }
     }
@@ -351,6 +352,7 @@ class Builders extends React.Component {
     }
 
     if (buttonFound) {
+      data.parentId = this.state.currentId
       linkedMessages.push(data)
     } else {
       unlinkedMessages.push(data)
@@ -696,9 +698,9 @@ class Builders extends React.Component {
     let quickReplies = {}
     quickReplies[currentId] = []
     this.setState({
-      lists, 
+      lists,
       currentId,
-      convoTitle: this.defaultTitle, 
+      convoTitle: this.defaultTitle,
       quickRepliesComponents: {},
       quickRepliesIndex: -1,
       linkedMessages: [{title: this.props.convoTitle, id: currentId, messageContent: []}],
@@ -745,12 +747,12 @@ class Builders extends React.Component {
       }
     }
     this.setState({
-      currentId: linkedMessages[0].id, 
-      convoTitle: linkedMessages[0].title, 
-      linkedMessages, 
-      unlinkedMessages, 
-      lists, 
-      quickReplies, 
+      currentId: linkedMessages[0].id,
+      convoTitle: linkedMessages[0].title,
+      linkedMessages,
+      unlinkedMessages,
+      lists,
+      quickReplies,
       quickRepliesComponents
     })
   }
