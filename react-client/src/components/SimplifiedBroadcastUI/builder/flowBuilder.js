@@ -69,11 +69,14 @@ class FlowBuilder extends React.Component {
     ) {
       //this.props.rerenderFlowBuilder()
       console.log('chart state in componentWillRecieveProps', this.state.chart)
+      let flowBuilderChart = document.getElementById('flowBuilderChart')
+      flowBuilderChart.style.transform = 'scale(1)'
       this.setState({
         chart: this.getChartData(),
         prevChart: {}
       }, () => {
         this.updateZIndex = true
+        flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
     }
   }
