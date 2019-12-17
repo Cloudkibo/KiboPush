@@ -13,11 +13,18 @@ class setAnswer extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this)
         this.onSave = this.onSave.bind(this)
+        this.onBack = this.onBack.bind(this)
     }
 
     onSave() {
-        let data = this.props.location.state.currentIntent
-        data.answer = this.state.broadcast
+        this.props.location.state.currentIntent.answer = this.state.broadcast
+        this.props.history.push({
+            pathname: `/intents`,
+            state: this.props.location.state
+        })
+    }
+
+    onBack() {
         this.props.history.push({
             pathname: `/intents`,
             state: this.props.location.state
@@ -53,6 +60,7 @@ class setAnswer extends React.Component {
                                             <button
                                                 className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
                                                 style={{ marginLeft: '5px' }}
+                                                onClick={this.onBack}
                                             >
                                                 <span>Back</span>
                                             </button>
