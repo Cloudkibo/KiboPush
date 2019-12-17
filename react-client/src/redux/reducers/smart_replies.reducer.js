@@ -31,7 +31,8 @@ export function botsInfo (state = {}, action) {
       })
     case ActionTypes.SHOW_WAITING_REPLY_LIST:
       return Object.assign({}, state, {
-        waitingReplyList: action.data
+        waitingSubscribers: action.data.waitingSubscribers,
+        waitingSubscribersCount: action.data.count
       })
     case ActionTypes.SHOW_UNANSWERED_QUERIES:
       return Object.assign({}, state, {

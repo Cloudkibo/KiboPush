@@ -193,16 +193,30 @@ class Intents extends React.Component {
   }
 
   gotoWaitingReply() {
+    let bot = {
+      _id: this.state.id,
+      botName: this.state.botName,
+      pageId: this.state.page,
+      isActive: this.state.isActive,
+      gcpPojectId: this.state.gcpProjectId,
+    }
     this.props.history.push({
       pathname: `/WaitingReplyList`,
-      state: this.state.id
+      state: Object.assign(this.state, { bot })
     })
   }
 
   gotoUnansweredQueries() {
+    let bot = {
+      _id: this.state.id,
+      botName: this.state.botName,
+      pageId: this.state.page,
+      isActive: this.state.isActive,
+      gcpPojectId: this.state.gcpProjectId,
+    }
     this.props.history.push({
-      pathname: '/UnansweredQueries',
-      state: this.state.id
+      pathname: `/UnansweredQueries`,
+      state: Object.assign(this.state, { bot })
     })
   }
 
@@ -416,12 +430,12 @@ class Intents extends React.Component {
                     style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
                     data-toggle='modal' data-target='#rename'></i>
                   <span style={{ float: "right" }}>
-                    <a href='#/'
-                      style={{ margin: '0px 16px 0px 0px' }}
-                      onClick={this.gotoUnansweredQueries} >Unanswered Queries</a>
-                    <a href='#/'
-                      style={{ margin: '0px 16px 0px 0px' }}
-                      onClick={this.gotoWaitingReply}>Waiting Subscribers</a>
+                    <button
+                      className='btn btn-link'
+                      onClick={this.gotoUnansweredQueries} >Unanswered Queries</button>
+                    <button
+                      className='btn btn-link'
+                      onClick={this.gotoWaitingReply}>Waiting Subscribers</button>
                     <button
                       className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
                       data-target='#createIntent' data-toggle='modal' >
