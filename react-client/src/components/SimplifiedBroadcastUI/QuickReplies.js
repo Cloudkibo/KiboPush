@@ -673,7 +673,7 @@ class QuickReplies extends React.Component {
                                             {
                                                 this.state.actions.map(action => {
                                                     return (
-                                                        <option value={action}>{action}</option>
+                                                        <option key={action} value={action}>{action}</option>
                                                     )
                                                 })
                                             }
@@ -705,6 +705,12 @@ class QuickReplies extends React.Component {
         </div>
     )
   }
+}
+
+QuickReplies.defaultProps = {
+  'sequences': [],
+  'broadcasts': [],
+  'tags': []
 }
 
 

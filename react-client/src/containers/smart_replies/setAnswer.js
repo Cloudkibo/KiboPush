@@ -7,7 +7,7 @@ class setAnswer extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            buttonActions: ['open website'],
+            buttonActions: ['open website', 'open webview', 'set custom field', 'google sheets', 'hubspot'],
             broadcast: props.location.state.currentIntent.answer ? props.location.state.currentIntent.answer : [],
             convoTitle: 'Set Your Answer'
         }
@@ -92,7 +92,6 @@ class setAnswer extends React.Component {
                                         <div className='row'>
                                             <div className='col-md-12 col-lg-12 col-sm-12'>
                                                 <GenericMessage
-                                                    module='smartReplies'
                                                     broadcast={this.state.broadcast}
                                                     handleChange={this.handleChange}
                                                     pageId={this.props.location.state.page._id}
