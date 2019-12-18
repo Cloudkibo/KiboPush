@@ -1442,9 +1442,9 @@ Builders.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
-    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
-    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+    sequences: state.sequenceInfo.sequences,
+    broadcasts: state.templatesInfo.broadcasts,
+    tags: state.tagsInfo.tags
   }
 }
 
