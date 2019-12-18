@@ -1235,6 +1235,7 @@ class Subscriber extends React.Component {
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
+        type='text'
         className='form-control m-input'
         placeholder='value'
         onChange={this.handleSetCustomField}
@@ -1280,7 +1281,7 @@ class Subscriber extends React.Component {
           onChange={this.handleBulkSetCustomField}
           type='date' />
       } else if (this.state.selectedBulkField.type === 'datetime') {
-        setBulkFieldInput = setFieldInput = <input className='form-control m-input'
+        setBulkFieldInput = <input className='form-control m-input'
           value={this.state.selectedBulkField.value}
           onChange={this.handleBulkSetCustomField}
           type='datetime-local' />
@@ -1864,7 +1865,7 @@ class Subscriber extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className='modal fade' id='m_modal_1_2' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                     <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog' role='document'>
                       <div className='modal-content'>
                         <div style={{ display: 'block' }} className='modal-header'>

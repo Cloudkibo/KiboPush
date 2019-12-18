@@ -50,6 +50,7 @@ class Intents extends React.Component {
     this.renameIntent = this.renameIntent.bind(this)
     this.setAnswer = this.setAnswer.bind(this)
     this.searchIntent = this.searchIntent.bind(this)
+    this.handleTrainBot = this.handleTrainBot.bind(this)
   }
 
   searchIntent(e) {
@@ -132,18 +133,23 @@ class Intents extends React.Component {
       dialogflowIntentId: this.state.currentIntent.dialogflowIntentId,
       gcpPojectId: this.state.gcpProjectId
     }
-    if (!data.questions || data.questions.length === 0) {
-      this.msg.error("Atleast one question is required")
-    } else if (data.questions.length > 0) {
-      for (let i = 0; i < data.questions.length; i++) {
-        if (data.questions[i] === '') {
-          this.msg.error("Each question must have some text")
-          break
-        }
+    console.log(data)
+    let emptyQuestion = false
+    for (let i = 0; i < data.questions.length; i++) {
+      if (data.questions[i].trim() === '') {
+        emptyQuestion = true
+        break
       }
-    } else if (!data.answer || data.answer.length === 0) {
-      this.msg.error("Please set the Answer")
-    } else this.props.trainBot(data, this.state.id, this.msg)
+    }
+    if (!data.questions || data.questions.length === 0) this.msg.error("Atleast one question is required")
+    else if (emptyQuestion) this.msg.error("Each question must have some text")
+    else if (!data.answer || data.answer.length === 0) this.msg.error("Please set the Answer")
+    else this.props.trainBot(data, this.state.id, this.msg, this.handleTrainBot)
+  }
+
+  handleTrainBot(response) {
+    let filtered = response.payload.filter((intent) => intent._id === this.state.currentIntent._id)[0]
+    this.setState({currentIntent: filtered})
   }
 
   changeQuestion(event, index) {
@@ -187,16 +193,30 @@ class Intents extends React.Component {
   }
 
   gotoWaitingReply() {
+    let bot = {
+      _id: this.state.id,
+      botName: this.state.botName,
+      pageId: this.state.page,
+      isActive: this.state.isActive,
+      gcpPojectId: this.state.gcpProjectId,
+    }
     this.props.history.push({
       pathname: `/WaitingReplyList`,
-      state: this.state.id
+      state: Object.assign(this.state, { bot })
     })
   }
 
   gotoUnansweredQueries() {
+    let bot = {
+      _id: this.state.id,
+      botName: this.state.botName,
+      pageId: this.state.page,
+      isActive: this.state.isActive,
+      gcpPojectId: this.state.gcpProjectId,
+    }
     this.props.history.push({
-      pathname: '/UnansweredQueries',
-      state: this.state.id
+      pathname: `/UnansweredQueries`,
+      state: Object.assign(this.state, { bot })
     })
   }
 
@@ -410,12 +430,12 @@ class Intents extends React.Component {
                     style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
                     data-toggle='modal' data-target='#rename'></i>
                   <span style={{ float: "right" }}>
-                    <a href='#/'
-                      style={{ margin: '0px 16px 0px 0px' }}
-                      onClick={this.gotoUnansweredQueries} >Unanswered Queries</a>
-                    <a href='#/'
-                      style={{ margin: '0px 16px 0px 0px' }}
-                      onClick={this.gotoWaitingReply}>Waiting Subscribers</a>
+                    <button
+                      className='btn btn-link'
+                      onClick={this.gotoUnansweredQueries} >Unanswered Queries</button>
+                    <button
+                      className='btn btn-link'
+                      onClick={this.gotoWaitingReply}>Waiting Subscribers</button>
                     <button
                       className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
                       data-target='#createIntent' data-toggle='modal' >

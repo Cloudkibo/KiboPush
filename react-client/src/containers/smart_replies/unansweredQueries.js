@@ -27,7 +27,7 @@ class UnansweredQueries extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getDateAndTime = this.getDateAndTime.bind(this)
     this.backToIntents = this.backToIntents.bind(this)
-    props.loadUnansweredQuestions(this.props.location.state)
+    props.loadUnansweredQuestions(this.props.location.state.bot._id)
     props.loadMyPagesList()
     props.allLocales()
   }
