@@ -358,7 +358,8 @@ class FacebookPosts extends React.Component {
                     </Link>
                   </div>
                 </div>
-                <div className='m-portlet__body'>
+                { this.state.postsData && this.state.postsData.length > 0
+                ? <div className='m-portlet__body'>
                   <div className='form-row'>
                     <div style={{ display: 'inline-block' }} className='col-md-3'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.captureType} onChange={this.onTypeFilter}>
@@ -400,10 +401,9 @@ class FacebookPosts extends React.Component {
                     <div style={{ display: 'inline-block', marginTop: '20px', marginBottom: '20px' }} className='col-md-12'>
                       <input type='text' style={{width: '50%'}} placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
                     </div>
-                    { this.state.postsData && this.state.postsData.length > 0
-                  ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      <thead className='m-datatable__head'>
+                    <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                        <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
                           <th data-field='posts'
@@ -424,7 +424,7 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Date</span>
+                            <span style={{width: '200px'}}>Date</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -442,7 +442,7 @@ class FacebookPosts extends React.Component {
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
                             <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversionCount ? post.conversionCount : '0'}</span></td>
-                            <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
+                            <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '200px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
                               {/* <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
@@ -480,12 +480,14 @@ class FacebookPosts extends React.Component {
                             activeClassName={'active'} />
                         </div>
                       </div>
-                      : <div className='col-12'>
-                        <p> No data to display </p>
-                      </div>
-                    }
                   </div>
                 </div>
+                : <div className='m-portlet__body'>
+                    <div className='col-12'>
+                      <p> No data to display </p>
+                    </div>
+                  </div>
+                }
               </div>
             </div>
           </div>

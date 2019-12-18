@@ -150,7 +150,7 @@ class Button extends React.Component {
           mapping: buttonPayload.mapping,
           hubspotAction: buttonPayload.googleSheetAction,
           portalId: buttonPayload.portalId,
-          identityFieldValue: buttonPayload.identityCustomFieldValue, 
+          identityFieldValue: buttonPayload.identityCustomFieldValue,
           openHubspot: true,
           openCreateMessage: false
         })
@@ -408,7 +408,7 @@ class Button extends React.Component {
           formId: this.state.hubSpotForm,
           portalId: this.state.portalId,
           mapping: this.state.mapping,
-          identityFieldValue: this.state.identityFieldValue
+          identityCustomFieldValue: this.state.identityFieldValue
 
         })
       }
@@ -530,7 +530,7 @@ class Button extends React.Component {
           formId: this.state.hubSpotForm,
           portalId: this.state.portalId,
           mapping: this.state.mapping,
-          identityFieldValue: this.state.identityFieldValue
+          identityCustomFieldValue: this.state.identityFieldValue
         })
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
@@ -861,8 +861,9 @@ class Button extends React.Component {
             {
               this.state.openCreateMessage &&
               <div className='card'>
-                <h7 className='card-header'>Create Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.removeReplyWithMessage} />
+                <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.removeReplyWithMessage} />
                 </h7>
+                <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
                 {/* <div style={{padding: '10px'}} className='card-block'>
                       <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
                        Create Message

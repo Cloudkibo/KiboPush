@@ -68,11 +68,15 @@ class FlowBuilder extends React.Component {
       )
     ) {
       //this.props.rerenderFlowBuilder()
+      console.log('chart state in componentWillRecieveProps', this.state.chart)
+      let flowBuilderChart = document.getElementById('flowBuilderChart')
+      flowBuilderChart.style.transform = 'scale(1)'
       this.setState({
         chart: this.getChartData(),
         prevChart: {}
       }, () => {
         this.updateZIndex = true
+        flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
     }
   }
@@ -323,7 +327,7 @@ class FlowBuilder extends React.Component {
     console.log('getting chart data')
     const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
     let {ports, links} = this.getPortsNLinks(messages[0])
-    let chartSimple = {
+    let chartSimple = (this.state && this.state.chart) ? this.state.chart : {
       offset: {
         x: 0,
         y: 0
@@ -333,8 +337,6 @@ class FlowBuilder extends React.Component {
       selected: {},
       hovered: {}
     }
-    let positionX = 25
-    let positionY = 50
     chartSimple['nodes'][`${messages[0].id}`] = {
       id: `${messages[0].id}`,
       type: "starting_step",
@@ -349,7 +351,9 @@ class FlowBuilder extends React.Component {
     }
 
     console.log('messages', messages)
+    let layers = [1]
     for (let i = 1; i < messages.length; i++) {
+      let currentBlock = chartSimple['nodes'][`${messages[i].id}`]
       let block = document.getElementById(`flowBuilderCard-${messages[i].id}`)
       let blockDimensions = null
       if (block) {
@@ -357,13 +361,17 @@ class FlowBuilder extends React.Component {
       }
       let portsNLinks = this.getPortsNLinks(messages[i])
       links = Object.assign(links, portsNLinks.links)
-      positionX = positionX + 400
+      let parent = chartSimple['nodes'][`${messages[i].parentId}`]
+      let positionX = parent.position.x + 400
+      let layerIndex = Math.floor(positionX / 400)
+      if (!layers[layerIndex]) layers[layerIndex] = 0
+      let positionY = 10 + (layers[layerIndex] * 200)
       chartSimple['nodes'][`${messages[i].id}`] = {
         id: `${messages[i].id}`,
         type: "component_block",
         position: {
-          x: positionX,
-          y: positionY
+          x: currentBlock ? currentBlock.position.x : positionX,
+          y: currentBlock ? currentBlock.position.y : positionY
         },
         ports: Object.assign({
           port0: {
@@ -379,6 +387,7 @@ class FlowBuilder extends React.Component {
           id: messages[i].id
         }
       }
+      layers[layerIndex] = layers[layerIndex] + 1
     }
     chartSimple['links'] = links
     console.log('chartSimple', chartSimple)
@@ -672,6 +681,7 @@ class FlowBuilder extends React.Component {
                 }
               }
             }
+            this.props.unlinkedMessages[messageIndex].parentId = fromComponentId
             this.props.linkedMessages.push(this.props.unlinkedMessages[messageIndex])
             this.props.unlinkedMessages.splice(messageIndex, 1)
           }

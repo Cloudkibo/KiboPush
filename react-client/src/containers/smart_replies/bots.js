@@ -304,12 +304,12 @@ class Bot extends React.Component {
   }
 
   gotoCreate() {
-    this.setState({ loader: true })
     if (this.state.name === '') {
       this.setState({ error: true, errorMessage: 'Please enter a name' })
     } else if (this.state.name.length > 25) {
       this.setState({ error: true, errorMessage: 'Name must be at most 25 charachters long' })
     } else {
+      this.setState({ loader: true })
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
       this.props.createBot({

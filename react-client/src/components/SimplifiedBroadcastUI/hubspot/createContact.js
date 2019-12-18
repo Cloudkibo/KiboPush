@@ -10,7 +10,7 @@ class CreateContact extends React.Component {
         super(props, context)
         this.state = {
             identityFieldValue: props.identityFieldValue !== '' ? props.identityFieldValue : '',
-            mappingData: props.mapping !== '' ? props.mapping : [{hubSpotColumn: '', kiboPushColumn: '', customFieldColumn: ''}],
+            mappingData: props.mapping !== '' ? props.mapping : [{hubspotColumn: '', kiboPushColumn: '', customFieldColumn: ''}],
             mappingDataValues: '',
             showColumns: props.identityFieldValue !== '' ? true : false,
             buttonDisabled:  props.identityFieldValue !== '' ? false : true
@@ -26,16 +26,27 @@ class CreateContact extends React.Component {
     }
 
     save () {
-      var mappingData = []
-      for (var i = 0; i < this.state.mappingData.length; i++) {
-        if ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubSpotColumn !== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubSpotColumn !== '')) {
+      let mappingData = []
+      for (let i = 0; i < this.state.mappingData.length; i++) {
+        if ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubspotColumn !== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubspotColumn !== '')) {
           mappingData.push(this.state.mappingData[i])
         }
       }
-      if (mappingData.length === 0) {
-        mappingData=''
+     let mapData = []
+      for (let i = 0; i < mappingData.length; i++) {
+        if(mappingData[i].kiboPushColumn === '') {
+          mapData.push({hubspotColumn: mappingData[i].hubspotColumn, customFieldColumn: mappingData[i].customFieldColumn})
+        }
+        else if(mappingData[i].customFieldColumn === '') {
+          mapData.push({hubspotColumn: mappingData[i].hubspotColumn, kiboPushColumn: mappingData[i].kiboPushColumn})
+        }  
       }
-      this.props.save('','', mappingData, this.state.identityFieldValue)
+
+
+      if (mapData.length === 0) {
+        mapData=''
+      }
+      this.props.save('','', mapData, this.state.identityFieldValue)
     }
 
 
@@ -63,7 +74,7 @@ class CreateContact extends React.Component {
       var mappingData = this.state.mappingData
       for (var i = 0; i < this.state.mappingData.length; i++) {
         if (index === i) {
-            mappingData[i].hubSpotColumn = e.target.value
+            mappingData[i].hubspotColumn = e.target.value
           } 
         }
       this.setState({mappingData: mappingData})
@@ -73,7 +84,7 @@ class CreateContact extends React.Component {
 
     addCondition () {
       var mappingData = this.state.mappingData
-      mappingData.push({hubSpotColumn: '', kiboPushColumn: '', customFieldColumn: ''})
+      mappingData.push({hubspotColumn: '', kiboPushColumn: '', customFieldColumn: ''})
       this.setState({
         mappingData: mappingData
       })
@@ -109,7 +120,7 @@ class CreateContact extends React.Component {
         content.push(
           <div className='row' key={i} style={{marginBottom: '7px'}}>
             <div className='col-4'>
-              <select value= {this.state.mappingData[i].kiboPushColumn === '' ? this.state.mappingData[i].customFieldColumn : this.state.mappingData[i].kiboPushColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}}  onChange={(e) => this.updateKiboPushData(e, i)} >
+              <select value= {this.state.mappingData[i].kiboPushColumn ? this.state.mappingData[i].kiboPushColumn : this.state.mappingData[i].customFieldColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}}  onChange={(e) => this.updateKiboPushData(e, i)} >
                 <option key='' value='' disabled>Select a Field...</option>
                 <optgroup label='System Fields'>
                   {kiboPushColumns.map((kibopush, i) => (
@@ -129,11 +140,11 @@ class CreateContact extends React.Component {
             </div>
             <div className='col-1'>
                 <center>
-                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubSpotColumn!== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubSpotColumn !== '')) ? '#419600' : '#bfe6c0'}} />
+                <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubspotColumn!== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubspotColumn !== '')) ? '#419600' : '#bfe6c0'}} />
                 </center>
               </div>
               <div className='col-4'>
-                <select value={this.state.mappingData[i].hubSpotColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updatehubSpotData(e, i)}>
+                <select value={this.state.mappingData[i].hubspotColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updatehubSpotData(e, i)}>
                   <option key='' value='' disabled>Select a Field...</option>
                   { hubSpotFormColumns.length > 0 &&
                     hubSpotFormColumns.map((hubSpotFormColumn, i) => (
