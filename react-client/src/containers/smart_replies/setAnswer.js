@@ -36,6 +36,21 @@ class setAnswer extends React.Component {
         this.setState(broadcast)
     }
 
+    componentDidMount () {
+      const hostname = window.location.hostname
+      let title = ''
+      if (hostname.includes('kiboengage.cloudkibo.com')) {
+        title = 'KiboEngage'
+      } else if (hostname.includes('kibochat.cloudkibo.com')) {
+        title = 'KiboChat'
+      }
+      if (this.props.location.state && this.props.location.state.module === 'edit') {
+        document.title = `${title} | Edit Message`
+      } else {
+        document.title = `${title} | Create Message`
+      }
+    }
+
     render() {
         return (
             <div>
@@ -82,7 +97,8 @@ class setAnswer extends React.Component {
                                                     handleChange={this.handleChange}
                                                     pageId={this.props.location.state.page._id}
                                                     convoTitle={this.state.convoTitle}
-                                                    buttonActions={this.state.buttonActions} />                                            </div>
+                                                    buttonActions={this.state.buttonActions}
+                                                    pages={[this.props.location.state.page._id]} />                                            </div>
                                         </div>
                                     </div>
                                 </div>
