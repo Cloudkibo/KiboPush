@@ -50,7 +50,10 @@ class Button extends React.Component {
       mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
       hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.formId : '',
       portalId: this.props.button && this.props.button.payload ? this.props.button.payload.portalId : '',
-      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityCustomFieldValue : ''
+      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityCustomFieldValue : '',
+      googleIntegration : '',
+      hubspotIntegration : ''
+
     }
     props.fetchAllSequence()
     props.getIntegrations()
@@ -828,13 +831,13 @@ class Button extends React.Component {
                   </div>
                 }
                 {(this.props.buttonActions.indexOf('google sheets') > -1) &&
-                  this.state.googleIntegration !== '' &&
+                  this.state.googleIntegration !== '' && this.state.googleIntegration.enabled &&
                   <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showGoogleSheets}>
                     <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-file-excel-o' /> Google Sheets</h7>
                   </div>
                 }
                 {(this.props.buttonActions.indexOf('hubspot') > -1) &&
-                  //  this.state.hubspotIntegration !== '' &&
+                  this.state.hubspotIntegration !== '' && this.state.hubspotIntegration.enabled &&
                   <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showHubspot}>
                     <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-transgender-alt' /> Hubspot</h7>
                   </div>
