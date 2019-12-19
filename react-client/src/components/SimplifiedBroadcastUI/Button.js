@@ -120,8 +120,10 @@ class Button extends React.Component {
       identityCustomFieldValue: hubSpotFormPayload.identityFieldValue,
       index: this.props.index
     }
+    console.log('this.props.updateButtonStatus' ,this.props.updateButtonStatus)
     if ((hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.hubSpotForm !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '') || (hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.identityFieldValue !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '')) {
       this.setState({ buttonDisabled: false })
+      console.log('this.props.updateButtonStatus in if condition' ,this.props.updateButtonStatus)
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: false }, buttonData)
       }
@@ -595,7 +597,21 @@ class Button extends React.Component {
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: false })
       }
-    } else {
+    }
+
+    else if (this.state.openHubspot && this.state.hubspotAction !== '' && event.target.value !== '') {
+      this.setState({ buttonDisabled: false })
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: false })
+      }
+    }
+    else if (this.state.openGoogleSheets && this.state.googleSheetAction !== '' &&  event.target.value !== '') {
+      this.setState({ buttonDisabled: false })
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: false })
+      }
+    }
+    else {
       this.setState({ buttonDisabled: true })
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: true })
@@ -744,9 +760,14 @@ class Button extends React.Component {
   updateCustomFieldValue(event) {
     this.setState({ customFieldValue: event.target.value })
     let buttonData = { title: this.state.title, visible: true, customFieldValue: this.state.customFieldValue, customFieldId: event.target.value, index: this.props.index }
-    if (this.state.customFieldId) {
+    if (this.state.customFieldId && event.target.value !== '' && this.state.title !=='') {
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: false, buttonData })
+      }
+    }
+    else {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
       }
     }
   }
