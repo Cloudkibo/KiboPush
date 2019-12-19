@@ -1068,8 +1068,7 @@ class FacebookPosts extends React.Component {
                         <div className='col-3'>
                           <label className='col-form-label'>Bot Configuration</label>
                         </div>
-                        { this.state.isEdit === 'false'
-                        ? <div className='col-12'>
+                          <div className='col-12'>
                             <p>
                             Create a reply that will be sent to people who comment on your Facebook Page Post
                             </p>
@@ -1083,17 +1082,6 @@ class FacebookPosts extends React.Component {
                               </button>
                             }
                         </div>
-                        : <div className='col-12'>
-                            <p>
-                              Preview reply that will be sent to people who comment on your Facebook Page Post
-                            </p>
-                            <button state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {
-                             this.refs.viewMessageModal.click()
-                            }}>
-                              Preview Reply
-                            </button >
-                        </div>
-                      }
                       </div>
                     </div>
                     <div className='col-12'>
