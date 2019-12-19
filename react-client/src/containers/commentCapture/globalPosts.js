@@ -149,7 +149,7 @@ class GlobalPosts extends React.Component {
         <div className='m-portlet__head'>
           <div className='m-portlet__head-caption'>
             <div className='m-portlet__head-title'>
-              <h3 className='m-portlet__head-text'>All Posts</h3>
+              <h3 className='m-portlet__head-text'>Posts</h3>
             </div>
           </div>
           <div className='m-portlet__head-tools'>
