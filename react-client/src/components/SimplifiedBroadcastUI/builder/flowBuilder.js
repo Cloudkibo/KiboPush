@@ -51,8 +51,6 @@ class FlowBuilder extends React.Component {
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
-
-    this.updateZIndex = true
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -75,7 +73,6 @@ class FlowBuilder extends React.Component {
         chart: this.getChartData(),
         prevChart: {}
       }, () => {
-        this.updateZIndex = true
         flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
     }
@@ -362,6 +359,9 @@ class FlowBuilder extends React.Component {
       let portsNLinks = this.getPortsNLinks(messages[i])
       links = Object.assign(links, portsNLinks.links)
       let parent = chartSimple['nodes'][`${messages[i].parentId}`]
+      if (!parent) {
+        parent = chartSimple['nodes'][`${this.props.linkedMessages[this.props.linkedMessages.length - 1].id}`]
+      }
       let positionX = parent.position.x + 400
       let layerIndex = Math.floor(positionX / 400)
       if (!layers[layerIndex]) layers[layerIndex] = 0
@@ -566,14 +566,11 @@ class FlowBuilder extends React.Component {
   }
 
   updateSvgZIndex () {
-    if (this.updateZIndex) {
-      // debugger;
-      let svgElements = document.getElementsByTagName('svg')
-      if (svgElements.length > 0) {
-        for (let i = 0; i < svgElements.length; i++) {
-          svgElements[i].style['z-index'] = 1
-        }
-        this.updateZIndex = false
+    // debugger;
+    let svgElements = document.getElementsByTagName('svg')
+    if (svgElements.length > 0) {
+      for (let i = 0; i < svgElements.length; i++) {
+        svgElements[i].style['z-index'] = 1
       }
     }
   }
@@ -635,7 +632,6 @@ class FlowBuilder extends React.Component {
         newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
       ) {
-        this.updateZIndex = true
         console.log('updating chart link added', this.props)
         // debugger;
         if (newChart.links[linksKeys[linksKeys.length - 1]].from.portId === 'port0') {
@@ -778,6 +774,7 @@ class FlowBuilder extends React.Component {
   }
 
   componentDidMount () {
+    console.log('componentDidMount called flowBuilder')
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 46 || e.keyCode === 8) {
         console.log('key pressed in flow builder', this.state)
