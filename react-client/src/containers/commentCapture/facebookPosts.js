@@ -288,32 +288,6 @@ class FacebookPosts extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content" style={{ width: '687px', top: '100' }}>
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Delete Post
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
-                <button style={{ float: 'right' }}
-                  className='btn btn-primary btn-sm'
-                  onClick={() => {
-                    this.props.deletePost(this.state.deleteid, this.msg)
-                  }}
-                  data-dismiss='modal'>Delete
-              </button>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -459,7 +433,7 @@ class FacebookPosts extends React.Component {
                                 <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
+                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} onClick={() => {this.props.deletePost(post._id, this.msg)}}>
                                         Delete
                                 </button>
                                     </span>
