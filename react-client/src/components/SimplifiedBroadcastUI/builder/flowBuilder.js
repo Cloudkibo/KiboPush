@@ -51,6 +51,9 @@ class FlowBuilder extends React.Component {
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
+
+    this.updateZIndex = true
+
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -73,6 +76,7 @@ class FlowBuilder extends React.Component {
         chart: this.getChartData(),
         prevChart: {}
       }, () => {
+        this.updateZIndex = true
         flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
     }
@@ -278,7 +282,7 @@ class FlowBuilder extends React.Component {
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
       let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
-      if (payload.action === 'send_message_block' || !buttons[j].type) {
+      if ((payload && payload.action === 'send_message_block') || !buttons[j].type) {
         let payload = JSON.parse(buttons[j].payload)
         console.log('parsed payload', payload)
         let port = document.getElementById(`port-${buttons[j].id}`)
@@ -566,11 +570,14 @@ class FlowBuilder extends React.Component {
   }
 
   updateSvgZIndex () {
-    // debugger;
-    let svgElements = document.getElementsByTagName('svg')
-    if (svgElements.length > 0) {
-      for (let i = 0; i < svgElements.length; i++) {
-        svgElements[i].style['z-index'] = 1
+    if (this.updateZIndex) {
+      // debugger;
+      let svgElements = document.getElementsByTagName('svg')
+      if (svgElements.length > 0) {
+        for (let i = 0; i < svgElements.length; i++) {
+          svgElements[i].style['z-index'] = 1
+        }
+        this.updateZIndex = false
       }
     }
   }
@@ -632,6 +639,7 @@ class FlowBuilder extends React.Component {
         newChart.links[linksKeys[linksKeys.length - 1]].from.portId &&
         newChart.links[linksKeys[linksKeys.length - 1]].from.nodeId
       ) {
+        this.updateZIndex = true
         console.log('updating chart link added', this.props)
         // debugger;
         if (newChart.links[linksKeys[linksKeys.length - 1]].from.portId === 'port0') {
