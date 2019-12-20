@@ -116,10 +116,16 @@ class CreateConvo extends React.Component {
   }
 
   switchBuilder (value) {
-    this.setState({
-      builderValue: value,
-      showBuilderDropdown: false
-    })
+    if (this.state.builderValue === value) {
+      this.setState({
+        showBuilderDropdown: false
+      })
+    } else {
+      this.setState({
+        builderValue: value,
+        showBuilderDropdown: false
+      })
+    }
   }
 
   handleChange (state) {
@@ -658,7 +664,7 @@ class CreateConvo extends React.Component {
             {
               this.state.tabActive === 'target' &&
               <div className='pull-right'>
-                <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                <button id='previous-prev' className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
                   Previous
                 </button>
                 <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.linkedMessages && this.state.linkedMessages[0].length === 0)) ? true : null} onClick={this.testConvo}>

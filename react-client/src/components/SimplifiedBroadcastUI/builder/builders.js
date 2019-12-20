@@ -355,6 +355,7 @@ class Builders extends React.Component {
       data.parentId = this.state.currentId
       linkedMessages.push(data)
     } else {
+      data.parentId = this.state.currentId
       unlinkedMessages.push(data)
     }
     lists[id] = []
