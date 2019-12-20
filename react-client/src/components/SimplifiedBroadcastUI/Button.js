@@ -26,7 +26,7 @@ class Button extends React.Component {
       openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
       openCustomField: this.props.button ? this.props.button.openCustomField : false,
       openGoogleSheets: this.props.button ? this.props.button.openGoogleSheets : false,
-      openHubspot: this.props.button && this.props.button.payload.action === 'hubspot' ? true : false,
+      openHubspot: this.props.button && this.props.button.payload && this.props.button.payload.action === 'hubspot' ? true : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
