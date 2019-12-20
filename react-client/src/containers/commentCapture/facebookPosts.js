@@ -290,7 +290,7 @@ class FacebookPosts extends React.Component {
         </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+            <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Delete Post
@@ -302,7 +302,7 @@ class FacebookPosts extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
+                <p>Are you sure you want to delete this comment capture rule ?</p>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
