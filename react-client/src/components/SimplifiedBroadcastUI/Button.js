@@ -90,8 +90,12 @@ class Button extends React.Component {
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.closeHubspot = this.closeHubspot.bind(this)
     this.savehubSpotForm = this.savehubSpotForm.bind(this)
+    this.weburlDebounce = this.weburlDebounce.bind(this)
+    this.webviewUrlDebounce = this.webviewUrlDebounce.bind(this)
     props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
+    this.typingTimer = null
+    this.doneTypingInterval = 500
   }
 
   handleFetch(resp) {
@@ -623,10 +627,9 @@ class Button extends React.Component {
     }
   }
 
-  changeUrl(event) {
-    console.log('chaning website url', event.target.value)
-    let buttonData = { title: this.state.title, visible: true, url: event.target.value, index: this.props.index }
-    if (isWebURL(event.target.value) && this.state.title !== '') {
+  weburlDebounce () {
+    let buttonData = { title: this.state.title, visible: true, url: this.state.url, index: this.props.index }
+    if (isWebURL(this.state.url) && this.state.title !== '') {
       console.log('buttonDisabled: false')
       this.setState({ buttonDisabled: false })
       if (this.props.updateButtonStatus) {
@@ -638,19 +641,18 @@ class Button extends React.Component {
         this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
       }
     }
-    this.setState({ url: event.target.value })
   }
-  changeWebviewUrl(e) {
-    console.log('changing webviewurl', e.target.value)
-    let buttonData = { title: this.state.title, visible: true, webviewurl: e.target.value, index: this.props.index }
-    if (!isWebURL(e.target.value)) {
+
+  webviewUrlDebounce () {
+    let buttonData = { title: this.state.title, visible: true, webviewurl: this.state.webviewurl, index: this.props.index }
+    if (!isWebURL(this.state.webviewurl)) {
       this.setState({ buttonDisabled: true, errorMsg: '' })
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
       }
     } else {
-      if (!isWebViewUrl(e.target.value)) {
-        this.setState({ webviewurl: e.target.value, buttonDisabled: true, errorMsg: 'Webview must include a protocol identifier e.g.(https://)' })
+      if (!isWebViewUrl(this.state.webviewurl)) {
+        this.setState({ buttonDisabled: true, errorMsg: 'Webview must include a protocol identifier e.g.(https://)' })
         if (this.props.updateButtonStatus) {
           this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
         }
@@ -659,7 +661,7 @@ class Button extends React.Component {
       let validDomain = false
       for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
         let domain = this.state.whitelistedDomains[i]
-        if (getHostName(e.target.value) === getHostName(domain)) {
+        if (getHostName(this.state.webviewurl) === getHostName(domain)) {
           validDomain = true
           break
         }
@@ -677,7 +679,22 @@ class Button extends React.Component {
         }
       }
     }
-    this.setState({ webviewurl: e.target.value })
+  }
+
+  changeUrl(event) {
+    console.log('chaning website url', event.target.value)
+    this.setState({ url: event.target.value }, () => {
+      clearTimeout(this.typingTimer)
+      this.typingTimer = setTimeout(this.weburlDebounce, this.doneTypingInterval)
+    })
+  }
+  
+  changeWebviewUrl(e) {
+    console.log('changing webviewurl', e.target.value)
+    this.setState({ webviewurl: e.target.value }, () => {
+      clearTimeout(this.typingTimer)
+      this.typingTimer = setTimeout(this.webviewUrlDebounce, this.doneTypingInterval)
+    })
   }
 
   updateCustomFieldId(event) {
@@ -846,7 +863,7 @@ class Button extends React.Component {
               <div className='card'>
                 <h7 className='card-header'>Open Website <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeWebsite} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
-                  <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                  <input id='button-weburl-input' type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
                 </div>
               </div>
             }

@@ -263,9 +263,10 @@ class CardModal extends React.Component {
       console.log(`cardComponent ${index}`, card)
 
       if (card && card.props) {
+        //debugger;
         let requirements = []
-        if (card.props.card.disabled || card.props.card.buttonDisabled) {
-          let cardData = card.props.card.component
+        let cardData = card.props.card.component
+        if (cardData) {
           let msg = `Card ${card.props.card.id} requires:`
           if (!cardData.title) {
             requirements.push('a title')
@@ -586,7 +587,7 @@ class CardModal extends React.Component {
               <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}>
                 Cancel
                 </button>
-              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled || (requirements && requirements.length > 0)} onClick={() => this.handleDone()} className='btn btn-primary'>
                 {this.props.edit ? 'Edit' : 'Next'}
               </button>
             </div>
