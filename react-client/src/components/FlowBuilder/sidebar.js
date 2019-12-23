@@ -10,6 +10,7 @@ class Sidebar extends React.Component {
     this.state = {}
     this.onDragMessageBlock = this.onDragMessageBlock.bind(this)
     this.onDragActionBlock = this.onDragActionBlock.bind(this)
+    this.onNext = this.onNext.bind(this)
   }
 
   componentDidMount () {
@@ -17,6 +18,10 @@ class Sidebar extends React.Component {
       let data = event.dataTransfer.getData(REACT_FLOW_CHART)
       console.log('REACT_FLOW_CHART', data)
     })
+  }
+
+  onNext () {
+    this.props.onNext()
   }
 
   onDragMessageBlock (event) {
@@ -119,6 +124,18 @@ class Sidebar extends React.Component {
                   id='expand'
                   onClick={this.props.toggleFullScreen}
                 />
+                {
+                  this.props.fullScreen &&
+                  <button style={{margin: '0px 0px 10px 20px', padding: '4px 12px'}} className='btn btn-primary' disabled={this.props.disableReset()} onClick={this.props.reset}>
+                    Reset
+                  </button>
+                }
+                {
+                  this.props.fullScreen &&
+                  <button style={{margin: '0px 10px 10px 10px', padding: '4px 12px'}} className='btn btn-primary' disabled={this.props.isBroadcastInvalid()} onClick={this.onNext}>
+                    Next
+                  </button>
+                }
               </div>
             </div>
           </div>
@@ -134,7 +151,11 @@ Sidebar.propTypes = {
   'fullScreen': PropTypes.bool.isRequired,
   'zoomIn': PropTypes.func.isRequired,
   'zoomOut': PropTypes.func.isRequired,
-  'resetTarget': PropTypes.func.isRequired
+  'resetTarget': PropTypes.func.isRequired,
+  'disableReset': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 export default Sidebar
