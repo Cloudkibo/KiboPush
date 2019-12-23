@@ -419,7 +419,7 @@ class Builders extends React.Component {
     if (showDialog) {
       this.showResetAlertDialog()
     } else {
-      this.newConvo()
+      this.newConvo(true)
     }
   }
 
@@ -692,7 +692,7 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp2}, obj)
   }
 
-  newConvo () {
+  newConvo (render) {
     let currentId = new Date().getTime()
     let lists = {}
     lists[currentId] = []
@@ -710,7 +710,7 @@ class Builders extends React.Component {
     }, () => {
       this.handleChange({convoTitle: this.defaultTitle}, {})
       this.handleChange({broadcast: []}, {})
-      if (this.props.builderValue === 'flow') {
+      if (render && this.props.builderValue === 'flow') {
         this.props.rerenderFlowBuilder()
       }
     })
@@ -1400,6 +1400,9 @@ class Builders extends React.Component {
           getItems={this.getItems}
           changeMessage={this.changeMessage}
           removeMessage={this.removeMessage}
+          reset={this.props.reset}
+          onNext={this.props.onNext}
+          isBroadcastInvalid={this.props.isBroadcastInvalid}
         />
       }
 
@@ -1430,7 +1433,10 @@ Builders.propTypes = {
   'linkedMessages': PropTypes.array,
   'showTabs': PropTypes.bool.isRequired,
   'unlinkedMessages': PropTypes.array,
-  'switchBuilder': PropTypes.func.isRequired
+  'switchBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 Builders.defaultProps = {

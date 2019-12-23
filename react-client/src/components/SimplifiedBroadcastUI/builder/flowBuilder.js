@@ -51,6 +51,7 @@ class FlowBuilder extends React.Component {
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
+    this.disableReset = this.disableReset.bind(this)
 
     this.updateZIndex = true
 
@@ -79,6 +80,15 @@ class FlowBuilder extends React.Component {
         this.updateZIndex = true
         flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
+    }
+  }
+
+  disableReset () {
+    if (this.props.linkedMessages &&
+      this.props.linkedMessages[0].messageContent.length === 0) {
+        return true
+    } else {
+      return null
     }
   }
 
@@ -932,6 +942,10 @@ class FlowBuilder extends React.Component {
                   zoomIn={this.zoomIn}
                   zoomOut={this.zoomOut}
                   resetTransform={this.resetTransform}
+                  disableReset={this.disableReset}
+                  reset={this.props.reset}
+                  onNext={this.props.onNext}
+                  isBroadcastInvalid={this.props.isBroadcastInvalid}
                 />
                 <div
                   id='flowBuilderChart'
@@ -978,7 +992,10 @@ FlowBuilder.propTypes = {
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
   'currentId': PropTypes.number.isRequired,
-  'rerenderFlowBuilder': PropTypes.func.isRequired
+  'rerenderFlowBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 export default FlowBuilder

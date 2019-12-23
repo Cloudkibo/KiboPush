@@ -711,6 +711,9 @@ class CreateConvo extends React.Component {
           unlinkedMessages={this.state.unlinkedMessages}
           switchBuilder={this.switchBuilder}
           componentLimit={3}
+          reset={this.reset}
+          onNext={this.onNext}
+          isBroadcastInvalid={this.isBroadcastInvalid}
         />
       </div>
     )
