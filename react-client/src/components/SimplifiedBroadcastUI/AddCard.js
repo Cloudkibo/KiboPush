@@ -3,7 +3,6 @@ import React from 'react'
 import AddButton from './AddButton'
 import Image from './AddImage'
 import AddAction from './AddAction'
-import { element } from 'prop-types'
 
 class AddCard extends React.Component {
   constructor (props) {
