@@ -22,7 +22,6 @@ import YouTube from 'react-youtube'
 import { loadTags } from '../../redux/actions/tags.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import {
   getSubscriberCount
 } from '../../redux/actions/broadcast.actions'
@@ -45,7 +44,9 @@ class Poll extends React.Component {
       selectedDays: '0',
       pageNumber: 0,
       savePoll: '',
-      subscriberCount: 0
+      subscriberCount: 0,
+      totalSubscribersCount: 0,
+      isApprovedForSMP: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -67,7 +68,11 @@ class Poll extends React.Component {
     this.setState({isShowingLearnMore: !this.state.isShowingLearnMore})
   }
   handleSubscriberCount(response) {
-    this.setState({subscriberCount: response.payload.count})
+    this.setState({
+      subscriberCount: response.payload.count,
+      totalSubscribersCount: response.payload.totalCount,
+      isApprovedForSMP: response.payload.isApprovedForSMP
+    })
   }
   savePoll(poll) {
     console.log('poll in savePoll', poll)
@@ -75,6 +80,7 @@ class Poll extends React.Component {
       let pageId = this.props.pages.find(page => page.pageId === poll.segmentationPageIds[0])
       var payload = {
         pageId:  pageId._id,
+        pageAccessToken: pageId.accessToken,
         segmented: poll.isSegmented,
         segmentationGender: poll.segmentationGender,
         segmentationLocale: poll.segmentationLocale,
@@ -249,6 +255,7 @@ class Poll extends React.Component {
   sendPoll(poll) {
     let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === poll.segmentationPageIds[0])
     poll.subscribersCount = currentPageSubscribers.length
+    poll.isApprovedForSMP = this.state.isApprovedForSMP
     let segmentationValues = []
     if (poll.segmentationTags && poll.segmentationTags.length > 0) {
       for (let i = 0; i < poll.segmentationTags.length; i++) {
@@ -285,7 +292,6 @@ class Poll extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -390,7 +396,7 @@ class Poll extends React.Component {
               <span
                 className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
                 style={{marginLeft: '10px'}}>
-                This Poll will be sent to {this.state.subscriberCount} subscriber(s).
+                This Poll will be sent to {this.state.subscriberCount} out of {this.state.totalSubscribersCount} subscriber(s).
               { this.state.subscriberCount === 0 &&
               <div>
                 <br/>
@@ -497,7 +503,7 @@ class Poll extends React.Component {
                           </div>
                           <div style={{ display: 'inline-block', padding: '5px' }}>
                             {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                            <button 
+                            <button
                               onClick={() => this.props.history.push({pathname: '/showTemplatePolls'})}
                               className='btn btn-primary'
                               data-dismiss='modal'>

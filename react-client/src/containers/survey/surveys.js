@@ -21,7 +21,6 @@ import {loadTags} from '../../redux/actions/tags.actions'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import {
   getSubscriberCount
 } from '../../redux/actions/broadcast.actions'
@@ -43,8 +42,8 @@ class Survey extends React.Component {
       pageNumber: 0,
       isShowingModalPro: false,
       subscriberCount: 0,
+      totalSubscribersCount: 0,
       savesurvey: ''
-
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -59,7 +58,10 @@ class Survey extends React.Component {
   }
 
   handleSubscriberCount(response) {
-    this.setState({subscriberCount: response.payload.count})
+    this.setState({
+      subscriberCount: response.payload.count,
+      totalSubscribersCount: response.payload.totalCount
+    })
   }
   saveSurvey(survey) {
     console.log('poll in savesurvey', survey)
@@ -67,6 +69,7 @@ class Survey extends React.Component {
       let pageId = this.props.pages.find(page => page.pageId === survey.segmentationPageIds[0])
       var payload = {
         pageId:  pageId._id,
+        pageAccessToken: pageId.accessToken,
         segmented: survey.isSegmented,
         segmentationGender: survey.segmentationGender,
         segmentationLocale: survey.segmentationLocale,
@@ -211,6 +214,7 @@ class Survey extends React.Component {
   sendSurvey (survey) {
     let currentPageSubscribers = this.props.subscribers.filter(subscriber => subscriber.pageId.pageId === survey.segmentationPageIds[0])
     survey.subscribersCount = currentPageSubscribers.length
+    survey.isApprovedForSMP = this.state.isApprovedForSMP
     let segmentationValues = []
     for (let i = 0; i < survey.segmentationTags; i++) {
       for (let j = 0; j < this.props.tags.length; j++) {
@@ -237,7 +241,6 @@ class Survey extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -342,7 +345,7 @@ class Survey extends React.Component {
               <span
                 className={this.state.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
                 style={{marginLeft: '10px'}}>
-                This Survey will be sent to {this.state.subscriberCount} subscriber(s).
+                This Survey will be sent to {this.state.subscriberCount} out of {this.state.totalSubscribersCount} subscriber(s).
               { this.state.subscriberCount === 0 &&
               <div>
                 <br/>
