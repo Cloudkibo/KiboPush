@@ -64,6 +64,7 @@ class BasicBuilder extends React.Component {
                         <Targeting
                           handleTargetValue={this.props.handleTargetValue}
                           subscriberCount={this.props.subscriberCount}
+                          totalSubscribersCount={this.props.totalSubscribersCount}
                           resetTarget={this.props.resetTarget}
                           page={this.props.pageId}
                           component='broadcast'
@@ -87,6 +88,7 @@ BasicBuilder.propTypes = {
   'pageId': PropTypes.object.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
   'showTabs': PropTypes.bool.isRequired,
   'showDialog': PropTypes.func.isRequired,

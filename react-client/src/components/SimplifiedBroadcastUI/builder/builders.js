@@ -1373,6 +1373,7 @@ class Builders extends React.Component {
           pageId={this.props.pageId}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           showDialog={this.showDialog}
           hiddenComponents={this.state.hiddenComponents}
@@ -1394,6 +1395,7 @@ class Builders extends React.Component {
           unlinkedMessages={this.state.unlinkedMessages}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           getComponent={this.getComponent}
           pageId={this.props.pageId}
@@ -1428,6 +1430,7 @@ Builders.propTypes = {
   'builderValue': PropTypes.string.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
   'noDefaultHeight': PropTypes.bool,
   'linkedMessages': PropTypes.array,

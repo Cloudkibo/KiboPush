@@ -37,7 +37,7 @@ class Targeting extends React.Component {
       tagValue: [],
       selectedRadio: '',
       messageTypeSelectedRadio: 'non promotional',
-      listSelected: '',
+      listSelected: [],
       isList: false,
       lists: [],
       showDropDownSurvey: false,
@@ -570,7 +570,7 @@ class Targeting extends React.Component {
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <span>you can not send messages to any of your subscribers if :</span>
+                <span>You can not send messages to any of your subscribers if :</span>
               <ol>
                 <li>None of your subscribers have 24 hour window session active. The session will automatically become active when your subscriber messages.</li>
                 <li>No subscriber match the selected criteria</li>
@@ -607,7 +607,7 @@ class Targeting extends React.Component {
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}
           >
-            This {this.props.component} will be sent to {this.props.subscriberCount} subscriber(s).
+            This {this.props.component} will be sent to {this.props.subscriberCount} out of {this.props.totalSubscribersCount} subscriber(s).
             { this.props.subscriberCount === 0 &&
               <a href='#/' onClick={this.isShowingLearnMore} style={{textDecoration: 'underline' }}
               data-toggle="modal" data-target="#learnMore">

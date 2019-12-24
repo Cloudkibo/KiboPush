@@ -967,6 +967,7 @@ class FlowBuilder extends React.Component {
                 <Targeting
                   handleTargetValue={this.props.handleTargetValue}
                   subscriberCount={this.props.subscriberCount}
+                  totalSubscribersCount={this.props.totalSubscribersCount}
                   resetTarget={this.props.resetTarget}
                   page={this.props.pageId}
                   component='broadcast'
@@ -986,6 +987,7 @@ FlowBuilder.propTypes = {
   'unlinkedMessages': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool,
   'pageId': PropTypes.object.isRequired,
   'getItems': PropTypes.func.isRequired,

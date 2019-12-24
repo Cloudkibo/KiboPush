@@ -5,17 +5,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-  createbroadcast,
-  loadBroadcastsList,
-  updatefileuploadStatus,
-  uploadBroadcastfile,
   sendBroadcast,
   getSubscriberCount
 } from '../../redux/actions/broadcast.actions'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 // import { checkConditions } from '../polls/utility'
 import { validateFields } from './utility'
 // import DragSortableList from 'react-drag-sortable'
@@ -23,7 +19,6 @@ import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import BUILDER from '../../components/SimplifiedBroadcastUI/builder/builders'
 var MessengerPlugin = require('react-messenger-plugin').default
 
@@ -56,6 +51,8 @@ class CreateConvo extends React.Component {
       loadScript: true,
       messageType: '',
       subscriberCount: 0,
+      totalSubscribersCount: 0,
+      isApprovedForSMP: false,
       locationPages: this.props.location.state ? this.props.location.state.pages : [],
       showBuilderDropdown: false,
       builderValue: 'basic'
@@ -161,6 +158,7 @@ class CreateConvo extends React.Component {
         this.setState({tabActive: 'target'})
         const payload = {
           pageId: this.state.pageId._id,
+          pageAccessToken: this.state.pageId.accessToken,
           segmented: false,
           isList: false,
         }
@@ -170,7 +168,11 @@ class CreateConvo extends React.Component {
   }
 
   handleSubscriberCount(response) {
-    this.setState({subscriberCount: response.payload.count})
+    this.setState({
+      subscriberCount: response.payload.count,
+      totalSubscribersCount: response.payload.totalCount,
+      isApprovedForSMP: response.payload.isApprovedForSMP
+    })
   }
 
   onPrevious () {
@@ -209,6 +211,7 @@ class CreateConvo extends React.Component {
     this.props.loadSubscribersCount(data)
     var payload = {
         pageId: this.state.locationPages[0],
+        pageAccessToken: this.state.pageId.accessToken,
         segmented: true,
         segmentationGender: targeting.genderValue,
         segmentationLocale: targeting.localeValue,
@@ -362,6 +365,7 @@ class CreateConvo extends React.Component {
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
         subscribersCount: this.state.subscriberCount,
         messageType: this.state.messageType,
+        isApprovedForSMP: this.state.isApprovedForSMP,
         linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
       }
       for (let i = 0; i < data.payload.length; i++) {
@@ -507,7 +511,6 @@ class CreateConvo extends React.Component {
 
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -630,8 +633,13 @@ class CreateConvo extends React.Component {
           <div className='m-alert__text'>
             Need help in understanding how to create broadcasts? Here is the <a href={`http://kibopush.com/${this.state.builderValue === 'basic' ? 'broadcasts' : 'flow-builder'}/`} target='_blank' rel='noopener noreferrer'>documentation</a>.
             <br />
-            View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
-            &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
+            {
+              /*
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}}  data-toggle="modal" data-target="#messageTypes">Message Types</Link>
+              &ensp; and <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
+              */
+            }
+            View Facebook guidelines regarding aspect ratio of images here: <a href='https://kibopush.com/2019/05/15/aspect-ratio-of-images/' target='_blank' rel='noopener noreferrer'>image guidelines</a>
           </div>
         </div>
         <div className="m-subheader ">
@@ -705,6 +713,7 @@ class CreateConvo extends React.Component {
           pages={this.props.location.state && this.state.locationPages}
           handleTargetValue={this.handleTargetValue}
           subscriberCount={this.state.subscriberCount}
+          totalSubscribersCount={this.state.totalSubscribersCount}
           resetTarget={this.state.resetTarget}
           linkedMessages={this.state.linkedMessages}
           showTabs={this.state.tabActive === 'broadcast'}
@@ -738,10 +747,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadBroadcastsList: loadBroadcastsList,
-      uploadBroadcastfile: uploadBroadcastfile,
-      createbroadcast: createbroadcast,
-      updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
       sendBroadcast: sendBroadcast,

@@ -17,7 +17,6 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
 import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import {
@@ -57,7 +56,9 @@ class AddSurvey extends React.Component {
       resetTarget: false,
       isShowingModalGuideLines: false,
       pageId: this.props.pages[0],
-      subscriberCount: 0
+      subscriberCount: 0,
+      totalSubscribersCount: 0,
+      isApprovedForSMP: false
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.goToSend = this.goToSend.bind(this)
@@ -73,7 +74,11 @@ class AddSurvey extends React.Component {
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
   }
   handleSubscriberCount(response) {
-    this.setState({subscriberCount: response.payload.count})
+    this.setState({
+      subscriberCount: response.payload.count,
+      totalSubscribersCount: response.payload.totalCount,
+      isApprovedForSMP: response.payload.isApprovedForSMP
+    })
   }
 
   onNext (e) {
@@ -86,6 +91,7 @@ class AddSurvey extends React.Component {
     this.setState({tabActive: 'target'})
     const payload = {
       pageId: this.state.pageId._id,
+      pageAccessToken: this.state.pageId.accessToken,
       segmented: false,
       isList: false,
     }
@@ -205,6 +211,7 @@ class AddSurvey extends React.Component {
     })
     var payload = {
       pageId:  pageId._id,
+      pageAccessToken: pageId.accessToken,
       segmented: true,
       segmentationGender: targeting.genderValue,
       segmentationLocale: targeting.localeValue,
@@ -669,7 +676,8 @@ class AddSurvey extends React.Component {
             segmentationTags: this.state.tagValue,
             isList: isListValue,
             segmentationList: this.state.listSelected,
-            subscribersCount: currentPageSubscribers.length
+            subscribersCount: currentPageSubscribers.length,
+            isApprovedForSMP:  this.state.isApprovedForSMP
           }
           console.log('Sending Survey', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
@@ -696,7 +704,6 @@ class AddSurvey extends React.Component {
     // const { disabled, stayOpen } = this.state
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messageTypes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -801,14 +808,18 @@ class AddSurvey extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-exclamation m--font-brand' />
+          {
+            /*
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-brand' />
+              </div>
+              <div className='m-alert__text'>
+                View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} data-toggle="modal" data-target="#messageTypes">Message Types</Link>
+              </div>
             </div>
-            <div className='m-alert__text'>
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} data-toggle="modal" data-target="#messageTypes">Message Types</Link>
-            </div>
-          </div>
+            */
+          }
 
           <div className='m-portlet__body'>
             <div className='row'>
@@ -942,7 +953,15 @@ class AddSurvey extends React.Component {
                             </div>
                           </div>
                           <div className='tab-pane' id='tab_2'>
-                            <Targeting handleTargetValue={this.handleTargetValue} subscriberCount = {this.state.subscriberCount} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='survey' />
+                            <Targeting
+                              handleTargetValue={this.handleTargetValue}
+                              subscriberCount={this.state.subscriberCount}
+                              resetTarget={this.state.resetTarget}
+                              subscribers={this.props.subscribers}
+                              totalSubscribersCount={this.state.totalSubscribersCount}
+                              page={this.state.pageId}
+                              component='survey'
+                            />
                           </div>
                         </div>
                       </div>
