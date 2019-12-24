@@ -177,7 +177,7 @@ class AddButton extends React.Component {
     console.log('disabled ', this.props.disabled)
     return (
       <div>
-        <h4 style={{marginBottom: '20px'}}>Buttons:</h4>
+        <h5 style={{marginBottom: '10px', textAlign: 'left'}}>Buttons:</h5>
         {
             this.state.buttons.map((button, index) => (
               button.visible && (
