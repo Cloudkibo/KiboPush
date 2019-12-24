@@ -3,6 +3,7 @@ import React from 'react'
 import AddButton from './AddButton'
 import Image from './AddImage'
 import AddAction from './AddAction'
+import { element } from 'prop-types'
 
 class AddCard extends React.Component {
   constructor (props) {
@@ -160,7 +161,10 @@ class AddCard extends React.Component {
           <hr style={{marginBottom: '30px'}} /> */}
           <div className='row'>
             <div className='col-3'>
-              <h5 style={{marginTop: '5px'}} id={this.titleId}>Title:</h5>
+              <h5 style={{marginTop: '5px', position: 'relative'}}>
+                <div id={this.titleId} style={{position: 'absolute', top: '-10px'}}></div>
+                Title:
+              </h5>
             </div>
             <div className='col-9'>
               <input onSelect={(e) => this.inputSelected(e, this.titleId)} placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
@@ -170,7 +174,10 @@ class AddCard extends React.Component {
 
           <div className='row'>
             <div className='col-3'>
-              <h5 style={{marginTop: '5px'}} id={this.subtitleId}>Subtitle:</h5>
+              <h5 style={{marginTop: '5px', position: 'relative'}}>
+                <div id={this.subtitleId} style={{position: 'absolute', top: '-10px'}}></div>
+                Subtitle:
+              </h5>
             </div>
             <div className='col-9'>
               <input onSelect={(e) => this.inputSelected(e, this.subtitleId)} placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />

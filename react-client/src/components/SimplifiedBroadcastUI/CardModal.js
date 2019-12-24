@@ -435,7 +435,7 @@ class CardModal extends React.Component {
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
             <div className='col-6'>
-              <div style={{ maxHeight: '55vh', overflowY: 'scroll' }}>
+              <div id='cardsContainer' style={{ maxHeight: '55vh', overflowY: 'scroll' }}>
                 {
                   this.state.cards.map((card, index) => {
                     console.log(`AddCard ${index + 1}`, card)
@@ -477,6 +477,7 @@ class CardModal extends React.Component {
                   })
                 }
                 </div>
+                <hr />
                 <div style={{marginTop: '20px'}}>
                   {
                     (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{ minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >

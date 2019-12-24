@@ -30,8 +30,13 @@ class Image extends React.Component {
       imgHeight: null
     }
     this.handleImage = this.handleImage.bind(this)
+    this.clickFile = this.clickFile.bind(this)
   }
 
+  clickFile () {
+    this.file.click()
+  }
+  
   UNSAFE_componentWillReceiveProps (nextProps) {
     let newState = {
       file: nextProps.file ? nextProps.file : null,
@@ -126,7 +131,7 @@ class Image extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 20 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='ui-block hoverborder' style={{borderColor: this.props.required && !this.state.file ? 'red': ''}}>
+        <div onClick={this.clickFile} className='ui-block hoverborder' style={{borderColor: this.props.required && !this.state.file ? 'red': ''}}>
           {
           this.state.loading
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
@@ -138,10 +143,10 @@ class Image extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer', padding: '10px'}} />
+              onChange={this._onChange} style={{display: 'none'}} />
             {
               (this.state.imgSrc === '')
-              ? <div className='align-center' style={{padding: '5px'}}>
+              ? <div className='align-center' style={{padding: '5px', marginTop: '-5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Upload Image </h6>
               </div>
