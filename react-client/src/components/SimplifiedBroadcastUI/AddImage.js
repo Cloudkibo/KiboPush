@@ -124,7 +124,7 @@ class Image extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+      <div className='broadcast-component' style={{marginBottom: 20 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='ui-block hoverborder' style={{borderColor: this.props.required && !this.state.file ? 'red': ''}}>
           {
@@ -143,7 +143,7 @@ class Image extends React.Component {
               (this.state.imgSrc === '')
               ? <div className='align-center' style={{padding: '5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Image </h6>
+                <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Upload Image </h6>
               </div>
               : <div className='align-center' style={{padding: '5px'}}>
                 <img src={this.state.imgSrc} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40, maxWidth: '100%'}} alt='Text' />

@@ -161,7 +161,7 @@ class AddAction extends React.Component {
   render () {
     return (
       <div>
-        <h4 style={{marginBottom: '20px'}}>Action (Optional):</h4>
+        <h5 style={{marginBottom: '10px', textAlign: 'left'}}>Action (Optional):</h5>
         {
           this.state.openPopover &&
           <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '200px', marginBottom: '30px', padding: '20px'}} >
