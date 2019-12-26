@@ -210,7 +210,7 @@ class CreateContact extends React.Component {
         }
         console.log('this.props.columns', this.props.columns)
         return ( 
-          <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <div className="modal-content" style={{ width: '687px', top: '100', height: this.state.showColumns ? '700px' :'312px', overflow:'hidden' }}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
@@ -222,7 +222,7 @@ class CreateContact extends React.Component {
                   </span>
             </button>
           </div>
-            <div style={{ textAlign: 'left' }} className="modal-body">
+            <div style={{ textAlign: 'left', overflow:'hidden' , overflowY:'scroll' }} className="modal-body">
                 <h6>HubSpot: Create/Update Contact Properties</h6>
                 <span style={{color: '#575962'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
              <br /> <br />

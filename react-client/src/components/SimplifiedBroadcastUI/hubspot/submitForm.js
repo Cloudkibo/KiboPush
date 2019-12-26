@@ -14,6 +14,7 @@ class submitForm extends React.Component {
             mappingData: props.mapping !== '' ? props.mapping : '',
             mappingDataValues: '',
             loadingColumns: false,
+            show_scroll: props.hubSpotForm === '' ? false : true,
             buttonDisabled:  props.hubSpotForm !== '' ? false : true
           }
           this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
@@ -78,7 +79,7 @@ class submitForm extends React.Component {
     }
     onhubspotFormChange (event) {
       let portalId = this.props.hubSpotForms.filter(hubSpotForm => hubSpotForm.guid === event.target.value)[0].portalId
-        this.setState({hubspotFormValue: event.target.value, portalId: portalId, buttonDisabled: false, loadingColumns: true})
+        this.setState({hubspotFormValue: event.target.value, portalId: portalId, buttonDisabled: false, loadingColumns: true, show_scroll: true})
         this.props.fetchColumns({formId: event.target.value})
       }
       UNSAFE_componentWillReceiveProps (nextProps) {
@@ -164,7 +165,7 @@ class submitForm extends React.Component {
       }
         console.log('hubspotFormValue', this.state.hubspotFormValue)
         return ( 
-          <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <div className="modal-content" style={{ width: '687px', top: '100', height: this.state.show_scroll ? '700px' :'312px', overflow:'hidden'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
@@ -176,7 +177,7 @@ class submitForm extends React.Component {
                   </span>
             </button>
           </div>
-            <div style={{ textAlign: 'left' }} className="modal-body">
+            <div style={{ textAlign: 'left', overflow:'hidden' , overflowY:'scroll' }} className="modal-body">
                 <h6>HubSpot: Submit data to a form</h6>
                 <span style={{color: '#575962'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
              <br /> <br />
