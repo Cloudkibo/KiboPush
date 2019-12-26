@@ -689,7 +689,7 @@ class CreateConvo extends React.Component {
             <div id='builder-dropdown-area'>
               {
                 this.state.showBuilderDropdown &&
-                <div className="daterangepicker dropdown-menu ltr opensleft" style={{display: 'block', top: '350px', right: '30.0002px', left: 'auto'}}>
+                <div className="daterangepicker dropdown-menu ltr opensleft" style={{display: 'block', top: '250px', right: '30.0002px', left: 'auto'}}>
                   <div className="ranges">
                     <ul>
                       <li onClick={() => this.switchBuilder('basic')} data-range-key="basic">Basic Builder</li>
