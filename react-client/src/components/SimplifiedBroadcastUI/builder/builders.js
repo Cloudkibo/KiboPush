@@ -28,6 +28,7 @@ import MediaModal from '../MediaModal'
 import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
 import YoutubeVideoModal from '../YoutubeVideoModal'
+import UserInputModal from '../UserInputModal'
 
 class Builders extends React.Component {
   constructor (props, context) {
@@ -902,7 +903,23 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
-        addComponent={this.addComponent} />)
+        addComponent={this.addComponent} />),
+        'input': (<UserInputModal
+          buttons={[]}
+          module = {this.props.module}
+          edit={this.state.editData ? true : false}
+          {...this.state.editData}
+          noButtons={this.props.noButtons}
+          pages={this.props.pages}
+          buttonActions={this.props.buttonActions}
+          replyWithMessage={this.props.replyWithMessage}
+          pageId={this.props.pageId.pageId}
+          showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+          closeModal={this.closeAddComponentModal}
+          addComponent={this.addComponent}
+          toggleGSModal={this.toggleGSModal}
+          closeGSModal={this.closeGSModal}
+          hideUserOptions={this.props.hideUserOptions} />)
     }
     return modals[this.state.componentType]
   }
