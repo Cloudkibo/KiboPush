@@ -140,13 +140,9 @@ class UnansweredQueries extends React.Component {
                           </th>
                           <th data-field='Name'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{ width: '100px', overflow: 'inherit' }}>Bot Name</span>
+                            <span style={{ width: '200px', overflow: 'inherit' }}>Bot Name</span>
                           </th>
-                          <th data-field='Page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{ width: '100px', overflow: 'inherit' }}>Confidence Score</span>
-                          </th>
-                          <th data-field='PhoneNumber'
+                          <th data-field='Date'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{ width: '100px', overflow: 'inherit' }}>Date</span>
                           </th>
@@ -169,18 +165,11 @@ class UnansweredQueries extends React.Component {
                               <td data-field='Page'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{ width: '100px', overflow: 'inherit' }}>
+                                  style={{ width: '200px', overflow: 'inherit' }}>
                                   {question.botId.botName ? question.botId.botName : 'Bot name not is missing'}
                                 </span>
                               </td>
-                              <td data-field='phoneNumber'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{ width: '100px', overflow: 'inherit' }}>
-                                  {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'No Answer Found'}
-                                </span>
-                              </td>
-                              <td data-field='source'
+                              <td data-field='Date'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{ width: '100px', overflow: 'inherit' }}>

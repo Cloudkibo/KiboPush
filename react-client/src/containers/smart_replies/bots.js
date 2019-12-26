@@ -608,145 +608,151 @@ class Bot extends React.Component {
                     }
                   </div>
                 </div>
-                <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                {
+                  this.props.bots && this.props.bots.length > 0
+                  ? <div className='m-portlet__body'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      </div>
+                      <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
+                        <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
+                        <span className='m-input-icon__icon m-input-icon__icon--left'>
+                          <span><i className='la la-search' /></span>
+                        </span>
+                      </div>
+                      <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center' style={{ margin: '10px' }}>
+                        <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
+                          <option value='' disabled>Filter by Pages...</option>
+                          {
+                            this.props.pages && this.props.pages.length > 0 &&
+                            this.props.pages.map((page, i) => (
+                              <option key={i} value={page._id}>{page.pageName}</option>
+                            ))
+                          }
+                          <option value=''>All</option>
+                        </select>
+                      </div>
+                      <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                        <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.statusFilterValue} onChange={this.onStatusFilter}>
+                          <option value='' disabled>Filter by Status...</option>
+                          <option value='true'>Active</option>
+                          <option value='false'>Disabled</option>
+                          <option value=''>All</option>
+                        </select>
+                      </div>
                     </div>
-                    <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
-                      <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
-                      <span className='m-input-icon__icon m-input-icon__icon--left'>
-                        <span><i className='la la-search' /></span>
-                      </span>
-                    </div>
-                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center' style={{ margin: '10px' }}>
-                      <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
-                        <option value='' disabled>Filter by Pages...</option>
-                        {
-                          this.props.pages && this.props.pages.length > 0 &&
-                          this.props.pages.map((page, i) => (
-                            <option key={i} value={page._id}>{page.pageName}</option>
-                          ))
-                        }
-                        <option value=''>All</option>
-                      </select>
-                    </div>
-                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
-                      <select className="form-control m-input m-input--square" id='m_form_status' tabIndex='-98' value={this.state.statusFilterValue} onChange={this.onStatusFilter}>
-                        <option value='' disabled>Filter by Status...</option>
-                        <option value='true'>Active</option>
-                        <option value='false'>Disabled</option>
-                        <option value=''>All</option>
-                      </select>
-                    </div>
-                  </div>
-                  <br />
-                  {this.state.botsData && this.state.botsData.length > 0
-                    ? <div className="m-widget5">
-                      {this.state.botsData.map((bot, i) => (
-                        <div className="m-widget5__item" key={bot._id}>
-                          <div className="m-widget5__pic" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
-                            <img
-                              className="m-widget7__img"
-                              src={bot.pageId.pagePic}
-                              alt=""
-                              style={{ borderRadius: '65px', width: '68px', height: '68px' }} />
-                          </div>
-                          <div className="m-widget5__content" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
-                            <h4 className="m-widget5__title" style={{ marginTop: '10px' }}>
-                              {bot.botName ? bot.botName.split('-').join(' ') : ''}
-                            </h4>
-                            <div className="m-widget5__info">
-                              <span className="m-widget5__info-label" style={{ marginRight: '5px' }}>
-                                Page:
+                    <br />
+                    {this.state.botsData && this.state.botsData.length > 0
+                      ? <div className="m-widget5">
+                        {this.state.botsData.map((bot, i) => (
+                          <div className="m-widget5__item" key={bot._id}>
+                            <div className="m-widget5__pic" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
+                              <img
+                                className="m-widget7__img"
+                                src={bot.pageId.pagePic}
+                                alt=""
+                                style={{ borderRadius: '65px', width: '68px', height: '68px' }} />
+                            </div>
+                            <div className="m-widget5__content" onClick={() => this.gotoView(bot)} style={{ cursor: 'pointer' }}>
+                              <h4 className="m-widget5__title" style={{ marginTop: '10px' }}>
+                                {bot.botName ? bot.botName.split('-').join(' ') : ''}
+                              </h4>
+                              <div className="m-widget5__info">
+                                <span className="m-widget5__info-label" style={{ marginRight: '5px' }}>
+                                  Page:
+                                </span>
+                                <span className="m-widget5__info-author-name">
+                                  {bot.pageId.pageName}
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              className="m-widget5__stats1"
+                              style={{
+                                textAlign: 'center',
+                                width: '12rem',
+                                paddingLeft: '0px'
+                              }}>
+                              <span className="m-widget5__number">
+                                {bot.hitCount ? bot.hitCount : 0}
                               </span>
-                              <span className="m-widget5__info-author-name">
-                                {bot.pageId.pageName}
+                              <br />
+                              <span className="m-widget5__sales">
+                                Responded
+                              </span>
+                            </div>
+                            <div
+                              className="m-widget5__stats2"
+                              style={{
+                                textAlign: 'center',
+                                width: '12rem',
+                                paddingLeft: '0px'
+                              }}>
+                              <span className="m-widget5__number">
+                                {bot.missCount ? bot.missCount : 0}
+                              </span>
+                              <br />
+                              <span className="m-widget5__votes">
+                                Not Responded
+                              </span>
+                            </div>
+                            <div
+                              className="m-widget5__stats2"
+                              style={{
+                                textAlign: 'center',
+                                width: '12rem',
+                                paddingLeft: '0px'
+                              }}>
+                              <span className="m-widget5__number">
+                                <span className="m-widget5__votes m-switch m-switch--outline m-switch--icon m-switch--success">
+                                  <label>
+                                    <input type="checkbox" onChange={() => { this.changeStatusCheckBox(bot._id, bot.isActive) }} checked={bot.isActive === 'false' ? false : true} name="" />
+                                    <span></span>
+                                  </label>
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              className="m-widget5__stats2"
+                              style={{
+                                textAlign: 'center',
+                                width: '7.1rem',
+                                color: 'red',
+                                paddingLeft: '0px'
+                              }}>
+                              <span
+                                onClick={() => this.showDialogDelete(bot._id)}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                <span className="m-widget5__number">
+                                  <i
+                                    className='la la-trash-o'
+                                    style={{
+                                      fontSize: '26px',
+                                      paddingLeft: '0px',
+                                      color: 'red',
+                                    }} />
+                                </span>
+                                <br />
+                                <span className="m-widget5__votes" style={{ color: 'red' }}>
+                                  Delete
+                                </span>
                               </span>
                             </div>
                           </div>
-                          <div
-                            className="m-widget5__stats1"
-                            style={{
-                              textAlign: 'center',
-                              width: '12rem',
-                              paddingLeft: '0px'
-                            }}>
-                            <span className="m-widget5__number">
-                              {bot.hitCount ? bot.hitCount : 0}
-                            </span>
-                            <br />
-                            <span className="m-widget5__sales">
-                              Responded
-                            </span>
-                          </div>
-                          <div
-                            className="m-widget5__stats2"
-                            style={{
-                              textAlign: 'center',
-                              width: '12rem',
-                              paddingLeft: '0px'
-                            }}>
-                            <span className="m-widget5__number">
-                              {bot.missCount ? bot.missCount : 0}
-                            </span>
-                            <br />
-                            <span className="m-widget5__votes">
-                              Not Responded
-                            </span>
-                          </div>
-                          <div
-                            className="m-widget5__stats2"
-                            style={{
-                              textAlign: 'center',
-                              width: '12rem',
-                              paddingLeft: '0px'
-                            }}>
-                            <span className="m-widget5__number">
-                              <span className="m-widget5__votes m-switch m-switch--outline m-switch--icon m-switch--success">
-                                <label>
-                                  <input type="checkbox" onChange={() => { this.changeStatusCheckBox(bot._id, bot.isActive) }} checked={bot.isActive === 'false' ? false : true} name="" />
-                                  <span></span>
-                                </label>
-                              </span>
-                            </span>
-                          </div>
-                          <div
-                            className="m-widget5__stats2"
-                            style={{
-                              textAlign: 'center',
-                              width: '7.1rem',
-                              color: 'red',
-                              paddingLeft: '0px'
-                            }}>
-                            <span
-                              onClick={() => this.showDialogDelete(bot._id)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <span className="m-widget5__number">
-                                <i
-                                  className='la la-trash-o'
-                                  style={{
-                                    fontSize: '26px',
-                                    paddingLeft: '0px',
-                                    color: 'red',
-                                  }} />
-                              </span>
-                              <br />
-                              <span className="m-widget5__votes" style={{ color: 'red' }}>
-                                Delete
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                      ))
-                      }
-                    </div>
-                    : <span>
-                      <p> No data to display </p>
-                    </span>
-                  }
-                </div>
+                        ))
+                        }
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
+                  </div>
+                  : <div className='m-portlet__body'>
+                    No data to display
+                  </div>
+                }
               </div>
             </div>
           </div>
