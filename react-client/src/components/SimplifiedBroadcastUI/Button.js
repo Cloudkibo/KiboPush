@@ -45,7 +45,6 @@ class Button extends React.Component {
       worksheetName: this.props.button && this.props.button.payload ? this.props.button.payload.worksheetName : '',
       lookUpValue: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpValue : '',
       lookUpColumn: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpColumn : '',
-      hubspotIntegration: '',
       hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : '',
       mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
       hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.formId : '',
