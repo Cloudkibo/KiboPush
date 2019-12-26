@@ -480,9 +480,9 @@ class CardModal extends React.Component {
                 <hr />
                 <div style={{marginTop: '20px'}}>
                   {
-                    (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{ minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
+                    (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{borderColor: "#3379B7", minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
                       <div onClick={this.addElement} style={{ paddingTop: '5px' }} className='align-center'>
-                        <h6> + Add Card </h6>
+                  <h6 style={{color: "#3379B7"}}> + Add Card </h6>
                       </div>
                     </div>
                   }
