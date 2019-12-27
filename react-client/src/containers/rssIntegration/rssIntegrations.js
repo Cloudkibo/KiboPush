@@ -9,26 +9,80 @@ import RssFeed from './RssFeed'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import { Link } from 'react-router-dom'
 import { fetchRssFeed, deleteRssFeed } from '../../redux/actions/rssIntegration.actions'
+import ReactPaginate from 'react-paginate'
 
 class RssIntegrations extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       newsPages: [],
-      deleteId: ''
+      deleteId: '',
+      searchValue: '',
+      status: '',
+      pageNumber: 0,
+      feeds: []
     }
-    props.fetchRssFeed()
+    props.fetchRssFeed({last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      search_value: '',
+      status_value: '',
+    })
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
     this.setDeleteId = this.setDeleteId.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
+    this.searchFeeds = this.searchFeeds.bind(this)
+    this.onStatusFilter = this.onStatusFilter.bind(this)
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
+  
+  onStatusFilter (e) {
+    this.setState({status: e.target.value, pageNumber: 0})
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({pageNumber: 0})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value})
+    } else {
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: ''})
+    }
+  }
+
+  searchFeeds (event) {
+    this.setState({
+      searchValue: event.target.value, pageNumber:0
+    })
+    if (event.target.value !== '') {
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status})
+    } else {
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', type_value: this.state.status})
+    }
+  }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   setDeleteId (id) {
     this.setState({deleteId: id})
+  }
+
+  displayData (n, feeds) {
+    let offset = n * 10
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 10) > feeds.length) {
+      limit = feeds.length
+    } else {
+      limit = offset + 10
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = feeds[i]
+      index++
+    }
+    this.setState({feeds: data})
   }
   componentDidMount () {
     const hostname =  window.location.hostname;
@@ -57,11 +111,50 @@ class RssIntegrations extends React.Component {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if(nextProps.pages !== this.props.pages) {
+    if(nextProps.pages && nextProps.pages.length !== this.props.pages.length) {
       this.setState({newsPages: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
+    if (nextProps.rssFeeds && nextProps.rssFeeds.length !== this.props.rssFeeds.length) {
+      this.displayData(0, nextProps.rssFeeds)
+    }
+    if (nextProps.count && nextProps.count !== this.props.rssFeeds) {
+      this.setState({ totalLength: nextProps.count })
+    }
   }
-
+  handlePageClick(data) {
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.fetchRssFeed({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        status_value: this.state.status
+      })
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.fetchRssFeed({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        search_value: this.state.searchValue,
+        status_value: this.state.status
+      })
+    } else {
+      this.props.fetchRssFeed({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        search_value: this.state.searchValue,
+        status_value: this.state.status
+      })
+    }
+    this.setState({pageNumber: data.selected})
+    this.displayData(data.selected, this.props.rssFeeds)
+  }
   updateDeleteID (id) {
     this.setState({deleteid: id})
   }
@@ -177,7 +270,7 @@ class RssIntegrations extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
-                <button
+                <Link to='/editFeed'
                   className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                   <span>
                     <i className='la la-plus' />
@@ -185,7 +278,7 @@ class RssIntegrations extends React.Component {
                       Add Feed
                     </span>
                   </span>
-                </button>
+                </Link>
               </div>
             </div>
             <div className='m-portlet__body'>
@@ -203,22 +296,54 @@ class RssIntegrations extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className='m-widget5'>
-                { this.props.feeds && this.props.feeds.length > 0 
-                ? this.props.rssFeeds.map((feed, i) => (
-                  <RssFeed feed={feed} 
-                    openSettings={this.props.gotoSettings} 
-                    gotoMessages={this.props.gotoMessages}
-                    setDeleteId={this.props.setDeleteId}
-                  />
-                ))
-                : <div>You have no connected Rss Feeds</div>
-                }
+              { this.state.feeds && this.state.feeds.length > 0 &&
+              <div className='row' style={{marginBottom: '15px'}}>
+                <div className='col-md-6'>
+                  <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
                 </div>
+                <div className='col-md-4'>
+                  <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
+                    <option value='' disabled>Filter by Status...</option>
+                    <option value='enabled'>Enabled</option>
+                    <option value='disabled'>Disabled</option>
+                  </select>
+                </div>
+              </div>
+              }
+              <div className='row' >
+                { this.state.feeds && this.state.feeds.length > 0 
+                ? <div className='col-12 m-widget5'>
+                  { this.state.feeds.map((feed, i) => (
+                    <RssFeed feed={feed} 
+                      openSettings={this.props.gotoSettings} 
+                      gotoMessages={this.props.gotoMessages}
+                      setDeleteId={this.props.setDeleteId}
+                    />
+                  ))
+                  }
+                  <div className='pagination'>
+                    <ReactPaginate
+                      previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a href='#/'>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      forcePage={this.state.pageNumber}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
+                  </div>
+                </div>
+                : <div className='col-12'>You have no connected Rss Feeds</div>
+                }
+              </div>
             </div>
           </div>
-        </div>      
-      </div>
+        </div>
+      </div>      
     )
   }
 }
@@ -227,7 +352,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
-    rssFeeds: (state.feedsInfo.rssFeeds)
+    rssFeeds: (state.feedsInfo.rssFeeds),
+    count: (state.feedsInfo.count)
   }
 }
 

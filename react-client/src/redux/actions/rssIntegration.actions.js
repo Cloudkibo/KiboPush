@@ -18,10 +18,10 @@ export function deleteRssFeed (id) {
   }
 }
 
-export function fetchRssFeed () {
-  console.log('function for fetching rss feeds')
+export function fetchRssFeed (data) {
+  console.log('function for fetching rss feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/`)
+    callApi(`rssFeeds/`, 'post', data)
       .then(res => {
         console.log('response from fetching rss feeds', res)
         if (res.status === 'success') {
