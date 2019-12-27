@@ -28,32 +28,50 @@ class UserInputModal extends React.Component {
     this.setQuestion = this.setQuestion.bind(this)
     this.addQuestion = this.addQuestion.bind(this)
     this.updateActionStatus = this.updateActionStatus.bind(this)
+    this.scrollToTop = this.scrollToTop.bind(this)
 
     this.questionLimit = 10
+  }
+
+  scrollToTopPreview (elementId) {
+    document.getElementById(elementId).click()
+    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
+  }
+
+  scrollToTop(elementId) {
+    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
   }
 
   addQuestion () {
     let questions = this.state.questions
     questions.push({question: '', replyType: '', customField: ''})
-    this.setState({questions})
+    this.setState({questions}, () => {
+      this.scrollToTop(`question-heading${questions.length}`)
+    })
   }
 
   setQuestion (e, index) {
     let questions = this.state.questions
     questions[index].question = e.target.value
-    this.setState({questions})
+    this.setState({questions}, () => {
+      this.scrollToTopPreview(`question-preview${index+1}`)
+    })
 }
 
   setReplyType (e, index) {
       let questions = this.state.questions
       questions[index].replyType = e.target.value
-      this.setState({questions})
+      this.setState({questions}, () => {
+        this.scrollToTopPreview(`question-preview${index+1}`)
+      })
   }
   
   setCustomField (e, index) {
     let questions = this.state.questions
     questions[index].customField = e.target.value
-    this.setState({questions})
+    this.setState({questions}, () => {
+        this.scrollToTopPreview(`question-preview${index+1}`)
+    })
   }
 
   toggleUserOptions() {
@@ -81,7 +99,6 @@ class UserInputModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent in UserInputModal', this.props)
-
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'text',
@@ -129,7 +146,7 @@ class UserInputModal extends React.Component {
                     this.state.questions.map((question, index) => {
                         return (
                         <div>
-                            <h5>{`Question #${index+1} for User:`}</h5>
+                            <h5 id={`question-heading${index+1}`}>{`Question #${index+1} for User:`}</h5>
                             <textarea placeholder={'Please type here...'} value={question.question} style={{ maxWidth: '100%', minHeight: '100px', borderColor: question.question === '' ? 'red' : '' }} onChange={(event) => this.setQuestion(event, index)} className='form-control' />
                             {(!this.props.hideUserOptions) &&
                             <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-25px', marginRight: '2px' }}>
@@ -210,6 +227,7 @@ class UserInputModal extends React.Component {
                 }
 
                     <AddAction
+                        smallHeading
                         edit={this.props.edit}
                         default_action={this.state.default_action}
                         webviewurl={this.state.webviewurl}
@@ -235,13 +253,13 @@ class UserInputModal extends React.Component {
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
                 {
-                    this.state.questions.map((question) => {
+                    this.state.questions.map((question, index) => {
                         return (
                             <div>
-                                <div className='discussion' style={{ display: 'inline-block', marginTop: '100px' }} >
+                                <div id={`question-preview${index+1}`} className='discussion' style={{ display: 'inline-block', marginTop: '100px' }} >
                                     <div style={{ maxWidth: '100%', fontSize: '16px' }} className='bubble recipient'>{question.question}</div>
                                 </div>
-                                <div style={{marginLeft: '5%', marginTop: '30px', width: '90%', height: '12px', borderBottom: '1px solid lightgray', textAlign: 'center'}}>
+                                <div style={{marginLeft: '5%', marginTop: '30px', marginBottom: '30px', width: '90%', height: '12px', borderBottom: '1px solid lightgray', textAlign: 'center'}}>
                                     <span style={{color: 'dimgray', backgroundColor: 'white', padding: '0 5px'}}>
                                         Waiting for a reply from the user
                                     </span>
