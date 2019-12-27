@@ -39,6 +39,7 @@ import BroadcastsByDays from './containers/operationalDashboard/broadcastsByDays
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import Autoposting from './containers/autoposting/autoposting'
 import RssIntegration from './containers/rssIntegration/rssIntegrations'
+import CreateFeed from './containers/rssIntegration/createFeed'
 import MessagesContainer from './containers/autoposting/messagesContainer'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/livechat'
@@ -204,6 +205,7 @@ const Routes = () => (
     <Route path='/autopostingMessages' component={MessagesContainer} onEnter={requireAuth} />
     <Route path='/autopostingItemSettings' component={ItemSettings} onEnter={requireAuth} />
     <Route path='/rssIntegration' component={RssIntegration} onEnter={requireAuth} />
+    <Route path='/editFeed' component={CreateFeed} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
