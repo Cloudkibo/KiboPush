@@ -33,9 +33,15 @@ class UserInputModal extends React.Component {
     this.questionLimit = 10
   }
 
+  scrollParentToChild(parent, child) {
+    let parentRect = parent.getBoundingClientRect();
+    let childRect = child.getBoundingClientRect();
+    parent.scrollTop = (childRect.top + parent.scrollTop) - parentRect.top - 20
+  }
+
   scrollToTopPreview (elementId) {
-    document.getElementById(elementId).click()
-    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
+    console.log('scrollToTopPreview', elementId)
+    this.scrollParentToChild(document.getElementById('userInputPreview'), document.getElementById(elementId))
   }
 
   scrollToTop(elementId) {
@@ -46,6 +52,7 @@ class UserInputModal extends React.Component {
     let questions = this.state.questions
     questions.push({question: '', replyType: '', customField: ''})
     this.setState({questions}, () => {
+      this.scrollToTopPreview(`question-preview${questions.length}`)
       this.scrollToTop(`question-heading${questions.length}`)
     })
   }
@@ -54,24 +61,20 @@ class UserInputModal extends React.Component {
     let questions = this.state.questions
     questions[index].question = e.target.value
     this.setState({questions}, () => {
-      this.scrollToTopPreview(`question-preview${index+1}`)
+        this.scrollToTopPreview(`question-preview${index+1}`)
     })
 }
 
   setReplyType (e, index) {
       let questions = this.state.questions
       questions[index].replyType = e.target.value
-      this.setState({questions}, () => {
-        this.scrollToTopPreview(`question-preview${index+1}`)
-      })
+      this.setState({questions})
   }
   
   setCustomField (e, index) {
     let questions = this.state.questions
     questions[index].customField = e.target.value
-    this.setState({questions}, () => {
-        this.scrollToTopPreview(`question-preview${index+1}`)
-    })
+    this.setState({questions})
   }
 
   toggleUserOptions() {
@@ -238,8 +241,9 @@ class UserInputModal extends React.Component {
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>
                   {
-                    (this.state.questions.length < this.questionLimit) && <div className='ui-block hoverborder' style={{borderColor: "#3379B7", minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
-                      <div onClick={this.addQuestion} style={{ paddingTop: '5px' }} className='align-center'>
+                    (this.state.questions.length < this.questionLimit) && 
+                    <div onClick={this.addQuestion} className='ui-block hoverborder' style={{borderColor: "#3379B7", minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
+                      <div style={{ paddingTop: '5px' }} className='align-center'>
                         <h6 style={{color: "#3379B7"}}> + Add Question </h6>
                       </div>
                     </div>
@@ -251,7 +255,7 @@ class UserInputModal extends React.Component {
             </div>
             <div className='col-5'>
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
-              <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
+              <div id='userInputPreview' className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
                 {
                     this.state.questions.map((question, index) => {
                         return (
