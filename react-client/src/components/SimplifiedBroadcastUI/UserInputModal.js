@@ -1,25 +1,27 @@
 import React from 'react'
 import { Popover, PopoverBody } from 'reactstrap'
 import AddAction from './AddAction'
+import CustomFields from '../customFields/customfields'
 
 class UserInputModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      edited: false,
+      customFields: [],
       action: null,
-      questions: [{question: '', replyType: '', customField: ''}],
-      text: props.text ? props.text : '',
-      buttons: props.buttons.map(button => { return { visible: true, title: button.title } }),
-      buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
-      buttonLimit: 3,
-      buttonDisabled: false,
-      messengerAdPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
+      questions: props.questions ? props.questions : 
+        [{
+            question: '', 
+            type: '', 
+            customFieldId: '', 
+            incorrectTriesAllowed: 3, 
+            skipButtonText: 'skip', 
+            retryMessage: ''
+        }]
     }
     console.log('messengerAdPayloads', this.state.messengerAdPayloads)
     console.log('UserInputModal initial state', this.state)
-    this.handleTextChange = this.handleTextChange.bind(this)
-    this.handleDone = this.handleDone.bind(this)
-    this.updateButtonStatus = this.updateButtonStatus.bind(this)
     this.toggleUserOptions = this.toggleUserOptions.bind(this)
     this.getName = this.getName.bind(this)
     this.closeModal = this.closeModal.bind(this)
@@ -29,8 +31,25 @@ class UserInputModal extends React.Component {
     this.addQuestion = this.addQuestion.bind(this)
     this.updateActionStatus = this.updateActionStatus.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
+    this.checkDisabled = this.checkDisabled.bind(this)
+    this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
+  }
 
-    this.questionLimit = 10
+
+  onLoadCustomFields (customFields) {
+    this.setState({customFields})
+  }
+
+  checkDisabled () {
+      for (let i = 0; i < this.state.questions.length; i++) {
+          let question = this.state.questions[i]
+          if (!question.question || !question.type || !question.customFieldId) {
+              return true
+          }
+          if (question.type !== 'text') {
+
+          }
+      }
   }
 
   scrollParentToChild(parent, child) {
@@ -50,8 +69,15 @@ class UserInputModal extends React.Component {
 
   addQuestion () {
     let questions = this.state.questions
-    questions.push({question: '', replyType: '', customField: ''})
-    this.setState({questions}, () => {
+    questions.push({
+        question: '', 
+        type: '', 
+        customFieldId: '', 
+        incorrectTriesAllowed: 3, 
+        skipButtonText: 'Skip', 
+        retryMessage: ''
+    })
+    this.setState({questions, edited: true}, () => {
       this.scrollToTopPreview(`question-preview${questions.length}`)
       this.scrollToTop(`question-heading${questions.length}`)
     })
@@ -60,59 +86,46 @@ class UserInputModal extends React.Component {
   setQuestion (e, index) {
     let questions = this.state.questions
     questions[index].question = e.target.value
-    this.setState({questions}, () => {
+    this.setState({questions, edited: true}, () => {
         this.scrollToTopPreview(`question-preview${index+1}`)
     })
 }
 
   setReplyType (e, index) {
       let questions = this.state.questions
-      questions[index].replyType = e.target.value
-      this.setState({questions})
+      questions[index].type = e.target.value
+      this.setState({questions, edited: true})
   }
   
   setCustomField (e, index) {
     let questions = this.state.questions
-    questions[index].customField = e.target.value
-    this.setState({questions})
+    questions[index].customFieldId = e.target.value
+    this.setState({questions, edited: true})
   }
 
   toggleUserOptions() {
     this.setState({ showUserOptions: !this.state.showUserOptions })
   }
 
-  getName(e, name) {
+  getName(e, index, name) {
     console.log('getName', name)
-    let message = this.state.text + ((this.state.text && this.state.text.length > 0) ? ` {{${name}}}` : `{{${name}}}`)
-    this.setState({ text: message, showUserOptions: false })
+    let questions = this.state.questions
+    let currentQuestion = this.state.questions[index].question
+    questions[index].question = currentQuestion + ((currentQuestion && currentQuestion.length > 0) ? ` {{${name}}}` : `{{${name}}}`)
+    this.setState({ questions, showUserOptions: false })
   }
 
-  handleTextChange(e) {
-    this.setState({ text: e.target.value, edited: true })
-  }
-
-  updateButtonStatus(status) {
-    status.edited = true
-    this.setState(status)
-  }
-
-  handleDone() {
-    this.addComponent([])
-  }
-
-  addComponent(buttons) {
+  addComponent() {
     console.log('addComponent in UserInputModal', this.props)
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
-      componentType: 'text',
-      text: this.state.text,
-      buttons: [],
-      deletePayload: null
+      componentType: 'userInput',
+      questions: this.state.questions
     }, this.props.edit)
   }
 
   closeModal() {
-    if (!this.state.edited || (this.state.text === '' && this.state.buttons.length === 0)) {
+    if (!this.state.edited) {
       this.props.closeModal()
     } else {
       this.props.showCloseModalAlertDialog()
@@ -138,7 +151,7 @@ class UserInputModal extends React.Component {
           <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" onClick={this.closeModal}>
             <span aria-hidden="true">
               &times;
-						</span>
+            </span>
           </button>
         </div>
         <div style={{ color: 'black' }} className="modal-body">
@@ -173,12 +186,12 @@ class UserInputModal extends React.Component {
                                 </div>
                             </div>
                             }
-                        {(!this.props.hideUserOptions) &&
+                            {(!this.props.hideUserOptions) &&
                             <Popover container={document.getElementsByClassName('narcissus_17w311v')[0]} placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
                                 <PopoverBody>
-                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
-                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
-                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, index, 'user_first_name')}>First Name</div>
+                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, index, 'user_last_name')}>Last Name</div>
+                                <div className='col-12 nameOptions' onClick={(e) => this.getName(e, index, 'user_full_name')}>Full Name</div>
                                 </PopoverBody>
                             </Popover>
                             }
@@ -187,7 +200,7 @@ class UserInputModal extends React.Component {
                             <h6>Reply Type:</h6>
                                 <div className='row'>
                                     <div className='col-6'>
-                                        <select value={question.replyType} style={{borderColor: !question.replyType  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setReplyType(event, index)}>
+                                        <select value={question.type} style={{borderColor: !question.type  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setReplyType(event, index)}>
                                             <option value={''} disabled>Select a Reply Type</option>
                                             {/* {
                                                 this.props.sequences.map((sequence, index) => {
@@ -200,7 +213,7 @@ class UserInputModal extends React.Component {
                                             <option value={'number'}>{'Number'}</option>
                                             <option value={'email'}>{'Email'}</option>                                    
                                         </select>
-                                        <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.replyType ? '*Required' : ''}</div>
+                                        <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.type ? '*Required' : ''}</div>
                                     </div>
                                 </div>
 
@@ -208,20 +221,27 @@ class UserInputModal extends React.Component {
                         <h6>Save response to a Custom Field:</h6>              
                             <div className='row'>
                                 <div className='col-6'>
-                                    <select value={question.customField} style={{borderColor: !question.customField  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setReplyType(event, index)}>
+                                    <select value={question.customFieldId} style={{borderColor: !question.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setCustomField(event, index)}>
                                         <option value={''} disabled>Select a Custom Field</option>
-                                        {/* {
-                                            this.props.sequences.map((sequence, index) => {
+                                        {
+                                            this.state.customFields.map((customField, index) => {
                                                 return (
-                                                    <option key={index} value={sequence.sequence._id}>{sequence.sequence.name}</option>
+                                                    <option key={index} value={customField._id}>{customField.name}</option>
                                                 )
                                             })
-                                        } */}
-                                        <option value={'city'}>{'city'}</option>
+                                        }
+                                        {/* <option value={'city'}>{'city'}</option>
                                         <option value={'school'}>{'school'}</option>
-                                        <option value={'profession'}>{'profession'}</option>                                    
+                                        <option value={'profession'}>{'profession'}</option> */}
                                     </select>
-                                    <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.customField ? '*Required' : ''}</div>
+                                    <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
+                                    <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
+                            </div>
+                        </div>
+
+                        <div className='row'>
+                            <div className='col-6'>
+                                <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
                             </div>
                         </div>
                         <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
@@ -241,7 +261,6 @@ class UserInputModal extends React.Component {
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>
                   {
-                    (this.state.questions.length < this.questionLimit) && 
                     <div onClick={this.addQuestion} className='ui-block hoverborder' style={{borderColor: "#3379B7", minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
                       <div style={{ paddingTop: '5px' }} className='align-center'>
                         <h6 style={{color: "#3379B7"}}> + Add Question </h6>
@@ -260,10 +279,10 @@ class UserInputModal extends React.Component {
                     this.state.questions.map((question, index) => {
                         return (
                             <div>
-                                <div id={`question-preview${index+1}`} className='discussion' style={{ display: 'inline-block', marginTop: '100px' }} >
+                                <div id={`question-preview${index+1}`} className='discussion' style={{ display: 'inline-block', marginTop: index === 0 ? '100px' : '0' }} >
                                     <div style={{ maxWidth: '100%', fontSize: '16px' }} className='bubble recipient'>{question.question}</div>
                                 </div>
-                                <div style={{marginLeft: '5%', marginTop: '30px', marginBottom: '30px', width: '90%', height: '12px', borderBottom: '1px solid lightgray', textAlign: 'center'}}>
+                                <div style={{marginLeft: '5%', marginTop: '30px', marginBottom: '50px', width: '90%', height: '12px', borderBottom: '1px solid lightgray', textAlign: 'center'}}>
                                     <span style={{color: 'dimgray', backgroundColor: 'white', padding: '0 5px'}}>
                                         Waiting for a reply from the user
                                     </span>
@@ -279,7 +298,7 @@ class UserInputModal extends React.Component {
                 <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px'}}>
                   Cancel
                 </button>
-                <button disabled={!this.state.text || this.state.buttonDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+                <button disabled={this.checkDisabled()} onClick={() => this.addComponent()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
