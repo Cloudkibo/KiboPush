@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadWaitingSubscribers, removeWaitingSubscribers } from '../../redux/actions/smart_replies.actions'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class WaitingReplyList extends React.Component {
   constructor (props, context) {
@@ -330,17 +331,11 @@ class WaitingReplyList extends React.Component {
                     No data to display
                   </div>
                 }
-                <div className='m-portlet__foot m-portlet__foot--fit'>
-                  <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                    <button
-                      onClick={this.backToIntents}
-                      className='btn btn-primary'>Back</button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </div>
+        <BACKBUTTON onBack={this.backToIntents} />
       </div>
     )
   }
