@@ -16,7 +16,7 @@ class UserInputModal extends React.Component {
             type: '', 
             customFieldId: '', 
             incorrectTriesAllowed: 3, 
-            skipButtonText: 'skip', 
+            skipButtonText: 'Skip', 
             retryMessage: ''
         }]
     }
@@ -33,8 +33,28 @@ class UserInputModal extends React.Component {
     this.scrollToTop = this.scrollToTop.bind(this)
     this.checkDisabled = this.checkDisabled.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
+    this.incorrectTriesAllowedChange = this.incorrectTriesAllowedChange.bind(this)
+    this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
+    this.retryMessageChange = this.retryMessageChange.bind(this)
   }
 
+  retryMessageChange (e, index) {
+    let questions = this.state.questions
+    questions[index].skipButtonText = e.target.value
+    this.setState({questions, edited: true})
+  }
+
+  skipButtonTextChange (e, index) {
+    let questions = this.state.questions
+    questions[index].skipButtonText = e.target.value
+    this.setState({questions, edited: true})
+  }
+
+  incorrectTriesAllowedChange (e, index) {
+      let questions = this.state.questions
+      questions[index].incorrectTriesAllowed = e.target.value
+      this.setState({questions, edited: true})
+  }
 
   onLoadCustomFields (customFields) {
     this.setState({customFields})
@@ -47,7 +67,9 @@ class UserInputModal extends React.Component {
               return true
           }
           if (question.type !== 'text') {
-
+            if (!question.skipButtonText || !question.retryMessage) {
+                return true
+            }
           }
       }
   }
@@ -94,6 +116,9 @@ class UserInputModal extends React.Component {
   setReplyType (e, index) {
       let questions = this.state.questions
       questions[index].type = e.target.value
+      if (e.target.value === 'number') {
+        questions[index].retryMessage = 'Please enter a number. Use digits only.'
+      }
       this.setState({questions, edited: true})
   }
   
@@ -202,13 +227,6 @@ class UserInputModal extends React.Component {
                                     <div className='col-6'>
                                         <select value={question.type} style={{borderColor: !question.type  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setReplyType(event, index)}>
                                             <option value={''} disabled>Select a Reply Type</option>
-                                            {/* {
-                                                this.props.sequences.map((sequence, index) => {
-                                                    return (
-                                                        <option key={index} value={sequence.sequence._id}>{sequence.sequence.name}</option>
-                                                    )
-                                                })
-                                            } */}
                                             <option value={'text'}>{'Text'}</option>
                                             <option value={'number'}>{'Number'}</option>
                                             <option value={'email'}>{'Email'}</option>                                    
@@ -230,20 +248,38 @@ class UserInputModal extends React.Component {
                                                 )
                                             })
                                         }
-                                        {/* <option value={'city'}>{'city'}</option>
-                                        <option value={'school'}>{'school'}</option>
-                                        <option value={'profession'}>{'profession'}</option> */}
                                     </select>
-                                    <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
+                                    <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
                                     <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
                             </div>
                         </div>
+                        {
+                        question.type && question.type !== 'text' &&
+                        <div>
+                            <h6>Number of incorrect tries allowed:</h6>              
+                            <div className='row'>
+                                <div className='col-6'>
+                                <input style={{marginBottom: '20px'}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
+                                </div>
+                            </div>
 
-                        <div className='row'>
-                            <div className='col-6'>
-                                <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
+                            <h6>"Skip" button text:</h6>      
+                            <div className='row'>
+                                <div className='col-6'>
+                                    <input style={{borderColor: question.skipButtonText === '' ? 'red' : ''}} type='text' className='form-control m-input' value={question.skipButtonText} onChange={(e) => this.skipButtonTextChange(e, index)} />
+                                    <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.skipButtonText ? '*Required' : ''}</div>
+                                </div>
+                            </div>
+
+                            <h6>Retry message if user gives incorrect response:</h6>      
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <textarea style={{minHeight: '50px', maxHeight: '100px', borderColor: question.retryMessage === '' ? 'red' : ''}} type='text' className='form-control m-input' value={question.retryMessage} onChange={(e) => this.retryMessageChange(e, index)} />
+                                    <div style={{color: 'red', textAlign: 'left', marginBottom: index === this.state.questions.length-1 ? '10px' : '20px'}}>{!question.retryMessage ? '*Required' : ''}</div>
+                                </div>
                             </div>
                         </div>
+                        }
                         <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                     </div>)
                     })
