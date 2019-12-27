@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { editBot } from '../../redux/actions/smart_replies.actions'
 import { loadBotIntents, createIntent, updateIntent, trainBot, deleteIntnet } from '../../redux/actions/smart_replies_intents.actions'
-
+import BACKBUTTON from '../../components/extras/backButton'
 
 class Intents extends React.Component {
   constructor(props) {
@@ -51,6 +51,13 @@ class Intents extends React.Component {
     this.setAnswer = this.setAnswer.bind(this)
     this.searchIntent = this.searchIntent.bind(this)
     this.handleTrainBot = this.handleTrainBot.bind(this)
+    this.onBack = this.onBack.bind(this)
+  }
+
+  onBack () {
+    this.props.history.push({
+      pathname: '/bots'
+    })
   }
 
   searchIntent(e) {
@@ -96,20 +103,22 @@ class Intents extends React.Component {
     this.setState({ disableRenameButton: true, renameIntent: '' })
   }
 
-  clickIntent(intent, index, state) {
+  clickIntent(intent, state) {
     if (state === 'edit') {
-      let temp = JSON.parse(JSON.stringify(intent))
-      this.setState({ currentIntent: temp })
       this.refs.renameIntent.click()
     } else {
-      for (let a = 0; a < this.state.intents.length; a++) {
-        if (this.state.intents[a]._id !== intent._id) {
-          document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
+      if (this.state.currentIntent !== null) {
+        this.setState({ currentIntent: null })
+      } else {
+        for (let a = 0; a < this.state.intents.length; a++) {
+          if (this.state.intents[a]._id !== intent._id) {
+            document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
+          }
         }
-      }
 
-      let temp = JSON.parse(JSON.stringify(intent))
-      this.setState({ currentIntent: temp })
+        let temp = JSON.parse(JSON.stringify(intent))
+        this.setState({ currentIntent: temp })
+      }
     }
   }
 
@@ -121,7 +130,6 @@ class Intents extends React.Component {
     }
     this.props.deleteIntnet(data, this.state.id, this.msg)
     this.setState({ currentIntent: null })
-    document.getElementById(`collapse_${this.state.intents[0]._id}`).classList.remove("show")
   }
 
   updateIntent() {
@@ -471,23 +479,52 @@ class Intents extends React.Component {
                           this.state.intents && this.state.intents.length > 0
                             ? <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
                               {this.state.intents.map((intent, i) =>
-                                <div key={i} className='accordion' id={`accordion${intent._id}`}>
+                                <div key={intent._id} className='accordion' id={`accordion${intent._id}`}>
                                   <div className='card'>
                                     <div className='card-header' id={`heading${intent._id}`}>
                                       <h4 className='mb-0'>
-                                        <a
-                                          href='#/'
-                                          className='btn btn-link'
+                                        <div
+                                          className='btn'
                                           data-toggle='collapse'
                                           data-target={`#collapse_${intent._id}`}
                                           aria-expanded="true"
                                           aria-controls={`#collapse_${intent._id}`}
-                                          onClick={() => this.clickIntent(intent, i)}>
+                                          onClick={() => this.clickIntent(intent)}>
                                           {intent.name}
-                                        </a>
-                                        <i id="convoTitle" className="fa fa-pencil-square-o" aria-hidden="true"
-                                          style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
-                                          onClick={() => this.clickIntent(intent, i, 'edit')}></i>
+                                        </div>
+                                        {
+                                          this.state.currentIntent &&
+                                          this.state.currentIntent._id === intent._id &&
+                                          <i
+                                            id="convoTitle"
+                                            className="fa fa-pencil-square-o"
+                                            aria-hidden="true"
+                                            style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '20px' }}
+                                            onClick={() => this.clickIntent(intent, 'edit')}
+                                          />
+                                        }
+                                        {
+                                          this.state.currentIntent &&
+                                          this.state.currentIntent._id === intent._id
+                                          ? <div className='btn pull-right'>
+                                            <i
+                                              onClick={() => this.clickIntent(intent)}
+                                              style={{fontSize: '20px'}}
+                                              className='la la-angle-up'
+                                              data-toggle='collapse'
+                                              data-target={`#collapse_${intent._id}`}
+                                            />
+                                          </div>
+                                          : <div className='btn pull-right'>
+                                            <i
+                                              onClick={() => this.clickIntent(intent)}
+                                              style={{fontSize: '20px'}}
+                                              className='la la-angle-down'
+                                              data-toggle='collapse'
+                                              data-target={`#collapse_${intent._id}`}
+                                            />
+                                          </div>
+                                        }
                                       </h4>
                                     </div>
                                     <div id={`collapse_${intent._id}`} className='collapse' aria-labelledby={`heading${intent._id}`} data-parent="#accordion">
@@ -596,6 +633,7 @@ class Intents extends React.Component {
             </div>
           </div>
         </div>
+        <BACKBUTTON onBack={this.onBack} />
       </div>
     )
   }
