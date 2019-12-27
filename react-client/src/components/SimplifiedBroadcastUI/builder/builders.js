@@ -355,6 +355,7 @@ class Builders extends React.Component {
       data.parentId = this.state.currentId
       linkedMessages.push(data)
     } else {
+      data.parentId = this.state.currentId
       unlinkedMessages.push(data)
     }
     lists[id] = []
@@ -418,7 +419,7 @@ class Builders extends React.Component {
     if (showDialog) {
       this.showResetAlertDialog()
     } else {
-      this.newConvo()
+      this.newConvo(true)
     }
   }
 
@@ -691,7 +692,7 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp2}, obj)
   }
 
-  newConvo () {
+  newConvo (render) {
     let currentId = new Date().getTime()
     let lists = {}
     lists[currentId] = []
@@ -709,7 +710,7 @@ class Builders extends React.Component {
     }, () => {
       this.handleChange({convoTitle: this.defaultTitle}, {})
       this.handleChange({broadcast: []}, {})
-      if (this.props.builderValue === 'flow') {
+      if (render && this.props.builderValue === 'flow') {
         this.props.rerenderFlowBuilder()
       }
     })
@@ -1372,6 +1373,7 @@ class Builders extends React.Component {
           pageId={this.props.pageId}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           showDialog={this.showDialog}
           hiddenComponents={this.state.hiddenComponents}
@@ -1393,12 +1395,16 @@ class Builders extends React.Component {
           unlinkedMessages={this.state.unlinkedMessages}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           getComponent={this.getComponent}
           pageId={this.props.pageId}
           getItems={this.getItems}
           changeMessage={this.changeMessage}
           removeMessage={this.removeMessage}
+          reset={this.props.reset}
+          onNext={this.props.onNext}
+          isBroadcastInvalid={this.props.isBroadcastInvalid}
         />
       }
 
@@ -1424,12 +1430,16 @@ Builders.propTypes = {
   'builderValue': PropTypes.string.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
   'noDefaultHeight': PropTypes.bool,
   'linkedMessages': PropTypes.array,
   'showTabs': PropTypes.bool.isRequired,
   'unlinkedMessages': PropTypes.array,
-  'switchBuilder': PropTypes.func.isRequired
+  'switchBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 Builders.defaultProps = {
@@ -1442,9 +1452,9 @@ Builders.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
-    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
-    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+    sequences: state.sequenceInfo.sequences,
+    broadcasts: state.templatesInfo.broadcasts,
+    tags: state.tagsInfo.tags
   }
 }
 

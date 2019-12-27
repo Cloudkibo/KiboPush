@@ -12,7 +12,6 @@ import ListItem from './ListItem'
 import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class Autoposting extends React.Component {
   constructor (props) {
@@ -93,7 +92,6 @@ class Autoposting extends React.Component {
     console.log('autoposting history', this.props.location)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

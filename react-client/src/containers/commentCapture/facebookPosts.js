@@ -290,7 +290,7 @@ class FacebookPosts extends React.Component {
         </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+            <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Delete Post
@@ -302,7 +302,7 @@ class FacebookPosts extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <p>If you delete this post, it will be deleted from your Facebook page timeline as well. Are you sure you want to delete this?</p>
+                <p>Are you sure you want to delete this comment capture rule ?</p>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
@@ -408,11 +408,15 @@ class FacebookPosts extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                          <span style={{width: '150px'}}>Title</span>
+                          <span style={{width: '100px'}}>Title</span>
                           </th>
                           <th data-field='posts'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Type</span>
+                            <span style={{width: '100px'}}>Type</span>
+                          </th>
+                          <th data-field='page'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Page</span>
                           </th>
                           <th data-field='commentsCount'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -424,7 +428,7 @@ class FacebookPosts extends React.Component {
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '200px'}}>Date</span>
+                            <span style={{width: '150px'}}>Date</span>
                           </th>
                           <th data-field='dateCreated'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -438,11 +442,12 @@ class FacebookPosts extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px', whiteSpace: 'nowrap'}} key={i}>
-                            <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
-                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
+                            <td data-field='title' title={post.title} className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.title ? post.title: 'Comment Capture'}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.payload && post.payload.length > 0 ? 'New Post': (post.post_id && post.post_id !== ''? 'Existing Post': 'Any Post')}</span></td>
+                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === post.pageId)[0].pageName}</span></td>
                             <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
                             <td data-field='conversions' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.conversionCount ? post.conversionCount : '0'}</span></td>
-                            <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '200px'}}>{handleDate(post.datetime)}</span></td>
+                            <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{handleDate(post.datetime)}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
                               {/* <Link to='/PostResult' state={{mode: 'view'}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
@@ -502,7 +507,8 @@ function mapStateToProps(state) {
   return {
     posts: (state.postsInfo.posts),
     postsCount: (state.postsInfo.postsCount),
-    allPostsAnalytics: (state.postsInfo.allPostsAnalytics)
+    allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
+    pages: (state.pagesInfo.pages)
   }
 }
 

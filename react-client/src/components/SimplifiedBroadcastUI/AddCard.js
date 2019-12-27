@@ -153,21 +153,45 @@ class AddCard extends React.Component {
   render () {
     return (
       <div>
-        <div style={{color: 'red'}}>{this.props.card.invalid ? this.props.errorMsg : ''}</div>
-        <div className='ui-block' style={{transform: 'scale(0.95, 0.95)', border: '1px solid rgba(0,0,0,.3)', borderRadius: '3px', minHeight: '300px', padding: '15px'}}>
-          {<div onClick={this.props.closeCard} style={{marginLeft: '98%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>}
+        <div className='ui-block' style={{padding: '5px'}}>
           {/* <div>
             <h4 style={{textAlign: 'left'}}>{this.props.cardComponent ? 'Card ' : 'Element '} #{this.props.index+1}</h4>
           </div>
           <hr style={{marginBottom: '30px'}} /> */}
-          <h4 id={this.titleId}>Title:</h4>
-          <input onSelect={(e) => this.inputSelected(e, this.titleId)} placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
-          <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
-          <h4 id={this.subtitleId}>Subtitle:</h4>
+          <div className='row'>
+            <div className='col-3'>
+              <h5 style={{marginTop: '5px', position: 'relative'}}>
+                <div id={this.titleId} style={{position: 'absolute', top: '-10px'}}></div>
+                Title:
+              </h5>
+            </div>
+            <div className='col-9'>
+              <input onSelect={(e) => this.inputSelected(e, this.titleId)} placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div>
+            </div>
+          </div>
+
+          <div className='row'>
+            <div className='col-3'>
+              <h5 style={{marginTop: '5px', position: 'relative'}}>
+                <div id={this.subtitleId} style={{position: 'absolute', top: '-10px'}}></div>
+                Subtitle:
+              </h5>
+            </div>
+            <div className='col-9'>
+              <input onSelect={(e) => this.inputSelected(e, this.subtitleId)} placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
+              <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
+            </div>
+          </div>
+          {/* <h4 id={this.titleId}>Title:</h4>
+          <input onSelect={(e) => this.inputSelected(e, this.titleId)} placeholder={'Please type here...'} value={this.state.title} style={{maxWidth: '100%', borderColor: this.state.title === '' ? 'red' : ''}} onChange={this.handleTitleChange} className='form-control' /> */}
+          {/* <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.title === '' ? '*Required' : ''}</div> */}
+          {/* <h4 id={this.subtitleId}>Subtitle:</h4>
           <input onSelect={(e) => this.inputSelected(e, this.subtitleId)} placeholder={'Please type here...'} value={this.state.subtitle} style={{maxWidth: '100%', borderColor: this.state.subtitle === '' ? 'red' : ''}} onChange={this.handleSubtitleChange} className='form-control' />
-          <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div>
-          <h4 id={this.imageId}>Image:</h4>
+          <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{this.state.subtitle === '' ? '*Required' : ''}</div> */}
+          <h5 style={{textAlign: 'left', marginLeft: '5px', marginBottom: '10px'}} id={this.imageId}>Image:</h5>
           <Image
+            imageId={this.imageId}
             onSelect={(e) => this.inputSelected(e, this.imageId)}
             edit={this.props.edit}
             required={this.props.onlyCard}

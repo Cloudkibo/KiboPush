@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing BackButton Component matches snapshot 1`] = `
+<div
+  aria-expanded="true"
+  className="m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push"
+  style={
+    Object {
+      "bottom": "40px",
+      "position": "fixed",
+      "right": "60px",
+    }
+  }
+>
+  <button
+    className="m-portlet__nav-link btn btn-lg btn-primary  m-btn m-btn--outline-2x m-btn--air m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle"
+    href="#/"
+    onClick={[Function]}
+  >
+    <i
+      className="la la-arrow-left"
+    />
+  </button>
+</div>
+`;

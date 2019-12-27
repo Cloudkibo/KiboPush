@@ -7,6 +7,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { loadUnansweredQuestions } from '../../redux/actions/smart_replies.actions'
 import { allLocales } from '../../redux/actions/subscribers.actions'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class UnansweredQueries extends React.Component {
   constructor (props, context) {
@@ -140,13 +141,9 @@ class UnansweredQueries extends React.Component {
                           </th>
                           <th data-field='Name'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{ width: '100px', overflow: 'inherit' }}>Bot Name</span>
+                            <span style={{ width: '200px', overflow: 'inherit' }}>Bot Name</span>
                           </th>
-                          <th data-field='Page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{ width: '100px', overflow: 'inherit' }}>Confidence Score</span>
-                          </th>
-                          <th data-field='PhoneNumber'
+                          <th data-field='Date'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{ width: '100px', overflow: 'inherit' }}>Date</span>
                           </th>
@@ -169,18 +166,11 @@ class UnansweredQueries extends React.Component {
                               <td data-field='Page'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{ width: '100px', overflow: 'inherit' }}>
+                                  style={{ width: '200px', overflow: 'inherit' }}>
                                   {question.botId.botName ? question.botId.botName : 'Bot name not is missing'}
                                 </span>
                               </td>
-                              <td data-field='phoneNumber'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{ width: '100px', overflow: 'inherit' }}>
-                                  {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'No Answer Found'}
-                                </span>
-                              </td>
-                              <td data-field='source'
+                              <td data-field='Date'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{ width: '100px', overflow: 'inherit' }}>
@@ -211,15 +201,9 @@ class UnansweredQueries extends React.Component {
                 </div>
               }
             </div>
-            <div className='m-portlet__foot m-portlet__foot--fit'>
-              <div className='m-form__actions m-form__actions' style={{ padding: '30px' }}>
-                <a href='#/'
-                  onClick={this.backToIntents}
-                  className='btn btn-primary'>Back</a>
-              </div>
-            </div>
           </div>
         </div>
+        <BACKBUTTON onBack={this.backToIntents} />
       </div>
     )
   }

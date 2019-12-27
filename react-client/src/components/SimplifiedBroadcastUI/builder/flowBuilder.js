@@ -51,8 +51,10 @@ class FlowBuilder extends React.Component {
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
+    this.disableReset = this.disableReset.bind(this)
 
     this.updateZIndex = true
+
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -78,6 +80,15 @@ class FlowBuilder extends React.Component {
         this.updateZIndex = true
         flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
+    }
+  }
+
+  disableReset () {
+    if (this.props.linkedMessages &&
+      this.props.linkedMessages[0].messageContent.length === 0) {
+        return true
+    } else {
+      return null
     }
   }
 
@@ -281,7 +292,7 @@ class FlowBuilder extends React.Component {
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
       let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
-      if (payload.action === 'send_message_block' || !buttons[j].type) {
+      if ((payload && payload.action === 'send_message_block') || !buttons[j].type) {
         let payload = JSON.parse(buttons[j].payload)
         console.log('parsed payload', payload)
         let port = document.getElementById(`port-${buttons[j].id}`)
@@ -362,6 +373,9 @@ class FlowBuilder extends React.Component {
       let portsNLinks = this.getPortsNLinks(messages[i])
       links = Object.assign(links, portsNLinks.links)
       let parent = chartSimple['nodes'][`${messages[i].parentId}`]
+      if (!parent) {
+        parent = chartSimple['nodes'][`${this.props.linkedMessages[this.props.linkedMessages.length - 1].id}`]
+      }
       let positionX = parent.position.x + 400
       let layerIndex = Math.floor(positionX / 400)
       if (!layers[layerIndex]) layers[layerIndex] = 0
@@ -778,6 +792,7 @@ class FlowBuilder extends React.Component {
   }
 
   componentDidMount () {
+    console.log('componentDidMount called flowBuilder')
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 46 || e.keyCode === 8) {
         console.log('key pressed in flow builder', this.state)
@@ -927,6 +942,10 @@ class FlowBuilder extends React.Component {
                   zoomIn={this.zoomIn}
                   zoomOut={this.zoomOut}
                   resetTransform={this.resetTransform}
+                  disableReset={this.disableReset}
+                  reset={this.props.reset}
+                  onNext={this.props.onNext}
+                  isBroadcastInvalid={this.props.isBroadcastInvalid}
                 />
                 <div
                   id='flowBuilderChart'
@@ -948,6 +967,7 @@ class FlowBuilder extends React.Component {
                 <Targeting
                   handleTargetValue={this.props.handleTargetValue}
                   subscriberCount={this.props.subscriberCount}
+                  totalSubscribersCount={this.props.totalSubscribersCount}
                   resetTarget={this.props.resetTarget}
                   page={this.props.pageId}
                   component='broadcast'
@@ -967,13 +987,17 @@ FlowBuilder.propTypes = {
   'unlinkedMessages': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool,
   'pageId': PropTypes.object.isRequired,
   'getItems': PropTypes.func.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
   'currentId': PropTypes.number.isRequired,
-  'rerenderFlowBuilder': PropTypes.func.isRequired
+  'rerenderFlowBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 export default FlowBuilder

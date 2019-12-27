@@ -7,7 +7,6 @@ import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
 import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class ItemSettings extends React.Component {
@@ -430,7 +429,6 @@ class ItemSettings extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">

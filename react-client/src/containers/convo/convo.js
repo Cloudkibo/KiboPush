@@ -18,7 +18,6 @@ import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import AlertMessage from '../../components/alertMessages/alertMessage'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -309,7 +308,6 @@ class Convo extends React.Component {
     console.log('this.state.broadcastsData in convo.js method', this.state.broadcastsData)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
