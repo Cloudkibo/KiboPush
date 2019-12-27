@@ -29,6 +29,7 @@ import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
 import YoutubeVideoModal from '../YoutubeVideoModal'
 import UserInputModal from '../UserInputModal'
+import UserInput from '../PreviewComponents/UserInput'
 
 class Builders extends React.Component {
   constructor (props, context) {
@@ -67,6 +68,7 @@ class Builders extends React.Component {
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleUserInput = this.handleUserInput.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.newConvo = this.newConvo.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -518,6 +520,29 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp}, obj)
   }
 
+  handleUserInput (obj) {
+    console.log('handleUserInput', obj)
+    var temp = this.getCurrentMessage().messageContent
+    console.log('handleUserInput temp', temp)
+    var isPresent = false
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
+      if (data.id === obj.id) {
+        temp[a].questions = obj.questions
+        isPresent = true
+      }
+    }
+
+    if (!isPresent) {
+        temp.push({id: obj.id, questions: obj.questions, componentType: 'input'})
+    }
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
+    console.log('handleUserInput temp', temp)
+    console.log('handleUserInput state', this.state)
+    this.setState({broadcast: temp})
+    this.handleChange({broadcast: temp}, obj)
+  }
+
   handleCard (obj) {
     console.log('handleCard', obj)
     if (obj.error) {
@@ -768,12 +793,14 @@ class Builders extends React.Component {
     if (edit) {
       if (componentDetails.componentType === 'text' && componentDetails.videoId) {
         this.msg.info(`youtube video component edited`)
-      } else {
-        this.msg.info(`${componentDetails.componentType} component edited`)
+      } else if (componentDetails.componentType === 'userInput') {
+        this.msg.info(`user input component edited`)
       }
     } else {
       if (componentDetails.componentType === 'text' && componentDetails.videoId) {
         this.msg.info(`New youtube video component added`)
+      } else if (componentDetails.componentType === 'userInput') {
+        this.msg.info(`New User Input component added`)
       } else {
         this.msg.info(`New ${componentDetails.componentType} component added`)
       }
@@ -904,7 +931,7 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-        'input': (<UserInputModal
+        'userInput': (<UserInputModal
           buttons={[]}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
@@ -1166,6 +1193,23 @@ class Builders extends React.Component {
             type: broadcast.type,
             mediaType: broadcast.mediaType,
             buttons: broadcast.buttons ? broadcast.buttons : []})
+        }
+      },
+      'userInput': {
+        component: (<UserInput
+          id={componentId}
+          editComponent={this.showAddComponentModal}
+          pageId={this.state.pageId}
+          key={componentId}
+          questions={broadcast.questions}
+          handleText={this.handleUserInput}
+          onRemove={this.removeComponent}
+          hideUserOptions={this.props.hideUserOptions} />),
+        handler: () => {
+          this.handleUserInput({
+            id: componentId,
+            questions: broadcast.questions
+          })
         }
       }
     }
