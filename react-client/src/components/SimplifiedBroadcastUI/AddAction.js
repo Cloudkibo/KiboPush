@@ -161,7 +161,9 @@ class AddAction extends React.Component {
   render () {
     return (
       <div>
-        <h5 style={{marginBottom: '10px', textAlign: 'left'}}>Action (Optional):</h5>
+        {
+          !this.props.noHeader && <h5 style={{marginBottom: '10px', textAlign: 'left'}}>Action (Optional):</h5>
+        }
         {
           this.state.openPopover &&
           <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '200px', marginBottom: '30px', padding: '20px'}} >
@@ -215,7 +217,7 @@ class AddAction extends React.Component {
           </div>
         }
         {
-          !this.state.openPopover && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px'}} onClick={this.handleClick}>
+          !this.state.openPopover && <div className='ui-block hoverborder' style={{minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '20px'}} onClick={this.handleClick}>
             <div ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
               <h6> + Add Action </h6>
             </div>
