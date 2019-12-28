@@ -11,6 +11,14 @@ export function showRssFeeds (data) {
   }
 }
 
+export function showRssFeedPosts (data) {
+  return {
+    type: ActionTypes.SHOW_RSS_FEED_POSTS,
+    feedPosts: data.feedPosts,
+    postsCount: data.count
+  }
+}
+
 export function deleteRssFeed (id) {
   return (dispatch) => {
     callApi(`rssFeeds/`, 'delete', {_id: id})
@@ -27,7 +35,22 @@ export function fetchRssFeed (data) {
         if (res.status === 'success') {
           dispatch(showRssFeeds(res.payload))
         } else {
-          dispatch(showRssFeeds([]))
+          dispatch(showRssFeeds({rssFeeds: [], count: 0}))
+        }
+      })
+  }
+}
+
+export function fetchFeedPosts (data) {
+  console.log('function for fetching feed posts', data)
+  return (dispatch) => {
+    callApi(`rssFeedPosts`, 'post', data)
+      .then(res => {
+        console.log('response from fetching rss feeds', res)
+        if (res.status === 'success') {
+          dispatch(showRssFeedPosts(res.payload))
+        } else {
+          dispatch(showRssFeedPosts({feedPosts: [], count: 0}))
         }
       })
   }

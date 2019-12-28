@@ -114,10 +114,10 @@ class RssIntegrations extends React.Component {
     if(nextProps.pages && nextProps.pages.length !== this.props.pages.length) {
       this.setState({newsPages: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
-    if (nextProps.rssFeeds && nextProps.rssFeeds.length !== this.props.rssFeeds.length) {
+    if (nextProps.rssFeeds && this.props.rssFeeds &&  nextProps.rssFeeds.length !== this.props.rssFeeds.length) {
       this.displayData(0, nextProps.rssFeeds)
     }
-    if (nextProps.count && nextProps.count !== this.props.rssFeeds) {
+    if (nextProps.count && this.props.count && nextProps.count !== this.props.count) {
       this.setState({ totalLength: nextProps.count })
     }
   }
