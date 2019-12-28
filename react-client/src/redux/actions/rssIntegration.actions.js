@@ -32,3 +32,19 @@ export function fetchRssFeed (data) {
       })
   }
 }
+
+export function createRssFeed (data, msg, handle) {
+  console.log('function for creating rss feeds', data)
+  return (dispatch) => {
+    callApi(`rssFeeds/create`, 'post', data)
+      .then(res => {
+        console.log('response from creating rss feeds', res)
+        if (res.status === 'success') {
+          msg.success('Rss feed saved successfully')
+          handle(res.payload)
+        } else {
+          msg.error(res.payload)
+        }
+      })
+  }
+}
