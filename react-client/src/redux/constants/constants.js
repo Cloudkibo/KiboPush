@@ -411,5 +411,6 @@ export const EMPTY_FIELDS = 'EMPTY_FIELDS'
 // constants for rss feeds
 export const SHOW_RSS_FEEDS = 'SHOW_RSS_FEEDS'
 export const SHOW_RSS_FEED_POSTS = 'SHOW_RSS_FEED_POSTS'
+export const SAVE_CURRENT_FEED = 'SAVE_CURRENT_FEED'
 
 
