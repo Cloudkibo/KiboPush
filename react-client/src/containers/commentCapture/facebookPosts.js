@@ -213,7 +213,7 @@ class FacebookPosts extends React.Component {
         endDate: this.state.endDate
       })
     } else {
-      this.props.allBroadcasts({
+      this.props.fetchAllPosts({
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
