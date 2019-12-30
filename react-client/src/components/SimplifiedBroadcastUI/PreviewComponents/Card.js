@@ -127,15 +127,17 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
     }]
-    if (this.props.youtubeVideo) {
-      this.props.editComponent('video', {
-        links: this.props.links,
-        id: this.props.id,
-        cards: [].concat(cards),
-        buttonActions: this.props.buttonActions,
-      })
-    } else if (this.props.links) {
+    if (this.props.links) {
       this.props.editComponent('link', {
+        componentName:this.props.componentName,
+        elementLimit: this.props.elementLimit,
+        header:this.props.header,
+        defaultErrorMsg:this.props.defaultErrorMsg,
+        invalidMsg:this.props.invalidMsg,
+        validMsg:this.props.validMsg,
+        retrievingMsg:this.props.retrievingMsg,
+        buttonTitle:this.props.buttonTitle,
+        validateUrl:this.props.validateUrl,
         links: this.props.links,
         id: this.props.id,
         cards: [].concat(cards),

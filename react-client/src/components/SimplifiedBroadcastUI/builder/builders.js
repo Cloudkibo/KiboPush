@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 
+import {validateYoutubeURL} from '../../../utility/utils'
+
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../../redux/actions/templates.actions'
@@ -27,7 +29,6 @@ import AudioModal from '../AudioModal'
 import MediaModal from '../MediaModal'
 import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
-import YoutubeVideoModal from '../YoutubeVideoModal'
 
 class Builders extends React.Component {
   constructor (props, context) {
@@ -867,12 +868,15 @@ class Builders extends React.Component {
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'video': (<LinkCarousel
+        elementLimit={1}
         componentName={'YouTube video'}
         header={'YouTube video'}
         defaultErrorMsg={'Please enter a valid YouTube link'}
         invalidMsg={'Invalid YouTube link'}
-        buttonText={'Watch on YouTube'}
-        validateUrl={this.validateYoutubeURL}
+        validMsg={'YouTube link is valid'}
+        retrievingMsg={'Retrieving YouTube video metadata'}
+        buttonTitle={'Watch on YouTube'}
+        validateUrl={(url) => validateYoutubeURL(url)}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -962,7 +966,15 @@ class Builders extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
-          youtubeVideo={broadcast.youtubeVideo}
+          elementLimit={broadcast.elementLimit}
+          componentName={broadcast.componentName}
+          header={broadcast.header}
+          defaultErrorMsg={broadcast.defaultErrorMsg}
+          invalidMsg={broadcast.invalidMsg}
+          validMsg={broadcast.validMsg}
+          retrievingMsg={broadcast.retrievingMsg}
+          buttonTitle={broadcast.buttonTitle}
+          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}

@@ -266,28 +266,6 @@ class YoutubeVideoModal extends React.Component {
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
                 <div className='ui-block' style={{ border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '80%', margin: 'auto', marginTop: '80px' }} >
-                  <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px' }} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex + 1 ? "next" : "") + (index === this.state.selectedIndex - 1 ? "prev" : "")}>
-                      {
-                        card.component.image_url &&
-                        <img alt='' src={card.component.image_url} style={{objectFit: 'cover', minHeight: '170px', maxHeight: '170px', maxWidth: '300px', paddingBottom: '11px', paddingTop: '29px', margin: '-25px', width: '100%', height: '100%' }} />
-                      }
-                      <hr style={{ marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px' }} />
-                      <h6 style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '10px', fontSize: '16px' }}>{card.component.title}</h6>
-                      <p style={{ textAlign: 'justify', marginLeft: '10px', marginTop: '5px', fontSize: '13px' }}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                      <p style={{ textAlign: 'justify', marginLeft: '10px', fontSize: '13px' }}>{card.component.default_action && card.component.default_action.url}</p>
-                      {
-                        card.component.buttons.map((button, index) => (
-                          (button.visible || button.type) && (
-                              <div>
-                                <hr style={{ marginTop: !card.component.title && !card.component.subtitle && index === 0 ? '50px' : '' }} />
-                                <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
-                              </div>
-                            )
-                        ))
-                      }
-                    </div>
-                  
-                  
                   {
                     this.state.loading && <div className='align-center' style={{ padding: '50px' }}>
                       <center><RingLoader color='#FF5E3A' /></center>
