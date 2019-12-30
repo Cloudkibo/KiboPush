@@ -8,7 +8,8 @@ import { urlMetaData } from '../../redux/actions/convos.actions'
 class LinkCarouselModal extends React.Component {
     constructor(props) {
         super(props)
-        this.elementLimit = 10
+        this.elementLimit = props.elementLimit ? props.elementLimit : 10
+        this.defaultErrorMsg = props.defaultErrorMsg ? props.defaultErrorMsg : 'Please enter a valid website link'
         this.buttonLimit = 3
         let cards = []
         for (let i = 0; i < this.elementLimit; i++) {
@@ -31,7 +32,7 @@ class LinkCarouselModal extends React.Component {
         this.cardComponents = new Array(10)
         this.state = {
             cards,
-            links: props.links ? props.links : [{ valid: false, url: '', loading: false, errorMsg: 'Please enter a valid website link' }],
+            links: props.links ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
             selectedIndex: 0,
             currentCollapsed: false,
             disabled: props.edit ? false : true,
@@ -104,7 +105,7 @@ class LinkCarouselModal extends React.Component {
     addLink() {
         let links = this.state.links
         if (links.length < this.elementLimit) {
-            links.push({ url: '', valid: false, loading: false, errorMsg: 'Please enter a valid website link' })
+            links.push({ url: '', valid: false, loading: false, errorMsg: this.defaultErrorMsg })
             this.setState({ links })
         }
     }
@@ -132,6 +133,15 @@ class LinkCarouselModal extends React.Component {
             let card = this.state.cards[0].component
             this.props.addComponent({
                 id: this.props.id,
+                componentName:  this.props.componentName ? this.props.componentName : 'links carousel',
+                elementLimit:this.props.elementLimit,
+                header:this.props.header,
+                defaultErrorMsg:this.props.defaultErrorMsg,
+                invalidMsg:this.props.invalidMsg,
+                validMsg:this.props.validMsg,
+                retrievingMsg:this.props.retrievingMsg,
+                buttonTitle:this.props.buttonTitle,
+                validateUrl:this.props.validateUrl,
                 links: this.state.links,
                 componentType: 'card',
                 image_url: card.image_url ? card.image_url : '',
@@ -151,6 +161,15 @@ class LinkCarouselModal extends React.Component {
             })
             this.props.addComponent({
                 id: this.props.id,
+                componentName: this.props.componentName ? this.props.componentName : 'links carousel',
+                elementLimit:this.props.elementLimit,
+                header:this.props.header,
+                defaultErrorMsg:this.props.defaultErrorMsg,
+                invalidMsg:this.props.invalidMsg,
+                validMsg:this.props.validMsg,
+                retrievingMsg:this.props.retrievingMsg,
+                buttonTitle:this.props.buttonTitle,
+                validateUrl:this.props.validateUrl,
                 links: this.state.links,
                 componentType: 'gallery',
                 cards
@@ -182,7 +201,7 @@ class LinkCarouselModal extends React.Component {
         if (!data || !data.ogTitle || !data.ogDescription || !data.ogImage || !data.ogImage.url) {
             let errorMsg = ''
             if (!data) {
-                errorMsg = 'Invalid website link'
+                errorMsg = this.props.invalidMsg ? this.props.invalidMsg : 'Invalid website link'
             } else if (data.ogImage && !data.ogImage.url) { 
                 errorMsg = 'No default image found'
             } else {
@@ -211,7 +230,7 @@ class LinkCarouselModal extends React.Component {
                     image_url: data.ogImage.url,
                     buttons: this.props.hideWebUrl ? [] :[
                         {
-                            title: 'Open on web',
+                            title: this.props.buttonTitle ? this.props.buttonTitle : 'Open on web',
                             type: 'web_url',
                             url: links[index].url
                         }
@@ -228,7 +247,7 @@ class LinkCarouselModal extends React.Component {
         let link = e.target.value
         let links = this.state.links
         let cards = this.state.cards
-        if (this.state.links.length < this.elementLimit) {
+        if (this.state.links.length <= this.elementLimit) {
             if (this.validateURL(link)) {
                 links[index] = { url: link, valid: true, loading: true, errorMsg: '' }
             } else {
@@ -241,7 +260,7 @@ class LinkCarouselModal extends React.Component {
                         buttons: []
                     }
                 }
-                links[index] = { url: link, valid: false, loading: false, errorMsg: 'Please enter a valid website link' }
+                links[index] = { url: link, valid: false, loading: false, errorMsg: this.defaultErrorMsg }
             }
         }
         this.setState({ links, cards, edited: true }, () => {
@@ -252,8 +271,12 @@ class LinkCarouselModal extends React.Component {
     }
 
     validateURL(textval) {
-        var urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
-        return urlregex.test(textval);
+        if (this.props.validateUrl) {
+            return this.props.validateUrl(textval)
+        } else {
+            var urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
+            return urlregex.test(textval);
+        }
     }
 
     UNSAFE_componentWillUnmount() {
@@ -265,7 +288,7 @@ class LinkCarouselModal extends React.Component {
             <div className="modal-content" style={{ width: '72vw' }}>
                 <div style={{ display: 'block' }} className="modal-header">
                     <h5 className="modal-title" id="exampleModalLabel">
-                        Create Carousel using Links
+                        {this.props.header ? this.props.header : 'Create Carousel using Links'}
                     </h5>
                     <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
                         <span aria-hidden="true">
@@ -284,14 +307,17 @@ class LinkCarouselModal extends React.Component {
                                                 <input value={link.url} style={{ maxWidth: '100%', borderColor: !link.valid && !this.state.loading ? 'red' : (this.state.loading || link.valid) ? 'green' : ''}} onChange={(e) => this.handleLinkChange(e, index)} className='form-control' />
                                             </div>
 
-                                            <div className='col-1'>
-                                                <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
-                                            </div>
+                                            {
+                                                this.state.links.length > 1 &&
+                                                <div className='col-1'>
+                                                    <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
+                                                </div>
+                                            }
 
                                         </div>
-                                        <div style={{color: 'green'}}>{link.valid && !link.loading ? '*Link is valid.' : ''}</div>
+                                        <div style={{color: 'green'}}>{link.valid && !link.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
                                         <div style={{color: 'red'}}>{!link.valid && !link.loading ? `*${link.errorMsg}` : ''}</div>
-                                        <div style={{marginBottom: '30px', color: 'green'}}>{link.loading ? '*Retrieving webpage meta data.' : ''}</div>
+                                        <div style={{marginBottom: '30px', color: 'green'}}>{link.loading ? this.props.retrievingMsg ? `*${this.props.retrievingMsg}` : '*Retrieving webpage meta data.' : ''}</div>
                                     </div>
                                 ))
                         }
@@ -343,7 +369,7 @@ class LinkCarouselModal extends React.Component {
                                 <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px'}} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                                     {
                                         card.component.image_url &&
-                                        <img alt='' src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
+                                        <img alt='' src={card.component.image_url} style={{objectFit: 'cover', minHeight: '170px', maxHeight: '170px', maxWidth: '300px', paddingBottom: '11px', paddingTop: '29px', margin: '-25px', width: '100%', height: '100%' }} />
                                     }
                                     <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
                                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>

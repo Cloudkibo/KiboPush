@@ -85,6 +85,16 @@ export function getHostName (url) {
   }
 }
 
+export function validateYoutubeURL (url) {
+  if (url !== undefined || url !== '') {
+      let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
+      let match = url.match(regExp)
+      return match && match[2].length === 11
+  } else {
+      return false
+  }
+}
+
 export function isWebViewUrl (value) {
   let regexp = /^(http|https):///
   return regexp.test(value)

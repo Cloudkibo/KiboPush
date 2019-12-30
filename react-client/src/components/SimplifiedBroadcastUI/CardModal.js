@@ -149,6 +149,7 @@ class CardModal extends React.Component {
       console.log('deletePayload for card', deletePayload)
       this.props.addComponent({
         id: this.props.id,
+        componentName: 'card',
         componentType: 'card',
         fileurl: card.fileurl ? card.fileurl : '',
         image_url: card.image_url ? card.image_url : '',
@@ -192,6 +193,7 @@ class CardModal extends React.Component {
       this.props.addComponent({
         id: this.props.id,
         componentType: 'gallery',
+        componentName: 'gallery',
         cards,
         deletePayload: deletePayload.length > 0 ? deletePayload : null
       }, this.props.edit)

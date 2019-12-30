@@ -41,6 +41,7 @@ class MediaModal extends React.Component {
     if (this.props.module === 'jsonads') {
       this.props.addComponent({
         id: this.props.id,
+        componentName: 'media',
         componentType: this.state.imgSrc ? 'image' : 'video',
         file: this.state.file,
         fileurl: this.state.file ? this.state.file.fileurl : '',
@@ -51,6 +52,7 @@ class MediaModal extends React.Component {
     } else {
       this.props.addComponent({
         id: this.props.id,
+        componentName: 'media',
         componentType: 'media',
         fileurl: this.state.file.fileurl,
         fileName: this.state.file.fileName,
