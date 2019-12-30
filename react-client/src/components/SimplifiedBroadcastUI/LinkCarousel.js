@@ -200,6 +200,9 @@ class LinkCarouselModal extends React.Component {
             }
             this.setState({ links, cards })
         } else {
+            if (data.ogImage.url.startsWith('/')) {
+                data.ogImage.url = links[index].url + data.ogImage.url
+            }
             cards[index] = {
                 id: index + 1,
                 component: {
