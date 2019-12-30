@@ -307,9 +307,12 @@ class LinkCarouselModal extends React.Component {
                                                 <input value={link.url} style={{ maxWidth: '100%', borderColor: !link.valid && !this.state.loading ? 'red' : (this.state.loading || link.valid) ? 'green' : ''}} onChange={(e) => this.handleLinkChange(e, index)} className='form-control' />
                                             </div>
 
-                                            <div className='col-1'>
-                                                <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
-                                            </div>
+                                            {
+                                                this.state.links.length > 1 &&
+                                                <div className='col-1'>
+                                                    <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
+                                                </div>
+                                            }
 
                                         </div>
                                         <div style={{color: 'green'}}>{link.valid && !link.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
