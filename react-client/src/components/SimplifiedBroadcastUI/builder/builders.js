@@ -765,21 +765,9 @@ class Builders extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      if (componentDetails.componentType === 'card' && componentDetails.youtubeVideo) {
-        this.msg.info(`youtube video component edited`)
-      } else if (componentDetails.componentType === 'card' && componentDetails.links) {
-        this.msg.info(`links carousel component edited`)
-      } else {
-        this.msg.info(`${componentDetails.componentType} component edited`)
-      }
+      this.msg.info(`${componentDetails.componentName} component edited`)
     } else {
-      if (componentDetails.componentType === 'card' && componentDetails.youtubeVideo) {
-        this.msg.info(`New youtube video component added`)
-      } else if (componentDetails.componentType === 'card' && componentDetails.links) {
-        this.msg.info(`New links carousel component added`)
-      } else {
-        this.msg.info(`New ${componentDetails.componentType} component added`)
-      }
+        this.msg.info(`New ${componentDetails.componentName} component added`)
     }
     this.updateList(component)
     component.handler()
@@ -878,7 +866,13 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<LinkCarousel
+        componentName={'YouTube video'}
+        header={'YouTube video'}
+        defaultErrorMsg={'Please enter a valid YouTube link'}
+        invalidMsg={'Invalid YouTube link'}
+        buttonText={'Watch on YouTube'}
+        validateUrl={this.validateYoutubeURL}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}

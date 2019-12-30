@@ -73,6 +73,7 @@ class TextModal extends React.Component {
     console.log('deletePayload', deletePayload)
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
+      componentName: 'text',
       componentType: 'text',
       text: this.state.text,
       buttons,
