@@ -765,14 +765,18 @@ class Builders extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+      if (componentDetails.componentType === 'card' && componentDetails.youtubeVideo) {
         this.msg.info(`youtube video component edited`)
+      } else if (componentDetails.componentType === 'card' && componentDetails.links) {
+        this.msg.info(`links carousel component edited`)
       } else {
         this.msg.info(`${componentDetails.componentType} component edited`)
       }
     } else {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
+      if (componentDetails.componentType === 'card' && componentDetails.youtubeVideo) {
         this.msg.info(`New youtube video component added`)
+      } else if (componentDetails.componentType === 'card' && componentDetails.links) {
+        this.msg.info(`New links carousel component added`)
       } else {
         this.msg.info(`New ${componentDetails.componentType} component added`)
       }
@@ -964,6 +968,7 @@ class Builders extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          youtubeVideo={broadcast.youtubeVideo}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
@@ -990,6 +995,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            youtubeVideo: broadcast.youtubeVideo,
             links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
