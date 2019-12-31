@@ -12,6 +12,7 @@ class LinkCarouselModal extends React.Component {
         this.elementLimit = props.elementLimit ? props.elementLimit : 10
         this.defaultErrorMsg = props.defaultErrorMsg ? props.defaultErrorMsg : 'Please enter a valid website link'
         this.buttonLimit = 3
+        this.defaultImage = 'https://atasouthport.com/wp-content/uploads/2017/04/default-image.jpg'
         let cards = []
         for (let i = 0; i < this.elementLimit; i++) {
             if (props.cards && props.cards[i]) {
@@ -72,6 +73,8 @@ class LinkCarouselModal extends React.Component {
         this.addLink = this.addLink.bind(this)
         this.removeLink = this.removeLink.bind(this)
         this.valid = this.valid.bind(this)
+        this.typingTimer = null
+        this.doneTypingInterval = 500
     }
 
     valid() {
@@ -199,13 +202,11 @@ class LinkCarouselModal extends React.Component {
         console.log('url meta data retrieved', data)
         let links = this.state.links
         let cards = this.state.cards
-        if (!data || !data.ogTitle || !data.ogDescription || !data.ogImage || !data.ogImage.url) {
+        if (!data || !data.ogTitle || !data.ogDescription) {
             let errorMsg = ''
             if (!data) {
                 errorMsg = this.props.invalidMsg ? this.props.invalidMsg : 'Invalid website link'
-            } else if (data.ogImage && !data.ogImage.url) { 
-                errorMsg = 'No default image found'
-            } else {
+            } else if (!data.ogTitle && !data.ogDescription) {
                 errorMsg = 'Not enough metadata present in link'
             }
             links[index] = Object.assign(links[index], { loading: false, valid: false, errorMsg })
@@ -220,7 +221,7 @@ class LinkCarouselModal extends React.Component {
             }
             this.setState({ links, cards })
         } else {
-            if (data.ogImage.url.startsWith('/')) {
+            if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
                 data.ogImage.url = links[index].url + data.ogImage.url
             }
             cards[index] = {
@@ -228,7 +229,7 @@ class LinkCarouselModal extends React.Component {
                 component: {
                     title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
                     subtitle: data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription,
-                    image_url: data.ogImage.url,
+                    image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
                     buttons: this.props.hideWebUrl ? [] :[
                         {
                             title: this.props.buttonTitle ? this.props.buttonTitle : 'Open on web',
@@ -242,7 +243,7 @@ class LinkCarouselModal extends React.Component {
             this.setState({ links, cards, selectedIndex: index })
         }
     }
-
+    
     handleLinkChange(e, index) {
         console.log('changing link', e.target.value)
         let link = e.target.value
@@ -266,7 +267,8 @@ class LinkCarouselModal extends React.Component {
         }
         this.setState({ links, cards, edited: true }, () => {
             if (links[index].valid) {
-                this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index))
+                clearTimeout(this.typingTimer)
+                this.typingTimer = setTimeout(() => this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index)), this.doneTypingInterval)
             }
         })
     }
