@@ -1235,7 +1235,13 @@ class ChatBox extends React.Component {
                                             {this.props.currentSession.firstName} wrote:
                                           </div>
                                           <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
-                                            {msg.payload.text}
+                                            {
+                                              validURL(msg.payload.text)
+                                              ? <a href={msg.payload.text} target='_blank' rel='noopener noreferrer'>
+                                                <p>{msg.payload.text}</p>
+                                              </a>
+                                              : <p>{msg.payload.text}</p>
+                                            }
                                           </div>
                                         </div>
                                       }
