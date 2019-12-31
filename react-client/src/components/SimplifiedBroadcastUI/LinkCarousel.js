@@ -243,11 +243,7 @@ class LinkCarouselModal extends React.Component {
             this.setState({ links, cards, selectedIndex: index })
         }
     }
-
-    debounce () {
-
-    }
-
+    
     handleLinkChange(e, index) {
         console.log('changing link', e.target.value)
         let link = e.target.value
