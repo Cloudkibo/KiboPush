@@ -19,17 +19,39 @@ export function showRssFeedPosts (data) {
   }
 }
 
-export function deleteRssFeed (id) {
+export function saveCurrentFeed (data) {
+  return {
+    type: ActionTypes.SAVE_CURRENT_FEED,
+    currentFeed: data,
+  }
+}
+
+export function deleteRssFeed (id, msg, resetFilters) {
   return (dispatch) => {
-    callApi(`rssFeeds/`, 'delete', {_id: id})
-      .then(res => dispatch(fetchRssFeed()))
+    var fetchData = {last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      search_value: '',
+      status_value: '',
+     }
+    callApi(`rssFeeds/${id}`, 'delete')
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Rss feed has been deleted successfully')
+          dispatch(fetchRssFeed(fetchData))
+          resetFilters()
+        } else {
+          msg.error('Unable to delete Rss feed')
+        }      
+      })
+
   }
 }
 
 export function fetchRssFeed (data) {
   console.log('function for fetching rss feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/`, 'post', data)
+    callApi(`rssFeeds/fetchFeeds`, 'post', data)
       .then(res => {
         console.log('response from fetching rss feeds', res)
         if (res.status === 'success') {

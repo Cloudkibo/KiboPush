@@ -12,7 +12,10 @@ export function feedsInfo (state = {}, action) {
         feedPosts: action.feedPosts,
         postsCount: action.postsCount,
       })
-
+    case ActionTypes.SAVE_CURRENT_FEED:
+      return Object.assign({}, state, {
+        currentFeed: action.currentFeed,
+      })
     default:
       return state
   }

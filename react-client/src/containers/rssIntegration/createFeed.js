@@ -151,22 +151,26 @@ class CreateFeed extends React.Component {
       saveEnabled: true,
       inValidUrlMsg: ''
     })
-    var newsPages = []
+    var selectedPages = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].gotPageSubscriptionPermission) {
         var isSelected = false
-        for (let j = 0; j < feed.selectedPages.length; j++) {
-          if (this.props.pages[i]._id === feed.selectedPages[j]) {
-            newsPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id, selected: true})
+        for (let j = 0; j < feed.pageIds.length; j++) {
+          if (this.props.pages[i]._id === feed.pageIds[j]) {
+            selectedPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id, selected: true})
             isSelected = true
             break
           }
         }
         if (!isSelected) {
-          newsPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
+          selectedPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
         }
       }
     }
+    this.setState({
+      selectedPages: selectedPages
+    })
+    this.initializePageSelect(selectedPages)
   }
   initializePageSelect (pageOptions) {
     var self = this

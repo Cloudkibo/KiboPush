@@ -10,7 +10,7 @@ import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { Link } from 'react-router-dom'
-import { fetchRssFeed, deleteRssFeed } from '../../redux/actions/rssIntegration.actions'
+import { fetchRssFeed, deleteRssFeed, saveCurrentFeed } from '../../redux/actions/rssIntegration.actions'
 import ReactPaginate from 'react-paginate'
 
 class RssIntegrations extends React.Component {
@@ -30,6 +30,7 @@ class RssIntegrations extends React.Component {
       search_value: '',
       status_value: '',
     })
+    props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
     this.setDeleteId = this.setDeleteId.bind(this)
@@ -38,8 +39,15 @@ class RssIntegrations extends React.Component {
     this.onStatusFilter = this.onStatusFilter.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.resetFilters = this.resetFilters.bind(this)
   }
-  
+  resetFilters () {
+    this.setState({
+      searchValue: '',
+      status: '',
+      pageNumber: 0,
+    })
+  }
   onStatusFilter (e) {
     this.setState({status: e.target.value, pageNumber: 0})
     if (e.target.value !== '' && e.target.value !== 'all') {
@@ -57,7 +65,7 @@ class RssIntegrations extends React.Component {
     if (event.target.value !== '') {
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', type_value: this.state.status})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status})
     }
   }
 
@@ -111,13 +119,13 @@ class RssIntegrations extends React.Component {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if(nextProps.pages && nextProps.pages.length !== this.props.pages.length) {
+    if(nextProps.pages) {
       this.setState({newsPages: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
-    if (nextProps.rssFeeds && this.props.rssFeeds &&  nextProps.rssFeeds.length !== this.props.rssFeeds.length) {
+    if (nextProps.rssFeeds) {
       this.displayData(0, nextProps.rssFeeds)
     }
-    if (nextProps.count && this.props.count && nextProps.count !== this.props.count) {
+    if (nextProps.count) {
       this.setState({ totalLength: nextProps.count })
     }
   }
@@ -159,17 +167,17 @@ class RssIntegrations extends React.Component {
     this.setState({deleteid: id})
   }
 
-  gotoSettings (item) {
+  gotoSettings (feed) {
+    this.props.saveCurrentFeed(feed)
     this.props.history.push({
       pathname: `/editFeed`,
-      state: item
     })
   }
 
-  gotoMessages (item) {
+  gotoMessages (feed) {
+    this.props.saveCurrentFeed(feed)
     this.props.history.push({
-      pathname: `/feedPosts`,
-      state: item
+      pathname: `/feedPosts`
     })
   }
 
@@ -232,7 +240,7 @@ class RssIntegrations extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.deleteRssFeed(this.state.deleteid)
+                    this.props.deleteRssFeed(this.state.deleteId, this.msg, this.resetFilters)
                   }}
                   data-dismiss='modal'>Delete
                 </button>
@@ -296,28 +304,27 @@ class RssIntegrations extends React.Component {
                   </div>
                 </div>
               </div>
-              { this.state.feeds && this.state.feeds.length > 0 &&
-              <div className='row' style={{marginBottom: '15px'}}>
+              <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
                 <div className='col-md-6'>
                   <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
                 </div>
                 <div className='col-md-4'>
                   <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                     <option value='' disabled>Filter by Status...</option>
-                    <option value='enabled'>Enabled</option>
-                    <option value='disabled'>Disabled</option>
+                    <option value=''>All</option>
+                    <option value='true'>Enabled</option>
+                    <option value='false'>Disabled</option>
                   </select>
                 </div>
               </div>
-              }
               <div className='row' >
                 { this.state.feeds && this.state.feeds.length > 0 
                 ? <div className='col-12 m-widget5'>
                   { this.state.feeds.map((feed, i) => (
                     <RssFeed feed={feed} 
-                      openSettings={this.props.gotoSettings} 
-                      gotoMessages={this.props.gotoMessages}
-                      setDeleteId={this.props.setDeleteId}
+                      openSettings={this.gotoSettings} 
+                      gotoMessages={this.gotoMessages}
+                      setDeleteId={this.setDeleteId}
                     />
                   ))
                   }
@@ -360,7 +367,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchRssFeed: fetchRssFeed,
-    deleteRssFeed: deleteRssFeed
+    deleteRssFeed: deleteRssFeed,
+    saveCurrentFeed: saveCurrentFeed
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(RssIntegrations)
