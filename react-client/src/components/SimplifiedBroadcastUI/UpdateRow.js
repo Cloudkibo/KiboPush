@@ -25,7 +25,9 @@ class UpdateRow extends React.Component {
     this.onSpreadSheetChange = this.onSpreadSheetChange.bind(this)
     this.onWorkSheetChange = this.onWorkSheetChange.bind(this)
     this.showMappingData = this.showMappingData.bind(this)
+    this.showMappingDataForUserInput = this.showMappingDataForUserInput.bind(this)
     this.updateMappingData = this.updateMappingData.bind(this)
+    this.updateMappingDataUserInput = this.updateMappingDataUserInput.bind(this)
     this.onLookUpColumnChange = this.onLookUpColumnChange.bind(this)
     this.onLookUpValueChange = this.onLookUpValueChange.bind(this)
     this.save = this.save.bind(this)
@@ -33,7 +35,7 @@ class UpdateRow extends React.Component {
 
   componentDidMount () {
     console.log('in componentDidMount of insert_row', this.props)
-    if (this.props.mapping !== '') {
+    if (this.props.mapping !== '' && !this.props.questions) {
       let mappingDataValues = [].concat(this.props.mapping)
       for (let i = 0; i < this.props.mapping.length; i++) {
         if (this.props.mapping[i].kiboPushColumn) {
@@ -46,6 +48,12 @@ class UpdateRow extends React.Component {
       }
       console.log('temp mappingDataValues', mappingDataValues)
       this.setState({mappingDataValues: mappingDataValues})
+    } else if (this.props.questions) {
+      let mappingData = []
+      for (let i = 0; i < this.props.questions.length; i++) {
+        mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
+      }
+      this.setState({mappingData})
     }
     if (this.props.spreadsheet) {
       this.setState({loadingWorkSheet: true})
@@ -63,6 +71,16 @@ class UpdateRow extends React.Component {
     } else {
       this.props.save(this.state.spreadSheetValue, this.state.workSheetValue, this.state.workSheetName, this.state.mappingData, this.state.lookUpColumn, this.state.lookUpValue)
     }
+  }
+
+  updateMappingDataUserInput (e, index) {
+    console.log('this.state.mappingData', this.state.mappingData)
+    let data = this.state.mappingData
+    if (e.target.value !== '') {
+      data[index].googleSheetColumn = e.target.value
+      this.setState({mappingData: data})
+    }
+    console.log('data in updateMappingData', data)
   }
 
   updateMappingData (e, index) {
@@ -127,26 +145,30 @@ class UpdateRow extends React.Component {
     }
     if (nextProps.columns && nextProps.columns.googleSheetColumns && nextProps.columns.googleSheetColumns.length > 0) {
       this.setState({loadingColumns: false})
-      let mappingData = []
-      let mappingDataValues = []
-      for (let i = 0; i < nextProps.columns.googleSheetColumns.length; i++) {
-        mappingData.push({googleSheetColumn: nextProps.columns.googleSheetColumns[i]})
-        mappingDataValues.push('')
-      }
-      console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
-      if (this.state.mappingData === '') {
-        this.setState({mappingDataValues: mappingDataValues, mappingData: mappingData})
+      if (!this.props.questions) {
+        let mappingData = []
+        let mappingDataValues = []
+        for (let i = 0; i < nextProps.columns.googleSheetColumns.length; i++) {
+          mappingData.push({googleSheetColumn: nextProps.columns.googleSheetColumns[i]})
+          mappingDataValues.push('')
+        }
+        console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
+        if (this.state.mappingData === '') {
+          this.setState({mappingDataValues: mappingDataValues, mappingData: mappingData})
+        }
       }
     }
   }
 
-  showMappingData (googleSheetColumns, kiboPushColumns, customFieldColumns) {
-    console.log('mappingDataValues', this.state.mappingDataValues)
+  showMappingDataForUserInput (questions, googleSheetColumns) {
+    console.log('showMappingDataForUserInput questions', questions)
+    console.log('showMappingDataForUserInput googleSheetColumns', googleSheetColumns)
+    console.log('showMappingDataForUserInput mappingData', this.state.mappingData)
     let content = []
     content.push(
       <div className='row'>
         <div className='col-6'>
-          <label style={{fontWeight: 'normal'}}>KiboPush Data:</label>
+          <label style={{fontWeight: 'normal'}}>Questions:</label>
         </div>
         <div className='col-1'>
         </div>
@@ -155,28 +177,12 @@ class UpdateRow extends React.Component {
         </div>
       </div>
     )
-    for (let i = 0; i < googleSheetColumns.length; i++) {
+    for (let i = 0; i < this.props.questions.length; i++) {
       content.push(
         <div>
         <div className='row'>
           <div className='col-6'>
-            <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingData(e, i)}>
-              <option key='' value='' disabled>Select a Field...</option>
-              <optgroup label='System Fields'>
-                {kiboPushColumns.map((kibopush, i) => (
-                    <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
-                  ))
-                }
-              </optgroup>
-              {customFieldColumns.length > 0 &&
-                <optgroup label='Custom Fields'>
-                {customFieldColumns.map((custom, i) => (
-                    <option key={i} value={custom.customFieldId}>{custom.title}</option>
-                  ))
-                }
-              </optgroup>
-              }
-              </select>
+            <input style={{height: '40px'}} type='text' className='form-control' value={questions[i]} disabled />
           </div>
           <div className='col-1'>
             <center>
@@ -184,7 +190,14 @@ class UpdateRow extends React.Component {
             </center>
           </div>
           <div className='col-5'>
-            <input style={{height: '40px'}} type='text' className='form-control' value={googleSheetColumns[i]} disabled />
+            <select value={this.state.mappingData[i].googleSheetColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingDataUserInput(e, i)}>
+              <option key='' value='' disabled>Select a Google Sheet Column...</option>
+              {
+                googleSheetColumns.map((column, index) => 
+                  <option key={index} value={column}>{column}</option>
+                )
+              }
+              </select>
           </div>
         </div>
         <br />
@@ -192,6 +205,65 @@ class UpdateRow extends React.Component {
       )
     }
     return content
+  }
+
+
+  showMappingData (googleSheetColumns, kiboPushColumns, customFieldColumns) {
+    console.log('mappingDataValues', this.state.mappingDataValues)
+    if (this.props.questions) {
+      return this.showMappingDataForUserInput(this.props.questions, googleSheetColumns)
+    } else {
+      let content = []
+      content.push(
+        <div className='row'>
+          <div className='col-6'>
+            <label style={{fontWeight: 'normal'}}>KiboPush Data:</label>
+          </div>
+          <div className='col-1'>
+          </div>
+          <div className='col-5'>
+            <label style={{fontWeight: 'normal'}}>Google Column Titles:</label>
+          </div>
+        </div>
+      )
+      for (let i = 0; i < googleSheetColumns.length; i++) {
+        content.push(
+          <div>
+          <div className='row'>
+            <div className='col-6'>
+              <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingData(e, i)}>
+                <option key='' value='' disabled>Select a Field...</option>
+                <optgroup label='System Fields'>
+                  {kiboPushColumns.map((kibopush, i) => (
+                      <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
+                    ))
+                  }
+                </optgroup>
+                {customFieldColumns.length > 0 &&
+                  <optgroup label='Custom Fields'>
+                  {customFieldColumns.map((custom, i) => (
+                      <option key={i} value={custom.customFieldId}>{custom.title}</option>
+                    ))
+                  }
+                </optgroup>
+                }
+                </select>
+            </div>
+            <div className='col-1'>
+              <center>
+              <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large'}} />
+              </center>
+            </div>
+            <div className='col-5'>
+              <input style={{height: '40px'}} type='text' className='form-control' value={googleSheetColumns[i]} disabled />
+            </div>
+          </div>
+          <br />
+          </div>
+        )
+      }
+      return content
+    }
   }
 
   render () {

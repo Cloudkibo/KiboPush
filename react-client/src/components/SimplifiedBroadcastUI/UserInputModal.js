@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popover, PopoverBody } from 'reactstrap'
-import AddAction from './AddAction'
-import CustomFields from '../customFields/customfields'
+import UserInputActions from './UserInputActions'
+// import CustomFields from '../customFields/customfields'
 
 class UserInputModal extends React.Component {
   constructor(props) {
@@ -36,6 +36,16 @@ class UserInputModal extends React.Component {
     this.incorrectTriesAllowedChange = this.incorrectTriesAllowedChange.bind(this)
     this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
     this.retryMessageChange = this.retryMessageChange.bind(this)
+    this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+  }
+
+  saveGoogleSheet (googleSheet) {
+      this.setState({
+        action: {
+            actionType: 'google_sheets',
+            ...googleSheet
+        }
+    })
   }
 
   retryMessageChange (e, index) {
@@ -236,7 +246,7 @@ class UserInputModal extends React.Component {
                                 </div>
 
             
-                        <h6>Save response to a Custom Field:</h6>              
+                        {/* <h6>Save response to a Custom Field:</h6>              
                             <div className='row'>
                                 <div className='col-6'>
                                     <select value={question.customFieldId} style={{borderColor: !question.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setCustomField(event, index)}>
@@ -252,7 +262,7 @@ class UserInputModal extends React.Component {
                                     <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
                                     <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
                             </div>
-                        </div>
+                        </div> */}
                         {
                         question.type && question.type !== 'text' &&
                         <div>
@@ -284,15 +294,13 @@ class UserInputModal extends React.Component {
                     </div>)
                     })
                 }
-
-                    <AddAction
-                        smallHeading
-                        edit={this.props.edit}
-                        default_action={this.state.default_action}
-                        webviewurl={this.state.webviewurl}
-                        webviewsize={this.state.webviewsize}
-                        elementUrl={this.state.elementUrl}
-                        updateActionStatus={this.updateActionStatus} />
+                <UserInputActions
+                    saveGoogleSheet={this.saveGoogleSheet}
+                    action={this.state.action}
+                    questions={this.state.questions.map(q => q.question)}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    updateActionStatus={this.updateActionStatus} />
                 </div>
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>

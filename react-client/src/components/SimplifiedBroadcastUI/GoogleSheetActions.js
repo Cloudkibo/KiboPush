@@ -31,7 +31,7 @@ class GoogleSheetActions extends React.Component {
   }
   componentDidMount () {
     console.log('in componentDidMount of googleSheetAction', this.props)
-    if (this.props.googleSheetAction !== '' && this.props.mapping !== '' && this.props.worksheet && this.props.spreadSheet) {
+    if (this.props.googleSheetAction && this.props.mapping && this.props.worksheet && this.props.spreadSheet) {
       this.setState({mapping: this.props.mapping, spreadSheet: this.props.spreadSheet, worksheet: this.props.worksheet, worksheetName: this.props.worksheetName, lookUpValue: this.props.lookUpValue, lookUpColumn: this.props.lookUpColumn})
       this.updateGoogleAction(this.props.googleSheetAction, true)
     }
@@ -95,14 +95,18 @@ class GoogleSheetActions extends React.Component {
   openModal () {
     console.log('in openModal', this.state.mapping)
     let modals = {
-      'insert_row': (<InsertRow save={this.save}
+      'insert_row': (<InsertRow 
+        questions={this.props.questions}
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
     	  mapping={this.state.mapping}
         closeGSModal={this.props.closeGSModal}
       />),
-      'update_row': (<UpdateRow save={this.save}
+      'update_row': (<UpdateRow 
+        questions={this.props.questions}
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
@@ -111,7 +115,9 @@ class GoogleSheetActions extends React.Component {
         lookUpColumn={this.state.lookUpColumn}
         closeGSModal={this.props.closeGSModal}
         />),
-      'get_row_by_value': (<GetRowByValue save={this.save}
+      'get_row_by_value': (<GetRowByValue 
+        questions={this.props.questions}
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
@@ -145,12 +151,15 @@ class GoogleSheetActions extends React.Component {
               <h6>Insert Row</h6>
               <span style={{color: '#676c7b'}}>Send KiboPush Data to Google Sheets</span>
             </div>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateGoogleAction('get_row_by_value')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`} >
-              <h6>Get Row by Value</h6>
-              <span style={{color: '#676c7b'}}>Return Google Sheets Data to KiboPush</span>
-            </div>
+            {
+              !this.props.questions &&
+              <div className='ui-block'
+                style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
+                onClick={() => this.updateGoogleAction('get_row_by_value')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`} >
+                <h6>Get Row by Value</h6>
+                <span style={{color: '#676c7b'}}>Return Google Sheets Data to KiboPush</span>
+              </div>
+            }
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
               onClick={() => this.updateGoogleAction('update_row')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`} >
