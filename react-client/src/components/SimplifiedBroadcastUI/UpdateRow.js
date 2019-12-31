@@ -9,18 +9,18 @@ class UpdateRow extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      spreadSheetValue: props.spreadsheet !== '' ? props.spreadsheet : '',
-      workSheetValue: props.worksheet !== '' ? props.worksheet : '',
-      workSheetName: props.worksheetName !== '' ? props.worksheetName : '',
+      spreadSheetValue: props.spreadsheet ? props.spreadsheet : '',
+      workSheetValue: props.worksheet ? props.worksheet : '',
+      workSheetName: props.worksheetName ? props.worksheetName : '',
       loadingWorkSheet: false,
       loadingColumns: false,
-      mappingData: props.mapping !== '' ? props.mapping : '',
-      buttonDisabled: props.spreadsheet !== '' && props.worksheet !== '' && props.mapping !== '' ? false : true,
+      mappingData: props.mapping ? props.mapping : '',
+      buttonDisabled: props.spreadsheet && props.worksheet && props.mapping ? false : true,
       mappingDataValues: '',
-      lookUpValue: props.lookUpValue !== '' ? props.lookUpValue : '',
-      lookUpColumn: props.lookUpColumn !== '' ? props.lookUpColumn : '',
-      showMapping: props.lookUpValue !== '' ? true : false,
-      showLookUpValue: props.worksheet !== '' ? true : false,
+      lookUpValue: props.lookUpValue ? props.lookUpValue : '',
+      lookUpColumn: props.lookUpColumn ? props.lookUpColumn : '',
+      showMapping: props.lookUpValue ? true : false,
+      showLookUpValue: props.worksheet ? true : false,
     }
     this.onSpreadSheetChange = this.onSpreadSheetChange.bind(this)
     this.onWorkSheetChange = this.onWorkSheetChange.bind(this)
@@ -35,7 +35,7 @@ class UpdateRow extends React.Component {
 
   componentDidMount () {
     console.log('in componentDidMount of insert_row', this.props)
-    if (this.props.mapping !== '' && !this.props.questions) {
+    if (!this.props.mapping && !this.props.questions) {
       let mappingDataValues = [].concat(this.props.mapping)
       for (let i = 0; i < this.props.mapping.length; i++) {
         if (this.props.mapping[i].kiboPushColumn) {
@@ -48,7 +48,7 @@ class UpdateRow extends React.Component {
       }
       console.log('temp mappingDataValues', mappingDataValues)
       this.setState({mappingDataValues: mappingDataValues})
-    } else if (this.props.questions) {
+    } else if (!this.props.mapping && this.props.questions) {
       let mappingData = []
       for (let i = 0; i < this.props.questions.length; i++) {
         mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
@@ -102,7 +102,7 @@ class UpdateRow extends React.Component {
   onSpreadSheetChange (event) {
     this.setState({spreadSheetValue: event.target.value, loadingWorkSheet: true})
     this.props.fetchWorksheets({spreadsheetId: event.target.value})
-    if (event.target.value !== '' && this.state.workSheetValue !== '' && this.state.lookUpColumn !== '' && this.state.lookUpValue !== '') {
+    if (event.target.value !== '' && this.state.workSheetValue && this.state.lookUpColumn && this.state.lookUpValue ) {
       this.setState({buttonDisabled: false})
     }
   }
@@ -111,14 +111,14 @@ class UpdateRow extends React.Component {
     let worksheetName = this.props.worksheets.filter(worksheet => worksheet.sheetId.toString() === event.target.value)
     this.setState({workSheetValue: event.target.value, workSheetName: worksheetName[0].title, loadingColumns: true})
     this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
-    if (event.target.value !== '' && this.state.spreadSheetValue !== '' && this.state.lookUpColumn !== '' && this.state.lookUpValue !== '') {
+    if (event.target.value !== '' && this.state.spreadSheetValue && this.state.lookUpColumn && this.state.lookUpValue) {
       this.setState({buttonDisabled: false})
     }
   }
 
   onLookUpColumnChange (event) {
     this.setState({lookUpColumn: event.target.value, showLookUpValue: true})
-    if (event.target.value !== '' && this.state.spreadSheetValue !== '' && this.state.workSheetValue !== '' && this.state.lookUpValue !== '') {
+    if (event.target.value !== '' && this.state.spreadSheetValue && this.state.workSheetValue && this.state.lookUpValue) {
       this.setState({buttonDisabled: false})
     }
   }
@@ -128,7 +128,7 @@ class UpdateRow extends React.Component {
     if (event.target.value === '') {
       this.setState({buttonDisabled: true})
     } else {
-      if (event.target.value !== '' && this.state.spreadSheetValue !== '' && this.state.workSheetValue !== '' && this.state.lookUpColumn !== '') {
+      if (event.target.value !== '' && this.state.spreadSheetValue && this.state.workSheetValue && this.state.lookUpColumn) {
         this.setState({buttonDisabled: false})
       }
     }
