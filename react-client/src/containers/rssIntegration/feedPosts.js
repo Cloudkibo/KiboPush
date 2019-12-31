@@ -22,7 +22,8 @@ class FeedPosts extends React.Component {
       endDate: '',
       status: '',
       pageNumber: 0,
-      feedPosts: []
+      feedPosts: [],
+      dateRangeWarning: ''
     }
     props.fetchFeedPosts({
       feedId: props.currentFeed && props.currentFeed._id ? props.currentFeed._id: '',
@@ -31,8 +32,7 @@ class FeedPosts extends React.Component {
       first_page: 'first',
       page_value: '',
       start_date: '',
-      end_date: '',
-      dateRangeWarning: ''
+      end_date: ''
     })
 
     this.onPageFilter = this.onPageFilter.bind(this)
@@ -97,10 +97,10 @@ class FeedPosts extends React.Component {
     }
   }
   onPageFilter (e) {
-    this.setState({page_value: e.target.value, pageNumber: 0})
+    this.setState({pageFilter: e.target.value, pageNumber: 0})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: this.state.pageFilter, startDate: this.state.startDate, endDate: this.state.endDate})
+      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: e.target.value, startDate: this.state.startDate, endDate: this.state.endDate})
     } else {
       this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: '', startDate: this.state.startDate, endDate: this.state.endDate})
     }
@@ -144,14 +144,14 @@ class FeedPosts extends React.Component {
   }
   
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if(nextProps.pages && nextProps.pages.length !== this.props.pages.length) {
+    if(nextProps.pages) {
       this.setState({newsPages: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
     }
-    if (nextProps.feedPosts && this.props.feedPosts && nextProps.feedPosts.length !== this.props.feedPosts.length) {
+    if (nextProps.feedPosts) {
       this.displayData(0, nextProps.feedPosts)
     }
-    if (nextProps.postsCount && this.props.postsCount && nextProps.postsCount !== this.props.postsCount) {
-      this.setState({ totalLength: nextProps.count })
+    if (nextProps.postsCount) {
+      this.setState({ totalLength: nextProps.postsCount })
     }
   }
   handlePageClick(data) {
@@ -192,7 +192,7 @@ class FeedPosts extends React.Component {
       })
     }
     this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.props.rssFeeds)
+    this.displayData(data.selected, this.props.feedPosts)
   }
 
   render () {
@@ -210,12 +210,15 @@ class FeedPosts extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='row' style={{marginBottom: '15px'}}>
+              <div className='row' style={{marginBottom: '30px'}}>
                 <div className='col-md-4'>
-                  <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
-                    <option value='' disabled>Filter by Status...</option>
-                    <option value='enabled'>Enabled</option>
-                    <option value='disabled'>Disabled</option>
+                  <select className='custom-select' style={{width: '100%'}} value= {this.state.pageFilter} onChange={this.onPageFilter}>
+                    <option value='' disabled>Filter by Page</option>
+                    <option value=''>All</option>
+                    { this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                      <option value={page._id}>{page.pageName}</option>
+                    ))
+                    }
                   </select>
                 </div>
                 <div className='col-md-8' style={{ display: 'inherit' }}>
@@ -246,7 +249,8 @@ class FeedPosts extends React.Component {
                 </div>
               </div>
               <div className='row' >
-              <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+              {this.props.feedPosts && this.props.feedPosts.length > 0 
+              ? <div className='col-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data' style={{width: '100%'}}>
                 <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                   <thead className='m-datatable__head'>
                     <tr className='m-datatable__row'
@@ -274,15 +278,18 @@ class FeedPosts extends React.Component {
                     </tr>
                   </thead>
                   <tbody className='m-datatable__body'>
+                    { this.state.feedPosts.map((post, i) => (
                     <tr 
                       className='m-datatable__row m-datatable__row--even'
                       style={{height: '55px'}}>
-                      <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}></span></td>
-                      <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate()}</span></td>
-                      <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}></span></td>
-                      <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}></span></td>
-                      <td data-field='clicked' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}></span></td>
+                      <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === post.pageId)[0].pageName}</span></td>
+                      <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
+                      <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.sent ? post.sent : 0}</span></td>
+                      <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.seen ? post.seen : 0}</span></td>
+                    <td data-field='clicked' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.clicked ? post.clicked: 0}</span></td>
                     </tr>
+                    ))
+                    }
                   </tbody>
                 </table>
                 <div className='pagination'>
@@ -301,6 +308,10 @@ class FeedPosts extends React.Component {
                     activeClassName={'active'} />
                 </div>
               </div>
+            : <div className= 'col-12' style={{margin: '10px', height: '100px'}}>
+              <span>No records found</span>
+              </div>
+            }
             </div>
             <div className='m-portlet__foot m-portlet__foot--fit'>
               <div className='col-12' style={{textAlign: 'right', paddingTop: '30px', paddingBottom: '30px'}}>

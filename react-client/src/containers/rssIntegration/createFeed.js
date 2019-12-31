@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { isWebURL, isRssUrl } from './../../utility/utils'
-import { createRssFeed } from '../../redux/actions/rssIntegration.actions'
+import { createRssFeed, updateFeed } from '../../redux/actions/rssIntegration.actions'
 
 class CreateFeed extends React.Component {
   constructor (props, context) {
@@ -15,7 +15,7 @@ class CreateFeed extends React.Component {
       isActive: true,
       feedTitle: '',
       storiesCount: '5',
-      isDefault: props.rssFeeds && props.rssFeeds.length > 1 ? false:true,
+      isDefault: props.rssFeeds && props.rssFeeds.length > 0 ? false:true,
       selectedPages: [],
       saveEnabled: false,
       inValidUrlMsg: ''
@@ -66,7 +66,15 @@ class CreateFeed extends React.Component {
 	    isActive: this.state.isActive,
 	    pageIds: this.state.selectedPages
     }
-    this.props.createRssFeed(rssPayload, this.msg, this.resetFields)
+    if (!this.props.currentFeed) {
+      this.props.createRssFeed(rssPayload, this.msg, this.resetFields)
+    } else {
+      var data = {
+        feedId: this.props.currentFeed._id,
+        updatedObject: rssPayload
+      }
+      this.props.updateFeed(data, this.msg, false)
+    }
   }
 
   isValidRssUrl(feedUrl) {
@@ -346,7 +354,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      createRssFeed: createRssFeed
+      createRssFeed: createRssFeed,
+      updateFeed: updateFeed
     },
     dispatch)
 }
