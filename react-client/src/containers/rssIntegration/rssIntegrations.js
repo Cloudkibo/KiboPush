@@ -10,7 +10,7 @@ import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { Link } from 'react-router-dom'
-import { fetchRssFeed, deleteRssFeed, saveCurrentFeed } from '../../redux/actions/rssIntegration.actions'
+import { fetchRssFeed, deleteRssFeed, saveCurrentFeed, updateFeed } from '../../redux/actions/rssIntegration.actions'
 import ReactPaginate from 'react-paginate'
 
 class RssIntegrations extends React.Component {
@@ -40,6 +40,7 @@ class RssIntegrations extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.resetFilters = this.resetFilters.bind(this)
+    this.setStatus = this.setStatus.bind(this)
   }
   resetFilters () {
     this.setState({
@@ -47,6 +48,13 @@ class RssIntegrations extends React.Component {
       status: '',
       pageNumber: 0,
     })
+  }
+  setStatus (feed) {
+    var data = {
+      feedId: feed._id,
+      updatedObject: {isActive: !feed.isActive}
+    }
+    this.props.updateFeed(data, this.msg, true)
   }
   onStatusFilter (e) {
     this.setState({status: e.target.value, pageNumber: 0})
@@ -325,6 +333,7 @@ class RssIntegrations extends React.Component {
                       openSettings={this.gotoSettings} 
                       gotoMessages={this.gotoMessages}
                       setDeleteId={this.setDeleteId}
+                      setStatus={this.setStatus}
                     />
                   ))
                   }
@@ -368,7 +377,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchRssFeed: fetchRssFeed,
     deleteRssFeed: deleteRssFeed,
-    saveCurrentFeed: saveCurrentFeed
+    saveCurrentFeed: saveCurrentFeed,
+    updateFeed: updateFeed
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(RssIntegrations)

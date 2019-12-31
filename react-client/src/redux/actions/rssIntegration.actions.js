@@ -14,7 +14,7 @@ export function showRssFeeds (data) {
 export function showRssFeedPosts (data) {
   return {
     type: ActionTypes.SHOW_RSS_FEED_POSTS,
-    feedPosts: data.feedPosts,
+    feedPosts: data.rssFeedPosts,
     postsCount: data.count
   }
 }
@@ -66,7 +66,7 @@ export function fetchRssFeed (data) {
 export function fetchFeedPosts (data) {
   console.log('function for fetching feed posts', data)
   return (dispatch) => {
-    callApi(`rssFeedPosts`, 'post', data)
+    callApi(`rssFeeds/rssFeedPosts`, 'post', data)
       .then(res => {
         console.log('response from fetching rss feeds', res)
         if (res.status === 'success') {
@@ -89,6 +89,29 @@ export function createRssFeed (data, msg, handle) {
           handle(res.payload)
         } else {
           msg.error(res.payload)
+        }
+      })
+  }
+}
+export function updateFeed (data, msg, fetchFeeds) {
+  console.log('function for updating rss feeds', data)
+  var fetchData = {last_id: 'none',
+    number_of_records: 10,
+    first_page: 'first',
+    search_value: '',
+    status_value: '',
+  }
+  return (dispatch) => {
+    callApi(`rssFeeds/edit`, 'post', data)
+      .then(res => {
+        console.log('response from editing rss feeds', res)
+        if (res.status === 'success') {
+          if (fetchFeeds) {
+            dispatch(fetchRssFeed(fetchData))
+          }
+          msg.success('Feed has been updated successfully')
+        } else {
+          msg.error('Failed to update feed ')
         }
       })
   }
