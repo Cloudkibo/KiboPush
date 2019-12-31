@@ -87,7 +87,9 @@ export function getHostName (url) {
 
 export function validateYoutubeURL (url) {
   if (url !== undefined || url !== '') {
+      /* eslint-disable */
       let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
+      /* eslint-disable */
       let match = url.match(regExp)
       return match && match[2].length === 11
   } else {
