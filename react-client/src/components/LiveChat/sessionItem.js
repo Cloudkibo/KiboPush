@@ -202,12 +202,12 @@ class SessionItem extends React.Component {
               </div>
               <div className='col-2'>
                 {
-                  this.state.showingQuickAction && 
+                  this.state.showingQuickAction &&
                   <span title={this.props.session.status === 'new' ? 'Mark as resolved' : 'Reopen session'}>
                   {
                     this.props.session.status === 'new'
                     ?
-                    <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={(e) => 
+                    <i  id={'resolve_session'+this.props.session._id} style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}} onClick={(e) =>
                       this.changeStatus(e, 'resolved', this.props.session._id)} data-tip='Mark as done' className='la la-check' />
                     :
                       <i id={'resolve_session'+this.props.session._id} style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }} data-tip='Reopen' onClick={(e) => {
@@ -223,10 +223,10 @@ class SessionItem extends React.Component {
               ? <span className='m-widget4__sub'>
                 {
                   !this.props.session.lastRepliedBy
-                  ? <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text.slice(0, 30) + '...' : this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text}</span>
+                  ? <span>{(this.props.session.lastPayload.text.length > 15) ? this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text.slice(0, 15) + '...' : this.props.subscriberName.split(' ')[0] + ': ' + this.props.session.lastPayload.text}</span>
                   : this.props.session.lastRepliedBy.type === 'agent' && this.props.session.lastRepliedBy.id === this.props.user._id
-                  ? <span>You: {(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastPayload.text.slice(0, 25) + '...' : this.props.session.lastPayload.text }</span>
-                  : <span>{(this.props.session.lastPayload.text.length > 30) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 20) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
+                  ? <span>You: {(this.props.session.lastPayload.text.length > 15) ? this.props.session.lastPayload.text.slice(0, 15) + '...' : this.props.session.lastPayload.text }</span>
+                  : <span>{(this.props.session.lastPayload.text.length > 15) ? this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text.slice(0, 15) + '...' : this.props.session.lastRepliedBy.name + ': ' + this.props.session.lastPayload.text}</span>
                 }
               </span>
               : this.props.session.lastPayload && this.props.session.lastPayload.componentType && this.props.session.lastPayload.componentType !== 'thumbsUp'

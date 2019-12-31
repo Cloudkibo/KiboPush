@@ -906,7 +906,7 @@ class ChatBox extends React.Component {
                       record={this.state.record}
                       className='sound-wave'
                       onStop={this.onStop}
-                      strokeColor='#000000' 
+                      strokeColor='#000000'
                       mimeType="audio/wav"/>
                   </div>
                   <br />
@@ -1077,11 +1077,34 @@ class ChatBox extends React.Component {
                                     <div className='m-messenger__message-body'>
                                       <div className='m-messenger__message-arrow' />
                                       {
-                                        msg.payload.attachments && !msg.url_meta
+                                        msg.payload.type === 'url-card'
+                                        ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.props.currentSession.firstName} wrote:
+                                          </div>
+                                          <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
+                                            {msg.payload.text}
+                                          </div>
+                                          {
+                                            msg.payload.title &&
+                                            <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '200px', margin: '0px'}} >
+                                              <div className='broadcastContent'>
+                                                {
+                                                  msg.payload.imageUrl && msg.payload.description &&
+                                                  <img src={msg.payload.imageUrl} style={{objectFit: 'cover', maxHeight: '110px', maxWidth: '200px', minHeight: '110px', paddingTop: '5px', minWidth: '95%', margin: '-10px', width: '100%', height: '100%'}} alt='' />
+                                                }
+                                                <hr style={{display: !msg.payload.imageUrl && 'none', marginBottom: '5px'}} />
+                                                <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{msg.payload.title}</h6>
+                                                <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{msg.payload.description.length > 50 ? msg.payload.description.substring(0, 50) + '...' : msg.payload.description}</p>
+                                              </div>
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.attachments && !msg.url_meta
                                         ? (
                                           <div className='m-messenger__message-content'>
                                             <div className='m-messenger__message-username'>
-                                              {this.props.currentSession.firstName} shared
+                                              {this.props.currentSession.firstName} shared:
                                             </div>
                                             {
                                               msg.payload.attachments.map((att, index) => (
@@ -1141,7 +1164,7 @@ class ChatBox extends React.Component {
                                         : msg.url_meta
                                         ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.firstName} shared a link
+                                            {this.props.currentSession.firstName} shared:
                                           </div>
                                           <div style={{clear: 'both', display: 'block'}}>
                                             <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
@@ -1201,7 +1224,7 @@ class ChatBox extends React.Component {
                                         : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                         ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.firstName} reacted
+                                            {this.props.currentSession.firstName} reacted:
                                           </div>
                                           <div style={{fontSize: '30px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                             {msg.payload.text}
@@ -1209,7 +1232,7 @@ class ChatBox extends React.Component {
                                         </div>
                                         : <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.firstName} wrote
+                                            {this.props.currentSession.firstName} wrote:
                                           </div>
                                           <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text' value={msg.payload.text}>
                                             {msg.payload.text}
