@@ -38,6 +38,9 @@ import PollsByDays from './containers/operationalDashboard/pollsByDays'
 import BroadcastsByDays from './containers/operationalDashboard/broadcastsByDays'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import Autoposting from './containers/autoposting/autoposting'
+import RssIntegration from './containers/rssIntegration/rssIntegrations'
+import CreateFeed from './containers/rssIntegration/createFeed'
+import FeedPosts from './containers/rssIntegration/feedPosts'
 import MessagesContainer from './containers/autoposting/messagesContainer'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/livechat'
@@ -89,6 +92,7 @@ import Bots from './containers/smart_replies/bots'
 import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 import CreateBot from './containers/smart_replies/createBot'
 import intents from './containers/smart_replies/intents'
+import setAnswer from './containers/smart_replies/setAnswer'
 import EditBot from './containers/smart_replies/editBot'
 import ViewBot from './containers/smart_replies/viewBot'
 import Sequence from './containers/sequence/sequence'
@@ -201,6 +205,9 @@ const Routes = () => (
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
     <Route path='/autopostingMessages' component={MessagesContainer} onEnter={requireAuth} />
     <Route path='/autopostingItemSettings' component={ItemSettings} onEnter={requireAuth} />
+    <Route path='/rssIntegration' component={RssIntegration} onEnter={requireAuth} />
+    <Route path='/editFeed' component={CreateFeed} onEnter={requireAuth} />
+    <Route path='/feedPosts' component={FeedPosts} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
@@ -288,6 +295,7 @@ const Routes = () => (
     <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
     <Route path='/intents' component={intents} onEnter={requireAuth} />
+    <Route path='/setAnswer' component={setAnswer} onEnter={requireAuth} />
     <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
     <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
     <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />

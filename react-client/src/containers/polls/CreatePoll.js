@@ -17,7 +17,6 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import SequencePopover from '../../components/Sequence/sequencePopover'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import {
@@ -52,8 +51,9 @@ class CreatePoll extends React.Component {
       isShowingModalGuideLines: false,
       pageId: this.props.pages[0],
       tabActive: 'poll',
-      subscriberCount: 0
-
+      subscriberCount: 0,
+      totalSubscribersCount: 0,
+      isApprovedForSMP: false
     }
     this.handleSubscriberCount = this.handleSubscriberCount.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
@@ -70,7 +70,11 @@ class CreatePoll extends React.Component {
     this.updateOptionsActions = this.updateOptionsActions.bind(this)
   }
   handleSubscriberCount(response) {
-    this.setState({subscriberCount: response.payload.count})
+    this.setState({
+      subscriberCount: response.payload.count,
+      totalSubscribersCount: response.payload.totalCount,
+      isApprovedForSMP: response.payload.isApprovedForSMP
+    })
   }
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
@@ -86,6 +90,7 @@ class CreatePoll extends React.Component {
     this.setState({tabActive: 'target'})
     const payload = {
       pageId: this.state.pageId._id,
+      pageAccessToken: this.state.pageId.accessToken,
       segmented: false,
       isList: false,
     }
@@ -181,6 +186,7 @@ class CreatePoll extends React.Component {
     })
     var payload = {
       pageId:  pageId._id,
+      pageAccessToken: pageId.accessToken,
       segmented: true,
       segmentationGender: targeting.genderValue,
       segmentationLocale: targeting.localeValue,
@@ -373,7 +379,8 @@ class CreatePoll extends React.Component {
           segmentationPoll: this.state.pollValue,
           segmentationList: this.state.listSelected,
           fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-          subscribersCount: currentPageSubscribers.length
+          subscribersCount: currentPageSubscribers.length,
+          isApprovedForSMP: this.state.isApprovedForSMP
         }
         console.log('Sending Poll', data)
         this.props.sendPollDirectly(data, this.msg)
@@ -392,7 +399,6 @@ class CreatePoll extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <SubscriptionPermissionALert />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='send' data-toggle="modal" data-target="#send">send</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -495,14 +501,18 @@ class CreatePoll extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-exclamation m--font-brand' />
+          {
+            /*
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-brand' />
+              </div>
+              <div className='m-alert__text'>
+                View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer' }} data-toggle="modal" data-target="#guideline">Message Types</Link>
+              </div>
             </div>
-            <div className='m-alert__text'>
-              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer' }} data-toggle="modal" data-target="#guideline">Message Types</Link>
-            </div>
-          </div>
+            */
+          }
           <div className='row'>
             <div className='col-12'>
               <div className='m-portlet' style={{ height: '100%' }}>
@@ -664,7 +674,15 @@ class CreatePoll extends React.Component {
                           }
                         </div>
                         <div className='tab-pane' id='tab_2'>
-                          <Targeting handleTargetValue={this.handleTargetValue} subscriberCount = {this.state.subscriberCount} resetTarget={this.state.resetTarget} subscribers={this.props.subscribers} page={this.state.pageId} component='poll' />
+                          <Targeting
+                            handleTargetValue={this.handleTargetValue}
+                            subscriberCount = {this.state.subscriberCount}
+                            totalSubscribersCount={this.state.totalSubscribersCount}
+                            resetTarget={this.state.resetTarget}
+                            subscribers={this.props.subscribers}
+                            page={this.state.pageId}
+                            component='poll'
+                          />
                         </div>
                       </div>
                     </div>

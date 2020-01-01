@@ -32,7 +32,8 @@ export function postsInfo (state = {}, action) {
         commentReplies: action.data,
         comments: action.data,
         commentsCount:action.data,
-        repliesCount: action.data
+        repliesCount: action.data,
+        postContent: action.data
       })
     case ActionTypes.CURRENT_POST:
       return Object.assign({}, state, {

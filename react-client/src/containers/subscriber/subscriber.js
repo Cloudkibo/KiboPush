@@ -21,7 +21,6 @@ import AlertContainer from 'react-alert'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
-import SubscriptionPermissionALert from '../../components/alertMessages/subscriptionPermissionAlert'
 import YouTube from 'react-youtube'
 var json2csv = require('json2csv')
 
@@ -1235,6 +1234,7 @@ class Subscriber extends React.Component {
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
+        type='text'
         className='form-control m-input'
         placeholder='value'
         onChange={this.handleSetCustomField}
@@ -1280,7 +1280,7 @@ class Subscriber extends React.Component {
           onChange={this.handleBulkSetCustomField}
           type='date' />
       } else if (this.state.selectedBulkField.type === 'datetime') {
-        setBulkFieldInput = setFieldInput = <input className='form-control m-input'
+        setBulkFieldInput = <input className='form-control m-input'
           value={this.state.selectedBulkField.value}
           onChange={this.handleBulkSetCustomField}
           type='datetime-local' />
@@ -1332,7 +1332,6 @@ class Subscriber extends React.Component {
         <CreateCustomField />
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <SubscriptionPermissionALert />
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1480,7 +1479,7 @@ class Subscriber extends React.Component {
                                       <option key='ALL' value='all'>ALL</option>
                                       {
                                         this.props.locales && this.props.locales.map((locale, i) => (
-                                          <option key={i} value={locale}>{locale}</option>
+                                          <option key={i} value={locale.value}>{locale.text}</option>
                                         ))
                                       }
                                     </select>{/* </div> */}
@@ -1864,7 +1863,7 @@ class Subscriber extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className='modal fade' id='m_modal_1_2' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                     <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog' role='document'>
                       <div className='modal-content'>
                         <div style={{ display: 'block' }} className='modal-header'>
@@ -2129,16 +2128,16 @@ class Subscriber extends React.Component {
                               <div>
                                 <div className='row'>
                                   <span style={{ fontWeight: 600, marginLeft: '15px', marginTop: '15px' }}>Web Chat Plugin Information:</span>
-            
+
                                 </div>
                                 {
-                                  this.state.subscriber.siteInfo ? 
+                                  this.state.subscriber.siteInfo ?
                                   <div>
                                     <span>This is the information captured when a customer sends a message from the chat plugin installed on your website</span>
                                     <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
                                       <span><strong>Page Title</strong>: {this.state.subscriber.siteInfo.pageTitle}</span>
                                     </div>
-                                
+
                                     <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
                                       <span><strong>Page URL</strong>: {this.state.subscriber.siteInfo.fullUrl}</span>
                                     </div>

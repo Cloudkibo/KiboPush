@@ -51,8 +51,10 @@ class FlowBuilder extends React.Component {
     this.getPortContainerPositions = this.getPortContainerPositions.bind(this)
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
+    this.disableReset = this.disableReset.bind(this)
 
     this.updateZIndex = true
+
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -68,12 +70,25 @@ class FlowBuilder extends React.Component {
       )
     ) {
       //this.props.rerenderFlowBuilder()
+      console.log('chart state in componentWillRecieveProps', this.state.chart)
+      let flowBuilderChart = document.getElementById('flowBuilderChart')
+      flowBuilderChart.style.transform = 'scale(1)'
       this.setState({
         chart: this.getChartData(),
         prevChart: {}
       }, () => {
         this.updateZIndex = true
+        flowBuilderChart.style.transform = `scale(${this.state.scale})`
       })
+    }
+  }
+
+  disableReset () {
+    if (this.props.linkedMessages &&
+      this.props.linkedMessages[0].messageContent.length === 0) {
+        return true
+    } else {
+      return null
     }
   }
 
@@ -277,7 +292,7 @@ class FlowBuilder extends React.Component {
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
       let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
-      if (payload.action === 'send_message_block' || !buttons[j].type) {
+      if ((payload && payload.action === 'send_message_block') || !buttons[j].type) {
         let payload = JSON.parse(buttons[j].payload)
         console.log('parsed payload', payload)
         let port = document.getElementById(`port-${buttons[j].id}`)
@@ -323,7 +338,7 @@ class FlowBuilder extends React.Component {
     console.log('getting chart data')
     const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
     let {ports, links} = this.getPortsNLinks(messages[0])
-    let chartSimple = {
+    let chartSimple = (this.state && this.state.chart) ? this.state.chart : {
       offset: {
         x: 0,
         y: 0
@@ -333,8 +348,6 @@ class FlowBuilder extends React.Component {
       selected: {},
       hovered: {}
     }
-    let positionX = 25
-    let positionY = 50
     chartSimple['nodes'][`${messages[0].id}`] = {
       id: `${messages[0].id}`,
       type: "starting_step",
@@ -349,7 +362,9 @@ class FlowBuilder extends React.Component {
     }
 
     console.log('messages', messages)
+    let layers = [1]
     for (let i = 1; i < messages.length; i++) {
+      let currentBlock = chartSimple['nodes'][`${messages[i].id}`]
       let block = document.getElementById(`flowBuilderCard-${messages[i].id}`)
       let blockDimensions = null
       if (block) {
@@ -357,13 +372,20 @@ class FlowBuilder extends React.Component {
       }
       let portsNLinks = this.getPortsNLinks(messages[i])
       links = Object.assign(links, portsNLinks.links)
-      positionX = positionX + 400
+      let parent = chartSimple['nodes'][`${messages[i].parentId}`]
+      if (!parent) {
+        parent = chartSimple['nodes'][`${this.props.linkedMessages[this.props.linkedMessages.length - 1].id}`]
+      }
+      let positionX = parent.position.x + 400
+      let layerIndex = Math.floor(positionX / 400)
+      if (!layers[layerIndex]) layers[layerIndex] = 0
+      let positionY = 10 + (layers[layerIndex] * 200)
       chartSimple['nodes'][`${messages[i].id}`] = {
         id: `${messages[i].id}`,
         type: "component_block",
         position: {
-          x: positionX,
-          y: positionY
+          x: currentBlock ? currentBlock.position.x : positionX,
+          y: currentBlock ? currentBlock.position.y : positionY
         },
         ports: Object.assign({
           port0: {
@@ -379,6 +401,7 @@ class FlowBuilder extends React.Component {
           id: messages[i].id
         }
       }
+      layers[layerIndex] = layers[layerIndex] + 1
     }
     chartSimple['links'] = links
     console.log('chartSimple', chartSimple)
@@ -672,6 +695,7 @@ class FlowBuilder extends React.Component {
                 }
               }
             }
+            this.props.unlinkedMessages[messageIndex].parentId = fromComponentId
             this.props.linkedMessages.push(this.props.unlinkedMessages[messageIndex])
             this.props.unlinkedMessages.splice(messageIndex, 1)
           }
@@ -768,6 +792,7 @@ class FlowBuilder extends React.Component {
   }
 
   componentDidMount () {
+    console.log('componentDidMount called flowBuilder')
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 46 || e.keyCode === 8) {
         console.log('key pressed in flow builder', this.state)
@@ -917,6 +942,10 @@ class FlowBuilder extends React.Component {
                   zoomIn={this.zoomIn}
                   zoomOut={this.zoomOut}
                   resetTransform={this.resetTransform}
+                  disableReset={this.disableReset}
+                  reset={this.props.reset}
+                  onNext={this.props.onNext}
+                  isBroadcastInvalid={this.props.isBroadcastInvalid}
                 />
                 <div
                   id='flowBuilderChart'
@@ -938,6 +967,7 @@ class FlowBuilder extends React.Component {
                 <Targeting
                   handleTargetValue={this.props.handleTargetValue}
                   subscriberCount={this.props.subscriberCount}
+                  totalSubscribersCount={this.props.totalSubscribersCount}
                   resetTarget={this.props.resetTarget}
                   page={this.props.pageId}
                   component='broadcast'
@@ -957,13 +987,17 @@ FlowBuilder.propTypes = {
   'unlinkedMessages': PropTypes.array.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool,
   'pageId': PropTypes.object.isRequired,
   'getItems': PropTypes.func.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
   'currentId': PropTypes.number.isRequired,
-  'rerenderFlowBuilder': PropTypes.func.isRequired
+  'rerenderFlowBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 export default FlowBuilder

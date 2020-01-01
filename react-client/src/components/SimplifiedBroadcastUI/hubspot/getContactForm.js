@@ -47,7 +47,7 @@ class GetContactForm extends React.Component {
       let mappingData = []
       let mappingDataValues = []
       for (let i = 0; i < nextProps.columns.hubSpotColumns.length; i++) {
-        mappingData.push({hubSpotColumn: nextProps.columns.hubSpotColumns[i]})
+        mappingData.push({hubspotColumn: nextProps.columns.hubSpotColumns[i]})
         mappingDataValues.push('')
       }
       console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
@@ -142,7 +142,7 @@ class GetContactForm extends React.Component {
       }
       console.log('this.props.columns', this.props.columns)
       return ( 
-        <div className="modal-content" style={{ width: '687px', top: '100' }}>
+        <div className="modal-content" style={{ width: '687px', top: '100', height: this.state.showColumns ? '700px' : '312px', overflow:'hidden'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
@@ -154,7 +154,7 @@ class GetContactForm extends React.Component {
                 </span>
           </button>
         </div>
-          <div style={{ textAlign: 'left' }} className="modal-body">
+          <div style={{ textAlign: 'left' , overflow:'hidden' , overflowY:'scroll'}} className="modal-body">
               <h6>HubSpot: Get Contact Properties</h6>
               <span style={{color: '#575962'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
            <br /> <br />

@@ -51,7 +51,8 @@ class Sidebar extends Component {
       messengerAds: true,
       businessGateway: false,
       checkbox: true,
-      abandonedCarts: false
+      abandonedCarts: false,
+      rssIntegration: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -277,6 +278,7 @@ class Sidebar extends Component {
               </li>
               {this.showSmartRespliesItem()}
               {this.showAutoPostingItem()}
+              {this.showRssIntegrationItem()}
               {this.showSequenceMessaging()}
             </ul>
           </div>
@@ -547,6 +549,26 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Autoposting
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showRssIntegrationItem () {
+    if (this.props.user.isSuperUser) {
+      if (this.state.rssIntegration) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/rssIntegration' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Rss Integration
               </span>
             </Link>
           </li>

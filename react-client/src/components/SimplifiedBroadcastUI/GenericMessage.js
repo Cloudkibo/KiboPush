@@ -833,12 +833,14 @@ class GenericMessage extends React.Component {
             quickReplies={this.state.quickReplies}
             updateQuickReplies={this.updateQuickReplies} />
         }])
+      // return this.state.list
     } else {
       return this.state.list
     }
   }
 
   render () {
+    console.log('render in genericMessage')
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -1015,9 +1017,9 @@ GenericMessage.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
-    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
-    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+    sequences: state.sequenceInfo.sequences,
+    broadcasts: state.templatesInfo.broadcasts,
+    tags: state.tagsInfo.tags
   }
 }
 

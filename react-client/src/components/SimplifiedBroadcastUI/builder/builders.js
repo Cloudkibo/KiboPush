@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 
+import {validateYoutubeURL} from '../../../utility/utils'
+
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../../redux/actions/templates.actions'
@@ -27,7 +29,6 @@ import AudioModal from '../AudioModal'
 import MediaModal from '../MediaModal'
 import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
-import YoutubeVideoModal from '../YoutubeVideoModal'
 
 class Builders extends React.Component {
   constructor (props, context) {
@@ -192,6 +193,7 @@ class Builders extends React.Component {
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
       if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
         // linkedMessages[i].title = button.title
+        linkedMessages[i].parentId = this.state.currentId
         linkedMessages[i].linkedButton = button
       }
     }
@@ -351,8 +353,10 @@ class Builders extends React.Component {
     }
 
     if (buttonFound) {
+      data.parentId = this.state.currentId
       linkedMessages.push(data)
     } else {
+      data.parentId = this.state.currentId
       unlinkedMessages.push(data)
     }
     lists[id] = []
@@ -416,7 +420,7 @@ class Builders extends React.Component {
     if (showDialog) {
       this.showResetAlertDialog()
     } else {
-      this.newConvo()
+      this.newConvo(true)
     }
   }
 
@@ -689,16 +693,16 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp2}, obj)
   }
 
-  newConvo () {
+  newConvo (render) {
     let currentId = new Date().getTime()
     let lists = {}
     lists[currentId] = []
     let quickReplies = {}
     quickReplies[currentId] = []
     this.setState({
-      lists, 
+      lists,
       currentId,
-      convoTitle: this.defaultTitle, 
+      convoTitle: this.defaultTitle,
       quickRepliesComponents: {},
       quickRepliesIndex: -1,
       linkedMessages: [{title: this.props.convoTitle, id: currentId, messageContent: []}],
@@ -707,7 +711,7 @@ class Builders extends React.Component {
     }, () => {
       this.handleChange({convoTitle: this.defaultTitle}, {})
       this.handleChange({broadcast: []}, {})
-      if (this.props.builderValue === 'flow') {
+      if (render && this.props.builderValue === 'flow') {
         this.props.rerenderFlowBuilder()
       }
     })
@@ -745,12 +749,12 @@ class Builders extends React.Component {
       }
     }
     this.setState({
-      currentId: linkedMessages[0].id, 
-      convoTitle: linkedMessages[0].title, 
-      linkedMessages, 
-      unlinkedMessages, 
-      lists, 
-      quickReplies, 
+      currentId: linkedMessages[0].id,
+      convoTitle: linkedMessages[0].title,
+      linkedMessages,
+      unlinkedMessages,
+      lists,
+      quickReplies,
       quickRepliesComponents
     })
   }
@@ -762,17 +766,9 @@ class Builders extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`youtube video component edited`)
-      } else {
-        this.msg.info(`${componentDetails.componentType} component edited`)
-      }
+      this.msg.info(`${componentDetails.componentName} component edited`)
     } else {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`New youtube video component added`)
-      } else {
-        this.msg.info(`New ${componentDetails.componentType} component added`)
-      }
+        this.msg.info(`New ${componentDetails.componentName} component added`)
     }
     this.updateList(component)
     component.handler()
@@ -871,7 +867,16 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<LinkCarousel
+        elementLimit={1}
+        componentName={'YouTube video'}
+        header={'YouTube video'}
+        defaultErrorMsg={'Please enter a valid YouTube link'}
+        invalidMsg={'Invalid YouTube link'}
+        validMsg={'YouTube link is valid'}
+        retrievingMsg={'Retrieving YouTube video metadata'}
+        buttonTitle={'Watch on YouTube'}
+        validateUrl={(url) => validateYoutubeURL(url)}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -961,6 +966,15 @@ class Builders extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          elementLimit={broadcast.elementLimit}
+          componentName={broadcast.componentName}
+          header={broadcast.header}
+          defaultErrorMsg={broadcast.defaultErrorMsg}
+          invalidMsg={broadcast.invalidMsg}
+          validMsg={broadcast.validMsg}
+          retrievingMsg={broadcast.retrievingMsg}
+          buttonTitle={broadcast.buttonTitle}
+          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
@@ -987,6 +1001,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            youtubeVideo: broadcast.youtubeVideo,
             links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
@@ -1370,6 +1385,7 @@ class Builders extends React.Component {
           pageId={this.props.pageId}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           showDialog={this.showDialog}
           hiddenComponents={this.state.hiddenComponents}
@@ -1391,12 +1407,16 @@ class Builders extends React.Component {
           unlinkedMessages={this.state.unlinkedMessages}
           handleTargetValue={this.props.handleTargetValue}
           subscriberCount={this.props.subscriberCount}
+          totalSubscribersCount={this.props.totalSubscribersCount}
           resetTarget={this.props.resetTarget}
           getComponent={this.getComponent}
           pageId={this.props.pageId}
           getItems={this.getItems}
           changeMessage={this.changeMessage}
           removeMessage={this.removeMessage}
+          reset={this.props.reset}
+          onNext={this.props.onNext}
+          isBroadcastInvalid={this.props.isBroadcastInvalid}
         />
       }
 
@@ -1422,12 +1442,16 @@ Builders.propTypes = {
   'builderValue': PropTypes.string.isRequired,
   'handleTargetValue': PropTypes.func.isRequired,
   'subscriberCount': PropTypes.number.isRequired,
+  'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool.isRequired,
   'noDefaultHeight': PropTypes.bool,
   'linkedMessages': PropTypes.array,
   'showTabs': PropTypes.bool.isRequired,
   'unlinkedMessages': PropTypes.array,
-  'switchBuilder': PropTypes.func.isRequired
+  'switchBuilder': PropTypes.func.isRequired,
+  'reset': PropTypes.func.isRequired,
+  'onNext': PropTypes.func.isRequired,
+  'isBroadcastInvalid': PropTypes.func.isRequired
 }
 
 Builders.defaultProps = {
@@ -1440,9 +1464,9 @@ Builders.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: state.sequenceInfo.sequences ? state.sequenceInfo.sequences : [],
-    broadcasts: state.templatesInfo.broadcasts ? state.templatesInfo.broadcasts : [],
-    tags: state.tagsInfo.tags ? state.tagsInfo.tags : []
+    sequences: state.sequenceInfo.sequences,
+    broadcasts: state.templatesInfo.broadcasts,
+    tags: state.tagsInfo.tags
   }
 }
 

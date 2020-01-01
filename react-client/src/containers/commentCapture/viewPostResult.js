@@ -101,24 +101,48 @@ class PostResult extends React.Component {
     prepareExportComments (comments) {
       var payload = []
       for(var i = 0; i < comments.length; i++) {
-        var commentObj = {}
-        var content = []
-        commentObj['Comment Id'] = comments[i]._id
-        commentObj['Sender Name'] = comments[i].senderName
-        commentObj['Replies Count'] = comments[i].childCommentCount
-        commentObj['Facebook Link'] = comments[i].postFbLink
-  
-        for(var j=0; j < comments[i].commentPayload.length; j++) {
-          if (comments[i].commentPayload[j].componentType === 'text') {
-            content.push(comments[i].commentPayload[j].text)
-          } else {
-            content.push(comments[i].commentPayload[j].url)
+        if ((!comments[i].parentId) || comments[i].parentId === '') {
+          var commentObj = {}
+          var contentComment = []
+          commentObj['Sender Name'] = comments[i].senderName
+          commentObj['Replies Count'] = comments[i].childCommentCount
+          commentObj['Facebook Link'] = comments[i].postFbLink
+    
+          for(var j=0; j < comments[i].commentPayload.length; j++) {
+            if (comments[i].commentPayload[j].componentType === 'text') {
+              contentComment.push(comments[i].commentPayload[j].text)
+            } else {
+              contentComment.push(comments[i].commentPayload[j].url)
+            }
+          }
+          commentObj['Comment'] = contentComment.join(' ')
+          commentObj['Reply for Comment'] = ''
+          commentObj['Created Date'] = comments[i].datetime
+          payload.push(commentObj)
+          if (comments[i].childCommentCount > 0) {
+            for(var r = 0; r < comments.length; r++) {
+              if (comments[i]._id === comments[r].parentId) {
+                var replyObj = {}
+                var contentReply = []
+                replyObj['Sender Name'] = comments[r].senderName
+                replyObj['Replies Count'] = comments[r].childCommentCount
+                replyObj['Facebook Link'] = comments[r].postFbLink
+          
+                for(var k=0; k < comments[r].commentPayload.length; k++) {
+                  if (comments[r].commentPayload[k].componentType === 'text') {
+                    contentReply.push(comments[r].commentPayload[k].text)
+                  } else {
+                    contentReply.push(comments[r].commentPayload[k].url)
+                  }
+                }
+                replyObj['Comment'] = contentReply.join(' ')
+                replyObj['Reply for Comment'] = contentComment.join(' ')
+                replyObj['Created Date'] = comments[r].datetime
+                payload.push(replyObj)
+              }
+            }
           }
         }
-        commentObj['Comment'] = content
-        commentObj['Reply for Comment(Id)'] = comments[i].parentId
-        commentObj['Created Date'] = comments[i].datetime
-        payload.push(commentObj)
       }
       return payload
     }
@@ -133,7 +157,7 @@ class PostResult extends React.Component {
         var subKey = j
         keys.push(subKey)
       }
-      json2csv({ data: data, fields: keys, unwindPath: ['Comment']}, function (err, csv) {
+      json2csv({ data: data, fields: keys}, function (err, csv) {
         if (err) {
         } else {
           console.log('call file download function')
@@ -271,14 +295,35 @@ render() {
                   <div className='m-widget1__item'>
                     <div className='row m-row--no-padding align-items-center'>
                       <div className='col'>
-                        <h3 className='m-widget1__title'>Comment Capture Created</h3>
+                        <h3 className='m-widget1__title'>Created Date</h3>
                       </div>
                       <div className='col m--align-left'>
                         <span>{handleDate(this.props.currentPost.datetime)}</span>
                       </div>
                     </div>
                   </div>
-
+                  <div className='m-widget1__item'>
+                    <div className='row m-row--no-padding align-items-center'>
+                      <div className='col'>
+                        <h3 className='m-widget1__title'>Included Keywords</h3>
+                        <span style={{fontSize: '9px'}}>An auto reply is sent if these keywords are used in a comment</span>
+                      </div>
+                      <div className='col m--align-left'>
+                        <span>{this.props.currentPost.includedKeywords && this.props.currentPost.includedKeywords.length > 0 ? this.props.currentPost.includedKeywords.join(',') : 'none'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-widget1__item'>
+                    <div className='row m-row--no-padding align-items-center'>
+                      <div className='col'>
+                        <h3 className='m-widget1__title'>Excluded Keywords</h3>
+                        <span style={{fontSize: '9px'}}>Reply is not sent if these keywords are used in a comment</span>
+                      </div>
+                      <div className='col m--align-left'>
+                        <span>{this.props.currentPost.excludedKeywords && this.props.currentPost.excludedKeywords.length > 0 ? this.props.currentPost.excludedKeywords.join(',') : 'none'}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className='col-md-9 col-lg-5 col-sm-9'>
@@ -298,10 +343,10 @@ render() {
               toggleOffCanvas={this.toggleOffCanvas} />
           }
           <div className='row'>
-            <div className='col-6'>
+            <div className='col-2'>
               <Link to='/commentCapture' className='btn btn-primary m-btn m-btn--icon'> Back </Link>
             </div>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-6'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-10'>
               <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportAnalytics}>
                 <span>
                   <i className='fa fa-download' />

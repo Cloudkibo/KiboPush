@@ -4,12 +4,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { urlMetaData } from '../../redux/actions/convos.actions'
+import {isWebURL} from '../../utility/utils'
 
 class LinkCarouselModal extends React.Component {
     constructor(props) {
         super(props)
-        this.elementLimit = 10
+        this.elementLimit = props.elementLimit ? props.elementLimit : 10
+        this.defaultErrorMsg = props.defaultErrorMsg ? props.defaultErrorMsg : 'Please enter a valid website link'
         this.buttonLimit = 3
+        this.defaultImage = 'https://atasouthport.com/wp-content/uploads/2017/04/default-image.jpg'
         let cards = []
         for (let i = 0; i < this.elementLimit; i++) {
             if (props.cards && props.cards[i]) {
@@ -31,7 +34,7 @@ class LinkCarouselModal extends React.Component {
         this.cardComponents = new Array(10)
         this.state = {
             cards,
-            links: props.links ? props.links : [{ valid: false, url: '', loading: false }],
+            links: props.links ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
             selectedIndex: 0,
             currentCollapsed: false,
             disabled: props.edit ? false : true,
@@ -70,6 +73,8 @@ class LinkCarouselModal extends React.Component {
         this.addLink = this.addLink.bind(this)
         this.removeLink = this.removeLink.bind(this)
         this.valid = this.valid.bind(this)
+        this.typingTimer = null
+        this.doneTypingInterval = 500
     }
 
     valid() {
@@ -104,7 +109,7 @@ class LinkCarouselModal extends React.Component {
     addLink() {
         let links = this.state.links
         if (links.length < this.elementLimit) {
-            links.push({ url: '', valid: false, loading: false })
+            links.push({ url: '', valid: false, loading: false, errorMsg: this.defaultErrorMsg })
             this.setState({ links })
         }
     }
@@ -132,6 +137,15 @@ class LinkCarouselModal extends React.Component {
             let card = this.state.cards[0].component
             this.props.addComponent({
                 id: this.props.id,
+                componentName:  this.props.componentName ? this.props.componentName : 'links carousel',
+                elementLimit:this.props.elementLimit,
+                header:this.props.header,
+                defaultErrorMsg:this.props.defaultErrorMsg,
+                invalidMsg:this.props.invalidMsg,
+                validMsg:this.props.validMsg,
+                retrievingMsg:this.props.retrievingMsg,
+                buttonTitle:this.props.buttonTitle,
+                validateUrl:this.props.validateUrl,
                 links: this.state.links,
                 componentType: 'card',
                 image_url: card.image_url ? card.image_url : '',
@@ -151,6 +165,15 @@ class LinkCarouselModal extends React.Component {
             })
             this.props.addComponent({
                 id: this.props.id,
+                componentName: this.props.componentName ? this.props.componentName : 'links carousel',
+                elementLimit:this.props.elementLimit,
+                header:this.props.header,
+                defaultErrorMsg:this.props.defaultErrorMsg,
+                invalidMsg:this.props.invalidMsg,
+                validMsg:this.props.validMsg,
+                retrievingMsg:this.props.retrievingMsg,
+                buttonTitle:this.props.buttonTitle,
+                validateUrl:this.props.validateUrl,
                 links: this.state.links,
                 componentType: 'gallery',
                 cards
@@ -179,8 +202,14 @@ class LinkCarouselModal extends React.Component {
         console.log('url meta data retrieved', data)
         let links = this.state.links
         let cards = this.state.cards
-        if (!data || !data.title || !data.description || !data.image) {
-            links[index] = Object.assign(links[index], { loading: false, valid: false })
+        if (!data || !data.ogTitle || !data.ogDescription) {
+            let errorMsg = ''
+            if (!data) {
+                errorMsg = this.props.invalidMsg ? this.props.invalidMsg : 'Invalid website link'
+            } else if (!data.ogTitle && !data.ogDescription) {
+                errorMsg = 'Not enough metadata present in link'
+            }
+            links[index] = Object.assign(links[index], { loading: false, valid: false, errorMsg })
             cards[index] = {
                 disabled: true,
                 id: index + 1,
@@ -191,35 +220,38 @@ class LinkCarouselModal extends React.Component {
                 }
             }
             this.setState({ links, cards })
-            return
-        }
-        cards[index] = {
-            id: index + 1,
-            component: {
-                title: data.title.length > 80 ? data.title.substring(0, 80) + '...' : data.title,
-                subtitle: data.description.length > 80 ? data.description.substring(0, 80) + '...' : data.description,
-                image_url: data.image,
-                buttons: [
-                    {
-                        title: 'Go to Article',
-                        type: 'web_url',
-                        url: links[index].url
-                    }
-                ]
+        } else {
+            if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
+                data.ogImage.url = links[index].url + data.ogImage.url
             }
+            cards[index] = {
+                id: index + 1,
+                component: {
+                    title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
+                    subtitle: data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription,
+                    image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
+                    buttons: this.props.hideWebUrl ? [] :[
+                        {
+                            title: this.props.buttonTitle ? this.props.buttonTitle : 'Open on web',
+                            type: 'web_url',
+                            url: links[index].url
+                        }
+                    ]
+                }
+            }
+            links[index] = Object.assign(links[index], { loading: false, valid: true, errorMsg: '' })
+            this.setState({ links, cards, selectedIndex: index })
         }
-        links[index] = Object.assign(links[index], { loading: false })
-        this.setState({ links, cards, selectedIndex: index })
     }
-
+    
     handleLinkChange(e, index) {
         console.log('changing link', e.target.value)
         let link = e.target.value
         let links = this.state.links
         let cards = this.state.cards
-        if (this.state.links.length < this.elementLimit) {
+        if (this.state.links.length <= this.elementLimit) {
             if (this.validateURL(link)) {
-                links[index] = { url: link, valid: true, loading: true }
+                links[index] = { url: link, valid: true, loading: true, errorMsg: '' }
             } else {
                 cards[index] = {
                     disabled: true,
@@ -230,19 +262,23 @@ class LinkCarouselModal extends React.Component {
                         buttons: []
                     }
                 }
-                links[index] = { url: link, valid: false, loading: false }
+                links[index] = { url: link, valid: false, loading: false, errorMsg: this.defaultErrorMsg }
             }
         }
         this.setState({ links, cards, edited: true }, () => {
             if (links[index].valid) {
-                this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index))
+                clearTimeout(this.typingTimer)
+                this.typingTimer = setTimeout(() => this.props.urlMetaData(link, (data) => this.handleUrlMetaData(data, index)), this.doneTypingInterval)
             }
         })
     }
 
     validateURL(textval) {
-        var urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
-        return urlregex.test(textval);
+        if (this.props.validateUrl) {
+            return this.props.validateUrl(textval)
+        } else {
+            return isWebURL(textval)
+        }
     }
 
     UNSAFE_componentWillUnmount() {
@@ -254,7 +290,7 @@ class LinkCarouselModal extends React.Component {
             <div className="modal-content" style={{ width: '72vw' }}>
                 <div style={{ display: 'block' }} className="modal-header">
                     <h5 className="modal-title" id="exampleModalLabel">
-                        Create Carousel using Links
+                        {this.props.header ? this.props.header : 'Create Carousel using Links'}
                     </h5>
                     <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
                         <span aria-hidden="true">
@@ -273,14 +309,17 @@ class LinkCarouselModal extends React.Component {
                                                 <input value={link.url} style={{ maxWidth: '100%', borderColor: !link.valid && !this.state.loading ? 'red' : (this.state.loading || link.valid) ? 'green' : ''}} onChange={(e) => this.handleLinkChange(e, index)} className='form-control' />
                                             </div>
 
-                                            <div className='col-1'>
-                                                <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
-                                            </div>
+                                            {
+                                                this.state.links.length > 1 &&
+                                                <div className='col-1'>
+                                                    <div onClick={() => this.removeLink(index)} style={{marginTop: '10px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
+                                                </div>
+                                            }
 
                                         </div>
-                                        <div style={{color: 'green'}}>{link.valid && !link.loading ? '*Link is valid.' : ''}</div>
-                                        <div style={{color: 'red'}}>{!link.valid && !link.loading ? '*Please enter a valid article link.' : ''}</div>
-                                        <div style={{marginBottom: '30px', color: 'green'}}>{link.loading ? '*Retrieving article meta data.' : ''}</div>
+                                        <div style={{color: 'green'}}>{link.valid && !link.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
+                                        <div style={{color: 'red'}}>{!link.valid && !link.loading ? `*${link.errorMsg}` : ''}</div>
+                                        <div style={{marginBottom: '30px', color: 'green'}}>{link.loading ? this.props.retrievingMsg ? `*${this.props.retrievingMsg}` : '*Retrieving webpage meta data.' : ''}</div>
                                     </div>
                                 ))
                         }
@@ -332,7 +371,7 @@ class LinkCarouselModal extends React.Component {
                                 <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '60px'}} className={"carousel-item " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                                     {
                                         card.component.image_url &&
-                                        <img alt='' src={card.component.image_url} style={{maxHeight: '140px', minWidth: '250px', padding: '20px', paddingTop: '30px', margin: '-25px'}} />
+                                        <img alt='' src={card.component.image_url} style={{objectFit: 'cover', minHeight: '170px', maxHeight: '170px', maxWidth: '300px', paddingBottom: '11px', paddingTop: '29px', margin: '-25px', width: '100%', height: '100%' }} />
                                     }
                                     <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
                                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>

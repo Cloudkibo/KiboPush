@@ -121,7 +121,7 @@ export function createBot (data, msg, cb) {
         } else {
           msg.error(res.payload)
         }
-        cb(res.status)
+        cb(res)
       })
   }
 }
@@ -205,10 +205,10 @@ export function loadWaitingReplyList () {
   }
 }
 
-export function loadWaitingSubscribers (id) {
+export function loadWaitingSubscribers (data) {
   return (dispatch) => {
     console.log('Calling load waiting subscribers api')
-    callApi('bots/fetchWaitingSubscribers/', 'post', {botId: id})
+    callApi('bots/fetchWaitingSubscribers/', 'post', data)
       .then(res => {
         console.log('response from loadWaitingSubscribers', res)
         if (res.status === 'success') {

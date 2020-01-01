@@ -149,6 +149,7 @@ class CardModal extends React.Component {
       console.log('deletePayload for card', deletePayload)
       this.props.addComponent({
         id: this.props.id,
+        componentName: 'card',
         componentType: 'card',
         fileurl: card.fileurl ? card.fileurl : '',
         image_url: card.image_url ? card.image_url : '',
@@ -192,6 +193,7 @@ class CardModal extends React.Component {
       this.props.addComponent({
         id: this.props.id,
         componentType: 'gallery',
+        componentName: 'gallery',
         cards,
         deletePayload: deletePayload.length > 0 ? deletePayload : null
       }, this.props.edit)
@@ -263,9 +265,10 @@ class CardModal extends React.Component {
       console.log(`cardComponent ${index}`, card)
 
       if (card && card.props) {
+        //debugger;
         let requirements = []
-        if (card.props.card.disabled || card.props.card.buttonDisabled) {
-          let cardData = card.props.card.component
+        let cardData = card.props.card.component
+        if (cardData) {
           let msg = `Card ${card.props.card.id} requires:`
           if (!cardData.title) {
             requirements.push('a title')
@@ -297,12 +300,12 @@ class CardModal extends React.Component {
             )
           }
         }
-        if (requirements.length === 0 && index === cardComponents.length-1) {
-          console.log('0 requirments')
-          if (this.additionalCardsModalTrigger) {
-            this.refs.addCard.click()
-          }
-        }
+        // if (requirements.length === 0 && index === cardComponents.length-1) {
+        //   console.log('0 requirments')
+        //   if (this.additionalCardsModalTrigger) {
+        //     this.refs.addCard.click()
+        //   }
+        // }
       }
     })
   }
@@ -433,18 +436,19 @@ class CardModal extends React.Component {
         </div>
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
-            <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
-              <h4>Cards:</h4>
-              <div className='ui-block' style={{ position: 'relative', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', padding: '20px', paddingTop: '40px', marginBottom: '30px' }}>
+            <div className='col-6'>
+              <div id='cardsContainer' style={{ maxHeight: '55vh', overflowY: 'scroll' }}>
                 {
                   this.state.cards.map((card, index) => {
                     console.log(`AddCard ${index + 1}`, card)
                     return (
                       <div className="panel-group" id="accordion">
+                        <div style={{color: 'red'}}>{card.invalid ? '*At least one card is required' : ''}</div>
                         <div className="panel panel-default">
                           <div id={`panel-heading${index + 1}`} className="panel-heading">
                             <h4 className="panel-title" style={{ fontSize: '22px' }}>
                               <a onClick={() => this.updateSelectedIndex(index)} data-toggle="collapse" data-parent="#accordion" href={`#collapse${index + 1}`}>Card #{index + 1}</a>
+                              <div onClick={() => this.closeCard(card.id)} style={{transform: 'scale(0.8, 0.8)', marginLeft: '95%', marginTop: '-23px', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
                             </h4>
                           </div>
                           <div id={`collapse${index + 1}`} className={"panel-collapse " + (this.state.selectedIndex === index ? "show" : "collapse")}>
@@ -456,7 +460,6 @@ class CardModal extends React.Component {
                                 index={card.id - 1}
                                 onlyCard={this.state.cards.length}
                                 cardComponent
-                                errorMsg={'*At least one card is required'}
                                 replyWithMessage={this.props.replyWithMessage}
                                 card={card}
                                 addCard={this.addCard}
@@ -475,15 +478,17 @@ class CardModal extends React.Component {
                     )
                   })
                 }
-                {
-                  (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{ minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
-                    <div onClick={this.addElement} style={{ paddingTop: '5px' }} className='align-center'>
-                      <h6> + Add Card </h6>
+                </div>
+                <hr />
+                <div style={{marginTop: '20px'}}>
+                  {
+                    (this.state.numOfElements < this.elementLimit) && <div className='ui-block hoverborder' style={{borderColor: "#3379B7", minHeight: '30px', width: '100%', marginLeft: '0px', marginBottom: '30px' }} >
+                      <div onClick={this.addElement} style={{ paddingTop: '5px' }} className='align-center'>
+                  <h6 style={{color: "#3379B7"}}> + Add Card </h6>
+                      </div>
                     </div>
-                  </div>
-                }
-              </div>
-
+                  }
+                </div>
             </div>
             <div className='col-1'>
               <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
@@ -586,7 +591,7 @@ class CardModal extends React.Component {
               <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}>
                 Cancel
                 </button>
-              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled} onClick={() => this.handleDone()} className='btn btn-primary'>
+              <button disabled={this.state.disabled || this.state.buttonDisabled || this.state.actionDisabled || (requirements && requirements.length > 0)} onClick={() => this.handleDone()} className='btn btn-primary'>
                 {this.props.edit ? 'Edit' : 'Next'}
               </button>
             </div>

@@ -13,7 +13,7 @@ class CommentCaptureEdit extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview'],
+      buttonActions: ['open website', 'open webview', 'subscribe sequence', 'unsubscribe sequence', 'google sheets', 'set custom field', 'hubspot'],
       broadcast: [],
       convoTitle: '',
       componentLimit: null,
@@ -64,7 +64,7 @@ class CommentCaptureEdit extends React.Component {
       title = 'KiboChat'
     }
 
-    document.title = `${title} | Second Reply`
+    document.title = `${title}`
     if (this.props.location.state && this.props.location.state.mode) {
       if (this.props.location.state.mode === 'reply') {
         this.setState({

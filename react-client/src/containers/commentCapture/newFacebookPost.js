@@ -62,6 +62,7 @@ class FacebookPosts extends React.Component {
       cards: [],
       isShowingLinkCarousel: false,
       defaultReply: [{
+        'id': new Date().getTime(),
         'componentType': 'text',
         'text': 'Hey! Can we help you with something? Respond us here and we will get in touch soon.'
       }]
@@ -1057,13 +1058,17 @@ class FacebookPosts extends React.Component {
                       </div>
                     </div>
                     }
+                    { this.state.loading && 
+                    <div className='col-12'>
+                      <span style={{color:'blue', marginLeft: '15px'}}>Uploading File...</span>
+                    </div>
+                    } 
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
                           <label className='col-form-label'>Bot Configuration</label>
                         </div>
-                        { this.state.isEdit === 'false'
-                        ? <div className='col-12'>
+                          <div className='col-12'>
                             <p>
                             Create a reply that will be sent to people who comment on your Facebook Page Post
                             </p>
@@ -1077,17 +1082,6 @@ class FacebookPosts extends React.Component {
                               </button>
                             }
                         </div>
-                        : <div className='col-12'>
-                            <p>
-                              Preview reply that will be sent to people who comment on your Facebook Page Post
-                            </p>
-                            <button state={{mode: 'reply'}} style={{marginRight: '10px'}} className='btn btn-secondary' onClick={() => {
-                             this.refs.viewMessageModal.click()
-                            }}>
-                              Preview Reply
-                            </button >
-                        </div>
-                      }
                       </div>
                     </div>
                     <div className='col-12'>
@@ -1292,6 +1286,7 @@ class FacebookPosts extends React.Component {
               cards={this.state.cards}
               saveLinks={this.saveLinks} 
               closeModal= {this.closeModal} 
+              hideWebUrl={true}
               showCloseModalAlertDialog={this.closeModal}/>}
           </div>
         </div>
