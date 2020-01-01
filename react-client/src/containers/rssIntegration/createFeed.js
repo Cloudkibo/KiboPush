@@ -39,7 +39,8 @@ class CreateFeed extends React.Component {
       storiesCount: '5',
       isDefault: false,
       saveEnabled: false,
-      inValidUrlMsg: ''
+      inValidUrlMsg: '',
+      selectedPages: []
     })
     /* eslint-disable */
     $('#selectPage').val('').trigger('change')
