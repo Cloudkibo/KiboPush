@@ -160,12 +160,14 @@ class CreateFeed extends React.Component {
       inValidUrlMsg: ''
     })
     var selectedPages = []
+    var selectedPageIds = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].gotPageSubscriptionPermission) {
         var isSelected = false
         for (let j = 0; j < feed.pageIds.length; j++) {
           if (this.props.pages[i]._id === feed.pageIds[j]) {
             selectedPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id, selected: true})
+            selectedPageIds.push(this.props.pages[i]._id)
             isSelected = true
             break
           }
@@ -176,7 +178,7 @@ class CreateFeed extends React.Component {
       }
     }
     this.setState({
-      selectedPages: selectedPages
+      selectedPages: selectedPageIds
     })
     this.initializePageSelect(selectedPages)
   }

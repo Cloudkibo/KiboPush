@@ -111,7 +111,11 @@ export function updateFeed (data, msg, fetchFeeds) {
           }
           msg.success('Feed has been updated successfully')
         } else {
-          msg.error('Failed to update feed ')
+          if (res.payload) {
+            msg.error(res.payload)
+          } else {
+            msg.error('Failed to update feed ')
+          }     
         }
       })
   }
