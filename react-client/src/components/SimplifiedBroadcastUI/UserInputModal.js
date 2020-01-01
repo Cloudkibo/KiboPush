@@ -118,6 +118,8 @@ class UserInputModal extends React.Component {
       questions[index].type = e.target.value
       if (e.target.value === 'number') {
         questions[index].retryMessage = 'Please enter a number. Use digits only.'
+      } else if (e.target.value === 'email') {
+        questions[index].retryMessage = 'Please enter a valid email address. e.g. me@mail.com'
       }
       this.setState({questions, edited: true})
   }
