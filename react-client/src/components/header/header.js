@@ -285,7 +285,6 @@ class Header extends React.Component {
 
         <Notification
           ignore={this.state.ignore}
-          disableActiveWindow
           title={'New Message'}
           onShow={this.handleNotificationOnShow}
           onClick={this.onNotificationClick}

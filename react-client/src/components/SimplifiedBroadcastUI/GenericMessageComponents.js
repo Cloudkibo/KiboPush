@@ -141,7 +141,7 @@ class GenericMessageComponents extends React.Component {
               </div>
               <div className='col-8'>
                 <h5>YouTube Video</h5>
-                <p>Enter a YouTube video link to send it as a playable video</p>
+                <p>Enter a YouTube video link to send it as a card</p>
               </div>
             </div>
           </div>

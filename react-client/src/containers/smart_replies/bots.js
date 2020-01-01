@@ -98,7 +98,7 @@ class Bot extends React.Component {
   }
 
   closeDialogDelete() {
-    this.setState({loader: true})
+    this.setState({ loader: true })
     this.props.deleteBot(this.state.deleteid, this.state.password, this.msg, this.handleResponseDelete)
     this.setState({ isShowingModalDelete: false })
   }
@@ -108,7 +108,7 @@ class Bot extends React.Component {
       this.refs.delete.click()
       this.setState({ deleteid: '', password: '' })
     }
-    this.setState({loader: false})
+    this.setState({ loader: false })
   }
   onPasswordChange(e) {
     this.setState({ password: e.target.value })
@@ -273,7 +273,7 @@ class Bot extends React.Component {
   gotoView(bot) {
     this.props.history.push({
       pathname: `/intents`,
-      state: {bot}
+      state: { bot }
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
@@ -307,7 +307,9 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({ error: true, errorMessage: 'Please enter a name' })
     } else if (this.state.name.length > 25) {
-      this.setState({ error: true, errorMessage: 'Name must be at most 25 charachters long' })
+      this.setState({ error: true, errorMessage: 'Please enter a valid name (Name must be at most 25 charachters long)' })
+    } else if (!/^[a-zA-Z]*$/g.test(this.state.name)) {
+      this.setState({ error: true, errorMessage: 'Please enter a valid name (Name should not contain any number)' })
     } else {
       this.setState({ loader: true })
       var botName = this.state.name.trim()
@@ -324,10 +326,10 @@ class Bot extends React.Component {
       this.refs.create.click()
       this.props.history.push({
         pathname: `/intents`,
-        state: {bot: res.payload}
+        state: { bot: res.payload }
       })
     }
-    this.setState({loader: false})
+    this.setState({ loader: false })
   }
 
   render() {
