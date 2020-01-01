@@ -37,6 +37,11 @@ class UserInputModal extends React.Component {
     this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
     this.retryMessageChange = this.retryMessageChange.bind(this)
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+    this.removeAction = this.removeAction.bind(this)
+  }
+
+  removeAction () {
+    this.setState({action: null})
   }
 
   saveGoogleSheet (googleSheet) {
@@ -71,17 +76,19 @@ class UserInputModal extends React.Component {
   }
 
   checkDisabled () {
+    if (this.state.action) {
       for (let i = 0; i < this.state.questions.length; i++) {
-          let question = this.state.questions[i]
-          if (!question.question || !question.type || !question.customFieldId) {
+        let question = this.state.questions[i]
+        if (!question.question || !question.type || !question.customFieldId) {
+            return true
+        }
+        if (question.type !== 'text') {
+          if (!question.skipButtonText || !question.retryMessage) {
               return true
           }
-          if (question.type !== 'text') {
-            if (!question.skipButtonText || !question.retryMessage) {
-                return true
-            }
-          }
+        }
       }
+    }
   }
 
   scrollParentToChild(parent, child) {
@@ -294,13 +301,15 @@ class UserInputModal extends React.Component {
                     </div>)
                     })
                 }
-                <UserInputActions
-                    saveGoogleSheet={this.saveGoogleSheet}
-                    action={this.state.action}
-                    questions={this.state.questions.map(q => q.question)}
-                    toggleGSModal={this.props.toggleGSModal}
-                    closeGSModal={this.props.closeGSModal}
-                    updateActionStatus={this.updateActionStatus} />
+                  <UserInputActions
+                  required
+                  saveGoogleSheet={this.saveGoogleSheet}
+                  removeAction={this.removeAction}
+                  action={this.state.action}
+                  questions={this.state.questions.map(q => q.question)}
+                  toggleGSModal={this.props.toggleGSModal}
+                  closeGSModal={this.props.closeGSModal}
+                  updateActionStatus={this.updateActionStatus} />
                 </div>
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchWorksheets, fetchColumns } from '../../redux/actions/googleSheets.actions'
 import { RingLoader } from 'halogenium'
+import Mapping from './Mapping'
 import AlertContainer from 'react-alert'
 
 class InsertRow extends React.Component {
@@ -26,6 +27,19 @@ class InsertRow extends React.Component {
     this.updateMappingData = this.updateMappingData.bind(this)
     this.updateMappingDataUserInput = this.updateMappingDataUserInput.bind(this)
     this.save = this.save.bind(this)
+    this.getMappingData = this.getMappingData.bind(this)
+  }
+
+  getMappingData () {
+    if (this.props.questions) {
+      return this.state.mappingData.map(data => {
+        return {'leftColumn': data.question, 'rightColumn': data.googleSheetColumn}
+      })
+    } else {
+      return this.state.mappingData.map(data => {
+        return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.googleSheetColumn}
+      })
+    }
   }
 
   componentDidMount () {
@@ -43,12 +57,6 @@ class InsertRow extends React.Component {
       }
       console.log('temp mappingDataValues', mappingDataValues)
       this.setState({mappingDataValues: mappingDataValues})
-    } else if (!this.props.mapping && this.props.questions) {
-      let mappingData = []
-      for (let i = 0; i < this.props.questions.length; i++) {
-        mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
-      }
-      this.setState({mappingData})
     }
     if (this.props.spreadsheet) {
       this.setState({loadingWorkSheet: true})
@@ -80,18 +88,22 @@ class InsertRow extends React.Component {
 
   updateMappingData (e, index) {
     console.log('this.state.mappingData', this.state.mappingData)
-    let data = this.state.mappingData
-    let dataValues = this.state.mappingDataValues
-    if (e.target.value !== '') {
-      if (e.target.value.match(/^[0-9a-fA-F]{24}$/)) {
-        data[index].customFieldColumn = e.target.value
-      } else {
-        data[index].kiboPushColumn = e.target.value
+    if (this.props.questions) {
+      this.updateMappingDataUserInput(e, index)
+    } else {
+      let data = this.state.mappingData
+      let dataValues = this.state.mappingDataValues
+      if (e.target.value !== '') {
+        if (e.target.value.match(/^[0-9a-fA-F]{24}$/)) {
+          data[index].customFieldColumn = e.target.value
+        } else {
+          data[index].kiboPushColumn = e.target.value
+        }
+        dataValues[index] = e.target.value
+        this.setState({mappingData: data, mappingDataValues: dataValues})
       }
-      dataValues[index] = e.target.value
-      this.setState({mappingData: data, mappingDataValues: dataValues})
+      console.log('data in updateMappingData', data)
     }
-    console.log('data in updateMappingData', data)
   }
 
   onSpreadSheetChange (event) {
@@ -303,7 +315,36 @@ class InsertRow extends React.Component {
           {this.state.loadingColumns
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 &&
-            this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
+            <Mapping 
+              leftColumns = {
+                this.props.questions ? 
+                {
+                  groups: false,
+                  data: this.props.questions.map(question => { return {value: question, title: question} })
+                } 
+                :
+                {
+                  groups: true,
+                  data: {
+                    'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
+                    'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
+                  }
+                } 
+              }
+              rightColumns = {{
+                groups: false,
+                data: this.props.columns.googleSheetColumns.map(column => { return {value: column, title: column} })
+              }}
+              leftEditable = {this.props.questions ? false : true}
+              rightEditable = {this.props.questions ? true : false}
+              defaultLeftOption = {'Select a Field...'}
+              defaultRightOption = {'Select a Google Sheet Column...'}
+              leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
+              rightLabel = {'Google Column Titles'}
+              mappingData = {this.getMappingData()}
+              updateMappingData = {this.updateMappingData}
+            />
+            //this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }
       </div>

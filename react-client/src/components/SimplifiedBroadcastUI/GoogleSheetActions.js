@@ -15,7 +15,7 @@ class GoogleSheetActions extends React.Component {
       googleSheetAction: '',
       spreadSheet: '',
       worksheet: '',
-    	mapping: '',
+    	mapping: this.props.mapping ? this.props.mapping : '',
       showModal: false,
       lookUpValue: '',
       lookUpColumn: '',
@@ -116,7 +116,6 @@ class GoogleSheetActions extends React.Component {
         closeGSModal={this.props.closeGSModal}
         />),
       'get_row_by_value': (<GetRowByValue 
-        questions={this.props.questions}
         save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
