@@ -15,7 +15,7 @@ class HubspotAction extends React.Component {
       hubspotAction: '',
       hubSpotForm: '' ,
       portalId: '',
-      mapping: '',
+      mapping: props.mapping ? props.mapping : '',
       showModal: false,
       identityFieldValue: ''
 
@@ -82,10 +82,27 @@ componentDidMount () {
 
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal} portalId= {this.state.portalId}/>),
-      'get_contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>),
-      'insert_update_contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>)
-
+      'submit_form': (<SubmitForm 
+        questions={this.props.questions}
+        hubSpotForm= {this.state.hubSpotForm} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal} 
+        portalId= {this.state.portalId}
+      />),
+      'get_contact': (<GetContactForm 
+        identityFieldValue= {this.state.identityFieldValue} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal}
+      />),
+      'insert_update_contact': (<CreateContact 
+        questions={this.props.questions}
+        identityFieldValue= {this.state.identityFieldValue} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal}
+      />)
     }
     return modals[this.state.hubspotAction]
   }

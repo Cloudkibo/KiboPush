@@ -62,6 +62,9 @@ class UserInputActions extends React.Component {
         if (this.state.openGoogleSheets) {
           mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
         }
+        if (this.state.openHubspot) {
+          mappingData.push({question: this.props.questions[i], hubspotColumn: ''})
+        }
       }
       return mappingData
     }
@@ -124,6 +127,28 @@ class UserInputActions extends React.Component {
                     mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
                     lookUpValue={this.props.action && this.props.action.lookUpValue ? this.props.action.lookUpValue : ''}
                     lookUpColumn={this.props.action && this.props.action.lookUpColumn ? this.props.action.lookUpColumn : ''}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    GSModalTarget='ActionModal'
+                  />
+                </div>
+              </div>
+            }
+            {
+              this.state.openHubspot &&
+              <div className='card'>
+                <h7 className='card-header'>Hubspot <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeHubspot} /></h7>
+                <div style={{ padding: '10px' }} className='card-block'>
+                  <HubspotActions
+                    questions={this.props.questions}
+                    savehubSpotForm={this.props.savehubSpotForm}
+                    hubspotAction={this.props.action && this.props.action.hubspotAction ? this.props.action.hubspotAction : ''}
+                    removeHubspotAction={this.props.removeAction}
+                    hubSpotForm={this.state.hubSpotForm}
+                    portalId={this.state.portalId}
+                    mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
+                    identityFieldValue={this.props.action && this.props.action.identityCustomFieldValue ? this.props.action.identityCustomFieldValue : ''}
+                    index={this.props.index}
                     toggleGSModal={this.props.toggleGSModal}
                     closeGSModal={this.props.closeGSModal}
                     GSModalTarget='ActionModal'

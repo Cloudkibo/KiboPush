@@ -53,6 +53,15 @@ class UserInputModal extends React.Component {
     })
   }
 
+  savehubSpotForm(hubSpotFormPayload) {
+    this.setState({
+      action: {
+          actionType: 'hubspot',
+          ...hubSpotFormPayload
+        }
+     })
+  }
+
   retryMessageChange (e, index) {
     let questions = this.state.questions
     questions[index].skipButtonText = e.target.value

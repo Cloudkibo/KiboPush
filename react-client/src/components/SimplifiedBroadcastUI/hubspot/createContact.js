@@ -10,7 +10,7 @@ class CreateContact extends React.Component {
         super(props, context)
         this.state = {
             identityFieldValue: props.identityFieldValue !== '' ? props.identityFieldValue : '',
-            mappingData: props.mapping !== '' ? props.mapping : [{hubspotColumn: '', kiboPushColumn: '', customFieldColumn: ''}],
+            mappingData: props.mapping ? props.mapping : [{hubspotColumn: '', kiboPushColumn: '', customFieldColumn: ''}],
             mappingDataValues: '',
             showColumns: props.identityFieldValue !== '' ? true : false,
             buttonDisabled:  props.identityFieldValue !== '' ? false : true
@@ -28,11 +28,18 @@ class CreateContact extends React.Component {
     save () {
       let mappingData = []
       for (let i = 0; i < this.state.mappingData.length; i++) {
-        if ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubspotColumn !== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubspotColumn !== '')) {
-          mappingData.push(this.state.mappingData[i])
+        if (this.props.questions) {
+          if (this.state.mappingData[i].question && this.state.mappingData[i].hubspotColumn) {
+            mappingData.push(this.state.mappingData[i])
+          }
+        } else {
+          if ((this.state.mappingData[i].kiboPushColumn !== '' && this.state.mappingData[i].hubspotColumn !== '') || (this.state.mappingData[i].customFieldColumn !== '' && this.state.mappingData[i].hubspotColumn !== '')) {
+            mappingData.push(this.state.mappingData[i])
+          }
         }
       }
      let mapData = []
+     if (!this.props.questions) {
       for (let i = 0; i < mappingData.length; i++) {
         if(mappingData[i].kiboPushColumn === '') {
           mapData.push({hubspotColumn: mappingData[i].hubspotColumn, customFieldColumn: mappingData[i].customFieldColumn})
@@ -41,8 +48,9 @@ class CreateContact extends React.Component {
           mapData.push({hubspotColumn: mappingData[i].hubspotColumn, kiboPushColumn: mappingData[i].kiboPushColumn})
         }  
       }
-
-
+     } else {
+       mapData = mappingData
+     }
       if (mapData.length === 0) {
         mapData=''
       }
@@ -62,7 +70,6 @@ class CreateContact extends React.Component {
           } else {
             mappingData[i].kiboPushColumn = e.target.value
             mappingData[i].customFieldColumn= ''
-
           }
         }
       }
