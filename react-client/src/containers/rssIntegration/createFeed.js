@@ -39,7 +39,8 @@ class CreateFeed extends React.Component {
       storiesCount: '5',
       isDefault: false,
       saveEnabled: false,
-      inValidUrlMsg: ''
+      inValidUrlMsg: '',
+      selectedPages: []
     })
     /* eslint-disable */
     $('#selectPage').val('').trigger('change')
@@ -84,9 +85,9 @@ class CreateFeed extends React.Component {
       this.setState({inValidUrlMsg: ''})
     }
   }
-  isValidIntegration (feedUrl, title) {
+  isValidIntegration (feedUrl, title, selectedPages) {
     var isValid = false
-    if (feedUrl !== '' && title !== '' && isWebURL(feedUrl) && isRssUrl(feedUrl)) {
+    if (feedUrl !== '' && title !== '' && isWebURL(feedUrl) && isRssUrl(feedUrl) && selectedPages.length > 0) {
       isValid = true
     } else {
       isValid = false
@@ -96,31 +97,31 @@ class CreateFeed extends React.Component {
     })
   }
   defaultFeedChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPages)
     this.setState({
       isDefault: e.target.checked
     })
   }
   handleStatusChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPages)
     this.setState({
       isActive: e.target.value === 'true' ? true : false
     })
   }
   handleStoryChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPages)
     this.setState({
       storiesCount: e.target.value
     })
   }
   feedTitleChange (e) {
-    this.isValidIntegration(this.state.feedUrl, e.target.value)
+    this.isValidIntegration(this.state.feedUrl, e.target.value, this.state.selectedPages)
     this.setState({
       feedTitle: e.target.value
     })
   }
   feedUrlChange (e) {
-    this.isValidIntegration(e.target.value, this.state.feedTitle)
+    this.isValidIntegration(e.target.value, this.state.feedTitle, this.state.selectedPages)
     this.setState({
       feedUrl: e.target.value,
       inValidUrlMsg: ''
@@ -135,16 +136,11 @@ class CreateFeed extends React.Component {
       this.setCurrentFeed(this.props.currentFeed)
     } else {
       var newsPages = []
-      var selectedPages = []
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].gotPageSubscriptionPermission) {
           newsPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
-          selectedPages.push(this.props.pages[i]._id)
         }
       }
-      this.setState({
-        selectedPages: selectedPages
-      })
       this.initializePageSelect(newsPages)
     }
   }
@@ -188,15 +184,15 @@ class CreateFeed extends React.Component {
     $('#selectPage').select2({
     /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages (Default: All)',
+      placeholder: 'Select Page(s)',
       allowClear: true,
       multiple: true,
       tags: true
     })
     /* eslint-disable */
     $('#selectPage').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
+    /* eslint-enable */ 
+      var selectedIndex = e.target.selectedIndex  
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
         var selected = []
@@ -204,6 +200,7 @@ class CreateFeed extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
+        self.isValidIntegration(self.state.feedUrl, self.state.feedTitle, selected)
         self.setState({ selectedPages: selected })
       }
     })
