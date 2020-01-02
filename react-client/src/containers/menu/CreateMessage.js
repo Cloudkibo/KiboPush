@@ -14,7 +14,7 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      buttonActions: ['open website', 'open webview'],
+      buttonActions: ['open website', 'open webview', 'subscribe sequence', 'unsubscribe sequence', 'google sheets', 'set custom field', 'hubspot'],
       broadcast: [],
       convoTitle: 'Message',
       itemMenus: [],
