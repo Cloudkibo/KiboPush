@@ -4,28 +4,43 @@ import { bindActionCreators } from 'redux'
 import {fetchColumns} from '../../../redux/actions/hubSpot.actions'
 import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
+import Mapping from '../Mapping'
 
 class submitForm extends React.Component {
     constructor (props, context) {
-        super(props, context)
-        this.state = {
-            hubspotFormValue: props.hubSpotForm !== '' ? props.hubSpotForm : '',
-            portalId: props.portalId !== '' ? props.portalId : '',
-            mappingData: props.mapping !== '' ? props.mapping : '',
-            mappingDataValues: '',
-            loadingColumns: false,
-            show_scroll: props.hubSpotForm === '' ? false : true,
-            buttonDisabled:  props.hubSpotForm !== '' ? false : true
-          }
-          this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
-          this.updateMappingData = this.updateMappingData.bind(this)
-          this.showMappingData = this.showMappingData.bind(this)
-          this.save = this.save.bind(this)
+      super(props, context)
+      this.state = {
+          hubspotFormValue: props.hubSpotForm !== '' ? props.hubSpotForm : '',
+          portalId: props.portalId !== '' ? props.portalId : '',
+          mappingData: props.mapping !== '' ? props.mapping : '',
+          mappingDataValues: '',
+          loadingColumns: false,
+          show_scroll: props.hubSpotForm === '' ? false : true,
+          buttonDisabled:  props.hubSpotForm !== '' ? false : true
+        }
+        this.onhubspotFormChange = this.onhubspotFormChange.bind(this)
+        this.updateMappingData = this.updateMappingData.bind(this)
+        this.showMappingData = this.showMappingData.bind(this)
+        this.save = this.save.bind(this)
+        this.updateMappingDataUserInput = this.updateMappingDataUserInput.bind(this)
+        this.getMappingData = this.getMappingData.bind(this)
     }
+
+  getMappingData () {
+    if (this.props.questions) {
+      return this.state.mappingData.map(data => {
+        return {'leftColumn': data.question, 'rightColumn': data.hubspotColumn}
+      })
+    } else {
+      return this.state.mappingData.map(data => {
+        return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.hubspotColumn}
+      })
+    }
+  }
 
     componentDidMount () {
       console.log('in componentDidMount of submitForm', this.props)
-      if (this.props.mapping !== '') {
+      if (this.props.mapping !== '' && !this.props.questions) {
         let mappingDataValues = [].concat(this.props.mapping)
         for (let i = 0; i < this.props.mapping.length; i++) {
           if (this.props.mapping[i].kiboPushColumn) {
@@ -55,27 +70,41 @@ class submitForm extends React.Component {
     save () {
       console.log('hubspotFormValue in this.save', this.state.hubspotFormValue)
       console.log('mappingData in this.save', this.state.mappingData)
-      if (this.state.mappingData[0].customFieldColumn || this.state.mappingData[0].kiboPushColumn) {
+      if (this.state.hubspotFormValue) {
         this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
       } else {
         this.msg.error('Please fill all the required fields')
       }
     }
 
-    updateMappingData (e, index) {
+    updateMappingDataUserInput (e, index) {
       console.log('this.state.mappingData', this.state.mappingData)
       let data = this.state.mappingData
-      let dataValues = this.state.mappingDataValues
       if (e.target.value !== '') {
-        if (e.target.value.match(/^[0-9a-fA-F]{24}$/)) {
-          data[index].customFieldColumn = e.target.value
-        } else {
-          data[index].kiboPushColumn = e.target.value
-        }
-        dataValues[index] = e.target.value
-        this.setState({mappingData: data, mappingDataValues: dataValues})
+        data[index].hubspotColumn = e.target.value
+        this.setState({mappingData: data})
       }
       console.log('data in updateMappingData', data)
+    }
+
+    updateMappingData (e, index) {
+      console.log('this.state.mappingData', this.state.mappingData)
+      if (this.props.questions) {
+        this.updateMappingDataUserInput(e, index)
+      } else {
+        let data = this.state.mappingData
+        let dataValues = this.state.mappingDataValues
+        if (e.target.value !== '') {
+          if (e.target.value.match(/^[0-9a-fA-F]{24}$/)) {
+            data[index].customFieldColumn = e.target.value
+          } else {
+            data[index].kiboPushColumn = e.target.value
+          }
+          dataValues[index] = e.target.value
+          this.setState({mappingData: data, mappingDataValues: dataValues})
+        }
+        console.log('data in updateMappingData', data)
+      }
     }
     onhubspotFormChange (event) {
       let portalId = this.props.hubSpotForms.filter(hubSpotForm => hubSpotForm.guid === event.target.value)[0].portalId
@@ -169,7 +198,7 @@ class submitForm extends React.Component {
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              Edit Google Sheets Actions
+              Edit HubSpot Actions
               </h5>
             <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
               <span aria-hidden="true">
@@ -196,7 +225,35 @@ class submitForm extends React.Component {
           {this.state.loadingColumns 
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : this.state.hubspotFormValue !== '' && (this.props.columns && this.props.columns.hubspotColumns.length > 0 &&
-            this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
+            <Mapping 
+              leftColumns = {
+                this.props.questions ? 
+                {
+                  groups: false,
+                  data: this.props.questions.map(question => { return {value: question, title: question} })
+                } 
+                :
+                {
+                  groups: true,
+                  data: {
+                    'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
+                    'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
+                  }
+                } 
+              }
+              rightColumns = {{
+                groups: false,
+                data: this.props.columns.hubspotColumns.map(column => { return {value: column.name, title: column.name} })
+              }}
+              defaultLeftOption = {'Select a Question...'}
+              defaultRightOption = {'Select a Hubspot Form Field...'}
+              leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
+              rightLabel = {'Hubspot Form Fields'}
+              mappingData = {this.getMappingData()}
+              updateLeftColumn = {null}
+              updateRightColumn = {this.updateMappingData}
+            />
+            //this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }
 
