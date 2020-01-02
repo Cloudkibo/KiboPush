@@ -529,6 +529,7 @@ class Builders extends React.Component {
       let data = temp[a]
       if (data.id === obj.id) {
         temp[a].questions = obj.questions
+        temp[a].action = obj.action
         isPresent = true
       }
     }
@@ -1201,6 +1202,7 @@ class Builders extends React.Component {
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           key={componentId}
+          action={broadcast.action}
           questions={broadcast.questions}
           handleText={this.handleUserInput}
           onRemove={this.removeComponent}
@@ -1208,7 +1210,8 @@ class Builders extends React.Component {
         handler: () => {
           this.handleUserInput({
             id: componentId,
-            questions: broadcast.questions
+            questions: broadcast.questions,
+            action: broadcast.action
           })
         }
       }

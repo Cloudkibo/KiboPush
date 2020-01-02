@@ -1,15 +1,14 @@
 import React from 'react'
 import { Popover, PopoverBody } from 'reactstrap'
-import AddAction from './AddAction'
-import CustomFields from '../customFields/customfields'
+import UserInputActions from './UserInputActions'
+// import CustomFields from '../customFields/customfields'
 
 class UserInputModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       edited: false,
-      customFields: [],
-      action: null,
+      action: props.action ? props.action : null,
       questions: props.questions ? props.questions : 
         [{
             question: '', 
@@ -36,6 +35,41 @@ class UserInputModal extends React.Component {
     this.incorrectTriesAllowedChange = this.incorrectTriesAllowedChange.bind(this)
     this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
     this.retryMessageChange = this.retryMessageChange.bind(this)
+    this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+    this.savehubSpotForm = this.savehubSpotForm.bind(this)
+    this.saveCustomFieldsAction = this.saveCustomFieldsAction.bind(this)
+    this.removeAction = this.removeAction.bind(this)
+  }
+
+  removeAction () {
+    this.setState({action: null})
+  }
+
+  saveGoogleSheet (googleSheet) {
+      this.setState({
+        action: {
+            type: 'google_sheets',
+            ...googleSheet
+        }
+    })
+  }
+
+  savehubSpotForm(hubSpotFormPayload) {
+    this.setState({
+      action: {
+          type: 'hubspot',
+          ...hubSpotFormPayload
+        }
+     })
+  }
+
+  saveCustomFieldsAction (customFields) {
+    this.setState({
+      action: {
+          type: 'custom_fields',
+          ...customFields
+        }
+     })
   }
 
   retryMessageChange (e, index) {
@@ -61,17 +95,20 @@ class UserInputModal extends React.Component {
   }
 
   checkDisabled () {
-      for (let i = 0; i < this.state.questions.length; i++) {
-          let question = this.state.questions[i]
-          if (!question.question || !question.type || !question.customFieldId) {
-              return true
-          }
-          if (question.type !== 'text') {
-            if (!question.skipButtonText || !question.retryMessage) {
-                return true
-            }
-          }
+    if (!this.state.action) {
+      return true
+    }
+    for (let i = 0; i < this.state.questions.length; i++) {
+      let question = this.state.questions[i]
+      if (!question.question || !question.type) {
+          return true
       }
+      if (question.type !== 'text') {
+        if (!question.skipButtonText || !question.retryMessage) {
+            return true
+        }
+      }
+    }
   }
 
   scrollParentToChild(parent, child) {
@@ -147,7 +184,8 @@ class UserInputModal extends React.Component {
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'userInput',
-      questions: this.state.questions
+      questions: this.state.questions,
+      action: this.state.action
     }, this.props.edit)
   }
 
@@ -236,25 +274,6 @@ class UserInputModal extends React.Component {
                                         <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.type ? '*Required' : ''}</div>
                                     </div>
                                 </div>
-
-            
-                        <h6>Save response to a Custom Field:</h6>              
-                            <div className='row'>
-                                <div className='col-6'>
-                                    <select value={question.customFieldId} style={{borderColor: !question.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setCustomField(event, index)}>
-                                        <option value={''} disabled>Select a Custom Field</option>
-                                        {
-                                            this.state.customFields.map((customField, index) => {
-                                                return (
-                                                    <option key={index} value={customField._id}>{customField.name}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                    <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
-                                    <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
-                            </div>
-                        </div>
                         {
                         question.type && question.type !== 'text' &&
                         <div>
@@ -286,15 +305,17 @@ class UserInputModal extends React.Component {
                     </div>)
                     })
                 }
-
-                    <AddAction
-                        smallHeading
-                        edit={this.props.edit}
-                        default_action={this.state.default_action}
-                        webviewurl={this.state.webviewurl}
-                        webviewsize={this.state.webviewsize}
-                        elementUrl={this.state.elementUrl}
-                        updateActionStatus={this.updateActionStatus} />
+                  <UserInputActions
+                    required
+                    saveGoogleSheet={this.saveGoogleSheet}
+                    savehubSpotForm={this.savehubSpotForm}
+                    saveCustomFieldsAction={this.saveCustomFieldsAction}
+                    removeAction={this.removeAction}
+                    action={this.state.action}
+                    questions={this.state.questions.map(q => q.question)}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    updateActionStatus={this.updateActionStatus} />
                 </div>
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>

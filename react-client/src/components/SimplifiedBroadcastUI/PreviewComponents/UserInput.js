@@ -5,29 +5,15 @@ import React from 'react'
 class UserInput extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {
-      questions: props.questions ? props.questions : [],
-      showEmojiPicker: false,
-      count: 0,
-      showUserOptions: false,
-      styling: {
-        minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'
-      }
-    }
-    console.log('UserInput Preview state', this.state)
+    console.log('UserInput Preview props', this.props)
     this.edit = this.edit.bind(this)
-  }
-
-  componentDidMount () {
-    if (this.props.message && this.props.message !== '') {
-      this.setState({text: this.props.message})
-    }
   }
 
   edit () {
     this.props.editComponent('userInput', {
         id: this.props.id,
-        questions: this.state.questions
+        questions: this.props.questions,
+        action: this.props.action
     })
   }
 
@@ -41,7 +27,7 @@ class UserInput extends React.Component {
         </div>
         <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         {
-            this.state.questions.map((question, index) => {
+            this.props.questions.map((question, index) => {
                 return (
                     <div>
                         <div className='discussion' style={{ display: 'inline-block'}} >
