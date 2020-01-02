@@ -335,14 +335,13 @@ class InsertRow extends React.Component {
                 groups: false,
                 data: this.props.columns.googleSheetColumns.map(column => { return {value: column, title: column} })
               }}
-              leftEditable = {this.props.questions ? false : true}
-              rightEditable = {this.props.questions ? true : false}
               defaultLeftOption = {'Select a Field...'}
               defaultRightOption = {'Select a Google Sheet Column...'}
               leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
               rightLabel = {'Google Column Titles'}
               mappingData = {this.getMappingData()}
-              updateMappingData = {this.updateMappingData}
+              updateRightColumn = {this.props.questions ? this.updateMappingData : null}
+              updateLeftColumn = {this.props.questions ? null : this.updateMappingData}
             />
             //this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )

@@ -37,6 +37,7 @@ class UserInputModal extends React.Component {
     this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
     this.retryMessageChange = this.retryMessageChange.bind(this)
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+    this.savehubSpotForm = this.savehubSpotForm.bind(this)
     this.removeAction = this.removeAction.bind(this)
   }
 
@@ -313,6 +314,7 @@ class UserInputModal extends React.Component {
                   <UserInputActions
                   required
                   saveGoogleSheet={this.saveGoogleSheet}
+                  savehubSpotForm={this.savehubSpotForm}
                   removeAction={this.removeAction}
                   action={this.state.action}
                   questions={this.state.questions.map(q => q.question)}

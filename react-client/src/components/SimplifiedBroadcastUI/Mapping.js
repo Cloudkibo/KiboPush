@@ -12,12 +12,12 @@ class Mapping extends React.Component {
     let content = []
     content.push(
       <div className='row'>
-        <div className='col-6'>
+        <div className={this.props.deleteRow ? 'col-5' : 'col-6'}>
           <label style={{fontWeight: 'normal'}}>{this.props.leftLabel}</label>
         </div>
         <div className='col-1'>
         </div>
-        <div className='col-5'>
+        <div className={this.props.deleteRow ? 'col-6' : 'col-5'}>
           <label style={{fontWeight: 'normal'}}>{this.props.rightLabel}</label>
         </div>
       </div>
@@ -26,10 +26,10 @@ class Mapping extends React.Component {
       content.push(
         <div>
         <div className='row'>
-          <div className='col-6'>
+          <div className={this.props.deleteRow ? 'col-5' : 'col-6'}>
               {
-                  this.props.leftEditable ?
-                  <select value={this.props.mappingData[i].leftColumn ? this.props.mappingData[i].leftColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateMappingData(e, i)}>
+                  this.props.updateLeftColumn ?
+                  <select value={this.props.mappingData[i].leftColumn ? this.props.mappingData[i].leftColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateLeftColumn(e, i)}>
                     <option key='' value='' disabled>{this.props.defaultLeftOption}</option>
                     {
                         !this.props.leftColumns.groups ? 
@@ -62,34 +62,62 @@ class Mapping extends React.Component {
             <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large'}} />
             </center>
           </div>
-          <div className='col-5'>
+          <div className={this.props.deleteRow ? 'col-6' : 'col-5'}>
             {
-                this.props.rightEditable ?
-                <select value={this.props.mappingData[i].rightColumn ? this.props.mappingData[i].rightColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateMappingData(e, i)}>
-                    <option key='' value='' disabled>{this.props.defaultRightOption}</option>
+                <div className='row'>
+                    <div className={this.props.deleteRow ? 'col-8' : 'col-12'}>
                     {
-                        !this.props.rightColumns.groups ? 
-                            this.props.rightColumns.data.map((column, index) => 
-                                <option key={index} value={column.value}>{column.title}</option>
-                            )
-                        : 
-                            Object.keys(this.props.rightColumns.data).map((group, groupIndex) => 
-                                <optgroup key={groupIndex} label={group}>
-                                {
-                                    this.props.rightColumns.data[group].map((column, columnIndex) => 
-                                        <option key={columnIndex} value={column.value}>{column.title}</option>
+                        this.props.updateRightColumn ?
+                        <select value={this.props.mappingData[i].rightColumn ? this.props.mappingData[i].rightColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateRightColumn(e, i)}>
+                            <option key='' value='' disabled>{this.props.defaultRightOption}</option>
+                            {
+                                !this.props.rightColumns.groups ? 
+                                    this.props.rightColumns.data.map((column, index) => 
+                                        <option key={index} value={column.value}>{column.title}</option>
                                     )
-                                }
-                            </optgroup>
-                            )
+                                : 
+                                    Object.keys(this.props.rightColumns.data).map((group, groupIndex) => 
+                                        <optgroup key={groupIndex} label={group}>
+                                        {
+                                            this.props.rightColumns.data[group].map((column, columnIndex) => 
+                                                <option key={columnIndex} value={column.value}>{column.title}</option>
+                                            )
+                                        }
+                                    </optgroup>
+                                    )
+                            }
+                        </select>
+                        :
+                        <div>
+                        {
+                            <input style={{height: '40px'}} type='text' className='form-control' value={this.props.rightColumns.data[i].value} disabled />
+                            
+                        }             
+                        </div>
                     }
-                </select>
-                :
-                <div>
-                {
-                    <input style={{height: '40px'}} type='text' className='form-control' value={this.props.rightColumns.data[i].value} disabled />
-                    
-                }             
+                    </div>
+                    {
+                        this.props.deleteRow && 
+                        <div className='col-4'>
+                            {
+                            (this.props.mappingData.length > 1)
+                            ? 
+                            <button className='btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill' onClick={(e) => this.props.delete(e, i)} >
+                                <span>
+                                    <i className="la la-trash-o"></i>
+                                    <span>Delete</span>
+                                </span>
+                            </button>
+                            : 
+                            <button className='btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill' disabled >
+                                <span>
+                                    <i className="la la-trash-o"></i>
+                                    <span>Delete</span>
+                                </span>
+                            </button>
+                            }
+                        </div>
+                    }
                 </div>
             }
           </div>
@@ -97,6 +125,24 @@ class Mapping extends React.Component {
         <br />
         </div>
       )
+    }
+    if (this.props.addRow) {
+        content.push(
+            <div className='row'>
+              <div className='col-6'>
+              <button style={{ margin: '15px' }} className= 'btn btn btn-sm btn-brand m-btn m-btn--icon m-btn--pill m-btn--wide' onClick={this.props.addRow}>
+              <span>
+                <i className="la la-plus"></i>
+                <span>
+                  Add
+                </span>
+              </span>          
+              </button>          
+              </div>
+              <div className='col-1'>
+              </div>
+            </div>
+        )
     }
     return content
   }
@@ -110,14 +156,13 @@ class Mapping extends React.Component {
 Mapping.propTypes = {
     'leftColumns': PropTypes.object.isRequired,
     'rightColumns': PropTypes.object.isRequired,
-    'leftEditable': PropTypes.bool.isRequired,
-    'rightEditable': PropTypes.bool.isRequired,
     'defaultLeftOption': PropTypes.string.isRequired,
     'defaultRightOption': PropTypes.string.isRequired,
     'leftLabel': PropTypes.string.isRequired,
     'rightLabel': PropTypes.string.isRequired,
     'mappingData': PropTypes.array.isRequired,
-    'updateMappingData': PropTypes.func.isRequired
+    'updateLeftColumn': PropTypes.func,
+    'updateRightColumn': PropTypes.func
 }
 
 export default Mapping

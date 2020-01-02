@@ -29,11 +29,11 @@ class submitForm extends React.Component {
   getMappingData () {
     if (this.props.questions) {
       return this.state.mappingData.map(data => {
-        return {'leftColumn': data.question, 'rightColumn': data.googleSheetColumn}
+        return {'leftColumn': data.question, 'rightColumn': data.hubspotColumn}
       })
     } else {
       return this.state.mappingData.map(data => {
-        return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.googleSheetColumn}
+        return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.hubspotColumn}
       })
     }
   }
@@ -81,7 +81,7 @@ class submitForm extends React.Component {
       console.log('this.state.mappingData', this.state.mappingData)
       let data = this.state.mappingData
       if (e.target.value !== '') {
-        data[index].googleSheetColumn = e.target.value
+        data[index].hubspotColumn = e.target.value
         this.setState({mappingData: data})
       }
       console.log('data in updateMappingData', data)
@@ -198,7 +198,7 @@ class submitForm extends React.Component {
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              Edit Google Sheets Actions
+              Edit HubSpot Actions
               </h5>
             <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
               <span aria-hidden="true">
@@ -245,14 +245,13 @@ class submitForm extends React.Component {
                 groups: false,
                 data: this.props.columns.hubspotColumns.map(column => { return {value: column.name, title: column.name} })
               }}
-              leftEditable = {this.props.questions ? false : true}
-              rightEditable = {this.props.questions ? true : false}
-              defaultLeftOption = {'Select a Field...'}
+              defaultLeftOption = {'Select a Question...'}
               defaultRightOption = {'Select a Hubspot Form Field...'}
               leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
               rightLabel = {'Hubspot Form Fields'}
               mappingData = {this.getMappingData()}
-              updateMappingData = {this.updateMappingData}
+              updateLeftColumn = {null}
+              updateRightColumn = {this.updateMappingData}
             />
             //this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )

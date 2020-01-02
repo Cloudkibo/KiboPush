@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { UncontrolledTooltip } from 'reactstrap'
 import {fetchHubspotColumns} from '../../../redux/actions/hubSpot.actions'
 import AlertContainer from 'react-alert'
+import Mapping from '../Mapping'
 
 class CreateContact extends React.Component {
     constructor (props, context) {
@@ -22,7 +23,20 @@ class CreateContact extends React.Component {
           this.updateKiboPushData = this.updateKiboPushData.bind(this)
           this.updatehubSpotData = this.updatehubSpotData.bind(this)
           this.props.fetchHubspotColumns()
+          this.getMappingData = this.getMappingData.bind(this)
+    }
 
+
+    getMappingData () {
+      if (this.props.questions) {
+        return this.state.mappingData.map(data => {
+          return {'leftColumn': data.question, 'rightColumn': data.hubspotColumn}
+        })
+      } else {
+        return this.state.mappingData.map(data => {
+          return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.hubspotColumn}
+        })
+      }
     }
 
     save () {
@@ -221,7 +235,7 @@ class CreateContact extends React.Component {
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              Edit Google Sheets Actions
+              Edit HubSpot Actions
               </h5>
             <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
               <span aria-hidden="true">
@@ -249,7 +263,39 @@ class CreateContact extends React.Component {
             <br />
             {this.state.showColumns &&
            (this.props.columns && this.props.columns.hubSpotColumns.length > 0 &&
-            this.showMappingData(this.props.columns.hubSpotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
+            <Mapping 
+              leftColumns = {
+                this.props.questions ? 
+                {
+                  groups: false,
+                  data: this.props.questions.map(question => { return {value: question, title: question} })
+                } 
+                :
+                {
+                  groups: true,
+                  data: {
+                    'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
+                    'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
+                  }
+                } 
+              }
+              rightColumns = {{
+                groups: false,
+                data: this.props.columns.hubSpotColumns.map(column => { return {value: column, title: column} })
+              }}
+              leftEditable = {this.props.questions ? false : true}
+              rightEditable = {this.props.questions ? true : false}
+              defaultLeftOption = {'Select a Field...'}
+              defaultRightOption = {'Select a Field...'}
+              leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
+              rightLabel = {'Hubspot Contact Fields'}
+              mappingData = {this.getMappingData()}
+              updateLeftColumn = {this.props.questions ? null : this.updateKiboPushData}
+              updateRightColumn = {this.updatehubSpotData}
+              deleteRow={this.removeCondition}
+              addRow={this.props.question ? null : this.addCondition}
+            />
+            //this.showMappingData(this.props.columns.hubSpotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
           }
             </div>
