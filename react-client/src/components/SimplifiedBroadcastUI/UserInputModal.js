@@ -157,6 +157,8 @@ class UserInputModal extends React.Component {
         questions[index].retryMessage = 'Please enter a number. Use digits only.'
       } else if (e.target.value === 'email') {
         questions[index].retryMessage = 'Please enter a valid email address. e.g. me@mail.com'
+      } else if (e.target.valye === 'phoneNumber') {
+        questions[index].retryMessage = "Please enter a correct phone number starting with '+'"
       }
       this.setState({questions, edited: true})
   }
@@ -269,7 +271,8 @@ class UserInputModal extends React.Component {
                                             <option value={''} disabled>Select a Reply Type</option>
                                             <option value={'text'}>{'Text'}</option>
                                             <option value={'number'}>{'Number'}</option>
-                                            <option value={'email'}>{'Email'}</option>                                    
+                                            <option value={'email'}>{'Email'}</option>
+                                            <option value={'phoneNumber'}>{'Phone Number'}</option>                                       
                                         </select>
                                         <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.type ? '*Required' : ''}</div>
                                     </div>
