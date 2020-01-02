@@ -8,8 +8,7 @@ class UserInputModal extends React.Component {
     super(props)
     this.state = {
       edited: false,
-      customFields: [],
-      action: null,
+      action: props.action ? props.action : null,
       questions: props.questions ? props.questions : 
         [{
             question: '', 
@@ -38,6 +37,7 @@ class UserInputModal extends React.Component {
     this.retryMessageChange = this.retryMessageChange.bind(this)
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
     this.savehubSpotForm = this.savehubSpotForm.bind(this)
+    this.saveCustomFieldsAction = this.saveCustomFieldsAction.bind(this)
     this.removeAction = this.removeAction.bind(this)
   }
 
@@ -48,7 +48,7 @@ class UserInputModal extends React.Component {
   saveGoogleSheet (googleSheet) {
       this.setState({
         action: {
-            actionType: 'google_sheets',
+            type: 'google_sheets',
             ...googleSheet
         }
     })
@@ -57,8 +57,17 @@ class UserInputModal extends React.Component {
   savehubSpotForm(hubSpotFormPayload) {
     this.setState({
       action: {
-          actionType: 'hubspot',
+          type: 'hubspot',
           ...hubSpotFormPayload
+        }
+     })
+  }
+
+  saveCustomFieldsAction (customFields) {
+    this.setState({
+      action: {
+          type: 'custom_fields',
+          ...customFields
         }
      })
   }
@@ -86,16 +95,17 @@ class UserInputModal extends React.Component {
   }
 
   checkDisabled () {
-    if (this.state.action) {
-      for (let i = 0; i < this.state.questions.length; i++) {
-        let question = this.state.questions[i]
-        if (!question.question || !question.type || !question.customFieldId) {
+    if (!this.state.action) {
+      return true
+    }
+    for (let i = 0; i < this.state.questions.length; i++) {
+      let question = this.state.questions[i]
+      if (!question.question || !question.type) {
+          return true
+      }
+      if (question.type !== 'text') {
+        if (!question.skipButtonText || !question.retryMessage) {
             return true
-        }
-        if (question.type !== 'text') {
-          if (!question.skipButtonText || !question.retryMessage) {
-              return true
-          }
         }
       }
     }
@@ -172,7 +182,8 @@ class UserInputModal extends React.Component {
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'userInput',
-      questions: this.state.questions
+      questions: this.state.questions,
+      action: this.state.action
     }, this.props.edit)
   }
 
@@ -261,25 +272,6 @@ class UserInputModal extends React.Component {
                                         <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.type ? '*Required' : ''}</div>
                                     </div>
                                 </div>
-
-            
-                        {/* <h6>Save response to a Custom Field:</h6>              
-                            <div className='row'>
-                                <div className='col-6'>
-                                    <select value={question.customFieldId} style={{borderColor: !question.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setCustomField(event, index)}>
-                                        <option value={''} disabled>Select a Custom Field</option>
-                                        {
-                                            this.state.customFields.map((customField, index) => {
-                                                return (
-                                                    <option key={index} value={customField._id}>{customField.name}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                    <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
-                                    <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
-                            </div>
-                        </div> */}
                         {
                         question.type && question.type !== 'text' &&
                         <div>
@@ -312,15 +304,16 @@ class UserInputModal extends React.Component {
                     })
                 }
                   <UserInputActions
-                  required
-                  saveGoogleSheet={this.saveGoogleSheet}
-                  savehubSpotForm={this.savehubSpotForm}
-                  removeAction={this.removeAction}
-                  action={this.state.action}
-                  questions={this.state.questions.map(q => q.question)}
-                  toggleGSModal={this.props.toggleGSModal}
-                  closeGSModal={this.props.closeGSModal}
-                  updateActionStatus={this.updateActionStatus} />
+                    required
+                    saveGoogleSheet={this.saveGoogleSheet}
+                    savehubSpotForm={this.savehubSpotForm}
+                    saveCustomFieldsAction={this.saveCustomFieldsAction}
+                    removeAction={this.removeAction}
+                    action={this.state.action}
+                    questions={this.state.questions.map(q => q.question)}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    updateActionStatus={this.updateActionStatus} />
                 </div>
                 <hr style={{marginBottom: '20px', marginTop: '10px', backgroundColor: 'darkgray'}}/>
                 <div>

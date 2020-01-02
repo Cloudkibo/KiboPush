@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomFields from '../customFields/customfields'
+import CustomFieldActions from './CustomFieldActions'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotActions from './hubspot/HubspotActions'
 
@@ -7,11 +7,11 @@ class UserInputActions extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-        openCustomField: false,
-        openGoogleSheets: false,
-        openHubspot: false,
-        questions: this.props.questions,
-        openPopover: false
+        openCustomField: props.action && props.action.type === 'custom_fields' ? true : false,
+        openGoogleSheets: props.action && props.action.type === 'google_sheets' ? true : false,
+        openHubspot: props.action && props.action.type === 'hubspot' ? true : false,
+        questions: props.questions,
+        openPopover: props.action && props.action.type ? true : false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -61,9 +61,10 @@ class UserInputActions extends React.Component {
       for (let i = 0; i < this.props.questions.length; i++) {
         if (this.state.openGoogleSheets) {
           mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
-        }
-        if (this.state.openHubspot) {
+        } else if (this.state.openHubspot) {
           mappingData.push({question: this.props.questions[i], hubspotColumn: ''})
+        } else if (this.state.openCustomField) {
+          mappingData.push({question: this.props.questions[i], customFieldId: ''})
         }
       }
       return mappingData
@@ -97,16 +98,16 @@ class UserInputActions extends React.Component {
             {
                 !this.state.openCustomField && !this.state.openGoogleSheets && !this.state.openHubspot &&
                 <div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showCustomField}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Custom Fields</h7>
+                  </div>
+
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showGoogleSheets}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Google Sheets</h7>
                   </div>
 
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showHubspot}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Hubspot</h7>
-                  </div>
-
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showCustomField}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Custom Fields</h7>
                   </div>
                 </div>
             }
@@ -119,7 +120,6 @@ class UserInputActions extends React.Component {
                     questions={this.props.questions}
                     removeGoogleAction={this.props.removeAction}
                     saveGoogleSheet={this.props.saveGoogleSheet}
-                    removeGoogleAction={this.removeGoogleAction}
                     googleSheetAction={this.props.action && this.props.action.googleSheetAction ? this.props.action.googleSheetAction : ''}
                     worksheet={this.props.action && this.props.action.worksheet ? this.props.action.worksheet : ''}
                     worksheetName={this.props.action && this.props.action.worksheetName ? this.props.action.worksheetName : ''}
@@ -155,7 +155,41 @@ class UserInputActions extends React.Component {
                   />
                 </div>
               </div>
-            }
+            }          
+            {
+              this.state.openCustomField &&
+              <div className='card'>
+                <h7 className='card-header'>Custom Fields <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
+                <div style={{ padding: '10px' }} className='card-block'>
+                  <CustomFieldActions
+                    questions={this.props.questions}
+                    saveCustomFieldsAction={this.props.saveCustomFieldsAction}
+                    removeCustomFieldsAction={this.props.removeAction}
+                    mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
+                    index={this.props.index}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    GSModalTarget='ActionModal'
+                  />
+                </div>
+              </div>
+            }       
+              {/* <div className='row'>
+                  <div className='col-6'>
+                      <select value={question.customFieldId} style={{borderColor: !question.customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.setCustomField(event, index)}>
+                          <option value={''} disabled>Select a Custom Field</option>
+                          {
+                              this.state.customFields.map((customField, index) => {
+                                  return (
+                                      <option key={index} value={customField._id}>{customField.name}</option>
+                                  )
+                              })
+                          }
+                      </select>
+                      <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.customFieldId ? '*Required' : ''}</div>
+                      <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
+                </div>
+              </div> */}
             </div>
           </div>
         }
