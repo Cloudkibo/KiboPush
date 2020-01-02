@@ -292,8 +292,8 @@ class CreateContact extends React.Component {
               mappingData = {this.getMappingData()}
               updateLeftColumn = {this.props.questions ? null : this.updateKiboPushData}
               updateRightColumn = {this.updatehubSpotData}
-              deleteRow={this.removeCondition}
-              addRow={this.props.question ? null : this.addCondition}
+              deleteRow={this.props.questions ? null : this.removeCondition}
+              addRow={this.props.questions ? null : this.addCondition}
             />
             //this.showMappingData(this.props.columns.hubSpotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )

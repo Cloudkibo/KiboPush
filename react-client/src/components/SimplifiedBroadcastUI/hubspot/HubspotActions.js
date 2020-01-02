@@ -155,12 +155,15 @@ componentDidMount () {
               <h6>Create/Update Contact Properties</h6>
               <span style={{color: '#676c7b'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
             </div>
-            <div className='ui-block'
+            {
+              !this.props.questions &&
+              <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
               onClick={() => this.updateHubspotAction('get_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Get Contact Properties</h6>
-            <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
-          </div>
+              <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
+              </div>
+            }
         </div>
     }
       </div>
