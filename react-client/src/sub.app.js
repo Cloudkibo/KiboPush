@@ -14,13 +14,25 @@ class App extends Component {
       path: '/',
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
+    this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
+  }
+
+  handleDemoSSAPage () {
+    const sidebar = document.getElementById('sidebarDiv')
+    sidebar.parentNode.removeChild(sidebar)
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
   }
 
   componentDidMount () {
-    this.props.history.push({
-      pathname: '/',
-      state: {obj: {_id: 1}}
-    })
+    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
+      this.handleDemoSSAPage()
+    } else {
+      this.props.history.push({
+        pathname: '/',
+        state: {obj: {_id: 1}}
+      })
+    }
+
     console.log('browser history', this.props.history)
     this.unlisten = this.props.history.listen(location => {
       this.setState({path: location.pathname})
@@ -49,10 +61,20 @@ class App extends Component {
   }
 
   isWizardOrLogin (path) {
-    if (path === '/addPageWizard' || path === '/inviteUsingLinkWizard' || path === '/greetingTextWizard' ||
-        path === '/welcomeMessageWizard' || path === '/autopostingWizard' || path === '/menuWizard' ||
-        path === '/responseMethods' || path === '/paymentMethodsWizard' || path === '/finish' ||
-        path === '/resendVerificationEmail' || path === '/connectFb' || path === '/addfbpages') {
+    if ([
+      '/addPageWizard',
+      '/inviteUsingLinkWizard',
+      '/greetingTextWizard',
+      '/welcomeMessageWizard',
+      '/autopostingWizard',
+      '/menuWizard',
+      '/responseMethods',
+      '/paymentMethodsWizard',
+      '/finish',
+      '/resendVerificationEmail',
+      '/connectFb',
+      '/addfbpages'
+    ].includes(path)) {
       return true
     }
     return false
