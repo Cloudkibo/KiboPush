@@ -10,7 +10,7 @@ export function updateChat (data) {
 
 export function getResponse (body) {
   return (dispatch) => {
-    callApi('https://boiling-push.glitch.me/webPost', 'post', body, 'demoSSA')
+    callApi('https://www.synaps3webrtc.com/webPost', 'post', body, 'demoSSA')
       .then(res => {
         console.log('demoSSA response', res)
         if (res.answer) {
