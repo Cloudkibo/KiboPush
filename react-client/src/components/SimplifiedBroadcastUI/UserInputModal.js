@@ -159,6 +159,8 @@ class UserInputModal extends React.Component {
         questions[index].retryMessage = 'Please enter a valid email address. e.g. me@mail.com'
       } else if (e.target.valye === 'phoneNumber') {
         questions[index].retryMessage = "Please enter a correct phone number starting with '+'"
+      } else if (e.target.valye === 'url') {
+        questions[index].retryMessage = "Please enter a correct website address e.g. kibopush.com"
       }
       this.setState({questions, edited: true})
   }
@@ -272,7 +274,8 @@ class UserInputModal extends React.Component {
                                             <option value={'text'}>{'Text'}</option>
                                             <option value={'number'}>{'Number'}</option>
                                             <option value={'email'}>{'Email'}</option>
-                                            <option value={'phoneNumber'}>{'Phone Number'}</option>                                       
+                                            <option value={'phoneNumber'}>{'Phone Number'}</option>    
+                                            <option value={'url'}>{'URL'}</option>                                       
                                         </select>
                                         <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.type ? '*Required' : ''}</div>
                                     </div>
