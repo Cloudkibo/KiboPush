@@ -51,6 +51,7 @@ class AssignCustomFields extends React.Component {
 
   render () {
     return (
+      <div>
         <div className="modal-content" style={{ width: '687px', top: '100' }}>
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
@@ -67,6 +68,10 @@ class AssignCustomFields extends React.Component {
             <span style={{color: '#575962'}}>Save user's responses to a custom field</span>
             <br />
             <br />
+            <button style={{ marginBottom: '30px', borderRadius: '5px' }} type='button' className='btn btn-primary btn-sm'
+                data-toggle='modal' data-target='#create_modal'>
+                  Create Custom Field
+              </button>
             {(this.props.customFields && this.props.customFields.length > 0 &&
               <Mapping 
                 leftColumns = {
@@ -94,6 +99,8 @@ class AssignCustomFields extends React.Component {
           <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
         </div>
       </div>
+
+    </div>
     )
   }
 }
