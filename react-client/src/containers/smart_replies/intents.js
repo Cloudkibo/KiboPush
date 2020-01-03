@@ -66,7 +66,15 @@ class Intents extends React.Component {
       let filtered = this.props.botIntents.filter((intent) => intent.name.toLowerCase().includes(e.target.value.toLowerCase()))
       this.setState({ intents: filtered })
     } else {
-      this.setState({ intents: this.props.botIntents })
+      this.setState({ intents: this.props.botIntents }, () => {
+        if (this.state.currentIntent !== null) {
+          for (let a = 0; a < this.state.intents.length; a++) {
+            if (this.state.intents[a]._id === this.state.currentIntent._id) {
+              document.getElementById(`collapse_${this.state.currentIntent._id}`).classList.add("show")
+            }
+          }
+        }
+      })
     }
   }
 
