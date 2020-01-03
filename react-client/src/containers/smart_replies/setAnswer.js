@@ -2,6 +2,7 @@ import React from 'react'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class setAnswer extends React.Component {
     constructor(props) {
@@ -105,6 +106,7 @@ class setAnswer extends React.Component {
                         </div>
                     </div>
                 </div>
+                <BACKBUTTON onBack={this.onBack} />
             </div>
         )
     }
