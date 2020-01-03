@@ -69,10 +69,7 @@ class Intents extends React.Component {
       this.setState({ intents: this.props.botIntents }, () => {
         if (this.state.currentIntent !== null) {
           for (let a = 0; a < this.state.intents.length; a++) {
-            console.log(this.state.intents[a]._id)
-            console.log(this.state.currentIntent._id)
             if (this.state.intents[a]._id === this.state.currentIntent._id) {
-             console.log('i am here')
               document.getElementById(`collapse_${this.state.currentIntent._id}`).classList.add("show")
             }
           }
