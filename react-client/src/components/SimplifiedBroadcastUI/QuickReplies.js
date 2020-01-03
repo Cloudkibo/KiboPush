@@ -55,6 +55,7 @@ class QuickReplies extends React.Component {
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
+    this.removeGoogleAction = this.removeGoogleAction.bind(this)
 
     this.GSModalContent = null
   }
@@ -365,7 +366,7 @@ class QuickReplies extends React.Component {
                 <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
                     <option value={''} disabled>Select a custom field</option>
                     {
-                        this.state.customFields.map((customField, index) => {
+                        this.props.customFields.map((customField, index) => {
                             return (
                                 <option key={index} value={customField._id}>{customField.name}</option>
                             )
@@ -401,9 +402,9 @@ class QuickReplies extends React.Component {
                 mapping={this.state.currentActions[index].mapping}
                 lookUpValue={this.state.currentActions[index].lookUpValue}
                 lookUpColumn={this.state.currentActions[index].lookUpColumn}
-                toggleGSModal={this.toggleGSModal}
-                closeGSModal={this.closeGSModal}
-                GSModalTarget='ActionModalGS'
+                toggleGSModal={this.props.toggleGSModal}
+                closeGSModal={this.props.closeGSModal}
+                GSModalTarget='ActionModal'
                 index={index}
                 />
             </div>
@@ -527,7 +528,7 @@ class QuickReplies extends React.Component {
                 </div>
             </div>
 
-            <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
+            {/* <CustomFields onLoadCustomFields={this.onLoadCustomFields} /> */}
             {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>
                     <Slider ref={(instance) => { this.slider = instance }}  {...settings}>

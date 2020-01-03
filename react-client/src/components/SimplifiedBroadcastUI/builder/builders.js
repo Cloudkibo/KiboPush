@@ -30,6 +30,8 @@ import MediaModal from '../MediaModal'
 import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
 
+import CustomFields from '../../customFields/customfields'
+
 class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -41,6 +43,7 @@ class Builders extends React.Component {
     let quickReplies = {}
     quickReplies[currentId] = []
     this.state = {
+      customFields: [],
       lists,
       quickReplies,
       quickRepliesComponents: {},
@@ -97,6 +100,7 @@ class Builders extends React.Component {
     this.removeMessage = this.removeMessage.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
+    this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
 
     this.GSModalContent = null
 
@@ -108,6 +112,10 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  onLoadCustomFields (customFields) {
+    this.setState({customFields})
   }
 
   toggleGSModal (value, content) {
@@ -1171,6 +1179,9 @@ class Builders extends React.Component {
     return {
       content:
         <QuickReplies
+          toggleGSModal={this.toggleGSModal}
+          closeGSModal={this.closeGSModal}
+          customFields={this.state.customFields}
           sequences={this.props.sequences}
           broadcasts={this.props.broadcasts}
           tags={this.props.tags}
@@ -1194,6 +1205,9 @@ class Builders extends React.Component {
           quickRepliesComponents[id] = {
             content:
               <QuickReplies
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                customFields={this.state.customFields}
                 sequences={this.props.sequences}
                 broadcasts={this.props.broadcasts}
                 tags={this.props.tags}
@@ -1292,6 +1306,8 @@ class Builders extends React.Component {
           </div>
         </div>
       </div>
+
+      <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
 
       <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
