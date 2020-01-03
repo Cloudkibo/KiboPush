@@ -31,6 +31,8 @@ import YoutubeVideoModal from '../YoutubeVideoModal'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
 
+import CreateCustomField from '../../customFields/createCustomField'
+
 class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -1344,6 +1346,8 @@ class Builders extends React.Component {
           </div>
         </div>
       </div>
+      
+      <CreateCustomField />
 
       <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
