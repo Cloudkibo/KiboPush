@@ -4,6 +4,7 @@ import { loadPageSubscribersList, allLocales, downloadSubscribersData, updatePic
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
+import {localeCodeToEnglish} from '../../utility/utils'
 
 class PageSubscribers extends React.Component {
   constructor (props, context) {
@@ -93,7 +94,7 @@ class PageSubscribers extends React.Component {
     var localeOptions = []
     if (nextProps.locales) {
       for (let i = 0; i < nextProps.locales.length; i++) {
-        localeOptions.push({value: nextProps.locales[i], label: nextProps.locales[i]})
+        localeOptions.push({value: nextProps.locales[i].value, label: nextProps.locales[i].text})
       }
       this.setState({localeOptions: localeOptions})
     }
@@ -399,7 +400,7 @@ class PageSubscribers extends React.Component {
                                       <td data-field='connected'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={{width: '150px'}}>{subscriber.locale}</span>
+                                          style={{width: '150px'}}>{localeCodeToEnglish(subscriber.locale)}</span>
                                       </td>
                                     </tr>
                               ))
