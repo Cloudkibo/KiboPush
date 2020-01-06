@@ -54,7 +54,7 @@ class RssIntegrations extends React.Component {
   setStatus (feed) {
     var data = {
       feedId: feed._id,
-      updatedObject: {isActive: !feed.isActive}
+      updatedObject: {isActive: !feed.isActive, pageIds: [feed.pageIds[0]]}
     }
     this.props.updateFeed(data, this.msg, true)
   }
@@ -356,7 +356,7 @@ class RssIntegrations extends React.Component {
                 ? <div className='col-12 m-widget5'>
                   { this.state.feeds.map((feed, i) => (
                     <RssFeed feed={feed}
-                      page={this.props.pages.filter((page) => page._id === feed.pageId)[0]} 
+                      page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]} 
                       openSettings={this.gotoSettings} 
                       gotoMessages={this.gotoMessages}
                       setDeleteId={this.setDeleteId}
