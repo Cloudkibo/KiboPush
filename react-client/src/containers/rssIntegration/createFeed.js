@@ -77,7 +77,7 @@ class CreateFeed extends React.Component {
 	    storiesCount: parseInt(this.state.storiesCount),
 	    defaultFeed: this.state.isDefault,
 	    isActive: this.state.isActive,
-	    pageId: this.state.selectedPage
+	    pageIds: [this.state.selectedPage]
     }
     if (!this.props.currentFeed) {
       this.props.createRssFeed(rssPayload, this.msg, this.resetFields)
@@ -168,13 +168,13 @@ class CreateFeed extends React.Component {
       feedTitle: feed.title,
       storiesCount: feed.storiesCount.toString(),
       isDefault: feed.defaultFeed,
-      selectedPage: feed.pageId,
+      selectedPage: feed.pageIds[0],
       saveEnabled: true,
       inValidUrlMsg: ''
     })
     var selectedPage = ''
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (feed.pageId === this.props.pages[i]._id) {
+      if (feed.pageIds[0] === this.props.pages[i]._id) {
         selectedPage = this.props.pages[i]
         break
       }
