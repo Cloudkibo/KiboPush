@@ -48,6 +48,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import auth from '../../utility/auth.service'
+import {localeCodeToEnglish} from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -492,7 +493,7 @@ class OperationalDashboard extends React.Component {
                                   <option key='ALL' value='all'>ALL</option>
                                   {
                                   this.props.locales && this.props.locales.map((locale, i) => (
-                                    <option key={i} value={locale}>{locale}</option>
+                                    <option key={i} value={locale.value}>{locale.text}</option>
                                   ))
                                 }
                                 </select>
@@ -557,7 +558,7 @@ class OperationalDashboard extends React.Component {
                                             Locale:&nbsp;
                                             </span>
                                             <span className='m-widget5__info-author m--font-info'>
-                                              {user.facebookInfo ? user.facebookInfo.locale : ''}
+                                              {user.facebookInfo && user.facebookInfo.locale ? localeCodeToEnglish(user.facebookInfo.locale) : ''}
                                             </span>
                                           </div>
                                         </div>
