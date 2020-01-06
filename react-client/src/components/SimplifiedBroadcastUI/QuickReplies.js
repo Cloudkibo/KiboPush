@@ -7,7 +7,6 @@ import { Popover, PopoverBody } from 'reactstrap'
 import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
-import CustomFields from '../customFields/customfields'
 import GoogleSheetActions from './GoogleSheetActions'
 
 class QuickReplies extends React.Component {
