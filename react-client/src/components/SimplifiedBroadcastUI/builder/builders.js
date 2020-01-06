@@ -101,6 +101,7 @@ class Builders extends React.Component {
     this.removeMessage = this.removeMessage.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
+    this.deconstructUserInput = this.deconstructUserInput.bind(this)
 
     this.GSModalContent = null
 
@@ -111,7 +112,7 @@ class Builders extends React.Component {
     this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
-    console.log('genericMessage props in constructor', this.props)
+    console.log('builders props in constructor', this.props)
   }
 
   toggleGSModal (value, content) {
@@ -242,9 +243,47 @@ class Builders extends React.Component {
             }
           }
         }
-        this.props.handleChange({broadcast: broadcast, linkedMessages: this.state.linkedMessages, unlinkedMessages: this.state.unlinkedMessages})
+        this.props.handleChange({broadcast: broadcast, linkedMessages: this.deconstructUserInput(this.state.linkedMessages), unlinkedMessages: this.state.unlinkedMessages})
       }
     }
+  }
+
+  deconstructUserInput (messages) {
+    debugger;
+    let userInputComponents = []
+    let finalMessages = JSON.parse(JSON.stringify(messages))
+    for (let x = 0; x < finalMessages.length; x++) {
+      let message = finalMessages[x].messageContent
+      for (let y = 0; y < message.length; y++) {
+        let component = JSON.parse(JSON.stringify(message[y]))
+        if (component.componentType === 'userInput' && component.questions) {
+          finalMessages[x].messageContent.splice(y, 1)
+          let temp = {}
+          for (let i = 0; i < component.questions.length; i++) {
+            temp = {...component, ...component.questions[i]}
+            delete temp.questions
+            for (let j = 0; j < component.action.mapping.length; j++) {
+              if (component.action.mapping[j].question === component.questions[i].question) {
+                let mapping = component.action.mapping[j]
+                temp.action = {}
+                temp.action.type = component.action.type
+                if (component.action.type === 'custom_fields') {
+                  temp.action.customFieldId = mapping.customFieldId
+                } else if (component.action.type === 'google_sheets'){
+                  temp.action.googleSheetColumn = mapping.googleSheetColumn
+                } else if (component.action.type === 'hubspot'){
+                  temp.action.hubspotColumn = mapping.hubspotColumn
+                }
+              }
+            } 
+            userInputComponents.push(temp)
+            finalMessages[x].messageContent.push(temp)
+          }
+        }
+      }
+    }
+    console.log('deconstruct userInputComponents', finalMessages)
+    return finalMessages
   }
 
   createLinkedMessagesFromButtons(broadcastComponent) {
@@ -522,6 +561,65 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp}, obj)
   }
 
+  // handleUserInput (obj) {
+  //   //debugger;
+  //   console.log('handleUserInput', obj)
+  //   var temp = this.getCurrentMessage().messageContent
+  //   console.log('handleUserInput temp', temp)
+  //   var isPresent = false
+
+  //   for (let i = 0; i < obj.questions.length; i++) {
+  //     for (let a = 0; a < temp.length; a++) {
+  //       if (temp[a].id === obj.questions[i].id) {
+  //         temp[a].question = obj.questions[i]
+  //         for (let j = 0; j < obj.action.mapping.length; j++) {
+  //           let mapping = obj.action.mapping[j]
+  //           if (obj.questions[i].question === mapping.question) {
+  //             if (obj.action.type === 'custom_fields') {
+  //               temp[a].action.customFieldId = mapping.customFieldId
+  //             } else if (obj.action.type === 'google_sheets'){
+  //               temp[a].action.googleSheetColumn = mapping.googleSheetColumn
+  //             } else if (obj.action.type === 'hubspot'){
+  //               temp[a].action.hubspotColumn = mapping.hubspotColumn
+  //             }
+  //           }
+  //         } 
+  //         isPresent = true
+  //       }
+  //     }
+  //     if (!isPresent) {
+  //       let action = JSON.parse(JSON.stringify(obj.action))
+  //       for (let k = 0; k < action.mapping.length; k++) {
+  //         console.log('action.mapping', action.mapping)
+  //         console.log('k', k)
+  //         console.log('action.mapping[k]', action.mapping[k])
+  //         let mappingData = action.mapping[k]
+  //         if (obj.questions[i].question === mappingData.question) {
+  //           if (obj.action.type === 'custom_fields') {
+  //             action.customFieldId = mappingData.customFieldId
+  //           } else if (obj.action.type === 'google_sheets'){
+  //             action.googleSheetColumn = mappingData.googleSheetColumn
+  //           } else if (obj.action.type === 'hubspot'){
+  //             action.hubspotColumn = mappingData.hubspotColumn
+  //           }
+  //         }
+  //       }
+  //       delete action.mapping 
+  //       temp.push({
+  //         id: obj.id, 
+  //         ...obj.questions[i], 
+  //         componentType: 'userInput', 
+  //         action: action})
+  //       console.log('userInput temp add', temp)
+  //     }
+  //   }
+  //   temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
+  //   console.log('handleUserInput temp', temp)
+  //   console.log('handleUserInput state', this.state)
+  //   this.setState({broadcast: temp})
+  //   this.handleChange({broadcast: temp}, obj)
+  // }
+
   handleUserInput (obj) {
     console.log('handleUserInput', obj)
     var temp = this.getCurrentMessage().messageContent
@@ -537,7 +635,7 @@ class Builders extends React.Component {
     }
 
     if (!isPresent) {
-        temp.push({id: obj.id, questions: obj.questions, componentType: 'input'})
+        temp.push({id: obj.id, questions: obj.questions, action: obj.action, componentType: 'userInput'})
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     console.log('handleUserInput temp', temp)
@@ -1206,7 +1304,6 @@ class Builders extends React.Component {
           key={componentId}
           action={broadcast.action}
           questions={broadcast.questions}
-          handleText={this.handleUserInput}
           onRemove={this.removeComponent}
           hideUserOptions={this.props.hideUserOptions} />),
         handler: () => {

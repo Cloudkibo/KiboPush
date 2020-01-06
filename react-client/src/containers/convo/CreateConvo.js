@@ -423,6 +423,43 @@ class CreateConvo extends React.Component {
     return false
   }
 
+  handleUserInput () {
+    //debugger;
+
+    let userInputComponents = []
+    let linkedMessages = JSON.parse(JSON.stringify(this.state.linkedMessages))
+    for (let x = 0; x < linkedMessages.length; x++) {
+      let message = linkedMessages[x].messageContent
+      for (let y = 0; y < message.length; y++) {
+        let component = message[y]
+        if (component.componentType === 'userInput') {
+          let temp = {}
+          for (let i = 0; i < component.questions.length; i++) {
+            temp = {...component, ...component.questions[i]}
+            delete temp.questions
+            for (let j = 0; j < component.action.mapping.length; j++) {
+              let mapping = component.action.mapping[j]
+              temp.action = {}
+              temp.action.type = component.action.type
+              if (component.action.type === 'custom_fields') {
+                temp.action.customFieldId = mapping.customFieldId
+              } else if (component.action.type === 'google_sheets'){
+                temp.action.googleSheetColumn = mapping.googleSheetColumn
+              } else if (component.action.type === 'hubspot'){
+                temp.action.hubspotColumn = mapping.hubspotColumn
+              }
+            } 
+            userInputComponents.push(temp)
+            linkedMessages[x].messageContent.push(temp)
+            linkedMessages[x].messageContent.splice(y, 1)
+          }
+        }
+      }
+    }
+    this.setState({linkedMessages})
+    console.log('handleUserInput userInputComponents', userInputComponents)
+  }
+
   testConvo () {
     if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
       this.msg.error('Only one page should be selected to test the broadcast')

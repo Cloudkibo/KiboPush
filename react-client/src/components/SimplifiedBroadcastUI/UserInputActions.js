@@ -59,12 +59,41 @@ class UserInputActions extends React.Component {
     if (this.props.questions) {
       let mappingData = []
       for (let i = 0; i < this.props.questions.length; i++) {
-        if (this.state.openGoogleSheets) {
-          mappingData.push({question: this.props.questions[i], googleSheetColumn: ''})
-        } else if (this.state.openHubspot) {
-          mappingData.push({question: this.props.questions[i], hubspotColumn: ''})
-        } else if (this.state.openCustomField) {
-          mappingData.push({question: this.props.questions[i], customFieldId: ''})
+        if (this.props.action && this.props.action.mapping) {
+          //debugger;
+          let mapping = this.props.action.mapping
+          let mappingExists = false
+          for (let j = 0; j < mapping.length; j++) {
+            if (this.props.questions[i].id === mapping[j].id) {
+              mappingExists = true
+              if (this.state.openGoogleSheets) {
+                mappingData.push({...this.props.questions[i], googleSheetColumn: mapping[j].googleSheetColumn})
+              } else if (this.state.openHubspot) {
+                mappingData.push({...this.props.questions[i], hubspotColumn: mapping[j].hubspotColumn})
+              } else if (this.state.openCustomField) {
+                mappingData.push({...this.props.questions[i], customFieldId: mapping[j].customFieldId})
+              }
+            }
+          }
+          if (!mappingExists) {
+            if (this.state.openGoogleSheets) {
+              mappingData.push({...this.props.questions[i], googleSheetColumn: ''})
+            } else if (this.state.openHubspot) {
+              mappingData.push({...this.props.questions[i], hubspotColumn: ''})
+            } else if (this.state.openCustomField) {
+              mappingData.push({...this.props.questions[i], customFieldId: ''})
+            }
+          } else {
+            mappingExists = false
+          }
+        } else {
+          if (this.state.openGoogleSheets) {
+            mappingData.push({...this.props.questions[i], googleSheetColumn: ''})
+          } else if (this.state.openHubspot) {
+            mappingData.push({...this.props.questions[i], hubspotColumn: ''})
+          } else if (this.state.openCustomField) {
+            mappingData.push({...this.props.questions[i], customFieldId: ''})
+          }
         }
       }
       return mappingData
@@ -117,14 +146,14 @@ class UserInputActions extends React.Component {
                 <h7 className='card-header'>Google Sheets <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeGoogleSheets} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <GoogleSheetActions
-                    questions={this.props.questions}
+                    questions={this.props.questions.map(q => q.question)}
                     removeGoogleAction={this.props.removeAction}
                     saveGoogleSheet={this.props.saveGoogleSheet}
                     googleSheetAction={this.props.action && this.props.action.googleSheetAction ? this.props.action.googleSheetAction : ''}
                     worksheet={this.props.action && this.props.action.worksheet ? this.props.action.worksheet : ''}
                     worksheetName={this.props.action && this.props.action.worksheetName ? this.props.action.worksheetName : ''}
                     spreadSheet={this.props.action && this.props.action.spreadSheet ? this.props.action.spreadSheet : ''}
-                    mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
+                    mapping={this.getMappingData()}
                     lookUpValue={this.props.action && this.props.action.lookUpValue ? this.props.action.lookUpValue : ''}
                     lookUpColumn={this.props.action && this.props.action.lookUpColumn ? this.props.action.lookUpColumn : ''}
                     toggleGSModal={this.props.toggleGSModal}
@@ -140,13 +169,13 @@ class UserInputActions extends React.Component {
                 <h7 className='card-header'>Hubspot <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeHubspot} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <HubspotActions
-                    questions={this.props.questions}
+                    questions={this.props.questions.map(q => q.question)}
                     savehubSpotForm={this.props.savehubSpotForm}
                     hubspotAction={this.props.action && this.props.action.hubspotAction ? this.props.action.hubspotAction : ''}
                     removeHubspotAction={this.props.removeAction}
                     hubSpotForm={this.state.hubSpotForm}
                     portalId={this.state.portalId}
-                    mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
+                    mapping={this.getMappingData()}
                     identityFieldValue={this.props.action && this.props.action.identityCustomFieldValue ? this.props.action.identityCustomFieldValue : ''}
                     index={this.props.index}
                     toggleGSModal={this.props.toggleGSModal}
@@ -162,10 +191,10 @@ class UserInputActions extends React.Component {
                 <h7 className='card-header'>Custom Fields <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <CustomFieldActions
-                    questions={this.props.questions}
+                    questions={this.props.questions.map(q => q.question)}
                     saveCustomFieldsAction={this.props.saveCustomFieldsAction}
                     removeCustomFieldsAction={this.props.removeAction}
-                    mapping={this.props.action && this.props.action.mapping ? this.props.action.mapping : this.getMappingData()}
+                    mapping={this.getMappingData()}
                     index={this.props.index}
                     toggleGSModal={this.props.toggleGSModal}
                     closeGSModal={this.props.closeGSModal}
