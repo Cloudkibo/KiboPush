@@ -53,7 +53,7 @@ class RssFeed extends React.Component {
               </span>
               <br />
               <span className='widget5__info'>
-                {this.props.page.pageName}
+                {this.props.page ? this.props.page.pageName: ''}
               </span>
           </div>
           <div className='m-widget5__stats2'>
