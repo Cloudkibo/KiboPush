@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 
 import { loadCustomFields, deleteCustomField, updateCustomField } from '../../redux/actions/customFields.actions'
 import Mapping from './Mapping'
-
+import AlertContainer from 'react-alert'
 
 
 class AssignCustomFields extends React.Component {
@@ -19,6 +19,7 @@ class AssignCustomFields extends React.Component {
     this.save = this.save.bind(this)
     this.getMappingData = this.getMappingData.bind(this)
     this.updateMappingData = this.updateMappingData.bind(this)
+    this.getCustomFieldType = this.getCustomFieldType.bind(this)
   }
 
   getMappingData () {
@@ -30,12 +31,24 @@ class AssignCustomFields extends React.Component {
     }
   }
 
+  getCustomFieldType (customFieldId) {
+    if (this.props.customFields) {
+      return this.props.customFields.find(cf => cf._id === customFieldId).type
+    }
+  }
+
   updateMappingData (e, index) {
     console.log('this.state.mappingData', this.state.mappingData)
     let data = this.state.mappingData
     if (e.target.value !== '') {
-      data[index].customFieldId = e.target.value
-      this.setState({mappingData: data})
+      let customFieldType = this.getCustomFieldType(e.target.value)
+      console.log('customFieldType', customFieldType)
+      if (customFieldType === data[index].type) {
+        data[index].customFieldId = e.target.value
+        this.setState({mappingData: data})
+      } else {
+        this.msg.error("Type of custom field doesn't match reply type of question")
+      }
     }
     console.log('data in updateMappingData', data)
   }
@@ -50,9 +63,17 @@ class AssignCustomFields extends React.Component {
 
 
   render () {
+    let alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
               Edit Custom Field Actions

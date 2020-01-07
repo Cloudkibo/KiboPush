@@ -143,12 +143,15 @@ componentDidMount () {
       </div>
         : <div>
           <span>Select one of the Actions below:</span>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
-              <h6>Submit data to a form</h6>
-              <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
-            </div>
+            {
+              !this.props.questions &&
+              <div className='ui-block'
+                style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
+                onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+                <h6>Submit data to a form</h6>
+                <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
+              </div>
+            }
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
               onClick={() => this.updateHubspotAction('insert_update_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>

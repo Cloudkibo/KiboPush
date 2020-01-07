@@ -245,13 +245,13 @@ class submitForm extends React.Component {
                 groups: false,
                 data: this.props.columns.hubspotColumns.map(column => { return {value: column.name, title: column.name} })
               }}
-              defaultLeftOption = {'Select a Question...'}
+              defaultLeftOption = {this.props.questions ? 'Select a Question...' : 'Select a Field...'}
               defaultRightOption = {'Select a Hubspot Form Field...'}
               leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
               rightLabel = {'Hubspot Form Fields'}
               mappingData = {this.getMappingData()}
-              updateLeftColumn = {null}
-              updateRightColumn = {this.updateMappingData}
+              updateLeftColumn = {this.updateMappingData}
+              updateRightColumn = {null}
             />
             //this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
