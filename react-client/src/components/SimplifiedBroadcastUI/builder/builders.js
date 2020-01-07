@@ -249,7 +249,7 @@ class Builders extends React.Component {
   }
 
   deconstructUserInput (messages) {
-    debugger;
+    //debugger;
     let userInputComponents = []
     let finalMessages = JSON.parse(JSON.stringify(messages))
     for (let x = 0; x < finalMessages.length; x++) {
