@@ -43,7 +43,7 @@ class AssignCustomFields extends React.Component {
     if (e.target.value !== '') {
       let customFieldType = this.getCustomFieldType(e.target.value)
       console.log('customFieldType', customFieldType)
-      if ((data[index].type === 'number' && customFieldType === data[index].type) || customFieldType=== 'text') {
+      if ((data[index].type === 'number' && customFieldType === data[index].type) || (customFieldType=== 'text' && data[index].type !== 'number')) {
         data[index].customFieldId = e.target.value
         this.setState({mappingData: data})
       } else {
