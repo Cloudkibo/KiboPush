@@ -11,9 +11,9 @@ class UserInputModal extends React.Component {
       action: props.action ? props.action : null,
       questions: props.questions ? props.questions : 
         [{
+            id: new Date().getTime(), 
             question: '', 
-            type: '', 
-            customFieldId: '', 
+            type: '',
             incorrectTriesAllowed: 3, 
             skipButtonText: 'Skip', 
             retryMessage: ''
@@ -25,7 +25,6 @@ class UserInputModal extends React.Component {
     this.getName = this.getName.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.setReplyType = this.setReplyType.bind(this)
-    this.setCustomField = this.setCustomField.bind(this)
     this.setQuestion = this.setQuestion.bind(this)
     this.addQuestion = this.addQuestion.bind(this)
     this.updateActionStatus = this.updateActionStatus.bind(this)
@@ -129,9 +128,9 @@ class UserInputModal extends React.Component {
   addQuestion () {
     let questions = this.state.questions
     questions.push({
+        id: new Date().getTime(),
         question: '', 
         type: '', 
-        customFieldId: '', 
         incorrectTriesAllowed: 3, 
         skipButtonText: 'Skip', 
         retryMessage: ''
@@ -163,12 +162,6 @@ class UserInputModal extends React.Component {
         questions[index].retryMessage = "Please enter a correct website address e.g. kibopush.com"
       }
       this.setState({questions, edited: true})
-  }
-  
-  setCustomField (e, index) {
-    let questions = this.state.questions
-    questions[index].customFieldId = e.target.value
-    this.setState({questions, edited: true})
   }
 
   toggleUserOptions() {
@@ -318,7 +311,7 @@ class UserInputModal extends React.Component {
                     saveCustomFieldsAction={this.saveCustomFieldsAction}
                     removeAction={this.removeAction}
                     action={this.state.action}
-                    questions={this.state.questions.map(q => q.question)}
+                    questions={this.state.questions}
                     toggleGSModal={this.props.toggleGSModal}
                     closeGSModal={this.props.closeGSModal}
                     updateActionStatus={this.updateActionStatus} />
