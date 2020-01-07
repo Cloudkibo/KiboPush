@@ -231,7 +231,7 @@ class CreateContact extends React.Component {
         }
         console.log('this.props.columns', this.props.columns)
         return ( 
-          <div className="modal-content" style={{ width: '687px', top: '100', height: this.state.showColumns ? '700px' :'312px', overflow:'hidden' }}>
+          <div className="modal-content" style={{ width: '687px', top: '100', overflow:'hidden' }}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
