@@ -14,6 +14,7 @@ class CustomFieldActions extends React.Component {
   openModal () {
     console.log('in openModal', this.state.mapping)
     return (<AssignCustomFields 
+        customFields={this.props.customFields}
         questions={this.props.questions}
         mapping={this.props.mapping}
         index={this.props.index}

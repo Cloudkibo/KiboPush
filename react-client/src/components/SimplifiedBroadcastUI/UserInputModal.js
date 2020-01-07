@@ -2,6 +2,9 @@ import React from 'react'
 import { Popover, PopoverBody } from 'reactstrap'
 import UserInputActions from './UserInputActions'
 // import CustomFields from '../customFields/customfields'
+import { loadCustomFields } from '../../redux/actions/customFields.actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 class UserInputModal extends React.Component {
   constructor(props) {
@@ -38,6 +41,10 @@ class UserInputModal extends React.Component {
     this.savehubSpotForm = this.savehubSpotForm.bind(this)
     this.saveCustomFieldsAction = this.saveCustomFieldsAction.bind(this)
     this.removeAction = this.removeAction.bind(this)
+    this.getCustomFieldType = this.getCustomFieldType.bind(this)
+    this.validateCustomFieldType = this.validateCustomFieldType.bind(this)
+    this.validateCustomFieldTypes = this.validateCustomFieldTypes.bind(this)
+    this.props.loadCustomFields()
   }
 
   removeAction () {
@@ -146,8 +153,21 @@ class UserInputModal extends React.Component {
     questions[index].question = e.target.value
     this.setState({questions, edited: true}, () => {
         this.scrollToTopPreview(`question-preview${index+1}`)
+        this.updateQuestionAction(questions[index])
     })
-}
+  }
+
+  updateQuestionAction (question) {
+    if (this.state.action) {
+      let action = this.state.action
+      for (let i = 0; i < action.mapping.length; i++) {
+        if (action.mapping[i].id === question.id) {
+          action.mapping[i] = Object.assign(action.mapping[i], question)
+        }
+      }
+      this.setState({action})
+    }
+  }
 
   setReplyType (e, index) {
       let questions = this.state.questions
@@ -161,7 +181,43 @@ class UserInputModal extends React.Component {
       } else if (e.target.valye === 'url') {
         questions[index].retryMessage = "Please enter a correct website address e.g. kibopush.com"
       }
-      this.setState({questions, edited: true})
+      this.setState({questions, edited: true}, () => {
+        if (this.state.action) {
+          this.updateQuestionAction(questions[index])
+          this.validateCustomFieldTypes()
+        }
+      })
+  }
+
+  validateCustomFieldType (question, customFieldId) {
+    if (customFieldId) {
+      let customFieldType = this.getCustomFieldType(customFieldId)
+      return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
+    }
+  }
+
+  getCustomFieldType (customFieldId) {
+    console.log('getCustomFieldType', customFieldId)
+    if (customFieldId && this.props.customFields) {
+      return this.props.customFields.find(cf => cf._id === customFieldId).type
+    }
+  }
+
+  validateCustomFieldTypes () {
+    debugger;
+    let action = this.state.action
+    let mappingDataChanged = false
+    for (let i = 0; i < action.mapping.length; i++) {
+      if (action.mapping[i].customFieldId) {
+        if (!this.validateCustomFieldType(action.mapping[i], action.mapping[i].customFieldId)) {
+          mappingDataChanged = true
+          action.mapping[i].customFieldId = ''
+        }
+      }
+    }
+    if (mappingDataChanged) {
+      this.setState({action})
+    }
   }
 
   toggleUserOptions() {
@@ -306,6 +362,7 @@ class UserInputModal extends React.Component {
                 }
                   <UserInputActions
                     required
+                    customFields={this.props.customFields}
                     saveGoogleSheet={this.saveGoogleSheet}
                     savehubSpotForm={this.savehubSpotForm}
                     saveCustomFieldsAction={this.saveCustomFieldsAction}
@@ -368,4 +425,16 @@ class UserInputModal extends React.Component {
   }
 }
 
-export default UserInputModal
+function mapStateToProps (state) {
+  return {
+    customFields: (state.customFieldInfo.customFields)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    loadCustomFields: loadCustomFields
+  },
+    dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(UserInputModal)
