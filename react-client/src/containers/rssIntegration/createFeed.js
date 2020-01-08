@@ -15,11 +15,11 @@ class CreateFeed extends React.Component {
       isActive: true,
       feedTitle: '',
       storiesCount: '5',
-      isDefault: true,
+      isDefault: false,
       selectedPage: '',
       saveEnabled: false,
       inValidUrlMsg: '',
-      pageName: ''
+      defaultMessage: ''
     }
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.feedUrlChange = this.feedUrlChange.bind(this)
@@ -31,13 +31,30 @@ class CreateFeed extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.resetFields = this.resetFields.bind(this)
     this.pageChange = this.pageChange.bind(this)
+    this.pageHasDefaultFeed = this.pageHasDefaultFeed.bind(this)
   }
 
+  pageHasDefaultFeed (pageId) {
+    var defaultFeed = true
+    for (var i = 0; i < this.props.rssFeeds.length; i++) {
+      if (this.props.rssFeeds[i].pageIds[0] === pageId && this.props.rssFeeds[i].defaultFeed) {
+        defaultFeed = false
+        break
+      }
+    }
+    return defaultFeed
+  }
   pageChange (event) {
     if (event.target.value !== -1) {
+        if(!this.props.currentFeed) {
+          var defaultFeed = this.pageHasDefaultFeed(event.target.value)
+          this.setState({
+            isDefault: defaultFeed,
+            defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${event.target.selectedOptions[0].label}`: `You already have a default feed for the selected page: ${event.target.selectedOptions[0].label}. Click on the checkbox if you want to make this feed as default`,
+          })
+        }
         this.setState({
-          selectedPage: event.target.value,
-          pageName: event.target.selectedOptions[0].label
+          selectedPage: event.target.value
         })
       } else {
         this.setState({
@@ -55,7 +72,8 @@ class CreateFeed extends React.Component {
       isDefault: false,
       saveEnabled: false,
       inValidUrlMsg: '',
-      selectedPage: ''
+      selectedPage: '',
+      defaultMessage: ''
     })
 
     var pageSelected = ''
@@ -67,7 +85,6 @@ class CreateFeed extends React.Component {
     }
     this.setState({
       selectedPage: pageSelected._id,
-      pageName: pageSelected.pageName
     })
   }
   handleSave () {
@@ -154,9 +171,11 @@ class CreateFeed extends React.Component {
           break
         }
       }
+      var defaultFeed = this.pageHasDefaultFeed(pageSelected._id)
       this.setState({
-        selectedPage: pageSelected._id,
-        pageName: pageSelected.pageName
+        isDefault: defaultFeed,
+        defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${pageSelected.pageName}`: `You already have a default feed for the selected page: ${pageSelected.pageName}. Click on the checkbox if you want to make this feed as default`,
+        selectedPage: pageSelected._id
       })
     }
   }
@@ -180,8 +199,7 @@ class CreateFeed extends React.Component {
       }
     }
     this.setState({
-      selectedPage: selectedPage._id,
-      pageName: selectedPage.pageName
+      selectedPage: selectedPage._id
     })
   }
 
@@ -302,7 +320,7 @@ class CreateFeed extends React.Component {
                       <input name='defaultFeed' value={this.state.isDefault} type='checkbox' checked={this.state.isDefault} onChange={this.defaultFeedChange} />
                       <span>&nbsp;&nbsp;Set Default Feed</span>
                     </label>                  
-  <p style={{fontSize:'0.85rem', marginLeft: '10px'}}>Subscribers will recieve daily news updates from the default feed. There can be only one default feed for a single news page. Uncheck if you donot want to make this as your default feed for Page: <b>{this.state.pageName}</b></p>
+                    <p className='col-12' style={{fontSize:'0.85rem', marginLeft: '10px'}}>Subscribers will receive daily news updates from the default feed. There can be only one default feed for a single news page. {this.state.defaultMessage}</p>
                   </div>
                 </div>
               </div>
