@@ -109,7 +109,7 @@ class UserInputActions extends React.Component {
 
   handleClose () {
     this.setState({openPopover: false})
-    this.props.updateActionStatus({actionDisabled: false})
+    this.props.removeAction()
   }
 
   render () {
@@ -191,6 +191,7 @@ class UserInputActions extends React.Component {
                 <h7 className='card-header'>Custom Fields <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <CustomFieldActions
+                    customFields={this.props.customFields}
                     questions={this.props.questions.map(q => q.question)}
                     saveCustomFieldsAction={this.props.saveCustomFieldsAction}
                     removeCustomFieldsAction={this.props.removeAction}

@@ -1,10 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-
-import { loadCustomFields, deleteCustomField, updateCustomField } from '../../redux/actions/customFields.actions'
 import Mapping from './Mapping'
-
+import AlertContainer from 'react-alert'
 
 
 class AssignCustomFields extends React.Component {
@@ -14,28 +10,62 @@ class AssignCustomFields extends React.Component {
         mappingData: this.props.mapping ? this.props.mapping : ''
     }
 
-    props.loadCustomFields()
-
     this.save = this.save.bind(this)
     this.getMappingData = this.getMappingData.bind(this)
     this.updateMappingData = this.updateMappingData.bind(this)
+    this.getCustomFieldType = this.getCustomFieldType.bind(this)
   }
 
   getMappingData () {
-    if (this.props.questions) {
-      return this.state.mappingData.map(data => {
-        console.log('getMappingData', data)
-        return {'leftColumn': data.question, 'rightColumn': data.customFieldId}
-      })
+    // debugger;
+    // if (this.props.questions) {
+    //   let mappingDataGeneric = []
+    //   let mappingData = this.state.mappingData
+    //   let mappingDataChanged = false
+    //   for (let i = 0; i < mappingData.length; i++) {
+    //     if (this.validateCustomFieldType(mappingData[i], mappingData[i].customFieldId)) {
+    //       mappingDataGeneric.push({'leftColumn': mappingData[i].question, 'rightColumn': mappingData[i].customFieldId})
+    //     } else {
+    //       mappingDataChanged = true
+    //       mappingDataGeneric.push({'leftColumn': mappingData[i].question, 'rightColumn': ''})
+    //     }
+    //   }
+    //   if (mappingDataChanged) {
+    //     this.props.saveCustomFieldsAction({
+    //       mapping: mappingData
+    //     }, this.props.index)
+    //   }
+    //   return mappingDataGeneric
+    return this.state.mappingData.map((data) => {
+      return {'leftColumn': data.question, 'rightColumn': data.customFieldId}
+    })
+  }
+
+  validateCustomFieldType (question, customFieldId) {
+    if (customFieldId) {
+      let customFieldType = this.getCustomFieldType(customFieldId)
+      return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
+    }
+  }
+
+  getCustomFieldType (customFieldId) {
+    console.log('getCustomFieldType', customFieldId)
+    if (customFieldId && this.props.customFields) {
+      return this.props.customFields.find(cf => cf._id === customFieldId).type
     }
   }
 
   updateMappingData (e, index) {
+    //debugger;
     console.log('this.state.mappingData', this.state.mappingData)
     let data = this.state.mappingData
     if (e.target.value !== '') {
-      data[index].customFieldId = e.target.value
-      this.setState({mappingData: data})
+      if (this.validateCustomFieldType(data[index], e.target.value)) {
+        data[index].customFieldId = e.target.value
+        this.setState({mappingData: data})
+      } else {
+        this.msg.error("Type of custom field doesn't match reply type of question")
+      }
     }
     console.log('data in updateMappingData', data)
   }
@@ -50,9 +80,17 @@ class AssignCustomFields extends React.Component {
 
 
   render () {
+    let alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <div className="modal-content" style={{ width: '687px', top: '100' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
               Edit Custom Field Actions
@@ -105,18 +143,4 @@ class AssignCustomFields extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    customFields: (state.customFieldInfo.customFields)
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    loadCustomFields: loadCustomFields,
-    deleteCustomField: deleteCustomField,
-    updateCustomField: updateCustomField
-  },
-    dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AssignCustomFields)
+export default (AssignCustomFields)

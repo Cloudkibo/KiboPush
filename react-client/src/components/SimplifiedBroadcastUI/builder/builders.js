@@ -249,24 +249,22 @@ class Builders extends React.Component {
   }
 
   deconstructUserInput (messages) {
-    debugger;
+    //debugger;
     let userInputComponents = []
     let finalMessages = JSON.parse(JSON.stringify(messages))
     for (let x = 0; x < finalMessages.length; x++) {
       let message = finalMessages[x].messageContent
       for (let y = 0; y < message.length; y++) {
-        let component = JSON.parse(JSON.stringify(message[y]))
+        let component = message[y]
         if (component.componentType === 'userInput' && component.questions) {
           finalMessages[x].messageContent.splice(y, 1)
           let temp = {}
           for (let i = 0; i < component.questions.length; i++) {
-            temp = {...component, ...component.questions[i]}
+            temp = JSON.parse(JSON.stringify({...component, ...component.questions[i]}))
             delete temp.questions
             for (let j = 0; j < component.action.mapping.length; j++) {
               if (component.action.mapping[j].question === component.questions[i].question) {
                 let mapping = component.action.mapping[j]
-                temp.action = {}
-                temp.action.type = component.action.type
                 if (component.action.type === 'custom_fields') {
                   temp.action.customFieldId = mapping.customFieldId
                 } else if (component.action.type === 'google_sheets'){
@@ -276,6 +274,7 @@ class Builders extends React.Component {
                 }
               }
             } 
+            delete temp.action.mapping
             userInputComponents.push(temp)
             finalMessages[x].messageContent.push(temp)
           }
