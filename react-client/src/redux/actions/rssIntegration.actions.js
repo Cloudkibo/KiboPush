@@ -81,11 +81,18 @@ export function fetchFeedPosts (data) {
 export function createRssFeed (data, msg, handle) {
   console.log('function for creating rss feeds', data)
   return (dispatch) => {
+      var fetchData = {last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      search_value: '',
+      status_value: '',
+    }
     callApi(`rssFeeds/create`, 'post', data)
       .then(res => {
         console.log('response from creating rss feeds', res)
         if (res.status === 'success') {
           msg.success('Rss feed saved successfully')
+          dispatch(fetchRssFeed(fetchData))
           handle(res.payload)
         } else {
           msg.error(res.payload)

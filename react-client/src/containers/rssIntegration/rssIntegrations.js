@@ -23,7 +23,8 @@ class RssIntegrations extends React.Component {
       status: '',
       pageNumber: 0,
       feeds: [],
-      page_value: ''
+      page_value: '',
+      filter: false
     }
     props.fetchRssFeed({last_id: 'none',
       number_of_records: 10,
@@ -61,18 +62,20 @@ class RssIntegrations extends React.Component {
   onPageFilter (e) {
     this.setState({page_value: e.target.value, pageNumber: 0})
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({pageNumber: 0})
+      this.setState({pageNumber: 0, filter: true})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value})
     } else {
+      this.setState({filter: false})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: ''})
     }
   }
   onStatusFilter (e) {
     this.setState({status: e.target.value, pageNumber: 0})
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({pageNumber: 0})
+      this.setState({pageNumber: 0, filter: true})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value})
     } else {
+      this.setState({filter: false})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value})
     }
   }
@@ -82,8 +85,10 @@ class RssIntegrations extends React.Component {
       searchValue: event.target.value, pageNumber:0
     })
     if (event.target.value !== '') {
+      this.setState({filter: true})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value})
     } else {
+      this.setState({filter: false})
       this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value})
     }
   }
@@ -326,31 +331,34 @@ class RssIntegrations extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
-                <div className='col-md-4'>
-                  <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
+              { (this.state.feeds && this.state.feeds.length > 0) || this.state.filter
+              ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
+                  <div className='col-md-4'>
+                    <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
+                  </div>
+                  <div className='col-md-4'>
+                    <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
+                      <option value='' disabled>Filter by Status...</option>
+                      <option value=''>All</option>
+                      <option value='true'>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    </select>
+                  </div>
+                  <div className='col-md-4'>
+                    <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
+                      <option value='' disabled>Filter by Page...</option>
+                      <option value=''>All</option>
+                      {
+                        this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                          page.connected && page.gotPageSubscriptionPermission &&
+                          <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
                 </div>
-                <div className='col-md-4'>
-                  <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
-                    <option value='' disabled>Filter by Status...</option>
-                    <option value=''>All</option>
-                    <option value='true'>Enabled</option>
-                    <option value='false'>Disabled</option>
-                  </select>
-                </div>
-                <div className='col-md-4'>
-                  <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
-                    <option value='' disabled>Filter by Page...</option>
-                    <option value=''>All</option>
-                    {
-                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                        page.connected && page.gotPageSubscriptionPermission &&
-                        <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </div>
+              : <div />
+              }
               <div className='row' >
                 { this.state.feeds && this.state.feeds.length > 0 
                 ? <div className='col-12 m-widget5'>
@@ -380,7 +388,12 @@ class RssIntegrations extends React.Component {
                       activeClassName={'active'} />
                   </div>
                 </div>
-                : <div className='col-12'>You have no connected Rss Feeds</div>
+                : <div>
+                  { this.state.filter 
+                    ? <div className='col-12'>No records found</div>
+                    : <div className='col-12'>You have no connected Rss Feeds</div>
+                  }
+                  </div>
                 }
               </div>
             </div>
