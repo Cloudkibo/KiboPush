@@ -109,7 +109,7 @@ class UserInputActions extends React.Component {
 
   handleClose () {
     this.setState({openPopover: false})
-    this.props.updateActionStatus({actionDisabled: false})
+    this.props.removeAction()
   }
 
   render () {
