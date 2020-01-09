@@ -140,7 +140,9 @@ class ChatBox extends React.Component {
   }
 
   overrideUserInput () {
-    this.setState({waitingForUserInput: false})
+    this.setState({waitingForUserInput: false}, () => {
+      this.props.currentSession.waitingForUserInput.componentIndex = -1
+    })
   }
 
   isUserSessionValid(chats) {
@@ -645,7 +647,7 @@ class ChatBox extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps chatbox.js')
-    if (this.props.currentSession.waitingForUserInput) {
+    if (this.props.currentSession.waitingForUserInput && this.props.currentSession.waitingForUserInput.componentIndex !== -1) {
       this.setState({waitingForUserInput: true})
     }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
