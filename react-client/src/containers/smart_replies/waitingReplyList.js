@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadWaitingSubscribers, removeWaitingSubscribers } from '../../redux/actions/smart_replies.actions'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class WaitingReplyList extends React.Component {
   constructor (props, context) {
@@ -195,24 +196,16 @@ class WaitingReplyList extends React.Component {
                                   </select>
                                 </div>
                               </div>
-                              <div className='d-md-none m--margin-bottom-10' />
-                            </div>
-                            <div className='col-md-4'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Page:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  <select className='custom-select' id='m_form_type' style={{width: '200px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.onPageChange}>
-                                    <option key='' value='' disabled>Filter by Page...</option>
-                                    <option key='' value=''>ALL</option>
-                                    {
-                                      this.props.pages.map((page, i) => (
-                                        <option key={i} value={page.pageId}>{page.pageName}</option>
-                                      ))
-                                    }
-                                  </select>
-                                </div>
+                              <div className='m-form__control'>
+                                <select className='custom-select' id='m_form_type' style={{width: '200px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.onPageChange}>
+                                  <option key='' value='' disabled>Filter by Page...</option>
+                                  <option key='' value=''>ALL</option>
+                                  {
+                                    this.props.pages.map((page, i) => (
+                                      <option key={i} value={page.pageId}>{page.pageName}</option>
+                                    ))
+                                  }
+                                </select>
                               </div>
                             </div>
                           </div>
@@ -330,17 +323,11 @@ class WaitingReplyList extends React.Component {
                     No data to display
                   </div>
                 }
-                <div className='m-portlet__foot m-portlet__foot--fit'>
-                  <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                    <button
-                      onClick={this.backToIntents}
-                      className='btn btn-primary'>Back</button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </div>
+        <BACKBUTTON onBack={this.backToIntents} />
       </div>
     )
   }

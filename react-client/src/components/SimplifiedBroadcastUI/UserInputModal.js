@@ -176,9 +176,9 @@ class UserInputModal extends React.Component {
         questions[index].retryMessage = 'Please enter a number. Use digits only.'
       } else if (e.target.value === 'email') {
         questions[index].retryMessage = 'Please enter a valid email address. e.g. me@mail.com'
-      } else if (e.target.valye === 'phoneNumber') {
+      } else if (e.target.value === 'phoneNumber') {
         questions[index].retryMessage = "Please enter a correct phone number starting with '+'"
-      } else if (e.target.valye === 'url') {
+      } else if (e.target.value === 'url') {
         questions[index].retryMessage = "Please enter a correct website address e.g. kibopush.com"
       }
       this.setState({questions, edited: true}, () => {
@@ -237,6 +237,7 @@ class UserInputModal extends React.Component {
     this.props.addComponent({
       id: this.props.id >= 0 ? this.props.id : null,
       componentType: 'userInput',
+      componentName: 'User Input',
       questions: this.state.questions,
       action: this.state.action
     }, this.props.edit)

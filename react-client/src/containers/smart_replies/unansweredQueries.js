@@ -7,6 +7,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { loadUnansweredQuestions } from '../../redux/actions/smart_replies.actions'
 import { allLocales } from '../../redux/actions/subscribers.actions'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class UnansweredQueries extends React.Component {
   constructor (props, context) {
@@ -200,15 +201,9 @@ class UnansweredQueries extends React.Component {
                 </div>
               }
             </div>
-            <div className='m-portlet__foot m-portlet__foot--fit'>
-              <div className='m-form__actions m-form__actions' style={{ padding: '30px' }}>
-                <a href='#/'
-                  onClick={this.backToIntents}
-                  className='btn btn-primary'>Back</a>
-              </div>
-            </div>
           </div>
         </div>
+        <BACKBUTTON onBack={this.backToIntents} />
       </div>
     )
   }

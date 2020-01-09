@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 
+import {validateYoutubeURL} from '../../../utility/utils'
+
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../../redux/actions/templates.actions'
@@ -27,11 +29,10 @@ import AudioModal from '../AudioModal'
 import MediaModal from '../MediaModal'
 import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
-import YoutubeVideoModal from '../YoutubeVideoModal'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
 
-import CreateCustomField from '../../customFields/createCustomField'
+import CustomFields from '../../customFields/customfields'
 
 class Builders extends React.Component {
   constructor (props, context) {
@@ -44,6 +45,7 @@ class Builders extends React.Component {
     let quickReplies = {}
     quickReplies[currentId] = []
     this.state = {
+      customFields: [],
       lists,
       quickReplies,
       quickRepliesComponents: {},
@@ -102,6 +104,7 @@ class Builders extends React.Component {
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
     this.deconstructUserInput = this.deconstructUserInput.bind(this)
+    this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
 
     this.GSModalContent = null
 
@@ -113,6 +116,10 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('builders props in constructor', this.props)
+  }
+
+  onLoadCustomFields (customFields) {
+    this.setState({customFields})
   }
 
   toggleGSModal (value, content) {
@@ -276,7 +283,7 @@ class Builders extends React.Component {
             } 
             delete temp.action.mapping
             userInputComponents.push(temp)
-            finalMessages[x].messageContent.push(temp)
+            finalMessages[x].messageContent.splice(y+i, 0, temp)
           }
         }
       }
@@ -891,19 +898,9 @@ class Builders extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`youtube video component edited`)
-      } else if (componentDetails.componentType === 'userInput') {
-        this.msg.info(`user input component edited`)
-      }
+      this.msg.info(`${componentDetails.componentName} component edited`)
     } else {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`New youtube video component added`)
-      } else if (componentDetails.componentType === 'userInput') {
-        this.msg.info(`New User Input component added`)
-      } else {
-        this.msg.info(`New ${componentDetails.componentType} component added`)
-      }
+        this.msg.info(`New ${componentDetails.componentName} component added`)
     }
     this.updateList(component)
     component.handler()
@@ -1002,7 +999,16 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<LinkCarousel
+        elementLimit={1}
+        componentName={'YouTube video'}
+        header={'YouTube video'}
+        defaultErrorMsg={'Please enter a valid YouTube link'}
+        invalidMsg={'Invalid YouTube link'}
+        validMsg={'YouTube link is valid'}
+        retrievingMsg={'Retrieving YouTube video metadata'}
+        buttonTitle={'Watch on YouTube'}
+        validateUrl={(url) => validateYoutubeURL(url)}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -1108,6 +1114,15 @@ class Builders extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          elementLimit={broadcast.elementLimit}
+          componentName={broadcast.componentName}
+          header={broadcast.header}
+          defaultErrorMsg={broadcast.defaultErrorMsg}
+          invalidMsg={broadcast.invalidMsg}
+          validMsg={broadcast.validMsg}
+          retrievingMsg={broadcast.retrievingMsg}
+          buttonTitle={broadcast.buttonTitle}
+          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
@@ -1134,6 +1149,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            youtubeVideo: broadcast.youtubeVideo,
             links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
@@ -1321,6 +1337,9 @@ class Builders extends React.Component {
     return {
       content:
         <QuickReplies
+          toggleGSModal={this.toggleGSModal}
+          closeGSModal={this.closeGSModal}
+          customFields={this.state.customFields}
           sequences={this.props.sequences}
           broadcasts={this.props.broadcasts}
           tags={this.props.tags}
@@ -1344,6 +1363,9 @@ class Builders extends React.Component {
           quickRepliesComponents[id] = {
             content:
               <QuickReplies
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                customFields={this.state.customFields}
                 sequences={this.props.sequences}
                 broadcasts={this.props.broadcasts}
                 tags={this.props.tags}
@@ -1442,8 +1464,8 @@ class Builders extends React.Component {
           </div>
         </div>
       </div>
-      
-      <CreateCustomField />
+
+      <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
 
       <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>

@@ -132,8 +132,8 @@ class GoogleSheetActions extends React.Component {
     return (
       <div>
         { this.state.title !== ''
-        ? <div>
-          <div className={this.props.index ? 'google-sheet-close-icon-quick-reply' : 'google-sheet-close-icon'} onClick={this.removeGoogleAction}></div>
+        ? <div style={{position: 'relative'}}>
+          <div style={{bottom: '90%'}} className={this.props.index ? 'google-sheet-close-icon-quick-reply' : 'google-sheet-close-icon'} onClick={this.removeGoogleAction}></div>
           <div className='ui-block'
             style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer', backgroundColor: 'rgba(0,0,0,.07)'}}
             onClick={() => this.updateGoogleAction(this.state.googleSheetAction)} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`} >

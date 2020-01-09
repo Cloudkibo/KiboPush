@@ -22,6 +22,7 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
+import {localeCodeToEnglish} from '../../utility/utils'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -1905,7 +1906,7 @@ class Subscriber extends React.Component {
                                 }
                                 {
                                   this.state.subscriber.locale
-                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /> {this.state.subscriber.locale}</span>
+                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /> {localeCodeToEnglish(this.state.subscriber.locale)}</span>
                                     : <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /></span>
                                 }
                                 {

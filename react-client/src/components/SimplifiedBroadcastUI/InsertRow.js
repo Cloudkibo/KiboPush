@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchWorksheets, fetchColumns } from '../../redux/actions/googleSheets.actions'
+import { fetchWorksheets, fetchColumns, emptyFields } from '../../redux/actions/googleSheets.actions'
 import { RingLoader } from 'halogenium'
 import Mapping from './Mapping'
 import AlertContainer from 'react-alert'
@@ -43,7 +43,7 @@ class InsertRow extends React.Component {
   }
 
   componentDidMount () {
-    console.log('in componentDidMount of insert_row', this.props)
+    console.log('in componentDidMount of InsertRow', this.props)
     if (!this.props.mapping && !this.props.questions) {
       let mappingDataValues = [].concat(this.props.mapping)
       for (let i = 0; i < this.props.mapping.length; i++) {
@@ -107,7 +107,15 @@ class InsertRow extends React.Component {
   }
 
   onSpreadSheetChange (event) {
-    this.setState({spreadSheetValue: event.target.value, loadingWorkSheet: true})
+    this.setState({
+      spreadSheetValue: event.target.value, 
+      loadingWorkSheet: true, 
+      loadingColumns: false,
+      workSheetValue: '', 
+      mappingData: this.props.questions ? this.state.mappingData : '', 
+      mappingDataValues: ''
+    })
+    this.props.emptyFields()
     this.props.fetchWorksheets({spreadsheetId: event.target.value})
     if (event.target.value !== '' && this.state.workSheetValue !== '') {
       this.setState({buttonDisabled: false})
@@ -116,7 +124,13 @@ class InsertRow extends React.Component {
 
   onWorkSheetChange (event) {
     let worksheetName = this.props.worksheets.filter(worksheet => worksheet.sheetId.toString() === event.target.value)
-    this.setState({workSheetValue: event.target.value, workSheetName: worksheetName[0].title, loadingColumns: true})
+    this.setState({
+      workSheetValue: event.target.value, 
+      workSheetName: worksheetName[0].title, 
+      loadingColumns: true,
+      mappingData: this.props.questions ? this.state.mappingData : '',  
+      mappingDataValues: ''
+    })
     this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
     if (event.target.value !== '' && this.state.spreadSheetValue !== '') {
       this.setState({buttonDisabled: false})
@@ -366,7 +380,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchWorksheets,
-    fetchColumns
+    fetchColumns,
+    emptyFields
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(InsertRow)

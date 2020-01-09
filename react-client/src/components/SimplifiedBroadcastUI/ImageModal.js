@@ -27,6 +27,7 @@ class ImageModal extends React.Component {
     console.log('addComponent ImageModal')
     this.props.addComponent({
       id: this.props.id,
+      componentName: 'image',
       componentType: 'image',
       file: this.state.file,
       fileurl: this.state.file ? this.state.file.fileurl : '',

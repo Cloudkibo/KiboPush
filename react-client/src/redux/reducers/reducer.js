@@ -48,6 +48,7 @@ import {sponsoredMessagingInfo} from './sponsoredMessaging.reducer'
 import {googleSheetsInfo} from './googleSheets.reducer'
 import {botIntentsInfo} from './smat_replies_intnets.reducer'
 import {hubSpotInfo} from './hubSpot.reducer'
+import {feedsInfo} from './rssIntegration.reducer'
 
 
 const appReducer = combineReducers({
@@ -98,7 +99,8 @@ const appReducer = combineReducers({
   sponsoredMessagingInfo,
   botIntentsInfo,
   hubSpotInfo,
-  googleSheetsInfo
+  googleSheetsInfo,
+  feedsInfo
 })
 
 export default appReducer
