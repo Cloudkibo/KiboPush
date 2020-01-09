@@ -4,7 +4,11 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { isWebURL, isRssUrl } from './../../utility/utils'
-import { createRssFeed, updateFeed } from '../../redux/actions/rssIntegration.actions'
+import { createRssFeed, updateFeed, previewRssFeed } from '../../redux/actions/rssIntegration.actions'
+import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { registerAction } from '../../utility/socketio'
+import { RingLoader } from 'halogenium'
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateFeed extends React.Component {
   constructor (props, context) {
@@ -19,8 +23,13 @@ class CreateFeed extends React.Component {
       selectedPage: '',
       saveEnabled: false,
       inValidUrlMsg: '',
-      defaultMessage: ''
+      defaultMessage: '', 
+      fbPageId: '',
+      loading: false
     }
+    props.getFbAppId()
+    props.getuserdetails()
+    props.getAdminSubscriptions()
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.feedUrlChange = this.feedUrlChange.bind(this)
     this.feedTitleChange = this.feedTitleChange.bind(this)
@@ -32,6 +41,35 @@ class CreateFeed extends React.Component {
     this.resetFields = this.resetFields.bind(this)
     this.pageChange = this.pageChange.bind(this)
     this.pageHasDefaultFeed = this.pageHasDefaultFeed.bind(this)
+    this.previewRssFeed = this.previewRssFeed.bind(this)
+  }
+
+  previewRssFeed () {
+    let pageSelected = this.state.selectedPage
+    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+      if (check.length <= 0) {
+        if(this.props.fbAppId && this.props.fbAppId !== '') {
+          this.refs.messengerModal.click()
+        }
+        return
+      }
+    } else {
+      if(this.props.fbAppId && this.props.fbAppId !== '') {
+        this.refs.messengerModal.click()
+      }
+      return
+    }
+    var rssPayload = {
+      feedUrl: this.state.feedUrl,
+	    title: this.state.feedTitle,
+	    storiesCount: parseInt(this.state.storiesCount),
+	    pageIds: [this.state.selectedPage]
+    }
+    this.setState({
+      loading: true
+    })
+    this.props.previewRssFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
   }
 
   pageHasDefaultFeed (pageId) {
@@ -54,7 +92,8 @@ class CreateFeed extends React.Component {
           })
         }
         this.setState({
-          selectedPage: event.target.value
+          selectedPage: event.target.value,
+          fbPageId: this.props.pages.filter((page) => page._id === event.target.value)[0].pageId
         })
       } else {
         this.setState({
@@ -73,7 +112,8 @@ class CreateFeed extends React.Component {
       saveEnabled: false,
       inValidUrlMsg: '',
       selectedPage: '',
-      defaultMessage: ''
+      defaultMessage: '', 
+      loading: false
     })
 
     var pageSelected = ''
@@ -88,6 +128,9 @@ class CreateFeed extends React.Component {
     })
   }
   handleSave () {
+    this.setState({
+      loading: true
+    })
     var rssPayload = {
       feedUrl: this.state.feedUrl,
 	    title: this.state.feedTitle,
@@ -103,7 +146,7 @@ class CreateFeed extends React.Component {
         feedId: this.props.currentFeed._id,
         updatedObject: rssPayload
       }
-      this.props.updateFeed(data, this.msg, false)
+      this.props.updateFeed(data, this.msg, false, () => {this.setState({ loading: false})})
     }
   }
 
@@ -160,7 +203,6 @@ class CreateFeed extends React.Component {
   componentDidMount () {
     let title = ''
     document.title = `${title} | Rss Feeds`
-   
     if (this.props.currentFeed) {
       this.setCurrentFeed(this.props.currentFeed)
     } else {
@@ -174,10 +216,21 @@ class CreateFeed extends React.Component {
       var defaultFeed = this.pageHasDefaultFeed(pageSelected._id)
       this.setState({
         isDefault: defaultFeed,
+        fbPageId: pageSelected.pageId,
         defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${pageSelected.pageName}`: `You already have a default feed for the selected page: ${pageSelected.pageName}. Click on the checkbox if you want to make this feed as default`,
         selectedPage: pageSelected._id
       })
     }
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        compProp.getAdminSubscriptions()
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+        comp.refs.messengerModal.click()
+      }
+    })
   }
 
   setCurrentFeed (feed) {
@@ -199,6 +252,7 @@ class CreateFeed extends React.Component {
       }
     }
     this.setState({
+      fbPageId: selectedPage.pageId,
       selectedPage: selectedPage._id
     })
   }
@@ -216,6 +270,40 @@ class CreateFeed extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        { this.state.loading && 
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          </div>
+
+        }
+        <a href='#/' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Connect to Messenger:
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <MessengerPlugin
+                  appId={this.props.fbAppId}
+                  pageId={this.state.fbPageId}
+                  size='large'
+                  passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
@@ -333,6 +421,10 @@ class CreateFeed extends React.Component {
                   </button>
                 </Link>
                 <span>&nbsp;&nbsp;</span>
+                <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.previewRssFeed} >
+                  Preview in Messenger
+                </button>
+                <span>&nbsp;&nbsp;</span>
                 <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.handleSave} >
                   Save
                 </button>
@@ -348,10 +440,13 @@ class CreateFeed extends React.Component {
 function mapStateToProps (state) {
   console.log('state from rss feed', state)
   return {
+    adminPageSubscription: (state.basicInfo.adminPageSubscription),
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
-    currentFeed: (state.feedsInfo.currentFeed)
+    currentFeed: (state.feedsInfo.currentFeed),
+    user: (state.basicInfo.user),
+    fbAppId: (state.basicInfo.fbAppId),
   }
 }
 
@@ -359,7 +454,11 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       createRssFeed: createRssFeed,
-      updateFeed: updateFeed
+      previewRssFeed: previewRssFeed,
+      updateFeed: updateFeed,
+      getuserdetails: getuserdetails,
+      getFbAppId: getFbAppId,
+      getAdminSubscriptions: getAdminSubscriptions
     },
     dispatch)
 }

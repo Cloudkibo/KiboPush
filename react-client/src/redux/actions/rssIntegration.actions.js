@@ -100,7 +100,22 @@ export function createRssFeed (data, msg, handle) {
       })
   }
 }
-export function updateFeed (data, msg, fetchFeeds) {
+export function previewRssFeed (data, msg, toggleLoader) {
+  console.log('function for previewing rss feeds', data)
+  return (dispatch) => {
+    callApi(`rssFeeds/preview`, 'post', data)
+      .then(res => {
+        toggleLoader()
+        console.log('response from previewing rss feeds', res)
+        if (res.status === 'success') {
+          msg.success('Preview message sent successfully to your messenger')
+        } else {
+          msg.error(JSON.stringify(res.payload))
+        }
+      })
+  }
+}
+export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
   console.log('function for updating rss feeds', data)
   var fetchData = {last_id: 'none',
     number_of_records: 10,
@@ -111,6 +126,7 @@ export function updateFeed (data, msg, fetchFeeds) {
   return (dispatch) => {
     callApi(`rssFeeds/edit`, 'post', data)
       .then(res => {
+        toggleLoader()
         console.log('response from editing rss feeds', res)
         if (res.status === 'success') {
           if (fetchFeeds) {
