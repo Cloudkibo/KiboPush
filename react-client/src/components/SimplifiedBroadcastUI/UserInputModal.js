@@ -80,7 +80,7 @@ class UserInputModal extends React.Component {
 
   retryMessageChange (e, index) {
     let questions = this.state.questions
-    questions[index].skipButtonText = e.target.value
+    questions[index].retryMessage = e.target.value
     this.setState({questions, edited: true})
   }
 
@@ -345,7 +345,7 @@ class UserInputModal extends React.Component {
                             <h6>"Skip" button text:</h6>      
                             <div className='row'>
                                 <div className='col-6'>
-                                    <input style={{borderColor: question.skipButtonText === '' ? 'red' : ''}} type='text' className='form-control m-input' value={question.skipButtonText} onChange={(e) => this.skipButtonTextChange(e, index)} />
+                                    <input maxLength='21' style={{borderColor: question.skipButtonText === '' ? 'red' : ''}} type='text' className='form-control m-input' value={question.skipButtonText} onChange={(e) => this.skipButtonTextChange(e, index)} />
                                     <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.skipButtonText ? '*Required' : ''}</div>
                                 </div>
                             </div>
