@@ -172,7 +172,9 @@ class UserInputModal extends React.Component {
   setReplyType (e, index) {
       let questions = this.state.questions
       questions[index].type = e.target.value
-      if (e.target.value === 'number') {
+      if (e.target.value === 'text') {
+        questions[index].retryMessage = 'Please enter some valid text'
+      } else if (e.target.value === 'number') {
         questions[index].retryMessage = 'Please enter a number. Use digits only.'
       } else if (e.target.value === 'email') {
         questions[index].retryMessage = 'Please enter a valid email address. e.g. me@mail.com'
@@ -331,7 +333,7 @@ class UserInputModal extends React.Component {
                                     </div>
                                 </div>
                         {
-                        question.type && question.type !== 'text' &&
+                        question.type &&
                         <div>
                             <h6>Number of incorrect tries allowed:</h6>              
                             <div className='row'>
