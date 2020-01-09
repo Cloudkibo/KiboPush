@@ -86,7 +86,8 @@ class ChatBox extends React.Component {
       recording: false,
       scrolling: true,
       pendingResponseValue: '',
-      sessionValid: false
+      sessionValid: false,
+      isWaitingForUserInput: false
     }
     props.fetchUserChats(this.props.currentSession._id, { page: 'first', number: 25 })
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -135,6 +136,11 @@ class ChatBox extends React.Component {
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.isUserSessionValid = this.isUserSessionValid.bind(this)
+    this.overrideUserInput = this.overrideUserInput.bind(this)
+  }
+
+  overrideUserInput () {
+    this.setState({waitingForUserInput: false})
   }
 
   isUserSessionValid(chats) {
@@ -639,6 +645,9 @@ class ChatBox extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps chatbox.js')
+    if (this.props.currentSession.waitingForUserInput) {
+      this.setState({waitingForUserInput: true})
+    }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
     }
@@ -1768,7 +1777,7 @@ class ChatBox extends React.Component {
                     </div>
                   </div>
                   <div className='m-messenger__seperator' />
-                  {this.state.sessionValid
+                  {(this.state.sessionValid && !this.state.waitingForUserInput)
                 ? <div>
                 <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
                     <PopoverBody>
@@ -2023,8 +2032,21 @@ class ChatBox extends React.Component {
                      </div>
                   }
                 </div>
-                : <span><p>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</p>
+                : (!this.state.sessionValid) ? 
+                <span>
+                  <p>
+                    Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.
+                  </p>
                 </span>
+                :
+                <div>
+                  <span>
+                    <p style={{marginRight: '10px'}}>A user input component was last sent to this subscriber. A response is currently pending. Do you want to override the user input component?</p>
+                  </span>
+                  <button style={{marginLeft: '33%'}} onClick={() => this.overrideUserInput()} className='btn btn-primary'>
+                    Confirm
+                  </button>
+                </div>
               }
                 </div>
               </div>
