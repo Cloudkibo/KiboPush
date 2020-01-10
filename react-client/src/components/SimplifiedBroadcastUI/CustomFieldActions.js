@@ -11,10 +11,19 @@ class CustomFieldActions extends React.Component {
     this.openModal = this.openModal.bind(this)
   }
 
-  openModal () {
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps CustomFieldActions this.props', this.props)
+    console.log('componentWillReceiveProps CustomFieldActions nextProps', nextProps)
+    if (this.props.customFields && nextProps.customFields && 
+      this.props.customFields.length !== nextProps.customFields.length) {
+      this.props.toggleGSModal(true, this.openModal(nextProps.customFields))
+    }
+  }
+
+  openModal (customFields) {
     console.log('in openModal', this.state.mapping)
     return (<AssignCustomFields 
-        customFields={this.props.customFields}
+        customFields={customFields ? customFields : this.props.customFields}
         questions={this.props.questions}
         mapping={this.props.mapping}
         index={this.props.index}
