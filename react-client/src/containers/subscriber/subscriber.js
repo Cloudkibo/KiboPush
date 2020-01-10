@@ -169,7 +169,7 @@ class Subscriber extends React.Component {
     }
   }
   handleBulkResponse(res) {
-    if (res.status === 'Success') {
+    if (res.status === 'success') {
       this.msg.success('Value set successfully')
       let selectedSubscribers = this.selectedSubscribers()
       let temp = this.state.subscribersData
