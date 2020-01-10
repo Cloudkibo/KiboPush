@@ -33,7 +33,6 @@ class UserInputModal extends React.Component {
     this.updateActionStatus = this.updateActionStatus.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
     this.checkDisabled = this.checkDisabled.bind(this)
-    this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.incorrectTriesAllowedChange = this.incorrectTriesAllowedChange.bind(this)
     this.skipButtonTextChange = this.skipButtonTextChange.bind(this)
     this.retryMessageChange = this.retryMessageChange.bind(this)
@@ -44,7 +43,6 @@ class UserInputModal extends React.Component {
     this.getCustomFieldType = this.getCustomFieldType.bind(this)
     this.validateCustomFieldType = this.validateCustomFieldType.bind(this)
     this.validateCustomFieldTypes = this.validateCustomFieldTypes.bind(this)
-    this.props.loadCustomFields()
   }
 
   removeAction () {
@@ -94,10 +92,6 @@ class UserInputModal extends React.Component {
       let questions = this.state.questions
       questions[index].incorrectTriesAllowed = e.target.value
       this.setState({questions, edited: true})
-  }
-
-  onLoadCustomFields (customFields) {
-    this.setState({customFields})
   }
 
   checkDisabled () {
@@ -428,16 +422,4 @@ class UserInputModal extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    customFields: (state.customFieldInfo.customFields)
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    loadCustomFields: loadCustomFields
-  },
-    dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(UserInputModal)
+export default (UserInputModal)

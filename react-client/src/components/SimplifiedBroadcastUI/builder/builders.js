@@ -1039,6 +1039,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
         'userInput': (<UserInputModal
           buttons={[]}
+          customFields={this.state.customFields}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
           {...this.state.editData}

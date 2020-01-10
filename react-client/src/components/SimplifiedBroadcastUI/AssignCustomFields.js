@@ -109,7 +109,7 @@ class AssignCustomFields extends React.Component {
             <button style={{ marginBottom: '30px', borderRadius: '5px' }} type='button' className='btn btn-primary btn-sm'
                 data-toggle='modal' data-target='#create_modal'>
                   Create Custom Field
-              </button>
+            </button>
             {(this.props.customFields && this.props.customFields.length > 0 &&
               <Mapping 
                 leftColumns = {
