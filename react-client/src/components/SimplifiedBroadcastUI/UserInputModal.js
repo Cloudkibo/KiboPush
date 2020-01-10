@@ -1,10 +1,6 @@
 import React from 'react'
 import { Popover, PopoverBody } from 'reactstrap'
 import UserInputActions from './UserInputActions'
-// import CustomFields from '../customFields/customfields'
-import { loadCustomFields } from '../../redux/actions/customFields.actions'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
 class UserInputModal extends React.Component {
   constructor(props) {
