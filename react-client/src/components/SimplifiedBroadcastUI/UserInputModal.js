@@ -39,6 +39,17 @@ class UserInputModal extends React.Component {
     this.getCustomFieldType = this.getCustomFieldType.bind(this)
     this.validateCustomFieldType = this.validateCustomFieldType.bind(this)
     this.validateCustomFieldTypes = this.validateCustomFieldTypes.bind(this)
+    this.removeQuestion = this.removeQuestion.bind(this)
+    this.removeQuestionAction = this.removeQuestionAction.bind(this)
+  }
+
+  removeQuestion (index) {
+    let questions = this.state.questions
+    let question = this.state.questions[index]
+    questions.splice(index, 1)
+    this.setState({questions, edited: true}, () => {
+      this.removeQuestionAction(question)
+    })
   }
 
   removeAction () {
@@ -145,6 +156,18 @@ class UserInputModal extends React.Component {
         this.scrollToTopPreview(`question-preview${index+1}`)
         this.updateQuestionAction(questions[index])
     })
+  }
+
+  removeQuestionAction (question) {
+    if (this.state.action) {
+      let action = this.state.action
+      for (let i = 0; i < action.mapping.length; i++) {
+        if (action.mapping[i].id === question.id) {
+          action.mapping.splice(i, 1)
+        }
+      }
+      this.setState({action})
+    }
   }
 
   updateQuestionAction (question) {
@@ -273,6 +296,12 @@ class UserInputModal extends React.Component {
                     this.state.questions.map((question, index) => {
                         return (
                         <div>
+                          {
+                            this.state.questions.length > 1 &&
+                            <div title={`Remove Question #${index+1}`} onClick={() => this.removeQuestion(index)} style={{cursor: 'pointer', marginLeft: '95%'}}>
+                              <span role='img' aria-label='times'>❌</span>
+                            </div>
+                          }
                             <h5 id={`question-heading${index+1}`}>{`Question #${index+1} for User:`}</h5>
                             <textarea placeholder={'Please type here...'} value={question.question} style={{ maxWidth: '100%', minHeight: '100px', borderColor: question.question === '' ? 'red' : '' }} onChange={(event) => this.setQuestion(event, index)} className='form-control' />
                             {(!this.props.hideUserOptions) &&
