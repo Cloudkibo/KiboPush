@@ -93,7 +93,7 @@ class CreateFeed extends React.Component {
         }
         this.setState({
           selectedPage: event.target.value,
-          fbPageId: this.props.pages.filter((page) => page._id === event.target.value)[0].pageId
+          fbPageId: this.props.newsPages.filter((page) => page._id === event.target.value)[0].pageId
         })
       } else {
         this.setState({
@@ -117,11 +117,9 @@ class CreateFeed extends React.Component {
     })
 
     var pageSelected = ''
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].gotPageSubscriptionPermission) {
-        pageSelected = this.props.pages[i]
+    for (let i = 0; i < this.props.newsPages.length; i++) {
+        pageSelected = this.props.newsPages[i]
         break
-      }
     }
     this.setState({
       selectedPage: pageSelected._id,
@@ -207,11 +205,9 @@ class CreateFeed extends React.Component {
       this.setCurrentFeed(this.props.currentFeed)
     } else {
       var pageSelected = ''
-      for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].gotPageSubscriptionPermission) {
-          pageSelected = this.props.pages[i]
-          break
-        }
+      for (let i = 0; i < this.props.newsPages.length; i++) {
+        pageSelected = this.props.newsPages[i]
+        break
       }
       var defaultFeed = this.pageHasDefaultFeed(pageSelected._id)
       this.setState({
@@ -245,9 +241,9 @@ class CreateFeed extends React.Component {
       inValidUrlMsg: ''
     })
     var selectedPage = ''
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (feed.pageIds[0] === this.props.pages[i]._id) {
-        selectedPage = this.props.pages[i]
+    for (let i = 0; i < this.props.newsPages.length; i++) {
+      if (feed.pageIds[0] === this.props.newsPages[i]._id) {
+        selectedPage = this.props.newsPages[i]
         break
       }
     }
@@ -376,8 +372,7 @@ class CreateFeed extends React.Component {
                     <div className='col-lg-6'>
                       <select className='form-control m-input' value={this.state.selectedPage} onChange={this.pageChange}>
                       {
-                        this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                          page.connected && page.gotPageSubscriptionPermission &&
+                        this.props.newsPages && this.props.newsPages.length > 0 && this.props.newsPages.map((page, i) => (
                           <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage}>{page.pageName}</option>
                         ))
                       }
@@ -447,6 +442,7 @@ function mapStateToProps (state) {
     currentFeed: (state.feedsInfo.currentFeed),
     user: (state.basicInfo.user),
     fbAppId: (state.basicInfo.fbAppId),
+    newsPages: (state.feedsInfo.newsPages)
   }
 }
 
