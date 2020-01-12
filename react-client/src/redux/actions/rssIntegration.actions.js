@@ -10,7 +10,12 @@ export function showRssFeeds (data) {
     count: data.count
   }
 }
-
+export function saveNewsPages (data) {
+  return {
+    type: ActionTypes.SAVE_NEWS_PAGES,
+    newsPages: data,
+  }
+}
 export function showRssFeedPosts (data) {
   return {
     type: ActionTypes.SHOW_RSS_FEED_POSTS,
@@ -47,7 +52,19 @@ export function deleteRssFeed (id, msg, resetFilters) {
 
   }
 }
-
+export function checkSubscriptionPermissions (handle) {
+  return (dispatch) => {
+    callApi(`rssFeeds/checkSMP`, 'get')
+      .then(res => {
+        if (res.status === 'success') {
+          handle(res.payload)
+        } else {
+          var permissions = []
+          handle(permissions)
+        }
+      })
+  }
+}
 export function fetchRssFeed (data) {
   console.log('function for fetching rss feeds', data)
   return (dispatch) => {
