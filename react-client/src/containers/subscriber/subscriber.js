@@ -1232,6 +1232,7 @@ class Subscriber extends React.Component {
 
   render() {
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
+    console.log('subscriber props', this.props)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
@@ -1479,7 +1480,8 @@ class Subscriber extends React.Component {
                                       <option key='' value='' disabled>Filter by Locale...</option>
                                       <option key='ALL' value='all'>ALL</option>
                                       {
-                                        this.props.locales && this.props.locales.map((locale, i) => (
+                                        this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
+                                        this.props.locales.map((locale, i) => (
                                           <option key={i} value={locale.value}>{locale.text}</option>
                                         ))
                                       }
