@@ -17,7 +17,8 @@ import {
   markRead,
   changeStatus,
   sendNotifications,
-  fetchTeamAgents
+  fetchTeamAgents,
+  emptySocketData
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -643,6 +644,10 @@ class ChatBox extends React.Component {
   scrollToTop() {
     console.log('scrollToTop')
     this.top.scrollIntoView({ behavior: 'instant' })
+  }
+
+  UNSAFE_componentWillUnmount() {
+    this.props.emptySocketData()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -2088,6 +2093,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    emptySocketData: emptySocketData,
     fetchOpenSessions: fetchOpenSessions,
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),

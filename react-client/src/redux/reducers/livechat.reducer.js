@@ -12,6 +12,10 @@ const initialState = {
 
 export function liveChat (state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.EMPTY_SOCKET_DATA:
+      return Object.assign({}, state, {
+        socketData: {}
+      })
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {
         openSessions: state.openSessions.concat(action.openSessions),
@@ -182,8 +186,7 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.RESET_SOCKET:
       return Object.assign({}, state, {
         socketSession: '',
-        changedStatus: '',
-        socketData: ''
+        changedStatus: ''
       })
 
     case ActionTypes.SET_ACTIVE_SESSION:
