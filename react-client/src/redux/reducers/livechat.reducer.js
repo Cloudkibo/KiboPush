@@ -182,7 +182,8 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.RESET_SOCKET:
       return Object.assign({}, state, {
         socketSession: '',
-        changedStatus: ''
+        changedStatus: '',
+        socketData: ''
       })
 
     case ActionTypes.SET_ACTIVE_SESSION:
