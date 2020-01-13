@@ -652,6 +652,7 @@ class ChatBox extends React.Component {
       this.setState({waitingForUserInput: true})
     }
     if (nextProps.socketData && nextProps.socketData.subscriber_id === nextProps.currentSession._id) {
+      console.log('socketData matches currentSession', nextProps.socketData)
       if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex === -1) {
         this.setState({waitingForUserInput: false})
       } else if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex !== -1) {
