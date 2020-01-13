@@ -706,6 +706,7 @@ class ChatBox extends React.Component {
     if (this.state.scrolling) {
       this.updateScrollTop()
     }
+    this.props.emptySocketData()
   }
 
   createGallery(cards) {
