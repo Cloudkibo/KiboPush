@@ -245,6 +245,9 @@ class ChatBox extends React.Component {
     })
 
     scrollSpy.update()
+    if (this.props.socketData) {
+      this.props.emptySocketData()
+    }
   }
 
   updateScrollTop() {
@@ -706,7 +709,6 @@ class ChatBox extends React.Component {
     if (this.state.scrolling) {
       this.updateScrollTop()
     }
-    this.props.emptySocketData()
   }
 
   createGallery(cards) {
