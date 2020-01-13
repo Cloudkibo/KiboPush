@@ -646,7 +646,8 @@ class ChatBox extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps chatbox.js')
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js this.props', this.props)
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js nextProps', nextProps)
     if (this.props.currentSession.waitingForUserInput && this.props.currentSession.waitingForUserInput.componentIndex !== -1) {
       this.setState({waitingForUserInput: true})
     }
