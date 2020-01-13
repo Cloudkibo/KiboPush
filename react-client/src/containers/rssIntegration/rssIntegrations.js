@@ -66,7 +66,7 @@ class RssIntegrations extends React.Component {
     return value
   }
   getNewsPages (permissions) {
-    //permissions = [{pageId: '5d6cd600b64b574649733f75', smpStatus: 'approved'}, {pageId: '5d6cd600b64b574649733f77', smpStatus: 'approved'}]
+    // permissions = [{pageId: '5d6cd600b64b574649733f75', smpStatus: 'approved'}, {pageId: '5d6cd600b64b574649733f77', smpStatus: 'approved'}]
     var newsPages = []
     for (var i = 0 ; i < this.props.pages.length; i++) {
       if (this.props.pages[i].connected) {

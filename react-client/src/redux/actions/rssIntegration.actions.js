@@ -95,7 +95,7 @@ export function fetchFeedPosts (data) {
   }
 }
 
-export function createRssFeed (data, msg, handle) {
+export function createRssFeed (data, msg, handle, toggleLoader) {
   console.log('function for creating rss feeds', data)
   return (dispatch) => {
       var fetchData = {last_id: 'none',
@@ -112,6 +112,7 @@ export function createRssFeed (data, msg, handle) {
           dispatch(fetchRssFeed(fetchData))
           handle(res.payload)
         } else {
+          toggleLoader()
           msg.error(res.payload)
         }
       })
