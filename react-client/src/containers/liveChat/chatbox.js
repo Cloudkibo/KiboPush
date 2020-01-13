@@ -262,9 +262,10 @@ class ChatBox extends React.Component {
     }
   }
 
-  componetWillUnmount() {
+  UNSAFE_componetWillUnmount() {
     Events.scrollEvent.remove('begin')
     Events.scrollEvent.remove('end')
+    this.props.emptySocketData()
   }
 
   removeAttachment() {
@@ -644,10 +645,6 @@ class ChatBox extends React.Component {
   scrollToTop() {
     console.log('scrollToTop')
     this.top.scrollIntoView({ behavior: 'instant' })
-  }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.emptySocketData()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
