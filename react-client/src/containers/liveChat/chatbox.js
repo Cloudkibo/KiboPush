@@ -262,7 +262,7 @@ class ChatBox extends React.Component {
     }
   }
 
-  UNSAFE_componetWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     console.log('chatbox unmount')
     Events.scrollEvent.remove('begin')
     Events.scrollEvent.remove('end')
