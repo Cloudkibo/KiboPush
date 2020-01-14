@@ -95,7 +95,7 @@ export function fetchFeedPosts (data) {
   }
 }
 
-export function createRssFeed (data, msg, handle) {
+export function createRssFeed (data, msg, handle, toggleLoader) {
   console.log('function for creating rss feeds', data)
   return (dispatch) => {
       var fetchData = {last_id: 'none',
@@ -112,6 +112,9 @@ export function createRssFeed (data, msg, handle) {
           dispatch(fetchRssFeed(fetchData))
           handle(res.payload)
         } else {
+          if (toggleLoader) {
+            toggleLoader()
+          }
           msg.error(res.payload)
         }
       })
@@ -122,7 +125,9 @@ export function previewRssFeed (data, msg, toggleLoader) {
   return (dispatch) => {
     callApi(`rssFeeds/preview`, 'post', data)
       .then(res => {
-        toggleLoader()
+        if (toggleLoader) {
+          toggleLoader()
+        }
         console.log('response from previewing rss feeds', res)
         if (res.status === 'success') {
           msg.success('Preview message sent successfully to your messenger')
@@ -143,7 +148,9 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
   return (dispatch) => {
     callApi(`rssFeeds/edit`, 'post', data)
       .then(res => {
-        toggleLoader()
+        if (toggleLoader) {
+          toggleLoader()
+        }
         console.log('response from editing rss feeds', res)
         if (res.status === 'success') {
           if (fetchFeeds) {

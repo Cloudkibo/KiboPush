@@ -52,7 +52,8 @@ class Sidebar extends Component {
       businessGateway: false,
       checkbox: true,
       abandonedCarts: false,
-      rssIntegration: true
+      rssIntegration: true,
+      overlayWidgets: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -321,6 +322,7 @@ class Sidebar extends Component {
               {this.showMessageUs()}
               {this.showChatWidget()}
               {this.showCheckbox()}
+              {this.showOverlayWidgets()}
             </ul>
           </div>
         </li>
@@ -634,6 +636,27 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Landing Pages
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showOverlayWidgets () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.overlayWidgets) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/overlayWidgets' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Overlay Widgets
               </span>
             </Link>
           </li>
