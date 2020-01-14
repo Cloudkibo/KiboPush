@@ -273,6 +273,7 @@ class Header extends React.Component {
     }
 
     console.log('this.props.user.facebookInfo in header', this.props.user)
+    console.log('this.props.socketData', this.props.socketData)
 
     return (
       <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
@@ -283,18 +284,20 @@ class Header extends React.Component {
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
 
-        <Notification
+        {this.props.socketData && Object.keys(this.props.socketData).length > 0 &&
+          <Notification
           ignore={this.state.ignore}
           title={'New Message'}
           onShow={this.handleNotificationOnShow}
           onClick={this.onNotificationClick}
           options={{
-            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
+            body: `You got a new message from ${this.props.socketData.name}: ${this.props.socketData.text ? this.props.socketData.text : this.props.socketData.message.payload.attachments[0].type}`,
             lang: 'en',
             dir: 'ltr',
             icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
           }}
         />
+    }
 
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>

@@ -143,6 +143,7 @@ class CreateSubList extends React.Component {
       this.setState({ errorMessages: [], isSaveEnabled: false })
       let parentListId = ''
       if (this.state.listSelected !== '') {
+        console.log('in parent list')
         parentListId = this.state.listSelected._id
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
@@ -163,7 +164,7 @@ class CreateSubList extends React.Component {
   handleGetParentList(response) {
     if (response.payload) {
       this.setState({ parentListData: response.payload })
-      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.props.customFields, this.props.customFieldSubscribers, this.state.joiningCondition)
+      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.customFields, this.props.customFieldSubscribers)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
