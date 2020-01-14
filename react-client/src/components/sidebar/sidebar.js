@@ -182,6 +182,23 @@ class Sidebar extends Component {
     }
   }
 
+  showCustomFields() {
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to={'/subscribers'} className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
+              <span className='m-menu__link-text'>Custom Fields</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showSponsoredMessaging () {
     if (this.props.user) {
       // include user persmissions
@@ -1066,6 +1083,7 @@ class Sidebar extends Component {
                   {this.showOperationalDashboard()}
                   {this.showDashboard()}
                   {this.showSubscribersItem()}
+                  {this.showCustomFields()}
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
