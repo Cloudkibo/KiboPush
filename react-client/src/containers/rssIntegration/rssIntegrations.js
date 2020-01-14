@@ -95,7 +95,7 @@ class RssIntegrations extends React.Component {
       }
     }
     return pageStatus
-  } 
+  }
   resetFilters () {
     this.setState({
       searchValue: '',
@@ -468,12 +468,12 @@ class RssIntegrations extends React.Component {
                 : <div />
                 }
                 <div className='row' >
-                  { this.state.feeds && this.state.feeds.length > 0 
+                  { this.state.feeds && this.state.feeds.length > 0
                   ? <div className='col-12 m-widget5'>
                     { this.state.feeds.map((feed, i) => (
                       <RssFeed feed={feed}
-                        page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]} 
-                        openSettings={this.gotoSettings} 
+                        page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]}
+                        openSettings={this.gotoSettings}
                         gotoMessages={this.gotoMessages}
                         setDeleteId={this.setDeleteId}
                         setStatus={this.setStatus}
@@ -497,7 +497,7 @@ class RssIntegrations extends React.Component {
                     </div>
                   </div>
                   : <div>
-                    { this.state.filter 
+                    { this.state.filter
                       ? <div className='col-12'>No records found</div>
                       : <div className='col-12'>You have no connected Rss Feeds</div>
                     }

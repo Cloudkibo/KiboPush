@@ -49,7 +49,7 @@ import {googleSheetsInfo} from './googleSheets.reducer'
 import {botIntentsInfo} from './smat_replies_intnets.reducer'
 import {hubSpotInfo} from './hubSpot.reducer'
 import {feedsInfo} from './rssIntegration.reducer'
-
+import {overlayWidgetsInfo} from './overlayWidgets.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -100,7 +100,8 @@ const appReducer = combineReducers({
   botIntentsInfo,
   hubSpotInfo,
   googleSheetsInfo,
-  feedsInfo
+  feedsInfo,
+  overlayWidgetsInfo
 })
 
 export default appReducer

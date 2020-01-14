@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 
 export function subscribersInfo (state = {}, action) {
+  console.log('subscribers reducer', action)
   switch (action.type) {
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {

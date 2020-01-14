@@ -17,7 +17,8 @@ import {
   markRead,
   changeStatus,
   sendNotifications,
-  fetchTeamAgents
+  fetchTeamAgents,
+  emptySocketData
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -244,6 +245,9 @@ class ChatBox extends React.Component {
     })
 
     scrollSpy.update()
+    if (this.props.socketData) {
+      this.props.emptySocketData()
+    }
   }
 
   updateScrollTop() {
@@ -261,9 +265,11 @@ class ChatBox extends React.Component {
     }
   }
 
-  componetWillUnmount() {
+  UNSAFE_componentWillUnmount() {
+    console.log('chatbox unmount')
     Events.scrollEvent.remove('begin')
     Events.scrollEvent.remove('end')
+    this.props.emptySocketData()
   }
 
   removeAttachment() {
@@ -650,6 +656,14 @@ class ChatBox extends React.Component {
     console.log('UNSAFE_componentWillReceiveProps chatbox.js nextProps', nextProps)
     if (this.props.currentSession.waitingForUserInput && this.props.currentSession.waitingForUserInput.componentIndex !== -1) {
       this.setState({waitingForUserInput: true})
+    }
+    if (nextProps.socketData && nextProps.socketData.subscriber_id === nextProps.currentSession._id) {
+      console.log('socketData matches currentSession', nextProps.socketData)
+      if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex === -1) {
+        this.setState({waitingForUserInput: false})
+      } else if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex !== -1) {
+        this.setState({waitingForUserInput: true})
+      }
     }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
@@ -2080,6 +2094,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    emptySocketData: emptySocketData,
     fetchOpenSessions: fetchOpenSessions,
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),

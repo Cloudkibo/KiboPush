@@ -54,8 +54,8 @@ class Autoposting extends React.Component {
         let smpStatusArray = []
         this.props.SMPStatus.forEach((item, i) => {
           let page = this.props.pages.filter((p) => item.pageId.includes(p._id))
-          item.pageName = item.pageName
-          item.pagePic = item.pagePic;
+          item.pageName = page.pageName
+          item.pagePic = page.pagePic;
           smpStatusArray.push(item)
         });
         console.log('smpStatusArray', smpStatusArray)
