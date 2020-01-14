@@ -4,7 +4,11 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { isWebURL, isRssUrl } from './../../utility/utils'
-import { createRssFeed, updateFeed } from '../../redux/actions/rssIntegration.actions'
+import { createRssFeed, updateFeed, previewRssFeed } from '../../redux/actions/rssIntegration.actions'
+import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { registerAction } from '../../utility/socketio'
+import { RingLoader } from 'halogenium'
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateFeed extends React.Component {
   constructor (props, context) {
@@ -15,22 +19,89 @@ class CreateFeed extends React.Component {
       isActive: true,
       feedTitle: '',
       storiesCount: '5',
-      isDefault: props.rssFeeds && props.rssFeeds.length > 0 ? false:true,
-      selectedPages: [],
+      isDefault: false,
+      selectedPage: '',
       saveEnabled: false,
-      inValidUrlMsg: ''
+      inValidUrlMsg: '',
+      defaultMessage: '', 
+      fbPageId: '',
+      loading: false
     }
+    props.getFbAppId()
+    props.getuserdetails()
+    props.getAdminSubscriptions()
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.feedUrlChange = this.feedUrlChange.bind(this)
     this.feedTitleChange = this.feedTitleChange.bind(this)
     this.handleStoryChange = this.handleStoryChange.bind(this)
     this.defaultFeedChange = this.defaultFeedChange.bind(this)
-    this.initializePageSelect = this.initializePageSelect.bind(this)
     this.isValidIntegration = this.isValidIntegration.bind(this)
     this.isValidRssUrl = this.isValidRssUrl.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.resetFields = this.resetFields.bind(this)
+    this.pageChange = this.pageChange.bind(this)
+    this.pageHasDefaultFeed = this.pageHasDefaultFeed.bind(this)
+    this.previewRssFeed = this.previewRssFeed.bind(this)
   }
+
+  previewRssFeed () {
+    let pageSelected = this.state.selectedPage
+    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+      if (check.length <= 0) {
+        if(this.props.fbAppId && this.props.fbAppId !== '') {
+          this.refs.messengerModal.click()
+        }
+        return
+      }
+    } else {
+      if(this.props.fbAppId && this.props.fbAppId !== '') {
+        this.refs.messengerModal.click()
+      }
+      return
+    }
+    var rssPayload = {
+      feedUrl: this.state.feedUrl,
+	    title: this.state.feedTitle,
+	    storiesCount: parseInt(this.state.storiesCount),
+	    pageIds: [this.state.selectedPage]
+    }
+    this.setState({
+      loading: true
+    })
+    this.props.previewRssFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
+  }
+
+  pageHasDefaultFeed (pageId) {
+    var defaultFeed = true
+    for (var i = 0; i < this.props.rssFeeds.length; i++) {
+      if (this.props.rssFeeds[i].pageIds[0] === pageId && this.props.rssFeeds[i].defaultFeed) {
+        defaultFeed = false
+        break
+      }
+    }
+    return defaultFeed
+  }
+  pageChange (event) {
+    if (event.target.value !== -1) {
+        if(!this.props.currentFeed) {
+          var defaultFeed = this.pageHasDefaultFeed(event.target.value)
+          this.setState({
+            isDefault: defaultFeed,
+            defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${event.target.selectedOptions[0].label}`: `You already have a default feed for the selected page: ${event.target.selectedOptions[0].label}. Click on the checkbox if you want to make this feed as default`,
+          })
+        }
+        this.setState({
+          selectedPage: event.target.value,
+          fbPageId: this.props.newsPages.filter((page) => page._id === event.target.value)[0].pageId
+        })
+      } else {
+        this.setState({
+          selectedPage: ''
+        })
+      }
+  }
+
   resetFields () {
     this.setState({
       feedUrl: '',
@@ -39,32 +110,32 @@ class CreateFeed extends React.Component {
       storiesCount: '5',
       isDefault: false,
       saveEnabled: false,
-      inValidUrlMsg: ''
+      inValidUrlMsg: '',
+      selectedPage: '',
+      defaultMessage: '', 
+      loading: false
     })
-    /* eslint-disable */
-    $('#selectPage').val('').trigger('change')
-    /* eslint-enable */
-    var newsPages = []
-    var selectedPages = []
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].gotPageSubscriptionPermission) {
-        newsPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
-        selectedPages.push(this.props.pages[i]._id)
-      }
+
+    var pageSelected = ''
+    for (let i = 0; i < this.props.newsPages.length; i++) {
+        pageSelected = this.props.newsPages[i]
+        break
     }
     this.setState({
-      selectedPages: selectedPages
+      selectedPage: pageSelected._id,
     })
-    this.initializePageSelect(newsPages)
   }
   handleSave () {
+    this.setState({
+      loading: true
+    })
     var rssPayload = {
       feedUrl: this.state.feedUrl,
 	    title: this.state.feedTitle,
 	    storiesCount: parseInt(this.state.storiesCount),
 	    defaultFeed: this.state.isDefault,
 	    isActive: this.state.isActive,
-	    pageIds: this.state.selectedPages
+	    pageIds: [this.state.selectedPage]
     }
     if (!this.props.currentFeed) {
       this.props.createRssFeed(rssPayload, this.msg, this.resetFields)
@@ -73,7 +144,7 @@ class CreateFeed extends React.Component {
         feedId: this.props.currentFeed._id,
         updatedObject: rssPayload
       }
-      this.props.updateFeed(data, this.msg, false)
+      this.props.updateFeed(data, this.msg, false, () => {this.setState({ loading: false})})
     }
   }
 
@@ -84,9 +155,9 @@ class CreateFeed extends React.Component {
       this.setState({inValidUrlMsg: ''})
     }
   }
-  isValidIntegration (feedUrl, title) {
+  isValidIntegration (feedUrl, title, selectedPage) {
     var isValid = false
-    if (feedUrl !== '' && title !== '' && isWebURL(feedUrl) && isRssUrl(feedUrl)) {
+    if (feedUrl !== '' && title !== '' && isWebURL(feedUrl) && isRssUrl(feedUrl) && selectedPage !== '') {
       isValid = true
     } else {
       isValid = false
@@ -96,31 +167,31 @@ class CreateFeed extends React.Component {
     })
   }
   defaultFeedChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
     this.setState({
       isDefault: e.target.checked
     })
   }
   handleStatusChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
     this.setState({
       isActive: e.target.value === 'true' ? true : false
     })
   }
   handleStoryChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle)
+    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
     this.setState({
       storiesCount: e.target.value
     })
   }
   feedTitleChange (e) {
-    this.isValidIntegration(this.state.feedUrl, e.target.value)
+    this.isValidIntegration(this.state.feedUrl, e.target.value, this.state.selectedPage)
     this.setState({
       feedTitle: e.target.value
     })
   }
   feedUrlChange (e) {
-    this.isValidIntegration(e.target.value, this.state.feedTitle)
+    this.isValidIntegration(e.target.value, this.state.feedTitle, this.state.selectedPage)
     this.setState({
       feedUrl: e.target.value,
       inValidUrlMsg: ''
@@ -130,24 +201,34 @@ class CreateFeed extends React.Component {
   componentDidMount () {
     let title = ''
     document.title = `${title} | Rss Feeds`
-   
     if (this.props.currentFeed) {
       this.setCurrentFeed(this.props.currentFeed)
     } else {
-      var newsPages = []
-      var selectedPages = []
-      for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].gotPageSubscriptionPermission) {
-          newsPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
-          selectedPages.push(this.props.pages[i]._id)
-        }
+      var pageSelected = ''
+      for (let i = 0; i < this.props.newsPages.length; i++) {
+        pageSelected = this.props.newsPages[i]
+        break
       }
+      var defaultFeed = this.pageHasDefaultFeed(pageSelected._id)
       this.setState({
-        selectedPages: selectedPages
+        isDefault: defaultFeed,
+        fbPageId: pageSelected.pageId,
+        defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${pageSelected.pageName}`: `You already have a default feed for the selected page: ${pageSelected.pageName}. Click on the checkbox if you want to make this feed as default`,
+        selectedPage: pageSelected._id
       })
-      this.initializePageSelect(newsPages)
     }
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        compProp.getAdminSubscriptions()
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+        comp.refs.messengerModal.click()
+      }
+    })
   }
+
   setCurrentFeed (feed) {
     this.setState({
       feedUrl: feed.feedUrl,
@@ -155,57 +236,23 @@ class CreateFeed extends React.Component {
       feedTitle: feed.title,
       storiesCount: feed.storiesCount.toString(),
       isDefault: feed.defaultFeed,
-      selectedPages: feed.pageIds,
+      selectedPage: feed.pageIds[0],
       saveEnabled: true,
       inValidUrlMsg: ''
     })
-    var selectedPages = []
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].gotPageSubscriptionPermission) {
-        var isSelected = false
-        for (let j = 0; j < feed.pageIds.length; j++) {
-          if (this.props.pages[i]._id === feed.pageIds[j]) {
-            selectedPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id, selected: true})
-            isSelected = true
-            break
-          }
-        }
-        if (!isSelected) {
-          selectedPages.push({text: this.props.pages[i].pageName, id: this.props.pages[i]._id})
-        }
+    var selectedPage = ''
+    for (let i = 0; i < this.props.newsPages.length; i++) {
+      if (feed.pageIds[0] === this.props.newsPages[i]._id) {
+        selectedPage = this.props.newsPages[i]
+        break
       }
     }
     this.setState({
-      selectedPages: selectedPages
-    })
-    this.initializePageSelect(selectedPages)
-  }
-  initializePageSelect (pageOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectPage').select2({
-    /* eslint-enable */
-      data: pageOptions,
-      placeholder: 'Select Pages (Default: All)',
-      allowClear: true,
-      multiple: true,
-      tags: true
-    })
-    /* eslint-disable */
-    $('#selectPage').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ selectedPages: selected })
-      }
+      fbPageId: selectedPage.pageId,
+      selectedPage: selectedPage._id
     })
   }
+
   UNSAFE_componentWillReceiveProps () {
   }
   render () {
@@ -219,6 +266,40 @@ class CreateFeed extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        { this.state.loading && 
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          </div>
+
+        }
+        <a href='#/' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Connect to Messenger:
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <MessengerPlugin
+                  appId={this.props.fbAppId}
+                  pageId={this.state.fbPageId}
+                  size='large'
+                  passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
@@ -289,7 +370,13 @@ class CreateFeed extends React.Component {
                       Select Pages
                     </label>
                     <div className='col-lg-6'>
-                      <select id='selectPage' />
+                      <select className='form-control m-input' value={this.state.selectedPage} onChange={this.pageChange}>
+                      {
+                        this.props.newsPages && this.props.newsPages.length > 0 && this.props.newsPages.map((page, i) => (
+                          <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage}>{page.pageName}</option>
+                        ))
+                      }
+                    </select>
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -313,10 +400,10 @@ class CreateFeed extends React.Component {
                   </div>
                   <div className='form-group m-form__group row'>
                     <label className='col-lg-2'>
-                      <input name='defaultFeed' value={this.state.isDefault} type='checkbox' checked={this.state.isDefault} onChange={this.defaultFeedChange} disabled={this.props.rssFeeds && this.props.rssFeeds.length < 1}/>
+                      <input name='defaultFeed' value={this.state.isDefault} type='checkbox' checked={this.state.isDefault} onChange={this.defaultFeedChange} />
                       <span>&nbsp;&nbsp;Set Default Feed</span>
                     </label>                  
-                    <p style={{fontSize:'0.85rem', marginLeft: '10px'}}>Subscribers will recieve daily news updates from the default feed. There can be only one default feed. Click on the checkbox if you want to make this feed your default feed.</p>
+                    <p className='col-12' style={{fontSize:'0.85rem', marginLeft: '10px'}}>Subscribers will receive daily news updates from the default feed. There can be only one default feed for a single news page. {this.state.defaultMessage}</p>
                   </div>
                 </div>
               </div>
@@ -328,6 +415,10 @@ class CreateFeed extends React.Component {
                     Back
                   </button>
                 </Link>
+                <span>&nbsp;&nbsp;</span>
+                <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.previewRssFeed} >
+                  Preview in Messenger
+                </button>
                 <span>&nbsp;&nbsp;</span>
                 <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.handleSave} >
                   Save
@@ -344,10 +435,14 @@ class CreateFeed extends React.Component {
 function mapStateToProps (state) {
   console.log('state from rss feed', state)
   return {
+    adminPageSubscription: (state.basicInfo.adminPageSubscription),
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
-    currentFeed: (state.feedsInfo.currentFeed)
+    currentFeed: (state.feedsInfo.currentFeed),
+    user: (state.basicInfo.user),
+    fbAppId: (state.basicInfo.fbAppId),
+    newsPages: (state.feedsInfo.newsPages)
   }
 }
 
@@ -355,7 +450,11 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       createRssFeed: createRssFeed,
-      updateFeed: updateFeed
+      previewRssFeed: previewRssFeed,
+      updateFeed: updateFeed,
+      getuserdetails: getuserdetails,
+      getFbAppId: getFbAppId,
+      getAdminSubscriptions: getAdminSubscriptions
     },
     dispatch)
 }

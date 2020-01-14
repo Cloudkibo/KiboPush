@@ -5,7 +5,8 @@ export const API_URL = '/api'
 export function showautoposting (data) {
   return {
     type: ActionTypes.FETCH_AUTOPOSTING_LIST,
-    autoposting: data
+    autoposting: data.autoposting,
+    SMPStatus: data.SMPStatus
   }
 }
 

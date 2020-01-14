@@ -54,7 +54,7 @@ class Intents extends React.Component {
     this.onBack = this.onBack.bind(this)
   }
 
-  onBack () {
+  onBack() {
     this.props.history.push({
       pathname: '/bots'
     })
@@ -66,7 +66,15 @@ class Intents extends React.Component {
       let filtered = this.props.botIntents.filter((intent) => intent.name.toLowerCase().includes(e.target.value.toLowerCase()))
       this.setState({ intents: filtered })
     } else {
-      this.setState({ intents: this.props.botIntents })
+      this.setState({ intents: this.props.botIntents }, () => {
+        if (this.state.currentIntent !== null) {
+          for (let a = 0; a < this.state.intents.length; a++) {
+            if (this.state.intents[a]._id === this.state.currentIntent._id) {
+              document.getElementById(`collapse_${this.state.currentIntent._id}`).classList.add("show")
+            }
+          }
+        }
+      })
     }
   }
 
@@ -108,14 +116,18 @@ class Intents extends React.Component {
       this.refs.renameIntent.click()
     } else {
       if (this.state.currentIntent !== null) {
-        this.setState({ currentIntent: null })
-      } else {
         for (let a = 0; a < this.state.intents.length; a++) {
           if (this.state.intents[a]._id !== intent._id) {
             document.getElementById(`collapse_${this.state.intents[a]._id}`).classList.remove("show")
           }
         }
-
+        if (this.state.currentIntent._id === intent._id) {
+          this.setState({ currentIntent: null })
+        } else {
+          let temp = JSON.parse(JSON.stringify(intent))
+          this.setState({ currentIntent: temp })
+        }
+      } else {
         let temp = JSON.parse(JSON.stringify(intent))
         this.setState({ currentIntent: temp })
       }
@@ -157,7 +169,7 @@ class Intents extends React.Component {
 
   handleTrainBot(response) {
     let filtered = response.payload.filter((intent) => intent._id === this.state.currentIntent._id)[0]
-    this.setState({currentIntent: filtered})
+    this.setState({ currentIntent: filtered })
   }
 
   changeQuestion(event, index) {
@@ -505,25 +517,25 @@ class Intents extends React.Component {
                                         }
                                         {
                                           this.state.currentIntent &&
-                                          this.state.currentIntent._id === intent._id
-                                          ? <div className='btn pull-right'>
-                                            <i
-                                              onClick={() => this.clickIntent(intent)}
-                                              style={{fontSize: '20px'}}
-                                              className='la la-angle-up'
-                                              data-toggle='collapse'
-                                              data-target={`#collapse_${intent._id}`}
-                                            />
-                                          </div>
-                                          : <div className='btn pull-right'>
-                                            <i
-                                              onClick={() => this.clickIntent(intent)}
-                                              style={{fontSize: '20px'}}
-                                              className='la la-angle-down'
-                                              data-toggle='collapse'
-                                              data-target={`#collapse_${intent._id}`}
-                                            />
-                                          </div>
+                                            this.state.currentIntent._id === intent._id
+                                            ? <div className='btn pull-right'>
+                                              <i
+                                                onClick={() => this.clickIntent(intent)}
+                                                style={{ fontSize: '20px' }}
+                                                className='la la-angle-up'
+                                                data-toggle='collapse'
+                                                data-target={`#collapse_${intent._id}`}
+                                              />
+                                            </div>
+                                            : <div className='btn pull-right'>
+                                              <i
+                                                onClick={() => this.clickIntent(intent)}
+                                                style={{ fontSize: '20px' }}
+                                                className='la la-angle-down'
+                                                data-toggle='collapse'
+                                                data-target={`#collapse_${intent._id}`}
+                                              />
+                                            </div>
                                         }
                                       </h4>
                                     </div>

@@ -26,7 +26,8 @@ class CustomFields extends React.Component {
     this.onDescriptionChange = this.onDescriptionChange.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillRecieveProps customfields', nextProps)
     if (nextProps.customFields && this.props.onLoadCustomFields) {
       this.props.onLoadCustomFields(nextProps.customFields)
     }

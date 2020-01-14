@@ -1,4 +1,5 @@
 import * as ActionTypes from '../constants/constants'
+import {localeCodeToEnglish} from '../../utility/utils'
 
 export function handleAction (actionType, data) {
   console.log('Action Handled', actionType, data)
@@ -44,9 +45,13 @@ export function updateUsersList (data, originalData) {
 
 export function updateAllLocales (data) {
   console.log('Data Fetched From backdoor', data)
+  let convertedData = []
+  for (let i = 0; i < data.length; i++) {
+    convertedData.push({value: data[i], text: localeCodeToEnglish(data[i])})
+  }
   return {
     type: ActionTypes.LOAD_LOCALES_LIST_BACKDOOR,
-    data
+    data: convertedData
   }
 }
 
@@ -219,7 +224,7 @@ export function updatePageAdmins (data) {
     type: ActionTypes.UPDATE_PAGE_ADMINS,
     data
   }
-} 
+}
 
 export function saveUserInformation (user) {
   return {

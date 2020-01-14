@@ -5,6 +5,7 @@ export function autopostingInfo (state = {}, action) {
     case ActionTypes.FETCH_AUTOPOSTING_LIST:
       return Object.assign({}, state, {
         autopostingData: action.autoposting,
+        SMPStatus: action.SMPStatus,
         errorMessageCreate: '',
         successMessageCreate: ''
       })

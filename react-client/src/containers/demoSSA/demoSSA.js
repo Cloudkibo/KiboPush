@@ -17,30 +17,14 @@ class DemoSSA extends React.Component {
   }
 
   componentDidMount () {
-    const hostname =  window.location.hostname;
-    let title = '';
-    if(hostname.includes('kiboengage.cloudkibo.com')) {
-      title = 'KiboEngage';
-    } else if (hostname.includes('kibochat.cloudkibo.com')) {
-      title = 'KiboChat';
-    }
-
-    document.title = `${title} | Demo SSA`;
-  }
-
-  UNSAFE_componentWillMount () {
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default'
-  }
-
-  UNSAFE_componentWillUnmount () {
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+    document.title = 'Demo SSA'
   }
 
   render () {
     return (
       <div>
         <Header />
-        <div style={{margin: '0px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div style={{margin: '0px', width: '100vw'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div style={{padding: '25px'}} className='m-content'>
             <div className='m-portlet__body'>
               <div style={{margin: 'auto'}} className='row'>

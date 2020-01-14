@@ -22,6 +22,7 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
+import {localeCodeToEnglish} from '../../utility/utils'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -168,7 +169,7 @@ class Subscriber extends React.Component {
     }
   }
   handleBulkResponse(res) {
-    if (res.status === 'Success') {
+    if (res.status === 'success') {
       this.msg.success('Value set successfully')
       let selectedSubscribers = this.selectedSubscribers()
       let temp = this.state.subscribersData
@@ -1231,6 +1232,7 @@ class Subscriber extends React.Component {
 
   render() {
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
+    console.log('subscriber props', this.props)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
     if (this.state.selectedField.type === 'text') {
       setFieldInput = <input
@@ -1478,7 +1480,8 @@ class Subscriber extends React.Component {
                                       <option key='' value='' disabled>Filter by Locale...</option>
                                       <option key='ALL' value='all'>ALL</option>
                                       {
-                                        this.props.locales && this.props.locales.map((locale, i) => (
+                                        this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
+                                        this.props.locales.map((locale, i) => (
                                           <option key={i} value={locale.value}>{locale.text}</option>
                                         ))
                                       }
@@ -1905,7 +1908,7 @@ class Subscriber extends React.Component {
                                 }
                                 {
                                   this.state.subscriber.locale
-                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /> {this.state.subscriber.locale}</span>
+                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /> {localeCodeToEnglish(this.state.subscriber.locale)}</span>
                                     : <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /></span>
                                 }
                                 {

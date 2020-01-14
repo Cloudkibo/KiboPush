@@ -159,6 +159,22 @@ class GenericMessageComponents extends React.Component {
             </div>
           </div>
         </div>
+
+        <div data-tip={tooltipText} style={cursorStyle} className='col-12' hidden={this.props.hiddenComponents.indexOf('userInput') > -1 ? true : null}>
+          <div style={componentStye} className='ui-block hoverbordercomponent' id='text' onClick={() => { this.props.addComponent('userInput') }}>
+            <div className='row'>
+              <div className='col-2'>
+                <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '40px', margin: '10px', marginLeft: '20px'}} />
+              </div>
+              <div className='col-8'>
+                <h5>User Input</h5>
+                <p>
+                  Take input from users and save the response
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
