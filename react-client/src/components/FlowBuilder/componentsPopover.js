@@ -109,6 +109,19 @@ class ComponentsPopover extends React.Component {
           >
               + Add Link Carousel Component
           </button>
+          <button
+            style={{
+              margin: '5px',
+              border: '1px dashed #716aca',
+              whiteSpace: 'normal',
+              width: '235px'
+            }}
+            onClick={() => this.props.showAddComponentModal('userInput')}
+            type="button"
+            className="btn btn-outline-brand"
+          >
+              + Add User Input Component
+          </button>
         </PopoverBody>
       </Popover>
     )
