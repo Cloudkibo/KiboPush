@@ -66,7 +66,6 @@ class RssIntegrations extends React.Component {
     return value
   }
   getNewsPages (permissions) {
-    // permissions = [{pageId: '5d6cd600b64b574649733f75', smpStatus: 'approved'}, {pageId: '5d6cd600b64b574649733f77', smpStatus: 'approved'}]
     var newsPages = []
     for (var i = 0 ; i < this.props.pages.length; i++) {
       if (this.props.pages[i].connected) {
@@ -105,9 +104,17 @@ class RssIntegrations extends React.Component {
     })
   }
   setStatus (feed) {
+    var updated = {
+      feedUrl: feed.feedUrl,
+      title: feed.title,
+      storiesCount: feed.storiesCount,
+      defaultFeed: feed.defaultFeed,
+      isActive: !feed.isActive, 
+      pageIds: [feed.pageIds[0]]
+    }
     var data = {
       feedId: feed._id,
-      updatedObject: {isActive: !feed.isActive, pageIds: [feed.pageIds[0]]}
+      updatedObject: updated
     }
     this.props.updateFeed(data, this.msg, true)
   }

@@ -112,7 +112,9 @@ export function createRssFeed (data, msg, handle, toggleLoader) {
           dispatch(fetchRssFeed(fetchData))
           handle(res.payload)
         } else {
-          toggleLoader()
+          if (toggleLoader) {
+            toggleLoader()
+          }
           msg.error(res.payload)
         }
       })
@@ -123,7 +125,9 @@ export function previewRssFeed (data, msg, toggleLoader) {
   return (dispatch) => {
     callApi(`rssFeeds/preview`, 'post', data)
       .then(res => {
-        toggleLoader()
+        if (toggleLoader) {
+          toggleLoader()
+        }
         console.log('response from previewing rss feeds', res)
         if (res.status === 'success') {
           msg.success('Preview message sent successfully to your messenger')
@@ -144,7 +148,9 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
   return (dispatch) => {
     callApi(`rssFeeds/edit`, 'post', data)
       .then(res => {
-        toggleLoader()
+        if (toggleLoader) {
+          toggleLoader()
+        }
         console.log('response from editing rss feeds', res)
         if (res.status === 'success') {
           if (fetchFeeds) {
