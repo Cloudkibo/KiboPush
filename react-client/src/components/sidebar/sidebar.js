@@ -187,7 +187,7 @@ class Sidebar extends Component {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={'/subscribers'} className='m-menu__link m-menu__toggle'>
+            <Link to={'/customFields'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
               <span className='m-menu__link-text'>Custom Fields</span>
             </Link>
