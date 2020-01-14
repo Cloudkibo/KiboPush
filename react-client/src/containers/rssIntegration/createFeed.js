@@ -138,7 +138,7 @@ class CreateFeed extends React.Component {
 	    pageIds: [this.state.selectedPage]
     }
     if (!this.props.currentFeed) {
-      this.props.createRssFeed(rssPayload, this.msg, this.resetFields)
+      this.props.createRssFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
     } else {
       var data = {
         feedId: this.props.currentFeed._id,
@@ -223,7 +223,7 @@ class CreateFeed extends React.Component {
       event: 'admin_subscriber',
       action: function (data) {
         compProp.getAdminSubscriptions()
-        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+        comp.msg.success('Subscribed successfully. Click on the `Preview in Messenger` button again to test')
         comp.refs.messengerModal.click()
       }
     })

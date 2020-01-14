@@ -105,6 +105,7 @@ import FacebookPost from './containers/commentCapture/newFacebookPost'
 import PostResult from './containers/commentCapture/viewPostResult'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
+import OverlayWidgets from './containers/overlayWidget/overlayWidgets'
 import MessengerCode from './containers/messengerCode/messengerCode'
 import createMessageForCode from './containers/messengerCode/createMessage'
 import createMessengerCode from './containers/messengerCode/create'
@@ -306,6 +307,7 @@ const Routes = () => (
     <Route path='/commentCaptureReply' component={CommentCaptureEdit} onEnter={requireAuth} />
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
+    <Route path='/overlayWidgets' component={OverlayWidgets} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createMessengerCode' component={createMessengerCode} onEnter={requireAuth} />
