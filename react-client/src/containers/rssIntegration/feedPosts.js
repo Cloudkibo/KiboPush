@@ -189,15 +189,21 @@ class FeedPosts extends React.Component {
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
                   <h3 className='m-portlet__head-text'>
-                    Rss Feed Posts
+                    {this.props.currentFeed.title}
                   </h3>
                 </div>
               </div>
             </div>
             <div className='m-portlet__body'>
               <div className='row' style={{marginBottom: '30px'}}>
-                <div className='col-md-12' style={{ display: 'inherit' }}>
-                  <label style={{marginTop: '7px', marginLeft: '30px'}} class="col-md-3 col-lg-3 col-sm-12">
+                <div className='col-md-4' style={{ display: 'inherit'}}>
+                  <label style={{marginTop: '7px'}} className="col-md-3 col-lg-3 col-sm-12">
+                    Page
+                  </label>
+                  <span style={{marginTop: '7px'}}>{this.props.pages.filter((page) => page._id === this.props.currentFeed.pageIds[0])[0].pageName}</span>
+                </div>
+                <div className='col-md-8' style={{ display: 'inherit' }}>
+                  <label style={{marginTop: '7px', marginLeft: '30px'}} className="col-md-3 col-lg-3 col-sm-12">
                     Filter by Date
                   </label>
                   <span style={{marginTop: '7px', marginRight: '10px'}}>From:</span>
@@ -232,10 +238,6 @@ class FeedPosts extends React.Component {
                       style={{height: '53px'}}>
                       <th data-field='page'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                        <span style={{width: '100px'}}>Pages</span>
-                      </th>
-                      <th data-field='page'
-                        className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                         <span style={{width: '100px'}}>Sent At</span>
                       </th>
                       <th data-field='datetime'
@@ -257,7 +259,6 @@ class FeedPosts extends React.Component {
                     <tr 
                       className='m-datatable__row m-datatable__row--even'
                       style={{height: '55px'}}>
-                      <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === post.pageId)[0].pageName}</span></td>
                       <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                       <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.sent ? post.sent : 0}</span></td>
                       <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.seen ? post.seen : 0}</span></td>
