@@ -272,9 +272,6 @@ class Header extends React.Component {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
 
-    console.log('this.props.user.facebookInfo in header', this.props.user)
-    console.log('this.props.socketData', this.props.socketData)
-
     return (
       <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 

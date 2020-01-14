@@ -366,7 +366,7 @@ class RssIntegrations extends React.Component {
               </div>
             }
             {
-              this.state.newsPages.length !== 0
+              this.state.newsPages.length === 0
             ? <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
