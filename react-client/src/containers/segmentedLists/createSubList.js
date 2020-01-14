@@ -267,7 +267,7 @@ class CreateSubList extends React.Component {
       errorMessages.push(errorMessage)
       this.setState({ errorMessages: errorMessages })
     }
-    if (this.state.newListName && this.props.customerLists && this.props.customerLists.filter(e => e.listName.toLowerCase() === this.state.newListName.toLowerCase()).length > 0) {
+    if (!this.props.currentList && this.state.newListName && this.props.customerLists && this.props.customerLists.filter(e => e.listName.toLowerCase() === this.state.newListName.toLowerCase()).length > 0) {
       errors = true
       errorMessage = { error: 'listName', message: 'List with this name already exists' }
       errorMessages.push(errorMessage)
