@@ -110,11 +110,11 @@ class UserInputModal extends React.Component {
       if (!question.question || !question.type) {
           return true
       }
-      if (question.type !== 'text') {
-        if (!question.skipButtonText || !question.retryMessage) {
-            return true
-        }
+
+      if (!question.skipButtonText || !question.retryMessage || !question.incorrectTriesAllowed) {
+          return true
       }
+      
     }
   }
 
@@ -357,7 +357,8 @@ class UserInputModal extends React.Component {
                             <h6>Number of incorrect tries allowed:</h6>              
                             <div className='row'>
                                 <div className='col-6'>
-                                <input style={{marginBottom: '20px'}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
+                                <input style={{borderColor: question.incorrectTriesAllowed === '' ? 'red' : ''}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
+                                <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.incorrectTriesAllowed ? '*Required' : ''}</div>
                                 </div>
                             </div>
 
