@@ -5,7 +5,8 @@ export const API_URL = '/api'
 export function showAllOverlayWidgets (data) {
   return {
     type: ActionTypes.SHOW_OVERLAY_WIDGETS,
-    data
+    overlayWidgets: data.overlayWidgets,
+    count: data.count
   }
 }
 
@@ -16,10 +17,10 @@ export function saveCurrentWidget (data) {
   }
 }
 
-export function fetchOverlayWidgets () {
-  console.log('in fetchOverlayWidgets')
+export function fetchOverlayWidgets (data) {
+  console.log('in fetchOverlayWidgets', data)
   return (dispatch) => {
-    callApi('overlayWidgets').then(res => {
+    callApi('overlayWidgets/fetchWidgets', 'post', data).then(res => {
       console.log('response from overlayWidgets', res)
       if (res.status === 'success' && res.payload) {
         dispatch(showAllOverlayWidgets(res.payload))
@@ -35,7 +36,15 @@ export function deleteOverlayWidget (id, msg) {
       console.log('response from delete overlay widgets', res)
       if (res.status === 'success') {
         msg.success('Overlay widget has been deleted')
-        dispatch(fetchOverlayWidgets())
+        var data = {
+          last_id: 'none', 
+          number_of_records: 10, 
+          first_page: 'first',
+          page_value: '',
+          status_value: '',
+          type_value: ''
+        }
+        dispatch(fetchOverlayWidgets(data))
       } else {
         msg.error('Failed to delete Pverlay Widget')
       }
