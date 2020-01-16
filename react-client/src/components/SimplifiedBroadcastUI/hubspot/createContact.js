@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { UncontrolledTooltip } from 'reactstrap';
+import { UncontrolledTooltip } from 'reactstrap'
 import {fetchHubspotColumns} from '../../../redux/actions/hubSpot.actions'
 import AlertContainer from 'react-alert'
 import Mapping from '../Mapping'
