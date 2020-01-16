@@ -2,24 +2,26 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import YouTube from 'react-youtube'
-import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
-import { loadCustomFields, deleteCustomField, updateCustomField } from '../../redux/actions/customFields.actions'
+import { loadCustomFields, deleteCustomField } from '../../redux/actions/customFields.actions'
+import CreateCustomField from './createCustomField'
+import AlertContainer from 'react-alert'
 
 class CustomFields extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      currentCustomField: null,
       displayVideo: true,
-      page: {},
-      pagesData: [],
       totalLength: 0,
       filter: false,
       search_value: '',
-      connectedPages: false,
       pageNumber: 0,
       showingSearchResult: true
     }
     props.loadCustomFields()
+    this.createCustomField = this.createCustomField.bind(this)
+    this.updateCustomField = this.updateCustomField.bind(this)
+    this.deleteCustomField = this.deleteCustomField.bind(this)
   }
 
   componentDidMount() {
@@ -34,14 +36,78 @@ class CustomFields extends React.Component {
     document.title = `${title} | Custom Fields`;
   }
 
+  deleteCustomField (customField) {
+    this.setState({
+        currentCustomField: customField
+    }, () => { 
+        this.refs.DeleteModal.click()
+    })
+  }
+
+  createCustomField () {
+      this.setState({
+        currentCustomField: null
+      }, () => {
+        this.refs.CustomFieldModal.click()
+      })
+  }
+
+  updateCustomField (customField) {
+      this.setState({
+        currentCustomField: customField
+      }, () => {
+        this.refs.CustomFieldModal.click()
+      })
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextProps in pages', nextProps)
+    console.log('nextProps in customFields', nextProps)
   }
 
   render() {
     console.log('showingSearchResult', this.state.showingSearchResult)
+    let alertOptions = {
+        offset: 14,
+        position: 'top right',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <a href='#/' style={{ display: 'none' }} ref='CustomFieldModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
+        <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
+        <CreateCustomField customField={this.state.currentCustomField} />
+        <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
+            <div className='modal-content' style={{ width: '400px' }} >
+              <div style={{ display: 'block' }} className='modal-header'>
+                <h5 className='modal-title' id='exampleModalLabel'>
+                  Are You Sure?
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close'
+                  data-dismiss='modal' aria-label='Close'>
+                  <span aria-hidden='true'>
+                    &times;
+                  </span>
+                </button>
+              </div>
+              <div className='modal-body'>
+                <p>Are you sure you want to delete this custom field? It will be removed and unassigned from all subscribers.</p>
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteCustomField(this.state.currentCustomField._id, this.msg)
+                  }} data-dismiss='modal'>Yes
+                </button>
+                <button style={{float: 'right'}} className='btn btn-primary btn-sm' data-dismiss='modal'>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
@@ -75,10 +141,6 @@ class CustomFields extends React.Component {
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
-                {(this.props.pages && this.props.pages.length === 0)
-                  ? <AlertMessageModal type='page' />
-                  : <AlertMessageModal type='subscriber' />
-                }
                 <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
                     &times;
@@ -265,7 +327,7 @@ class CustomFields extends React.Component {
                     <div className='m-portlet__head-tools'>
                       <ul className='m-portlet__nav'>
                         <li className='m-portlet__nav-item'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.goToAddPages}>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createCustomField}>
                             <span>
                               <i className='la la-plus' />
                               <span>
@@ -324,10 +386,12 @@ class CustomFields extends React.Component {
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '150px' }}>
                                         <button className='btn btn-primary btn-sm'
-                                            style={{ float: 'right', margin: 2 }}>
+                                            style={{ float: 'right', margin: 2 }}
+                                            onClick={() => this.deleteCustomField(field)}>
                                             Delete
                                         </button>
                                         <button className='btn btn-primary btn-sm'
+                                            onClick={() => this.updateCustomField(field)}
                                             style={{ float: 'right', margin: 2 }}>
                                             Edit
                                         </button>
@@ -379,9 +443,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    loadCustomFields: loadCustomFields,
-    deleteCustomField: deleteCustomField,
-    updateCustomField: updateCustomField
+    loadCustomFields,
+    deleteCustomField
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomFields)
