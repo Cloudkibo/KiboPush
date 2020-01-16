@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { UncontrolledTooltip } from 'reactstrap'
+import { UncontrolledTooltip } from 'reactstrap';
 import {fetchHubspotColumns} from '../../../redux/actions/hubSpot.actions'
 import AlertContainer from 'react-alert'
 import Mapping from '../Mapping'
@@ -25,7 +25,6 @@ class CreateContact extends React.Component {
           this.props.fetchHubspotColumns()
           this.getMappingData = this.getMappingData.bind(this)
     }
-
 
     getMappingData () {
       if (this.props.questions) {
@@ -248,8 +247,12 @@ class CreateContact extends React.Component {
                 <span style={{color: '#575962'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
              <br /> <br />
              <label style={{fontWeight: 'normal'}}>Identity Field</label>           
-             <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='hubspot_getcontact'> <span>Custom Field which contains user’s email to identify HubSpot Contacts. Please select such Custom Field.</span>  </UncontrolledTooltip>
-            <i id = 'hubspot_getcontact' className='la la-question-circle'/>
+            <span id="hubspot_getcontact" className='la la-question-circle'/>
+              <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='top' target="hubspot_getcontact"> 
+                <span id='identityFieldExplanation'>
+                  Custom Field which contains user’s email to identify HubSpot Contacts. Please select such Custom Field.
+                </span>  
+             </UncontrolledTooltip>
             {this.props.columns && this.props.columns.customFieldColumns && this.props.columns.customFieldColumns.length > 0 &&
               <select className='form-control m-input m-input--square' value={this.state.identityFieldValue} onChange={this.onidentityFieldValueChange}>
                 <option key='' value='' disabled>Enter Field name...</option>
