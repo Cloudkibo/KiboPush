@@ -225,28 +225,35 @@ class Subscriber extends React.Component {
     this.setState({ selectedBulkField: temp })
   }
 
-  handleSelectBulkCustomField(value) {
-    console.log('findme', value)
-    var index = 0
-    if (value) {
-      for (var i = 0; i < this.props.customFields.length; i++) {
-        if (this.props.customFields[i].name !== value.label) {
-          index++
-        }
-      }
-      if (index === this.props.customFields.length) {
-      } else {
-        this.setState({
-          saveBulkFieldDisable: false,
-          selectedBulkField: value
-        })
-      }
-    } else {
+  handleSelectBulkCustomField(e) {
+    let customField = this.state.customFieldOptions.find(cf => cf._id === e.target.value)
+    console.log('handleSelectBulkCustomField', customField)
+    if (customField) {
       this.setState({
-        saveBulkFieldDisable: true,
-        selectedBulkField: value
+        selectedBulkField: customField
       })
     }
+    // console.log('findme', value)
+    // var index = 0
+    // if (value) {
+    //   for (var i = 0; i < this.props.customFields.length; i++) {
+    //     if (this.props.customFields[i].name !== value.label) {
+    //       index++
+    //     }
+    //   }
+    //   if (index === this.props.customFields.length) {
+    //   } else {
+    //     this.setState({
+    //       saveBulkFieldDisable: false,
+    //       selectedBulkField: value
+    //     })
+    //   }
+    // } else {
+    //   this.setState({
+    //     saveBulkFieldDisable: true,
+    //     selectedBulkField: value
+    //   })
+    // }
   }
 
   toggleSetCustomField() {
@@ -486,7 +493,8 @@ class Subscriber extends React.Component {
       saveEnable: false
     })
   }
-  createUnassignPayload() {
+  createUnassignPayload(tagId) {
+    let tag = this.state.options.find(t => t.value == tagId)
     var payload = {}
     var selectedIds = []
     var subscribers = this.state.subscribersDataAll
@@ -494,7 +502,7 @@ class Subscriber extends React.Component {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
         for (var j = 0; j < subscribers[i].tags.length; j++) {
-          if (subscribers[i].tags[j] !== this.state.removeTag.label) {
+          if (subscribers[i].tags[j] !== tag.label) {
             index++
           }
         }
@@ -504,11 +512,12 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.removeTag.label
+    payload.tag = tag.label
     return payload
   }
-  createAssignPayload() {
-    console.log('this.state.addTag', this.state.addTag)
+  createAssignPayload(tagId) {
+    let tag = this.state.options.find(t => t.value === tagId)
+    console.log('createAssignPayload', tag)
     console.log('this.state.subscribersDataAll', this.state.subscribersDataAll)
     var payload = {}
     var selectedIds = []
@@ -517,7 +526,7 @@ class Subscriber extends React.Component {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
         for (var j = 0; j < subscribers[i].tags.length; j++) {
-          if (subscribers[i].tags[j] !== this.state.addTag.label) {
+          if (subscribers[i].tags[j] !== tag.label) {
             index++
           }
         }
@@ -527,11 +536,13 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.addTag.label
+    payload.tag = tag.label
     return payload
   }
-  addTags() {
-    var payload = this.createAssignPayload()
+
+  addTags(e) {
+    console.log('addTags', e.target.value)
+    var payload = this.createAssignPayload(e.target.value)
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -540,6 +551,7 @@ class Subscriber extends React.Component {
       }
     }
   }
+
   addTagsIndividual(subscriber) {
     var payload = {}
     var subscribers = []
@@ -562,7 +574,8 @@ class Subscriber extends React.Component {
     }
   }
 
-  subscribeToSequence() {
+  subscribeToSequence(e) {
+    let sequenceId = e.target.value
     let subscribers = []
     for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
       if (this.state.subscribersDataAll[i].selected) {
@@ -570,7 +583,7 @@ class Subscriber extends React.Component {
       }
     }
     let data = {
-      sequenceId: this.state.sequenceValue,
+      sequenceId,
       subscriberIds: subscribers,
       fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
@@ -587,7 +600,8 @@ class Subscriber extends React.Component {
     this.props.unsubscribeToSequence(data, this.msg, this.handleSeqResponse)
   }
 
-  unsubscribeToSequence() {
+  unsubscribeToSequence(e) {
+    let sequenceId = e.target.value
     let subscribers = []
     for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
       if (this.state.subscribersDataAll[i].selected) {
@@ -595,7 +609,7 @@ class Subscriber extends React.Component {
       }
     }
     let data = {
-      sequenceId: this.state.sequenceValue,
+      sequenceId,
       subscriberIds: subscribers
     }
     this.props.unsubscribeToSequence(data, this.msg)
@@ -609,8 +623,8 @@ class Subscriber extends React.Component {
     })
   }
 
-  removeTags() {
-    var payload = this.createUnassignPayload()
+  removeTags(e) {
+    var payload = this.createUnassignPayload(e.target.value)
     if (payload.subscribers.length > 0) {
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -1245,6 +1259,7 @@ class Subscriber extends React.Component {
   }
 
   render() {
+    console.log('subscriber state', this.state)
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
     console.log('subscriber props', this.props)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
@@ -1538,12 +1553,15 @@ class Subscriber extends React.Component {
                               <div className='col-md-3'>
                                 <div className='m-form__group m-form__group--inline'>
                                   <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
-                                      <option key='' value='' disabled>Filter by Gender...</option>
-                                      <option key='ALL' value='all'>All</option>
-                                      <option key='male' value='male'>Male</option>
-                                      <option key='female' value='female'>Female</option>
-                                      <option key='other' value='other'>Other</option>
+                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
+                                      <option key='' value='' disabled>Assign Tag</option>
+                                      {
+                                        this.state.options.map((option, i) => { 
+                                          return (
+                                            <option key={i} value={option.value}>{option.label}</option>
+                                          )
+                                        })
+                                      }
                                     </select>
                                   </div>
                               </div>
@@ -1552,13 +1570,27 @@ class Subscriber extends React.Component {
                             <div className='col-md-3'>
                               <div className='m-form__group m-form__group--inline'>
                                 <div className='m-form__control'>
-                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
-                                    <option key='' value='' disabled>Filter by Locale...</option>
-                                    <option key='ALL' value='all'>ALL</option>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.removeTags}>
+                                    <option key='' value='' disabled>Unassign Tag</option>
                                     {
-                                      this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
-                                      this.props.locales.map((locale, i) => (
-                                        <option key={i} value={locale.value}>{locale.text}</option>
+                                      this.state.options.map((option, i) => { 
+                                        return (
+                                          <option key={i} value={option.value}>{option.label}</option>
+                                        )
+                                      })      
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.subscribeToSequence}>
+                                    <option key='' value='' disabled>Subscribe to Sequence</option>
+                                    {
+                                      this.state.sequenceOptions.map((seq, i) => (
+                                        <option key={i} value={seq.value}>{seq.label}</option>
                                       ))
                                     }
                                   </select>
@@ -1568,40 +1600,47 @@ class Subscriber extends React.Component {
                             <div className='col-md-3'>
                               <div className='m-form__group m-form__group--inline'>
                                 <div className='m-form__control'>
-                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
-                                    <option key='' value='' disabled>Filter by Tags...</option>
-                                    <option key='ALL' value='all'>ALL</option>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.unsubscribeToSequence}>
+                                    <option key='' value='' disabled>Unsubscribe from Sequence</option>
                                     {
-                                      this.state.options.map((tag, i) => (
-                                        <option key={i} value={tag.label}>{tag.label}</option>
+                                      this.state.sequenceOptions.map((seq, i) => (
+                                        <option key={i} value={seq.value}>{seq.label}</option>
                                       ))
                                     }
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                            <div className='col-md-3'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='m-form__control'>
-                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
-                                    <option key='' value='' disabled>Filter by Status...</option>
-                                    <option key='ALL' value='all'>ALL</option>
-                                    <option key='subscribed' value='subscribed'>Subscribed</option>
-                                    <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
                                   </select>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
-                            <div className='col-6'>
-                              <div className='m-input-icon m-input-icon--left'>
-                                <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                  <span><i className='la la-search' /></span>
-                                </span>
+                            <div className='col-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.handleSelectBulkCustomField}>
+                                    <option key='' value='' disabled>Set Custom Field</option>
+                                    {
+                                      this.state.customFieldOptions.map((cf, i) => (
+                                        <option key={i} value={cf._id}>{cf.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
                               </div>
                             </div>
+                            {
+                              (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
+                                <div className='col-3'>
+                                  <input placeholder={'Enter custom field value...'} value={this.state.selectedBulkField ? this.state.selectedBulkField.value : ''} onChange={this.handleBulkSetCustomField} className='form-control' />
+                                </div>
+                            }
+                            {
+                              (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
+                              <div className='col-3'>
+                                <button disabled={!this.state.selectedBulkField.value ? true : false} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
+                                  Save
+                                </button>
+                              </div>
+                            }
                           </div>
                         </div>
                             }
