@@ -171,6 +171,14 @@ class Subscriber extends React.Component {
   handleBulkResponse(res) {
     if (res.status === 'success') {
       this.msg.success('Value set successfully')
+      let subscribersData = this.state.subscribersData
+      for (var i = 0; i < subscribersData.length; i++) {
+          subscribersData[i].selected = false
+      }
+      this.setState({
+        selectAllChecked: false,
+        subscribersData
+      })
       let selectedSubscribers = this.selectedSubscribers()
       let temp = this.state.subscribersData
       selectedSubscribers.forEach((subscriberId, i) => {
@@ -1616,7 +1624,7 @@ class Subscriber extends React.Component {
                             <div className='col-3'>
                               <div className='m-form__group m-form__group--inline'>
                                 <div className='m-form__control'>
-                                  <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.handleSelectBulkCustomField}>
+                                  <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={this.handleSelectBulkCustomField}>
                                     <option key='' value='' disabled>Set Custom Field</option>
                                     {
                                       this.state.customFieldOptions.map((cf, i) => (
