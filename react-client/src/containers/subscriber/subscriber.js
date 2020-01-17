@@ -1390,7 +1390,7 @@ class Subscriber extends React.Component {
               this.props.pages && this.props.pages.length === 0 &&
               <AlertMessage type='page' />
             }
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div style={{width: '74vw'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-technology m--font-accent' />
               </div>
@@ -1765,10 +1765,8 @@ class Subscriber extends React.Component {
                       </div>
                     </div> :
                     <div className='m-portlet__body'>
-                      <div>
-                        <div className='table-responsive'>
-                          <h6> Please select a page to view subscribers for that page </h6>
-                        </div>
+                      <div className='table-responsive'>
+                        <h5> Please select a page to view subscribers for that page </h5>
                       </div>
                     </div>
                   }
