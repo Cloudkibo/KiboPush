@@ -804,7 +804,8 @@ class Subscriber extends React.Component {
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
-          selectAllChecked: true
+          selectAllChecked: true,
+          showBulkActions: true
         })
         for (var i = 0; i < this.state.subscribersDataAll.length; i++) {
           subscribersAll[i].selected = true
@@ -814,7 +815,8 @@ class Subscriber extends React.Component {
         }
       } else {
         this.setState({
-          selectAllChecked: false
+          selectAllChecked: false,
+          showBulkActions: false
         })
         for (var k = 0; k < this.state.subscribersDataAll.length; k++) {
           subscribersAll[k].selected = false
@@ -829,6 +831,9 @@ class Subscriber extends React.Component {
     }
     if (e.target.value !== '') {
       if (e.target.checked) {
+        this.setState({
+          showBulkActions: true
+        })
         for (var p = 0; p < this.state.subscribersDataAll.length; p++) {
           if (subscribersAll[p]._id === subscribers[e.target.value]._id) {
             subscribersAll[p].selected = true
@@ -838,10 +843,19 @@ class Subscriber extends React.Component {
         this.setState({ subscribersData: subscribers })
         this.setState({ subscribersDataAll: subscribersAll })
       } else {
+        let anySelected = false
         for (var q = 0; q < this.state.subscribersDataAll.length; q++) {
           if (subscribersAll[q]._id === subscribers[e.target.value]._id) {
             subscribersAll[q].selected = false
           }
+          if (subscribersAll[q].selected) {
+            anySelected = true
+          }
+        }
+        if (!anySelected) {
+          this.setState({
+            showBulkActions: false
+          })
         }
         subscribers[e.target.value].selected = false
         this.setState({ subscribersData: subscribers })
@@ -1444,51 +1458,29 @@ class Subscriber extends React.Component {
                       <div style={{ marginTop: '-50px' }}>
                         <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                           <div className='row align-items-center'>
-                            <div className='col-xl-12 order-2 order-xl-1'>
-                              <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
-                                <div className='col-md-3'>
-                                  <div className='m-form__group m-form__group--inline'>
-                                    {/* <div className='m-form__control'>
-                                <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
-                                </div> */}
-                                    <div className='m-form__control'>
-                                      <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
-                                        <option key='' value='' disabled>Filter by Gender...</option>
-                                        <option key='ALL' value='all'>All</option>
-                                        <option key='male' value='male'>Male</option>
-                                        <option key='female' value='female'>Female</option>
-                                        <option key='other' value='other'>Other</option>
-                                      </select>
-                                    </div>
+                            {
+                              !this.state.showBulkActions ?
+                                <div className='col-xl-12 order-2 order-xl-1'>
+                                <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Filters:</h5>
+                                <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
+                                  <div className='col-md-3'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
+                                          <option key='' value='' disabled>Filter by Gender...</option>
+                                          <option key='ALL' value='all'>All</option>
+                                          <option key='male' value='male'>Male</option>
+                                          <option key='female' value='female'>Female</option>
+                                          <option key='other' value='other'>Other</option>
+                                        </select>
+                                      </div>
                                   </div>
                                   <div className='d-md-none m--margin-bottom-10' />
                                 </div>
-                                {/* <div className='col-md-4'>
-                                  <div className='m-form__group m-form__group--inline'>
-                                    <div className='' style={{ marginTop: '10px' }}>
-                                      <label style={{ width: '60px' }}>Page:</label>
-                                    </div>
-                                    <div className='m-form__control'>
-                                      <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
-                                        <option key='' value='' disabled>Filter by Page...</option>
-                                        <option key='ALL' value='all'>ALL</option>
-                                        {
-                                          this.props.pages && this.props.pages.map((page, i) => (
-                                            <option key={i} value={page._id}>{page.pageName}</option>
-                                          ))
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-                                </div> */}
                                 <div className='col-md-3'>
                                   <div className='m-form__group m-form__group--inline'>
                                     <div className='m-form__control'>
-                                      {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
-                                  <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
-                                  <div className='dropdown-menu open' role='combobox'>
-                                    <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                  */}<select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
                                         <option key='' value='' disabled>Filter by Locale...</option>
                                         <option key='ALL' value='all'>ALL</option>
                                         {
@@ -1538,180 +1530,81 @@ class Subscriber extends React.Component {
                                     </span>
                                   </div>
                                 </div>
-                                {/* <div className='col-md-4'>
-                                  <div className='pull-right' style={{ display: 'flex' }}>
-                                    <div style={{ display: 'block' }}>
-                                      <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
-                                        <DropdownToggle caret>
-                                          Bulk Actions
-                                        </DropdownToggle>
-                                        <DropdownMenu>
-                                          <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
-                                          <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
-                                          <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                          {this.props.user.isSuperUser &&
-                                            <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
-                                          }
-                                          {this.props.user.isSuperUser &&
-                                            <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
-                                          }
-                                        </DropdownMenu>
-                                      </Dropdown>
-                                    </div>
-                                    {this.props.tags && this.props.tags.length > 0 &&
-                                      <div style={{ marginLeft: '10px', marginTop: '5px' }}><Link style={{ color: '#5867dd', cursor: 'pointer', fontSize: 'small' }} data-toggle="modal" data-target="#editTag">Edit Tags</Link></div>
-                                    }
-                                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
-                                      <PopoverHeader>Add Tags</PopoverHeader>
-                                      <PopoverBody>
-                                        <div className='row' style={{ minWidth: '250px' }}>
-                                          <div className='col-12'>
-                                            <label>Select Tags</label>
-                                            <Select.Creatable
-                                              options={this.state.options}
-                                              onChange={this.handleAdd}
-                                              value={this.state.addTag}
-                                              placeholder='Add User Tags'
-                                            />
-                                          </div>
-                                          {this.state.saveEnable
-                                            ? <div className='col-12'>
-                                              <button style={{ float: 'right', margin: '15px' }}
-                                                className='btn btn-primary btn-sm'
-                                                onClick={() => {
-                                                  this.addTags()
-                                                  this.toggleAdd()
-                                                }}>Save
-                                            </button>
-                                            </div>
-                                            : <div className='col-12'>
-                                              <button style={{ float: 'right', margin: '15px' }}
-                                                className='btn btn-primary btn-sm'
-                                                disabled>
-                                                Save
-                                            </button>
-                                            </div>
-                                          }
-                                        </div>
-                                      </PopoverBody>
-                                    </Popover>
-                                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
-                                      <PopoverHeader>Remove Tags</PopoverHeader>
-                                      <PopoverBody>
-                                        <div className='row' style={{ minWidth: '250px' }}>
-                                          <div className='col-12'>
-                                            <label>Select Tags</label>
-                                            <Select
-                                              options={this.state.options}
-                                              onChange={this.handleRemove}
-                                              value={this.state.removeTag}
-                                              placeholder='Remove User Tags'
-                                            />
-                                          </div>
-                                          <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              onClick={() => {
-                                                this.removeTags()
-                                                this.toggleRemove()
-                                              }}>Save
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </PopoverBody>
-                                    </Popover>
-                                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
-                                      <PopoverHeader>Set Custom Field</PopoverHeader>
-                                      <PopoverBody>
-                                        <div className='row' style={{ minWidth: '250px' }}>
-                                          <div className='col-12'>
-                                            <label>Field</label>
-                                            <Select
-                                              options={this.state.customFieldOptions}
-                                              onChange={this.handleSelectBulkCustomField}
-                                              value={this.state.selectedBulkField}
-                                              placeholder='Enter Field Name'
-                                            />
-                                          </div>
-                                          <div className='col-12'>
-                                            <label>Value</label>
-                                            {setBulkFieldInput}
-                                          </div>
-                                          <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              disabled={this.state.saveBulkFieldDisable}
-                                              onClick={() => {
-                                                this.saveSetCustomField()
-                                              }}>Save
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </PopoverBody>
-                                    </Popover>
-                                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.openSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
-                                      <PopoverHeader>Subscribe to Sequence</PopoverHeader>
-                                      <PopoverBody>
-                                        <div className='row' style={{ minWidth: '250px' }}>
-                                          <div className='col-12'>
-                                            <label>Select Sequence</label>
-                                            <Select
-                                              options={this.state.sequenceOptions}
-                                              onChange={this.handleSequence}
-                                              value={this.state.sequenceValue}
-                                              placeholder='Select Sequence...'
-                                            />
-                                          </div>
-                                          {this.state.saveEnableSeq
-                                            ? <div className='col-12'>
-                                              <button style={{ float: 'right', margin: '15px' }}
-                                                className='btn btn-primary btn-sm'
-                                                onClick={() => {
-                                                  this.subscribeToSequence()
-                                                  this.toggleSubscribe()
-                                                }}>Save
-                                            </button>
-                                            </div>
-                                            : <div className='col-12'>
-                                              <button style={{ float: 'right', margin: '15px' }}
-                                                className='btn btn-primary btn-sm'
-                                                disabled>
-                                                Save
-                                            </button>
-                                            </div>
-                                          }
-                                        </div>
-                                      </PopoverBody>
-                                    </Popover>
-                                    <Popover placement='left' className='subscriberPopover' isOpen={this.state.openUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
-                                      <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
-                                      <PopoverBody>
-                                        <div className='row' style={{ minWidth: '250px' }}>
-                                          <div className='col-12'>
-                                            <label>Select Sequence</label>
-                                            <Select
-                                              options={this.state.unsubSequenceOptions}
-                                              onChange={this.handleSequence}
-                                              value={this.state.sequenceValue}
-                                              placeholder='Select Sequence...'
-                                            />
-                                          </div>
-                                          <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              onClick={() => {
-                                                this.unsubscribeToSequence()
-                                                this.toggleUnSubscribe()
-                                              }}>Save
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </PopoverBody>
-                                    </Popover>
+                              </div>
+                            </div> :
+                            <div className='col-xl-12 order-2 order-xl-1'>
+                            <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Bulk Actions:</h5>
+                            <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
+                              <div className='col-md-3'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
+                                      <option key='' value='' disabled>Filter by Gender...</option>
+                                      <option key='ALL' value='all'>All</option>
+                                      <option key='male' value='male'>Male</option>
+                                      <option key='female' value='female'>Female</option>
+                                      <option key='other' value='other'>Other</option>
+                                    </select>
                                   </div>
-                                </div> */}
+                              </div>
+                              <div className='d-md-none m--margin-bottom-10' />
+                            </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
+                                    <option key='' value='' disabled>Filter by Locale...</option>
+                                    <option key='ALL' value='all'>ALL</option>
+                                    {
+                                      this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
+                                      this.props.locales.map((locale, i) => (
+                                        <option key={i} value={locale.value}>{locale.text}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
                               </div>
                             </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
+                                    <option key='' value='' disabled>Filter by Tags...</option>
+                                    <option key='ALL' value='all'>ALL</option>
+                                    {
+                                      this.state.options.map((tag, i) => (
+                                        <option key={i} value={tag.label}>{tag.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
+                                    <option key='' value='' disabled>Filter by Status...</option>
+                                    <option key='ALL' value='all'>ALL</option>
+                                    <option key='subscribed' value='subscribed'>Subscribed</option>
+                                    <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                            <div className='col-6'>
+                              <div className='m-input-icon m-input-icon--left'>
+                                <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                  <span><i className='la la-search' /></span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                            }
                           </div>
                         </div>
                         {this.state.subscribersData && this.state.subscribersData.length > 0
