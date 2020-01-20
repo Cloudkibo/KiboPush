@@ -5,6 +5,7 @@ import UserInputActions from './UserInputActions'
 class UserInputModal extends React.Component {
   constructor(props) {
     super(props)
+    this.maxIncorrectTries = 10000
     this.state = {
       edited: false,
       action: props.action ? props.action : null,
@@ -13,7 +14,7 @@ class UserInputModal extends React.Component {
             id: new Date().getTime(), 
             question: '', 
             type: '',
-            incorrectTriesAllowed: 3, 
+            incorrectTriesAllowed: this.maxIncorrectTries, 
             skipButtonText: 'Skip', 
             retryMessage: ''
         }]
@@ -139,7 +140,7 @@ class UserInputModal extends React.Component {
         id: new Date().getTime(),
         question: '', 
         type: '', 
-        incorrectTriesAllowed: 3, 
+        incorrectTriesAllowed: this.maxIncorrectTries, 
         skipButtonText: 'Skip', 
         retryMessage: ''
     })
@@ -354,13 +355,13 @@ class UserInputModal extends React.Component {
                         {
                         question.type &&
                         <div>
-                            <h6>Number of incorrect tries allowed:</h6>              
+                            {/* <h6>Number of incorrect tries allowed:</h6>              
                             <div className='row'>
                                 <div className='col-6'>
                                 <input style={{borderColor: question.incorrectTriesAllowed === '' ? 'red' : ''}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
                                 <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.incorrectTriesAllowed ? '*Required' : ''}</div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <h6>"Skip" button text:</h6>      
                             <div className='row'>
