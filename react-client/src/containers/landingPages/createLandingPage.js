@@ -17,7 +17,8 @@ class CreateLandingPage extends React.Component {
     super(props, context)
     this.state = {
       isActive: props.location.state && props.location.state.landingPage ? props.location.state.landingPage.isActive : true,
-      isEdit: false
+      isEdit: false,
+      landing_page_id: ''
     }
 
     if (props.location.state && props.location.state.pageId) {
@@ -30,7 +31,7 @@ class CreateLandingPage extends React.Component {
   componentDidMount () {
     console.log('this.props.location.state', this.props.location.state)
     if (this.props.location.state && this.props.location.state.module === 'edit') {
-      this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive})
+      this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive, landing_page_id:this.props.location.state.landingPage._id})
       this.props.updateLandingPageData('', '', '', '', '', {
         pageId: this.props.location.state.landingPage.pageId.pageId,
         initialState: this.props.location.state.landingPage.initialState,
@@ -54,7 +55,7 @@ class CreateLandingPage extends React.Component {
     }
   }
   onEdit () {
-    this.props.editLandingPage(this.props.location.state.landingPage._id, {
+    this.props.editLandingPage(this.state.landing_page_id, {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
       optInMessage: this.props.landingPage.optInMessage,
@@ -72,8 +73,8 @@ class CreateLandingPage extends React.Component {
   }
   setStatus (value) {
     this.setState({isActive: value})
-    this.props.updateLandingPageData(this.props.location.state.landingPage, this.props.landingPage.currentTab, 'isActive', value)
-    this.props.editLandingPage(this.props.location.state.landingPage._id, {
+    this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'isActive', value)
+    this.props.editLandingPage(this.state.landing_page_id, {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
       optInMessage: this.props.landingPage.optInMessage,
@@ -103,9 +104,9 @@ class CreateLandingPage extends React.Component {
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       {
-                          this.props.location.state && this.props.location.state.module === 'edit' ?
-                          <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module}
-                            landing_page_id={this.props.location.state.landingPage._id}
+                          this.state.isEdit ?
+                          <Tabs history={this.props.history} location={this.props.location} module={'edit'}
+                            landing_page_id={this.state.landing_page_id}
                             isActive={this.state.isActive}
                              />
                           : <Tabs history={this.props.history} location={this.props.location} />
