@@ -72,11 +72,11 @@ class UserInputActions extends React.Component {
   }
 
   getMappingData () {
+    //debugger;
     if (this.props.questions) {
       let mappingData = []
       for (let i = 0; i < this.props.questions.length; i++) {
         if (this.props.action && this.props.action.mapping) {
-          //debugger;
           let mapping = this.props.action.mapping
           let mappingExists = false
           for (let j = 0; j < mapping.length; j++) {
@@ -112,6 +112,7 @@ class UserInputActions extends React.Component {
           }
         }
       }
+      console.log('getMappingData', mappingData)
       return mappingData
     }
   }
