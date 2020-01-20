@@ -15,27 +15,44 @@ class OverlayWidgets extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      overlayWidgetsData: [],
+      widgets: [],
       totalLength: 0,
       isShowingModalDelete: false,
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
-      isSetupShow: false
+      isSetupShow: false,
+      filter: false,
+      searchValue: '',
+      pageNumber: 0,
+      status: '', 
+      page_value: '',
+      type_value: ''
     }
 
-    props.fetchOverlayWidgets()
+    props.fetchOverlayWidgets({
+      last_id: 'none', 
+      number_of_records: 10, 
+      first_page: 'first',
+      page_value: '',
+      status_value: '',
+      type_value: ''
+    })
     props.saveCurrentWidget(null)
     //props.setInitialState()
-    this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.closeDialogSetup = this.closeDialogSetup.bind(this)
+    this.searchWidgets = this.searchWidgets.bind(this)
+    this.onStatusFilter = this.onStatusFilter.bind(this)
+    this.onPageFilter = this.onPageFilter.bind(this)
+    this.onTypeFilter = this.onTypeFilter.bind(this)
+    this.getWidgetType = this.getWidgetType.bind(this)
+    this.isAnyFilter = this.isAnyFilter.bind(this)
   }
-
   componentDidMount () {
     const hostname = window.location.hostname
     let title = ''
@@ -45,9 +62,78 @@ class OverlayWidgets extends React.Component {
       title = 'KiboChat'
     }
 
-    document.title = `${title} | Landing Pages`
+    document.title = `${title} | Overlay Widgets`
+  }
+  
+  isAnyFilter(search, page, status, type) {
+    if (search !== '' || page !== '' || status !== '' || type !== '') {
+      this.setState({
+        filter: true
+      })
+    } else {
+      this.setState({
+        filter: false
+      })
+    }
   }
 
+  getWidgetType (type) {
+    var value = ''
+    if (type === 'slide_in') {
+      value = 'Slide In'
+    } else if (type === 'bar') {
+      value= 'Bar'
+    } else if (type === 'modal') {
+      value = 'Modal'
+    } else if (type === 'page_takeover') {
+      value = 'Page Takeove'
+    }
+    return value
+  } 
+  onPageFilter (event) {
+    this.setState({
+      page_value: event.target.value, pageNumber:0
+    })
+    this.isAnyFilter(this.state.searchValue, event.target.value, this.state.status, this.state.type_value)
+    if (event.target.value !== '') {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: event.target.value, type_value: this.state.type_value})
+    } else {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value})
+    }
+  }
+  onTypeFilter (event) {
+    this.setState({
+      type_value: event.target.value, pageNumber:0
+    })
+    this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, event.target.value)
+    if (event.target.value !== '') {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: event.target.value})
+    } else {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_valye, type_value: ''})
+    }
+  }
+  onStatusFilter (event) {
+    this.setState({
+      status: event.target.value, pageNumber:0
+    })
+    this.isAnyFilter(this.state.searchValue, this.state.page_value, event.target.value, this.state.type_value)
+    if (event.target.value !== '') {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: event.target.value, page_value: this.state.page_value, type_value: this.state.type_value})
+    } else {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value})
+    }
+  }
+  searchWidgets (event) {
+    this.setState({
+      searchValue: event.target.value, pageNumber:0
+    })
+    this.isAnyFilter(event.target.value, this.state.page_value, this.state.status, this.state.type_value)
+    if (event.target.value !== '') {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+    } else {
+      this.props.fetchOverlayWidgets({last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+    }
+  }
   gotoCreate () {
     this.props.history.push({
       pathname: `/createOverlayWidget`
@@ -66,32 +152,71 @@ class OverlayWidgets extends React.Component {
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
   }
-  displayData (n, overlayWidgets) {
-    console.log('in displayData', overlayWidgets)
+
+  displayData (n, widgets) {
     let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 10) > overlayWidgets.length) {
-      limit = overlayWidgets.length
+    if ((offset + 10) > widgets.length) {
+      limit = widgets.length
     } else {
       limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      data[index] = overlayWidgets[i]
+      data[index] = widgets[i]
       index++
     }
-    this.setState({overlayWidgetsData: data})
+    this.setState({widgets: data})
   }
 
-  handlePageClick (data) {
+  handlePageClick(data) {
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.fetchOverlayWidgets({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
+      })
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.fetchOverlayWidgets({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
+      })
+    } else {
+      this.props.fetchOverlayWidgets({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.overlayWidgets.length > 0 ? this.props.overlayWidgets[this.props.overlayWidgets.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
+      })
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.overlayWidgets)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.overlayWidgets) {
       this.displayData(0, nextProps.overlayWidgets)
-      this.setState({totalLength: nextProps.overlayWidgets.length})
+    }
+    if (nextProps.widgetsCount) {
+      this.setState({ totalLength: nextProps.widgetsCount })
     }
   }
 
@@ -197,8 +322,46 @@ class OverlayWidgets extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                { (this.state.widgets && this.state.widgets.length > 0) || this.state.filter
+                ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
+                    <div className='col-md-12' style={{marginBottom: '15px'}}>
+                      <input type='text' style={{width: '50%'}} placeholder='Search Widgets..' className='form-control' value={this.state.searchValue} onChange={this.searchWidgets} />
+                    </div>
+                    <div className='col-md-4'>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
+                        <option value='' disabled>Filter by Status...</option>
+                        <option value=''>All</option>
+                        <option value='true'>Active</option>
+                        <option value='false'>In Active</option>
+                      </select>
+                    </div>
+                    <div className='col-md-4'>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
+                        <option value='' disabled>Filter by Page...</option>
+                        <option value=''>All</option>
+                        {
+                          this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                            page.connected &&
+                            <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                    <div className='col-md-4'>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.type_value} onChange={this.onTypeFilter}>
+                        <option value='' disabled>Filter by Type...</option>
+                        <option value=''>All</option>
+                        <option value='bar'>Bar</option>
+                        <option value='slide_in'>Slide In</option>
+                        <option value='modal'>Modal</option>
+                        <option value='page_takeover'>Page Takeover</option>
+                      </select>
+                    </div>
+                  </div>
+                : <div />
+                }
                   <div className='form-row'>
-                    { this.state.overlayWidgetsData && this.state.overlayWidgetsData.length > 0
+                    { this.state.widgets && this.state.widgets.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
@@ -206,15 +369,19 @@ class OverlayWidgets extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='page'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Title</span>
+                          </th>
+                          <th data-field='page'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Page</span>
                           </th>
                           <th data-field='type'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Widget Type</span>
+                            <span style={{width: '100px'}}>Type</span>
                           </th>
                           <th data-field='status'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Widget Type</span>
+                            <span style={{width: '100px'}}>Status</span>
                           </th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -224,23 +391,24 @@ class OverlayWidgets extends React.Component {
                       </thead>
                       <tbody className='m-datatable__body'>
                         {
-                        this.state.overlayWidgetsData.map((widget, i) => (
+                        this.props.overlayWidgets.map((widget, i) => (
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{widget.pageId.pageName}</span></td>
-                            <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span>{widget.widgetType}</span></td>
+                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{widget.title}</span></td>  
+                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.props.pages.filter((page) => page._id === widget.pageId)[0].pageName}</span></td>
+                            <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.getWidgetType(widget.widgetType)}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{landingPage.isActive ? 'Active' : 'Disabled'}</span></td>
+                              <span style={{width: '100px'}}>{widget.isActive ? 'Active' : 'Disabled'}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '290px'}}>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(widget)}>
+                                <button className='btn btn-primary btn-sm' style={{margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(widget)}>
                                     Edit
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(widget._id)}>
+                                <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(widget._id)}>
                                     Delete
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#setup" onClick={() => this.setupOverlayWidget(widget._id)}>
+                                <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#setup" onClick={() => this.setupOverlayWidget(widget._id)}>
                                     Setup
                                 </button>
                               </span>
@@ -284,6 +452,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     overlayWidgets: (state.overlayWidgetsInfo.overlayWidgets),
+    widgetsCount: (state.overlayWidgetsInfo.widgetsCount),
     pages: (state.pagesInfo.pages)
   }
 }
