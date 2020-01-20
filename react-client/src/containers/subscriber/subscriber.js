@@ -177,6 +177,7 @@ class Subscriber extends React.Component {
       }
       this.setState({
         selectAllChecked: false,
+        showBulkActions: false,
         subscribersData
       })
       let selectedSubscribers = this.selectedSubscribers()
@@ -596,7 +597,7 @@ class Subscriber extends React.Component {
       fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
     this.props.subscribeToSequence(data, this.msg)
-    this.setState({ selectAllChecked: false, sequenceValue: '' })
+    this.setState({ selectAllChecked: false, showBulkActions: false, sequenceValue: '' })
   }
 
   removeSequence(sequenceId) {
@@ -621,13 +622,14 @@ class Subscriber extends React.Component {
       subscriberIds: subscribers
     }
     this.props.unsubscribeToSequence(data, this.msg)
-    this.setState({ selectAllChecked: false, sequenceValue: '' })
+    this.setState({ selectAllChecked: false, showBulkActions: false, sequenceValue: '' })
   }
 
   handleSaveTags() {
     this.props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
     this.setState({
-      selectAllChecked: false
+      selectAllChecked: false,
+      showBulkActions: false
     })
   }
 
