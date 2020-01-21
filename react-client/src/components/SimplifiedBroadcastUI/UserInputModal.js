@@ -5,6 +5,7 @@ import UserInputActions from './UserInputActions'
 class UserInputModal extends React.Component {
   constructor(props) {
     super(props)
+    this.maxIncorrectTries = 10000
     this.state = {
       edited: false,
       action: props.action ? props.action : null,
@@ -13,7 +14,7 @@ class UserInputModal extends React.Component {
             id: new Date().getTime(), 
             question: '', 
             type: '',
-            incorrectTriesAllowed: 3, 
+            incorrectTriesAllowed: this.maxIncorrectTries, 
             skipButtonText: 'Skip', 
             retryMessage: ''
         }]
@@ -110,11 +111,11 @@ class UserInputModal extends React.Component {
       if (!question.question || !question.type) {
           return true
       }
-      if (question.type !== 'text') {
-        if (!question.skipButtonText || !question.retryMessage) {
-            return true
-        }
+
+      if (!question.skipButtonText || !question.retryMessage || !question.incorrectTriesAllowed) {
+          return true
       }
+      
     }
   }
 
@@ -139,7 +140,7 @@ class UserInputModal extends React.Component {
         id: new Date().getTime(),
         question: '', 
         type: '', 
-        incorrectTriesAllowed: 3, 
+        incorrectTriesAllowed: this.maxIncorrectTries, 
         skipButtonText: 'Skip', 
         retryMessage: ''
     })
@@ -219,7 +220,7 @@ class UserInputModal extends React.Component {
   }
 
   validateCustomFieldTypes () {
-    debugger;
+    //debugger;
     let action = this.state.action
     let mappingDataChanged = false
     for (let i = 0; i < action.mapping.length; i++) {
@@ -354,12 +355,13 @@ class UserInputModal extends React.Component {
                         {
                         question.type &&
                         <div>
-                            <h6>Number of incorrect tries allowed:</h6>              
+                            {/* <h6>Number of incorrect tries allowed:</h6>              
                             <div className='row'>
                                 <div className='col-6'>
-                                <input style={{marginBottom: '20px'}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
+                                <input style={{borderColor: question.incorrectTriesAllowed === '' ? 'red' : ''}} type='number' min='0' step='1' value={question.incorrectTriesAllowed} className='form-control' onChange={(event) => this.incorrectTriesAllowedChange(event, index)} />
+                                <div style={{color: 'red', textAlign: 'left', marginBottom: '20px'}}>{!question.incorrectTriesAllowed ? '*Required' : ''}</div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <h6>"Skip" button text:</h6>      
                             <div className='row'>
@@ -390,7 +392,7 @@ class UserInputModal extends React.Component {
                     saveCustomFieldsAction={this.saveCustomFieldsAction}
                     removeAction={this.removeAction}
                     action={this.state.action}
-                    questions={this.state.questions}
+                    questions={[].concat(this.state.questions)}
                     toggleGSModal={this.props.toggleGSModal}
                     closeGSModal={this.props.closeGSModal}
                     updateActionStatus={this.updateActionStatus} />

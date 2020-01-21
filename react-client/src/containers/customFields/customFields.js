@@ -237,20 +237,20 @@ class CustomFields extends React.Component {
                               style={{ height: '53px' }}>
                               <th data-field='name'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{ width: '100px' }}>Name</span>
+                                <span style={{ width: '150px' }}>Name</span>
                               </th>
                               <th data-field='type'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{ width: '100px' }}>Type</span>
+                                <span style={{ width: '150px' }}>Type</span>
                               </th>
                               <th data-field='description'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{ width: '200px' }}>Description</span>
+                                <span style={{ width: '300px' }}>Description</span>
                               </th>
-                              <th data-field='actions'
+                              {/* <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{ width: '150px' }}>Actions</span>
-                              </th>
+                              </th> */}
                             </tr>
                           </thead>
                           <tbody className='m-datatable__body'>
@@ -259,10 +259,10 @@ class CustomFields extends React.Component {
                                 <tr data-row={i}
                                   className='m-datatable__row m-datatable__row--even'
                                   style={{ height: '55px' }} key={i}>
-                                  <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{field.name}</span></td>
-                                  <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{field.type}</span></td>
-                                  <td data-field='description' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '200px' }}>{field.description}</span></td>
-                                  <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                  <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{field.name}</span></td>
+                                  <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{field.type}</span></td>
+                                  <td data-field='description' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '300px' }}>{field.description}</span></td>
+                                  {/* <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '150px' }}>
                                         <button className='btn btn-primary btn-sm'
                                             style={{ float: 'right', margin: 2 }}>
@@ -273,7 +273,7 @@ class CustomFields extends React.Component {
                                             Edit
                                         </button>
                                     </span>
-                                  </td>
+                                  </td> */}
                                 </tr>
                               ))
                             }

@@ -189,7 +189,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={'/customFields'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
+              <i className='m-menu__link-icon flaticon-profile' title='Custom Fields' />
               <span className='m-menu__link-text'>Custom Fields</span>
             </Link>
           </li>
