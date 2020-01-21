@@ -37,6 +37,7 @@ class Subscriber extends React.Component {
       filterByPage: '',
       filteredData: '',
       filterByTag: '',
+      filterBySource: '',
       searchValue: '',
       statusValue: '',
       tagValue: '',
@@ -156,6 +157,7 @@ class Subscriber extends React.Component {
     this.updateOption = this.updateOption.bind(this)
     this.loadsubscriberData = this.loadsubscriberData.bind(this)
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
+    this.handleFilterBySource = this.handleFilterBySource.bind(this)
   }
 
   saveSetCustomField() {
@@ -1233,6 +1235,45 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
 
+  handleFilterBySource(e) {
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({ filter: true, filterBySource: e.target.value, pageSelected: 0 })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: 
+          { 
+            search_value: this.state.searchValue, 
+            gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+            page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+            locale_value: e.target.value === 'all' ? '' : this.state.filterByLocale, 
+            tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+            status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+            source_value: e.target.value === 'all' ? '' : e.target.value
+          } 
+        })
+    } else {
+      this.setState({ filterBySource: '', pageSelected: 0 })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: e.target.value === 'all' ? '' : e.target.value
+        } 
+      })
+    }
+  }
+
   handleFilterByStatus(e) {
     // var filteredData = this.props.subscribers
     // filteredData = this.stackPageFilter(filteredData)
@@ -1544,6 +1585,22 @@ class Subscriber extends React.Component {
                                       </select>
                                     </div>
                                   </div>
+                                </div>
+
+                                <div style={{marginTop: '20px'}} className='col-md-3'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterBySource} onChange={this.handleFilterBySource}>
+                                          <option value='' disabled>Filter by Source...</option>
+                                          <option value='all'>All</option>
+                                          <option value='direct_message'>Direct Message</option>
+                                          <option value='customer_matching'>Phone Number</option>
+                                          <option value='chat_plugin'>Chat Plugin</option>
+                                          <option value='shopify'>Shopify</option>
+                                        </select>
+                                      </div>
+                                  </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
                                 </div>
                               </div>
                               <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
