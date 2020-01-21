@@ -8,8 +8,6 @@ import { Link } from 'react-router-dom'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
-import CreateCustomField from '../../components/customFields/createCustomField'
-import CustomFields from '../../components/customFields/customfields'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -1280,8 +1278,6 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-        <CustomFields />
-        <CreateCustomField />
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -1908,30 +1904,35 @@ class Subscriber extends React.Component {
                                       : <span>Show <i style={{ fontSize: '12px' }} className='la la-angle-down ' /></span>
                                     }
                                   </a>
-                                  <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</a>
+                                  <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
                                 </span>
-                                : <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px' }}><i className='la la-gear' /> Manage Fields</a>
+                                :                         
+                                <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
                               }
                             </div>
                             <div className='row'>
                               {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
                                 ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                                   {
-                                    this.state.subscriber.customFields.map((field, i) => (
-                                      <div className='row'>
-                                        <div className='col-sm-12'>
-                                          <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
-                                            onMouseEnter={() => { this.hoverOn(field._id) }}
-                                            onMouseLeave={this.hoverOff}
-                                            style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
-                                            <span style={{ marginLeft: '10px' }}>
-                                              <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                              <span style={{ color: '#3c3c7b' }}>{field.value !== '' ? field.value : 'Not Set'}</span>
-                                            </span>
+                                    this.state.subscriber.customFields.map((field, i) => {
+                                      if (field.value) {
+                                        return (
+                                          <div className='row'>
+                                            <div className='col-sm-12'>
+                                              <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
+                                                onMouseEnter={() => { this.hoverOn(field._id) }}
+                                                onMouseLeave={this.hoverOff}
+                                                style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                                                <span style={{ marginLeft: '10px' }}>
+                                                  <span style={{ fontWeight: '100' }}>{field.name} : </span>
+                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>                                              
+                                                </span>
+                                              </div>
+                                            </div>
                                           </div>
-                                        </div>
-                                      </div>
-                                    ))
+                                        )
+                                      }
+                                    })
                                   }
                                   <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
                                     <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
