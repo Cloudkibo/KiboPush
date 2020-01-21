@@ -26,7 +26,14 @@ class Autoposting extends React.Component {
     this.gotoMessages = this.gotoMessages.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
+    this.gotoRssIntegration = this.gotoRssIntegration.bind(this)
   }
+  gotoRssIntegration () {
+    this.props.history.push({
+      pathname: `/rssIntegration`
+    })
+  }
+
   scrollToTop() {
     this.top.scrollIntoView({ behavior: 'instant' })
   }
@@ -232,7 +239,7 @@ class Autoposting extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel addFeedClose={this.refs.addFeedClose} msg={this.msg} openGuidelines={this.viewGuide} />
+                <AddChannel addFeedClose={this.refs.addFeedClose} msg={this.msg} openGuidelines={this.viewGuide} gotoRssIntegration={this.gotoRssIntegration}/>
               </div>
             </div>
           </div>
