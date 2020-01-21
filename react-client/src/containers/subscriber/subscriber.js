@@ -44,6 +44,7 @@ class Subscriber extends React.Component {
       filterPage: '',
       filterGender: '',
       filterLocale: '',
+      filterSource: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
@@ -996,6 +997,25 @@ class Subscriber extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('next Props in subscribers', nextProps)
     console.log('nextProps in subscribers', nextProps)
+    if (nextProps.pages && !this.state.filterByPage) {
+      this.setState({ filterByPage: nextProps.pages[0]._id, filterPage: nextProps.pages[0].pageName }, () => {
+        this.props.loadAllSubscribersListNew({ 
+          last_id: 'none', 
+          number_of_records: 10, 
+          first_page: 'first', 
+          filter: false, 
+          filter_criteria: { 
+            search_value: '', 
+            gender_value: '', 
+            page_value: '', 
+            locale_value: '', 
+            tag_value: '', 
+            status_value: '',
+            source_value: '' 
+          } 
+        })
+      })
+    }
     if (nextProps.subscribers && nextProps.count) {
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count })
@@ -1114,128 +1134,204 @@ class Subscriber extends React.Component {
 
   handleFilterByTag(e) {
     this.setState({ tagValue: e.target.value })
-    //  this.setState({searchValue: ''})
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    //  var filtered = []
     console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, filterByTag: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].tags) {
-      //     for (var i = 0; i < filteredData[k].tags.length; i++) {
-      //       if (filteredData[k].tags[i] === e.target.value) {
-      //         filtered.push(filteredData[k])
-      //         break
-      //       }
-      //     }
-      //   }
-      // }
-      // filteredData = filtered
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: e.target.value === 'all' ? '' : e.target.value, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     } else {
       this.setState({ filterByTag: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: e.target.value === 'all' ? '' : e.target.value,
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
+
   handleFilterByPage(e) {
     this.setState({ filterPage: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: e.target.value === 'all' ? '' : e.target.value, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     } else {
       this.setState({ filterByPage: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: e.target.value === 'all' ? '' : e.target.value, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByPageInitial(pageId, isSubscribed) {
     this.setState({ filterByPage: pageId })
     if (pageId !== '' && pageId !== 'all') {
       this.setState({ filter: true })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender, 
+          page_value: pageId, 
+          locale_value: this.state.filterByLocale, 
+          tag_value: this.state.filterByTag, 
+          status_value: isSubscribed,
+          source_value: this.state.filterBySource 
+        } 
+      })
     } else {
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: false, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender, 
+          page_value: this.state.filterPage, 
+          locale_value: this.state.filterByLocale, 
+          tag_value: this.state.filterByTag, 
+          status_value: this.state.status_value,
+          source_value: this.state.filterBySource
+        } 
+      })
     }
   }
   handleFilterByGender(e) {
     this.setState({ filterGender: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByGender: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.setState({ 
+        filter: true, 
+        filterByGender: e.target.value, 
+        pageSelected: 0 
+      })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: e.target.value === 'all' ? '' : e.target.value, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
+        } 
+      })
     } else {
       this.setState({ filterByGender: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: e.target.value === 'all' ? '' : e.target.value, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByLocale(e) {
     this.setState({ filterLocale: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, filterByLocale: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: e.target.value === 'all' ? '' : e.target.value, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+        } 
+      })
     } else {
       this.setState({ filterByLocale: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.props.loadAllSubscribersListNew({ 
+        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+        number_of_records: 10, 
+        first_page: 'first', 
+        filter: true, 
+        filter_criteria: { 
+          search_value: this.state.searchValue, 
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+          locale_value: e.target.value === 'all' ? '' : e.target.value, 
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
+        } 
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterBySource(e) {
+    this.setState({filterSource: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, filterBySource: e.target.value, pageSelected: 0 })
       this.props.loadAllSubscribersListNew({ 
@@ -1243,8 +1339,7 @@ class Subscriber extends React.Component {
         number_of_records: 10, 
         first_page: 'first', 
         filter: true, 
-        filter_criteria: 
-          { 
+        filter_criteria: { 
             search_value: this.state.searchValue, 
             gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
             page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
@@ -1548,7 +1643,7 @@ class Subscriber extends React.Component {
                                     <div className='m-form__control'>
                                       <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
                                         <option key='' value='' disabled>Filter by Locale...</option>
-                                        <option key='ALL' value='all'>ALL</option>
+                                        <option key='ALL' value='all'>All</option>
                                         {
                                           this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
                                           this.props.locales.map((locale, i) => (
@@ -1564,7 +1659,7 @@ class Subscriber extends React.Component {
                                     <div className='m-form__control'>
                                       <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
                                         <option key='' value='' disabled>Filter by Tags...</option>
-                                        <option key='ALL' value='all'>ALL</option>
+                                        <option key='ALL' value='all'>All</option>
                                         {
                                           this.state.options.map((tag, i) => (
                                             <option key={i} value={tag.label}>{tag.label}</option>
@@ -1579,7 +1674,7 @@ class Subscriber extends React.Component {
                                     <div className='m-form__control'>
                                       <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
                                         <option key='' value='' disabled>Filter by Status...</option>
-                                        <option key='ALL' value='all'>ALL</option>
+                                        <option key='ALL' value='all'>All</option>
                                         <option key='subscribed' value='subscribed'>Subscribed</option>
                                         <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
                                       </select>
@@ -1590,7 +1685,7 @@ class Subscriber extends React.Component {
                                 <div style={{marginTop: '20px'}} className='col-md-3'>
                                     <div className='m-form__group m-form__group--inline'>
                                       <div className='m-form__control'>
-                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterBySource} onChange={this.handleFilterBySource}>
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterSource} onChange={this.handleFilterBySource}>
                                           <option value='' disabled>Filter by Source...</option>
                                           <option value='all'>All</option>
                                           <option value='direct_message'>Direct Message</option>
@@ -1855,7 +1950,11 @@ class Subscriber extends React.Component {
                             </div>
                           </div>
                           : <div className='table-responsive'>
-                            <h6> No subscribers found that match the criteria </h6>
+                            {
+                              this.state.subscribersData.length === 0 ? 
+                              <h6> No subscribers found that match the criteria </h6>
+                              : <h6> Loading subscribers... </h6>
+                            }
                           </div>
                         }
                         <div className='m-form m-form--label-align-right m--margin-bottom-30'>
@@ -1872,7 +1971,12 @@ class Subscriber extends React.Component {
                     </div> :
                     <div className='m-portlet__body'>
                       <div className='table-responsive'>
-                        <h5> Please select a page to view subscribers for that page </h5>
+                        {
+                          this.props.pages && this.props.pages.length === 0 ? 
+                          <h6> No pages connected. Please first connect a page. </h6>
+                          : 
+                          <h6> Loading... </h6>
+                        }
                       </div>
                     </div>
                   }
