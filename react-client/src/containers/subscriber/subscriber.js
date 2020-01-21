@@ -921,57 +921,11 @@ class Subscriber extends React.Component {
   }
   handlePageClick(data) {
     if (data.selected === 0) {
-      this.props.loadAllSubscribersListNew({
-        last_id: 'none',
-        number_of_records: 10,
-        first_page: 'first',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value,
-          source_value: this.state.source_value
-        }
-      })
+      this.loadSubscribers()
     } else if (this.state.pageSelected < data.selected) {
-      this.props.loadAllSubscribersListNew({
-        current_page: this.state.pageSelected,
-        requested_page: data.selected,
-        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
-        number_of_records: 10,
-        first_page: 'next',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value,
-          source_value: this.state.source_value
-        }
-      })
+      this.loadSubscribers(this.state.pageSelected, data.selected)
     } else {
-      this.props.loadAllSubscribersListNew({
-        current_page: this.state.pageSelected,
-        requested_page: data.selected,
-        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[0]._id : 'none',
-        number_of_records: 10,
-        first_page: 'previous',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value,
-          source_value: this.state.source_value
-        }
-      })
+      this.loadSubscribers(this.state.pageSelected, data.selected)
     }
     this.setState({ pageSelected: data.selected })
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -989,11 +943,13 @@ class Subscriber extends React.Component {
     }
   }
 
-  loadSubscribers () {
+  loadSubscribers (currentPage, requestedPage) {
     this.props.loadAllSubscribersListNew({ 
+      current_page: currentPage,
+      requested_page: requestedPage,
       last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
       number_of_records: 10, 
-      first_page: 'first', 
+      first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first', 
       filter: this.state.filter, 
       filter_criteria: { 
         search_value: this.state.searchValue, 
