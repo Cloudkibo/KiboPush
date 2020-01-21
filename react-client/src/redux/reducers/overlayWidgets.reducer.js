@@ -47,7 +47,8 @@ export function overlayWidgetsInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SHOW_OVERLAY_WIDGETS:
       return Object.assign({}, state, {
-        overlayWidgets: action.data
+        overlayWidgets: action.overlayWidgets,
+        widgetsCount: action.count
       })
     case ActionTypes.SAVE_CURRENT_WIDGET:
       return Object.assign({}, state, {

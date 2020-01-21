@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import CustomFieldActions from './CustomFieldActions'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotActions from './hubspot/HubspotActions'
+import { getIntegrations } from '../../redux/actions/settings.actions'
 
 class UserInputActions extends React.Component {
   constructor (props) {
@@ -11,8 +14,11 @@ class UserInputActions extends React.Component {
         openGoogleSheets: props.action && props.action.type === 'google_sheets' ? true : false,
         openHubspot: props.action && props.action.type === 'hubspot' ? true : false,
         questions: props.questions,
-        openPopover: props.action && props.action.type ? true : false
+        openPopover: props.action && props.action.type ? true : false,
+        googleIntegration: '', 
+        hubspotIntegration: ''
     }
+    props.getIntegrations()
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.showCustomField = this.showCustomField.bind(this)
@@ -53,14 +59,24 @@ class UserInputActions extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps UserInputActions', nextProps)
+    if (nextProps.integrations && nextProps.integrations.length > 0) {
+      let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+      let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
+      if (googleIntegration && googleIntegration.length > 0) {
+        this.setState({ googleIntegration: googleIntegration[0] })
+      }
+      if (hubspotIntegration && hubspotIntegration.length > 0) {
+        this.setState({ hubspotIntegration: hubspotIntegration[0] })
+      }
+    }
   }
 
   getMappingData () {
+    //debugger;
     if (this.props.questions) {
       let mappingData = []
       for (let i = 0; i < this.props.questions.length; i++) {
         if (this.props.action && this.props.action.mapping) {
-          //debugger;
           let mapping = this.props.action.mapping
           let mappingExists = false
           for (let j = 0; j < mapping.length; j++) {
@@ -96,6 +112,7 @@ class UserInputActions extends React.Component {
           }
         }
       }
+      console.log('getMappingData', mappingData)
       return mappingData
     }
   }
@@ -131,13 +148,19 @@ class UserInputActions extends React.Component {
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Custom Fields</h7>
                   </div>
 
-                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showGoogleSheets}>
-                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Google Sheets</h7>
-                  </div>
-
+                  {
+                  this.state.googleIntegration && this.state.googleIntegration.enabled &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showGoogleSheets}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Google Sheets</h7>
+                    </div>
+                  }
+                  
+                  {
+                  this.state.hubspotIntegration && this.state.hubspotIntegration.enabled &&
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginTop: '10px'}} onClick={this.showHubspot}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Hubspot</h7>
                   </div>
+                  }
                 </div>
             }
             {
@@ -239,4 +262,17 @@ class UserInputActions extends React.Component {
   }
 }
 
-export default UserInputActions
+function mapStateToProps(state) {
+  console.log('UserInputActions mapStateToProps', state)
+  return {
+    integrations: (state.settingsInfo.integrations)
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    getIntegrations
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(UserInputActions)
+
