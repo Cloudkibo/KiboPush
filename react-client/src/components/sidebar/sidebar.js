@@ -200,6 +200,23 @@ class Sidebar extends Component {
     }
   }
 
+  showTags() {
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to={'/tags'} className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
+              <span className='m-menu__link-text'>Tags</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showSponsoredMessaging () {
     if (this.props.user) {
       // include user persmissions
@@ -1107,6 +1124,7 @@ class Sidebar extends Component {
                   {this.showDashboard()}
                   {this.showSubscribersItem()}
                   {this.showCustomFields()}
+                  {this.showTags()}
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
