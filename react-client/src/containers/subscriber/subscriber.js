@@ -8,14 +8,12 @@ import { Link } from 'react-router-dom'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe, updatePicture } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { setCustomFieldValue, loadCustomFields } from '../../redux/actions/customFields.actions'
-import CreateCustomField from '../../components/customFields/createCustomField'
-import CustomFields from '../../components/customFields/customfields'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
 import fileDownload from 'js-file-download'
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
+import { Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import EditTags from './editTags'
@@ -37,12 +35,14 @@ class Subscriber extends React.Component {
       filterByPage: '',
       filteredData: '',
       filterByTag: '',
+      filterBySource: '',
       searchValue: '',
       statusValue: '',
       tagValue: '',
       filterPage: '',
       filterGender: '',
       filterLocale: '',
+      filterSource: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
@@ -83,9 +83,9 @@ class Subscriber extends React.Component {
     props.allLocales()
     props.fetchAllSequence()
     props.loadMyPagesList()
-    if (!this.props.location.state) {
-      props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: '' } })
-    }
+    // if (!this.props.location.state) {
+    //   props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: '' } })
+    // }
     props.loadTags()
     props.loadCustomFields()
     this.handleAdd = this.handleAdd.bind(this)
@@ -156,6 +156,8 @@ class Subscriber extends React.Component {
     this.updateOption = this.updateOption.bind(this)
     this.loadsubscriberData = this.loadsubscriberData.bind(this)
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
+    this.handleFilterBySource = this.handleFilterBySource.bind(this)
+    this.loadSubscribers = this.loadSubscribers.bind(this)
   }
 
   saveSetCustomField() {
@@ -171,6 +173,15 @@ class Subscriber extends React.Component {
   handleBulkResponse(res) {
     if (res.status === 'success') {
       this.msg.success('Value set successfully')
+      let subscribersData = this.state.subscribersData
+      for (var i = 0; i < subscribersData.length; i++) {
+          subscribersData[i].selected = false
+      }
+      this.setState({
+        selectAllChecked: false,
+        showBulkActions: false,
+        subscribersData
+      })
       let selectedSubscribers = this.selectedSubscribers()
       let temp = this.state.subscribersData
       selectedSubscribers.forEach((subscriberId, i) => {
@@ -225,28 +236,35 @@ class Subscriber extends React.Component {
     this.setState({ selectedBulkField: temp })
   }
 
-  handleSelectBulkCustomField(value) {
-    console.log('findme', value)
-    var index = 0
-    if (value) {
-      for (var i = 0; i < this.props.customFields.length; i++) {
-        if (this.props.customFields[i].name !== value.label) {
-          index++
-        }
-      }
-      if (index === this.props.customFields.length) {
-      } else {
-        this.setState({
-          saveBulkFieldDisable: false,
-          selectedBulkField: value
-        })
-      }
-    } else {
+  handleSelectBulkCustomField(e) {
+    let customField = this.state.customFieldOptions.find(cf => cf._id === e.target.value)
+    console.log('handleSelectBulkCustomField', customField)
+    if (customField) {
       this.setState({
-        saveBulkFieldDisable: true,
-        selectedBulkField: value
+        selectedBulkField: customField
       })
     }
+    // console.log('findme', value)
+    // var index = 0
+    // if (value) {
+    //   for (var i = 0; i < this.props.customFields.length; i++) {
+    //     if (this.props.customFields[i].name !== value.label) {
+    //       index++
+    //     }
+    //   }
+    //   if (index === this.props.customFields.length) {
+    //   } else {
+    //     this.setState({
+    //       saveBulkFieldDisable: false,
+    //       selectedBulkField: value
+    //     })
+    //   }
+    // } else {
+    //   this.setState({
+    //     saveBulkFieldDisable: true,
+    //     selectedBulkField: value
+    //   })
+    // }
   }
 
   toggleSetCustomField() {
@@ -362,7 +380,7 @@ class Subscriber extends React.Component {
   }
   handleSubscription(res, action) {
     if (res.status === 'success') {
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
+      this.loadSubscribers()
       if (action === 'sub') {
         this.msg.success('Subscribed Successfully')
       }
@@ -385,14 +403,14 @@ class Subscriber extends React.Component {
   }
   loadsubscriberData(data) {
     if (data.tag_value === false) {
-      this.setState({ filterByTag: '' })
-      this.props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '', status_value: this.state.status_value } })
-
+      this.setState({ filterByTag: '' }, () => {
+        this.loadSubscribers()
+      })
     }
     else if (data.tag_value === true) {
-      this.setState({ filterByTag: '' })
-      this.props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
-
+      this.setState({ filterByTag: '' }, () => {
+        this.loadSubscribers()
+      })
     }
   }
 
@@ -486,7 +504,8 @@ class Subscriber extends React.Component {
       saveEnable: false
     })
   }
-  createUnassignPayload() {
+  createUnassignPayload(tagId) {
+    let tag = this.state.options.find(t => t.value === tagId)
     var payload = {}
     var selectedIds = []
     var subscribers = this.state.subscribersDataAll
@@ -494,7 +513,7 @@ class Subscriber extends React.Component {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
         for (var j = 0; j < subscribers[i].tags.length; j++) {
-          if (subscribers[i].tags[j] !== this.state.removeTag.label) {
+          if (subscribers[i].tags[j] !== tag.label) {
             index++
           }
         }
@@ -504,11 +523,12 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.removeTag.label
+    payload.tag = tag.label
     return payload
   }
-  createAssignPayload() {
-    console.log('this.state.addTag', this.state.addTag)
+  createAssignPayload(tagId) {
+    let tag = this.state.options.find(t => t.value === tagId)
+    console.log('createAssignPayload', tag)
     console.log('this.state.subscribersDataAll', this.state.subscribersDataAll)
     var payload = {}
     var selectedIds = []
@@ -517,7 +537,7 @@ class Subscriber extends React.Component {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
         for (var j = 0; j < subscribers[i].tags.length; j++) {
-          if (subscribers[i].tags[j] !== this.state.addTag.label) {
+          if (subscribers[i].tags[j] !== tag.label) {
             index++
           }
         }
@@ -527,11 +547,13 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.addTag.label
+    payload.tag = tag.label
     return payload
   }
-  addTags() {
-    var payload = this.createAssignPayload()
+
+  addTags(e) {
+    console.log('addTags', e.target.value)
+    var payload = this.createAssignPayload(e.target.value)
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -540,6 +562,7 @@ class Subscriber extends React.Component {
       }
     }
   }
+
   addTagsIndividual(subscriber) {
     var payload = {}
     var subscribers = []
@@ -562,7 +585,8 @@ class Subscriber extends React.Component {
     }
   }
 
-  subscribeToSequence() {
+  subscribeToSequence(e) {
+    let sequenceId = e.target.value
     let subscribers = []
     for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
       if (this.state.subscribersDataAll[i].selected) {
@@ -570,12 +594,12 @@ class Subscriber extends React.Component {
       }
     }
     let data = {
-      sequenceId: this.state.sequenceValue,
+      sequenceId,
       subscriberIds: subscribers,
       fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
     this.props.subscribeToSequence(data, this.msg)
-    this.setState({ selectAllChecked: false, sequenceValue: '' })
+    this.setState({ selectAllChecked: false, showBulkActions: false, sequenceValue: '' })
   }
 
   removeSequence(sequenceId) {
@@ -587,7 +611,8 @@ class Subscriber extends React.Component {
     this.props.unsubscribeToSequence(data, this.msg, this.handleSeqResponse)
   }
 
-  unsubscribeToSequence() {
+  unsubscribeToSequence(e) {
+    let sequenceId = e.target.value
     let subscribers = []
     for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
       if (this.state.subscribersDataAll[i].selected) {
@@ -595,22 +620,24 @@ class Subscriber extends React.Component {
       }
     }
     let data = {
-      sequenceId: this.state.sequenceValue,
+      sequenceId,
       subscriberIds: subscribers
     }
     this.props.unsubscribeToSequence(data, this.msg)
-    this.setState({ selectAllChecked: false, sequenceValue: '' })
+    this.setState({ selectAllChecked: false, showBulkActions: false, sequenceValue: '' })
   }
 
   handleSaveTags() {
-    this.props.loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
     this.setState({
-      selectAllChecked: false
+      selectAllChecked: false,
+      showBulkActions: false
+    }, () => {
+      this.loadSubscribers()
     })
   }
 
-  removeTags() {
-    var payload = this.createUnassignPayload()
+  removeTags(e) {
+    var payload = this.createUnassignPayload(e.target.value)
     if (payload.subscribers.length > 0) {
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -760,24 +787,13 @@ class Subscriber extends React.Component {
   searchSubscriber(event) {
     this.setState({ searchValue: event.target.value, pageSelected: 0 })
     if (event.target.value !== '') {
-      this.setState({ filter: true })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: event.target.value, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
-
-      // var filtered = []
-      // var data = this.props.subscribers
-      // if (this.state.filteredData !== '') {
-      //   data = this.state.filteredData
-      // }
-      // for (let i = 0; i < data.length; i++) {
-      //   var fullName = data[i].firstName + ' ' + data[i].lastName
-      //   if (data[i].firstName.toLowerCase().includes((event.target.value).toLowerCase()) || data[i].lastName.toLowerCase().includes((event.target.value).toLowerCase()) || fullName.toLowerCase().includes((event.target.value).toLowerCase())) {
-      //     filtered.push(data[i])
-      //   }
-      // }
-      // this.displayData(0, filtered)
-      // this.setState({ totalLength: filtered.length })
+    this.setState({ searchValue: event.target.value, pageSelected: 0, filter: true }, () => {
+      this.loadSubscribers()
+    })
     } else {
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: { search_value: '', gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
+      this.setState({ searchValue: event.target.value, pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
 
   }
@@ -804,7 +820,8 @@ class Subscriber extends React.Component {
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
-          selectAllChecked: true
+          selectAllChecked: true,
+          showBulkActions: true
         })
         for (var i = 0; i < this.state.subscribersDataAll.length; i++) {
           subscribersAll[i].selected = true
@@ -814,7 +831,8 @@ class Subscriber extends React.Component {
         }
       } else {
         this.setState({
-          selectAllChecked: false
+          selectAllChecked: false,
+          showBulkActions: false
         })
         for (var k = 0; k < this.state.subscribersDataAll.length; k++) {
           subscribersAll[k].selected = false
@@ -829,6 +847,9 @@ class Subscriber extends React.Component {
     }
     if (e.target.value !== '') {
       if (e.target.checked) {
+        this.setState({
+          showBulkActions: true
+        })
         for (var p = 0; p < this.state.subscribersDataAll.length; p++) {
           if (subscribersAll[p]._id === subscribers[e.target.value]._id) {
             subscribersAll[p].selected = true
@@ -838,10 +859,19 @@ class Subscriber extends React.Component {
         this.setState({ subscribersData: subscribers })
         this.setState({ subscribersDataAll: subscribersAll })
       } else {
+        let anySelected = false
         for (var q = 0; q < this.state.subscribersDataAll.length; q++) {
           if (subscribersAll[q]._id === subscribers[e.target.value]._id) {
             subscribersAll[q].selected = false
           }
+          if (subscribersAll[q].selected) {
+            anySelected = true
+          }
+        }
+        if (!anySelected) {
+          this.setState({
+            showBulkActions: false
+          })
         }
         subscribers[e.target.value].selected = false
         this.setState({ subscribersData: subscribers })
@@ -889,54 +919,11 @@ class Subscriber extends React.Component {
   }
   handlePageClick(data) {
     if (data.selected === 0) {
-      this.props.loadAllSubscribersListNew({
-        last_id: 'none',
-        number_of_records: 10,
-        first_page: 'first',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value
-        }
-      })
+      this.loadSubscribers()
     } else if (this.state.pageSelected < data.selected) {
-      this.props.loadAllSubscribersListNew({
-        current_page: this.state.pageSelected,
-        requested_page: data.selected,
-        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
-        number_of_records: 10,
-        first_page: 'next',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value
-        }
-      })
+      this.loadSubscribers(this.state.pageSelected, data.selected)
     } else {
-      this.props.loadAllSubscribersListNew({
-        current_page: this.state.pageSelected,
-        requested_page: data.selected,
-        last_id: this.props.subscribers.length > 0 ? this.props.subscribers[0]._id : 'none',
-        number_of_records: 10,
-        first_page: 'previous',
-        filter: this.state.filter,
-        filter_criteria: {
-          search_value: this.state.searchValue,
-          gender_value: this.state.filterByGender,
-          page_value: this.state.filterByPage,
-          locale_value: this.state.filterByLocale,
-          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-          status_value: this.state.status_value
-        }
-      })
+      this.loadSubscribers(this.state.pageSelected, data.selected)
     }
     this.setState({ pageSelected: data.selected })
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -953,9 +940,36 @@ class Subscriber extends React.Component {
       })
     }
   }
+
+  loadSubscribers (currentPage, requestedPage) {
+    this.props.loadAllSubscribersListNew({ 
+      current_page: currentPage,
+      requested_page: requestedPage,
+      last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
+      number_of_records: 10, 
+      first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first', 
+      filter: this.state.filter, 
+      filter_criteria: { 
+        search_value: this.state.searchValue, 
+        gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
+        page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
+        locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
+        tag_value: this.state.tag_value === 'all' ? '' : this.state.tag_value, 
+        status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+        source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
+      } 
+    })
+  }
+
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('next Props in subscribers', nextProps)
     console.log('nextProps in subscribers', nextProps)
+    if (nextProps.pages && !this.state.filterByPage) {
+      this.setState({ filterByPage: nextProps.pages[0]._id, filterPage: nextProps.pages[0].pageName }, () => {
+        this.loadSubscribers()
+      })
+    }
     if (nextProps.subscribers && nextProps.count) {
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count })
@@ -1074,125 +1088,82 @@ class Subscriber extends React.Component {
 
   handleFilterByTag(e) {
     this.setState({ tagValue: e.target.value })
-    //  this.setState({searchValue: ''})
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    //  var filtered = []
     console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByTag: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].tags) {
-      //     for (var i = 0; i < filteredData[k].tags.length; i++) {
-      //       if (filteredData[k].tags[i] === e.target.value) {
-      //         filtered.push(filteredData[k])
-      //         break
-      //       }
-      //     }
-      //   }
-      // }
-      // filteredData = filtered
+      this.setState({ filter: true, filterByTag: e.target.value, pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     } else {
-      this.setState({ filterByTag: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: e.target.value === 'all' ? '' : e.target.value, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.setState({ filterByTag: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
+
   handleFilterByPage(e) {
     this.setState({ filterPage: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     } else {
-      this.setState({ filterByPage: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: e.target.value === 'all' ? '' : e.target.value, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.setState({ filterByPage: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByPageInitial(pageId, isSubscribed) {
     this.setState({ filterByPage: pageId })
     if (pageId !== '' && pageId !== 'all') {
-      this.setState({ filter: true })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed } })
+      this.setState({ filter: true }, () => {
+        this.loadSubscribers()
+      })
     } else {
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value } })
+      this.loadSubscribers()
     }
   }
   handleFilterByGender(e) {
     this.setState({ filterGender: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackLocaleFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByGender: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.setState({ 
+        filter: true, 
+        filterByGender: e.target.value, 
+        pageSelected: 0 
+      }, () => {
+        this.loadSubscribers()
+      })
     } else {
-      this.setState({ filterByGender: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: e.target.value === 'all' ? '' : e.target.value, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.setState({ filterByGender: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByLocale(e) {
     this.setState({ filterLocale: e.target.value })
-    // var filteredData = this.props.subscribers
-    // filteredData = this.stackPageFilter(filteredData)
-    // filteredData = this.stackGenderFilter(filteredData)
-    // filteredData = this.stackTagFilter(filteredData)
-    // filteredData = this.stackStatusFilter(filteredData)
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByLocale: e.target.value, pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
-      // for (var k = 0; k < filteredData.length; k++) {
-      //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
-      //     filtered.push(filteredData[k])
-      //   }
-      // }
-      // filteredData = filtered
+      this.setState({ filter: true, filterByLocale: e.target.value, pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     } else {
-      this.setState({ filterByLocale: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: e.target.value === 'all' ? '' : e.target.value, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: this.state.status_value === 'all' ? '' : this.state.status_value } })
+      this.setState({ filterByLocale: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
-    // this.setState({filteredData: filteredData})
-    // this.displayData(0, filteredData)
-    // this.setState({pageSelected: 0})
-    // this.setState({ totalLength: filteredData.length })
+  }
+
+  handleFilterBySource(e) {
+    this.setState({filterSource: e.target.value})
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({ filter: true, filterBySource: e.target.value, pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
+    } else {
+      this.setState({ filterBySource: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
+    }
   }
 
   handleFilterByStatus(e) {
@@ -1206,11 +1177,13 @@ class Subscriber extends React.Component {
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, pageSelected: 0 })
       if (e.target.value === 'subscribed') {
-        this.setState({ status_value: true })
-        this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: true } })
+        this.setState({ status_value: true }, () => { 
+          this.loadSubscribers()
+        })
       } else {
-        this.setState({ status_value: false })
-        this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: false } })
+        this.setState({ status_value: false }, () => {
+          this.loadSubscribers()
+        })
       }
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
@@ -1221,8 +1194,9 @@ class Subscriber extends React.Component {
       // }
       // filteredData = filtered
     } else {
-      this.setState({ status_value: '', pageSelected: 0 })
-      this.props.loadAllSubscribersListNew({ last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, status_value: '' } })
+      this.setState({ status_value: '', pageSelected: 0 }, () => {
+        this.loadSubscribers()
+      })
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -1231,6 +1205,7 @@ class Subscriber extends React.Component {
   }
 
   render() {
+    console.log('subscriber state', this.state)
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
     console.log('subscriber props', this.props)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
@@ -1266,33 +1241,6 @@ class Subscriber extends React.Component {
         <option key='true' value='true'>True</option>
         <option key='false' value='false'>False</option>
       </select>
-    }
-    let setBulkFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
-    if (this.state.selectedBulkField) {
-      if (this.state.selectedBulkField.type === 'text' || this.state.selectedBulkField.type === 'number') {
-        setBulkFieldInput = <input
-          className='form-control m-input'
-          placeholder='value'
-          onChange={this.handleBulkSetCustomField}
-          value={this.state.selectedBulkField.value}
-        />
-      } else if (this.state.selectedBulkField.type === 'date') {
-        setBulkFieldInput = <input className='form-control m-input'
-          value={this.state.selectedBulkField.value}
-          onChange={this.handleBulkSetCustomField}
-          type='date' />
-      } else if (this.state.selectedBulkField.type === 'datetime') {
-        setBulkFieldInput = <input className='form-control m-input'
-          value={this.state.selectedBulkField.value}
-          onChange={this.handleBulkSetCustomField}
-          type='datetime-local' />
-      } else if (this.state.selectedBulkField.type === 'true/false') {
-        setBulkFieldInput = <select className='custom-select' id='type' value={this.state.selectedBulkField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleBulkSetCustomField}>
-          <option key='' value='' selected disabled>...Select...</option>
-          <option key='true' value='true'>True</option>
-          <option key='false' value='false'>False</option>
-        </select>
-      }
     }
     var hostname = window.location.hostname
     var hoverOn = {
@@ -1330,8 +1278,6 @@ class Subscriber extends React.Component {
 
     return (
       <div>
-        <CustomFields />
-        <CreateCustomField />
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -1376,7 +1322,7 @@ class Subscriber extends React.Component {
               this.props.pages && this.props.pages.length === 0 &&
               <AlertMessage type='page' />
             }
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div style={{width: '74vw'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-technology m--font-accent' />
               </div>
@@ -1391,9 +1337,26 @@ class Subscriber extends React.Component {
                   <div className='m-portlet__head'>
                     <div className='m-portlet__head-caption'>
                       <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Page Subscribers
-                        </h3>
+                        <div className='row'>
+                          <div className='col-7' style={{marginTop: '20px'}}>
+                            <div className='m-form__control'>
+                              <select className='custom-select' id='m_form_type' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
+                                <option key='' value='' disabled>Select a Page</option>
+                                {
+                                  this.props.pages && this.props.pages.map((page, i) => (
+                                    <option key={i} value={page._id}>{page.pageName}</option>
+                                  ))
+                                }
+                              </select>
+                            </div>
+                          </div>
+                          <div className='col-5' style={{marginLeft: '-20px', marginTop: '30px'}}>
+                            <h3 className='m-portlet__head-text'>
+                              Subscribers
+                            </h3>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
@@ -1422,450 +1385,372 @@ class Subscriber extends React.Component {
                       }
                     </div>
                   </div>
-                  <div className='m-portlet__body'>
-                    <div style={{ marginTop: '-50px' }}>
-                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                        <div className='row align-items-center'>
-                          <div className='col-xl-12 order-2 order-xl-1'>
+                  {this.state.filterPage ?
+                    <div className='m-portlet__body'>
+                      <div style={{ marginTop: '-50px' }}>
+                        <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                          <div className='row align-items-center'>
+                            {
+                              !this.state.showBulkActions ?
+                                <div className='col-xl-12 order-2 order-xl-1'>
+                                <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Filters:</h5>
+                                <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
+                                  <div className='col-md-3'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
+                                          <option key='' value='' disabled>Filter by Gender...</option>
+                                          <option key='ALL' value='all'>All</option>
+                                          <option key='male' value='male'>Male</option>
+                                          <option key='female' value='female'>Female</option>
+                                          <option key='other' value='other'>Other</option>
+                                        </select>
+                                      </div>
+                                  </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
+                                        <option key='' value='' disabled>Filter by Locale...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        {
+                                          this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
+                                          this.props.locales.map((locale, i) => (
+                                            <option key={i} value={locale.value}>{locale.text}</option>
+                                          ))
+                                        }
+                                      </select>{/* </div> */}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
+                                        <option key='' value='' disabled>Filter by Tags...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        {
+                                          this.state.options.map((tag, i) => (
+                                            <option key={i} value={tag.label}>{tag.label}</option>
+                                          ))
+                                        }
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
+                                        <option key='' value='' disabled>Filter by Status...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        <option key='subscribed' value='subscribed'>Subscribed</option>
+                                        <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div style={{marginTop: '20px'}} className='col-md-3'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterSource} onChange={this.handleFilterBySource}>
+                                          <option value='' disabled>Filter by Source...</option>
+                                          <option value='all'>All</option>
+                                          <option value='direct_message'>Direct Message</option>
+                                          <option value='customer_matching'>Phone Number</option>
+                                          <option value='chat_plugin'>Chat Plugin</option>
+                                          <option value='shopify'>Shopify</option>
+                                        </select>
+                                      </div>
+                                  </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
+                                </div>
+                              </div>
+                              <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                                <div className='col-6'>
+                                  <div className='m-input-icon m-input-icon--left'>
+                                    <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                      <span><i className='la la-search' /></span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div> :
+                            <div className='col-xl-12 order-2 order-xl-1'>
+                            <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Bulk Actions:</h5>
                             <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
-                              <div className='col-md-4'>
+                              <div className='col-md-3'>
                                 <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{ marginTop: '10px' }}>
-                                    <label style={{ width: '60px' }}>Gender:</label>
-                                  </div>
-                                  {/* <div className='m-form__control'>
-                              <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
-                              </div> */}
                                   <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_status' style={{ width: '250px' }} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
-                                      <option key='' value='' disabled>Filter by Gender...</option>
-                                      <option key='ALL' value='all'>All</option>
-                                      <option key='male' value='male'>Male</option>
-                                      <option key='female' value='female'>Female</option>
-                                      <option key='other' value='other'>Other</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div className='d-md-none m--margin-bottom-10' />
-                              </div>
-                              <div className='col-md-4'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{ marginTop: '10px' }}>
-                                    <label style={{ width: '60px' }}>Page:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
-                                      <option key='' value='' disabled>Filter by Page...</option>
-                                      <option key='ALL' value='all'>ALL</option>
+                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
+                                      <option key='' value='' disabled>Assign Tag</option>
                                       {
-                                        this.props.pages && this.props.pages.map((page, i) => (
-                                          <option key={i} value={page._id}>{page.pageName}</option>
-                                        ))
+                                        this.state.options.map((option, i) => { 
+                                          return (
+                                            <option key={i} value={option.value}>{option.label}</option>
+                                          )
+                                        })
                                       }
                                     </select>
                                   </div>
-                                </div>
                               </div>
-                              <div className='col-md-4'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{ marginTop: '10px' }}>
-                                    <label style={{ width: '60px' }}>Locale:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
-                                <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
-                                <div className='dropdown-menu open' role='combobox'>
-                                  <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                */}<select className='custom-select' style={{ width: '250px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
-                                      <option key='' value='' disabled>Filter by Locale...</option>
-                                      <option key='ALL' value='all'>ALL</option>
-                                      {
-                                        this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
-                                        this.props.locales.map((locale, i) => (
-                                          <option key={i} value={locale.value}>{locale.text}</option>
-                                        ))
-                                      }
-                                    </select>{/* </div> */}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='col-md-4' style={{ marginTop: '20px' }}>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{ marginTop: '10px' }}>
-                                    <label style={{ width: '60px' }}>Tags:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' style={{ width: '250px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
-                                      <option key='' value='' disabled>Filter by Tags...</option>
-                                      <option key='ALL' value='all'>ALL</option>
-                                      {
-                                        this.state.options.map((tag, i) => (
-                                          <option key={i} value={tag.label}>{tag.label}</option>
-                                        ))
-                                      }
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='col-md-4' style={{ marginTop: '20px' }}>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{ marginTop: '10px' }}>
-                                    <label style={{ width: '60px' }}>Status:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' style={{ width: '250px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
-                                      <option key='' value='' disabled>Filter by Status...</option>
-                                      <option key='ALL' value='all'>ALL</option>
-                                      <option key='subscribed' value='subscribed'>Subscribed</option>
-                                      <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
-                                    </select>
-                                  </div>
+                              <div className='d-md-none m--margin-bottom-10' />
+                            </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.removeTags}>
+                                    <option key='' value='' disabled>Unassign Tag</option>
+                                    {
+                                      this.state.options.map((option, i) => { 
+                                        return (
+                                          <option key={i} value={option.value}>{option.label}</option>
+                                        )
+                                      })      
+                                    }
+                                  </select>
                                 </div>
                               </div>
                             </div>
-                            <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
-                              <div className='col-md-8'>
-                                <div className='m-input-icon m-input-icon--left'>
-                                  <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                    <span><i className='la la-search' /></span>
-                                  </span>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.subscribeToSequence}>
+                                    <option key='' value='' disabled>Subscribe to Sequence</option>
+                                    {
+                                      this.state.sequenceOptions.map((seq, i) => (
+                                        <option key={i} value={seq.value}>{seq.label}</option>
+                                      ))
+                                    }
+                                  </select>
                                 </div>
                               </div>
-                              <div className='col-md-4'>
-                                <div className='pull-right' style={{ display: 'flex' }}>
-                                  <div style={{ display: 'block' }}>
-                                    <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
-                                      <DropdownToggle caret>
-                                        Bulk Actions
-                                      </DropdownToggle>
-                                      <DropdownMenu>
-                                        <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
-                                        <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
-                                        <DropdownItem onClick={this.toggleSetCustomField}>Set Custom Field</DropdownItem>
-                                        {this.props.user.isSuperUser &&
-                                          <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
-                                        }
-                                        {this.props.user.isSuperUser &&
-                                          <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
-                                        }
-                                      </DropdownMenu>
-                                    </Dropdown>
-                                    {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
-                                  </div>
-                                  {this.props.tags && this.props.tags.length > 0 &&
-                                    <div style={{ marginLeft: '10px', marginTop: '5px' }}><Link style={{ color: '#5867dd', cursor: 'pointer', fontSize: 'small' }} data-toggle="modal" data-target="#editTag">Edit Tags</Link></div>
-                                  }
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
-                                    <PopoverHeader>Add Tags</PopoverHeader>
-                                    <PopoverBody>
-                                      <div className='row' style={{ minWidth: '250px' }}>
-                                        <div className='col-12'>
-                                          <label>Select Tags</label>
-                                          <Select.Creatable
-                                            options={this.state.options}
-                                            onChange={this.handleAdd}
-                                            value={this.state.addTag}
-                                            placeholder='Add User Tags'
-                                          />
-                                        </div>
-                                        {this.state.saveEnable
-                                          ? <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              onClick={() => {
-                                                this.addTags()
-                                                this.toggleAdd()
-                                              }}>Save
-                                          </button>
-                                          </div>
-                                          : <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              disabled>
-                                              Save
-                                          </button>
-                                          </div>
-                                        }
-                                      </div>
-                                    </PopoverBody>
-                                  </Popover>
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
-                                    <PopoverHeader>Remove Tags</PopoverHeader>
-                                    <PopoverBody>
-                                      <div className='row' style={{ minWidth: '250px' }}>
-                                        <div className='col-12'>
-                                          <label>Select Tags</label>
-                                          <Select
-                                            options={this.state.options}
-                                            onChange={this.handleRemove}
-                                            value={this.state.removeTag}
-                                            placeholder='Remove User Tags'
-                                          />
-                                        </div>
-                                        <div className='col-12'>
-                                          <button style={{ float: 'right', margin: '15px' }}
-                                            className='btn btn-primary btn-sm'
-                                            onClick={() => {
-                                              this.removeTags()
-                                              this.toggleRemove()
-                                            }}>Save
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </PopoverBody>
-                                  </Popover>
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverSetCustomField} target='assignTag' toggle={this.toggleSetCustomField}>
-                                    <PopoverHeader>Set Custom Field</PopoverHeader>
-                                    <PopoverBody>
-                                      <div className='row' style={{ minWidth: '250px' }}>
-                                        <div className='col-12'>
-                                          <label>Field</label>
-                                          <Select
-                                            options={this.state.customFieldOptions}
-                                            onChange={this.handleSelectBulkCustomField}
-                                            value={this.state.selectedBulkField}
-                                            placeholder='Enter Field Name'
-                                          />
-                                        </div>
-                                        <div className='col-12'>
-                                          <label>Value</label>
-                                          {setBulkFieldInput}
-                                        </div>
-                                        <div className='col-12'>
-                                          <button style={{ float: 'right', margin: '15px' }}
-                                            className='btn btn-primary btn-sm'
-                                            disabled={this.state.saveBulkFieldDisable}
-                                            onClick={() => {
-                                              this.saveSetCustomField()
-                                            }}>Save
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </PopoverBody>
-                                  </Popover>
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.openSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
-                                    <PopoverHeader>Subscribe to Sequence</PopoverHeader>
-                                    <PopoverBody>
-                                      <div className='row' style={{ minWidth: '250px' }}>
-                                        <div className='col-12'>
-                                          <label>Select Sequence</label>
-                                          <Select
-                                            options={this.state.sequenceOptions}
-                                            onChange={this.handleSequence}
-                                            value={this.state.sequenceValue}
-                                            placeholder='Select Sequence...'
-                                          />
-                                        </div>
-                                        {this.state.saveEnableSeq
-                                          ? <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              onClick={() => {
-                                                this.subscribeToSequence()
-                                                this.toggleSubscribe()
-                                              }}>Save
-                                          </button>
-                                          </div>
-                                          : <div className='col-12'>
-                                            <button style={{ float: 'right', margin: '15px' }}
-                                              className='btn btn-primary btn-sm'
-                                              disabled>
-                                              Save
-                                          </button>
-                                          </div>
-                                        }
-                                      </div>
-                                    </PopoverBody>
-                                  </Popover>
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.openUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
-                                    <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
-                                    <PopoverBody>
-                                      <div className='row' style={{ minWidth: '250px' }}>
-                                        <div className='col-12'>
-                                          <label>Select Sequence</label>
-                                          <Select
-                                            options={this.state.unsubSequenceOptions}
-                                            onChange={this.handleSequence}
-                                            value={this.state.sequenceValue}
-                                            placeholder='Select Sequence...'
-                                          />
-                                        </div>
-                                        <div className='col-12'>
-                                          <button style={{ float: 'right', margin: '15px' }}
-                                            className='btn btn-primary btn-sm'
-                                            onClick={() => {
-                                              this.unsubscribeToSequence()
-                                              this.toggleUnSubscribe()
-                                            }}>Save
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </PopoverBody>
-                                  </Popover>
+                            </div>
+                            <div className='col-md-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.unsubscribeToSequence}>
+                                    <option key='' value='' disabled>Unsubscribe from Sequence</option>
+                                    {
+                                      this.state.sequenceOptions.map((seq, i) => (
+                                        <option key={i} value={seq.value}>{seq.label}</option>
+                                      ))
+                                    }
+                                  </select>
                                 </div>
                               </div>
                             </div>
                           </div>
+                          <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                            <div className='col-3'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={this.handleSelectBulkCustomField}>
+                                    <option key='' value='' disabled>Set Custom Field</option>
+                                    {
+                                      this.state.customFieldOptions.map((cf, i) => (
+                                        <option key={i} value={cf._id}>{cf.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            {
+                              (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
+                                <div className='col-3'>
+                                  <input placeholder={'Enter custom field value...'} value={this.state.selectedBulkField ? this.state.selectedBulkField.value : ''} onChange={this.handleBulkSetCustomField} className='form-control' />
+                                </div>
+                            }
+                            {
+                              (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
+                              <div className='col-3'>
+                                <button disabled={!this.state.selectedBulkField.value ? true : false} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
+                                  Save
+                                </button>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                            }
+                          </div>
+                        </div>
+                        {this.state.subscribersData && this.state.subscribersData.length > 0
+                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                            <table className='m-datatable__table'
+                              id='m-datatable--27866229129' style={{
+                                display: 'block',
+                                height: 'auto',
+                                overflowX: 'auto'
+                              }}>
+                              <thead className='m-datatable__head'>
+                                <tr className='m-datatable__row'
+                                  style={{ height: '53px' }}>
+                                  <th data-field='Select All'
+                                    className='m-datatable__cell--center m-datatable__cell'>
+                                    <span style={{ width: '30px', overflow: 'inherit' }}>
+                                      <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></span></th>
+                                  <th data-field='Profile Picture'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '100px', overflow: 'inherit' }}>Profile Picture</span>
+                                  </th>
+                                  <th data-field='Name'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '100px', overflow: 'inherit' }}>Name</span>
+                                  </th>
+                                  <th data-field='Page'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '100px', overflow: 'inherit' }}>Page</span>
+                                  </th>
+                                  <th data-field='Status'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '100px', overflow: 'inherit' }}>Status</span>
+                                  </th>
+                                  <th data-field='Gender'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '50px', overflow: 'inherit' }}>Gender</span>
+                                  </th>
+                                  <th data-field='Subscribed'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{ width: '100px', overflow: 'inherit' }}>Subscribed</span>
+                                  </th>
+                                  <th data-field='Tag'
+                                    className='m-datatable__cell--center m-datatable__cell'>
+                                    <span style={{ width: '50px', overflow: 'inherit' }}>Tags</span>
+                                  </th>
+                                </tr>
+                              </thead>
+
+                              <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
+                                {
+                                  this.state.subscribersData.map((subscriber, i) => (
+                                    <tr data-row={i}
+                                      className='m-datatable__row m-datatable__row--even subscriberRow'
+                                      style={{ height: '55px', cursor: 'pointer' }} key={i}>
+                                      <td data-field='Select All'
+                                        className='m-datatable__cell'>
+                                        <span style={{ width: '30px', overflow: 'inherit' }}>
+                                          <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
+                                        </span></td>
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Profile Picture'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={{ width: '100px', overflow: 'inherit' }}>
+                                          <img alt='pic'
+                                            src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                            onError={(e) => this.profilePicError(e, subscriber)}
+                                            className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                          />
+                                        </span>
+                                      </td>
+
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                                      </td>
+
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.pageId.pageName}
+                                        </span>
+                                      </td>
+                                      <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
+                                        className='m-datatable__cell'>
+                                        <span
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                        </span>
+                                      </td>
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
+                                        <span style={{ width: '50px' }}>
+                                          {subscriber.gender}
+                                        </span>
+                                      </td>
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
+                                        <span style={{ width: '100px' }}>{moment(subscriber.datetime).fromNow()}</span>
+                                      </td>
+                                      <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
+                                        <span style={{ width: '50px', color: 'white', overflow: 'inherit' }}>
+                                          {
+                                            subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{ color: subscriber.isSubscribed ? '#716aca' : '#818a91' }} />) : ('No Tags Assigned')
+                                          }
+                                        </span>
+                                        {subscriber.tags && subscriber.tags.length > 0 &&
+                                          <UncontrolledTooltip style={{ minWidth: '100px', opacity: '1.0' }} placement='left' target={'tag-' + i}>
+                                            {
+                                              subscriber.tags.map((tag, i) => (
+                                                <span key={i} style={{ display: 'block' }}>{tag}</span>
+                                              ))
+                                            }
+                                          </UncontrolledTooltip>
+                                        }
+                                      </td>
+                                    </tr>
+                                  ))
+                                }
+                              </tbody>
+                            </table>
+                            <div className='row'>
+                              <div className='col-sm-9'>
+                                <ReactPaginate previousLabel={'previous'}
+                                  nextLabel={'next'}
+                                  breakLabel={<a href='#/'>...</a>}
+                                  breakClassName={'break-me'}
+                                  pageCount={Math.ceil(this.state.totalLength / 10)}
+                                  marginPagesDisplayed={1}
+                                  pageRangeDisplayed={3}
+                                  onPageChange={this.handlePageClick}
+                                  containerClassName={'pagination'}
+                                  subContainerClassName={'pages pagination'}
+                                  activeClassName={'active'}
+                                  forcePage={this.state.pageSelected}
+                                />
+                              </div>
+                              <div className='col-sm-3' style={{ float: 'right' }}>
+                                <span class="m-datatable__pager-detail" style={{ float: 'right', marginTop: '30px' }}>
+                                  Displaying {(this.state.pageSelected * 10) + 1} - {this.props.subscribers.length < 10 ? this.props.count : (this.props.subscribers.length) * (this.state.pageSelected + 1)} of {this.props.count} records
+                              </span>
+                              </div>
+                            </div>
+                          </div>
+                          : <div className='table-responsive'>
+                            {
+                              this.props.subscibers ? 
+                              <h6> No subscribers found that match the criteria </h6>
+                              : <h6> Loading subscribers... </h6>
+                            }
+                          </div>
+                        }
+                        <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                          <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                            <span>
+                              <i className='fa fa-download' />
+                              <span>
+                                Export Records in CSV File
+                              </span>
+                            </span>
+                          </button>
                         </div>
                       </div>
-                      {this.state.subscribersData && this.state.subscribersData.length > 0
-                        ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                          <table className='m-datatable__table'
-                            id='m-datatable--27866229129' style={{
-                              display: 'block',
-                              height: 'auto',
-                              overflowX: 'auto'
-                            }}>
-                            <thead className='m-datatable__head'>
-                              <tr className='m-datatable__row'
-                                style={{ height: '53px' }}>
-                                <th data-field='Select All'
-                                  className='m-datatable__cell--center m-datatable__cell'>
-                                  <span style={{ width: '30px', overflow: 'inherit' }}>
-                                    <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></span></th>
-                                <th data-field='Profile Picture'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '100px', overflow: 'inherit' }}>Profile Picture</span>
-                                </th>
-                                <th data-field='Name'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '100px', overflow: 'inherit' }}>Name</span>
-                                </th>
-                                <th data-field='Page'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '100px', overflow: 'inherit' }}>Page</span>
-                                </th>
-                                <th data-field='Status'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '100px', overflow: 'inherit' }}>Status</span>
-                                </th>
-                                <th data-field='Gender'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '50px', overflow: 'inherit' }}>Gender</span>
-                                </th>
-                                <th data-field='Subscribed'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{ width: '100px', overflow: 'inherit' }}>Subscribed</span>
-                                </th>
-                                <th data-field='Tag'
-                                  className='m-datatable__cell--center m-datatable__cell'>
-                                  <span style={{ width: '50px', overflow: 'inherit' }}>Tags</span>
-                                </th>
-                              </tr>
-                            </thead>
-
-                            <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
-                              {
-                                this.state.subscribersData.map((subscriber, i) => (
-                                  <tr data-row={i}
-                                    className='m-datatable__row m-datatable__row--even subscriberRow'
-                                    style={{ height: '55px', cursor: 'pointer' }} key={i}>
-                                    <td data-field='Select All'
-                                      className='m-datatable__cell'>
-                                      <span style={{ width: '30px', overflow: 'inherit' }}>
-                                        <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
-                                      </span></td>
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Profile Picture'
-                                      className='m-datatable__cell'>
-                                      <span
-                                        style={{ width: '100px', overflow: 'inherit' }}>
-                                        <img alt='pic'
-                                          src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                          onError={(e) => this.profilePicError(e, subscriber)}
-                                          className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
-                                        />
-                                      </span>
-                                    </td>
-
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
-                                      className='m-datatable__cell'>
-                                      <span
-                                        style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
-                                    </td>
-
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
-                                      className='m-datatable__cell'>
-                                      <span
-                                        style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                        {subscriber.pageId.pageName}
-                                      </span>
-                                    </td>
-                                    <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
-                                      className='m-datatable__cell'>
-                                      <span
-                                        style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                        {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
-                                      </span>
-                                    </td>
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
-                                      <span style={{ width: '50px' }}>
-                                        {subscriber.gender}
-                                      </span>
-                                    </td>
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Subscribed' className='m-datatable__cell'>
-                                      <span style={{ width: '100px' }}>{moment(subscriber.datetime).fromNow()}</span>
-                                    </td>
-                                    <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
-                                      <span style={{ width: '50px', color: 'white', overflow: 'inherit' }}>
-                                        {
-                                          subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{ color: subscriber.isSubscribed ? '#716aca' : '#818a91' }} />) : ('No Tags Assigned')
-                                        }
-                                      </span>
-                                      {subscriber.tags && subscriber.tags.length > 0 &&
-                                        <UncontrolledTooltip style={{ minWidth: '100px', opacity: '1.0' }} placement='left' target={'tag-' + i}>
-                                          {
-                                            subscriber.tags.map((tag, i) => (
-                                              <span key={i} style={{ display: 'block' }}>{tag}</span>
-                                            ))
-                                          }
-                                        </UncontrolledTooltip>
-                                      }
-                                    </td>
-                                  </tr>
-                                ))
-                              }
-                            </tbody>
-                          </table>
-                          <div className='row'>
-                            <div className='col-sm-9'>
-                              <ReactPaginate previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={<a href='#/'>...</a>}
-                                breakClassName={'break-me'}
-                                pageCount={Math.ceil(this.state.totalLength / 10)}
-                                marginPagesDisplayed={1}
-                                pageRangeDisplayed={3}
-                                onPageChange={this.handlePageClick}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'}
-                                forcePage={this.state.pageSelected}
-                              />
-                            </div>
-                            <div className='col-sm-3' style={{ float: 'right' }}>
-                              <span class="m-datatable__pager-detail" style={{ float: 'right', marginTop: '30px' }}>
-                                Displaying {(this.state.pageSelected * 10) + 1} - {this.props.subscribers.length < 10 ? this.props.count : (this.props.subscribers.length) * (this.state.pageSelected + 1)} of {this.props.count} records
-                            </span>
-                            </div>
-                          </div>
-                        </div>
-                        : <div className='table-responsive'>
-                          <p> No data to display </p>
-                        </div>
-                      }
-                      <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV File
-                            </span>
-                          </span>
-                        </button>
+                    </div> :
+                    <div className='m-portlet__body'>
+                      <div className='table-responsive'>
+                        {
+                          this.props.pages && this.props.pages.length === 0 ? 
+                          <h6> No pages connected. Please first connect a page. </h6>
+                          : 
+                          <h6> Loading... </h6>
+                        }
                       </div>
                     </div>
-                  </div>
+                  }
                   <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className='modal fade' id='m_modal_1_2' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                     <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog' role='document'>
                       <div className='modal-content'>
@@ -2019,30 +1904,37 @@ class Subscriber extends React.Component {
                                       : <span>Show <i style={{ fontSize: '12px' }} className='la la-angle-down ' /></span>
                                     }
                                   </a>
-                                  <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</a>
+                                  <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
                                 </span>
-                                : <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '200px' }}><i className='la la-gear' /> Manage Fields</a>
+                                :                         
+                                <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
                               }
                             </div>
                             <div className='row'>
                               {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
                                 ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                                   {
-                                    this.state.subscriber.customFields.map((field, i) => (
-                                      <div className='row'>
-                                        <div className='col-sm-12'>
-                                          <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
-                                            onMouseEnter={() => { this.hoverOn(field._id) }}
-                                            onMouseLeave={this.hoverOff}
-                                            style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
-                                            <span style={{ marginLeft: '10px' }}>
-                                              <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                              <span style={{ color: '#3c3c7b' }}>{field.value !== '' ? field.value : 'Not Set'}</span>
-                                            </span>
+                                    this.state.subscriber.customFields.map((field, i) => {
+                                      if (field.value) {
+                                        return (
+                                          <div className='row'>
+                                            <div className='col-sm-12'>
+                                              <div onClick={() => { this.toggleSetFieldPopover(field) }} id='target'
+                                                onMouseEnter={() => { this.hoverOn(field._id) }}
+                                                onMouseLeave={this.hoverOff}
+                                                style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
+                                                <span style={{ marginLeft: '10px' }}>
+                                                  <span style={{ fontWeight: '100' }}>{field.name} : </span>
+                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>                                              
+                                                </span>
+                                              </div>
+                                            </div>
                                           </div>
-                                        </div>
-                                      </div>
-                                    ))
+                                        )
+                                      } else {
+                                        return null
+                                      }
+                                    })
                                   }
                                   <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
                                     <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
