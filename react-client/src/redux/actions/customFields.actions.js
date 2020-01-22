@@ -58,7 +58,7 @@ export function deleteCustomField (customFieldId, msg) {
     callApi('custom_fields/delete/', 'post', {customFieldId: customFieldId})
     .then(res => {
       if (res.status === 'success') {
-        msg.success(`${res.description}`)
+        msg.success(`Custom Field removed successfully`)
         dispatch(loadCustomFields())
       } else {
         if (res.status === 'failed' && res.description) {
