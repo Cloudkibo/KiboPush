@@ -66,6 +66,9 @@ class CreateFeed extends React.Component {
 	    storiesCount: parseInt(this.state.storiesCount),
 	    pageIds: [this.state.selectedPage]
     }
+    if (this.props.currentFeed && this.props.currentFeed._id) {
+      rssPayload.feedId = this.props.currentFeed._id
+    }
     this.setState({
       loading: true
     })

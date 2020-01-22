@@ -220,7 +220,7 @@ class UserInputModal extends React.Component {
   }
 
   validateCustomFieldTypes () {
-    debugger;
+    //debugger;
     let action = this.state.action
     let mappingDataChanged = false
     for (let i = 0; i < action.mapping.length; i++) {
@@ -392,7 +392,7 @@ class UserInputModal extends React.Component {
                     saveCustomFieldsAction={this.saveCustomFieldsAction}
                     removeAction={this.removeAction}
                     action={this.state.action}
-                    questions={this.state.questions}
+                    questions={[].concat(this.state.questions)}
                     toggleGSModal={this.props.toggleGSModal}
                     closeGSModal={this.props.closeGSModal}
                     updateActionStatus={this.updateActionStatus} />
