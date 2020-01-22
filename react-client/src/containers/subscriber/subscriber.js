@@ -1931,6 +1931,8 @@ class Subscriber extends React.Component {
                                             </div>
                                           </div>
                                         )
+                                      } else {
+                                        return null
                                       }
                                     })
                                   }

@@ -17,7 +17,8 @@ class CreateCustomField extends React.Component {
     this.onSubmit = this.onSubmit.bind(this)
     this.typeHandleChange = this.typeHandleChange.bind(this)
     this.descriptionHandleChange = this.descriptionHandleChange.bind(this)
-    this.handleResponse = this.handleResponse.bind(this)
+    this.handleCreateResponse = this.handleCreateResponse.bind(this)
+    this.handleUpdateResponse = this.handleUpdateResponse.bind(this)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -53,16 +54,16 @@ class CreateCustomField extends React.Component {
 
   onSubmit (event) {
     event.preventDefault()
+    //debugger;
     if (this.props.customField) {
         let data = {
             customFieldId: this.props.customField._id,
             updated: {
-                name: this.state.name.toLowerCase(),
-                type: this.state.type.toLowerCase(),
+                name: this.props.customField.name !== this.state.name ? this.state.name.toLowerCase() : undefined,
                 description: this.state.description.toLocaleLowerCase(),
             }
         }
-        this.props.updateCustomField(data, this.msg)
+        this.props.updateCustomField(data, this.handleUpdateResponse)
     } else {
         let data = {
             name: this.state.name.toLowerCase(),
@@ -71,16 +72,34 @@ class CreateCustomField extends React.Component {
             companyId: '',
             createdBy: ''
         }
-        this.props.createCustomField(data, this.handleResponse)
+        this.props.createCustomField(data, this.handleCreateResponse)
     }
   }
 
-  handleResponse (res) {
+  handleUpdateResponse (res) {
+    if (res.status === 'success' && res.payload) {
+      this.msg.success('Custom Field has been updated')
+      this.setState({closeModal: 'modal'}, () => {
+        document.getElementById('create').click()
+        this.setState({closeModal: '', name: '', type: '', description: ''})
+      })
+    } else {
+      this.setState({closeModal: ''})
+      if (res.status === 'failed' && res.description) {
+        this.msg.error(`Unable to edit custom field. ${res.description}`)
+      } else {
+        this.msg.error('Unable to edit custom field')
+      }
+    }
+  }
+
+  handleCreateResponse (res) {
     if (res.status === 'success' && res.payload) {
       this.msg.success('New Custom Field Created')
-      this.setState({closeModal: 'modal'})
-      document.getElementById('create').click()
-      this.setState({closeModal: '', name: '', type: '', description: ''})
+      this.setState({closeModal: 'modal'}, () => {
+        document.getElementById('create').click()
+        this.setState({closeModal: '', name: '', type: '', description: ''})
+      })
     } else {
       this.msg.error(res.description)
       this.setState({closeModal: ''})
@@ -88,7 +107,11 @@ class CreateCustomField extends React.Component {
   }
 
   clear () {
-    this.setState({name: '', type: '', description: ''})
+    if (this.props.customField) {
+      this.setState({name: '', description: ''})
+    } else {
+      this.setState({name: '', type: '', description: ''})
+    }
   }
 
   render () {
@@ -132,7 +155,7 @@ class CreateCustomField extends React.Component {
                         <label>Type:</label><i className='la la-question-circle' data-toggle='tooltip' title='select any type, according to the nature of data' />
                       </div>
                       <div className='m-form__control'>
-                        <select className='custom-select' id='type' value={this.state.type} style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
+                        <select disabled={this.props.customField ? true : false} className='custom-select' id='type' value={this.state.type} style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
                           <option key='' value='' selected disabled>...Select...</option>
                           <option key='string' value='text'>Text</option>
                           <option key='number' value='number'>Number</option>
