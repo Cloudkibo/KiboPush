@@ -9,7 +9,6 @@ import Media from '../convo/Media'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 export function transformData (data) {
-  console.log('data in transformData', data)
   data = JSON.parse(JSON.stringify(data))
   for (let a = 0; a < data.length; a++) {
     let item = data[a]
