@@ -39,20 +39,14 @@ export function createCustomField (customField, handleResponse) {
   }
 }
 
-export function updateCustomField (payload, msg) {
+export function updateCustomField (payload, handleResponse) {
   console.log('Actions for updating custom field', payload)
   return (dispatch) => {
     callApi('custom_fields/update', 'post', payload)
       .then(res => {
+        handleResponse(res)
         if (res.status === 'success' && res.payload) {
-          msg.success('Custom Field has been updated')
           dispatch(loadCustomFields())
-        } else {
-          if (res.status === 'failed' && res.description) {
-            msg.error(`Unable to edit custom field. ${res.description}`)
-          } else {
-            msg.error('Unable to edit custom field')
-          }
         }
       })
   }
