@@ -7,9 +7,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchOverlayWidgets, deleteOverlayWidget, saveCurrentWidget} from '../../redux/actions/overlayWidgets.actions'
+import {fetchOverlayWidgets, deleteOverlayWidget, setInitialState} from '../../redux/actions/overlayWidgets.actions'
 import AlertContainer from 'react-alert'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class OverlayWidgets extends React.Component {
   constructor (props, context) {
@@ -38,8 +37,7 @@ class OverlayWidgets extends React.Component {
       status_value: '',
       type_value: ''
     })
-    props.saveCurrentWidget(null)
-    //props.setInitialState()
+    props.setInitialState()
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
@@ -86,7 +84,7 @@ class OverlayWidgets extends React.Component {
     } else if (type === 'modal') {
       value = 'Modal'
     } else if (type === 'page_takeover') {
-      value = 'Page Takeove'
+      value = 'Page Takeover'
     }
     return value
   } 
@@ -461,8 +459,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchOverlayWidgets: fetchOverlayWidgets,
     deleteOverlayWidget: deleteOverlayWidget,
-    saveCurrentWidget: saveCurrentWidget,
-    loadMyPagesList: loadMyPagesList
+    setInitialState: setInitialState
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OverlayWidgets)

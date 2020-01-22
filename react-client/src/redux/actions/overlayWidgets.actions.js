@@ -10,11 +10,34 @@ export function showAllOverlayWidgets (data) {
   }
 }
 
-export function saveCurrentWidget (data) {
+export function showUpdatedWidget (data) {
   return {
     type: ActionTypes.SAVE_CURRENT_WIDGET,
     data
   }
+}
+
+export function updateWidget (widget, tab, updatedKey, updatedValue) {
+  return (dispatch) => {
+    var updatedWidget = {
+      initialState: widget.initialState,
+      submittedState: widget.submittedState,
+      optInMessage:  widget.optInMessage,
+      page: widget.page,
+      type: widget.type,
+      status: widget.status,
+      currentTab: widget.currentTab
+    }
+    if (tab) {
+      updatedWidget[tab][updatedKey] = updatedValue
+    } else {
+      updatedWidget[updatedKey] = updatedValue
+    }  
+    dispatch(showUpdatedWidget(updatedWidget))
+  }
+}
+export function createOverlayWidget (data) {
+
 }
 
 export function fetchOverlayWidgets (data) {
@@ -52,36 +75,24 @@ export function deleteOverlayWidget (id, msg) {
   }
 }
 
-/*export function setInitialState () {
+export function setInitialState () {
   return (dispatch) => {
-    let landingPage = {
+    let widget = {
       initialState: {
-        title: 'Here is your widget headline. Click here to change it!',
-        description: 'We also put default text here. Make sure to turn it into a unique and valuable message.',
-        pageTemplate: 'text',
-        backgroundColor: '#fff',
-        titleColor: '#000',
-        descriptionColor: '#000',
-        buttonText: 'Send To Messenger',
-        mediaType: 'image',
-        mediaLink: '',
-        mediaPlacement: 'aboveHeadline'
+        button_type: "send_to_messenger",
+        background_color: '#fff',
+        headline_color: '#000',
+        button_background: 'blue',
+        button_text: 'Send to Messenger',
+        headline: 'Here is your widget headline. Click here to change it!'
       },
       submittedState: {
-        title: 'Thank You for Reading Our Thank You Message!',
-        description: 'Once a user opt-ins through your form, he sees this. Unless you change it, of course.',
-        buttonText: 'View it in Messenger',
-        actionType: 'REDIRECT_TO_URL',
-        url: '',
-        tab: 'NEW_TAB',
-        state: {
-          backgroundColor: '#fff',
-          titleColor: '#000',
-          descriptionColor: '#000',
-          mediaType: 'image',
-          mediaLink: '',
-          mediaPlacement: 'aboveHeadline'
-        }
+        action_type: "show_new_message",
+        message: "Thank You for Reading Our Thank You Message!",
+        background_color: "#CE93D8",
+        headline_color: "#FFFFFF",
+        button_background: "#FFFFFF",
+        button_text_color: "#000000"
       },
       optInMessage: [{
         id: new Date().getTime(),
@@ -89,14 +100,18 @@ export function deleteOverlayWidget (id, msg) {
         componentType: 'text'
       }],
       currentTab: 'initialState',
-      pageId: '',
+      page: '',
+      status: true,
+      type: 'bar',
       error: false
     }
-    dispatch(showUpdatedData(landingPage))
+    dispatch(showUpdatedWidget(widget))
   }
 }
-
-export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
+export function updateOverlayWidget (widgetData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
+  console.log('In Update Widget')
+}
+/*export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
   return (dispatch) => {
     let landingPage = {
       initialState: landingPageData.initialState,
