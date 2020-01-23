@@ -321,7 +321,7 @@ class OverlayWidgets extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                 { (this.state.widgets && this.state.widgets.length > 0) || this.state.filter
-                ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
+                ? <div className='row' style={{marginBottom: '15px'}}>
                     <div className='col-md-12' style={{marginBottom: '15px'}}>
                       <input type='text' style={{width: '50%'}} placeholder='Search Widgets..' className='form-control' value={this.state.searchValue} onChange={this.searchWidgets} />
                     </div>
@@ -394,7 +394,7 @@ class OverlayWidgets extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{widget.title}</span></td>  
-                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.props.pages.filter((page) => page._id === widget.pageId)[0].pageName}</span></td>
+                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.props.pages && this.props.pages.filter((page) => page._id === widget.pageId)[0].pageName}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.getWidgetType(widget.widgetType)}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{widget.isActive ? 'Active' : 'Disabled'}</span></td>

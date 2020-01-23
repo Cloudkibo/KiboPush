@@ -92,7 +92,9 @@ export function setInitialState () {
         background_color: "#CE93D8",
         headline_color: "#FFFFFF",
         button_background: "#FFFFFF",
-        button_text_color: "#000000"
+        button_text_color: "#000000",
+        url: '',
+        tab: 'new_tab' 
       },
       optInMessage: [{
         id: new Date().getTime(),

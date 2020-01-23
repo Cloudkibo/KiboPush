@@ -13,7 +13,7 @@ class Footer extends React.Component {
           <div className='row'>
             <div className='col-lg-6 m--align-left'>
               {this.props.widgetState !== 'initialState' &&
-                <button className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleBack(this.props.page)}>
+                <button className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleBack(this.props.widgetState)}>
                   <span>
                     <i className='la la-arrow-left' />
                     <span>Back</span>&nbsp;&nbsp;
@@ -22,8 +22,8 @@ class Footer extends React.Component {
               }
             </div>
             <div className='col-lg-6 m--align-right'>
-              {(this.props.widgetState !== 'submit') &&
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.page)}>
+              {(this.props.widgetState !== 'optInActions') &&
+                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.widgetState)}>
                   <span>
                     <span>Next</span>&nbsp;&nbsp;
                     <i className='la la-arrow-right' />

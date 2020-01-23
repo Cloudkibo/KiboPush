@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux'
 import { updateWidget } from '../../redux/actions/overlayWidgets.actions'
 import InitialState from './initialState'
 import SubmittedState from './submittedState'
+import OptInActions from './optInActions'
 
 class Tab extends React.Component {
   constructor (props, context) {
@@ -24,7 +25,6 @@ class Tab extends React.Component {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
-    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
@@ -36,15 +36,12 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
       this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'submittedState')
-    } else if (tab === 'optInActions') {
-      $('#tab_4').addClass('active')
     }
   }
   handleBack (tab) {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
-    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
@@ -62,7 +59,6 @@ class Tab extends React.Component {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
-    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
@@ -108,7 +104,7 @@ class Tab extends React.Component {
             <SubmittedState submittedState={this.props.currentWidget.submittedState} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
-            <div>Opt In Actions</div>
+            <OptInActions history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
         </div>
       </div>

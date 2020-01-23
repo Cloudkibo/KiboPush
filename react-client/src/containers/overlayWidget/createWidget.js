@@ -137,7 +137,7 @@ class CreateWidget extends React.Component {
                   <br />
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <Tabs />
+                      <Tabs history={this.props.history} location={this.props.location}/>
                     </div>
                     <Preview />
                   </div>
