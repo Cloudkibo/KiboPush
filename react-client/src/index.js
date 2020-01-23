@@ -13,6 +13,10 @@ import {BROWSER_NAME, BROWSER_VERSION} from './utility/browser.utility'
 
 const history = createBrowserHistory()
 
+history.listen(() => {
+  window.scrollTo(0, 0)  
+})
+
 const store = configureStore(window.__INITIAL_STATE__)
 const rootElement = document.getElementById('content')
 
