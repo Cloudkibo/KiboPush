@@ -1895,7 +1895,7 @@ class Subscriber extends React.Component {
                             </Popover>
                             <div className='row' style={{ display: 'inline-block' }}>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>Custom Fields: </span>
-                              {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                              {this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0
                                 ? <span>
                                   <a href='#/' data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
                                     onClick={this.showToggle}>
@@ -1911,11 +1911,10 @@ class Subscriber extends React.Component {
                               }
                             </div>
                             <div className='row'>
-                              {this.state.subscriber.customFields && this.state.subscriber.customFields.length > 0
+                              {this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0
                                 ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                                   {
-                                    this.state.subscriber.customFields.map((field, i) => {
-                                      if (field.value) {
+                                    this.state.subscriber.customFields.filter(cf => !!cf.value).map((field, i) => {
                                         return (
                                           <div className='row'>
                                             <div className='col-sm-12'>
@@ -1931,9 +1930,6 @@ class Subscriber extends React.Component {
                                             </div>
                                           </div>
                                         )
-                                      } else {
-                                        return null
-                                      }
                                     })
                                   }
                                   <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
@@ -1958,7 +1954,7 @@ class Subscriber extends React.Component {
                                   </Popover>
                                 </div>
                                 : <div style={{ padding: '15px', maxHeight: '120px' }}>
-                                  <span>No Custom Field Found</span>
+                                  <span>No Custom Fields Set</span>
                                 </div>}
                             </div>
                             {hostname.includes('kiboengage.cloudkibo.com') &&
