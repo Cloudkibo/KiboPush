@@ -555,9 +555,9 @@ class Builders extends React.Component {
 
     if (!isPresent) {
       if (obj.buttons.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.buttons})
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName, buttons: obj.buttons})
       } else {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text'})
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName})
       }
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
@@ -1084,6 +1084,7 @@ class Builders extends React.Component {
           this.handleText({
             id: componentId,
             videoId: broadcast.videoId,
+            componentName: broadcast.componentName,
             videoTitle: broadcast.videoTitle,
             videoDescription: broadcast.videoDescription,
             text: broadcast.text,
@@ -1150,6 +1151,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            componentName: broadcast.componentName,
             youtubeVideo: broadcast.youtubeVideo,
             links: broadcast.links,
             componentType: 'card',
@@ -1185,6 +1187,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleGallery({
             id: componentId,
+            componentName: broadcast.componentName,
             links: broadcast.links,
             componentType: 'gallery',
             cards: broadcast.cards,
@@ -1206,6 +1209,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({
             id: componentId,
+            componentName: broadcast.componentName,
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
           })
@@ -1225,6 +1229,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
+            componentName: broadcast.componentName,
             file: broadcast.file ? broadcast.file : ''
           })
         }
@@ -1243,6 +1248,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleImage({
             id: componentId,
+            componentName: broadcast.componentName,
             componentType: 'image',
             image_url: broadcast.image_url ? broadcast.image_url : '',
             fileurl: broadcast.fileurl ? broadcast.fileurl : '',
@@ -1272,6 +1278,7 @@ class Builders extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'video',
+            componentName: broadcast.componentName,
             file: broadcast.file,
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
@@ -1303,6 +1310,7 @@ class Builders extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
+            componentName: broadcast.componentName,
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
             image_url: broadcast.image_url,
@@ -1325,6 +1333,8 @@ class Builders extends React.Component {
         handler: () => {
           this.handleUserInput({
             id: componentId,
+            componentType: 'userInput',
+            componentName: broadcast.componentName,
             questions: broadcast.questions,
             action: broadcast.action
           })
