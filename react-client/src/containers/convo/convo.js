@@ -606,7 +606,7 @@ class Convo extends React.Component {
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
                             <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
-                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentName}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentName === 'userInput' ? 'user input' : broadcast.payload[0].componentName}</span></td>
                             <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
                             <td data-field='clicks' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.clicks ? broadcast.clicks : 0}</span></td>
