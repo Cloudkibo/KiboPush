@@ -948,7 +948,7 @@ class Subscriber extends React.Component {
       last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
       number_of_records: 10, 
       first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first', 
-      filter: this.state.filter, 
+      filter: true, 
       filter_criteria: { 
         search_value: this.state.searchValue, 
         gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
