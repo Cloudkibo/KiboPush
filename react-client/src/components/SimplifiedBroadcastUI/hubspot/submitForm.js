@@ -70,7 +70,7 @@ class submitForm extends React.Component {
     save () {
       console.log('hubspotFormValue in this.save', this.state.hubspotFormValue)
       console.log('mappingData in this.save', this.state.mappingData)
-      if (this.state.hubspotFormValue && (this.state.mappingData[0].customFieldColumn || this.state.mappingData[0].kiboPushColumn)) {
+      if (this.state.hubspotFormValue) {
         this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
       } else {
         this.msg.error('Please fill all the required fields')
@@ -151,21 +151,23 @@ class submitForm extends React.Component {
                 <select value={this.state.mappingDataValues[i]} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1', display: 'inline-block'}} onChange={(e) => this.updateMappingData(e, i)}>
                   <option key='' value='' disabled>Select a Field...</option>
                   <optgroup label='System Fields'>
-                    {kiboPushColumns.map((kibopush,j) => (
-                        <option key={j} value={kibopush.fieldName}>{kibopush.title}</option>
+                    {kiboPushColumns.map((kibopush, i) => (
+                        <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
                       ))
                     }
                   </optgroup>
                   {customFieldColumns.length > 0 &&
                     <optgroup label='Custom Fields'>
-                    {customFieldColumns.map((custom, j) => (
-                        <option key={j} value={custom.customFieldId}>{custom.title}</option>
+                    {customFieldColumns.map((custom, i) => (
+                        <option key={i} value={custom.customFieldId}>{custom.title}</option>
                       ))
                     }
                   </optgroup>
                   }
                   </select>
-                  { i === 0 && <span style={{ color: 'red' }}> * </span> }
+                  { i === 0 &&
+                  <span style={{ color: 'red' }}> * </span>
+                  }
               </div>
               <div className='col-1'>
                 <center>
