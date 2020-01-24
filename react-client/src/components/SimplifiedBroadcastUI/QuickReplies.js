@@ -15,9 +15,6 @@ class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     let actions = []
-    if (this.props.broadcasts && this.props.broadcasts.length > 0) {
-        actions.push('send new message')
-    }
     if (this.props.customFields && this.props.customFields.length > 0) {
         actions.push('set custom field')
     }
@@ -73,6 +70,8 @@ class QuickReplies extends React.Component {
     this.closeGSModal = this.closeGSModal.bind(this)
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
+    this.addReplyWithMessage = this.addReplyWithMessage.bind(this)
+
     this.GSModalContent = null
   }
 
@@ -145,8 +144,6 @@ class QuickReplies extends React.Component {
   }
 
   editQuickReply (index) {
-      console.log('editQuickReply index', index)
-      console.log('quickReplies', this.state.quickReplies)
       this.setState({
         addingQuickReply: true,
         currentActions: JSON.parse(this.state.quickReplies[index].payload),
@@ -273,12 +270,16 @@ class QuickReplies extends React.Component {
       this.setState({addingAction: false})
   }
 
-  removeAction (index) {
-      console.log('removeAction', index)
-      let currentActions = this.state.currentActions
-      currentActions.splice(index, 1)
-      this.setState({currentActions}, () => {
-        this.checkIfEdited()
+  removeAction (index, action) {
+    if (action.action.includes('message')) {
+      let allowedActions = this.state.actions
+      allowedActions.unshift('reply with a message')
+      this.setState({actions: allowedActions})
+    }
+    let currentActions = this.state.currentActions
+    currentActions.splice(index, 1)
+    this.setState({currentActions}, () => {
+      this.checkIfEdited()
     })
   }
 
@@ -332,6 +333,12 @@ class QuickReplies extends React.Component {
     this.setState({currentActions})
   }
 
+  addReplyWithMessage (index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].blockUniqueId = new Date().getTime() + (Math.floor(Math.random() * 100))
+    this.setState({currentActions})
+  }
+
   updateCustomFieldValue (event, index) {
     let currentActions = this.state.currentActions
     currentActions[index].customFieldValue = event.target.value
@@ -379,7 +386,7 @@ class QuickReplies extends React.Component {
     } else if (action.includes('message')) {
         return (
             <div>
-                <select value={this.state.currentActions[index].templateId ? this.state.currentActions[index].templateId : ''} style={{borderColor: !this.state.currentActions[index].templateId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateTemplate(event, index)}>
+                {/*<select value={this.state.currentActions[index].templateId ? this.state.currentActions[index].templateId : ''} style={{borderColor: !this.state.currentActions[index].templateId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateTemplate(event, index)}>
                     <option value={''} disabled>Select a message</option>
                     {
                         this.props.broadcasts.map((broadcast, index) => {
@@ -387,13 +394,10 @@ class QuickReplies extends React.Component {
                                 <option key={index} value={broadcast._id}>{broadcast.title}</option>
                             )
                         })
-                    }{
                     }
-                    {/* <option value={'Message 1'}>{'Message 1'}</option>
-                    <option value={'Message 2'}>{'Message 2'}</option>
-                    <option value={'Message 3'}>{'Message 3'}</option> */}
                 </select>
-                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].templateId ? '*Required' : ''}</div>
+                <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].templateId ? '*Required' : ''}</div>*/}
+                New message will be created when you click on Save button
             </div>
         )
     } else if (action.includes('tag')) {
@@ -509,6 +513,13 @@ class QuickReplies extends React.Component {
   selectAction (e) {
       let currentActions = this.state.currentActions
       currentActions.push({action: e.target.value.replace(/ /g, '_')})
+      if (e.target.value.includes('message')) {
+        let allowedActions = this.state.actions
+        // allowedActions = allowedActions.splice(allowedActions.indexOf('reply with a message'), 1 )
+        allowedActions.shift()
+        this.setState({actions: allowedActions})
+        // this.addReplyWithMessage(currentActions.length - 1)
+      }
       this.setState({selectedAction: e.target.value, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
     })
@@ -707,7 +718,7 @@ class QuickReplies extends React.Component {
                                                 <ul className="m-portlet__nav">
                                                     <li className="m-portlet__nav-item">
                                                         <div className="m-portlet__nav-link m-portlet__nav-link--icon">
-                                                            <i onClick={() => {this.removeAction(index)}} style={{color: 'red', cursor: 'pointer'}} className="la la-close"></i>
+                                                            <i onClick={() => {this.removeAction(index, action)}} style={{color: 'red', cursor: 'pointer'}} className="la la-close"></i>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -789,7 +800,6 @@ class QuickReplies extends React.Component {
 
 QuickReplies.defaultProps = {
   'sequences': [],
-  'broadcasts': [],
   'tags': []
 }
 
