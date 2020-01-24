@@ -26,7 +26,7 @@ class Mapping extends React.Component {
       content.push(
         <div>
         <div className='row'>
-          <div className={this.props.deleteRow ? 'col-5' : 'col-6'}>
+          <div className={this.props.deleteRow ? 'col-5' : 'col-6'} style={{display: 'inherit', paddingRight: (this.props.isFirstRequired && i === 0) ? 'none' : '22px'}}>
               {
                   this.props.updateLeftColumn ?
                   <select value={this.props.mappingData[i].leftColumn ? this.props.mappingData[i].leftColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateLeftColumn(e, i)}>
@@ -54,12 +54,12 @@ class Mapping extends React.Component {
                         <input style={{height: '40px'}} type='text' className='form-control' value={this.props.leftColumns.data[i].value} disabled />
                       }             
                   </div>
-                    
               }
+            {(this.props.isFirstRequired && i === 0) && <span style={{ color: 'red' }}> * </span> }
           </div>
           <div className='col-1'>
             <center>
-            <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large'}} />
+            <i className='fa fa-long-arrow-right' style={{paddingTop: '5px', fontSize: 'x-large', color: (this.props.mappingData[i].leftColumn && this.props.mappingData[i].rightColumn) ?  '#419600':'#bfe6c0'}} />
             </center>
           </div>
           <div className={this.props.deleteRow ? 'col-6' : 'col-5'}>

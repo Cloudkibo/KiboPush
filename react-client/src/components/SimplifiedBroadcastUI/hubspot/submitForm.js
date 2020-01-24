@@ -252,6 +252,7 @@ class submitForm extends React.Component {
               mappingData = {this.getMappingData()}
               updateLeftColumn = {this.updateMappingData}
               updateRightColumn = {null}
+              isFirstRequired = {true}
             />
             //this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )
