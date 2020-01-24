@@ -179,7 +179,6 @@ class submitForm extends React.Component {
             <br />
             </div>
           )
-          console.log('The value of i is ', i)
         }
         return content
       }
