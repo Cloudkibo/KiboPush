@@ -102,7 +102,7 @@ class Mapping extends React.Component {
                             {
                             (this.props.mappingData.length > 1)
                             ? 
-                            <button className='btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill' onClick={(e) => this.props.delete(e, i)} >
+                            <button className='btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill' onClick={(e) => this.props.deleteRow(e, i)} >
                                 <span>
                                     <i className="la la-trash-o"></i>
                                     <span>Delete</span>
