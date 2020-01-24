@@ -223,7 +223,7 @@ class CreateContact extends React.Component {
       render () {
         var alertOptions = {
           offset: 14,
-          position: 'bottom right',
+          position: 'top right',
           theme: 'dark',
           time: 5000,
           transition: 'scale'
@@ -246,7 +246,7 @@ class CreateContact extends React.Component {
                 <h6>HubSpot: Create/Update Contact Properties</h6>
                 <span style={{color: '#575962'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
              <br /> <br />
-             <label style={{fontWeight: 'normal'}}>Identity Field</label>           
+             <label style={{fontWeight: 'normal'}}>Email Field</label>           
             <span id="hubspot_getcontact" className='la la-question-circle'/>
               <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='top' target="hubspot_getcontact"> 
                 <span id='identityFieldExplanation'>
