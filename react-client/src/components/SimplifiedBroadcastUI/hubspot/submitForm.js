@@ -73,7 +73,7 @@ class submitForm extends React.Component {
       if (this.state.hubspotFormValue && (this.state.mappingData[0].customFieldColumn || this.state.mappingData[0].kiboPushColumn)) {
         this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
       } else {
-        this.msg.error('Please select email KiboPush Data Column')
+        this.msg.error('Please select email KiboPush Column')
       }
     }
 
