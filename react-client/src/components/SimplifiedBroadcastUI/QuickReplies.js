@@ -444,10 +444,8 @@ class QuickReplies extends React.Component {
       currentActions.push({action: e.target.value.replace(/ /g, '_')})
       if (e.target.value.includes('message')) {
         let allowedActions = this.state.actions
-        // allowedActions = allowedActions.splice(allowedActions.indexOf('reply with a message'), 1 )
         allowedActions.shift()
         this.setState({actions: allowedActions})
-        // this.addReplyWithMessage(currentActions.length - 1)
       }
       this.setState({selectedAction: e.target.value, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
