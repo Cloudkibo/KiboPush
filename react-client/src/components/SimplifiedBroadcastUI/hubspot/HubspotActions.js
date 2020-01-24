@@ -44,7 +44,7 @@ class HubspotAction extends React.Component {
       mapping: mappingData,
       portalId: portalId,
       identityFieldValue: identityFieldValue
-    })
+    }, this.props.index)
     this.closeModal()
   }
   
@@ -76,7 +76,7 @@ componentDidMount () {
     showModal: false
     })
     //this.props.emptyFields()
-    this.props.removeHubspotAction()
+    this.props.removeHubspotAction(this.props.index)
   }
   openModal () {
 
