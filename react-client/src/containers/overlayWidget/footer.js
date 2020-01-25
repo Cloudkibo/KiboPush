@@ -22,7 +22,7 @@ class Footer extends React.Component {
               }
             </div>
             <div className='col-lg-6 m--align-right'>
-              {(this.props.widgetState !== 'optInActions') &&
+              {(this.props.widgetState !== 'setup') &&
                 <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.widgetState)}>
                   <span>
                     <span>Next</span>&nbsp;&nbsp;

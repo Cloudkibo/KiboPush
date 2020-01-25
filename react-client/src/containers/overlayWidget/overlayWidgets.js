@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchOverlayWidgets, deleteOverlayWidget, setInitialState} from '../../redux/actions/overlayWidgets.actions'
+import {fetchOverlayWidgets, deleteOverlayWidget, setInitialState, updateWidget} from '../../redux/actions/overlayWidgets.actions'
 import AlertContainer from 'react-alert'
 
 class OverlayWidgets extends React.Component {
@@ -138,7 +138,6 @@ class OverlayWidgets extends React.Component {
     })
   }
   onEdit (widget) {
-    this.props.saveCurrentWidget(widget)
     this.props.history.push({
       pathname: `/createOverlayWidget`
     })
@@ -450,6 +449,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     overlayWidgets: (state.overlayWidgetsInfo.overlayWidgets),
+    currentWidget: (state.overlayWidgetsInfo.currentWidget),
     widgetsCount: (state.overlayWidgetsInfo.widgetsCount),
     pages: (state.pagesInfo.pages)
   }
@@ -459,7 +459,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchOverlayWidgets: fetchOverlayWidgets,
     deleteOverlayWidget: deleteOverlayWidget,
-    setInitialState: setInitialState
+    setInitialState: setInitialState,
+    updateWidget: updateWidget
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OverlayWidgets)

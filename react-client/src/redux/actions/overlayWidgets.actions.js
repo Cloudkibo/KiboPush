@@ -26,18 +26,16 @@ export function updateWidget (widget, tab, updatedKey, updatedValue) {
       page: widget.page,
       type: widget.type,
       status: widget.status,
-      currentTab: widget.currentTab
+      currentTab: widget.currentTab,
+      id: widget.id
     }
     if (tab) {
       updatedWidget[tab][updatedKey] = updatedValue
-    } else {
+    } else if (updatedKey) {
       updatedWidget[updatedKey] = updatedValue
     }  
     dispatch(showUpdatedWidget(updatedWidget))
   }
-}
-export function createOverlayWidget (data) {
-
 }
 
 export function fetchOverlayWidgets (data) {
@@ -74,16 +72,40 @@ export function deleteOverlayWidget (id, msg) {
     })
   }
 }
-
-export function setInitialState () {
+export function createOverlayWidget (data, msg) {
+  return (dispatch) => {
+    callApi(`overlayWidgets/create/`, 'post', data).then(res => {
+      console.log('response from create overlay widgets', res)
+      if (res.status === 'success') {
+        msg.success('Overlay widget has been saved')
+      } else {
+        msg.error('Failed to save overlay Widget')
+      }
+    })
+  }
+}
+export function updateOverlayWidget (data, msg) {
+  return (dispatch) => {
+    callApi(`overlayWidgets/update/${data._id}`, 'post', data).then(res => {
+      console.log('response from create overlay widgets', res)
+      if (res.status === 'success') {
+        msg.success('Overlay widget has been saved')
+      } else {
+        msg.error('Failed to save overlay Widget')
+      }
+    })
+  }
+}
+export function setInitialState (wgt) {
   return (dispatch) => {
     let widget = {
       initialState: {
-        button_type: "send_to_messenger",
+        button_type:  "send_to_messenger",
         background_color: '#fff',
         headline_color: '#000',
         button_background: 'blue',
         button_text: 'Send to Messenger',
+        button_text_color: '#fff',
         headline: 'Here is your widget headline. Click here to change it!'
       },
       submittedState: {
@@ -93,6 +115,7 @@ export function setInitialState () {
         headline_color: "#FFFFFF",
         button_background: "#FFFFFF",
         button_text_color: "#000000",
+        button_text: 'View it in Messenger',
         url: '',
         tab: 'new_tab' 
       },
@@ -105,66 +128,10 @@ export function setInitialState () {
       page: '',
       status: true,
       type: 'bar',
-      error: false
+      error: false, 
+      id: ''
     }
     dispatch(showUpdatedWidget(widget))
   }
 }
-export function updateOverlayWidget (widgetData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
-  console.log('In Update Widget')
-}
-/*export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
-  return (dispatch) => {
-    let landingPage = {
-      initialState: landingPageData.initialState,
-      submittedState: landingPageData.submittedState,
-      pageId: landingPageData.pageId,
-      optInMessage: landingPageData.optInMessage ? landingPageData.optInMessage : [],
-      currentTab: landingPageData.currentTab
-    }
-    if (editLandingPage) {
-      landingPage = {
-        initialState: editLandingPage.initialState,
-        submittedState: {
-          title: editLandingPage.submittedState.title,
-          description: editLandingPage.submittedState.description,
-          buttonText: editLandingPage.submittedState.buttonText,
-          actionType: editLandingPage.submittedState.actionType,
-          url: editLandingPage.submittedState.url ? editLandingPage.submittedState.url : '',
-          tab: editLandingPage.submittedState.tab ? editLandingPage.submittedState.tab : 'NEW_TAB',
-          state: {
-            backgroundColor: '#fff',
-            titleColor: '#000',
-            descriptionColor: '#000',
-            mediaType: 'image',
-            mediaLink: '',
-            mediaPlacement: 'aboveHeadline'
-          }
-        },
-        pageId: editLandingPage.pageId,
-        optInMessage: editLandingPage.optInMessage,
-        currentTab: editLandingPage.currentTab
-      }
-      if (editLandingPage.submittedState.state) {
-        landingPage.submittedState.state = {
-          _id: editLandingPage.submittedState.state._id,
-          backgroundColor: editLandingPage.submittedState.state.backgroundColor,
-          titleColor: editLandingPage.submittedState.state.titleColor,
-          descriptionColor: editLandingPage.submittedState.state.descriptionColor,
-          mediaType: editLandingPage.submittedState.state.mediaType,
-          mediaLink: editLandingPage.submittedState.state.mediaLink,
-          mediaPlacement: editLandingPage.submittedState.state.mediaPlacement
-        }
-      }
-    } else if (updateKey === 'state') {
-      console.log('inside state action', landingPageData)
-      landingPage[tabValue][updateKey][stateKey] = updateValue
-      console.log('landingPage in action', landingPage)
-    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage' || updateKey === 'isActive') {
-      landingPage[updateKey] = updateValue
-    } else {
-      landingPage[tabValue][updateKey] = updateValue
-    }
-    dispatch(showUpdatedData(landingPage))
-  }
-}*/
+

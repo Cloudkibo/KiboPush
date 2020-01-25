@@ -25,9 +25,11 @@ class Tab extends React.Component {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
+    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
+    $('#setup').removeClass('active')
     if (tab === 'initialState') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
@@ -36,32 +38,44 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
       this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'submittedState')
+    } else if (tab === 'optInActions') {
+      $('#tab_4').addClass('active')
+      $('#setup').addClass('active')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'setup')
     }
   }
   handleBack (tab) {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
+    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
+    $('#setup').removeClass('active')
     if (tab === 'submittedState') {
       $('#tab_1').addClass('active')
       $('#initialState').addClass('active')
-      //this.props.updateOverlayWidget(this.props.landingPage, '', 'currentTab', 'initialState')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'initialState')
     } else if (tab === 'optInActions') {
       $('#tab_2').addClass('active')
       $('#submittedState').addClass('active')
-      //this.props.updateOverlayWidget(this.props.landingPage, '', 'currentTab', 'submittedState')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'submittedState')
+    } else if (tab === 'setup') {
+      $('#tab_3').addClass('active')
+      $('#optInActions').addClass('active')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'optInActions')
     }
   }
   onTabClick (tab) {
     $('#tab_1').removeClass('active')
     $('#tab_2').removeClass('active')
     $('#tab_3').removeClass('active')
+    $('#tab_4').removeClass('active')
     $('#initialState').removeClass('active')
     $('#optInActions').removeClass('active')
     $('#submittedState').removeClass('active')
+    $('#setup').removeClass('active')
     if (tab === 'initialState') {
       $('#tab_1').addClass('active')
       $('#initialState').addClass('active')
@@ -74,6 +88,10 @@ class Tab extends React.Component {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
       this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'optInActions')
+    } else if (tab === 'setup') {
+      $('#tab_4').addClass('active')
+      $('#setup').addClass('active')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'setup')
     }
   }
   componentDidMount () {
@@ -95,6 +113,9 @@ class Tab extends React.Component {
           <li>
             <a href='#/' id='optInActions' className='broadcastTabs' onClick={() => { this.onTabClick('optInActions') }}>Opt-In Actions </a>
           </li>
+          <li>
+            <a href='#/' id='setup' className='broadcastTabs' onClick={() => { this.onTabClick('setup') }}>Setup </a>
+          </li>
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
@@ -105,6 +126,9 @@ class Tab extends React.Component {
           </div>
           <div className='tab-pane' id='tab_3'>
             <OptInActions history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
+          </div>
+          <div className='tab-pane' id='tab_4'>
+            <div>Setup</div>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { updateWidget } from '../../redux/actions/overlayWidgets.actions'
+import { updateWidget, createOverlayWidget, updateOverlayWidget} from '../../redux/actions/overlayWidgets.actions'
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
@@ -20,12 +20,28 @@ class CreateWidget extends React.Component {
     this.pageChange = this.pageChange.bind(this)
     this.toggleWidgetStatus = this.toggleWidgetStatus.bind(this)
     this.changeWidgetType = this.changeWidgetType.bind(this)
+    this.onSave = this.onSave.bind(this)
   }
   toggleWidgetStatus () {
     console.log(this.props.currentWidget)
     this.props.updateWidget(this.props.currentWidget, null, 'status', !this.props.currentWidget.status)
   }
-
+  onSave () {
+    var widgetObject = {}
+    widgetObject.initialState = this.props.currentWidget.initialState
+    widgetObject.submittedState = this.props.currentWidget.submittedState
+    widgetObject.optInMessage = this.props.currentWidget.optInMessage
+    widgetObject._id = this.props.currentWidget.id
+    widgetObject.title = 'Widget Title'
+    widgetObject.isActive = this.props.currentWidget.status
+    widgetObject.widgetType = this.props.currentWidget.type
+    widgetObject.pageId = this.props.currentWidget.page._id
+    if (this.props.currentWidget._id !== '') {
+      this.props.createOverlayWidget(widgetObject, this.msg)
+    } else {
+      this.props.updateOverlayWidget(widgetObject, this.msg)
+    }
+  }
   changeWidgetType (e) {
     this.props.updateWidget(this.props.currentWidget, null, 'type', e.target.value)
   }
@@ -75,7 +91,7 @@ class CreateWidget extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
+                    <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.onSave}>
                       <span>Save</span>
                     </button>
                   </div>
@@ -104,7 +120,7 @@ class CreateWidget extends React.Component {
                           <option value='bar'>Bar</option>
                           <option value='slide-in'>Slide In</option>
                           <option value='modal'>Modal</option>
-                          <option value='page-takeover'>Page Takeover</option>
+                          <option value='page_takeover'>Page Takeover</option>
                         </select>
                       </div>
                     </div>
@@ -161,7 +177,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updateWidget: updateWidget
+    updateWidget: updateWidget,
+    createOverlayWidget: createOverlayWidget,
+    updateOverlayWidget: updateOverlayWidget
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWidget)
