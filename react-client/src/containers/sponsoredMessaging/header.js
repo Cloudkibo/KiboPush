@@ -21,14 +21,14 @@ class Header extends React.Component {
           </div>
         </div>
         <div className='m-portlet__head-tools'>
-          <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
+          {/* <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
             <span>Save Draft</span>
-          </button>
+          </button> */}
             <button 
               className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' 
               style={{marginLeft: '5px'}} onClick={this.props.onSend}
               disabled= {this.props.sendDisabled}>
-              <span>Send</span>
+              <span>Send to Facebook</span>
             </button>
         </div>
       </div>

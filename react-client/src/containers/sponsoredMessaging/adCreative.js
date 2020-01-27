@@ -21,16 +21,20 @@ class adCreative extends React.Component {
   handleadAccountId (e) {
     this.setState({ad_account_id: e.target.value})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage,'ad_account_id', e.target.value)
+    this.props.onEdit()
   }
 
   handleChange (broadcast) {
     console.log(broadcast)
     if(broadcast.convoTitle) {
+      console.log("broadcast.convoTitle,", broadcast.convoTitle)
       this.setState({convoTitle: broadcast.convoTitle })
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_name', broadcast.convoTitle)
+      this.props.onEdit()
     } else {
     this.setState(broadcast)
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
+    this.props.onEdit()
     }
   }
 

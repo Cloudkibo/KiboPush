@@ -53,7 +53,6 @@ class sponsoredMessaging extends React.Component {
   }
 
   gotoCreate () {
-    //let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     this.props.history.push({
       pathname: `/createsponsoredMessage`,
     })
