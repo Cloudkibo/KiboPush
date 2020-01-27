@@ -158,6 +158,8 @@ class Subscriber extends React.Component {
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
     this.handleFilterBySource = this.handleFilterBySource.bind(this)
     this.loadSubscribers = this.loadSubscribers.bind(this)
+    this.setSelectedField = this.setSelectedField.bind(this)
+    this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
   }
 
   saveSetCustomField() {
@@ -171,12 +173,10 @@ class Subscriber extends React.Component {
     }
   }
   handleBulkResponse(res) {
+    //debugger;
     if (res.status === 'success') {
       this.msg.success('Value set successfully')
       let subscribersData = this.state.subscribersData
-      for (var i = 0; i < subscribersData.length; i++) {
-          subscribersData[i].selected = false
-      }
       this.setState({
         selectAllChecked: false,
         showBulkActions: false,
@@ -186,6 +186,7 @@ class Subscriber extends React.Component {
       let temp = this.state.subscribersData
       selectedSubscribers.forEach((subscriberId, i) => {
         this.state.subscribersData.forEach((subscriber, j) => {
+          subscribersData[i].selected = false
           if (subscriberId === subscriber._id) {
             subscriber.customFields.forEach((field, k) => {
               if (field._id === this.state.selectedBulkField._id) {
@@ -280,8 +281,11 @@ class Subscriber extends React.Component {
       subscriberIds: subscriberIds,
       value: this.state.selectedField.value
     }
+    let subscriber = this.state.subscriber
+    let index = subscriber.customFields.findIndex(cf => cf._id === this.state.selectedField._id)
+    subscriber.customFields[index].value = this.state.selectedField.value
     this.props.setCustomFieldValue(temp, this.handleResponse)
-    this.setState({ setFieldIndex: !this.state.setFieldIndex })
+    this.setState({ setFieldIndex: false, selectedField: {}, subscriber })
   }
 
   handleResponse(res) {
@@ -317,6 +321,20 @@ class Subscriber extends React.Component {
     } else {
       this.setState({ selectedField: temp, saveFieldValueButton: false })
     }
+  }
+
+  handleSelectedFieldValue (e) {
+    let selectedField = this.state.selectedField
+    selectedField.value = e.target.value
+    this.setState({selectedField})
+  }
+
+  setSelectedField(e) {
+    console.log('setSelectedField', e.target.value)
+    console.log('this.props.customFields', this.props.customFields)
+    let field = this.state.customFieldOptions.find(cf => cf._id === e.target.value)
+    console.log('field found', field)
+    this.setState({selectedField: field})
   }
 
   toggleSetFieldPopover(field) {
@@ -396,7 +414,7 @@ class Subscriber extends React.Component {
     }
   }
   setSubscriber(s) {
-    this.setState({ subscriber: s }, () => {
+    this.setState({ subscriber: s, show: false }, () => {
       console.log('find me', this.state.subscriber)
     })
     this.props.getSubscriberSequences(s._id)
@@ -997,7 +1015,7 @@ class Subscriber extends React.Component {
     if (nextProps.customFields) {
       var fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
-        fieldOptions.push({ '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
+        fieldOptions.push({ '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '', 'default':  nextProps.customFields[a].default})
       }
       this.setState({
         customFieldOptions: fieldOptions
@@ -1209,38 +1227,40 @@ class Subscriber extends React.Component {
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
     console.log('subscriber props', this.props)
     let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
-    if (this.state.selectedField.type === 'text') {
-      setFieldInput = <input
-        type='text'
-        className='form-control m-input'
-        placeholder='value'
-        onChange={this.handleSetCustomField}
-        value={this.state.selectedField.value}
-      />
-    } else if (this.state.selectedField.type === 'number') {
-      setFieldInput = <input
-        type='text'
-        className='form-control m-input'
-        placeholder='value'
-        onChange={this.handleSetCustomField}
-        value={this.state.selectedField.value}
-      />
-    } else if (this.state.selectedField.type === 'date') {
-      setFieldInput = <input className='form-control m-input'
-        value={this.state.selectedField.value}
-        onChange={this.handleSetCustomField}
-        type='date' />
-    } else if (this.state.selectedField.type === 'datetime') {
-      setFieldInput = setFieldInput = <input className='form-control m-input'
-        value={this.state.selectedField.value}
-        onChange={this.handleSetCustomField}
-        type='datetime-local' />
-    } else if (this.state.selectedField.type === 'true/false') {
-      setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
-        <option key='' value='' selected disabled>...Select...</option>
-        <option key='true' value='true'>True</option>
-        <option key='false' value='false'>False</option>
-      </select>
+    if (this.state.setFieldIndex) {
+      if (this.state.selectedField.type === 'text') {
+        setFieldInput = <input
+          type='text'
+          className='form-control m-input'
+          placeholder='value'
+          onChange={this.handleSetCustomField}
+          value={this.state.selectedField.value}
+        />
+      } else if (this.state.selectedField.type === 'number') {
+        setFieldInput = <input
+          type='text'
+          className='form-control m-input'
+          placeholder='value'
+          onChange={this.handleSetCustomField}
+          value={this.state.selectedField.value}
+        />
+      } else if (this.state.selectedField.type === 'date') {
+        setFieldInput = <input className='form-control m-input'
+          value={this.state.selectedField.value}
+          onChange={this.handleSetCustomField}
+          type='date' />
+      } else if (this.state.selectedField.type === 'datetime') {
+        setFieldInput = setFieldInput = <input className='form-control m-input'
+          value={this.state.selectedField.value}
+          onChange={this.handleSetCustomField}
+          type='datetime-local' />
+      } else if (this.state.selectedField.type === 'true/false') {
+        setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
+          <option key='' value='' selected disabled>...Select...</option>
+          <option key='true' value='true'>True</option>
+          <option key='false' value='false'>False</option>
+        </select>
+      }
     }
     var hostname = window.location.hostname
     var hoverOn = {
@@ -1551,10 +1571,22 @@ class Subscriber extends React.Component {
                                 <div className='m-form__control'>
                                   <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={this.handleSelectBulkCustomField}>
                                     <option key='' value='' disabled>Set Custom Field</option>
+                                    <optgroup label='Default Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
                                     {
-                                      this.state.customFieldOptions.map((cf, i) => (
-                                        <option key={i} value={cf._id}>{cf.label}</option>
-                                      ))
+                                    this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                    <optgroup label='User Defined Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
                                     }
                                   </select>
                                 </div>
@@ -1716,7 +1748,7 @@ class Subscriber extends React.Component {
                               <div className='col-sm-3' style={{ float: 'right' }}>
                                 <span class="m-datatable__pager-detail" style={{ float: 'right', marginTop: '30px' }}>
                                   Displaying {(this.state.pageSelected * 10) + 1} - {this.props.subscribers.length < 10 ? this.props.count : (this.props.subscribers.length) * (this.state.pageSelected + 1)} of {this.props.count} records
-                              </span>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -1904,10 +1936,10 @@ class Subscriber extends React.Component {
                                       : <span>Show <i style={{ fontSize: '12px' }} className='la la-angle-down ' /></span>
                                     }
                                   </a>
-                                  <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
+                                  <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '145px' }}><i className='la la-gear' /> Manage Fields</span>
                                 </span>
                                 :                         
-                                <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '144px' }}><i className='la la-gear' /> Manage Fields</span>
+                                <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '210px' }}><i className='la la-gear' /> Manage Fields</span>
                               }
                             </div>
                             <div className='row'>
@@ -1932,7 +1964,7 @@ class Subscriber extends React.Component {
                                         )
                                     })
                                   }
-                                  <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
+                                  {/* <Popover placement='left' className='subscriberPopover' isOpen={this.state.setFieldIndex} target='target' toggle={this.toggleSetFieldPopover}>
                                     <PopoverHeader>Set {this.state.selectedField.name} Value</PopoverHeader>
                                     <PopoverBody>
                                       <div className='row' style={{ minWidth: '250px' }}>
@@ -1951,12 +1983,59 @@ class Subscriber extends React.Component {
                                         </button>
                                       </div>
                                     </PopoverBody>
-                                  </Popover>
+                                  </Popover> */}
                                 </div>
                                 : <div style={{ padding: '15px', maxHeight: '120px' }}>
                                   <span>No Custom Fields Set</span>
-                                </div>}
+                                </div>
+                              }
                             </div>
+
+                            <div className="row" style={{ marginTop: '15px', marginLeft: '1px' }}>
+                              <div className='col-6'>
+                                <div className='form-group m-form__group row align-items-center'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
+                                        <option key='' value='' disabled>Set Custom Field</option>
+                                        <optgroup label='Default Custom Fields'>
+                                          {
+                                            this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
+                                              <option key={i} value={cf._id}>{cf.label}</option>
+                                            ))
+                                          }
+                                        </optgroup>
+                                        {
+                                        this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                        <optgroup label='User Defined Custom Fields'>
+                                          {
+                                            this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                              <option key={i} value={cf._id}>{cf.label}</option>
+                                            ))
+                                          }
+                                        </optgroup>
+                                        }
+                                      </select>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                          {
+                              (this.state.selectedField && this.state.selectedField._id) &&
+                                <div style={{marginLeft: '-75px'}} className='col-5'>
+                                  <input placeholder={'Enter field value...'} value={this.state.selectedField ? this.state.selectedField.value : ''} onChange={this.handleSelectedFieldValue} className='form-control' />
+                                </div>
+                            }
+                            {
+                              (this.state.selectedField && this.state.selectedField._id) &&
+                              <div style={{marginLeft: '-15px'}}  className='col-1'>
+                                <button disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()} className='btn btn-primary'>
+                                  Save
+                                </button>
+                              </div>
+                            }
+                        </div>
+
                             {hostname.includes('kiboengage.cloudkibo.com') &&
                               <div className='row'>
                                 <span style={{ fontWeight: 600, marginLeft: '15px' }}>Subscribed to Sequences:</span>
