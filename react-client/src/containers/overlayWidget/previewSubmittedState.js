@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { updateWidget } from '../../redux/actions/overlayWidgets.actions'
-var MessengerPlugin = require('react-messenger-plugin').default
 
 class PreviewInitialState extends React.Component {
   constructor (props, context) {
