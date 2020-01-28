@@ -316,7 +316,7 @@ class Autoposting extends React.Component {
             </div>
           }
           {
-            this.state.newsPageIndex.length === 0 && this.props.SMPStatus
+            this.state.newsPageIndex.length !== 0 && this.props.SMPStatus
               ?
               <div className='m-portlet m-portlet--mobile'>
                 <div className='m-portlet__head'>
