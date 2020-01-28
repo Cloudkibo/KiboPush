@@ -38,7 +38,7 @@ class Tab extends React.Component {
     } else if (tab === 'submittedState') {
       $('#tab_3').addClass('active')
       $('#optInActions').addClass('active')
-      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'submittedState')
+      this.props.updateWidget(this.props.currentWidget, null, 'currentTab', 'optInActions')
     } else if (tab === 'optInActions') {
       $('#tab_4').addClass('active')
       $('#setup').addClass('active')
@@ -100,6 +100,7 @@ class Tab extends React.Component {
       this.onTabClick(this.props.currentWidget.currentTab)
     }
   }
+  
   render () {
     console.log('render in tabs', this.props)
     return (

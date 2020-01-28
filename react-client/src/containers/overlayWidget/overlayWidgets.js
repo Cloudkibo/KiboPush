@@ -38,7 +38,8 @@ class OverlayWidgets extends React.Component {
       first_page: 'first',
       page_value: '',
       status_value: '',
-      type_value: ''
+      type_value: '',
+      search_value: ''
     })
     props.setWidgetProperties(null, props.pages[0]._id)
     this.handlePageClick = this.handlePageClick.bind(this)

@@ -27,7 +27,8 @@ export function updateWidget (widget, tab, updatedKey, updatedValue) {
       type: widget.type,
       status: widget.status,
       currentTab: widget.currentTab,
-      id: widget.id
+      id: widget.id,
+      title: widget.title
     }
     if (tab) {
       updatedWidget[tab][updatedKey] = updatedValue
@@ -46,7 +47,7 @@ export function fetchOverlayWidgets (data) {
       if (res.status === 'success' && res.payload) {
         dispatch(showAllOverlayWidgets(res.payload))
       } else {
-        dispatch(showAllOverlayWidgets([]))
+        dispatch(showAllOverlayWidgets({overlayWidgets: [], count: 0}))
       }
     })
   }
@@ -63,7 +64,8 @@ export function deleteOverlayWidget (id, msg) {
           first_page: 'first',
           page_value: '',
           status_value: '',
-          type_value: ''
+          type_value: '',
+          search_value: ''
         }
         dispatch(fetchOverlayWidgets(data))
       } else {
@@ -72,12 +74,15 @@ export function deleteOverlayWidget (id, msg) {
     })
   }
 }
-export function createOverlayWidget (data, msg) {
+export function createOverlayWidget (data, msg, handleCreate) {
   return (dispatch) => {
     callApi(`overlayWidgets/create/`, 'post', data).then(res => {
       console.log('response from create overlay widgets', res)
       if (res.status === 'success') {
         msg.success('Overlay widget has been saved')
+        if (handleCreate) {
+          handleCreate(res.payload)
+        }
       } else {
         msg.error('Failed to save overlay Widget')
       }
@@ -129,6 +134,7 @@ export function setWidgetProperties (wgt, defaultPageId) {
       status: wgt && wgt.isActive ? wgt.isActive: true,
       type:  wgt && wgt.widgetType ? wgt.widgetType: 'bar',
       error: false, 
+      title: wgt && wgt.title ? wgt.title : '',
       id: wgt && wgt._id ? wgt._id :  ''
     }
     dispatch(showUpdatedWidget(widget))

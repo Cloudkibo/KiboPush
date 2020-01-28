@@ -106,7 +106,7 @@ class InitialState extends React.Component {
   render () {
     return (
       <div>
-        <div style={{minHeight: '450px'}}>
+        <div style={{minHeight: '400px'}}>
           <Popover isOpen={this.state.showHeadingPicker} target='init_heading' title='heading' toggle={this.toggleColorPicker} color={this.props.initialState.headline_color} onChangeComplete={this.onChangeComplete} />
           <Popover isOpen={this.state.showBackgroundPicker} target='init_background' title='background' toggle={this.toggleColorPicker} color={this.props.initialState.background_color} onChangeComplete={this.onChangeComplete} />
           <label>Button Type:</label>
@@ -172,6 +172,7 @@ class InitialState extends React.Component {
               </div>
             </div>
             <br />
+            {/*
             <div className='row'>
               <div className='col-md-6 col-lg-6 col-sm-6'>
                 <label>Button Text</label>
@@ -180,6 +181,7 @@ class InitialState extends React.Component {
                 </select>
               </div>
             </div>
+            */}
             <br /><br />
           </div>
           }
