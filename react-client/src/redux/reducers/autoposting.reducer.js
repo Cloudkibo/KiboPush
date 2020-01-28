@@ -18,7 +18,7 @@ export function autopostingInfo (state = {}, action) {
 
     case ActionTypes.SHOW_AUTOPOSTING_POSTS:
       return Object.assign({}, state, {
-        autoposting_posts: action.autoposting_messages,
+        autoposting_posts: action.autoposting_posts,
         postsCount: action.count
       })
 
