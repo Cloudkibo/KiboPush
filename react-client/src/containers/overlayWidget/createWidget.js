@@ -15,9 +15,11 @@ class CreateWidget extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isEdit: false
+      isEdit: props.currentWidget.id === '' ? false: true,
+      selectedPage: props.pages[0]._id
     }
     this.pageChange = this.pageChange.bind(this)
+    this.titleChange = this.titleChange.bind(this)
     this.toggleWidgetStatus = this.toggleWidgetStatus.bind(this)
     this.changeWidgetType = this.changeWidgetType.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -26,17 +28,20 @@ class CreateWidget extends React.Component {
     console.log(this.props.currentWidget)
     this.props.updateWidget(this.props.currentWidget, null, 'status', !this.props.currentWidget.status)
   }
+  titleChange (e) {
+    this.props.updateWidget(this.props.currentWidget, null, 'title', e.target.value)
+  }
   onSave () {
     var widgetObject = {}
     widgetObject.initialState = this.props.currentWidget.initialState
     widgetObject.submittedState = this.props.currentWidget.submittedState
     widgetObject.optInMessage = this.props.currentWidget.optInMessage
     widgetObject._id = this.props.currentWidget.id
-    widgetObject.title = 'Widget Title'
+    widgetObject.title = this.props.currentWidget.title
     widgetObject.isActive = this.props.currentWidget.status
     widgetObject.widgetType = this.props.currentWidget.type
-    widgetObject.pageId = this.props.currentWidget.page._id
-    if (this.props.currentWidget._id !== '') {
+    widgetObject.pageId = this.props.currentWidget.pageId
+    if (this.props.currentWidget.id === '') {
       this.props.createOverlayWidget(widgetObject, this.msg)
     } else {
       this.props.updateOverlayWidget(widgetObject, this.msg)
@@ -52,15 +57,19 @@ class CreateWidget extends React.Component {
     } else {
       document.title = `${title} | Create Overlay Widget`
     }
-    this.props.updateWidget(this.props.currentWidget, null, 'page', this.props.pages[0])
+    this.setState({
+      selectedPage: this.props.currentWidget.pageId
+    })
   }
   pageChange (event) {
     if (event.target.value !== -1) {
-      var selectedPage = this.props.pages.filter((page) => page._id === event.target.value)[0]
-      this.props.updateWidget(this.props.currentWidget, null, 'page', selectedPage)
+      this.props.updateWidget(this.props.currentWidget, null, 'pageId', event.target.value)
     } else {
-      this.props.updateWidget(this.props.currentWidget, null, 'page', '')
+      this.props.updateWidget(this.props.currentWidget, null, 'pageId', '')
     }
+    this.setState({
+      selectedPage: event.target.value
+    })
   }
 
   render () {
@@ -100,11 +109,23 @@ class CreateWidget extends React.Component {
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       <div style={{display: 'flex'}}>
+                        <label style={{width: '30%', marginTop: '10px'}}>Title</label>
+                        <input className='form-control m-input' placeholder='title'
+                          onChange={this.titleChange}
+                          defaultValue=''
+                          value={this.props.currentWidget.title} />
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <div className='row'>
+                    <div className='col-md-6 col-lg-6 col-sm-6'>
+                      <div style={{display: 'flex'}}>
                         <label style={{width: '30%', marginTop: '10px'}}>Select Page</label>
-                        <select className='form-control m-input' value={this.props.currentWidget.page ? this.props.currentWidget.page._id : ''} onChange={this.pageChange}>
+                        <select className='form-control m-input' value={this.state.selectedPage} onChange={this.pageChange}>
                         {
                           this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                            <option key={page._id} value={page._id} selected={this.props.currentWidget.page && page._id === this.props.currentWidget.page._id}>{page.pageName}</option>
+                            <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage}>{page.pageName}</option>
                           ))
                         }
                         </select>

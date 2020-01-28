@@ -30,7 +30,7 @@ class Preview extends React.Component {
             </div>
           </div>
         }
-        { this.props.currentWidget.currentTab === 'initialState' &&
+        { (this.props.currentWidget.currentTab === 'initialState' || this.props.currentWidget.currentTab === 'setup') &&
          <PreviewInitialState />
         }
         { this.props.currentWidget.currentTab === 'submittedState' &&

@@ -100,10 +100,6 @@ class SubmittedState extends React.Component {
     return (
       <div>
         <div style={{minHeight: '450px'}}>
-          <Popover isOpen={this.state.showHeadingPicker} target='sub_heading' title='heading' toggle={this.toggleColorPicker} color={this.props.submittedState.headline_color} onChangeComplete={this.onChangeComplete} />
-          <Popover isOpen={this.state.showBackgroundPicker} target='sub_background' title='background' toggle={this.toggleColorPicker} color={this.props.submittedState.background_color} onChangeComplete={this.onChangeComplete} />
-          <Popover isOpen={this.state.showButtonBgPicker} target='sub_button_background' title='button_background' toggle={this.toggleColorPicker} color={this.props.submittedState.button_background} onChangeComplete={this.onChangeComplete} />
-          <Popover isOpen={this.state.showButtonTextPicker} target='sub_button_text' title='button_text' toggle={this.toggleColorPicker} color={this.props.submittedState.button_text_color} onChangeComplete={this.onChangeComplete} />
           <label>After Submit:</label>
           <div className='row'>
             <div className='col-md-6 col-lg-6 col-sm-6'>
@@ -132,6 +128,10 @@ class SubmittedState extends React.Component {
           <br />
           { this.props.submittedState.action_type  === 'show_new_message' &&
           <div>
+          <Popover isOpen={this.state.showHeadingPicker} target='sub_heading' title='heading' toggle={this.toggleColorPicker} color={this.props.submittedState.headline_color} onChangeComplete={this.onChangeComplete} />
+          <Popover isOpen={this.state.showBackgroundPicker} target='sub_background' title='background' toggle={this.toggleColorPicker} color={this.props.submittedState.background_color} onChangeComplete={this.onChangeComplete} />
+          <Popover isOpen={this.state.showButtonBgPicker} target='sub_button_background' title='button_background' toggle={this.toggleColorPicker} color={this.props.submittedState.button_background} onChangeComplete={this.onChangeComplete} />
+          <Popover isOpen={this.state.showButtonTextPicker} target='sub_button_text' title='button_text' toggle={this.toggleColorPicker} color={this.props.submittedState.button_text_color} onChangeComplete={this.onChangeComplete} />
             <label>Colors:</label><br />
             <div className='row'>
               <div className='col-md-6 col-lg-6 col-sm-6'>

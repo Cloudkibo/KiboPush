@@ -15,7 +15,8 @@ class PreviewInitialState extends React.Component {
     super(props, context)
     this.state = {
       backgroundImage: 'https://kibopush.com/wp-content/uploads/2020/01/preview_background.jpg',
-      loadScript: true
+      loadScript: true,
+      fbPageId: ''
     }
     this.handleHeadlineChange = this.handleHeadlineChange.bind(this)
     this.loadsdk = this.loadsdk.bind(this)
@@ -27,6 +28,11 @@ class PreviewInitialState extends React.Component {
   }
   changeButtonText (e) {
     this.props.updateWidget(this.props.currentWidget, 'initialState', 'button_text', e.target.value)
+  }
+  componentDidMount () {
+    this.setState({
+      fbPageId: this.props.pages.filter((page) => page._id === this.props.currentWidget.pageId)[0].pageId
+    })
   }
   loadsdk (fbAppId) {
     console.log('inside loadsdk', fbAppId)
@@ -67,7 +73,7 @@ class PreviewInitialState extends React.Component {
           <center style={{marginLeft: '90px'}}>
             <MessengerPlugin
               appId={this.props.fbAppId}
-              pageId={JSON.stringify(this.props.currentWidget.page.pageId)}
+              pageId={JSON.stringify(this.state.fbPageId)}
               size='large'
               color={this.props.currentWidget.initialState.button_background}
             />
@@ -88,6 +94,7 @@ class PreviewInitialState extends React.Component {
 function mapStateToProps (state) {
   return {
     fbAppId: state.basicInfo.fbAppId,
+    pages: (state.pagesInfo.pages),
     currentWidget: state.overlayWidgetsInfo.currentWidget
   }
 }

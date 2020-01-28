@@ -64,6 +64,10 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         integrations: action.data
       })
+    case ActionTypes.SHOW_WHITELIST_DOMAINS:
+      return Object.assign({}, state, {
+        whitelistDomains: action.data
+      })
     default:
       return state
   }

@@ -7,8 +7,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchOverlayWidgets, deleteOverlayWidget, setInitialState, updateWidget} from '../../redux/actions/overlayWidgets.actions'
+import {fetchOverlayWidgets, deleteOverlayWidget, setWidgetProperties, updateWidget} from '../../redux/actions/overlayWidgets.actions'
 import AlertContainer from 'react-alert'
+import JSSNIPPET from './jsSnippet'
 
 class OverlayWidgets extends React.Component {
   constructor (props, context) {
@@ -26,7 +27,9 @@ class OverlayWidgets extends React.Component {
       pageNumber: 0,
       status: '', 
       page_value: '',
-      type_value: ''
+      type_value: '',
+      setupPage: '',
+      setupModal: false
     }
 
     props.fetchOverlayWidgets({
@@ -37,7 +40,7 @@ class OverlayWidgets extends React.Component {
       status_value: '',
       type_value: ''
     })
-    props.setInitialState()
+    props.setWidgetProperties(null, props.pages[0]._id)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
@@ -59,7 +62,9 @@ class OverlayWidgets extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
+    this.setState({
+      setupPage: this.props.pages[0].pageId
+    })
     document.title = `${title} | Overlay Widgets`
   }
   
@@ -138,6 +143,7 @@ class OverlayWidgets extends React.Component {
     })
   }
   onEdit (widget) {
+    this.props.setWidgetProperties(widget, this.props.pages[0]._id)
     this.props.history.push({
       pathname: `/createOverlayWidget`
     })
@@ -217,8 +223,13 @@ class OverlayWidgets extends React.Component {
     }
   }
 
-  setupOverlayWidget (id) {
-    console.log('true in setup landing page')
+  setupOverlayWidget (widget) {
+    var fbPageId = this.props.pages.filter((page) => page._id === widget.pageId)[0].pageId
+    this.setState({
+      setupPage: fbPageId,
+      setupModal: true
+    })
+    this.refs.setupModal.click()
   }
   closeDialogSetup () {
     this.setState({isSetupShow: false})
@@ -234,47 +245,52 @@ class OverlayWidgets extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                  Delete Overlay Widget?
-									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='setupModal' data-toggle="modal" data-target="#setupModal">setupModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="setupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content" style={{width: '500px'}}>
+              <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Setup
+                  </h5>
+                  <button style={{opacity: '0.5' }} type='button' className='close' data-dismiss='modal' aria-label='Close' onClick={() => {
+                      this.setState({
+                        setupModal: false
+                      })
+                    }}>
+                    <span aria-hidden='true'>
                       &times;
-											</span>
+                    </span>
                   </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
-                <p>Are you sure you want to delete this overlay widget?</p>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.props.deleteOverlayWidget(this.state.deleteid, this.msg)
-                  this.closeDialogDelete()
-                }} data-dismiss='modal'>Delete
-              </button>
-                </div>
+              </div>
+              <div style={{ minHeight: '350px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                {this.state.setupModal  && <JSSNIPPET fbPageId={this.state.setupPage}/>}
               </div>
             </div>
           </div>
-          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="setup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Setup
-									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
-											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
-                <div />
+        </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                Delete Overlay Widget?
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{color: 'black'}} className="modal-body">
+              <p>Are you sure you want to delete this overlay widget?</p>
+            <button style={{float: 'right'}}
+              className='btn btn-primary btn-sm'
+              onClick={() => {
+                this.props.deleteOverlayWidget(this.state.deleteid, this.msg)
+                this.closeDialogDelete()
+              }} data-dismiss='modal'>Delete
+            </button>
               </div>
             </div>
           </div>
@@ -405,7 +421,7 @@ class OverlayWidgets extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(widget._id)}>
                                     Delete
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#setup" onClick={() => this.setupOverlayWidget(widget._id)}>
+                                <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#setupModal" onClick={() => this.setupOverlayWidget(widget)}>
                                     Setup
                                 </button>
                               </span>
@@ -459,7 +475,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchOverlayWidgets: fetchOverlayWidgets,
     deleteOverlayWidget: deleteOverlayWidget,
-    setInitialState: setInitialState,
+    setWidgetProperties: setWidgetProperties,
     updateWidget: updateWidget
   }, dispatch)
 }

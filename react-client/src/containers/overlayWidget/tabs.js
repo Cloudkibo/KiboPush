@@ -11,6 +11,7 @@ import { updateWidget } from '../../redux/actions/overlayWidgets.actions'
 import InitialState from './initialState'
 import SubmittedState from './submittedState'
 import OptInActions from './optInActions'
+import Setup from './setup'
 
 class Tab extends React.Component {
   constructor (props, context) {
@@ -128,7 +129,7 @@ class Tab extends React.Component {
             <OptInActions history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_4'>
-            <div>Setup</div>
+            <Setup handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
         </div>
       </div>

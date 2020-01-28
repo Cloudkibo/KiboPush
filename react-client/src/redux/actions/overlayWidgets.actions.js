@@ -23,7 +23,7 @@ export function updateWidget (widget, tab, updatedKey, updatedValue) {
       initialState: widget.initialState,
       submittedState: widget.submittedState,
       optInMessage:  widget.optInMessage,
-      page: widget.page,
+      pageId: widget.pageId,
       type: widget.type,
       status: widget.status,
       currentTab: widget.currentTab,
@@ -96,40 +96,40 @@ export function updateOverlayWidget (data, msg) {
     })
   }
 }
-export function setInitialState (wgt) {
+export function setWidgetProperties (wgt, defaultPageId) {
   return (dispatch) => {
     let widget = {
       initialState: {
-        button_type:  "send_to_messenger",
-        background_color: '#fff',
-        headline_color: '#000',
-        button_background: 'blue',
-        button_text: 'Send to Messenger',
-        button_text_color: '#fff',
-        headline: 'Here is your widget headline. Click here to change it!'
+        button_type:  wgt && wgt.initialState ? wgt.initialState.button_type : "send_to_messenger",
+        background_color: wgt && wgt.initialState ? wgt.initialState.background_color : '#fff',
+        headline_color:  wgt && wgt.initialState ? wgt.initialState.headline_color: '#000',
+        button_background:  wgt && wgt.initialState ? wgt.initialState.button_background: 'blue',
+        button_text:  wgt && wgt.initialState ? wgt.initialState.button_text: 'Send to Messenger',
+        button_text_color:  wgt && wgt.initialState ? wgt.initialState.button_text_color: '#fff',
+        headline:  wgt && wgt.initialState ? wgt.initialState.headline: 'Here is your widget headline. Click here to change it!'
       },
       submittedState: {
-        action_type: "show_new_message",
-        message: "Thank You for Reading Our Thank You Message!",
-        background_color: "#CE93D8",
-        headline_color: "#FFFFFF",
-        button_background: "#FFFFFF",
-        button_text_color: "#000000",
-        button_text: 'View it in Messenger',
-        url: '',
-        tab: 'new_tab' 
+        action_type:  wgt && wgt.submittedState ? wgt.submittedState.action_type : "show_new_message",
+        message: wgt && wgt.submittedState ? wgt.submittedState.message: "Thank You for Reading Our Thank You Message!",
+        background_color: wgt && wgt.submittedState ? wgt.submittedState.background_color: "#CE93D8",
+        headline_color: wgt && wgt.submittedState ? wgt.submittedState.headline_color: "#FFFFFF",
+        button_background: wgt && wgt.submittedState ? wgt.submittedState.button_background: "#FFFFFF",
+        button_text_color: wgt && wgt.submittedState ? wgt.submittedState.button_text_color: "#000000",
+        button_text: wgt && wgt.submittedState ? wgt.submittedState.button_text: 'View it in Messenger',
+        url: wgt && wgt.submittedState ? wgt.submittedState.url: '',
+        tab: wgt && wgt.submittedState ? wgt.submittedState.tab: 'new_tab' 
       },
-      optInMessage: [{
+      optInMessage: wgt && wgt.optInMessage ? wgt.optInMessage: [{
         id: new Date().getTime(),
         text: 'Welcome {{user_first_name}}! Thankyou for subscribing. The next post is coming soon, stay tuned!    P.S. If you ever want to unsubscribe just type "stop"',
         componentType: 'text'
       }],
       currentTab: 'initialState',
-      page: '',
-      status: true,
-      type: 'bar',
+      pageId:  wgt && wgt.pageId ? wgt.pageId: defaultPageId,
+      status: wgt && wgt.isActive ? wgt.isActive: true,
+      type:  wgt && wgt.widgetType ? wgt.widgetType: 'bar',
       error: false, 
-      id: ''
+      id: wgt && wgt._id ? wgt._id :  ''
     }
     dispatch(showUpdatedWidget(widget))
   }
