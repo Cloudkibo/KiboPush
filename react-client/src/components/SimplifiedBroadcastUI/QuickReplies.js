@@ -595,7 +595,7 @@ class QuickReplies extends React.Component {
                                         {
                                             (index+2) < this.state.quickReplies.length &&
                                             <button onClick={() => this.editQuickReply(index+2)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                              {this.state.quickReplies[index+2].image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                              {this.state.quickReplies[index+2].image_url && <img src={this.state.quickReplies[index+2].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
                                               }
                                               {this.state.quickReplies[index+2].title}
                                             </button>
