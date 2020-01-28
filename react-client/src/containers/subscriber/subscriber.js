@@ -27,7 +27,7 @@ class Subscriber extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      subscribersData: null,
+      subscribersData: [],
       subscribersDataAll: [],
       totalLength: 0,
       filterByGender: '',
