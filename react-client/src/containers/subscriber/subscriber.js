@@ -27,7 +27,7 @@ class Subscriber extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      subscribersData: [],
+      subscribersData: null,
       subscribersDataAll: [],
       totalLength: 0,
       filterByGender: '',
@@ -78,7 +78,8 @@ class Subscriber extends React.Component {
       selectedBulkField: null,
       saveBulkFieldDisable: true,
       createCustomField: false,
-      selectedTagValue: ''
+      selectedTagValue: '',
+      subscribersLoaded: false
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -972,7 +973,7 @@ class Subscriber extends React.Component {
         gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
         page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
         locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
-        tag_value: this.state.tag_value === 'all' ? '' : this.state.tag_value, 
+        tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
         status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
         source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
       } 
@@ -981,6 +982,7 @@ class Subscriber extends React.Component {
 
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    //debugger;
     console.log('next Props in subscribers', nextProps)
     console.log('nextProps in subscribers', nextProps)
     if (nextProps.pages && !this.state.filterByPage) {
@@ -990,7 +992,7 @@ class Subscriber extends React.Component {
     }
     if (nextProps.subscribers && nextProps.count) {
       this.displayData(0, nextProps.subscribers)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.count, subscribersLoaded: true })
       if (this.state.subscriber && this.state.subscriber._id) {
         for (let i = 0; i < nextProps.subscribers.length; i++) {
           if (nextProps.subscribers[i]._id === this.state.subscriber._id) {
@@ -1001,7 +1003,7 @@ class Subscriber extends React.Component {
         }
       }
     } else {
-      this.setState({ subscribersData: [], subscribersDataAll: [], totalLength: 0 })
+      this.setState({subscribersData: [], subscribersDataAll: [], totalLength: 0 })
     }
     if (nextProps.tags) {
       var tagOptions = []
@@ -1754,7 +1756,7 @@ class Subscriber extends React.Component {
                           </div>
                           : <div className='table-responsive'>
                             {
-                              this.props.subscibers ? 
+                              this.state.subscribersLoaded ? 
                               <h6> No subscribers found that match the criteria </h6>
                               : <h6> Loading subscribers... </h6>
                             }
