@@ -10,6 +10,14 @@ export function showIntegrations (data) {
   }
 }
 
+export function showWhiteListDomains (data) {
+  return {
+    type: ActionTypes.SHOW_WHITELIST_DOMAINS,
+    data
+  }
+}
+
+
 
 export function getResponseMethod (data) {
   return {
@@ -357,7 +365,10 @@ export function fetchWhiteListedDomains (pageId, handleFetch) {
       .then(res => {
         console.log('whitelisted domains', res)
         if (res.status === 'success') {
-          handleFetch(res)
+          if (handleFetch) {
+            handleFetch(res)
+          }
+          dispatch(showWhiteListDomains(res.payload))
         } else {
           console.log(res.description)
         }
@@ -371,7 +382,9 @@ export function deleteDomain (payload, msg, handleDelete) {
       .then(res => {
         console.log('whitelisted domains', res)
         if (res.status === 'success') {
-          handleDelete(res)
+          if (handleDelete) {
+           handleDelete(res)
+          }
         } else {
           msg.error(res.description)
         }
