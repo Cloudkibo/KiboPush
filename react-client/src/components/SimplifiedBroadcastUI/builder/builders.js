@@ -1209,7 +1209,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({
             id: componentId,
-            componentName: broadcast.componentName,
+            componentName: 'audio',
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
           })
@@ -1229,7 +1229,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
-            componentName: broadcast.componentName,
+            componentName: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
         }
