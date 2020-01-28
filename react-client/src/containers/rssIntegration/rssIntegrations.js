@@ -25,6 +25,7 @@ class RssIntegrations extends React.Component {
       pageNumber: 0,
       feeds: [],
       page_value: '',
+      type_value: '',
       filter: false,
       loading: true
     }
@@ -33,6 +34,7 @@ class RssIntegrations extends React.Component {
       first_page: 'first',
       search_value: '',
       status_value: '',
+      type_value: ''
     })
     props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -46,6 +48,7 @@ class RssIntegrations extends React.Component {
     this.resetFilters = this.resetFilters.bind(this)
     this.setStatus = this.setStatus.bind(this)
     this.onPageFilter = this.onPageFilter.bind(this)
+    this.onTypeFilter = this.onTypeFilter.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
     this.setPageStatus = this.setPageStatus.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
@@ -67,8 +70,8 @@ class RssIntegrations extends React.Component {
     return value
   }
 
-  isAnyFilter(search, page, status) {
-    if (search !== '' || page !== '' || status !== '') {
+  isAnyFilter(search, page, status, type) {
+    if (search !== '' || page !== '' || status !== '' || type !== '') {
       this.setState({
         filter: true
       })
@@ -132,24 +135,34 @@ class RssIntegrations extends React.Component {
     }
     this.props.updateFeed(data, this.msg, true)
   }
-  onPageFilter (e) {
-    this.setState({page_value: e.target.value, pageNumber: 0})
-    this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status)
+  onTypeFilter (e) {
+    this.setState({type_value: e.target.value, pageNumber: 0})
+    this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: ''})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
+    }
+  }
+  onPageFilter (e) {
+    this.setState({page_value: e.target.value, pageNumber: 0})
+    this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({pageNumber: 0})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value})
+    } else {
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value})
     }
   }
   onStatusFilter (e) {
     this.setState({status: e.target.value, pageNumber: 0})
-    this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value)
+    this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value})
     }
   }
 
@@ -157,11 +170,11 @@ class RssIntegrations extends React.Component {
     this.setState({
       searchValue: event.target.value, pageNumber:0
     })
-    this.isAnyFilter(event.target.value, this.state.page_value, this.state.status)
+    this.isAnyFilter(event.target.value, this.state.page_value, this.state.status, this.state.type_value)
     if (event.target.value !== '') {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
     }
   }
 
@@ -231,7 +244,8 @@ class RssIntegrations extends React.Component {
         first_page: 'first',
         search_value: this.state.searchValue,
         status_value: this.state.status,
-        page_value: this.state.page_value
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
       })
     } else if (this.state.pageNumber < data.selected) {
       this.props.fetchRssFeed({
@@ -242,7 +256,8 @@ class RssIntegrations extends React.Component {
         first_page: 'next',
         search_value: this.state.searchValue,
         status_value: this.state.status,
-        page_value: this.state.page_value
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
       })
     } else {
       this.props.fetchRssFeed({
@@ -253,7 +268,8 @@ class RssIntegrations extends React.Component {
         first_page: 'previous',
         search_value: this.state.searchValue,
         status_value: this.state.status,
-        page_value: this.state.page_value
+        page_value: this.state.page_value,
+        type_value: this.state.type_value
       })
     }
     this.setState({pageNumber: data.selected})
@@ -454,10 +470,10 @@ class RssIntegrations extends React.Component {
                 </div>
                 { (this.state.feeds && this.state.feeds.length > 0) || this.state.filter
                 ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
-                    <div className='col-md-4'>
+                    <div className='col-md-3'>
                       <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-3'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                         <option value='' disabled>Filter by Status...</option>
                         <option value=''>All</option>
@@ -465,7 +481,7 @@ class RssIntegrations extends React.Component {
                         <option value='false'>Disabled</option>
                       </select>
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-3'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
                         <option value='' disabled>Filter by Page...</option>
                         <option value=''>All</option>
@@ -475,6 +491,14 @@ class RssIntegrations extends React.Component {
                             <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
                           ))
                         }
+                      </select>
+                    </div>
+                    <div className='col-md-3'>
+                      <select className='custom-select' style={{width: '100%'}} value= {this.state.type_value} onChange={this.onTypeFilter}>
+                        <option value='' disabled>Filter by Type...</option>
+                        <option value=''>All</option>
+                        <option value='default'>Default</option>
+                        <option value='nonDefault'>Non Default</option>
                       </select>
                     </div>
                   </div>

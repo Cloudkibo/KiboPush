@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import swal from 'sweetalert2'
 
 class ErrorMessage extends React.Component {

@@ -168,7 +168,7 @@ class QuickReplies extends React.Component {
               return true
           }
           if(this.state.currentActions[i].hubspotAction) {
-              
+
           }
       }
       console.log('null')
@@ -578,20 +578,26 @@ class QuickReplies extends React.Component {
                                 return (
                                     <div className='btn-toolbar' style={{padding: '10px', visibility: this.state.currentSlideIndex !== index ? 'hidden': 'visible', display: 'flex', flexWrap: 'nowrap'}} key={index}>
                                         <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                            {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
+                                          {reply.image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                          }
+                                          {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
                                         </button>
 
                                         {
                                             (index+1) < this.state.quickReplies.length &&
                                             <button onClick={() => this.editQuickReply(index+1)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                                {this.state.quickReplies[index+1].title}
+                                              {this.state.quickReplies[index+1].image_url && <img src={this.state.quickReplies[index+1].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                              }
+                                              {this.state.quickReplies[index+1].title}
                                             </button>
                                         }
 
                                         {
                                             (index+2) < this.state.quickReplies.length &&
                                             <button onClick={() => this.editQuickReply(index+2)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                                {this.state.quickReplies[index+2].title}
+                                              {this.state.quickReplies[index+2].image_url && <img src={this.state.quickReplies[index+2].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                              }
+                                              {this.state.quickReplies[index+2].title}
                                             </button>
                                         }
                                     </div>
@@ -633,8 +639,8 @@ class QuickReplies extends React.Component {
                                             ? <div className='align-center' style={{padding: '7px'}}>
                                                 <h6 style={{pointerEvents: 'none', zIndex: -1, display: 'inline'}}>Upload Image </h6>
                                             </div>
-                                            : <div className='align-center' style={{padding: '7px'}}>
-                                                <img src={this.state.image_url} style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                                            : <div className='align-center' style={{marginTop: '-12px', marginLeft: '-2px'}}>
+                                                <img src={this.state.image_url} style={{pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '75px', height: '75px'}} alt='Text' />
                                             </div>
                                         }
                                         </div>
