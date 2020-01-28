@@ -121,11 +121,11 @@ class CreateMessage extends React.Component {
         for (var i = 0; i < payload.length; i++) {
           temp1.push(payload[i])
         }
-        if (saveMessage && JSON.stringify(temp1).length > 1000) {
-          this.msg.error('Message is too long')
-          error = true
-          break
-        }
+        // if (saveMessage && JSON.stringify(temp1).length > 1000) {
+        //   this.msg.error('Message is too long')
+        //   error = true
+        //   break
+        // }
         temp[index[1]].payload = JSON.stringify(temp1)
         break
       case 'submenu':
@@ -133,11 +133,11 @@ class CreateMessage extends React.Component {
         for (var j = 0; j < payload.length; j++) {
           temp2.push(payload[j])
         }
-        if (saveMessage && JSON.stringify(temp2).length > 1000) {
-          this.msg.error('Message is too long')
-          error = true
-          break
-        }
+        // if (saveMessage && JSON.stringify(temp2).length > 1000) {
+        //   this.msg.error('Message is too long')
+        //   error = true
+        //   break
+        // }
         temp[index[1]].submenu[index[2]].payload = JSON.stringify(temp2)
         break
       case 'nestedMenu':
@@ -145,11 +145,11 @@ class CreateMessage extends React.Component {
         for (var k = 0; k < payload.length; k++) {
           temp3.push(payload[k])
         }
-        if (saveMessage && JSON.stringify(temp3).length > 1000) {
-          this.msg.error('Message is too long')
-          error = true
-          break
-        }
+        // if (saveMessage && JSON.stringify(temp3).length > 1000) {
+        //   this.msg.error('Message is too long')
+        //   error = true
+        //   break
+        // }
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = JSON.stringify(temp3)
         break
       default:

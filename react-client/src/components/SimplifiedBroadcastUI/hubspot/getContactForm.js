@@ -60,8 +60,13 @@ class GetContactForm extends React.Component {
   save () {
     console.log('identityFieldValue in this.save', this.state.identityFieldValue)
     console.log('mappingData in this.save', this.state.mappingData)
+    let data = this.state.mappingData.filter(data => data.customFieldColumn)
+    console.log('data in this.save', data)
     if (this.state.identityFieldValue === '' ) {
-      this.msg.error('Please fill all the required fields')
+      this.msg.error('Please select email Field')
+    }
+    else if (data.length === 0) {
+      this.msg.error('Please select at least one custom Field column')
     } else {
       this.props.save('','',this.state.mappingData, this.state.identityFieldValue)
     }
@@ -135,7 +140,7 @@ class GetContactForm extends React.Component {
     render () {
       var alertOptions = {
         offset: 14,
-        position: 'bottom right',
+        position: 'top right',
         theme: 'dark',
         time: 5000,
         transition: 'scale'
@@ -146,7 +151,7 @@ class GetContactForm extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            Edit Google Sheets Actions
+          Edit HubSpot Actions
             </h5>
           <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" onClick={this.props.closeGSModal} className="close" aria-label="Close">
             <span aria-hidden="true">
@@ -158,7 +163,7 @@ class GetContactForm extends React.Component {
               <h6>HubSpot: Get Contact Properties</h6>
               <span style={{color: '#575962'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
            <br /> <br />
-           <label style={{fontWeight: 'normal'}}>Identity Field</label>           
+           <label style={{fontWeight: 'normal'}}>Email Field</label>           
            <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='hubspot_getcontact'> <span>Custom Field which contains user’s email to identify HubSpot Contacts. Please select such Custom Field.</span>  </UncontrolledTooltip>
           <i id = 'hubspot_getcontact' className='la la-question-circle'/>
           {this.props.columns && this.props.columns.customFieldColumns && this.props.columns.customFieldColumns.length > 0 &&

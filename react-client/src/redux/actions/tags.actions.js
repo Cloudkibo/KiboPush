@@ -63,19 +63,17 @@ export function unassignTags (data, handleResponse, msg) {
     })
   }
 }
-export function createTag (tag, handleResponse, msg) {
+export function createTag (tag, handleResponse) {
   console.log('Actions for saving new subscriber Tag', tag)
   return (dispatch) => {
     callApi('tags', 'post', {tag: tag})
       .then(res => {
+        handleResponse(res)
         if (res.status === 'success' && res.payload) {
           dispatch(loadTags())
-          msg.success('New Tag Created')
         } else {
           dispatch(loadTags())
-          msg.error(res.description)
         }
-        handleResponse()
       })
   }
 }
@@ -101,7 +99,9 @@ export function deleteTag (tag, msg,loadsubscriberData) {
       .then(res => {
         if (res.status === 'success') {
           msg.success(`${res.payload}`)
-          loadsubscriberData({tag_value: false})
+          if (loadsubscriberData) {
+            loadsubscriberData({tag_value: false})
+          }
           dispatch(loadTags())
         } else {
           if (res.status === 'failed' && res.description) {
@@ -113,24 +113,19 @@ export function deleteTag (tag, msg,loadsubscriberData) {
       })
   }
 }
-export function renameTag (payload, msg, handleEdit,loadsubscriberData) {
+export function renameTag (payload, handleEdit,loadsubscriberData) {
   console.log('Actions for renaming Tag', payload)
   return (dispatch) => {
     callApi('tags/rename/', 'post', payload)
       .then(res => {
+        handleEdit(res)
         console.log('renameTag response', res)
         if (res.status === 'success' && res.payload) {
-          msg.success('Tag has been changed')
-          loadsubscriberData({tag_value: true})
-          dispatch(loadTags())
-        } else {
-          if (res.status === 'failed' && res.description) {
-            msg.error(`Unable to edit tag name. ${res.description}`)
-          } else {
-            msg.error('Unable to edit tag name')
+          if (loadsubscriberData) {
+            loadsubscriberData({tag_value: true})
           }
+          dispatch(loadTags())
         }
-        handleEdit()
       })
   }
 }

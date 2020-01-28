@@ -46,6 +46,7 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onEdit () {
+    console.log('location state', this.props.location.state + this.props.location.state.module)
     if(this.props.location.state && this.props.location.state.module === 'edit') {
       this.props.saveDraft(this.state.editSponsoredMessage._id, this.props.sponsoredMessage, this.msg)
     } else {
@@ -53,9 +54,7 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onSend () {
-    this.props.send(this.props.sponsoredMessage)
-  }
-  setStatus (value) {
+    this.props.send(this.props.sponsoredMessage, this.msg)
   }
   render () {
     var alertOptions = {
@@ -80,7 +79,7 @@ class CreateSponsoredMessage extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-12 col-lg-12 col-sm-12'>
-                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage}/>
+                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage} onEdit={this.onEdit}/>
                     </div>
                   </div>
                 </div>

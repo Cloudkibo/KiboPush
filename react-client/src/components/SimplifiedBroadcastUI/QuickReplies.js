@@ -8,12 +8,12 @@ import { RingLoader } from 'halogenium'
 import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import GoogleSheetActions from './GoogleSheetActions'
-
+import HubspotAction from './hubspot/HubspotActions'
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field', 'google sheets'],
+        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field', 'google sheets' , 'hubspot'],
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
         addingQuickReply: this.props.addingQuickReply ? this.props.addingQuickReply : false,
         image_url: '',
@@ -52,10 +52,11 @@ class QuickReplies extends React.Component {
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.closeQuickReply = this.closeQuickReply.bind(this)
     this.saveGoogleSheet = this.saveGoogleSheet.bind(this)
+    this.savehubSpotForm = this.savehubSpotForm.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
-
+    this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.GSModalContent = null
   }
 
@@ -150,7 +151,6 @@ class QuickReplies extends React.Component {
   }
 
   disableSave () {
-    console.log('in disableSave', this.state.currentActions)
       if (!this.state.currentTitle || this.state.addingAction) {
           return true
       }
@@ -158,7 +158,7 @@ class QuickReplies extends React.Component {
           if (!this.state.currentActions[i].action) {
               return true
           }
-          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId  && !this.state.currentActions[i].googleSheetAction) {
+          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId  && !this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].hubspotAction) {
               return true
           }
           if (this.state.currentActions[i].customFieldId && !this.state.currentActions[i].customFieldValue) {
@@ -166,6 +166,9 @@ class QuickReplies extends React.Component {
           }
           if (this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].worksheet && !this.state.currentActions[i].worksheetName) {
               return true
+          }
+          if(this.state.currentActions[i].hubspotAction) {
+              
           }
       }
       console.log('null')
@@ -267,6 +270,26 @@ class QuickReplies extends React.Component {
     currentActions[index].mapping = googleSheetPayload.mapping
     currentActions[index].lookUpValue = googleSheetPayload.lookUpValue
     currentActions[index].lookUpColumn = googleSheetPayload.lookUpColumn
+    this.setState({currentActions})
+  }
+
+  removeHubspotAction(index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].hubspotAction = ''
+    currentActions[index].formId = ''
+    currentActions[index].portalId = ''
+    currentActions[index].mapping = ''
+    currentActions[index].identityFieldValue = ''
+    this.setState({currentActions})
+  }
+
+  savehubSpotForm(hubSpotFormPayload, index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].hubspotAction = hubSpotFormPayload.hubspotAction
+    currentActions[index].formId = hubSpotFormPayload.hubSpotForm
+    currentActions[index].portalId = hubSpotFormPayload.portalId
+    currentActions[index].mapping = hubSpotFormPayload.mapping
+    currentActions[index].identityFieldValue = hubSpotFormPayload.identityFieldValue
     this.setState({currentActions})
   }
 
@@ -401,6 +424,24 @@ class QuickReplies extends React.Component {
                 mapping={this.state.currentActions[index].mapping}
                 lookUpValue={this.state.currentActions[index].lookUpValue}
                 lookUpColumn={this.state.currentActions[index].lookUpColumn}
+                toggleGSModal={this.props.toggleGSModal}
+                closeGSModal={this.props.closeGSModal}
+                GSModalTarget='ActionModal'
+                index={index}
+                />
+            </div>
+        )
+    } else if (action.includes('hubspot')) {
+        return (
+            <div>
+              <HubspotAction
+                savehubSpotForm={this.savehubSpotForm}
+                removeHubspotAction={this.removeHubspotAction}
+                hubspotAction={this.state.currentActions[index].hubspotAction ? this.state.currentActions[index].hubspotAction:''}
+                hubSpotForm={this.state.currentActions[index].formId ? this.state.currentActions[index].formId : ''}
+                portalId={this.state.currentActions[index].portalId ? this.state.currentActions[index].portalId: ''}
+                mapping={this.state.currentActions[index].mapping ? this.state.currentActions[index].mapping :''}
+                identityFieldValue={this.state.currentActions[index].identityFieldValue ? this.state.currentActions[index].identityFieldValue : ''}
                 toggleGSModal={this.props.toggleGSModal}
                 closeGSModal={this.props.closeGSModal}
                 GSModalTarget='ActionModal'

@@ -26,7 +26,6 @@ class CreateContact extends React.Component {
           this.getMappingData = this.getMappingData.bind(this)
     }
 
-
     getMappingData () {
       if (this.props.questions) {
         return this.state.mappingData.map(data => {
@@ -224,7 +223,7 @@ class CreateContact extends React.Component {
       render () {
         var alertOptions = {
           offset: 14,
-          position: 'bottom right',
+          position: 'top right',
           theme: 'dark',
           time: 5000,
           transition: 'scale'
@@ -247,9 +246,13 @@ class CreateContact extends React.Component {
                 <h6>HubSpot: Create/Update Contact Properties</h6>
                 <span style={{color: '#575962'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
              <br /> <br />
-             <label style={{fontWeight: 'normal'}}>Identity Field</label>           
-             <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='hubspot_getcontact'> <span>Custom Field which contains user’s email to identify HubSpot Contacts. Please select such Custom Field.</span>  </UncontrolledTooltip>
-            <i id = 'hubspot_getcontact' className='la la-question-circle'/>
+             <label style={{fontWeight: 'normal'}}>Email Field</label>           
+            <span id="hubspot_getcontact" className='la la-question-circle'/>
+              <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='top' target="hubspot_getcontact"> 
+                <span id='identityFieldExplanation'>
+                  Custom Field which contains user’s email to identify HubSpot Contacts. Please select such Custom Field.
+                </span>  
+             </UncontrolledTooltip>
             {this.props.columns && this.props.columns.customFieldColumns && this.props.columns.customFieldColumns.length > 0 &&
               <select className='form-control m-input m-input--square' value={this.state.identityFieldValue} onChange={this.onidentityFieldValueChange}>
                 <option key='' value='' disabled>Enter Field name...</option>

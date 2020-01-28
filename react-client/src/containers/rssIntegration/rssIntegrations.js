@@ -66,7 +66,7 @@ class RssIntegrations extends React.Component {
     }
     return value
   }
-  
+
   isAnyFilter(search, page, status) {
     if (search !== '' || page !== '' || status !== '') {
       this.setState({
@@ -123,7 +123,7 @@ class RssIntegrations extends React.Component {
       title: feed.title,
       storiesCount: feed.storiesCount,
       defaultFeed: feed.defaultFeed,
-      isActive: !feed.isActive, 
+      isActive: !feed.isActive,
       pageIds: [feed.pageIds[0]]
     }
     var data = {

@@ -93,7 +93,7 @@ class GoogleSheetActions extends React.Component {
   }
 
   openModal () {
-    console.log('in openModal', this.state.mapping)
+    console.log('in openModal', this.props.mapping)
     let modals = {
       'insert_row': (<InsertRow 
         questions={this.props.questions}
@@ -101,7 +101,7 @@ class GoogleSheetActions extends React.Component {
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
-    	  mapping={this.state.mapping}
+    	  mapping={this.props.mapping}
         closeGSModal={this.props.closeGSModal}
       />),
       'update_row': (<UpdateRow 
@@ -110,7 +110,7 @@ class GoogleSheetActions extends React.Component {
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
-    	  mapping={this.state.mapping}
+    	  mapping={this.props.mapping}
         lookUpValue={this.state.lookUpValue}
         lookUpColumn={this.state.lookUpColumn}
         closeGSModal={this.props.closeGSModal}
@@ -120,7 +120,7 @@ class GoogleSheetActions extends React.Component {
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
-    	  mapping={this.state.mapping}
+    	  mapping={this.props.mapping}
         lookUpValue={this.state.lookUpValue}
         lookUpColumn={this.state.lookUpColumn}
         closeGSModal={this.props.closeGSModal}
