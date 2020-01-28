@@ -108,7 +108,7 @@ class Integrations extends React.Component {
                   onClick={() => {
                     this.disconnect(this.state.deleteIngerationId)
                   }}
-                  data-dismiss='modal'>Delete
+                  data-dismiss='modal'>Disable
                 </button>
               </div>
             </div>
