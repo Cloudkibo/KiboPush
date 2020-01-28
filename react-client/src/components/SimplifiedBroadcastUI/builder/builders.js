@@ -202,10 +202,12 @@ class Builders extends React.Component {
     let linkedMessages = this.state.linkedMessages
     let buttonPayload = JSON.parse(button.payload)
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
-      if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
-        // linkedMessages[i].title = button.title
-        linkedMessages[i].parentId = this.state.currentId
-        linkedMessages[i].linkedButton = button
+      for (let j = 0; j < buttonPayload.length; j++) {
+        if (linkedMessages[i].id === buttonPayload[j].blockUniqueId) {
+          // linkedMessages[i].title = button.title
+          linkedMessages[i].parentId = this.state.currentId
+          linkedMessages[i].linkedButton = button
+        }
       }
     }
     this.setState({linkedMessages})
@@ -313,12 +315,15 @@ class Builders extends React.Component {
     let buttons = broadcastComponent.buttons
     for (let j = 0; j < buttons.length; j++) {
       let button = buttons[j]
-      if (button.type === 'postback' && button.payload === null) {
-        console.log('found create new message button')
-        this.addLinkedMessage(button)
-      } else {
-        if (typeof button.payload === 'string') {
-          this.editLinkedMessage(button)
+      if (button.type === 'postback') {
+        let buttonPayload = JSON.parse(button.payload)
+        for (let k = 0; k < buttonPayload.length; k++) {
+          if (buttonPayload[k].action === 'send_message_block') {
+            console.log('found create new message action')
+            this.addLinkedMessage(button)
+          } else if (buttonPayload[k].blockUniqueId) {
+            this.editLinkedMessage(button)
+          }
         }
       }
     }
@@ -334,10 +339,6 @@ class Builders extends React.Component {
         if (payloads[a].action === 'reply_with_a_message' && !payloads[a].blockUniqueId) {
           payloads[a].action = 'send_message_block'
           this.addLinkedMessageForQuickReply(quickReply, a)
-        } else {
-          // if (typeof button.payload === 'string') {
-          //   this.editLinkedMessageForQuickReply(button)
-          // }
         }
       }
     }
@@ -408,8 +409,8 @@ class Builders extends React.Component {
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     deletePayload = deletePayload.map(payload => {
-      if (payload && typeof payload === 'string') {
-        return JSON.parse(payload).blockUniqueId
+      if (payload && payload.action === 'send_message_block') {
+        return payload.blockUniqueId
       }
       return null
     }).filter(payload => !!payload)
@@ -459,10 +460,14 @@ class Builders extends React.Component {
       messageContent: [],
       linkedButton: button
     }
-    button.payload = JSON.stringify({
-      blockUniqueId: id,
-      action: 'send_message_block'
-    })
+    let buttonPayload = JSON.parse(button.payload) 
+    for (let i = 0; i < buttonPayload.length; i++) {
+      if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
+        buttonPayload[i].blockUniqueId = id
+        break
+      }
+    }
+    button.payload = JSON.stringify(buttonPayload)
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     let quickReplies = this.state.quickReplies
