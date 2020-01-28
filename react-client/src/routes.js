@@ -150,6 +150,8 @@ import BackdoorSubscribersWithTags from './containers/operationalDashboard/pageS
 import BackdoorPageAdmins from './containers/operationalDashboard/pageAdmins'
 import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
+import successMessage from './containers/integerationScreen/successMessage'
+import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -365,6 +367,8 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
+    <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
+    <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
