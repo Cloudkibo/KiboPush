@@ -99,7 +99,7 @@ class SubmittedState extends React.Component {
   render () {
     return (
       <div>
-        <div style={{minHeight: '450px'}}>
+        <div style={{minHeight: '400px'}}>
           <label>After Submit:</label>
           <div className='row'>
             <div className='col-md-6 col-lg-6 col-sm-6'>

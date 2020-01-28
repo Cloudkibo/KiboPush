@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { updateWidget } from '../../redux/actions/overlayWidgets.actions'
 import JSSNIPPET from './jsSnippet'
-
+import Footer from './footer'
 
 class SetUp extends React.Component {
   constructor (props) {
@@ -32,8 +32,7 @@ class SetUp extends React.Component {
 
   render () {
     return (
-      <div className='row' style={{minHeight: '450px'}}>
-
+      <div className='row' style={{minHeight: '400px'}}>
          <a href='#/' style={{ display: 'none' }} ref='setupModal' data-toggle="modal" data-target="#setupModal">setupModal</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="setupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -62,6 +61,9 @@ class SetUp extends React.Component {
           </div>
         <div style={{textAlign: 'center', width: '100%'}}>
           <button className='btn btn-primary' style={{width: '100%'}} onClick={this.openSetup}>Install JavaScript Snippet</button>
+          <div style={{marginTop: '50px'}}>
+            <Footer widgetState='setup' handleNext={this.props.handleNext} handleBack={this.props.handleBack} />
+          </div>
         </div>
       </div>
     )

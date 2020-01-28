@@ -56,7 +56,7 @@ class SubmittedState extends React.Component {
         {this.props.landingPage.submittedState.actionType === 'REDIRECT_TO_URL' &&
           <div>
             <label>URL to open after submission:</label>
-            <input className='form-control m-input m-input--air' value={this.props.landingPage.submittedState.url} onChange={this.handleUrl} />
+            <input className='form-control m-input m-input--air' value={this.props.landingPage.submittedState.url} onChange={this.handleUrl} />  
             <br />
             <label>Open this URL:</label>
             <div className='radio' style={{marginLeft: '18px'}}>

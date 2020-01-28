@@ -10,6 +10,7 @@ import { updateWidget, createOverlayWidget, updateOverlayWidget} from '../../red
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
+import { isWebURL } from '../../utility/utils'
 
 class CreateWidget extends React.Component {
   constructor (props, context) {
@@ -23,27 +24,39 @@ class CreateWidget extends React.Component {
     this.toggleWidgetStatus = this.toggleWidgetStatus.bind(this)
     this.changeWidgetType = this.changeWidgetType.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.updateWidgetId = this.updateWidgetId.bind(this)
   }
   toggleWidgetStatus () {
     console.log(this.props.currentWidget)
     this.props.updateWidget(this.props.currentWidget, null, 'status', !this.props.currentWidget.status)
   }
+  updateWidgetId(widget) {
+    this.props.updateWidget(this.props.currentWidget, null, 'id', widget._id)
+  }
   titleChange (e) {
     this.props.updateWidget(this.props.currentWidget, null, 'title', e.target.value)
   }
   onSave () {
+    if (!this.props.currentWidget.title || this.props.currentWidget.title === '') {
+      this.msg.error('Please enter the widget title')
+      return
+    }
+    if (this.props.currentWidget.submittedState.action_type === 'redirect_to_url' && !isWebURL(this.props.currentWidget.submittedState.url)) {
+      this.msg.error('Please provide a correct url in the submitted state tab')
+      return
+    }
     var widgetObject = {}
     widgetObject.initialState = this.props.currentWidget.initialState
     widgetObject.submittedState = this.props.currentWidget.submittedState
     widgetObject.optInMessage = this.props.currentWidget.optInMessage
-    widgetObject._id = this.props.currentWidget.id
     widgetObject.title = this.props.currentWidget.title
     widgetObject.isActive = this.props.currentWidget.status
     widgetObject.widgetType = this.props.currentWidget.type
     widgetObject.pageId = this.props.currentWidget.pageId
     if (this.props.currentWidget.id === '') {
-      this.props.createOverlayWidget(widgetObject, this.msg)
+      this.props.createOverlayWidget(widgetObject, this.msg, this.updateWidgetId)
     } else {
+      widgetObject._id = this.props.currentWidget.id
       this.props.updateOverlayWidget(widgetObject, this.msg)
     }
   }

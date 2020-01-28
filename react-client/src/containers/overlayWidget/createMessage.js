@@ -15,7 +15,7 @@
     constructor (props, context) {
       super(props, context)
       this.state = {
-        buttonActions: ['open website', 'open webview'],
+        buttonActions: ['open website', 'open webview', 'set custom field', 'google sheets', 'hubspot'],
         broadcast: props.currentWidget.optInMessage ? props.currentWidget.optInMessage : [],
         convoTitle: 'Overlay Widget Opt-In Message'
       }
@@ -79,12 +79,11 @@
             </div>
           </div>
           <GenericMessage
-            pageId={this.props.currentWidget.page._id}
+            pageId={this.props.currentWidget.pageId}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
             convoTitle={this.state.convoTitle}
-            buttonActions={this.state.buttonActions}
-            pages={this.props.pages} />
+            buttonActions={this.state.buttonActions} />
         </div>
       )
     }
