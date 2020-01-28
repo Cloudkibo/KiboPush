@@ -1228,42 +1228,6 @@ class Subscriber extends React.Component {
     console.log('subscriber state', this.state)
     console.log('sequence options in subscriberss,', this.state.sequenceOptions)
     console.log('subscriber props', this.props)
-    let setFieldInput = <div style={{ padding: '15px', maxHeight: '120px' }}>No Type Found</div>
-    if (this.state.setFieldIndex) {
-      if (this.state.selectedField.type === 'text') {
-        setFieldInput = <input
-          type='text'
-          className='form-control m-input'
-          placeholder='value'
-          onChange={this.handleSetCustomField}
-          value={this.state.selectedField.value}
-        />
-      } else if (this.state.selectedField.type === 'number') {
-        setFieldInput = <input
-          type='text'
-          className='form-control m-input'
-          placeholder='value'
-          onChange={this.handleSetCustomField}
-          value={this.state.selectedField.value}
-        />
-      } else if (this.state.selectedField.type === 'date') {
-        setFieldInput = <input className='form-control m-input'
-          value={this.state.selectedField.value}
-          onChange={this.handleSetCustomField}
-          type='date' />
-      } else if (this.state.selectedField.type === 'datetime') {
-        setFieldInput = setFieldInput = <input className='form-control m-input'
-          value={this.state.selectedField.value}
-          onChange={this.handleSetCustomField}
-          type='datetime-local' />
-      } else if (this.state.selectedField.type === 'true/false') {
-        setFieldInput = <select className='custom-select' id='type' value={this.state.selectedField.value} style={{ width: '250px' }} tabIndex='-98' onChange={this.handleSetCustomField}>
-          <option key='' value='' selected disabled>...Select...</option>
-          <option key='true' value='true'>True</option>
-          <option key='false' value='false'>False</option>
-        </select>
-      }
-    }
     var hostname = window.location.hostname
     var hoverOn = {
       cursor: 'pointer',
