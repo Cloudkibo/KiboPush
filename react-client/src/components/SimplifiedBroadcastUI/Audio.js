@@ -38,6 +38,7 @@ class Audio extends React.Component {
       var fileInfo = {
         id: this.props.id,
         componentType: 'audio',
+        componentName: 'audio',
         name: this.props.file.fileName,
         type: this.props.file.type,
         size: this.props.file.size,
@@ -51,11 +52,13 @@ class Audio extends React.Component {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
           componentType: 'audio',
+          componentName: 'audio',
           id: this.props.file.fileurl.id,
           name: this.props.file.fileurl.name
         }, {
           id: this.props.id,
           componentType: 'audio',
+          componentName: 'audio',
           fileName: this.props.file.fileName,
           type: this.props.file.type,
           size: this.props.file.size
@@ -92,6 +95,7 @@ class Audio extends React.Component {
         var fileInfo = {
           id: this.props.id,
           componentType: 'audio',
+          componentName: 'audio',
           fileName: file.name,
           type: file.type,
           size: file.size
