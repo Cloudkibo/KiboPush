@@ -16,7 +16,7 @@ class PreviewContentInitialState extends React.Component {
         </span>
         }
       <div className='col-12' style={{width: '100%',height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-        <div>
+        <div style={{marginBottom: `${this.props.widgetType !== 'bar'? '75px': '0px'}`}}>
           <textarea value={this.props.initialState.headline} rows='2' style={{resize: 'none', fontWeight: '600', border:'1px dashed lightgray', fontSize: `${this.props.widgetType === 'page_takeover'? 'x-large' : 'large'}`, textAlign: 'center', height: 'auto', width:  `${this.props.widgetType === 'page_takeover'? '400px' : '300px'}`, margin: '10px', background: this.props.initialState.background_color, color: this.props.initialState ? this.props.initialState.headline_color : '#000'}} maxLength='100' onChange={this.props.handleHeadlineChange} />
           <br />
           { this.props.widgetType !== 'bar' &&
