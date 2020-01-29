@@ -237,7 +237,12 @@ export function createCommentCapture (data, msg, handleCreate) {
           }
         } else {
           if (res.status === 'failed' && res.payload) {
-            msg.error(res.payload)
+            if(res.payload.code === 506) {
+              msg.error(res.payload.error_user_msg)
+            }
+            else {
+              msg.error(res.payload)
+            }
           } else {
             msg.error('Failed to create Comment Capture record')
           }

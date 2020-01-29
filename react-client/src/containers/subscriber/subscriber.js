@@ -651,7 +651,9 @@ class Subscriber extends React.Component {
       selectAllChecked: false,
       showBulkActions: false
     }, () => {
-      this.loadSubscribers()
+      setTimeout(() => {
+        this.loadSubscribers()
+      }, 500)
     })
   }
 

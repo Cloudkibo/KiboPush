@@ -106,12 +106,11 @@ export function send(data, msg) {
   return (dispatch) => {
     callApi(`sponsoredmessaging/send/${data._id}`, 'post', {ad_account_id: data.ad_account_id})
       .then(res => {
-        console.log('response when send', res)
         if(res.status === 'success') {
           dispatch(fetchSponsoredMessages())
           msg.success('Ad has been sent to Ads Manager')
         } else {
-          msg.error('Failed to create sponsored message')
+          msg.error(res.payload.message)
         }
       })
    }
