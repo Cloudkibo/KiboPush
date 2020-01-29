@@ -1719,6 +1719,16 @@ class Subscriber extends React.Component {
                                 </span>
                               </div>
                             </div>
+                            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                                <span>
+                                  <i className='fa fa-download' />
+                                  <span>
+                                    Export Records in CSV File
+                                  </span>
+                                </span>
+                              </button>
+                            </div>
                           </div>
                           : <div className='table-responsive'>
                             {
@@ -1728,16 +1738,6 @@ class Subscriber extends React.Component {
                             }
                           </div>
                         }
-                        <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                          <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                            <span>
-                              <i className='fa fa-download' />
-                              <span>
-                                Export Records in CSV File
-                              </span>
-                            </span>
-                          </button>
-                        </div>
                       </div>
                     </div> :
                     <div className='m-portlet__body'>
