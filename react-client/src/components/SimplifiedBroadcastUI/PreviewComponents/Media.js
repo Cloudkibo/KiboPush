@@ -75,6 +75,31 @@ class Media extends React.Component {
     }
   }
 
+  validateButton(button) {
+    let domButton = document.getElementById('button-' + button.id)
+    if (button.type === 'postback') {
+      let buttonPayload = JSON.parse(button.payload)
+      for (let i = 0; i < buttonPayload.length; i++) {
+        if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
+          if (!domButton) {
+            setTimeout(() => {
+              for (let j = 0; j < this.state.buttons.length; j++) {
+                this.validateButton(this.state.buttons[j])
+              }
+            }, 100)
+          } else {
+            domButton.style['border-color'] = 'red'
+          }
+          return false
+        }
+      }
+    }
+    if (domButton) {
+      domButton.style['border-color'] = 'rgba(0,0,0,.1)'
+    }
+    return true
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -105,7 +130,7 @@ class Media extends React.Component {
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div id={`button-${button.id}`} style={{border: !button.type ?  '1px solid red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
+                  <div id={`button-${button.id}`} style={{border: !this.validateButton(button) ?  '1px solid red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
                     <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                   </div>
                 )

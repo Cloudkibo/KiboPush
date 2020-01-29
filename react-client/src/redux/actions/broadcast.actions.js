@@ -193,8 +193,8 @@ export function addButton (data, handleFunction, msg, resetButton) {
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
       if (res.status === 'success') {
-        debugger;
-        console.log('Response: ', res.payload)
+        //debugger;
+        console.log('broadcasts/addButton Response: ', res.payload)
         res.payload.id = new Date().getTime() + (Math.floor(Math.random() * 100))
         handleFunction(res.payload)
         if (resetButton) {
@@ -224,7 +224,8 @@ export function editButton (data, handleFunction, handleClose, msg) {
           handleClose()
         }
       } else {
-        console.log(res.payload)
+        console.log('broadcasts/editButton response', res.payload)
+        res.payload.id = new Date().getTime() + (Math.floor(Math.random() * 100))
         if (msg) {
           if (res.payload) {
             msg.error(res.payload)

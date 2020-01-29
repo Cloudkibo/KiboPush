@@ -70,6 +70,19 @@ class Text extends React.Component {
     }
     return deletePayload
   }
+
+  validateButton(button) {
+    //debugger;
+    if (button.type === 'postback') {
+      let buttonPayload = JSON.parse(button.payload)
+      for (let i = 0; i < buttonPayload.length; i++) {
+        if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
+          return false
+        }
+      }
+    }
+    return true
+  }
  
   render () {
     return (
@@ -120,7 +133,19 @@ class Text extends React.Component {
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div id={`button-${button.id}`} className='bubble recipient' style={{maxWidth: '100%', textAlign: 'center', margin: 'auto', marginTop: '5px', fontSize: '16px', backgroundColor: 'white', border: !button.type ? '1px solid red' : '1px solid rgba(0,0,0,.1)', borderRadius: '10px', wordBreak: 'break-all', color: '#0782FF'}}>{button.title}</div>
+                  <div id={`button-${button.id}`} className='bubble recipient' 
+                    style={{
+                      maxWidth: '100%', 
+                      textAlign: 'center', 
+                      margin: 'auto', 
+                      marginTop: '5px', 
+                      fontSize: '16px', 
+                      backgroundColor: 'white', 
+                      border: !this.validateButton(button) ? '1px solid red' : '1px solid rgba(0,0,0,.1)', 
+                      borderRadius: '10px', 
+                      wordBreak: 'break-all', 
+                      color: '#0782FF'
+                    }}>{button.title}</div>
                 )
               })
           }

@@ -270,7 +270,7 @@ class FlowBuilder extends React.Component {
       blockDimensions = document.getElementById(`flowBuilderCard-${message.id}`).getBoundingClientRect()
     }
     console.log('getPortsNLinks', components)
-    // debugger;
+    //debugger;
     let ports = {}
     let links = {}
     for (let i = 0; i < components.length; i++) {
@@ -288,6 +288,7 @@ class FlowBuilder extends React.Component {
   }
 
   getPortsNLinksHelper (buttons, message, blockDimensions, ports, links) {
+    //debugger;
     let portHeight = 24
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
@@ -316,7 +317,7 @@ class FlowBuilder extends React.Component {
                 y: y
               }
             }
-            if (payload.blockUniqueId) {
+            if (payload[l].blockUniqueId) {
               console.log('adding link')
               let linkId = Math.floor(Math.random() * 100)
               links[`${linkId}`] = {
@@ -326,7 +327,7 @@ class FlowBuilder extends React.Component {
                   portId: `${buttons[j].id}`
                 },
                 to: {
-                  nodeId: `${payload.blockUniqueId}`,
+                  nodeId: `${payload[l].blockUniqueId}`,
                   portId: 'port0'
                 }
               }
@@ -334,49 +335,6 @@ class FlowBuilder extends React.Component {
           }
         }
       }
-
-
-
-      // let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
-      // if ((payload && payload.action === 'send_message_block') || !buttons[j].type) {
-      //   let payload = JSON.parse(buttons[j].payload)
-      //   console.log('parsed payload', payload)
-      //   let port = document.getElementById(`port-${buttons[j].id}`)
-      //   let y = blockDimensions ? (blockDimensions.hei-ght/2): 0
-      //   if (port && blockDimensions) {
-      //     let portDimensions = port.getBoundingClientRect()
-      //     y = (portDimensions.bottom - blockDimensions.top) - (portHeight/2)
-      //   } else {
-      //     if (j === 0 && buttons.length > 1) {
-      //       y = y - portMarginTop
-      //     } else if (j > 0) {
-      //       y = (y-portMarginTop) + (portHeight)
-      //     }
-      //   }
-      //   ports[`${buttons[j].id}`] = {
-      //     id: `${buttons[j].id}`,
-      //     type: 'right',
-      //     position: {
-      //       x: blockDimensions ? blockDimensions.width : 0,
-      //       y: y
-      //     }
-      //   }
-      //   if (payload && payload.action === 'send_message_block') {
-      //     console.log('adding link')
-      //     let linkId = Math.floor(Math.random() * 100)
-      //     links[`${linkId}`] = {
-      //       id: `${linkId}`,
-      //       from: {
-      //         nodeId: `${message.id}`,
-      //         portId: `${buttons[j].id}`
-      //       },
-      //       to: {
-      //         nodeId: `${payload.blockUniqueId}`,
-      //         portId: 'port0'
-      //       }
-      //     }
-      //   }
-      // }
     }
   }
 
@@ -776,11 +734,13 @@ class FlowBuilder extends React.Component {
             let button = component.buttons[k]
             if (button.id.toString() === buttonId.toString()) {
               document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-              this.props.linkedMessages[i].messageContent[j].buttons[k].type = 'postback'
-              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
-                action: 'send_message_block',
-                blockUniqueId: blockUniqueId
-              })
+              let buttonPayload = JSON.parse(button.payload)
+              for (let l = 0; l < buttonPayload.length; l++) {
+                if (buttonPayload[l].action === 'send_message_block') {
+                  buttonPayload[l].blockUniqueId = blockUniqueId
+                  this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(buttonPayload)
+                }
+              }
               return
             }
           }
@@ -790,11 +750,13 @@ class FlowBuilder extends React.Component {
               let button = component.cards[m].buttons[k]
               if (button.id.toString() === buttonId.toString()) {
                 document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-                this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].type = 'postback'
-                this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify({
-                  action: 'send_message_block',
-                  blockUniqueId: blockUniqueId
-                })
+                let buttonPayload = JSON.parse(button.payload)
+                for (let l = 0; l < buttonPayload.length; l++) {
+                  if (buttonPayload[l].action === 'send_message_block') {
+                    buttonPayload[l].blockUniqueId = blockUniqueId
+                    this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(buttonPayload)
+                  }
+                }
                 return
               }
             }
@@ -813,11 +775,13 @@ class FlowBuilder extends React.Component {
             let button = component.buttons[k]
             if (button.id.toString() === buttonId.toString()) {
               document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].type = 'postback'
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
-                action: 'send_message_block',
-                blockUniqueId: blockUniqueId
-              })
+              let buttonPayload = JSON.parse(button.payload)
+              for (let l = 0; l < buttonPayload.length; l++) {
+                if (buttonPayload[l].action === 'send_message_block') {
+                  buttonPayload[l].blockUniqueId = blockUniqueId
+                  this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(buttonPayload)
+                }
+              }
               return
             }
           }
@@ -827,11 +791,13 @@ class FlowBuilder extends React.Component {
               let button = component.cards[m].buttons[k]
               if (button.id.toString() === buttonId.toString()) {
                 document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-                this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].type = 'postback'
-                this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify({
-                  action: 'send_message_block',
-                  blockUniqueId: blockUniqueId
-                })
+                let buttonPayload = JSON.parse(button.payload)
+                for (let l = 0; l < buttonPayload.length; l++) {
+                  if (buttonPayload[l].action === 'send_message_block') {
+                    buttonPayload[l].blockUniqueId = blockUniqueId
+                    this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(buttonPayload)
+                  }
+                }
                 return
               }
             }
@@ -912,9 +878,10 @@ class FlowBuilder extends React.Component {
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
                   document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
-                  this.props.linkedMessages[i].messageContent[j].buttons[k].payload[l] = {
-                    action: 'send_message'
+                  payload[l] = {
+                    action: 'send_message_block'
                   }
+                  this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
                   return
                 }
               }
@@ -929,9 +896,10 @@ class FlowBuilder extends React.Component {
                 for (let l = 0; l < payload.length; l++) {
                   if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
                     document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
-                    this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload[l] = {
-                      action: 'send_message'
+                    payload[l] = {
+                      action: 'send_message_block'
                     }
+                    this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
                     return
                   }
                 }
@@ -954,10 +922,11 @@ class FlowBuilder extends React.Component {
               let payload = JSON.parse(button.payload)
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
-                  this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = {
-                    action: 'send_message'
+                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
                   }
+                  this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
                   return
                 }
               }
@@ -971,10 +940,11 @@ class FlowBuilder extends React.Component {
                 let payload = JSON.parse(button.payload)
                 for (let l = 0; l < payload.length; l++) {
                   if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
-                    this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = {
-                      action: 'send_message'
+                    document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
                     }
+                    this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
                     return
                   }
                 }
