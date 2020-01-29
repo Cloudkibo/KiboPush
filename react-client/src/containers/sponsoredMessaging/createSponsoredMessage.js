@@ -46,7 +46,6 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onEdit () {
-    console.log('location state', this.props.location.state + this.props.location.state.module)
     if(this.props.location.state && this.props.location.state.module === 'edit') {
       this.props.saveDraft(this.state.editSponsoredMessage._id, this.props.sponsoredMessage, this.msg)
     } else {
