@@ -18,7 +18,8 @@ class InitialState extends React.Component {
       showHeadingPicker: false,
       showBackgroundPicker: false,
       showButtonBgPicker: false, 
-      showButtonTextPicker: false
+      showButtonTextPicker: false,
+      showDescriptionPicker: true
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -57,6 +58,8 @@ class InitialState extends React.Component {
       this.props.updateWidget(this.props.currentWidget, 'initialState', 'button_text_color', color.hex)
     } else if (value === 'button_background') {
       this.props.updateWidget(this.props.currentWidget, 'initialState', 'button_background', color.hex)
+    } else if (value === 'description') {
+      this.props.updateWidget(this.props.currentWidget, 'initialState', 'description_color', color.hex)
     }
   }
 
@@ -66,28 +69,40 @@ class InitialState extends React.Component {
         showHeadingPicker: true,
         showBackgroundPicker: false,
         showButtonBgPicker: false,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'background') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: true,
         showButtonBgPicker: false,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'button_background') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: false,
         showButtonBgPicker: true,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'button_text') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: false,
         showButtonBgPicker: false,
-        showButtonTextPicker: true
+        showButtonTextPicker: true,
+        showDescriptionPicker: false
+      })
+    } else if (value === 'description') {
+      this.setState({
+        showHeadingPicker: false,
+        showBackgroundPicker: false,
+        showButtonBgPicker: false,
+        showButtonTextPicker: false,
+        showDescriptionPicker: true
       })
     }
   }
@@ -101,6 +116,8 @@ class InitialState extends React.Component {
       this.setState({showButtonTextPicker: !this.state.showButtonTextPicker})
     } else if (value === 'button_background') {
       this.setState({showButtonBgPicker: !this.state.showButtonBgPicker})
+    } else if (value === 'description') {
+      this.setState({showDescriptionPicker: !this.state.showDescriptionPicker})
     }
   }
   render () {
@@ -159,6 +176,11 @@ class InitialState extends React.Component {
               <br />
             </div>
             }
+            <div className='row'>
+              <div className='col-md-6 col-lg-6 col-sm-6'>
+                <ColorPicker id='init_descript' name='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.description_color} title='Description' />
+              </div>
+            </div>
           {this.props.currentWidget.initialState.button_type === 'send_to_messenger' &&
           <div>
             <br />
