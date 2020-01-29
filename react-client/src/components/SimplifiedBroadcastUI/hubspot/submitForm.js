@@ -70,10 +70,10 @@ class submitForm extends React.Component {
     save () {
       console.log('hubspotFormValue in this.save', this.state.hubspotFormValue)
       console.log('mappingData in this.save', this.state.mappingData)
-      if (this.state.hubspotFormValue) {
+      if (this.state.hubspotFormValue && (this.state.mappingData[0].customFieldColumn || this.state.mappingData[0].kiboPushColumn)) {
         this.props.save(this.state.hubspotFormValue, this.state.portalId, this.state.mappingData, '')
       } else {
-        this.msg.error('Please fill all the required fields')
+        this.msg.error('Please select email KiboPush Column')
       }
     }
 
@@ -252,6 +252,7 @@ class submitForm extends React.Component {
               mappingData = {this.getMappingData()}
               updateLeftColumn = {this.updateMappingData}
               updateRightColumn = {null}
+              isFirstRequired = {true}
             />
             //this.showMappingData(this.props.columns.hubspotColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
           )

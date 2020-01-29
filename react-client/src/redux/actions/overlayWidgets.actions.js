@@ -10,10 +10,32 @@ export function showAllOverlayWidgets (data) {
   }
 }
 
-export function saveCurrentWidget (data) {
+export function showUpdatedWidget (data) {
   return {
     type: ActionTypes.SAVE_CURRENT_WIDGET,
     data
+  }
+}
+
+export function updateWidget (widget, tab, updatedKey, updatedValue) {
+  return (dispatch) => {
+    var updatedWidget = {
+      initialState: widget.initialState,
+      submittedState: widget.submittedState,
+      optInMessage:  widget.optInMessage,
+      pageId: widget.pageId,
+      type: widget.type,
+      status: widget.status,
+      currentTab: widget.currentTab,
+      id: widget.id,
+      title: widget.title
+    }
+    if (tab) {
+      updatedWidget[tab][updatedKey] = updatedValue
+    } else if (updatedKey) {
+      updatedWidget[updatedKey] = updatedValue
+    }  
+    dispatch(showUpdatedWidget(updatedWidget))
   }
 }
 
@@ -25,7 +47,7 @@ export function fetchOverlayWidgets (data) {
       if (res.status === 'success' && res.payload) {
         dispatch(showAllOverlayWidgets(res.payload))
       } else {
-        dispatch(showAllOverlayWidgets([]))
+        dispatch(showAllOverlayWidgets({overlayWidgets: [], count: 0}))
       }
     })
   }
@@ -42,7 +64,8 @@ export function deleteOverlayWidget (id, msg) {
           first_page: 'first',
           page_value: '',
           status_value: '',
-          type_value: ''
+          type_value: '',
+          search_value: ''
         }
         dispatch(fetchOverlayWidgets(data))
       } else {
@@ -51,103 +74,70 @@ export function deleteOverlayWidget (id, msg) {
     })
   }
 }
-
-/*export function setInitialState () {
+export function createOverlayWidget (data, msg, handleCreate) {
   return (dispatch) => {
-    let landingPage = {
+    callApi(`overlayWidgets/create/`, 'post', data).then(res => {
+      console.log('response from create overlay widgets', res)
+      if (res.status === 'success') {
+        msg.success('Overlay widget has been saved')
+        if (handleCreate) {
+          handleCreate(res.payload)
+        }
+      } else {
+        msg.error('Failed to save overlay Widget')
+      }
+    })
+  }
+}
+export function updateOverlayWidget (data, msg) {
+  return (dispatch) => {
+    callApi(`overlayWidgets/update/${data._id}`, 'post', data).then(res => {
+      console.log('response from create overlay widgets', res)
+      if (res.status === 'success') {
+        msg.success('Overlay widget has been saved')
+      } else {
+        msg.error('Failed to save overlay Widget')
+      }
+    })
+  }
+}
+export function setWidgetProperties (wgt, defaultPageId) {
+  return (dispatch) => {
+    let widget = {
       initialState: {
-        title: 'Here is your widget headline. Click here to change it!',
-        description: 'We also put default text here. Make sure to turn it into a unique and valuable message.',
-        pageTemplate: 'text',
-        backgroundColor: '#fff',
-        titleColor: '#000',
-        descriptionColor: '#000',
-        buttonText: 'Send To Messenger',
-        mediaType: 'image',
-        mediaLink: '',
-        mediaPlacement: 'aboveHeadline'
+        button_type:  wgt && wgt.initialState ? wgt.initialState.button_type : "send_to_messenger",
+        background_color: wgt && wgt.initialState ? wgt.initialState.background_color : '#fff',
+        headline_color:  wgt && wgt.initialState ? wgt.initialState.headline_color: '#000',
+        button_background:  wgt && wgt.initialState ? wgt.initialState.button_background: 'blue',
+        button_text:  wgt && wgt.initialState ? wgt.initialState.button_text: 'Send to Messenger',
+        button_text_color:  wgt && wgt.initialState ? wgt.initialState.button_text_color: '#fff',
+        headline:  wgt && wgt.initialState ? wgt.initialState.headline: 'Here is your widget headline. Click here to change it!'
       },
       submittedState: {
-        title: 'Thank You for Reading Our Thank You Message!',
-        description: 'Once a user opt-ins through your form, he sees this. Unless you change it, of course.',
-        buttonText: 'View it in Messenger',
-        actionType: 'REDIRECT_TO_URL',
-        url: '',
-        tab: 'NEW_TAB',
-        state: {
-          backgroundColor: '#fff',
-          titleColor: '#000',
-          descriptionColor: '#000',
-          mediaType: 'image',
-          mediaLink: '',
-          mediaPlacement: 'aboveHeadline'
-        }
+        action_type:  wgt && wgt.submittedState ? wgt.submittedState.action_type : "show_new_message",
+        message: wgt && wgt.submittedState ? wgt.submittedState.message: "Thank You for Reading Our Thank You Message!",
+        background_color: wgt && wgt.submittedState ? wgt.submittedState.background_color: "#CE93D8",
+        headline_color: wgt && wgt.submittedState ? wgt.submittedState.headline_color: "#FFFFFF",
+        button_background: wgt && wgt.submittedState ? wgt.submittedState.button_background: "#FFFFFF",
+        button_text_color: wgt && wgt.submittedState ? wgt.submittedState.button_text_color: "#000000",
+        button_text: wgt && wgt.submittedState ? wgt.submittedState.button_text: 'View it in Messenger',
+        url: wgt && wgt.submittedState ? wgt.submittedState.url: '',
+        tab: wgt && wgt.submittedState ? wgt.submittedState.tab: 'new_tab' 
       },
-      optInMessage: [{
+      optInMessage: wgt && wgt.optInMessage ? wgt.optInMessage: [{
         id: new Date().getTime(),
         text: 'Welcome {{user_first_name}}! Thankyou for subscribing. The next post is coming soon, stay tuned!    P.S. If you ever want to unsubscribe just type "stop"',
         componentType: 'text'
       }],
       currentTab: 'initialState',
-      pageId: '',
-      error: false
+      pageId:  wgt && wgt.pageId ? wgt.pageId: defaultPageId,
+      status: wgt && wgt.isActive ? wgt.isActive: true,
+      type:  wgt && wgt.widgetType ? wgt.widgetType: 'bar',
+      error: false, 
+      title: wgt && wgt.title ? wgt.title : '',
+      id: wgt && wgt._id ? wgt._id :  ''
     }
-    dispatch(showUpdatedData(landingPage))
+    dispatch(showUpdatedWidget(widget))
   }
 }
 
-export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
-  return (dispatch) => {
-    let landingPage = {
-      initialState: landingPageData.initialState,
-      submittedState: landingPageData.submittedState,
-      pageId: landingPageData.pageId,
-      optInMessage: landingPageData.optInMessage ? landingPageData.optInMessage : [],
-      currentTab: landingPageData.currentTab
-    }
-    if (editLandingPage) {
-      landingPage = {
-        initialState: editLandingPage.initialState,
-        submittedState: {
-          title: editLandingPage.submittedState.title,
-          description: editLandingPage.submittedState.description,
-          buttonText: editLandingPage.submittedState.buttonText,
-          actionType: editLandingPage.submittedState.actionType,
-          url: editLandingPage.submittedState.url ? editLandingPage.submittedState.url : '',
-          tab: editLandingPage.submittedState.tab ? editLandingPage.submittedState.tab : 'NEW_TAB',
-          state: {
-            backgroundColor: '#fff',
-            titleColor: '#000',
-            descriptionColor: '#000',
-            mediaType: 'image',
-            mediaLink: '',
-            mediaPlacement: 'aboveHeadline'
-          }
-        },
-        pageId: editLandingPage.pageId,
-        optInMessage: editLandingPage.optInMessage,
-        currentTab: editLandingPage.currentTab
-      }
-      if (editLandingPage.submittedState.state) {
-        landingPage.submittedState.state = {
-          _id: editLandingPage.submittedState.state._id,
-          backgroundColor: editLandingPage.submittedState.state.backgroundColor,
-          titleColor: editLandingPage.submittedState.state.titleColor,
-          descriptionColor: editLandingPage.submittedState.state.descriptionColor,
-          mediaType: editLandingPage.submittedState.state.mediaType,
-          mediaLink: editLandingPage.submittedState.state.mediaLink,
-          mediaPlacement: editLandingPage.submittedState.state.mediaPlacement
-        }
-      }
-    } else if (updateKey === 'state') {
-      console.log('inside state action', landingPageData)
-      landingPage[tabValue][updateKey][stateKey] = updateValue
-      console.log('landingPage in action', landingPage)
-    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage' || updateKey === 'isActive') {
-      landingPage[updateKey] = updateValue
-    } else {
-      landingPage[tabValue][updateKey] = updateValue
-    }
-    dispatch(showUpdatedData(landingPage))
-  }
-}*/

@@ -37,6 +37,7 @@ class File extends React.Component {
       var fileInfo = {
         id: this.props.id,
         componentType: 'file',
+        componentName: 'file',
         name: this.props.file.fileName,
         type: this.props.file.type,
         size: this.props.file.size,
@@ -50,11 +51,13 @@ class File extends React.Component {
         this.props.uploadTemplate({pages: this.props.pages,
           url: this.props.file.fileurl.url,
           componentType: 'file',
+          componentName: 'file',
           id: this.props.file.fileurl.id,
           name: this.props.file.fileurl.name
         }, {
           id: this.props.id,
           componentType: 'file',
+          componentName: 'file',
           fileName: this.props.file.fileName,
           type: this.props.file.type,
           size: this.props.file.size
@@ -88,6 +91,7 @@ class File extends React.Component {
         var fileInfo = {
           id: this.props.id,
           componentType: 'file',
+          componentName: 'file',
           fileName: file.name,
           type: file.type,
           size: file.size

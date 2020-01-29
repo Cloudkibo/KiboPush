@@ -641,7 +641,7 @@ class Builders extends React.Component {
     }
 
     if (!isPresent) {
-        temp.push({id: obj.id, questions: obj.questions, action: obj.action, componentType: 'userInput'})
+        temp.push({id: obj.id, questions: obj.questions, action: obj.action, componentType: 'userInput', componentName: obj.componentName})
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     console.log('handleUserInput temp', temp)
@@ -1209,7 +1209,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({
             id: componentId,
-            componentName: broadcast.componentName,
+            componentName: 'audio',
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
           })
@@ -1229,7 +1229,7 @@ class Builders extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
-            componentName: broadcast.componentName,
+            componentName: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
         }

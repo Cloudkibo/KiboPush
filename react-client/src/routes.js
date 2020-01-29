@@ -106,6 +106,8 @@ import PostResult from './containers/commentCapture/viewPostResult'
 import LandingPages from './containers/landingPages/landingPages'
 import CreateLandingPage from './containers/landingPages/createLandingPage'
 import OverlayWidgets from './containers/overlayWidget/overlayWidgets'
+import CreateWidget from './containers/overlayWidget/createWidget'
+import WidgetMessage from './containers/overlayWidget/createMessage'
 import MessengerCode from './containers/messengerCode/messengerCode'
 import createMessageForCode from './containers/messengerCode/createMessage'
 import createMessengerCode from './containers/messengerCode/create'
@@ -150,6 +152,8 @@ import BackdoorSubscribersWithTags from './containers/operationalDashboard/pageS
 import BackdoorPageAdmins from './containers/operationalDashboard/pageAdmins'
 import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
+import successMessage from './containers/integerationScreen/successMessage'
+import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -310,6 +314,8 @@ const Routes = () => (
     <Route path='/landingPages' component={LandingPages} onEnter={requireAuth} />
     <Route path='/createLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/overlayWidgets' component={OverlayWidgets} onEnter={requireAuth} />
+    <Route path='/createOverlayWidget' component={CreateWidget} onEnter={requireAuth} />
+    <Route path='/createWidgetMessage' component={WidgetMessage} onEnter={requireAuth} />
     <Route path='/editLandingPage' component={CreateLandingPage} onEnter={requireAuth} />
     <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createMessengerCode' component={createMessengerCode} onEnter={requireAuth} />
@@ -365,6 +371,8 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
+    <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
+    <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
