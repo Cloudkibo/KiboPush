@@ -19,7 +19,9 @@ class Autoposting extends React.Component {
     this.state = {
       showListItems: true,
       deleteid: '',
-      newsPageIndex: []
+      newsPageIndex: [],
+      smpStatus: [],
+      anyApproved: false
     }
     props.loadAutopostingList()
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -28,7 +30,7 @@ class Autoposting extends React.Component {
     this.viewGuide = this.viewGuide.bind(this)
     this.gotoRssIntegration = this.gotoRssIntegration.bind(this)
   }
-  gotoRssIntegration () {
+  gotoRssIntegration() {
     this.props.history.push({
       pathname: `/rssIntegration`
     })
@@ -57,27 +59,30 @@ class Autoposting extends React.Component {
     })
     if (this.props.pages) {
       let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })
-      if (this.props.SMPStatus) {
-        let smpStatusArray = []
-        this.props.SMPStatus.forEach((item, i) => {
-          let page = this.props.pages.filter((p) => item.pageId.includes(p._id))
-          item.pageName = page.pageName
-          item.pagePic = page.pagePic;
-          smpStatusArray.push(item)
-        });
-        console.log('smpStatusArray', smpStatusArray)
-        // this.setState({ SMPStatus: pages })
-      }
-
       this.setState({ newsPageIndex: pagesIndex })
     }
   }
+
   viewGuide() {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.pages !== this.props.pages) {
       this.setState({ newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) }) })
+    }
+    if (nextProps.SMPStatus) {
+      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
+        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
+        if (pageIndex > -1) {
+          if ( nextProps.SMPStatus[j].smpStatus === 'approved') {
+            this.setState({anyApproved: true})
+            break
+          }
+          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
+          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
+        }
+      }
+      this.setState({ smpStatus: nextProps.SMPStatus })
     }
   }
 
@@ -101,6 +106,7 @@ class Autoposting extends React.Component {
 
   render() {
     console.log('this.state.newsPageIndex.length', this.state.newsPageIndex.length)
+    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -239,7 +245,7 @@ class Autoposting extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel addFeedClose={this.refs.addFeedClose} msg={this.msg} openGuidelines={this.viewGuide} gotoRssIntegration={this.gotoRssIntegration}/>
+                <AddChannel addFeedClose={this.refs.addFeedClose} msg={this.msg} openGuidelines={this.viewGuide} gotoRssIntegration={this.gotoRssIntegration} />
               </div>
             </div>
           </div>
@@ -316,7 +322,7 @@ class Autoposting extends React.Component {
             </div>
           }
           {
-            this.state.newsPageIndex.length !== 0 && this.props.SMPStatus
+            this.state.newsPageIndex.length === 0 && !this.state.anyApproved
               ?
               <div className='m-portlet m-portlet--mobile'>
                 <div className='m-portlet__head'>
@@ -324,18 +330,18 @@ class Autoposting extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h5 className='m-portlet__head-text'>
                         You do not have page level subscription permission on any of your connected pages.
-                </h5>
+            </h5>
                     </div>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
                   <p></p>
-                  {this.props.SMPStatus.map((item, i) => (
-                    <span>
+                  {this.state.smpStatus.map((item, i) => (
+                    <span key={i}>
                       <span>
-                        {/* <img alt='pic' style={{ height: '30px' }} src={(i.id) ? page.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp; */}
-                        <span>{item.pageId}}</span>&nbsp;&nbsp;&nbsp;
-                        <span className='m-badge m-badge--wide m-badge--success'> {item.smpStatus}</span>
+                        <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
+                    <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
+                    <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
                       </span>
                       <br /><br />
                     </span>
@@ -350,7 +356,7 @@ class Autoposting extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         Connected Feeds
-                </h3>
+                      </h3>
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
@@ -363,7 +369,7 @@ class Autoposting extends React.Component {
                               <i className='la la-plus' />
                               <span>
                                 Add Feed
-                    </span>
+                              </span>
                             </span>
                           </button>
                         </Link>
@@ -374,7 +380,7 @@ class Autoposting extends React.Component {
                               <i className='la la-plus' />
                               <span>
                                 Add Feed
-                    </span>
+                              </span>
                             </span>
                           </button>
                         </Link>
