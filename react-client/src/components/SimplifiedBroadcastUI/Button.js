@@ -88,13 +88,13 @@ class Button extends React.Component {
     let buttonActions = []
     for (let i = 0; i < this.props.buttonActions.length; i++) {
       let buttonAction = this.props.buttonActions[i]
-      if (buttonAction === 'open website' && this.state.postbackPayload.length == 0) {
+      if (buttonAction === 'open website' && this.state.postbackPayload.length == 0 && !this.state.openCreateMessage) {
         buttonActions.push({title: 'Open website', action: this.showWebsite})
       }
-      if (buttonAction === 'open webview' && this.state.postbackPayload.length == 0) {
+      if (buttonAction === 'open webview' && this.state.postbackPayload.length == 0 && !this.state.openCreateMessage) {
         buttonActions.push({title: 'Open webview', action: this.showWebView})
       }
-      if (buttonAction === 'create message') {
+      if (buttonAction === 'create message' && !this.state.openCreateMessage) {
         buttonActions.push({title: 'Reply with a message', action: this.replyWithMessage})
       }
       if (buttonAction === 'send sequence message') {
@@ -168,7 +168,8 @@ class Button extends React.Component {
           googleSheetAction: buttonPayload.googleSheetAction,
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
-          openGoogleSheets: true, openCreateMessage: false
+          openGoogleSheets: true, 
+          openCreateMessage: false
         })
       }
       else if (buttonPayload.hubspotAction) {
@@ -224,6 +225,9 @@ class Button extends React.Component {
     if (this.state.url || this.state.webviewurl) {
       return true
     } else {
+      if (this.state.postbackPayload.length === 0) {
+        return false
+      }
       for (let i = 0; i < this.state.postbackPayload.length; i++) {
         let postbackPayload = this.state.postbackPayload[i]
         if (postbackPayload.action === 'subscribe' || postbackPayload.action === 'subscribe') {
@@ -495,14 +499,6 @@ class Button extends React.Component {
       }
 
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    } else if (this.state.openCreateMessage) {
-      let data = {
-        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
-        type: 'postback',
-        title: this.state.title,
-        payload: this.props.button.payload ? this.props.button.payload : null
-      }
-      this.props.onAdd(data, this.props.index)
     } else {
       let data = {
         id: this.props.index,
@@ -537,15 +533,6 @@ class Button extends React.Component {
         pageId: this.props.pageId
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    }  else if (this.state.openCreateMessage) {
-      let data = {
-        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
-        type: 'postback',
-        title: this.state.title,
-        payload: null
-      }
-      console.log('creating new message block button', data)
-      this.props.onAdd(data, this.props.index)
     } else  {
       let data = {
         id: this.props.index,
@@ -558,21 +545,29 @@ class Button extends React.Component {
   }
 
   replyWithMessage() {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'send_message_block'
+    })
     this.setState({
-      openCreateMessage: true
+      openCreateMessage: true,
+      postbackPayload
     }, () => {
-      if (this.props.updateButtonStatus && this.state.title) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
       }
     })
   }
 
-  removeReplyWithMessage() {
+  removeReplyWithMessage(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
     this.setState({
-      openCreateMessage: false
+      openCreateMessage: false,
+      postbackPayload
     }, () => {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: true })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
       }
     })
   }
@@ -878,22 +873,17 @@ class Button extends React.Component {
             </div>
           </div>
         ))
+      } else if (postbackPayload[i].action === 'send_message_block') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+          <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.removeReplyWithMessage(i)} />
+          </h7>
+          <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
+        </div>
+        ))
       }
     }
-    
     return postbackActions
-
-    //   this.state.openCreateMessage &&
-    //   <div style={{ marginTop: '30px' }} className='card'>
-    //     <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.removeReplyWithMessage} />
-    //     </h7>
-    //     <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
-    //     {/* <div style={{padding: '10px'}} className='card-block'>
-    //           <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
-    //            Create Message
-    //            </button>
-    //         </div> */}
-    //   </div>
   }
 
   render() {
@@ -939,19 +929,6 @@ class Button extends React.Component {
                     }
                   </select>
                 </div>
-              </div>
-            }
-            {
-              this.state.openCreateMessage &&
-              <div style={{ marginTop: '30px' }} className='card'>
-                <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.removeReplyWithMessage} />
-                </h7>
-                <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
-                {/* <div style={{padding: '10px'}} className='card-block'>
-                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
-                       Create Message
-                       </button>
-                    </div> */}
               </div>
             }
             {
