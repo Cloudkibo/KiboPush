@@ -242,6 +242,7 @@ class Builders extends React.Component {
   handleChange (broadcast, event) {
     console.log('handleChange broadcast in basicBuilder', broadcast)
     console.log('handleChange event in basciBuilder', event)
+    //debugger;
     if (broadcast.convoTitle) {
       this.updateLinkedMessagesTitle(broadcast.convoTitle)
       this.props.handleChange({convoTitle: broadcast.convoTitle, linkedMessages: this.state.linkedMessages})
@@ -318,10 +319,9 @@ class Builders extends React.Component {
       if (button.type === 'postback') {
         let buttonPayload = JSON.parse(button.payload)
         for (let k = 0; k < buttonPayload.length; k++) {
-          if (buttonPayload[k].action === 'send_message_block') {
-            console.log('found create new message action')
+          if (buttonPayload[k].action === 'send_message_block' && !buttonPayload[k].blockUniqueId) {
             this.addLinkedMessage(button)
-          } else if (buttonPayload[k].blockUniqueId) {
+          } else if (buttonPayload[k].action === 'send_message_block' && buttonPayload[k].blockUniqueId) {
             this.editLinkedMessage(button)
           }
         }
