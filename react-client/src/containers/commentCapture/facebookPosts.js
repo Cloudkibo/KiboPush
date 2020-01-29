@@ -402,13 +402,14 @@ class FacebookPosts extends React.Component {
                         max= {moment().format('YYYY-MM-DD')}
                         type='date'/>
                     </div>
+                    <br/>
+                    <div style={{ display: 'inline-block', marginTop: '20px', marginBottom: '20px' }} className='col-md-12'>
+                      <input type='text' style={{width: '50%'}} placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
+                    </div>
                   </div> : null
                 }
                 { (this.state.postsData && this.state.postsData.length > 0) ?
                   <div className='form-row'>
-                    <div style={{ display: 'inline-block', marginTop: '20px', marginBottom: '20px' }} className='col-md-12'>
-                      <input type='text' style={{width: '50%'}} placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
-                    </div>
                     <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                       <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                         <thead className='m-datatable__head'>
