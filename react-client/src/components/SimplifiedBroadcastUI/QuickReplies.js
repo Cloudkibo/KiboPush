@@ -78,15 +78,14 @@ class QuickReplies extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.integrations && nextProps.integrations.length > 0) {
+        let actions = this.state.actions
         let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
         let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
         if (!actions.includes('google sheets') && googleIntegration && googleIntegration.length > 0) {
-            let actions = this.state.actions
             actions.push('google sheets')
             this.setState({actions})
         }
         if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
-            let actions = this.state.actions
             actions.push('hubspot')
             this.setState({actions})
         }
