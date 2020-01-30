@@ -118,7 +118,7 @@ class CreateMessengerAd extends React.Component {
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
                         {
-                        this.props.location.state.module === 'edit'
+                        (this.props.location.state && this.props.location.state.module === 'edit')
                         ? 'Edit JSON Ad'
                         : 'Create JSON Ad'
                       }
@@ -145,10 +145,8 @@ class CreateMessengerAd extends React.Component {
                   </div>
                   <div className='row'>
                     <Tabs history={this.props.history} location={this.props.location} setupState={this.state.setupState} switchSetupState={this.switchSetupState} jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
-                    {
-                      this.props.location.state.module === 'create' && <Preview history={this.props.history} location={this.props.location} />
-                    }
-                    { (this.props.location.state.module === 'edit' && this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) && <Preview previewOptInMessage={this.state.previewOptInMessage} />
+                    { (this.props.location.state && this.props.location.state.module === 'edit' && this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) ? <Preview previewOptInMessage={this.state.previewOptInMessage} />
+                       :<Preview history={this.props.history} location={this.props.location} />
                     }
                   </div>
                 </div>
