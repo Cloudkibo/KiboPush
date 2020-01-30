@@ -297,7 +297,19 @@ class CreateMessage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-content' style={{marginBottom: '-30px'}}>
+        <div
+          className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible'
+          role='alert'
+          style={{margin: '30px 30px 0px 30px'}}
+        >
+          <div className='m-alert__icon'>
+            <i className='flaticon-exclamation m--font-brand' />
+          </div>
+          <div className='m-alert__text'>
+            Note: A person will get into your subscriber's list only if he presses a button with action :'Reply with a message'. So, keep in mind that the first message should contain a button.
+          </div>
+        </div>
+        <div className='m-subheader'>
           <div className='row'>
             <div className='col-12'>
               <div className='pull-right'>
@@ -311,44 +323,40 @@ class CreateMessage extends React.Component {
             </div>
           </div>
         </div>
-        <div className='row m-content' style={{marginBottom: '-60px'}}>
-          <div className='col-12'>
-            <div
-              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-              role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation m--font-brand' />
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__body'>
+                  <div className='row'>
+                    <div className='col-12'>
+                      <div className='ui-block' style={{marginBottom: '-22px', border: '1px solid rgb(204, 204, 204)', paddingLeft: '10px'}}>
+                        <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
+                          { this.state.jsonMessages.map((jsonMessage, index) => (
+                            <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
+                              <a href='#/' id={'tab-' + jsonMessage.jsonAdMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonAdMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
+                                {jsonMessage.title}
+                              </a>
+                              { (index < this.state.jsonMessages.length - 1) &&
+                                <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px'}} />
+                              }
+                            </li>))
+                          }
+                        </ul>
+                        <GenericMessage
+                          hiddenComponents={['video']}
+                          module="jsonads"
+                          hideUserOptions
+                          broadcast={this.state.broadcast}
+                          handleChange={this.handleChange}
+                          convoTitle={this.state.convoTitle}
+                          buttonActions={this.state.buttonActions}
+                          replyWithMessage={this.replyWithMessage} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className='m-alert__text'>
-          Note: A person will get into your subscriber's list only if he presses a button with action :'Reply with a message'. So, keep in mind that the first message should contain a button.
-          </div>
-            </div>
-          </div>
-        </div>
-        <div className='row m-content'>
-          <div className='col-12'>
-            <div className='ui-block' style={{marginBottom: '-22px', border: '1px solid rgb(204, 204, 204)', paddingLeft: '10px'}}>
-              <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
-                { this.state.jsonMessages.map((jsonMessage, index) => (
-                  <li className='nav-item m-tabs__item' style={{width: '20%', display: 'flex'}}>
-                    <a href='#/' id={'tab-' + jsonMessage.jsonAdMessageId} className='nav-link m-tabs__link' data-toggle='tab' role='tab' onClick={() => this.jsonMessageClick(jsonMessage.jsonAdMessageId)} style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100px'}}>
-                      {jsonMessage.title}
-                    </a>
-                    { (index < this.state.jsonMessages.length - 1) &&
-                      <i className='la la-arrow-right' style={{verticalAlign: 'middle', lineHeight: '43px'}} />
-                    }
-                  </li>))
-                }
-              </ul>
-              <GenericMessage
-                hiddenComponents={['video']}
-                module="jsonads"
-                hideUserOptions
-                broadcast={this.state.broadcast}
-                handleChange={this.handleChange}
-                convoTitle={this.state.convoTitle}
-                buttonActions={this.state.buttonActions}
-                replyWithMessage={this.replyWithMessage} />
             </div>
           </div>
         </div>
