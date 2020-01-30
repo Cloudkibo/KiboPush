@@ -470,10 +470,7 @@ class RssIntegrations extends React.Component {
                 </div>
                 { (this.state.feeds && this.state.feeds.length > 0) || this.state.filter
                 ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
-                    <div className='col-md-3'>
-                      <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
-                    </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-4'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                         <option value='' disabled>Filter by Status...</option>
                         <option value=''>All</option>
@@ -481,7 +478,7 @@ class RssIntegrations extends React.Component {
                         <option value='false'>Disabled</option>
                       </select>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-4'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
                         <option value='' disabled>Filter by Page...</option>
                         <option value=''>All</option>
@@ -493,13 +490,17 @@ class RssIntegrations extends React.Component {
                         }
                       </select>
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-4'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.type_value} onChange={this.onTypeFilter}>
                         <option value='' disabled>Filter by Type...</option>
                         <option value=''>All</option>
                         <option value='default'>Default</option>
                         <option value='nonDefault'>Non Default</option>
                       </select>
+                    </div>
+                    <br /><br />
+                    <div className='col-md-8' style={{marginTop: '5px'}}>
+                      <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
                     </div>
                   </div>
                 : <div />

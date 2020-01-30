@@ -121,21 +121,18 @@ class CreateWidget extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <div style={{display: 'flex'}}>
-                        <label style={{width: '30%', marginTop: '10px'}}>Title</label>
+                      <div className='row'>
+                        <label style={{width: '20%', marginTop: '10px'}}>Title</label>
                         <input className='form-control m-input' placeholder='title'
                           onChange={this.titleChange}
                           defaultValue=''
-                          value={this.props.currentWidget.title} />
+                          value={this.props.currentWidget.title} 
+                          style={{width: '70%'}}/>
                       </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <div style={{display: 'flex'}}>
-                        <label style={{width: '30%', marginTop: '10px'}}>Select Page</label>
-                        <select className='form-control m-input' value={this.state.selectedPage} onChange={this.pageChange}>
+                      <br />
+                      <div className='row'>
+                        <label style={{width: '20%', marginTop: '10px'}}>Select Page</label>
+                        <select className='form-control m-input' style={{width: '70%'}} value={this.state.selectedPage} onChange={this.pageChange}>
                         {
                           this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                             <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage}>{page.pageName}</option>
@@ -143,27 +140,19 @@ class CreateWidget extends React.Component {
                         }
                         </select>
                       </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <div style={{display: 'flex'}}>
-                        <label style={{width: '30%', marginTop: '10px'}}>Widget Type</label>
-                        <select className='form-control m-input' value={this.props.currentWidget.type} onChange={this.changeWidgetType}>
+                      <br />
+                      <div className='row'>
+                        <label style={{width: '20%', marginTop: '10px'}}>Widget Type</label>
+                        <select style={{width: '70%'}} className='form-control m-input' value={this.props.currentWidget.type} onChange={this.changeWidgetType}>
                           <option value='bar'>Bar</option>
-                          <option value='slide-in'>Slide In</option>
+                          <option value='slide_in'>Slide In</option>
                           <option value='modal'>Modal</option>
                           <option value='page_takeover'>Page Takeover</option>
                         </select>
                       </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-6 col-sm-6'>
-                      <div style={{display: 'flex'}}>
-                        <label style={{width: '22%', marginTop: '10px'}}>Status</label>
+                      <br />
+                      <div className='row'>
+                        <label style={{width: '20%', marginTop: '10px'}}>Status</label>
                         <div>
                           <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
                             <label>
@@ -181,15 +170,11 @@ class CreateWidget extends React.Component {
                           </label>
                         }
                       </div>
-                    </div>
-                  </div>
-                  <br />
-                  <br />
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-6 col-sm-6'>
+                      <br />
+                      <br />
                       <Tabs history={this.props.history} location={this.props.location}/>
                     </div>
-                    <Preview />
+                      <Preview />
                   </div>
                 </div>
               </div>
