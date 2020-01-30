@@ -236,7 +236,7 @@ export function createCommentCapture (data, msg, handleCreate) {
           }
         } else {
           if (res.status === 'failed' && res.payload) {
-            payload = JSON.parse(res.payload)
+            let payload = JSON.parse(res.payload)
             if(payload.code === 506) {
               msg.error(payload.error_user_msg)
             }
