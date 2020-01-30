@@ -19,7 +19,7 @@ class InitialState extends React.Component {
       showBackgroundPicker: false,
       showButtonBgPicker: false, 
       showButtonTextPicker: false,
-      showDescriptionPicker: true
+      showDescriptionPicker: false
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -172,15 +172,16 @@ class InitialState extends React.Component {
               <div className='col-md-6 col-lg-6 col-sm-6'>
                 <ColorPicker id='init_button_text' name='button_text' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.button_text_color} title='Button Text' />
               </div>
-              <br />
-              <br />
             </div>
             }
+            { this.props.currentWidget.type !== 'bar' &&
             <div className='row'>
               <div className='col-md-6 col-lg-6 col-sm-6'>
-                <ColorPicker id='init_descript' name='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.description_color} title='Description' />
+                <Popover isOpen={this.state.showDescriptionPicker} target='init_description_color' title='description' toggle={this.toggleColorPicker} color={this.props.initialState.description_color} onChangeComplete={this.onChangeComplete} />
+                <ColorPicker id='init_description_color' name='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.initialState.description_color} title='Description' />
               </div>
             </div>
+           }
           {this.props.currentWidget.initialState.button_type === 'send_to_messenger' &&
           <div>
             <br />

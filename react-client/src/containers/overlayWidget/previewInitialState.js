@@ -14,7 +14,7 @@ class PreviewInitialState extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      backgroundImage: 'https://kibopush.com/wp-content/uploads/2020/01/preview_background.jpg',
+      backgroundImage: 'https://kibopush.com/wp-content/uploads/2020/01/website-preview-2.png',
       loadScript: true,
       fbPageId: ''
     }
@@ -70,9 +70,10 @@ class PreviewInitialState extends React.Component {
 
   render () {
     return (
-      <div style={{ width:'100%', height: '100%', top: '0px', left: '0px',borderLeft: '0.07rem solid #EBEDF2', backgroundSize: 'cover', backgroundImage: 'url(' + this.state.backgroundImage + ')', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}} >
+      <div style={{width: '100%', height: '100%'}}>
+        <img src={this.state.backgroundImage} style={{width: '100%', height: '100%', filter: 'blur(3px) opacity(0.5)'}}/>
         { this.props.currentWidget.type === 'bar' &&
-        <div style={{ width: '100%', height: '25%', padding: '10px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', textAlign: 'center', background: this.props.currentWidget.initialState.background_color}}> 
+        <div style={{ width: '100%', height: '25%', position: 'absolute', top:'0', padding: '10px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', textAlign: 'center', background: this.props.currentWidget.initialState.background_color}}> 
           <PreviewContent 
             widgetType='bar' 
             initialState={this.props.currentWidget.initialState} 
@@ -84,8 +85,8 @@ class PreviewInitialState extends React.Component {
         </div>
         }
         { this.props.currentWidget.type === 'modal' &&
-          <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: '99999', width:'100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{width: '350px', height: '400px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', background: this.props.currentWidget.initialState.background_color }}>
+          <div style={{background: 'rgba(33, 37, 41, 0.6)', position: 'absolute', top: '0px', width:'100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div style={{width: '350px', height: '350px', position: 'absolute', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', background: this.props.currentWidget.initialState.background_color }}>
           <PreviewContent 
             widgetType='modal' 
             initialState={this.props.currentWidget.initialState} 
@@ -98,23 +99,19 @@ class PreviewInitialState extends React.Component {
         </div>
         }
         { this.props.currentWidget.type === 'slide_in' &&
-        <div style={{width:'100%', height: '100%', display:'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{width: '100%'}}>
-            <div style={{float: 'right', width: '350px', height: '400px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', background: this.props.currentWidget.initialState.background_color }}>
-            <PreviewContent 
-              widgetType='slide_in' 
-              initialState={this.props.currentWidget.initialState} 
-              fbAppId={this.props.fbAppId}
-              fbPageId={this.state.fbPageId}
-              changeButtonText={this.changeButtonText}
-              handleDescriptionChange={this.handleDescriptionChange}
-              handleHeadlineChange={this.handleHeadlineChange} /> 
-          </div>
+        <div style={{width: '350px', height: '350px', position: 'absolute', top:'30%', right: '0', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', background: this.props.currentWidget.initialState.background_color }}>
+          <PreviewContent 
+            widgetType='slide_in' 
+            initialState={this.props.currentWidget.initialState} 
+            fbAppId={this.props.fbAppId}
+            fbPageId={this.state.fbPageId}
+            changeButtonText={this.changeButtonText}
+            handleDescriptionChange={this.handleDescriptionChange}
+            handleHeadlineChange={this.handleHeadlineChange} /> 
         </div>
-      </div>
       }
         { this.props.currentWidget.type === 'page_takeover' &&
-          <div style={{border: '1px solid lightgrey',zIndex: '99999', width:'100%', height: '100%', background: this.props.currentWidget.initialState.background_color, display:'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div style={{border: '1px solid lightgrey', position: 'absolute', top: '0', width:'100%', height: '100%', background: this.props.currentWidget.initialState.background_color, display:'flex', justifyContent: 'center', alignItems: 'center'}}>
             <PreviewContent 
               widgetType='page_takeover' 
               initialState={this.props.currentWidget.initialState} 
