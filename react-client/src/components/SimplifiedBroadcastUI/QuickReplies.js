@@ -406,9 +406,9 @@ class QuickReplies extends React.Component {
                     </div>
                 }
                 <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].customFieldId ? '*Required' : ''}</div>
-                <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                {/* <button onClick={() => this.props.history.push('/customFields')} id='customfieldid' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
                     Manage Custom Fields
-                </button>
+                </button> */}
             </div>
         )
     } else if (action.includes('google')) {

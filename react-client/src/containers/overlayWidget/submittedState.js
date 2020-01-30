@@ -18,7 +18,8 @@ class SubmittedState extends React.Component {
       showHeadingPicker: false,
       showBackgroundPicker: false,
       showButtonTextPicker: false,
-      showButtonBgPicker: false
+      showButtonBgPicker: false,
+      showDescriptionPicker: false
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -50,6 +51,8 @@ class SubmittedState extends React.Component {
       this.props.updateWidget(this.props.currentWidget, 'submittedState', 'button_text_color', color.hex)
     } else if (value === 'button_background') {
       this.props.updateWidget(this.props.currentWidget, 'submittedState', 'button_background', color.hex)
+    } else if (value === 'description') {
+      this.props.updateWidget(this.props.currentWidget, 'submittedState', 'description_color', color.hex)
     }
   }
 
@@ -59,31 +62,43 @@ class SubmittedState extends React.Component {
         showHeadingPicker: true,
         showBackgroundPicker: false,
         showButtonBgPicker: false,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'background') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: true,
         showButtonBgPicker: false,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'button_background') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: false,
         showButtonBgPicker: true,
-        showButtonTextPicker: false
+        showButtonTextPicker: false,
+        showDescriptionPicker: false
       })
     } else if (value === 'button_text') {
       this.setState({
         showHeadingPicker: false,
         showBackgroundPicker: false,
         showButtonBgPicker: false,
-        showButtonTextPicker: true
-      })
+        showButtonTextPicker: true,
+        showDescriptionPicker: false
+      }) 
+    } else if (value === 'description') {
+        this.setState({
+          showHeadingPicker: false,
+          showBackgroundPicker: false,
+          showButtonBgPicker: false,
+          showButtonTextPicker: false,
+          showDescriptionPicker: true
+        }) 
+      }
     }
-  }
 
   toggleColorPicker (value) {
     if (value === 'heading') {
@@ -94,6 +109,8 @@ class SubmittedState extends React.Component {
       this.setState({showButtonTextPicker: !this.state.showButtonTextPicker})
     } else if (value === 'button_background') {
       this.setState({showButtonBgPicker: !this.state.showButtonBgPicker})
+    } else if (value === 'description') {
+      this.setState({showDescriptionPicker: !this.state.showDescriptionPicker})
     }
   }
   render () {
@@ -146,6 +163,12 @@ class SubmittedState extends React.Component {
               <div className='col-md-6 col-lg-6 col-sm-6'>
                 <ColorPicker id='sub_button_text' name='button_text' showColorPicker={this.showColorPicker} backgroundColor={this.props.submittedState.button_text_color} title='Button Text' />
               </div>
+              { this.props.currentWidget.type !== 'bar' &&
+              <div className='col-md-6 col-lg-6 col-sm-6'>
+                <Popover isOpen={this.state.showDescriptionPicker} target='sub_description_color' title='description' toggle={this.toggleColorPicker} color={this.props.submittedState.description_color} onChangeComplete={this.onChangeComplete} />  
+                <ColorPicker id='sub_description_color' name='description' showColorPicker={this.showColorPicker} backgroundColor={this.props.submittedState.description_color} title='Description' />
+              </div>
+              }
             </div>
           </div>
           }

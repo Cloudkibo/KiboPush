@@ -111,7 +111,9 @@ export function setWidgetProperties (wgt, defaultPageId) {
         button_background:  wgt && wgt.initialState ? wgt.initialState.button_background: 'blue',
         button_text:  wgt && wgt.initialState ? wgt.initialState.button_text: 'Send to Messenger',
         button_text_color:  wgt && wgt.initialState ? wgt.initialState.button_text_color: '#fff',
-        headline:  wgt && wgt.initialState ? wgt.initialState.headline: 'Here is your widget headline. Click here to change it!'
+        headline:  wgt && wgt.initialState ? wgt.initialState.headline: 'Here is your widget headline. Click here to change it!',
+        description: wgt && wgt.initialState ? wgt.initialState.description: 'Here is a short description. Make sure to turn it into a valuable message for your users.',
+        description_color: wgt && wgt.initialState ? wgt.initialState.description_color: 'grey'
       },
       submittedState: {
         action_type:  wgt && wgt.submittedState ? wgt.submittedState.action_type : "show_new_message",
@@ -122,7 +124,9 @@ export function setWidgetProperties (wgt, defaultPageId) {
         button_text_color: wgt && wgt.submittedState ? wgt.submittedState.button_text_color: "#000000",
         button_text: wgt && wgt.submittedState ? wgt.submittedState.button_text: 'View it in Messenger',
         url: wgt && wgt.submittedState ? wgt.submittedState.url: '',
-        tab: wgt && wgt.submittedState ? wgt.submittedState.tab: 'new_tab' 
+        tab: wgt && wgt.submittedState ? wgt.submittedState.tab: 'new_tab',
+        description: wgt && wgt.initialState ? wgt.submittedState.description: 'Here is a short description. Make sure to turn it into a valuable message for your users.' ,
+        description_color: wgt && wgt.initialState ? wgt.initialState.description_color: 'grey'
       },
       optInMessage: wgt && wgt.optInMessage ? wgt.optInMessage: [{
         id: new Date().getTime(),
