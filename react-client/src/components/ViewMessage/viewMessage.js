@@ -8,8 +8,10 @@ class ViewMessage extends React.Component {
     super(props, context)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.slideIndexChange = this.slideIndexChange.bind(this)
     this.state = {
-      payload: (this.props.payload && this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) ? this.props.payload.jsonAdMessages[0].messageContent : this.props.payload
+      payload: (this.props.payload && this.props.payload.jsonAdMessages && this.props.payload.jsonAdMessages.length !== 0) ? this.props.payload.jsonAdMessages[0].messageContent : this.props.payload,
+      currentSlideIndex: 0
     }
   }
 /* UNSAFE_componentWillMount() {
@@ -27,6 +29,10 @@ class ViewMessage extends React.Component {
 
     if (truef === false) {
     }
+  }
+
+  slideIndexChange (newIndex) {
+    this.setState({currentSlideIndex: newIndex})
   }
 
   onTestURLAudio (url) {
@@ -242,6 +248,62 @@ class ViewMessage extends React.Component {
                                         }
                                       </div>
                                   ))
+                                }
+                                {
+                                  this.state.payload && this.state.payload.map((b, index) => {
+                                    let settings = {
+                                      dots: false,
+                                      infinite: false,
+                                      speed: 250,
+                                      slidesToShow: 1,
+                                      slidesToScroll: 1,
+                                      arrows: b.quickReplies.length > 1 ? true : false,
+                                      initialSlide: this.state.currentSlideIndex,
+                                      afterChange: this.slideIndexChange
+                                    }
+                                    if (b.quickReplies && b.quickReplies.length > 0) {
+                                      return (
+                                        <div style={{maxWidth: '80%', marginLeft: '20px'}}>
+                                            <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
+                                                {
+                                                    b.quickReplies.map((reply, index) => {
+                                                        console.log(`quickReplies index ${index}`, b.quickReplies)
+                                                        return (
+                                                            <div className='btn-toolbar' style={{padding: '10px', visibility: this.state.currentSlideIndex !== index ? 'hidden': 'visible', display: 'flex', flexWrap: 'nowrap'}} key={index}>
+                                                                <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                                                  {reply.image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                                                  }
+                                                                  {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
+                                                                </button>
+                        
+                                                                {
+                                                                    (index+1) < b.quickReplies.length &&
+                                                                    <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                                                      {b.quickReplies[index+1].image_url && <img src={b.quickReplies[index+1].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                                                      }
+                                                                      {b.quickReplies[index+1].title}
+                                                                    </button>
+                                                                }
+                        
+                                                                {
+                                                                    (index+2) < b.quickReplies.length &&
+                                                                    <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                                                      {b.quickReplies[index+2].image_url && <img src={b.quickReplies[index+2].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
+                                                                      }
+                                                                      {b.quickReplies[index+2].title}
+                                                                    </button>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Slider>
+                                        </div>
+                                    )
+                                    } else {
+                                      return null
+                                    }
+                                  })
                                 }
                               </div>
                             </div>
