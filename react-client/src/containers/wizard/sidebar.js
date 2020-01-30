@@ -159,7 +159,7 @@ class Sidebar extends React.Component {
                 </div>
               </div>
               }
-              {getCurrentProduct() === 'KiboEngage' &&
+              {(getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')  &&
               <div>
                 {this.props.step === '4'
                 ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
