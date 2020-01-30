@@ -281,14 +281,14 @@ class Autoposting extends React.Component {
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{ marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap' }}>
                   <Sidebar history={this.props.history} step='4' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
-                  {!this.state.anyAppro ?
+                  {!this.state.anyApproved ?
                     <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{ padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none' }}>
                       <div className='m-portlet__head'>
                         <div className='m-portlet__head-caption'>
                           <div className='m-portlet__head-title'>
                             <h5 className='m-portlet__head-text'>
                               You do not have page level subscription permission on any of your connected pages.
-            </h5>
+                            </h5>
                           </div>
                         </div>
                       </div>
@@ -298,8 +298,8 @@ class Autoposting extends React.Component {
                           <span key={i}>
                             <span>
                               <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
-                    <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                    <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
+                            <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
+                            <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
                             </span>
                             <br /><br />
                           </span>
