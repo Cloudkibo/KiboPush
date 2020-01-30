@@ -470,13 +470,13 @@ class Subscriber extends React.Component {
     subscribers.push(this.state.subscriber._id)
     for (let i = 0; i < this.state.options.length; i++) {
       if (this.state.options[i].label === tag) {
-        tagId = this.state.options[i].label
+        tagId = this.state.options[i].value
         break
       }
     }
     if (tagId !== '' && subscribers.length > 0) {
       payload.subscribers = subscribers
-      payload.tag = tagId
+      payload.tagId = tagId
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     }
   }
@@ -542,7 +542,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = tag.label
+    payload.tagId = tag.value
     return payload
   }
   createAssignPayload(tagId) {
@@ -566,7 +566,7 @@ class Subscriber extends React.Component {
       }
     }
     payload.subscribers = selectedIds
-    payload.tag = tag.label
+    payload.tagId = tag.value
     return payload
   }
 
@@ -594,7 +594,7 @@ class Subscriber extends React.Component {
     }
     subscribers.push(subscriber._id)
     payload.subscribers = subscribers
-    payload.tag = this.state.addTagIndividual.label
+    payload.tagId = this.state.addTagIndividual.value
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
@@ -1719,6 +1719,16 @@ class Subscriber extends React.Component {
                                 </span>
                               </div>
                             </div>
+                            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                                <span>
+                                  <i className='fa fa-download' />
+                                  <span>
+                                    Export Records in CSV File
+                                  </span>
+                                </span>
+                              </button>
+                            </div>
                           </div>
                           : <div className='table-responsive'>
                             {
@@ -1728,16 +1738,6 @@ class Subscriber extends React.Component {
                             }
                           </div>
                         }
-                        <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                          <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                            <span>
-                              <i className='fa fa-download' />
-                              <span>
-                                Export Records in CSV File
-                              </span>
-                            </span>
-                          </button>
-                        </div>
                       </div>
                     </div> :
                     <div className='m-portlet__body'>
