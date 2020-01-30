@@ -14,10 +14,10 @@ import ListItem from '../autoposting/ListItem'
 // import YouTube from 'react-youtube'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
-import {getCurrentProduct} from '../../utility/utils'
+import { getCurrentProduct } from '../../utility/utils'
 
 class Autoposting extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       isShowingModal: false,
@@ -26,7 +26,9 @@ class Autoposting extends React.Component {
       alertMessage: '',
       alertType: '',
       deleteid: '',
-      showWordPressGuide: false
+      showWordPressGuide: false,
+      smpStatus: [],
+      anyApproved: false
     }
     props.loadAutopostingList()
     props.clearAlertMessages()
@@ -40,10 +42,10 @@ class Autoposting extends React.Component {
     this.closeGuide = this.closeGuide.bind(this)
   }
 
-  scrollToTop () {
-    this.top.scrollIntoView({behavior: 'instant'})
+  scrollToTop() {
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
-  componentDidMount () {
+  componentDidMount() {
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -62,54 +64,69 @@ class Autoposting extends React.Component {
       }
     })
   }
-  viewGuide () {
+  viewGuide() {
     this.setState({
       showWordPressGuide: true
     })
   }
-  closeGuide () {
+  closeGuide() {
     this.setState({
       showWordPressGuide: false
     })
   }
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.successMessage) {
       this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
       this.msg.error(nextProps.errorMessage)
     }
+    if (nextProps.SMPStatus) {
+      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
+        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
+        if (pageIndex > -1) {
+          if (nextProps.SMPStatus[j].smpStatus === 'approved') {
+            this.setState({ anyApproved: true })
+            break
+          }
+          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
+          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
+        }
+      }
+      this.setState({ smpStatus: nextProps.SMPStatus })
+    }
   }
 
-  updateDeleteID (id) {
-    this.setState({deleteid: id})
+  updateDeleteID(id) {
+    this.setState({ deleteid: id })
     this.showDialogDelete()
   }
 
-  showDialog () {
-    this.setState({isShowingModal: true})
+  showDialog() {
+    this.setState({ isShowingModal: true })
   }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
+  closeDialog() {
+    this.setState({ isShowingModal: false })
   }
 
-  showDialogDelete () {
+  showDialogDelete() {
     this.refs.delete.click()
-    this.setState({isShowingModalDelete: true})
+    this.setState({ isShowingModalDelete: true })
   }
 
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
+  closeDialogDelete() {
+    this.setState({ isShowingModalDelete: false })
   }
 
-  gotoSettings (item) {
+  gotoSettings(item) {
     this.props.history.push({
       pathname: `/autopostingItemSettings`,
       state: item
     })
   }
 
-  render () {
+  render() {
+    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -121,90 +138,90 @@ class Autoposting extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Guidelines for integrating WordPress blogs
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Guidelines for integrating WordPress blogs
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
 											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <div className='panel-group accordion' id='accordion1'>
-              <div className='panel panel-default'>
-                <div className='panel-heading guidelines-heading'>
-                  <h4 className='panel-title'>
-                    <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>WordPress.com</a>
-                  </h4>
-                </div>
-                <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                  <div className='panel-body'>
-                    <p>If you have admin rights on WordPress, follow the steps below to create a webhook</p>
-                    <ul>
-                      <li>
-                      Go to Settings -> Webhooks on WordPress dashboard
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>WordPress.com</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
+                      <div className='panel-body'>
+                        <p>If you have admin rights on WordPress, follow the steps below to create a webhook</p>
+                        <ul>
+                          <li>
+                            Go to Settings -> Webhooks on WordPress dashboard
                       </li>
-                      <li>
-                      Choose Action: 'Publish_Post'
+                          <li>
+                            Choose Action: 'Publish_Post'
                       </li>
-                      <li>
-                      Select all the fields
+                          <li>
+                            Select all the fields
                       </li>
-                      <li>
-                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
+                          <li>
+                            Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
-                      <li>
-                      Click on 'Add new webhook'
+                          <li>
+                            Click on 'Add new webhook'
                       </li>
-                    </ul>
-                    <p> Once you have added our webhook on WORDPRESS.COM, our endpoint will be notified whenever a new post is published.
+                        </ul>
+                        <p> Once you have added our webhook on WORDPRESS.COM, our endpoint will be notified whenever a new post is published.
                     Your blog post details will be automatically broadcasted to your subscribers </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className='panel panel-default'>
-                <div className='panel-heading guidelines-heading'>
-                  <h4 className='panel-title'>
-                    <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>WordPress.org (self-hosted version).</a>
-                  </h4>
-                </div>
-                <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                  <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
-                    <ul>
-                      <li>
-                      Go to Settings -> Webhooks on WordPress dashboard
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>WordPress.org (self-hosted version).</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{ height: '0px' }}>
+                      <div className='panel-body'>
+                        <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
+                        <ul>
+                          <li>
+                            Go to Settings -> Webhooks on WordPress dashboard
                       </li>
-                      <li>
-                      Choose Action: 'Publish_Post'
+                          <li>
+                            Choose Action: 'Publish_Post'
                       </li>
-                      <li>
-                      Select All the fields
+                          <li>
+                            Select All the fields
                       </li>
-                      <li>
-                      Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
+                          <li>
+                            Add our webhook endpoint: 'https://webhook.cloudkibo.com/webhooks/wordpress'
                       </li>
-                      <li>
-                      Click on 'Add new webhook'
+                          <li>
+                            Click on 'Add new webhook'
                       </li>
-                    </ul>
-                    <p> Once you have added our webhook on WORDPRESS.ORG through HookPress plug-in, our endpoint will be notified whenever a new post is published.
+                        </ul>
+                        <p> Once you have added our webhook on WORDPRESS.ORG through HookPress plug-in, our endpoint will be notified whenever a new post is published.
                     Your blog post details will be automatically broadcasted to your subscribers </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        <div style={{float: 'left', clear: 'both'}}
+        <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
 
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -253,96 +270,130 @@ class Autoposting extends React.Component {
             </div>
           </div>
         </div>
+
+
+
+
+
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                <div className='row m-row--no-padding' style={{ marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap' }}>
                   <Sidebar history={this.props.history} step='4' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
-                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Step 4: Autoposting Feeds
-                          </h3>
+                  {!this.state.anyAppro ?
+                    <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{ padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none' }}>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <h5 className='m-portlet__head-text'>
+                              You do not have page level subscription permission on any of your connected pages.
+            </h5>
+                          </div>
                         </div>
+                      </div>
+                      <div className='m-portlet__body'>
+                        <p></p>
+                        {this.state.smpStatus.map((item, i) => (
+                          <span key={i}>
+                            <span>
+                              <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
+                    <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
+                    <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
+                            </span>
+                            <br /><br />
+                          </span>
+                        ))
+                        }
+                        <p>You will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/12/24/facebook-subscription-messaging-policy/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
                       </div>
                     </div>
-                    <div className='m-portlet__body' style={{height: 'auto'}}>
-                      <br />
-                      <div className='form-group m-form__group row'>
-                        <label style={{fontWeight: 'normal'}}>This page will help you setup autoposting feeds. You can connect your Facebook pages and twitter accounts and send updates to your subscribers automatically. Click on Add Feeds to start adding them.</label>
-                      </div>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-8 order-2 order-xl-1' />
-                        <div
-                          className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                    : <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{ padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none' }}>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <h3 className='m-portlet__head-text'>
+                              Step 4: Autoposting Feeds
+                    </h3>
+                          </div>
                         </div>
                       </div>
-                      {this.props.autopostingData && this.props.autopostingData.length > 0 &&
-                      <div className='row' >
-                        <div className='col-lg-6 m--align-left' />
-                        <div className='col-lg-6 m--align-right'>
-                          <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
-                            <i className='fa fa-plus' style={{marginRight: '10px'}} />
-                            <span>Add Feeds</span>
-                          </button>
+                      <div className='m-portlet__body' style={{ height: 'auto' }}>
+                        <br />
+                        <div className='form-group m-form__group row'>
+                          <label style={{ fontWeight: 'normal' }}>This page will help you setup autoposting feeds. You can connect your Facebook pages and twitter accounts and send updates to your subscribers automatically. Click on Add Feeds to start adding them.</label>
                         </div>
-                      </div>
-                    }
-                      <br />
-                      <div className='tab-pane active m-scrollable' role='tabpanel'>
-                        <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                          <div style={{height: '380px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                            <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                              <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                                {
-                                this.props.autopostingData && this.props.autopostingData.length > 0
-                                  ? this.props.autopostingData.map((item, i) => (
-                                    <div className='m-widget5'>
-                                      <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState viewGuide openGuidelines={this.viewGuide} />
-                                    </div>
-                                ))
-                                  : <div>
-                                    <br /><br /><br /><br />
-                                    <center>
-                                      <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
-                                        <i className='fa fa-plus' style={{marginRight: '10px'}} />
-                                        <span>Add Feeds</span>
-                                      </button>
-                                    </center>
-                                  </div>
-                              }
+                        <div className='row align-items-center'>
+                          <div className='col-xl-8 order-2 order-xl-1' />
+                          <div
+                            className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          </div>
+                        </div>
+                        {this.props.autopostingData && this.props.autopostingData.length > 0 &&
+                          <div className='row' >
+                            <div className='col-lg-6 m--align-left' />
+                            <div className='col-lg-6 m--align-right'>
+                              <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
+                                <i className='fa fa-plus' style={{ marginRight: '10px' }} />
+                                <span>Add Feeds</span>
+                              </button>
+                            </div>
+                          </div>
+                        }
+                        <br />
+                        <div className='tab-pane active m-scrollable' role='tabpanel'>
+                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                            <div style={{ height: '380px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom' }} className='m-messenger__messages'>
+                              <div style={{ position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr' }}>
+                                <div style={{ position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto' }} >
+                                  {
+                                    this.props.autopostingData && this.props.autopostingData.length > 0
+                                      ? this.props.autopostingData.map((item, i) => (
+                                        <div className='m-widget5'>
+                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState viewGuide openGuidelines={this.viewGuide} />
+                                        </div>
+                                      ))
+                                      : <div>
+                                        <br /><br /><br /><br />
+                                        <center>
+                                          <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
+                                            <i className='fa fa-plus' style={{ marginRight: '10px' }} />
+                                            <span>Add Feeds</span>
+                                          </button>
+                                        </center>
+                                      </div>
+                                  }
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                      <div className='m-form__actions'>
-                        <div className='row'>
-                          <div className='col-lg-6 m--align-left' >
-                            <Link to='/welcomeMessageWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                              <span>
-                                <i className='la la-arrow-left' />
-                                <span>Back</span>&nbsp;&nbsp;
-                              </span>
-                            </Link>
-                          </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <Link to='/menuWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                              <span>
-                                <span>Next</span>&nbsp;&nbsp;
-                                <i className='la la-arrow-right' />
-                              </span>
-                            </Link>
+                      <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                        <div className='m-form__actions'>
+                          <div className='row'>
+                            <div className='col-lg-6 m--align-left' >
+                              <Link to='/welcomeMessageWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <span>
+                                  <i className='la la-arrow-left' />
+                                  <span>Back</span>&nbsp;&nbsp;
+                        </span>
+                              </Link>
+                            </div>
+                            <div className='col-lg-6 m--align-right'>
+                              <Link to='/menuWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <span>
+                                  <span>Next</span>&nbsp;&nbsp;
+                          <i className='la la-arrow-right' />
+                                </span>
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  }
+
                 </div>
               </div>
             </div>
@@ -353,16 +404,18 @@ class Autoposting extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     successMessage: (state.autopostingInfo.successMessageCreate),
     errorMessage: (state.autopostingInfo.errorMessageCreate),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    pages: (state.pagesInfo.pages),
+    SMPStatus: (state.autopostingInfo.SMPStatus)
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadAutopostingList: loadAutopostingList,
     clearAlertMessages: clearAlertMessages,
