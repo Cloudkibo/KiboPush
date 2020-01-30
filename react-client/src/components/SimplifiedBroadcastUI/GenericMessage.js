@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../redux/actions/templates.actions'
+import { loadCustomFields } from '../../redux/actions/customFields.actions'
+
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -72,13 +74,12 @@ class GenericMessage extends React.Component {
     this.getItems = this.getItems.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
-
     this.GSModalContent = null
 
     if (props.setReset) {
       props.setReset(this.reset)
     }
-
+    this.props.loadCustomFields()
     this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
@@ -139,6 +140,9 @@ class GenericMessage extends React.Component {
       this.setState({quickRepliesComponent: null})
     }
     if (!this.props.tags && nextProps.tags) {
+      this.setState({quickRepliesComponent: null})
+    }
+    if (!this.props.customFields && nextProps.customFields) {
       this.setState({quickRepliesComponent: null})
     }
   }
@@ -845,7 +849,7 @@ class GenericMessage extends React.Component {
             (<QuickReplies
               toggleGSModal={this.toggleGSModal}
               closeGSModal={this.closeGSModal}
-              customFields={this.state.customFields}
+              customFields={this.props.customFields}
               sequences={this.props.sequences}
               broadcasts={this.props.broadcasts}
               tags={this.props.tags}
@@ -1040,6 +1044,7 @@ GenericMessage.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    customFields: (state.customFieldInfo.customFields),
     sequences: state.sequenceInfo.sequences,
     broadcasts: state.templatesInfo.broadcasts,
     tags: state.tagsInfo.tags
@@ -1048,6 +1053,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+      loadCustomFields: loadCustomFields,
       fetchAllSequence: fetchAllSequence,
       loadBroadcastsList: loadBroadcastsList,
       loadTags: loadTags
