@@ -17,7 +17,6 @@ class FeedPosts extends React.Component {
     this.state = {
       newsPages: [],
       deleteId: '',
-      pageFilter: '',
       startDate: '', 
       endDate: '',
       status: '',
@@ -30,12 +29,10 @@ class FeedPosts extends React.Component {
       last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
-      page_value: '',
       start_date: '',
       end_date: ''
     })
 
-    this.onPageFilter = this.onPageFilter.bind(this)
     this.changeDateFrom = this.changeDateFrom.bind(this)
     this.changeDateTo = this.changeDateTo.bind(this)
     this.validDateRange = this.validDateRange.bind(this)
@@ -78,10 +75,10 @@ class FeedPosts extends React.Component {
     })
     if (this.validDateRange(this.state.startDate, e.target.value)) {
       this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: this.state.pageFilter, startDate: this.state.startDate, endDate: e.target.value})
+      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', startDate: this.state.startDate, endDate: e.target.value})
     } else {
       this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({ feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: this.state.pageFilter, startDate: '', endDate: ''})
+      this.props.fetchFeedPosts({ feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', startDate: '', endDate: ''})
     }
   }
   changeDateFrom (e) {
@@ -90,19 +87,10 @@ class FeedPosts extends React.Component {
     })
     if (this.validDateRange(e.target.value, this.state.endDate)) {
       this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: this.state.pageFilter, startDate: e.target.value, endDate: this.state.endDate})
+      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', startDate: e.target.value, endDate: this.state.endDate})
     } else {
       this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: this.state.pageFilter, startDate: '', endDate: ''})
-    }
-  }
-  onPageFilter (e) {
-    this.setState({pageFilter: e.target.value, pageNumber: 0})
-    if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({pageNumber: 0})
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: e.target.value, startDate: this.state.startDate, endDate: this.state.endDate})
-    } else {
-      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', page_value: '', startDate: this.state.startDate, endDate: this.state.endDate})
+      this.props.fetchFeedPosts({feedId: this.props.currentFeed._id, last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', startDate: '', endDate: ''})
     }
   }
 
@@ -162,7 +150,6 @@ class FeedPosts extends React.Component {
         last_id: 'none',
         number_of_records: 10,
         first_page: 'first',
-        page_value: this.state.pageFilter,
         startDate: this.state.startDate,
         endDate: this.state.endDate
       })
@@ -174,7 +161,6 @@ class FeedPosts extends React.Component {
         last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'next',
-        page_value: this.state.pageFilter,
         startDate: this.state.startDate,
         endDate: this.state.endDate
       })
@@ -186,7 +172,6 @@ class FeedPosts extends React.Component {
         last_id: this.props.feedPosts.length > 0 ? this.props.feedPosts[this.props.feedPosts.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'previous',
-        page_value: this.state.pageFilter,
         startDate: this.state.startDate,
         endDate: this.state.endDate
       })
@@ -204,25 +189,21 @@ class FeedPosts extends React.Component {
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
                   <h3 className='m-portlet__head-text'>
-                    Rss Feed Posts
+                    {this.props.currentFeed.title}
                   </h3>
                 </div>
               </div>
             </div>
             <div className='m-portlet__body'>
               <div className='row' style={{marginBottom: '30px'}}>
-                <div className='col-md-4'>
-                  <select className='custom-select' style={{width: '100%'}} value= {this.state.pageFilter} onChange={this.onPageFilter}>
-                    <option value='' disabled>Filter by Page</option>
-                    <option value=''>All</option>
-                    { this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                      <option value={page._id}>{page.pageName}</option>
-                    ))
-                    }
-                  </select>
+                <div className='col-md-4' style={{ display: 'inherit'}}>
+                  <label style={{marginTop: '7px'}} className="col-md-3 col-lg-3 col-sm-12">
+                    Page
+                  </label>
+                  <span style={{marginTop: '7px'}}>{this.props.pages.filter((page) => page._id === this.props.currentFeed.pageIds[0])[0].pageName}</span>
                 </div>
                 <div className='col-md-8' style={{ display: 'inherit' }}>
-                  <label style={{marginTop: '7px', marginLeft: '30px'}} class="col-md-3 col-lg-3 col-sm-12">
+                  <label style={{marginTop: '7px', marginLeft: '30px'}} className="col-md-3 col-lg-3 col-sm-12">
                     Filter by Date
                   </label>
                   <span style={{marginTop: '7px', marginRight: '10px'}}>From:</span>
@@ -257,10 +238,6 @@ class FeedPosts extends React.Component {
                       style={{height: '53px'}}>
                       <th data-field='page'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                        <span style={{width: '100px'}}>Pages</span>
-                      </th>
-                      <th data-field='page'
-                        className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                         <span style={{width: '100px'}}>Sent At</span>
                       </th>
                       <th data-field='datetime'
@@ -282,7 +259,6 @@ class FeedPosts extends React.Component {
                     <tr 
                       className='m-datatable__row m-datatable__row--even'
                       style={{height: '55px'}}>
-                      <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === post.pageId)[0].pageName}</span></td>
                       <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
                       <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.sent ? post.sent : 0}</span></td>
                       <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.seen ? post.seen : 0}</span></td>

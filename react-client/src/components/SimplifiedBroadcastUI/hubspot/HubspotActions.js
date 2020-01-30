@@ -15,7 +15,7 @@ class HubspotAction extends React.Component {
       hubspotAction: '',
       hubSpotForm: '' ,
       portalId: '',
-      mapping: '',
+      mapping: props.mapping ? props.mapping : '',
       showModal: false,
       identityFieldValue: ''
 
@@ -44,7 +44,7 @@ class HubspotAction extends React.Component {
       mapping: mappingData,
       portalId: portalId,
       identityFieldValue: identityFieldValue
-    })
+    }, this.props.index)
     this.closeModal()
   }
   
@@ -76,16 +76,33 @@ componentDidMount () {
     showModal: false
     })
     //this.props.emptyFields()
-    this.props.removeHubspotAction()
+    this.props.removeHubspotAction(this.props.index)
   }
   openModal () {
 
      console.log('in openModal',this.state.hubspotAction)
     let modals = {
-      'submit_form': (<SubmitForm hubSpotForm= {this.state.hubSpotForm} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal} portalId= {this.state.portalId}/>),
-      'get_contact': (<GetContactForm identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>),
-      'insert_update_contact': (<CreateContact identityFieldValue= {this.state.identityFieldValue} mapping={this.state.mapping} save={this.save} closeGSModal={this.props.closeGSModal}/>)
-
+      'submit_form': (<SubmitForm 
+        questions={this.props.questions}
+        hubSpotForm= {this.state.hubSpotForm} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal} 
+        portalId= {this.state.portalId}
+      />),
+      'get_contact': (<GetContactForm 
+        identityFieldValue= {this.state.identityFieldValue} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal}
+      />),
+      'insert_update_contact': (<CreateContact 
+        questions={this.props.questions}
+        identityFieldValue= {this.state.identityFieldValue} 
+        mapping={this.state.mapping} 
+        save={this.save} 
+        closeGSModal={this.props.closeGSModal}
+      />)
     }
     return modals[this.state.hubspotAction]
   }
@@ -126,24 +143,30 @@ componentDidMount () {
       </div>
         : <div>
           <span>Select one of the Actions below:</span>
-            <div className='ui-block'
-              style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
-              onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
-              <h6>Submit data to a form</h6>
-              <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
-            </div>
+            {
+              !this.props.questions &&
+              <div className='ui-block'
+                style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
+                onClick={() => this.updateHubspotAction('submit_form')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+                <h6>Submit data to a form</h6>
+                <span style={{color: '#676c7b'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
+              </div>
+            }
             <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
               onClick={() => this.updateHubspotAction('insert_update_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Create/Update Contact Properties</h6>
               <span style={{color: '#676c7b'}}>Create a contact if it doesn’t exist in HubSpot already, or update it with Subscriber’s Custom Fields if it does. An existing contact will be determined by its email address.</span>
             </div>
-            <div className='ui-block'
+            {
+              !this.props.questions &&
+              <div className='ui-block'
               style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', padding: '18px', textAlign: 'left', cursor: 'pointer'}}
               onClick={() => this.updateHubspotAction('get_contact')} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
               <h6>Get Contact Properties</h6>
-            <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
-          </div>
+              <span style={{color: '#676c7b'}}>Return information about a single contact by its email address and process it to Subscriber’s Custom Fields.</span>
+              </div>
+            }
         </div>
     }
       </div>

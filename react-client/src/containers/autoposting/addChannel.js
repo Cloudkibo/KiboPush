@@ -236,7 +236,7 @@ class AddChannel extends React.Component {
         })
         break
       case 'rss':
-        this.setState({
+        /*this.setState({
           facebookColor: '',
           twitterColor: '',
           rssColor: '#716aca',
@@ -245,7 +245,9 @@ class AddChannel extends React.Component {
           twitterForeGroundColor: 'black',
           rssForeGroundColor: 'white',
           wordPressForeGroundColor: 'black'
-        })
+        })*/
+        this.props.addFeedClose.click()
+        this.props.gotoRssIntegration()
         break
       case 'wordpress':
         this.setState({

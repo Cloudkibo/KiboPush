@@ -212,6 +212,13 @@ export function showSearchChat (data) {
   }
 }
 
+export function emptySocketData () {
+  console.log('emptySocketData')
+  return {
+    type: ActionTypes.EMPTY_SOCKET_DATA
+  }
+}
+
 // export function fetchSessions () {
 //   return (dispatch) => {
 //     callApi('sessions')

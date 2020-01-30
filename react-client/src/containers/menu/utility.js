@@ -31,6 +31,9 @@ export function transformData (data) {
     } else {
       delete item.submenu
     }
+    if (item.type === 'postback') {
+      item.payload = JSON.stringify({action: 'send_menu_reply', index: a})
+    }
   }
   var final = {}
   final.persistent_menu = [{locale: 'default', call_to_actions: data}]

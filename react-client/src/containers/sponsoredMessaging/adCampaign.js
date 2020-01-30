@@ -21,6 +21,7 @@ class adCampaign extends React.Component {
   handleInput (e) {
     this.setState({campaign_name: e.target.value})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'campaign_name', e.target.value)
+    this.props.onEdit()
   }
 
   render () {

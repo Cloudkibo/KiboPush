@@ -109,13 +109,13 @@ class Tab extends React.Component {
         </ul>
         <div className='tab-content'>
           <div className='tab-pane fade active in' id='tab_1'>
-            <AdCampaign campaignName={this.props.editSponsoredMessage.campaign_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCampaign onEdit={this.props.onEdit} campaignName={this.props.editSponsoredMessage.campaign_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_2'>
-            <Adset adSetPayload={this.props.editSponsoredMessage.ad_set_payload} pageId={this.props.editSponsoredMessage.pageId} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <Adset onEdit={this.props.onEdit} adSetPayload={this.props.editSponsoredMessage.ad_set_payload} pageId={this.props.editSponsoredMessage.pageId} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
           <div className='tab-pane' id='tab_3'>
-            <AdCreative adAccountId={this.props.editSponsoredMessage.ad_account_id} payload={this.props.editSponsoredMessage.payload} ad_name={this.props.editSponsoredMessage.ad_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
+            <AdCreative onEdit={this.props.onEdit} adAccountId={this.props.editSponsoredMessage.ad_account_id} payload={this.props.editSponsoredMessage.payload} ad_name={this.props.editSponsoredMessage.ad_name} page={this.state.activeTab} handleNext={this.handleNext} handleBack={this.handleBack}/>
           </div>
         </div>
       </div>

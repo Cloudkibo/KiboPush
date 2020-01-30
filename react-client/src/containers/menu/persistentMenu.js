@@ -251,6 +251,10 @@ class Menu extends React.Component {
     this.setState({menuItems: temp})
     var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id] }
     this.props.saveCurrentMenuItem(currentState)
+    this.props.history.push({
+      pathname: `/createMessage`,
+    })
+
   }
   handleReset () {
     this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
@@ -766,6 +770,15 @@ class Menu extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        { this.state.loading && 
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          </div>
+
+        }
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
@@ -816,18 +829,6 @@ class Menu extends React.Component {
           </div>
         </div>
         <div id='menuPopover' />
-
-        {
-          this.state.loading
-          ?
-          // <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><RingLoader color='#716aca' /></center>
-            </div>
-          // </ModalContainer>
-          : <span />
-        }
         <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
@@ -921,12 +922,12 @@ class Menu extends React.Component {
              this.state.selectedRadio === 'replyWithMessage' &&
              <div className='col-12' style={{marginTop: '20px', marginBottom: '10px'}}>
                { this.state.isEditMessage
-               ? <Link to='CreateMessage' className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
+               ? <button className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
                   Edit Message
-                </Link>
-                : <Link to='CreateMessage' className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
+                </button>
+                : <button className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
                    Create Message
-                </Link>
+                </button>
                }
              </div>
             }

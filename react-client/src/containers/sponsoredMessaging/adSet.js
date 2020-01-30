@@ -41,6 +41,7 @@ class adSet extends React.Component {
     temp.bidAmount = e.target.value
     this.setState({ad_set_payload: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
+    this.props.onEdit()
 
   }
 
@@ -49,6 +50,7 @@ class adSet extends React.Component {
     temp.adset_name = e.target.value
     this.setState({ad_set_payload: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
+    this.props.onEdit()
   }
 
   handleAge (e) {
@@ -69,6 +71,7 @@ class adSet extends React.Component {
       }
     }
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
+    this.props.onEdit()
   }
 
   handleBudget (e) {
@@ -81,6 +84,7 @@ class adSet extends React.Component {
     }
     this.setState({ad_set_payload: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'ad_set_payload', temp)
+    this.props.onEdit()
 
   }
 
@@ -88,6 +92,7 @@ class adSet extends React.Component {
     let temp = e.target.value
     this.setState({page: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage,'pageId',temp)
+    this.props.onEdit()
   }
 
   handleGender (e) {
@@ -96,6 +101,7 @@ class adSet extends React.Component {
     temp.gender = e.target.value
     this.setState({ad_set_payload: temp})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage,'ad_set_payload',temp)
+    this.props.onEdit()
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {

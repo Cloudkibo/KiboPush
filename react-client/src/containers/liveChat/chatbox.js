@@ -17,7 +17,8 @@ import {
   markRead,
   changeStatus,
   sendNotifications,
-  fetchTeamAgents
+  fetchTeamAgents,
+  emptySocketData
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -86,7 +87,8 @@ class ChatBox extends React.Component {
       recording: false,
       scrolling: true,
       pendingResponseValue: '',
-      sessionValid: false
+      sessionValid: false,
+      isWaitingForUserInput: false
     }
     props.fetchUserChats(this.props.currentSession._id, { page: 'first', number: 25 })
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -135,6 +137,13 @@ class ChatBox extends React.Component {
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.isUserSessionValid = this.isUserSessionValid.bind(this)
+    this.overrideUserInput = this.overrideUserInput.bind(this)
+  }
+
+  overrideUserInput () {
+    this.setState({waitingForUserInput: false}, () => {
+      this.props.currentSession.waitingForUserInput.componentIndex = -1
+    })
   }
 
   isUserSessionValid(chats) {
@@ -236,6 +245,9 @@ class ChatBox extends React.Component {
     })
 
     scrollSpy.update()
+    if (this.props.socketData) {
+      this.props.emptySocketData()
+    }
   }
 
   updateScrollTop() {
@@ -253,9 +265,11 @@ class ChatBox extends React.Component {
     }
   }
 
-  componetWillUnmount() {
+  UNSAFE_componentWillUnmount() {
+    console.log('chatbox unmount')
     Events.scrollEvent.remove('begin')
     Events.scrollEvent.remove('end')
+    this.props.emptySocketData()
   }
 
   removeAttachment() {
@@ -638,7 +652,19 @@ class ChatBox extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps chatbox.js')
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js this.props', this.props)
+    console.log('UNSAFE_componentWillReceiveProps chatbox.js nextProps', nextProps)
+    if (this.props.currentSession.waitingForUserInput && this.props.currentSession.waitingForUserInput.componentIndex !== -1) {
+      this.setState({waitingForUserInput: true})
+    }
+    if (nextProps.socketData && nextProps.socketData.subscriber_id === nextProps.currentSession._id) {
+      console.log('socketData matches currentSession', nextProps.socketData)
+      if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex === -1) {
+        this.setState({waitingForUserInput: false})
+      } else if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex !== -1) {
+        this.setState({waitingForUserInput: true})
+      }
+    }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.props.currentSession._id) {
       this.isUserSessionValid(nextProps.userChat)
     }
@@ -1768,7 +1794,7 @@ class ChatBox extends React.Component {
                     </div>
                   </div>
                   <div className='m-messenger__seperator' />
-                  {this.state.sessionValid
+                  {(this.state.sessionValid && !this.state.waitingForUserInput)
                 ? <div>
                 <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
                     <PopoverBody>
@@ -2023,8 +2049,21 @@ class ChatBox extends React.Component {
                      </div>
                   }
                 </div>
-                : <span><p>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</p>
+                : (!this.state.sessionValid) ? 
+                <span>
+                  <p>
+                    Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.
+                  </p>
                 </span>
+                :
+                <div>
+                  <span>
+                    <p style={{marginRight: '10px'}}>A user input component was last sent to this subscriber. A response is currently pending. Do you want to override the user input component?</p>
+                  </span>
+                  <button style={{marginLeft: '33%'}} onClick={() => this.overrideUserInput()} className='btn btn-primary'>
+                    Confirm
+                  </button>
+                </div>
               }
                 </div>
               </div>
@@ -2055,6 +2094,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    emptySocketData: emptySocketData,
     fetchOpenSessions: fetchOpenSessions,
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),

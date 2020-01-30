@@ -78,7 +78,7 @@ class AutopostingPosts extends React.Component {
                         pageCount={Math.ceil(this.props.totalLength / 10)}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={3}
-                        onPageChange={this.props.handlePageClick()}
+                        onPageChange={this.props.handlePageClick}
                         containerClassName={'pagination'}
                         subContainerClassName={'pages pagination'}
                         activeClassName={'active'}

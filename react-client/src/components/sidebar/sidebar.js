@@ -52,7 +52,8 @@ class Sidebar extends Component {
       businessGateway: false,
       checkbox: true,
       abandonedCarts: false,
-      rssIntegration: true
+      rssIntegration: true,
+      overlayWidgets: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -182,6 +183,40 @@ class Sidebar extends Component {
     }
   }
 
+  showCustomFields() {
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to={'/customFields'} className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-profile' title='Custom Fields' />
+              <span className='m-menu__link-text'>Custom Fields</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showTags() {
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to={'/tags'} className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
+              <span className='m-menu__link-text'>Tags</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showSponsoredMessaging () {
     if (this.props.user) {
       // include user persmissions
@@ -291,6 +326,39 @@ class Sidebar extends Component {
     }
   }
 
+  showSubscriptionsItem () {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a href='#/' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-users' title='Subscriptions' />
+            <span className='m-menu__link-text'>Subscriptions</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a href='#/' className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Subscriptions
+                  </span>
+                </a>
+              </li>
+              {this.showSubscribersItem()}
+              {this.showCustomFields()}
+              {this.showTags()}
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
+  }
+
   showGrowthToolsItems () {
     if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
       return (
@@ -321,6 +389,7 @@ class Sidebar extends Component {
               {this.showMessageUs()}
               {this.showChatWidget()}
               {this.showCheckbox()}
+              {this.showOverlayWidgets()}
             </ul>
           </div>
         </li>
@@ -634,6 +703,27 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Landing Pages
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showOverlayWidgets () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.overlayWidgets) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/overlayWidgets' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Overlay Widgets
               </span>
             </Link>
           </li>
@@ -1065,7 +1155,7 @@ class Sidebar extends Component {
                 <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                   {this.showOperationalDashboard()}
                   {this.showDashboard()}
-                  {this.showSubscribersItem()}
+                  {this.showSubscriptionsItem()}
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}

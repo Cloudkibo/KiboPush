@@ -5,6 +5,7 @@ export function autopostingInfo (state = {}, action) {
     case ActionTypes.FETCH_AUTOPOSTING_LIST:
       return Object.assign({}, state, {
         autopostingData: action.autoposting,
+        SMPStatus: action.SMPStatus,
         errorMessageCreate: '',
         successMessageCreate: ''
       })
@@ -17,7 +18,7 @@ export function autopostingInfo (state = {}, action) {
 
     case ActionTypes.SHOW_AUTOPOSTING_POSTS:
       return Object.assign({}, state, {
-        autoposting_posts: action.autoposting_messages,
+        autoposting_posts: action.autoposting_posts,
         postsCount: action.count
       })
 

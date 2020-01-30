@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadBroadcastsList } from '../../redux/actions/templates.actions'
+import { loadCustomFields } from '../../redux/actions/customFields.actions'
+
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -34,14 +36,15 @@ class GenericMessage extends React.Component {
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
     this.state = {
       list: [],
-      quickReplies: [],
+      quickReplies: this.props.broadcast && this.props.broadcast.length > 0 ? this.props.broadcast[this.props.broadcast.length-1].quickReplies : [],
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
       pageId: this.props.pageId,
       hiddenComponents: hiddenComponents,
       componentType: '',
-      showGSModal: false
+      showGSModal: false,
+      quickRepliesComponent: null
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -71,13 +74,12 @@ class GenericMessage extends React.Component {
     this.getItems = this.getItems.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
-
     this.GSModalContent = null
 
     if (props.setReset) {
       props.setReset(this.reset)
     }
-
+    this.props.loadCustomFields()
     this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
@@ -91,11 +93,15 @@ class GenericMessage extends React.Component {
   }
 
   updateQuickReplies (quickReplies) {
-    console.log('updateQuickReplies', quickReplies)
-    let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
-    console.log('broadcast after updating quick replies', broadcast)
-    this.setState({quickReplies, broadcast})
-    this.props.handleChange({broadcast})
+    return new Promise((resolve, reject) => {
+      console.log('updateQuickReplies', quickReplies)
+      let broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
+      console.log('broadcast after updating quick replies', broadcast)
+      this.setState({quickReplies, broadcast}, () => {
+        resolve()
+      })
+      this.props.handleChange({broadcast})
+    })
   }
 
   appendQuickRepliesToEnd (broadcast, quickReplies) {
@@ -122,7 +128,22 @@ class GenericMessage extends React.Component {
       this.setState({convoTitle: nextProps.convoTitle})
     }
     if (this.props.broadcast !== nextProps.broadcast) {
+      if (nextProps.broadcast.length > 0) {
+        this.setState({quickReplies: nextProps.broadcast[nextProps.broadcast.length-1].quickReplies})
+      }
       this.initializeList(nextProps.broadcast)
+    }
+    if (!this.props.sequences && nextProps.sequences) {
+      this.setState({quickRepliesComponent: null})
+    }
+    if (!this.props.broadcasts && nextProps.broadcasts) {
+      this.setState({quickRepliesComponent: null})
+    }
+    if (!this.props.tags && nextProps.tags) {
+      this.setState({quickRepliesComponent: null})
+    }
+    if (!this.props.customFields && nextProps.customFields) {
+      this.setState({quickRepliesComponent: null})
     }
   }
 
@@ -822,18 +843,24 @@ class GenericMessage extends React.Component {
   getItems () {
     if (this.state.list.length > 0) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
-      return this.state.list.concat([{
-        content:
-          <QuickReplies
-            sequences={this.props.sequences}
-            toggleGSModal={this.toggleGSModal}
-            closeGSModal={this.closeGSModal}
-            broadcasts={this.props.broadcasts}
-            tags={this.props.tags}
-            quickReplies={this.state.quickReplies}
-            updateQuickReplies={this.updateQuickReplies} />
-        }])
-      // return this.state.list
+      if (!this.state.quickRepliesComponent) {
+        this.setState({quickRepliesComponent: {
+          content:
+            (<QuickReplies
+              toggleGSModal={this.toggleGSModal}
+              closeGSModal={this.closeGSModal}
+              customFields={this.props.customFields}
+              sequences={this.props.sequences}
+              broadcasts={this.props.broadcasts}
+              tags={this.props.tags}
+              quickReplies={this.state.quickReplies}
+              updateQuickReplies={this.updateQuickReplies}
+              currentId={this.state.currentId}
+            />)
+        }})
+      } else {
+        return this.state.list.concat([this.state.quickRepliesComponent])
+      }
     } else {
       return this.state.list
     }
@@ -1017,6 +1044,7 @@ GenericMessage.defaultProps = {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    customFields: (state.customFieldInfo.customFields),
     sequences: state.sequenceInfo.sequences,
     broadcasts: state.templatesInfo.broadcasts,
     tags: state.tagsInfo.tags
@@ -1025,6 +1053,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+      loadCustomFields: loadCustomFields,
       fetchAllSequence: fetchAllSequence,
       loadBroadcastsList: loadBroadcastsList,
       loadTags: loadTags

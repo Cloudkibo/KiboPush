@@ -16,6 +16,10 @@ export function feedsInfo (state = {}, action) {
       return Object.assign({}, state, {
         currentFeed: action.currentFeed,
       })
+    case ActionTypes.SAVE_NEWS_PAGES:
+      return Object.assign({}, state, {
+        newsPages: action.newsPages,
+      })
     default:
       return state
   }

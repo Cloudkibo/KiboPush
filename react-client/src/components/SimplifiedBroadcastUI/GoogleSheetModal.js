@@ -88,13 +88,15 @@ class GoogleSheetActions extends React.Component {
   openModal () {
     console.log('in openModal', this.state.mapping)
     let modals = {
-      'insert_row': (<InsertRow save={this.save}
+      'insert_row': (<InsertRow 
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
     	  mapping={this.state.mapping}
       />),
-      'update_row': (<UpdateRow save={this.save}
+      'update_row': (<UpdateRow 
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
@@ -102,7 +104,8 @@ class GoogleSheetActions extends React.Component {
         lookUpValue={this.state.lookUpValue}
         lookUpColumn={this.state.lookUpColumn}
         />),
-      'get_row_by_value': (<GetRowByValue save={this.save}
+      'get_row_by_value': (<GetRowByValue 
+        save={this.save}
         spreadsheet={this.state.spreadSheet}
     	  worksheet={this.state.worksheet}
         worksheetName={this.state.worksheetName}
@@ -121,7 +124,6 @@ class GoogleSheetActions extends React.Component {
       </div>
     </div>
   </div>
-    )
   }
 }
 

@@ -47,7 +47,16 @@ class RssFeed extends React.Component {
               </span>
             </div>
           </div>
-          <div className='m-widget5__stats1'>
+          <div className='m-widget5__stats1' style={{textAlign: 'center', width: '200px'}}>
+              <span className='m-widget5__title'>
+                <label>Page</label>  
+              </span>
+              <br />
+              <span className='widget5__info'>
+                {this.props.page ? this.props.page.pageName: ''}
+              </span>
+          </div>
+          <div className='m-widget5__stats2'>
           {this.props.feed.isActive
           ? <a href='#/'>
               <button type='button' onClick={() => this.props.setStatus(this.props.feed)} className='btn m-btn--pill btn-success btn-sm m-btn m-btn--custom'>Enabled</button>

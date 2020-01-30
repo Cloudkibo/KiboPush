@@ -86,7 +86,8 @@ class FacebookPosts extends React.Component {
   }
   changeDateTo (e) {
     this.setState({
-      endDate: e.target.value
+      endDate: e.target.value,
+      filter:true
     })
     if (this.validDateRange(this.state.startDate, e.target.value)) {
       this.setState({pageNumber: 0})
@@ -98,7 +99,8 @@ class FacebookPosts extends React.Component {
   }
   changeDateFrom (e) {
     this.setState({
-      startDate: e.target.value
+      startDate: e.target.value,
+      filter:true
     })
     if (this.validDateRange(e.target.value, this.state.endDate)) {
       this.setState({pageNumber: 0})
@@ -113,7 +115,7 @@ class FacebookPosts extends React.Component {
   }
   onTypeFilter (e) {
     console.log('e.target type', e.target.value)
-    this.setState({captureType: e.target.value, pageNumber: 0})
+    this.setState({captureType: e.target.value, pageNumber: 0, filter:true})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
       this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
@@ -189,6 +191,7 @@ class FacebookPosts extends React.Component {
   }
 
   handlePageClick(data) {
+    this.setState({filter:true})
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
       this.props.fetchAllPosts({
@@ -240,7 +243,8 @@ class FacebookPosts extends React.Component {
 
   searchPosts(event) {
     this.setState({
-      searchValue: event.target.value, pageNumber:0
+      searchValue: event.target.value, pageNumber:0,
+      filter:true
     })
     if (event.target.value !== '') {
       this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), type_value: this.state.captureType, startDate: '', endDate: ''})
@@ -306,6 +310,7 @@ class FacebookPosts extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    this.setState({filter: false})
                     this.props.deletePost(this.state.deleteid, this.msg)
                   }}
                   data-dismiss='modal'>Delete
@@ -358,8 +363,9 @@ class FacebookPosts extends React.Component {
                     </Link>
                   </div>
                 </div>
-                { this.state.postsData && this.state.postsData.length > 0
-                ? <div className='m-portlet__body'>
+                <div className='m-portlet__body'>
+                { (this.state.postsData && this.state.postsData.length > 0) || this.state.filter
+                ? 
                   <div className='form-row'>
                     <div style={{ display: 'inline-block' }} className='col-md-3'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.captureType} onChange={this.onTypeFilter}>
@@ -396,11 +402,14 @@ class FacebookPosts extends React.Component {
                         max= {moment().format('YYYY-MM-DD')}
                         type='date'/>
                     </div>
-                  </div>
-                  <div className='form-row'>
+                    <br/>
                     <div style={{ display: 'inline-block', marginTop: '20px', marginBottom: '20px' }} className='col-md-12'>
                       <input type='text' style={{width: '50%'}} placeholder='Search Posts..' className='form-control' value={this.state.searchValue} onChange={this.searchPosts} />
                     </div>
+                  </div> : null
+                }
+                { (this.state.postsData && this.state.postsData.length > 0) ?
+                  <div className='form-row'>
                     <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                       <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                         <thead className='m-datatable__head'>
@@ -486,13 +495,13 @@ class FacebookPosts extends React.Component {
                         </div>
                       </div>
                   </div>
-                </div>
                 : <div className='m-portlet__body'>
                     <div className='col-12'>
                       <p> No data to display </p>
                     </div>
                   </div>
                 }
+                </div>
               </div>
             </div>
           </div>

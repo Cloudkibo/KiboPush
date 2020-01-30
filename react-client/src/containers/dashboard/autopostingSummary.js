@@ -236,8 +236,7 @@ class AutopostingSummary extends React.Component {
           {this.props.autopostingSummary &&
             <div className='m-widget21'>
             <div className='row'>
-              <div className='col-1'></div>
-              <div className='col-5'>
+              <div className='col-4'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-twitter'
@@ -251,7 +250,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-5'>
+              <div className='col-4'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-facebook-f'
@@ -265,11 +264,7 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-1'></div>
-            </div>
-            <div className='row'>
-              <div className='col-1'></div>
-              <div className='col-5'>
+              <div className='col-4'>
                 <IconStack
                   path='/autoposting'
                   icon='fa fa-wordpress'
@@ -283,21 +278,6 @@ class AutopostingSummary extends React.Component {
                 />
               <div className='m--space-30' ></div>
               </div>
-              <div className='col-5'>
-                <IconStack
-                  path='/autoposting'
-                  icon='fa fa-feed fa-2x'
-                  title='RSS'
-                  connected={this.props.autopostingSummary.rssFeedAutoposting}
-                  received={this.props.autopostingSummary.rssFeedAutopostingCame}
-                  sent={this.props.autopostingSummary.rssFeedAutopostingSent}
-                  iconStyle='warning'
-                  connectedText='Feeds'
-                  otherText='Feeds'
-                />
-              <div className='m--space-30' ></div>
-              </div>
-              <div className='col-1'></div>
             </div>
             <br />
             <center>

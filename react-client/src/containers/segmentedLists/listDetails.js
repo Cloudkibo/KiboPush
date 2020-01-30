@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
+import {localeCodeToEnglish} from '../../utility/utils'
 var json2csv = require('json2csv')
 
 class ListDetails extends React.Component {
@@ -253,7 +254,7 @@ class ListDetails extends React.Component {
                                   {subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
                                 </span>
                               </td>
-                              <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                              <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{localeCodeToEnglish(subscriber.locale)}</span></td>
                               <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
                             </tr>
                           ))

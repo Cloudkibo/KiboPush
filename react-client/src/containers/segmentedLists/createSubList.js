@@ -163,7 +163,7 @@ class CreateSubList extends React.Component {
   handleGetParentList(response) {
     if (response.payload) {
       this.setState({ parentListData: response.payload })
-      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.props.customFields, this.props.customFieldSubscribers, this.state.joiningCondition)
+      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.customFields, this.props.customFieldSubscribers)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -266,11 +266,13 @@ class CreateSubList extends React.Component {
       errorMessages.push(errorMessage)
       this.setState({ errorMessages: errorMessages })
     }
-    if (this.state.newListName && this.props.customerLists && this.props.customerLists.filter(e => e.listName.toLowerCase() === this.state.newListName.toLowerCase()).length > 0) {
-      errors = true
-      errorMessage = { error: 'listName', message: 'List with this name already exists' }
-      errorMessages.push(errorMessage)
-      this.setState({ errorMessages: errorMessages })
+    if (!(this.props.currentList &&  this.props.currentList.listName.trim().toLowerCase() === this.state.newListName.trim().toLowerCase())) {
+      if (this.state.newListName && this.props.customerLists && this.props.customerLists.filter(e => e.listName.toLowerCase() === this.state.newListName.toLowerCase()).length > 0) {
+        errors = true
+        errorMessage = { error: 'listName', message: 'List with this name already exists' }
+        errorMessages.push(errorMessage)
+        this.setState({ errorMessages: errorMessages })
+      }
     }
     let conditionErrors = []
     let conditionError = {}
