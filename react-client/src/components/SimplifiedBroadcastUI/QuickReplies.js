@@ -10,6 +10,7 @@ import { uploadImage } from '../../redux/actions/convos.actions'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotAction from './hubspot/HubspotActions'
 import { getIntegrations } from '../../redux/actions/settings.actions'
+import ActionsPopover from './ActionsPopover'
 
 class QuickReplies extends React.Component {
   constructor (props) {
@@ -71,6 +72,7 @@ class QuickReplies extends React.Component {
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.addReplyWithMessage = this.addReplyWithMessage.bind(this)
+    this.createQuickReplyActions = this.createQuickReplyActions.bind(this)
 
     this.GSModalContent = null
   }
@@ -89,6 +91,32 @@ class QuickReplies extends React.Component {
             this.setState({actions})
         }
     }
+}
+
+  createQuickReplyActions () {
+    let quickReplyActions = []
+    for (let i = 0; i < this.state.actions.length; i++) {
+      let action = this.state.actions[i]
+      if (action === 'reply with a message' && !this.state.openCreateMessage) {
+        quickReplyActions.push({title: 'Reply with a message', action: () => this.selectAction(action)})
+      }
+      if (action === 'subscribe to sequence') {
+        quickReplyActions.push({title: 'Subscribe to sequence', action: () => this.selectAction(action)})
+      }
+      if (action === 'unsubscribe from sequence') {
+        quickReplyActions.push({title: 'Unsubscribe from sequence', action: () => this.selectAction(action)})
+      }
+      if (action === 'set custom field') {
+        quickReplyActions.push({title: 'Set custom field', action: () => this.selectAction(action)})
+      }
+      if (action === 'google sheets') {
+        quickReplyActions.push({title: 'Google Sheets', action: () => this.selectAction(action)})
+      }
+      if (action === 'hubspot') {
+        quickReplyActions.push({title: 'Hubspot', action: () => this.selectAction(action)})
+      }
+    }
+    return quickReplyActions
   }
 
   toggleGSModal (value, content) {
@@ -510,15 +538,15 @@ class QuickReplies extends React.Component {
       this.setState({addingAction: true})
   }
 
-  selectAction (e) {
+  selectAction (action) {
       let currentActions = this.state.currentActions
-      currentActions.push({action: e.target.value.replace(/ /g, '_')})
-      if (e.target.value.includes('message')) {
+      currentActions.push({action: action.replace(/ /g, '_')})
+      if (action.includes('message')) {
         let allowedActions = this.state.actions
         allowedActions.shift()
         this.setState({actions: allowedActions})
       }
-      this.setState({selectedAction: e.target.value, addingAction: false, currentActions}, () => {
+      this.setState({selectedAction: action, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
     })
   }
@@ -757,7 +785,7 @@ class QuickReplies extends React.Component {
                                         }
                                     </div>
                                     <div className="m-portlet__body">
-                                        <select style={{borderColor: 'red'}} className='form-control m-input' onChange={this.selectAction}>
+                                        <select style={{borderColor: 'red'}} className='form-control m-input' onChange={(e) => this.selectAction(e.target.value)}>
                                             <option value={''} selected disabled>{'Select an action'}</option>
                                             {
                                                 this.state.actions.map(action => {
@@ -777,6 +805,13 @@ class QuickReplies extends React.Component {
                             <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
                             </button>
+
+                            <ActionsPopover
+                                showPopover={this.state.addingAction}
+                                togglePopover={this.toggleAddAction}
+                                targetId={`addActionButton`}
+                                actions={this.createQuickReplyActions()}
+                            />
 
                             <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary'>
                                 Save

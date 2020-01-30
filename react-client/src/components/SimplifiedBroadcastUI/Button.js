@@ -12,7 +12,7 @@ import { loadCustomFields } from '../../redux/actions/customFields.actions'
 import CustomFields from '../customFields/customfields'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotActions from './hubspot/HubspotActions'
-import ButtonActionsPopover from './ButtonActionsPopover'
+import ActionsPopover from './ActionsPopover'
 
 class Button extends React.Component {
   constructor(props, context) {
@@ -109,10 +109,10 @@ class Button extends React.Component {
       if (buttonAction === 'set custom field') {
         buttonActions.push({title: 'Set custom field', action: this.showCustomField})
       }
-      if (buttonAction === 'google sheets') {
+      if (buttonAction === 'google sheets' && this.state.googleIntegration) {
         buttonActions.push({title: 'Google Sheets', action: this.showGoogleSheets})
       }
-      if (buttonAction === 'hubspot') {
+      if (buttonAction === 'hubspot' && this.state.hubspotIntegration) {
         buttonActions.push({title: 'Hubspot', action: this.showHubspot})
       }
     }
@@ -947,11 +947,11 @@ class Button extends React.Component {
                     + Add Action
                   </button>
 
-                  <ButtonActionsPopover
+                  <ActionsPopover
                     showPopover={this.state.showButtonActionPopover}
                     togglePopover={this.toggleButtonActionPopover}
                     targetId={`addAction-${this.buttonId}`}
-                    buttonActions={this.createButtonActions()}
+                    actions={this.createButtonActions()}
                   />
               </div>
             }

@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from 'prop-types'
 import { Popover, PopoverBody } from 'reactstrap'
 
-class ButtonActionsPopover extends React.Component {
+class ActionsPopover extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
@@ -24,7 +24,7 @@ class ButtonActionsPopover extends React.Component {
       >
         <PopoverBody>
             {
-                this.props.buttonActions.map((action) => {
+                this.props.actions.map((action) => {
                     return (
                         <button
                         style={{
@@ -48,11 +48,11 @@ class ButtonActionsPopover extends React.Component {
   }
 }
 
-ButtonActionsPopover.propTypes = {
+ActionsPopover.propTypes = {
   'showPopover': PropTypes.bool.isRequired,
   'togglePopover': PropTypes.func.isRequired,
   'targetId': PropTypes.string.isRequired,
-  'buttonActions': PropTypes.array.isRequired
+  'actions': PropTypes.array.isRequired
 }
 
-export default ButtonActionsPopover
+export default ActionsPopover
