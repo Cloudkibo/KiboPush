@@ -9,11 +9,26 @@ import Slider from 'react-slick'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotAction from './hubspot/HubspotActions'
+import { getIntegrations } from '../../redux/actions/settings.actions'
+
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
+    let actions = []
+    if (this.props.broadcasts && this.props.broadcasts.length > 0) {
+        actions.push('send new message')
+    }
+    if (this.props.customFields && this.props.customFields.length > 0) {
+        actions.push('set custom field')
+    }
+    if (this.props.sequences && this.props.sequences.length > 0) {
+        actions.push('subscribe to sequence',  'unsubscribe from sequence')
+    }
+    if (this.props.tags && this.props.tags.length > 0) {
+        actions.push('assign tag', 'unassign tag')
+    }
     this.state = {
-        actions: ['send new message', 'subscribe to sequence', 'unsubscribe from sequence', 'assign tag', 'unassign tag', 'set custom field', 'google sheets' , 'hubspot'],
+        actions,
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
         addingQuickReply: this.props.addingQuickReply ? this.props.addingQuickReply : false,
         image_url: '',
@@ -26,6 +41,7 @@ class QuickReplies extends React.Component {
         currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
         showGSModal: false
     }
+    props.getIntegrations()
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
     this.addAction = this.addAction.bind(this)
@@ -58,6 +74,22 @@ class QuickReplies extends React.Component {
     this.removeGoogleAction = this.removeGoogleAction.bind(this)
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.GSModalContent = null
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.integrations && nextProps.integrations.length > 0) {
+        let actions = this.state.actions
+        let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+        let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
+        if (!actions.includes('google sheets') && googleIntegration && googleIntegration.length > 0) {
+            actions.push('google sheets')
+            this.setState({actions})
+        }
+        if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
+            actions.push('hubspot')
+            this.setState({actions})
+        }
+    }
   }
 
   toggleGSModal (value, content) {
@@ -242,6 +274,7 @@ class QuickReplies extends React.Component {
   }
 
   removeAction (index) {
+      console.log('removeAction', index)
       let currentActions = this.state.currentActions
       currentActions.splice(index, 1)
       this.setState({currentActions}, () => {
@@ -406,9 +439,9 @@ class QuickReplies extends React.Component {
                     </div>
                 }
                 <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].customFieldId ? '*Required' : ''}</div>
-                <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                {/* <button onClick={() => this.props.history.push('/customFields')} id='customfieldid' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
                     Manage Custom Fields
-                </button>
+                </button> */}
             </div>
         )
     } else if (action.includes('google')) {
@@ -674,7 +707,7 @@ class QuickReplies extends React.Component {
                                                 <ul className="m-portlet__nav">
                                                     <li className="m-portlet__nav-item">
                                                         <div className="m-portlet__nav-link m-portlet__nav-link--icon">
-                                                            <i onClick={(index) => {this.removeAction(index)}} style={{color: 'red', cursor: 'pointer'}} className="la la-close"></i>
+                                                            <i onClick={() => {this.removeAction(index)}} style={{color: 'red', cursor: 'pointer'}} className="la la-close"></i>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -764,12 +797,14 @@ QuickReplies.defaultProps = {
 function mapStateToProps (state) {
     console.log(state)
     return {
+        integrations: (state.settingsInfo.integrations)
     }
   }
 
   function mapDispatchToProps (dispatch) {
     return bindActionCreators({
-        uploadImage: uploadImage
+        uploadImage: uploadImage,
+        getIntegrations
     }, dispatch)
   }
   export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(QuickReplies)

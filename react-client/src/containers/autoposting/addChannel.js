@@ -291,12 +291,14 @@ class AddChannel extends React.Component {
               <br />Twitter
             </button>
           </div>
+          { this.props.module !== 'wizard' &&
           <div style={{display: 'inline-block', padding: '5px'}}>
             <button onClick={() => this.onSelectItem('rss')} style={{backgroundColor: rssColor, color: rssForeGroundColor}} className='btn'>
               <i className='fa fa-feed fa-2x' aria-hidden='true' />
               <br />RSS Feed
             </button>
           </div>
+          }
           <div style={{display: 'inline-block', padding: '5px'}}>
             <button onClick={() => this.onSelectItem('wordpress')} style={{backgroundColor: wordPressColor, color: wordPressForeGroundColor}} className='btn'>
               <i className='fa fa-wordpress fa-2x' aria-hidden='true' />

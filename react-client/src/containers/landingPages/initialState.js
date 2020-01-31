@@ -7,6 +7,7 @@ import React from 'react'
 import Popover from './popover'
 import ColorPicker from './colorPicker'
 import Footer from './footer'
+import { RingLoader } from 'halogenium'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -14,12 +15,14 @@ import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
 
 class InitialState extends React.Component {
   constructor (props) {
+    console.log('props in constructor', props.initialState)
     super(props)
     this.state = {
       showHeadingPicker: false,
       showDescriptionPicker: false,
       showBackgroundPicker: false,
-      showImagePlacement: false
+      showImagePlacement: false,
+      loading: false
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -36,7 +39,7 @@ class InitialState extends React.Component {
 
   handleImage (obj) {
     console.log('handleImage', obj)
-    this.setState({showImagePlacement:true})
+    this.setState({showImagePlacement: true, loading: false})
     if (this.props.landingPage.currentTab === 'initialState') {
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', obj.image_url)
     } else {
@@ -60,6 +63,7 @@ class InitialState extends React.Component {
           // imgSrc: [reader.result]
         })
       }.bind(this)
+      this.setState({loading: true})
       this.props.uploadImage(file, this.props.pages, 'image', {
         id: this.props.id,
         componentType: 'image',
@@ -138,6 +142,12 @@ class InitialState extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.initialState && nextProps.initialState.mediaLink) {
+      this.setState({showImagePlacement: true})
+    }
+  }
+
   toggleColorPicker (value) {
     if (value === 'heading') {
       this.setState({showHeadingPicker: !this.state.showHeadingPicker})
@@ -204,26 +214,32 @@ class InitialState extends React.Component {
           <div className='col-md-12 col-lg-12 col-sm-12'>
             <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
               <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-                <div>
-                  <input
-                    ref='file'
-                    type='file'
-                    name='user[image]'
-                    multiple='true'
-                    accept='image/*'
-                    title=' '
-                    onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
-                  {this.props.initialState.mediaLink === ''
-                  ? <div className='align-center'>
-                    <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-                    <h4 style={{pointerEvents: 'none', zIndex: -1}}> Upload Image </h4>
+                {
+                  this.state.loading
+                  ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#716aca' /></center></div>
+                  : <div>
+                    <input
+                      ref='file'
+                      type='file'
+                      name='user[image]'
+                      multiple='true'
+                      accept='image/*'
+                      title=' '
+                      onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}}
+                    />
+                    {
+                      this.props.initialState.mediaLink === ''
+                      ? <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                        <h4 style={{pointerEvents: 'none', zIndex: -1}}> Upload Image </h4>
+                      </div>
+                      : <span>
+                        <i className='fa fa-remove' style={{float:"right"}} onClick={this.removeImage}></i>
+                        <img alt='' style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
+                      </span>
+                    }
                   </div>
-                  : <span>
-                  <i className='fa fa-remove' style={{float:"right"}} onClick={this.removeImage}></i>
-                  <img alt='' style={{width: '300px', height: '100px', margin: 'auto', display: 'block', marginBottom: '10px'}} src={this.props.initialState.mediaLink} />
-                </span>
-                  }
-                </div>
+                }
               </div>
             </div>
           </div>
