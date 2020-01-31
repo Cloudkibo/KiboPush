@@ -526,7 +526,7 @@ class Menu extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div style={{marginLeft: '-255px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopoverWizard' />
