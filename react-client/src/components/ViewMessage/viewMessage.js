@@ -251,17 +251,17 @@ class ViewMessage extends React.Component {
                                 }
                                 {
                                   this.state.payload && this.state.payload.map((b, index) => {
-                                    let settings = {
-                                      dots: false,
-                                      infinite: false,
-                                      speed: 250,
-                                      slidesToShow: 1,
-                                      slidesToScroll: 1,
-                                      arrows: b.quickReplies.length > 1 ? true : false,
-                                      initialSlide: this.state.currentSlideIndex,
-                                      afterChange: this.slideIndexChange
-                                    }
                                     if (b.quickReplies && b.quickReplies.length > 0) {
+                                      let settings = {
+                                        dots: false,
+                                        infinite: false,
+                                        speed: 250,
+                                        slidesToShow: 1,
+                                        slidesToScroll: 1,
+                                        arrows: b.quickReplies.length > 1 ? true : false,
+                                        initialSlide: this.state.currentSlideIndex,
+                                        afterChange: this.slideIndexChange
+                                      }
                                       return (
                                         <div style={{maxWidth: '80%', marginLeft: '20px'}}>
                                             <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
