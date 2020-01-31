@@ -336,8 +336,7 @@ class Builders extends React.Component {
       let quickReply = quickReplies[j]
       let payloads = JSON.parse(quickReply.payload)
       for (let a = 0; a < payloads.length; a++) {
-        if (payloads[a].action === 'reply_with_a_message' && !payloads[a].blockUniqueId) {
-          payloads[a].action = 'send_message_block'
+        if (payloads[a].action === 'send_message_block' && !payloads[a].blockUniqueId) {
           this.addLinkedMessageForQuickReply(quickReply, a)
         }
       }
@@ -377,7 +376,7 @@ class Builders extends React.Component {
         for (let k = 0; k < quickReplies.length; k++) {
           let payloads = JSON.parse(quickReplies[k].payload)
           for (let a = 0; a < payloads.length; a++) {
-            if (payloads[a].action === 'reply_with_a_message') {
+            if (payloads[a].action === 'send_message_block') {
               quickReplyFound = true
               break
             }

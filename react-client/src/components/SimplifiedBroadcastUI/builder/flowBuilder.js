@@ -99,6 +99,12 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let button = component.quickReplies[k]
+            buttons[button.id] = button.title
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
@@ -174,6 +180,12 @@ class FlowBuilder extends React.Component {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
             elements[messages[i].id][component.id].push(button.id)
+          }
+        }
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            elements[messages[i].id][component.id].push(quickReply.id)
           }
         }
       }
@@ -274,6 +286,9 @@ class FlowBuilder extends React.Component {
     let ports = {}
     let links = {}
     for (let i = 0; i < components.length; i++) {
+      if (components[i].quickReplies) {
+        this.getPortsNLinksHelper(components[i].quickReplies, message, blockDimensions, ports, links)
+      }
       if (components[i].buttons) {
         this.getPortsNLinksHelper(components[i].buttons, message, blockDimensions, ports, links)
       } else if (components[i].cards) {
@@ -293,7 +308,7 @@ class FlowBuilder extends React.Component {
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
       let button = buttons[j]
-      if (button.type === 'postback') {
+      if (button.type === 'postback' || button.content_type === 'text') {
         let payload = JSON.parse(button.payload)
         for (let l = 0; l < payload.length; l++) {
           if (payload[l].action === 'send_message_block') {
@@ -729,6 +744,21 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            if (quickReply.id.toString() === buttonId.toString()) {
+              let quickReplyPayload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < quickReplyPayload.length; l++) {
+                if (quickReplyPayload[l].action === 'send_message_block') {
+                  quickReplyPayload[l].blockUniqueId = blockUniqueId
+                  this.props.linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(quickReplyPayload)
+                }
+              }
+              return
+            }
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
@@ -770,6 +800,21 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            if (quickReply.id.toString() === buttonId.toString()) {
+              let quickReplyPayload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < quickReplyPayload.length; l++) {
+                if (quickReplyPayload[l].action === 'send_message_block') {
+                  quickReplyPayload[l].blockUniqueId = blockUniqueId
+                  this.props.unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(quickReplyPayload)
+                }
+              }
+              return
+            }
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
@@ -870,6 +915,21 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                this.props.linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
@@ -915,6 +975,21 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                this.props.unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
