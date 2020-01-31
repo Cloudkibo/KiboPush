@@ -231,7 +231,7 @@ class SubscriberSummary extends React.Component {
                               {
                                 this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <button onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                    <button onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
@@ -240,7 +240,7 @@ class SubscriberSummary extends React.Component {
                                 ))
                               }
                               <li key={'all'} className='m-nav__item'>
-                                <button onClick={() => this.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
@@ -278,35 +278,35 @@ class SubscriberSummary extends React.Component {
                           <div className='m-dropdown__content'>
                             <ul className='m-nav'>
                               <li key={10} className='m-nav__item'>
-                                <button onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 10
                                   </span>
                                 </button>
                               </li>
                               <li key={30} className='m-nav__item'>
-                                <button onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 30
                                   </span>
                                 </button>
                               </li>
                               <li key={90} className='m-nav__item'>
-                                <button onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 90
                                   </span>
                                 </button>
                               </li>
                               <li key={'all'} className='m-nav__item'>
-                                <button onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
                                 </button>
                               </li>
                               <li key={'other'} className='m-nav__item'>
-                                <button onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Other
                                   </span>
