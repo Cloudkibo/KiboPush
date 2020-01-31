@@ -80,7 +80,7 @@ class ProgressBox extends React.Component {
                               {
                                 this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <button onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                    <button onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
@@ -89,7 +89,7 @@ class ProgressBox extends React.Component {
                                 ))
                               }
                               <li key={'all'} className='m-nav__item'>
-                                <button href='#/' onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
+                                <button href='#/' onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none', background: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
