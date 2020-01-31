@@ -83,26 +83,26 @@ class ProgressBox extends React.Component {
                               {
                                 this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a href='#/' onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <button href='#/' onClick={() => this.props.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
-                                    </a>
+                                    </button>
                                   </li>
                                 ))
                               }
                               <li key={'all'} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button href='#/' onClick={() => this.props.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <button href='#/' onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
-                                </a>
+                                </button>
                               </li>
                             </ul>
                           </div>
