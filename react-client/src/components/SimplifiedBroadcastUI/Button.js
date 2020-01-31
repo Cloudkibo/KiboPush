@@ -88,10 +88,10 @@ class Button extends React.Component {
     let buttonActions = []
     for (let i = 0; i < this.props.buttonActions.length; i++) {
       let buttonAction = this.props.buttonActions[i]
-      if (buttonAction === 'open website' && this.state.postbackPayload.length == 0 && !this.state.openCreateMessage) {
+      if (buttonAction === 'open website' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
         buttonActions.push({title: 'Open website', action: this.showWebsite})
       }
-      if (buttonAction === 'open webview' && this.state.postbackPayload.length == 0 && !this.state.openCreateMessage) {
+      if (buttonAction === 'open webview' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
         buttonActions.push({title: 'Open webview', action: this.showWebView})
       }
       if (buttonAction === 'create message' && !this.state.openCreateMessage) {
@@ -168,7 +168,7 @@ class Button extends React.Component {
           googleSheetAction: buttonPayload.googleSheetAction,
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
-          openGoogleSheets: true, 
+          openGoogleSheets: true,
           openCreateMessage: false
         })
       }
@@ -507,7 +507,7 @@ class Button extends React.Component {
         payload: JSON.stringify(this.state.postbackPayload)
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    }  
+    }
   }
 
   handleDone() {
@@ -643,7 +643,7 @@ class Button extends React.Component {
       this.typingTimer = setTimeout(this.weburlDebounce, this.doneTypingInterval)
     })
   }
-  
+
   changeWebviewUrl(e) {
     console.log('changing webviewurl', e.target.value)
     this.setState({ webviewurl: e.target.value }, () => {

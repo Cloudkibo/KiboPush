@@ -37,7 +37,8 @@ class QuickReplies extends React.Component {
         index: -1,
         editing: false,
         currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
-        showGSModal: false
+        showGSModal: false,
+        deletePayload: []
     }
     props.getIntegrations()
     this.addQuickReply = this.addQuickReply.bind(this)
@@ -98,7 +99,10 @@ class QuickReplies extends React.Component {
     for (let i = 0; i < this.state.actions.length; i++) {
       let action = this.state.actions[i]
       if (action === 'send_message_block' && !this.state.openCreateMessage) {
-        quickReplyActions.push({title: 'Reply with a message', action: () => this.selectAction(action)})
+        let replyAction = this.state.currentActions.filter(a => a.action.includes('message'))
+        if (replyAction.length === 0) {
+          quickReplyActions.push({title: 'Reply with a message', action: () => this.selectAction(action)})
+        }
       }
       if (action === 'subscribe_to_sequence') {
         quickReplyActions.push({title: 'Subscribe to sequence', action: () => this.selectAction(action)})
@@ -161,12 +165,18 @@ class QuickReplies extends React.Component {
 
   removeQuickReply () {
       let quickReplies = this.state.quickReplies
+      let deletePayload = []
+      let quickReplyPayload
       if (this.state.index > -1) {
+          quickReplyPayload = this.state.quickReplies[this.state.index].payload
           quickReplies.splice(this.state.index, 1)
+      }
+      if (quickReplyPayload) {
+        deletePayload = JSON.parse(quickReplyPayload)
       }
       this.setState({addingQuickReply: false, index: -1, quickReplies, currentTitle: '', image_url: '', currentActions: [], currentSlideIndex: 0, editing: false}, () => {
         if (this.props.updateQuickReplies) {
-            this.props.updateQuickReplies(this.state.quickReplies, -1)
+            this.props.updateQuickReplies(this.state.quickReplies, -1, deletePayload)
         }
       })
   }
@@ -213,11 +223,11 @@ class QuickReplies extends React.Component {
       }
       for (let i = 0; i < this.state.currentActions.length; i++) {
           if (!this.state.currentActions[i].action &&
-            !this.state.currentActions[i].sequenceId && 
-            !this.state.currentActions[i].templateId && 
-            !this.state.currentActions[i].tagId && 
-            !this.state.currentActions[i].customFieldId  && 
-            !this.state.currentActions[i].googleSheetAction && 
+            !this.state.currentActions[i].sequenceId &&
+            !this.state.currentActions[i].templateId &&
+            !this.state.currentActions[i].tagId &&
+            !this.state.currentActions[i].customFieldId  &&
+            !this.state.currentActions[i].googleSheetAction &&
             !this.state.currentActions[i].hubspotAction) {
               return true
           }
@@ -259,10 +269,10 @@ class QuickReplies extends React.Component {
       } else {
         quickReplies.push(quickReply)
       }
-
-      this.setState({quickReplies, index: -1, addingQuickReply: false, currentTitle: '', image_url: '', addingAction: false, currentActions: [], editing: false }, () => {
+      let deletePayload = JSON.parse(JSON.stringify(this.state.deletePayload))
+      this.setState({quickReplies, index: -1, addingQuickReply: false, currentTitle: '', image_url: '', addingAction: false, currentActions: [], editing: false, deletePayload: [] }, () => {
         if (this.props.updateQuickReplies) {
-            this.props.updateQuickReplies(this.state.quickReplies, -1)
+            this.props.updateQuickReplies(this.state.quickReplies, -1, deletePayload)
         }
       })
   }
@@ -306,9 +316,7 @@ class QuickReplies extends React.Component {
 
   removeAction (index, action) {
     if (action.action.includes('message')) {
-      let allowedActions = this.state.actions
-      allowedActions.unshift('reply with a message')
-      this.setState({actions: allowedActions})
+      this.setState({deletePayload: [this.state.currentActions[index]]})
     }
     let currentActions = this.state.currentActions
     currentActions.splice(index, 1)
@@ -547,11 +555,6 @@ class QuickReplies extends React.Component {
   selectAction (action) {
       let currentActions = this.state.currentActions
       currentActions.push({action})
-      if (action.includes('message')) {
-        let allowedActions = this.state.actions
-        allowedActions.shift()
-        this.setState({actions: allowedActions})
-      }
       this.setState({selectedAction: action, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
     })
