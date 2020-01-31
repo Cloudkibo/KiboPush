@@ -15,15 +15,15 @@ import ActionsPopover from './ActionsPopover'
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
-    let actions = ['reply with a message']
+    let actions = ['send_message_block']
     if (this.props.customFields && this.props.customFields.length > 0) {
-        actions.push('set custom field')
+        actions.push('set_custom_field')
     }
     if (this.props.sequences && this.props.sequences.length > 0) {
-        actions.push('subscribe to sequence',  'unsubscribe from sequence')
+        actions.push('subscribe_to_sequence',  'unsubscribe_from_sequence')
     }
     if (this.props.tags && this.props.tags.length > 0) {
-        actions.push('assign tag', 'unassign tag')
+        actions.push('assign_tag', 'unassign_tag')
     }
     this.state = {
         actions,
@@ -97,19 +97,19 @@ class QuickReplies extends React.Component {
     let quickReplyActions = []
     for (let i = 0; i < this.state.actions.length; i++) {
       let action = this.state.actions[i]
-      if (action === 'reply with a message' && !this.state.openCreateMessage) {
+      if (action === 'send_message_block' && !this.state.openCreateMessage) {
         quickReplyActions.push({title: 'Reply with a message', action: () => this.selectAction(action)})
       }
-      if (action === 'subscribe to sequence') {
+      if (action === 'subscribe_to_sequence') {
         quickReplyActions.push({title: 'Subscribe to sequence', action: () => this.selectAction(action)})
       }
-      if (action === 'unsubscribe from sequence') {
+      if (action === 'unsubscribe_from_sequence') {
         quickReplyActions.push({title: 'Unsubscribe from sequence', action: () => this.selectAction(action)})
       }
-      if (action === 'set custom field') {
+      if (action === 'set_custom_field') {
         quickReplyActions.push({title: 'Set custom field', action: () => this.selectAction(action)})
       }
-      if (action === 'google sheets') {
+      if (action === 'google_sheets') {
         quickReplyActions.push({title: 'Google Sheets', action: () => this.selectAction(action)})
       }
       if (action === 'hubspot') {
@@ -237,13 +237,16 @@ class QuickReplies extends React.Component {
 
   saveQuickReply () {
       let quickReplies = this.state.quickReplies
+      let id = new Date().getTime() + (Math.floor(Math.random() * 100))
       let quickReply = {
+        id,
         content_type: 'text',
         title:  this.state.currentTitle,
         payload: JSON.stringify(this.state.currentActions)
       }
       if (this.state.image_url) {
         quickReply = {
+            id,
             content_type: 'text',
             title:  this.state.currentTitle,
             payload: JSON.stringify(this.state.currentActions),
@@ -543,7 +546,7 @@ class QuickReplies extends React.Component {
 
   selectAction (action) {
       let currentActions = this.state.currentActions
-      currentActions.push({action: action.replace(/ /g, '_')})
+      currentActions.push({action})
       if (action.includes('message')) {
         let allowedActions = this.state.actions
         allowedActions.shift()
