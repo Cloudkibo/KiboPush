@@ -739,6 +739,7 @@ class CreateConvo extends React.Component {
 					</div>
 				</div>
         <BUILDER
+          module='broadcast'
           rerenderFlowBuilder={this.rerenderFlowBuilder}
           convoTitle={this.state.convoTitle}
           handleChange={this.handleChange}
