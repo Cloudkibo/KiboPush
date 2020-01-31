@@ -386,10 +386,34 @@ class Builders extends React.Component {
         if (buttonFound) {
           break
         }
+        for (let k = 0; k < buttons.length; k++) {
+          let payloads = JSON.parse(buttons[k].payload)
+          for (let a = 0; a < payloads.length; a++) {
+            if (payloads[a].action === 'reply_with_a_message') {
+              buttonFound = true
+              break
+            }
+          }
+        }
+        if (buttonFound) {
+          break
+        }
       }
       if (buttonFound) {
         break
       }
+      if (buttonFound) {
+        break
+      }
+    }
+    console.log('buttonFound', buttonFound)
+    console.log('this.state.currentId', this.state.currentId)
+    if (buttonFound) {
+      data.parentId = this.state.currentId
+      linkedMessages.push(data)
+    } else {
+      data.parentId = this.state.currentId
+      unlinkedMessages.push(data)
     }
     console.log('buttonFound', buttonFound)
     console.log('this.state.currentId', this.state.currentId)
