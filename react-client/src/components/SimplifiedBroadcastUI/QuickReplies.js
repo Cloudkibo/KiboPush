@@ -767,49 +767,6 @@ class QuickReplies extends React.Component {
                             })
                         }
 
-                        <Popover placement='auto' isOpen={this.state.addingAction} target='addActionButton'>
-                            <PopoverBody>
-                                <div style={{marginTop: '10px', border: '1px solid #d3d3d3'}} className="m-portlet">
-                                    <div style={{background: 'lightgrey', height: '3rem', padding: '15px'}} className="m-portlet__head m-portlet--head-solid-bg">
-                                        <div className="m-portlet__head-caption">
-                                            <div className="m-portlet__head-title">
-                                                <span className="m-portlet__head-icon">
-                                                    <i style={{color: 'black'}} className="flaticon-add"></i>
-                                                </span>
-                                                <h5 style={{fontSize: '1em'}} className="m-portlet__head-text">
-                                                    Add an action
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        {
-                                            <div className="m-portlet__head-tools">
-                                                <ul className="m-portlet__nav">
-                                                    <li className="m-portlet__nav-item">
-                                                        <div className="m-portlet__nav-link m-portlet__nav-link--icon">
-                                                            <i onClick={this.closeAddAction} style={{color: 'red', cursor: 'pointer'}} className="la la-close"></i>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        }
-                                    </div>
-                                    <div className="m-portlet__body">
-                                        <select style={{borderColor: 'red'}} className='form-control m-input' onChange={(e) => this.selectAction(e.target.value)}>
-                                            <option value={''} selected disabled>{'Select an action'}</option>
-                                            {
-                                                this.state.actions.map(action => {
-                                                    return (
-                                                        <option key={action} value={action}>{action}</option>
-                                                    )
-                                                })
-                                            }
-                                        </select>
-                                        <div style={{color: 'red', textAlign: 'left'}}>*Required</div>
-                                    </div>
-                                </div>
-                            </PopoverBody>
-                        </Popover>
-
                         <div style={{marginBottom: '10px', marginTop: '20px'}}>
                             <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
