@@ -40,6 +40,11 @@ class InviteSubscribers extends React.Component {
     this.sendTestMessage = this.sendTestMessage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
+    this.skipWizard = this.skipWizard.bind(this)
+  }
+
+  skipWizard () {
+    this.props.history.push({pathname: '/'})
   }
 
   showDialog () {
@@ -198,7 +203,7 @@ class InviteSubscribers extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{marginLeft: '-255px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='welcome' data-toggle="modal" data-target="#welcome">ZeroModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -224,9 +229,9 @@ class InviteSubscribers extends React.Component {
                   </a>
                 </div>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <Link to='/dashboard' className='btn btn-secondary'>
+                  <button onClick={this.skipWizard} data-dismiss="modal" className='btn btn-secondary'>
                     Skip
-                  </Link>
+                  </button>
                 </div>
               </div>
                 </div>

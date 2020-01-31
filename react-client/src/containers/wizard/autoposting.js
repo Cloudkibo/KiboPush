@@ -135,7 +135,7 @@ class Autoposting extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{marginLeft: '-255px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <a href='#/' style={{ display: 'none' }} ref='guide' data-toggle="modal" data-target="#guide">guide</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="guide" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -238,7 +238,7 @@ class Autoposting extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
+                <AddChannel module='wizard' onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
               </div>
             </div>
           </div>
@@ -271,104 +271,91 @@ class Autoposting extends React.Component {
           </div>
         </div>
 
-
-
-
-
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{ marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap' }}>
                   <Sidebar history={this.props.history} step='4' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
-                  {!this.state.anyApproved ?
                     <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{ padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none' }}>
                       <div className='m-portlet__head'>
                         <div className='m-portlet__head-caption'>
                           <div className='m-portlet__head-title'>
                             <h5 className='m-portlet__head-text'>
-                              You do not have page level subscription permission on any of your connected pages.
+                              Step 4: Autoposting Feeds
                             </h5>
                           </div>
                         </div>
                       </div>
-                      <div className='m-portlet__body'>
-                        <p></p>
-                        {this.state.smpStatus.map((item, i) => (
-                          <span key={i}>
-                            <span>
-                              <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
-                            <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                            <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
+                      {
+                        !this.state.anyApproved ?
+                        <div className='m-portlet__body'>
+                          <p>You do not have page level subscription permission on any of your connected pages.</p>
+                          {this.state.smpStatus.map((item, i) => (
+                            <span key={i}>
+                              <span>
+                                <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
+                              <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
+                              <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
+                              </span>
+                              <br /><br />
                             </span>
-                            <br /><br />
-                          </span>
-                        ))
-                        }
-                        <p>You will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/12/24/facebook-subscription-messaging-policy/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
-                      </div>
-                    </div>
-                    : <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{ padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none' }}>
-                      <div className='m-portlet__head'>
-                        <div className='m-portlet__head-caption'>
-                          <div className='m-portlet__head-title'>
-                            <h3 className='m-portlet__head-text'>
-                              Step 4: Autoposting Feeds
-                    </h3>
+                          ))
+                          }
+                          <p>You will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/12/24/facebook-subscription-messaging-policy/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
+                        </div>
+                        : <div className='m-portlet__body' style={{ height: 'auto' }}>
+                          <br />
+                          <div className='form-group m-form__group row'>
+                            <label style={{ fontWeight: 'normal' }}>This page will help you setup autoposting feeds. You can connect your Facebook pages and twitter accounts and send updates to your subscribers automatically. Click on Add Feeds to start adding them.</label>
                           </div>
-                        </div>
-                      </div>
-                      <div className='m-portlet__body' style={{ height: 'auto' }}>
-                        <br />
-                        <div className='form-group m-form__group row'>
-                          <label style={{ fontWeight: 'normal' }}>This page will help you setup autoposting feeds. You can connect your Facebook pages and twitter accounts and send updates to your subscribers automatically. Click on Add Feeds to start adding them.</label>
-                        </div>
-                        <div className='row align-items-center'>
-                          <div className='col-xl-8 order-2 order-xl-1' />
-                          <div
-                            className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          </div>
-                        </div>
-                        {this.props.autopostingData && this.props.autopostingData.length > 0 &&
-                          <div className='row' >
-                            <div className='col-lg-6 m--align-left' />
-                            <div className='col-lg-6 m--align-right'>
-                              <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
-                                <i className='fa fa-plus' style={{ marginRight: '10px' }} />
-                                <span>Add Feeds</span>
-                              </button>
+                          <div className='row align-items-center'>
+                            <div className='col-xl-8 order-2 order-xl-1' />
+                            <div
+                              className='col-xl-4 order-1 order-xl-2 m--align-right'>
                             </div>
                           </div>
-                        }
-                        <br />
-                        <div className='tab-pane active m-scrollable' role='tabpanel'>
-                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                            <div style={{ height: '380px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom' }} className='m-messenger__messages'>
-                              <div style={{ position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr' }}>
-                                <div style={{ position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto' }} >
-                                  {
-                                    this.props.autopostingData && this.props.autopostingData.length > 0
-                                      ? this.props.autopostingData.map((item, i) => (
-                                        <div className='m-widget5'>
-                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState viewGuide openGuidelines={this.viewGuide} />
+                          {this.props.autopostingData && this.props.autopostingData.length > 0 &&
+                            <div className='row' >
+                              <div className='col-lg-6 m--align-left' />
+                              <div className='col-lg-6 m--align-right'>
+                                <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
+                                  <i className='fa fa-plus' style={{ marginRight: '10px' }} />
+                                  <span>Add Feeds</span>
+                                </button>
+                              </div>
+                            </div>
+                          }
+                          <br />
+                          <div className='tab-pane active m-scrollable' role='tabpanel'>
+                            <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                              <div style={{ height: '380px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom' }} className='m-messenger__messages'>
+                                <div style={{ position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr' }}>
+                                  <div style={{ position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto' }} >
+                                    {
+                                      this.props.autopostingData && this.props.autopostingData.length > 0
+                                        ? this.props.autopostingData.map((item, i) => (
+                                          <div className='m-widget5'>
+                                            <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState viewGuide openGuidelines={this.viewGuide} />
+                                          </div>
+                                        ))
+                                        : <div>
+                                          <br /><br /><br /><br />
+                                          <center>
+                                            <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
+                                              <i className='fa fa-plus' style={{ marginRight: '10px' }} />
+                                              <span>Add Feeds</span>
+                                            </button>
+                                          </center>
                                         </div>
-                                      ))
-                                      : <div>
-                                        <br /><br /><br /><br />
-                                        <center>
-                                          <button className='btn btn-primary' data-toggle="modal" data-target="#addFeed" onClick={this.showDialog}>
-                                            <i className='fa fa-plus' style={{ marginRight: '10px' }} />
-                                            <span>Add Feeds</span>
-                                          </button>
-                                        </center>
-                                      </div>
-                                  }
+                                    }
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      }
                       <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                         <div className='m-form__actions'>
                           <div className='row'>
@@ -392,8 +379,6 @@ class Autoposting extends React.Component {
                         </div>
                       </div>
                     </div>
-                  }
-
                 </div>
               </div>
             </div>

@@ -231,26 +231,26 @@ class SubscriberSummary extends React.Component {
                               {
                                 this.props.pages && this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a href='#/' onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <button onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
-                                    </a>
+                                    </button>
                                   </li>
                                 ))
                               }
                               <li key={'all'} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changePage('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changePage('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <button onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
-                                </a>
+                                </button>
                               </li>
                             </ul>
                           </div>
@@ -278,45 +278,45 @@ class SubscriberSummary extends React.Component {
                           <div className='m-dropdown__content'>
                             <ul className='m-nav'>
                               <li key={10} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changeDays(10)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 10
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li key={30} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changeDays(30)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 30
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li key={90} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changeDays(90)} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Last 90
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li key={'all'} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changeDays('all')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     All
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li key={'other'} className='m-nav__item'>
-                                <a href='#/' onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                <button onClick={() => this.changeDays('other')} className='m-nav__link' style={{cursor: 'pointer', border: 'none'}}>
                                   <span className='m-nav__link-text'>
                                     Other
                                   </span>
-                                </a>
+                                </button>
                               </li>
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <button onClick={() => this.hideDaysDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
-                                </a>
+                                </button>
                               </li>
                             </ul>
                           </div>
