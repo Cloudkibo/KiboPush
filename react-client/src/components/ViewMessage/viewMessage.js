@@ -251,17 +251,17 @@ class ViewMessage extends React.Component {
                                 }
                                 {
                                   this.state.payload && this.state.payload.map((b, index) => {
+                                    let settings = {
+                                      dots: false,
+                                      infinite: false,
+                                      speed: 250,
+                                      slidesToShow: 1,
+                                      slidesToScroll: 1,
+                                      arrows: b.quickReplies.length > 1 ? true : false,
+                                      initialSlide: this.state.currentSlideIndex,
+                                      afterChange: this.slideIndexChange
+                                    }
                                     if (b.quickReplies && b.quickReplies.length > 0) {
-                                      let settings = {
-                                        dots: false,
-                                        infinite: false,
-                                        speed: 250,
-                                        slidesToShow: 1,
-                                        slidesToScroll: 1,
-                                        arrows: b.quickReplies.length > 1 ? true : false,
-                                        initialSlide: this.state.currentSlideIndex,
-                                        afterChange: this.slideIndexChange
-                                      }
                                       return (
                                         <div style={{maxWidth: '80%', marginLeft: '20px'}}>
                                             <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
@@ -275,7 +275,7 @@ class ViewMessage extends React.Component {
                                                                   }
                                                                   {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
                                                                 </button>
-                        
+
                                                                 {
                                                                     (index+1) < b.quickReplies.length &&
                                                                     <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
@@ -284,7 +284,7 @@ class ViewMessage extends React.Component {
                                                                       {b.quickReplies[index+1].title}
                                                                     </button>
                                                                 }
-                        
+
                                                                 {
                                                                     (index+2) < b.quickReplies.length &&
                                                                     <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
