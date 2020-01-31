@@ -15,7 +15,7 @@ import ActionsPopover from './ActionsPopover'
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
-    let actions = []
+    let actions = ['reply with a message']
     if (this.props.customFields && this.props.customFields.length > 0) {
         actions.push('set custom field')
     }
@@ -212,10 +212,13 @@ class QuickReplies extends React.Component {
           return true
       }
       for (let i = 0; i < this.state.currentActions.length; i++) {
-          if (!this.state.currentActions[i].action) {
-              return true
-          }
-          if (!this.state.currentActions[i].sequenceId && !this.state.currentActions[i].templateId && !this.state.currentActions[i].tagId && !this.state.currentActions[i].customFieldId  && !this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].hubspotAction) {
+          if (!this.state.currentActions[i].action &&
+            !this.state.currentActions[i].sequenceId && 
+            !this.state.currentActions[i].templateId && 
+            !this.state.currentActions[i].tagId && 
+            !this.state.currentActions[i].customFieldId  && 
+            !this.state.currentActions[i].googleSheetAction && 
+            !this.state.currentActions[i].hubspotAction) {
               return true
           }
           if (this.state.currentActions[i].customFieldId && !this.state.currentActions[i].customFieldValue) {
