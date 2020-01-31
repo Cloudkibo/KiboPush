@@ -365,59 +365,35 @@ class Builders extends React.Component {
     let lists = this.state.lists
 
     // debugger;
-    let buttonFound = false
+    let quickReplyFound = false
     for (let i = 0; i < linkedMessages.length; i++) {
       let message = linkedMessages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let messageContent = message.messageContent[j]
-        let buttons = []
+        let quickReplies = []
         if (messageContent.quickReplies && messageContent.quickReplies.length > 0) {
-          buttons = messageContent.quickReplies
+          quickReplies = messageContent.quickReplies
         }
-        for (let k = 0; k < buttons.length; k++) {
-          let payloads = JSON.parse(buttons[k].payload)
+        for (let k = 0; k < quickReplies.length; k++) {
+          let payloads = JSON.parse(quickReplies[k].payload)
           for (let a = 0; a < payloads.length; a++) {
             if (payloads[a].action === 'reply_with_a_message') {
-              buttonFound = true
+              quickReplyFound = true
               break
             }
           }
         }
-        if (buttonFound) {
-          break
-        }
-        for (let k = 0; k < buttons.length; k++) {
-          let payloads = JSON.parse(buttons[k].payload)
-          for (let a = 0; a < payloads.length; a++) {
-            if (payloads[a].action === 'reply_with_a_message') {
-              buttonFound = true
-              break
-            }
-          }
-        }
-        if (buttonFound) {
+        if (quickReplyFound) {
           break
         }
       }
-      if (buttonFound) {
-        break
-      }
-      if (buttonFound) {
+      if (quickReplyFound) {
         break
       }
     }
-    console.log('buttonFound', buttonFound)
+    console.log('quickReplyFound', quickReplyFound)
     console.log('this.state.currentId', this.state.currentId)
-    if (buttonFound) {
-      data.parentId = this.state.currentId
-      linkedMessages.push(data)
-    } else {
-      data.parentId = this.state.currentId
-      unlinkedMessages.push(data)
-    }
-    console.log('buttonFound', buttonFound)
-    console.log('this.state.currentId', this.state.currentId)
-    if (buttonFound) {
+    if (quickReplyFound) {
       data.parentId = this.state.currentId
       linkedMessages.push(data)
     } else {
