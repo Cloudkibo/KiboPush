@@ -213,15 +213,15 @@ class Builders extends React.Component {
     this.setState({linkedMessages})
   }
 
-  editLinkedMessageForQuickReply (button) {
+  editLinkedMessageForQuickReply (quickReply) {
     let linkedMessages = this.state.linkedMessages
-    let buttonPayload = JSON.parse(button.payload)
+    let quickReplyPayload = JSON.parse(quickReply.payload)
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
-      for (let j = 0; j < buttonPayload.length; j++) {
-        if (linkedMessages[i].id === buttonPayload[j].blockUniqueId) {
+      for (let j = 0; j < quickReplyPayload.length; j++) {
+        if (linkedMessages[i].id === quickReplyPayload[j].blockUniqueId) {
           // linkedMessages[i].title = button.title
           linkedMessages[i].parentId = this.state.currentId
-          linkedMessages[i].linkedButton = button
+          linkedMessages[i].linkedButton = quickReply
         }
       }
     }
@@ -266,7 +266,7 @@ class Builders extends React.Component {
               this.createLinkedMessagesFromButtons(card)
             }
           }
-          if (broadcastComponent.quickReplies && broadcastComponent.quickReplies.length > 0) {
+          if (broadcastComponent.quickReplies) {
             this.createLinkedMessagesFromQuickReplies(broadcastComponent)
           }
         }
@@ -338,6 +338,8 @@ class Builders extends React.Component {
       for (let a = 0; a < payloads.length; a++) {
         if (payloads[a].action === 'send_message_block' && !payloads[a].blockUniqueId) {
           this.addLinkedMessageForQuickReply(quickReply, a)
+        } else if (payloads[a].action === 'send_message_block' && payloads[a].blockUniqueId) {
+          this.editLinkedMessageForQuickReply(quickReply)
         }
       }
     }
@@ -459,7 +461,7 @@ class Builders extends React.Component {
       messageContent: [],
       linkedButton: button
     }
-    let buttonPayload = JSON.parse(button.payload) 
+    let buttonPayload = JSON.parse(button.payload)
     for (let i = 0; i < buttonPayload.length; i++) {
       if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
         buttonPayload[i].blockUniqueId = id
@@ -515,7 +517,7 @@ class Builders extends React.Component {
     this.setState({linkedMessages, lists, quickReplies})
   }
 
-  updateQuickReplies (quickRepliesValue, quickRepliesIndex) {
+  updateQuickReplies (quickRepliesValue, quickRepliesIndex, deletePayload) {
     return new Promise ((resolve, reject) => {
       console.log('updateQuickReplies', quickRepliesValue)
       let quickReplies = this.state.quickReplies
@@ -528,7 +530,7 @@ class Builders extends React.Component {
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
       })
-      this.handleChange({broadcast}, {})
+      this.handleChange({broadcast}, {deletePayload})
     })
   }
 
