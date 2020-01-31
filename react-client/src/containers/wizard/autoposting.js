@@ -238,7 +238,7 @@ class Autoposting extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
+                <AddChannel module='wizard' onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
               </div>
             </div>
           </div>
