@@ -188,7 +188,7 @@ class QuickReplies extends React.Component {
         currentTitle: this.state.quickReplies[index].title,
         image_url: this.state.quickReplies[index].image_url,
         index: index,
-        editing: true
+        editing: false
     }, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies, index)
@@ -612,21 +612,35 @@ class QuickReplies extends React.Component {
                             </button>
                         </div>
                         {
-                            this.state.index === -1 ?
                             <div style={{ color: 'black' }} className="modal-body">
                                 <p>Are you sure you want to close this quick reply and lose all the data that was entered?</p>
                                 <button style={{ float: 'right', marginLeft: '10px' }}
                                 className='btn btn-primary btn-sm'
                                 onClick={() => {
-                                    this.removeQuickReply()
+                                    this.toggleAddQuickReply()
                                 }} data-dismiss='modal'>Yes
                                 </button>
                                     <button style={{ float: 'right' }}
                                     className='btn btn-primary btn-sm'
                                     data-dismiss='modal'>Cancel
                                 </button>
-                            </div> :
-                                <div style={{ color: 'black' }} className="modal-body">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div style={{ display: 'block' }} className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Warning</h5>
+                            <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {
+                            <div style={{ color: 'black' }} className="modal-body">
                                 <p>Do you want to delete this quick reply?</p>
                                 <button style={{ float: 'right', marginLeft: '10px' }}
                                 className='btn btn-primary btn-sm'
@@ -635,9 +649,6 @@ class QuickReplies extends React.Component {
                                 }} data-dismiss='modal'>Yes
                                 </button>
                                 <button style={{ float: 'right' }}
-                                    onClick={() => {
-                                        this.toggleAddQuickReply()
-                                    }}
                                     className='btn btn-primary btn-sm'
                                     data-dismiss='modal'>No
                                 </button>
@@ -766,23 +777,25 @@ class QuickReplies extends React.Component {
                                 )
                             })
                         }
-
+                        <ActionsPopover
+                            showPopover={this.state.addingAction}
+                            togglePopover={this.toggleAddAction}
+                            targetId={`addActionButton`}
+                            actions={this.createQuickReplyActions()}
+                        />
                         <div style={{marginBottom: '10px', marginTop: '20px'}}>
-                            <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                            <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', marginLeft: '30%', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
                             </button>
-
-                            <ActionsPopover
-                                showPopover={this.state.addingAction}
-                                togglePopover={this.toggleAddAction}
-                                targetId={`addActionButton`}
-                                actions={this.createQuickReplyActions()}
-                            />
-
+                        </div>
+                        <div style={{marginBottom: '10px', marginTop: '20px'}}>
+                            <button data-toggle="modal" data-target="#deleteQuickReply" style={{marginLeft: '10px'}} disabled={this.disableSave()} className='btn btn-primary btn-sm'>
+                                Delete
+                            </button>
+                            <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary btn-sm'>
                             <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary'>
                                 Save
                             </button>
-
                         </div>
                         <div className='m-alert__text' style={{fontSize: '0.9em', marginTop: '25px', marginLeft: '15px'}}>
                             Need help in understanding quick replies? Here is the <a href='http://kibopush.com/quick-replies/' target='_blank' rel='noopener noreferrer'>documentation</a>.
