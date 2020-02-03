@@ -793,7 +793,6 @@ class QuickReplies extends React.Component {
                                 Delete
                             </button>
                             <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary btn-sm'>
-                            <button onClick={this.saveQuickReply} style={{float: 'right'}} disabled={this.disableSave()} className='btn btn-primary'>
                                 Save
                             </button>
                         </div>
