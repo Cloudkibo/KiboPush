@@ -34,7 +34,8 @@ class RssIntegrations extends React.Component {
       first_page: 'first',
       search_value: '',
       status_value: '',
-      type_value: ''
+      type_value: '',
+      integrationType: 'rss'
     })
     props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -140,9 +141,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: '', integrationType: 'rss'})
     }
   }
   onPageFilter (e) {
@@ -150,9 +151,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
   onStatusFilter (e) {
@@ -160,9 +161,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
 
@@ -172,9 +173,9 @@ class RssIntegrations extends React.Component {
     })
     this.isAnyFilter(event.target.value, this.state.page_value, this.state.status, this.state.type_value)
     if (event.target.value !== '') {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
 
@@ -245,7 +246,8 @@ class RssIntegrations extends React.Component {
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     } else if (this.state.pageNumber < data.selected) {
       this.props.fetchRssFeed({
@@ -257,7 +259,8 @@ class RssIntegrations extends React.Component {
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     } else {
       this.props.fetchRssFeed({
@@ -269,7 +272,8 @@ class RssIntegrations extends React.Component {
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     }
     this.setState({pageNumber: data.selected})

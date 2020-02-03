@@ -39,7 +39,7 @@ export function deleteRssFeed (id, msg, resetFilters) {
       search_value: '',
       status_value: '',
      }
-    callApi(`rssFeeds/${id}`, 'delete')
+    callApi(`newsSections/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Rss feed has been deleted successfully')
@@ -47,14 +47,14 @@ export function deleteRssFeed (id, msg, resetFilters) {
           resetFilters()
         } else {
           msg.error('Unable to delete Rss feed')
-        }      
+        }
       })
 
   }
 }
 export function checkSubscriptionPermissions (handle) {
   return (dispatch) => {
-    callApi(`rssFeeds/checkSMP`, 'get')
+    callApi(`newsSections/checkSMP`, 'get')
       .then(res => {
         if (res.status === 'success') {
           handle(res.payload)
@@ -68,7 +68,7 @@ export function checkSubscriptionPermissions (handle) {
 export function fetchRssFeed (data) {
   console.log('function for fetching rss feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/fetchFeeds`, 'post', data)
+    callApi(`newsSections/fetchFeeds`, 'post', data)
       .then(res => {
         console.log('response from fetching rss feeds', res)
         if (res.status === 'success') {
@@ -83,7 +83,7 @@ export function fetchRssFeed (data) {
 export function fetchFeedPosts (data) {
   console.log('function for fetching feed posts', data)
   return (dispatch) => {
-    callApi(`rssFeeds/rssFeedPosts`, 'post', data)
+    callApi(`newsSections/rssFeedPosts`, 'post', data)
       .then(res => {
         console.log('response from fetching rss feeds', res)
         if (res.status === 'success') {
@@ -104,7 +104,7 @@ export function createRssFeed (data, msg, handle, toggleLoader) {
       search_value: '',
       status_value: '',
     }
-    callApi(`rssFeeds/create`, 'post', data)
+    callApi(`newsSections/create`, 'post', data)
       .then(res => {
         console.log('response from creating rss feeds', res)
         if (res.status === 'success') {
@@ -123,7 +123,7 @@ export function createRssFeed (data, msg, handle, toggleLoader) {
 export function previewRssFeed (data, msg, toggleLoader) {
   console.log('function for previewing rss feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/preview`, 'post', data)
+    callApi(`newsSections/preview`, 'post', data)
       .then(res => {
         if (toggleLoader) {
           toggleLoader()
@@ -146,7 +146,7 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
     status_value: '',
   }
   return (dispatch) => {
-    callApi(`rssFeeds/edit`, 'post', data)
+    callApi(`newsSections/edit`, 'post', data)
       .then(res => {
         if (toggleLoader) {
           toggleLoader()
@@ -162,7 +162,7 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
             msg.error(res.payload)
           } else {
             msg.error('Failed to update feed ')
-          }     
+          }
         }
       })
   }
