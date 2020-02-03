@@ -99,6 +99,12 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let button = component.quickReplies[k]
+            buttons[button.id] = button.title
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
@@ -174,6 +180,12 @@ class FlowBuilder extends React.Component {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
             elements[messages[i].id][component.id].push(button.id)
+          }
+        }
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            elements[messages[i].id][component.id].push(quickReply.id)
           }
         }
       }
@@ -270,10 +282,13 @@ class FlowBuilder extends React.Component {
       blockDimensions = document.getElementById(`flowBuilderCard-${message.id}`).getBoundingClientRect()
     }
     console.log('getPortsNLinks', components)
-    // debugger;
+    //debugger;
     let ports = {}
     let links = {}
     for (let i = 0; i < components.length; i++) {
+      if (components[i].quickReplies) {
+        this.getPortsNLinksHelper(components[i].quickReplies, message, blockDimensions, ports, links)
+      }
       if (components[i].buttons) {
         this.getPortsNLinksHelper(components[i].buttons, message, blockDimensions, ports, links)
       } else if (components[i].cards) {
@@ -288,45 +303,49 @@ class FlowBuilder extends React.Component {
   }
 
   getPortsNLinksHelper (buttons, message, blockDimensions, ports, links) {
+    //debugger;
     let portHeight = 24
     let portMarginTop = 3
     for (let j = 0; j < buttons.length; j++) {
-      let payload = typeof buttons[j].payload === "string" ? JSON.parse(buttons[j].payload) : buttons[j].payload
-      if ((payload && payload.action === 'send_message_block') || !buttons[j].type) {
-        let payload = JSON.parse(buttons[j].payload)
-        console.log('parsed payload', payload)
-        let port = document.getElementById(`port-${buttons[j].id}`)
-        let y = blockDimensions ? (blockDimensions.height/2): 0
-        if (port && blockDimensions) {
-          let portDimensions = port.getBoundingClientRect()
-          y = (portDimensions.bottom - blockDimensions.top) - (portHeight/2)
-        } else {
-          if (j === 0 && buttons.length > 1) {
-            y = y - portMarginTop
-          } else if (j > 0) {
-            y = (y-portMarginTop) + (portHeight)
-          }
-        }
-        ports[`${buttons[j].id}`] = {
-          id: `${buttons[j].id}`,
-          type: 'right',
-          position: {
-            x: blockDimensions ? blockDimensions.width : 0,
-            y: y
-          }
-        }
-        if (payload && payload.action === 'send_message_block') {
-          console.log('adding link')
-          let linkId = Math.floor(Math.random() * 100)
-          links[`${linkId}`] = {
-            id: `${linkId}`,
-            from: {
-              nodeId: `${message.id}`,
-              portId: `${buttons[j].id}`
-            },
-            to: {
-              nodeId: `${payload.blockUniqueId}`,
-              portId: 'port0'
+      let button = buttons[j]
+      if (button.type === 'postback' || button.content_type === 'text') {
+        let payload = JSON.parse(button.payload)
+        for (let l = 0; l < payload.length; l++) {
+          if (payload[l].action === 'send_message_block') {
+            let port = document.getElementById(`port-${buttons[j].id}`)
+            let y = blockDimensions ? (blockDimensions.height/2): 0
+            if (port && blockDimensions) {
+              let portDimensions = port.getBoundingClientRect()
+              y = (portDimensions.bottom - blockDimensions.top) - (portHeight/2)
+            } else {
+              if (j === 0 && buttons.length > 1) {
+                y = y - portMarginTop
+              } else if (j > 0) {
+                y = (y-portMarginTop) + (portHeight)
+              }
+            }
+            ports[`${buttons[j].id}`] = {
+              id: `${buttons[j].id}`,
+              type: 'right',
+              position: {
+                x: blockDimensions ? blockDimensions.width : 0,
+                y: y
+              }
+            }
+            if (payload[l].blockUniqueId) {
+              console.log('adding link')
+              let linkId = Math.floor(Math.random() * 100)
+              links[`${linkId}`] = {
+                id: `${linkId}`,
+                from: {
+                  nodeId: `${message.id}`,
+                  portId: `${buttons[j].id}`
+                },
+                to: {
+                  nodeId: `${payload[l].blockUniqueId}`,
+                  portId: 'port0'
+                }
+              }
             }
           }
         }
@@ -674,10 +693,12 @@ class FlowBuilder extends React.Component {
               if (messageContent.buttons) {
                 for (let k = 0; k < messageContent.buttons.length; k++) {
                   let button = messageContent.buttons[k]
-                  if (typeof button.payload === 'string') {
+                  if (button.type === 'postback') {
                     let payload = JSON.parse(button.payload)
-                    if (payload.blockUniqueId) {
-                      addPayload.push(payload.blockUniqueId)
+                    for (let l = 0; l < payload.length; l++) {
+                      if (payload[l].blockUniqueId) {
+                        addPayload.push(payload[l].blockUniqueId)
+                      }
                     }
                   }
                 }
@@ -685,10 +706,12 @@ class FlowBuilder extends React.Component {
                 for (let m = 0; m < messageContent.cards.length; m++) {
                   for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
                     let button = messageContent.cards[m].buttons[k]
-                    if (typeof button.payload === 'string') {
+                    if (button.type === 'postback') {
                       let payload = JSON.parse(button.payload)
-                      if (payload.blockUniqueId) {
-                        addPayload.push(payload.blockUniqueId)
+                      for (let l = 0; l < payload.length; l++) {
+                        if (payload[l].blockUniqueId) {
+                          addPayload.push(payload[l].blockUniqueId)
+                        }
                       }
                     }
                   }
@@ -721,16 +744,33 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            if (quickReply.id.toString() === buttonId.toString()) {
+              let quickReplyPayload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < quickReplyPayload.length; l++) {
+                if (quickReplyPayload[l].action === 'send_message_block') {
+                  quickReplyPayload[l].blockUniqueId = blockUniqueId
+                  this.props.linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(quickReplyPayload)
+                }
+              }
+              return
+            }
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
             if (button.id.toString() === buttonId.toString()) {
               document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-              this.props.linkedMessages[i].messageContent[j].buttons[k].type = 'postback'
-              this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
-                action: 'send_message_block',
-                blockUniqueId: blockUniqueId
-              })
+              let buttonPayload = JSON.parse(button.payload)
+              for (let l = 0; l < buttonPayload.length; l++) {
+                if (buttonPayload[l].action === 'send_message_block') {
+                  buttonPayload[l].blockUniqueId = blockUniqueId
+                  this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(buttonPayload)
+                }
+              }
               return
             }
           }
@@ -740,11 +780,13 @@ class FlowBuilder extends React.Component {
               let button = component.cards[m].buttons[k]
               if (button.id.toString() === buttonId.toString()) {
                 document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-                this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].type = 'postback'
-                this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify({
-                  action: 'send_message_block',
-                  blockUniqueId: blockUniqueId
-                })
+                let buttonPayload = JSON.parse(button.payload)
+                for (let l = 0; l < buttonPayload.length; l++) {
+                  if (buttonPayload[l].action === 'send_message_block') {
+                    buttonPayload[l].blockUniqueId = blockUniqueId
+                    this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(buttonPayload)
+                  }
+                }
                 return
               }
             }
@@ -758,16 +800,33 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            if (quickReply.id.toString() === buttonId.toString()) {
+              let quickReplyPayload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < quickReplyPayload.length; l++) {
+                if (quickReplyPayload[l].action === 'send_message_block') {
+                  quickReplyPayload[l].blockUniqueId = blockUniqueId
+                  this.props.unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(quickReplyPayload)
+                }
+              }
+              return
+            }
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
             let button = component.buttons[k]
             if (button.id.toString() === buttonId.toString()) {
               document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].type = 'postback'
-              this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify({
-                action: 'send_message_block',
-                blockUniqueId: blockUniqueId
-              })
+              let buttonPayload = JSON.parse(button.payload)
+              for (let l = 0; l < buttonPayload.length; l++) {
+                if (buttonPayload[l].action === 'send_message_block') {
+                  buttonPayload[l].blockUniqueId = blockUniqueId
+                  this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(buttonPayload)
+                }
+              }
               return
             }
           }
@@ -777,11 +836,13 @@ class FlowBuilder extends React.Component {
               let button = component.cards[m].buttons[k]
               if (button.id.toString() === buttonId.toString()) {
                 document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'rgba(0,0,0,.1)'
-                this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].type = 'postback'
-                this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify({
-                  action: 'send_message_block',
-                  blockUniqueId: blockUniqueId
-                })
+                let buttonPayload = JSON.parse(button.payload)
+                for (let l = 0; l < buttonPayload.length; l++) {
+                  if (buttonPayload[l].action === 'send_message_block') {
+                    buttonPayload[l].blockUniqueId = blockUniqueId
+                    this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(buttonPayload)
+                  }
+                }
                 return
               }
             }
@@ -813,10 +874,12 @@ class FlowBuilder extends React.Component {
                 if (messageContent.buttons) {
                   for (let k = 0; k < messageContent.buttons.length; k++) {
                     let button = messageContent.buttons[k]
-                    if (typeof button.payload === 'string') {
+                    if (button.type === 'postback') {
                       let payload = JSON.parse(button.payload)
-                      if (payload && payload.blockUniqueId) {
-                        deletePayload.push(payload.blockUniqueId)
+                      for (let l = 0; l < payload.length; l++) {
+                        if (payload[l].blockUniqueId) {
+                          deletePayload.push(payload[l].blockUniqueId)
+                        }
                       }
                     }
                   }
@@ -824,10 +887,12 @@ class FlowBuilder extends React.Component {
                   for (let m = 0; m < messageContent.cards.length; m++) {
                     for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
                       let button = messageContent.cards[m].buttons[k]
-                      if (typeof button.payload === 'string') {
+                      if (button.type === 'postback') {
                         let payload = JSON.parse(button.payload)
-                        if (payload && payload.blockUniqueId) {
-                          deletePayload.push(payload.blockUniqueId)
+                        for (let l = 0; l < payload.length; l++) {
+                          if (payload[l].blockUniqueId) {
+                            deletePayload.push(payload[l].blockUniqueId)
+                          }
                         }
                       }
                     }
@@ -850,28 +915,53 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                this.props.linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
-            if (typeof component.buttons[k].payload === 'string') {
-              let buttonPayload = JSON.parse(component.buttons[k].payload)
-              if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-                document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
-                this.props.linkedMessages[i].messageContent[j].buttons[k].type = null
-                this.props.linkedMessages[i].messageContent[j].buttons[k].payload = null
-                return
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  this.props.linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
               }
             }
           }
         } else if (component.cards) {
           for (let m = 0; m < component.cards.length; m++) {
             for (let k = 0; k < component.cards[m].buttons.length; k++) {
-              if (typeof component.cards[m].buttons[k].payload === 'string') {
-                let buttonPayload = JSON.parse(component.cards[m].buttons[k].payload)
-                if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
-                  this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].type = null
-                  this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = null
-                  return
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
                 }
               }
             }
@@ -885,28 +975,53 @@ class FlowBuilder extends React.Component {
       let message = messages[i]
       for (let j = 0; j < message.messageContent.length; j++) {
         let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                this.props.unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
         if (component.buttons) {
           for (let k = 0; k < component.buttons.length; k++) {
-            if (typeof component.buttons[k].payload === 'string') {
-              let buttonPayload = JSON.parse(component.buttons[k].payload)
-              if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-                document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
-                this.props.linkedMessages[i].messageContent[j].buttons[k].type = null
-                this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = null
-                return
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  this.props.unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
               }
             }
           }
         } else if (component.cards) {
           for (let m = 0; m < component.cards.length; m++) {
             for (let k = 0; k < component.cards[m].buttons.length; k++) {
-              if (typeof component.cards[m].buttons[k].payload === 'string') {
-                let buttonPayload = JSON.parse(component.cards[m].buttons[k].payload)
-                if (buttonPayload && buttonPayload.blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
-                  this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].type = null
-                  this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = null
-                  return
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
                 }
               }
             }
