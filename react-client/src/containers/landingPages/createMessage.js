@@ -101,7 +101,7 @@
             handleChange={this.handleChange}
             convoTitle={this.state.convoTitle}
             buttonActions={this.state.buttonActions}
-            pages={this.props.pages} />
+            pages={[this.state.pageId]} />
         </div>
       )
     }
