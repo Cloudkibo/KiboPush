@@ -19,13 +19,6 @@ class Integrations extends React.Component {
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        {
-          name: 'DialogFlow',
-          icon: 'fa fa-cube',
-          enabled: false,
-          description: 'This integration can help you link DailogFlow Agent with Facebook Page',
-          color: 'orange'
-        },
         { 
           name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
