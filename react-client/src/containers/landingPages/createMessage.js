@@ -53,9 +53,10 @@
 
     goBack () {
       if (this.props.location.state && this.props.location.state.module === 'edit') {
+        const currentLP = this.props.landingPages.filter((lp) => lp.pageId._id === this.state.pageId)[0]
         this.props.landingPage.isActive = true
-        this.props.landingPage.pageId = this.props.landingPages[0].pageId
-        this.props.landingPage._id = this.props.landingPages[0]._id
+        this.props.landingPage.pageId = currentLP.pageId
+        this.props.landingPage._id = currentLP._id
         this.props.landingPage.currentTab = 'optInActions'
         this.props.history.push({
           pathname: `/editLandingPage`,
