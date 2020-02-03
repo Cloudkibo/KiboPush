@@ -103,6 +103,8 @@ export function createRssFeed (data, msg, handle, toggleLoader) {
       first_page: 'first',
       search_value: '',
       status_value: '',
+      type_value: '',
+      integrationType: data.integrationType
     }
     callApi(`newsSections/create`, 'post', data)
       .then(res => {
@@ -144,6 +146,8 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
     first_page: 'first',
     search_value: '',
     status_value: '',
+    type_value: '',
+    integrationType: data.updatedObject.integrationType
   }
   return (dispatch) => {
     callApi(`newsSections/edit`, 'post', data)
