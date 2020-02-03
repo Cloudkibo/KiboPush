@@ -12,47 +12,28 @@ import { loadCustomFields } from '../../redux/actions/customFields.actions'
 import CustomFields from '../customFields/customfields'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotActions from './hubspot/HubspotActions'
+import ActionsPopover from './ActionsPopover'
 
 class Button extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      postbackPayload: props.button && props.button.type === 'postback' ? JSON.parse(props.button.payload) : [],
+      buttonActions: [],
+      showButtonActionPopover: false,
       openPopover: false,
       title: this.props.button ? this.props.button.title : this.props.title,
       url: this.props.button ? (!this.props.button.messenger_extensions ? this.props.button.url : '') : '',
-      sequenceValue: this.props.button ? this.props.button.sequenceValue : '',
       openWebsite: this.props.button ? this.props.button.type === 'web_url' && !this.props.button.messenger_extensions : false,
-      openSubscribe: this.props.button ? this.props.button.openSubscribe : '',
-      openUnsubscribe: this.props.button ? this.props.button.openUnsubscribe : false,
-      openCustomField: this.props.button ? this.props.button.openCustomField : false,
-      openGoogleSheets: this.props.button ? this.props.button.openGoogleSheets : false,
-      openHubspot: this.props.button && this.props.button.payload && this.props.button.payload.action === 'hubspot' ? true : false,
       sendSequenceMessageButton: this.props.button ? this.props.button.type === 'postback' && !this.props.button.payload : false,
       openWebView: this.props.button ? this.props.button.messenger_extensions : false,
       webviewurl: this.props.button ? (this.props.button.messenger_extensions ? this.props.button.url : '') : '',
       webviewsize: this.props.button ? (this.props.button.webview_height_ratio ? this.props.button.webview_height_ratio : 'FULL') : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload && this.props.button.payload.action !== 'hubspot') : false,
+      openCreateMessage: this.props.button ? (this.props.button.type === 'postback' && this.props.button.payload && typeof this.props.button.payload  === 'number') : false,
       showSequenceMessage: true,
       buttonDisabled: this.props.button ? false : true,
       errorMsg: '',
-      customFieldId: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldId : '',
-      customFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.customFieldValue : '',
-
-      googleSheetAction: this.props.button && this.props.button.payload ? this.props.button.payload.googleSheetAction : '',
-      spreadSheet: this.props.button && this.props.button.payload ? this.props.button.payload.spreadSheet : '',
-      worksheet: this.props.button && this.props.button.payload ? this.props.button.payload.worksheet : '',
-      worksheetName: this.props.button && this.props.button.payload ? this.props.button.payload.worksheetName : '',
-      lookUpValue: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpValue : '',
-      lookUpColumn: this.props.button && this.props.button.payload ? this.props.button.payload.lookUpColumn : '',
-      hubspotAction: this.props.button && this.props.button.payload ? this.props.button.payload.hubspotAction : '',
-      mapping: this.props.button && this.props.button.payload ? this.props.button.payload.mapping : '',
-      hubSpotForm: this.props.button && this.props.button.payload ? this.props.button.payload.formId : '',
-      portalId: this.props.button && this.props.button.payload ? this.props.button.payload.portalId : '',
-      identityFieldValue: this.props.button && this.props.button.payload ? this.props.button.payload.identityCustomFieldValue : '',
-      googleIntegration : '',
-      hubspotIntegration : ''
-
     }
     props.fetchAllSequence()
     props.getIntegrations()
@@ -98,6 +79,44 @@ class Button extends React.Component {
     this.buttonId = (this.props.cardId ? `card${this.props.cardId}` : '') + 'button' + this.props.index
     this.typingTimer = null
     this.doneTypingInterval = 500
+    this.createButtonActions = this.createButtonActions.bind(this)
+    this.showButtonActionPopover = this.showButtonActionPopover.bind(this)
+    this.toggleButtonActionPopover = this.toggleButtonActionPopover.bind(this)
+  }
+
+  createButtonActions () {
+    let buttonActions = []
+    for (let i = 0; i < this.props.buttonActions.length; i++) {
+      let buttonAction = this.props.buttonActions[i]
+      if (buttonAction === 'open website' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
+        buttonActions.push({title: 'Open website', action: this.showWebsite})
+      }
+      if (buttonAction === 'open webview' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
+        buttonActions.push({title: 'Open webview', action: this.showWebView})
+      }
+      if (buttonAction === 'create message' && !this.state.openCreateMessage) {
+        buttonActions.push({title: 'Reply with a message', action: this.replyWithMessage})
+      }
+      if (buttonAction === 'send sequence message') {
+        buttonActions.push({title: 'Send sequence message', action: this.sendSequenceMessageButton})
+      }
+      if (buttonAction === 'subscribe sequence') {
+        buttonActions.push({title: 'Subscribe to sequence', action: this.showSubscribe})
+      }
+      if (buttonAction === 'unsubscribe sequence') {
+        buttonActions.push({title: 'Unsubscribe from sequence', action: this.showUnsubscribe})
+      }
+      if (buttonAction === 'set custom field') {
+        buttonActions.push({title: 'Set custom field', action: this.showCustomField})
+      }
+      if (buttonAction === 'google sheets' && this.state.googleIntegration) {
+        buttonActions.push({title: 'Google Sheets', action: this.showGoogleSheets})
+      }
+      if (buttonAction === 'hubspot' && this.state.hubspotIntegration) {
+        buttonActions.push({title: 'Hubspot', action: this.showHubspot})
+      }
+    }
+    return buttonActions
   }
 
   handleFetch(resp) {
@@ -108,30 +127,29 @@ class Button extends React.Component {
     }
   }
 
-  savehubSpotForm(hubSpotFormPayload) {
+  savehubSpotForm(hubSpotFormPayload, index) {
     console.log('hubSpotFormPayload', hubSpotFormPayload)
-    this.setState({
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index] = Object.assign(postbackPayload[index], {
       hubspotAction: hubSpotFormPayload.hubspotAction,
       hubSpotForm: hubSpotFormPayload.hubSpotForm,
       portalId: hubSpotFormPayload.portalId,
       mapping: hubSpotFormPayload.mapping,
       identityFieldValue: hubSpotFormPayload.identityFieldValue
     })
-    let buttonData = {
-      title: this.state.title, visible: true,
-      hubspotAction: hubSpotFormPayload.hubspotAction,
-      formId: hubSpotFormPayload.hubSpotForm,
-      mapping: hubSpotFormPayload.mapping,
-      portalId: hubSpotFormPayload.portalId,
-      identityCustomFieldValue: hubSpotFormPayload.identityFieldValue,
-      index: this.props.index
-    }
-    console.log('this.props.updateButtonStatus' ,this.props.updateButtonStatus)
-    if ((hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.hubSpotForm !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '') || (hubSpotFormPayload.hubspotAction !== '' && hubSpotFormPayload.identityFieldValue !== '' && hubSpotFormPayload.mapping !== '' && this.state.title !== '')) {
-      this.setState({ buttonDisabled: false })
-      console.log('this.props.updateButtonStatus in if condition' ,this.props.updateButtonStatus)
+    this.setState({postbackPayload})
+    if (this.state.title !== '') {
+      let buttonData = {
+        title: this.state.title, visible: true,
+        hubspotAction: hubSpotFormPayload.hubspotAction,
+        formId: hubSpotFormPayload.hubSpotForm,
+        mapping: hubSpotFormPayload.mapping,
+        portalId: hubSpotFormPayload.portalId,
+        identityCustomFieldValue: hubSpotFormPayload.identityFieldValue,
+        index: this.props.index
+      }
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false }, buttonData)
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() }, buttonData)
       }
     }
   }
@@ -150,7 +168,8 @@ class Button extends React.Component {
           googleSheetAction: buttonPayload.googleSheetAction,
           lookUpValue: buttonPayload.lookUpValue,
           lookUpColumn: buttonPayload.lookUpColumn,
-          openGoogleSheets: true, openCreateMessage: false
+          openGoogleSheets: true,
+          openCreateMessage: false
         })
       }
       else if (buttonPayload.hubspotAction) {
@@ -199,7 +218,42 @@ class Button extends React.Component {
     }
   }
 
-
+  checkValid () {
+    if (!this.state.title) {
+      return false
+    }
+    if (this.state.url || this.state.webviewurl) {
+      return true
+    } else {
+      if (this.state.postbackPayload.length === 0) {
+        return false
+      }
+      for (let i = 0; i < this.state.postbackPayload.length; i++) {
+        let postbackPayload = this.state.postbackPayload[i]
+        if (postbackPayload.action === 'subscribe' || postbackPayload.action === 'subscribe') {
+          if (!postbackPayload.sequenceId) {
+            return false
+          }
+        }
+        if (postbackPayload.action === 'set_custom_field') {
+          if (!postbackPayload.customFieldId && !postbackPayload.customFieldValue) {
+            return false
+          }
+        }
+        if (postbackPayload.action === 'google_sheets') {
+          if (!postbackPayload.googleSheetAction && !postbackPayload.mapping) {
+            return false
+          }
+        }
+        if (postbackPayload.action === 'hubspot') {
+          if (!postbackPayload.hubspotAction && !postbackPayload.mapping) {
+            return false
+          }
+        }
+      }
+    }
+    return true
+  }
 
   onChangeWebviewSize(event) {
     if (event.target.value !== -1) {
@@ -213,112 +267,174 @@ class Button extends React.Component {
     this.setState({ sendSequenceMessageButton: true, title: '' })
     if (this.props.updateButtonStatus) {
       let buttonData = { title: '', visible: true, sendSequenceMessageButton: true, index: this.props.index }
-      this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid(), buttonData })
     }
   }
 
   showCustomField() {
-    this.setState({ openCustomField: true })
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'set_custom_field',
+      customFieldId: '',
+      customFieldValue: ''
+    })
+    this.setState({ openCustomField: true, postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
   }
 
   showGoogleSheets() {
-    this.setState({ openGoogleSheets: true })
-  }
-
-  showHubspot() {
-    this.setState({ openHubspot: true })
-  }
-
-  showWebsite() {
-    this.setState({ openWebsite: true })
-  }
-  showWebView() {
-    this.setState({ openWebView: true })
-  }
-  showSubscribe() {
-    this.setState({ openSubscribe: true })
-  }
-
-  showUnsubscribe() {
-    this.setState({ openUnsubscribe: true })
-  }
-  closeWebview() {
-    this.setState({ openWebView: false, webviewurl: '', webviewsize: 'FULL', buttonDisabled: true })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-  closeWebsite() {
-    this.setState({ openWebsite: false, url: '', buttonDisabled: true })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-
-  closeSendSequenceMessageButton() {
-    this.setState({ sendSequenceMessageButton: false, buttonDisabled: true, title: '' })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-  closeSubscribe() {
-    this.setState({ openSubscribe: false, sequenceValue: '', buttonDisabled: true })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-
-  closeCustomField() {
-    this.setState({ openCustomField: false, customFieldId: '', buttonDisabled: true, customFieldValue: '' })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-
-  closeUnsubscribe() {
-    this.setState({ openUnsubscribe: false, sequenceValue: '', buttonDisabled: true })
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
-    }
-  }
-
-  closeGoogleSheets() {
-    this.setState({
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'google_sheets',
       googleSheetAction: '',
       spreadSheet: '',
       worksheet: '',
       worksheetName: '',
       mapping: '',
-      buttonDisabled: true,
       lookUpValue: '',
-      lookUpColumn: '',
-      openGoogleSheets: false
+      lookUpColumn: ''
+    })
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  showHubspot() {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'hubspot',
+      hubspotAction: '',
+      formId: '',
+      portalId: '',
+      mapping: '',
+      identityCustomFieldValue: ''
+    })
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  showWebsite() {
+    this.setState({ openWebsite: true })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+  showWebView() {
+    this.setState({ openWebView: true })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  showSubscribe() {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'subscribe',
+      sequenceId: ''
+    })
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  showUnsubscribe() {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'unsubscribe',
+      sequenceId: ''
+    })
+    this.setState({ postbackPayload})
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  closeWebview() {
+    this.setState({ openWebView: false, webviewurl: '', webviewsize: 'FULL' })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+  closeWebsite() {
+    this.setState({ openWebsite: false, url: '', })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  closeSendSequenceMessageButton() {
+    this.setState({ sendSequenceMessageButton: false, title: '' })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: true })
+    }
+  }
+  closeSubscribe(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  closeCustomField(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+    }
+  }
+
+  closeUnsubscribe(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
+    this.setState({ postbackPayload })
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid })
+    }
+  }
+
+  closeGoogleSheets(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
+    this.setState({
+      postbackPayload
     })
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
 
-  closeHubspot() {
-    this.setState({ openHubspot: false, buttonDisabled: true })
+  closeHubspot(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
+    this.setState({ postbackPayload})
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
 
 
-  onSequenceChange(e) {
+  onSequenceChange(e, index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index].sequenceId = e.target.value
+    this.setState({ postbackPayload })
     if (this.state.title !== '') {
       this.setState({ buttonDisabled: false })
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: false })
       }
     }
-    this.setState({ sequenceValue: e.target.value })
   }
 
   handleClick(e) {
-    this.setState({ buttonDisabled: true })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: true })
     }
@@ -368,77 +484,7 @@ class Button extends React.Component {
         title: this.state.title // User defined label
       }
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    } else if (this.state.sendSequenceMessageButton) {
-      let data = {
-        id: this.props.index,
-        type: 'postback',
-        title: this.state.title,
-        messageId: 'messageId'
-      }
-      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    } else if (this.state.openCreateMessage) {
-      let data = {
-        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
-        type: 'postback',
-        title: this.state.title,
-        payload: this.props.button.payload ? this.props.button.payload : null
-      }
-      this.props.onAdd(data, this.props.index)
-    } else if (this.state.sequenceValue && this.state.sequenceValue !== '') {
-      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        let data = {
-          id: this.props.index,
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'subscribe'
-        }
-        this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        let data = {
-          id: this.props.index,
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'unsubscribe'
-        }
-        this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-      }
-
-    } else if (this.state.openHubspot) {
-      let data = {
-        id: this.props.index,
-        type: 'postback',
-        title: this.state.title,
-        payload: JSON.stringify({
-          action: 'hubspot',
-          hubspotAction: this.state.hubspotAction,
-          formId: this.state.hubSpotForm,
-          portalId: this.state.portalId,
-          mapping: this.state.mapping,
-          identityCustomFieldValue: this.state.identityFieldValue
-
-        })
-      }
-      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    } else if (this.state.openGoogleSheets) {
-      let data = {
-        id: this.props.index,
-        type: 'postback',
-        title: this.state.title,
-        payload: JSON.stringify({
-          action: 'google_sheets',
-          googleSheetAction: this.state.googleSheetAction,
-          spreadSheet: this.state.spreadSheet,
-          worksheet: this.state.worksheet,
-          worksheetName: this.state.worksheetName,
-          mapping: this.state.mapping,
-          lookUpValue: this.state.lookUpValue,
-          lookUpColumn: this.state.lookUpColumn
-        })
-      }
-      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
-    } else if (this.state.webviewurl && this.state.webviewurl !== '') {
+    }  else if (this.state.webviewurl && this.state.webviewurl !== '') {
       if (!isWebViewUrl(this.state.webviewurl)) {
         return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
       }
@@ -453,8 +499,15 @@ class Button extends React.Component {
       }
 
       this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
+    } else {
+      let data = {
+        id: this.props.index,
+        type: 'postback',
+        title: this.state.title,
+        payload: JSON.stringify(this.state.postbackPayload)
+      }
+      this.props.editButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.handleClose, this.msg)
     }
-
   }
 
   handleDone() {
@@ -470,43 +523,7 @@ class Button extends React.Component {
         }
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.sequenceValue) {
-      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        let data = {
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'subscribe',
-          module: { type: 'sequenceMessaging' }
-        }
-        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        let data = {
-          type: 'postback',
-          title: this.state.title, // User defined label
-          sequenceId: this.state.sequenceValue,
-          action: 'unsubscribe',
-          module: { type: 'sequenceMessaging' }
-        }
-        this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-      }
-    } else if (this.state.sendSequenceMessageButton) {
-      let data = {
-        type: 'postback',
-        title: this.state.title,
-        messageId: 'messageId'
-      }
-      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.openCreateMessage) {
-      let data = {
-        id: new Date().getTime() + (Math.floor(Math.random() * 100)),
-        type: 'postback',
-        title: this.state.title,
-        payload: null
-      }
-      console.log('creating new message block button', data)
-      this.props.onAdd(data, this.props.index)
-    } else if (this.state.webviewurl) {
+    }  else if (this.state.webviewurl) {
       let data = {
         type: 'web_url',
         url: this.state.webviewurl, // User defined link,
@@ -516,112 +533,48 @@ class Button extends React.Component {
         pageId: this.props.pageId
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.openCustomField) {
-      let data = {
-        type: 'postback',
-        title: this.state.title,
-        payload: JSON.stringify({
-          action: 'set_custom_field',
-          customFieldId: this.state.customFieldId,
-          customFieldValue: this.state.customFieldValue
-        })
-      }
-      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-    } else if (this.state.openHubspot) {
+    } else  {
       let data = {
         id: this.props.index,
         type: 'postback',
         title: this.state.title,
-        payload: JSON.stringify({
-          action: 'hubspot',
-          hubspotAction: this.state.hubspotAction,
-          formId: this.state.hubSpotForm,
-          portalId: this.state.portalId,
-          mapping: this.state.mapping,
-          identityCustomFieldValue: this.state.identityFieldValue
-        })
-      }
-      this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
-
-    } else if (this.state.openGoogleSheets) {
-      let data = {
-        type: 'postback',
-        title: this.state.title,
-        payload: JSON.stringify({
-          action: 'google_sheets',
-          googleSheetAction: this.state.googleSheetAction,
-          spreadSheet: this.state.spreadSheet,
-        	worksheet: this.state.worksheet,
-          worksheetName: this.state.worksheetName,
-        	mapping: this.state.mapping,
-          lookUpValue: this.state.lookUpValue,
-          lookUpColumn: this.state.lookUpColumn
-        })
+        payload: JSON.stringify(this.state.postbackPayload)
       }
       this.props.addButton(data, (btn) => this.props.onAdd(btn, this.props.index), this.msg, this.resetButton)
     }
   }
 
   replyWithMessage() {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.push({
+      action: 'send_message_block'
+    })
     this.setState({
-      openCreateMessage: true
+      openCreateMessage: true,
+      postbackPayload
     }, () => {
-      if (this.props.updateButtonStatus && this.state.title) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
       }
     })
   }
 
-  removeReplyWithMessage() {
+  removeReplyWithMessage(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload.splice(index, 1)
     this.setState({
-      openCreateMessage: false
+      openCreateMessage: false,
+      postbackPayload
     }, () => {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: true })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
       }
     })
   }
 
   changeTitle(event) {
-    if (((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) || (this.state.customFieldId && this.state.customFieldValue)) && event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    } else if (this.state.sendSequenceMessageButton && event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    } else if (this.state.openCreateMessage && event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    } else if (this.state.openCustomField && event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    }
-
-    else if (this.state.openHubspot && this.state.hubspotAction !== '' && event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    }
-    else if (this.state.openGoogleSheets && this.state.googleSheetAction !== '' &&  event.target.value !== '') {
-      this.setState({ buttonDisabled: false })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false })
-      }
-    }
-    else {
-      this.setState({ buttonDisabled: true })
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: true })
-      }
+    if (this.props.updateButtonStatus) {
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
     this.setState({ title: event.target.value })
     if (this.props.handleTitleChange) {
@@ -684,13 +637,13 @@ class Button extends React.Component {
   }
 
   changeUrl(event) {
-    console.log('chaning website url', event.target.value)
+    console.log('changing website url', event.target.value)
     this.setState({ url: event.target.value }, () => {
       clearTimeout(this.typingTimer)
       this.typingTimer = setTimeout(this.weburlDebounce, this.doneTypingInterval)
     })
   }
-  
+
   changeWebviewUrl(e) {
     console.log('changing webviewurl', e.target.value)
     this.setState({ webviewurl: e.target.value }, () => {
@@ -699,19 +652,22 @@ class Button extends React.Component {
     })
   }
 
-  updateCustomFieldId(event) {
-    this.setState({ customFieldId: event.target.value })
-    let buttonData = { title: this.state.title, visible: true, customFieldId: event.target.value, customFieldValue: this.state.customFieldValue, index: this.props.index }
-    if (this.state.customFieldValue) {
+  updateCustomFieldId(event, index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index].customFieldId =  event.target.value
+    this.setState({ postbackPayload })
+    let buttonData = { title: this.state.title, visible: true, index: this.props.index, payload: postbackPayload }
+    if (postbackPayload[index].customFieldValue) {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false, buttonData })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid(), buttonData })
       }
     }
   }
 
-  saveGoogleSheet(googleSheetPayload) {
+  saveGoogleSheet(googleSheetPayload, index) {
     console.log('saveGoogleSheet', googleSheetPayload)
-    this.setState({
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index] = Object.assign(postbackPayload[index], {
       googleSheetAction: googleSheetPayload.googleSheetAction,
       spreadSheet: googleSheetPayload.spreadSheet,
       worksheet: googleSheetPayload.worksheet,
@@ -720,26 +676,21 @@ class Button extends React.Component {
       lookUpValue: googleSheetPayload.lookUpValue,
       lookUpColumn: googleSheetPayload.lookUpColumn
     })
-    let buttonData = {
-      title: this.state.title, visible: true,
-      googleSheetAction: googleSheetPayload.googleSheetAction,
-      spreadSheet: googleSheetPayload.spreadSheet,
-      worksheet: googleSheetPayload.worksheet,
-      worksheetName: googleSheetPayload.worksheetName,
-      mapping: googleSheetPayload.mapping,
-      lookUpValue: googleSheetPayload.lookUpValue,
-      lookUpColumn: googleSheetPayload.lookUpColumn,
-      index: this.props.index
-    }
-    if (googleSheetPayload.googleSheetAction !== '' &&
-      googleSheetPayload.spreadSheet !== '' &&
-      googleSheetPayload.worksheet !== '' &&
-      googleSheetPayload.mapping !== '' &&
-      this.state.title !== ''
-    ) {
-      this.setState({ buttonDisabled: false })
+    this.setState({ postbackPayload })
+    if (this.state.title !== '') {
+      let buttonData = {
+        title: this.state.title, visible: true,
+        googleSheetAction: googleSheetPayload.googleSheetAction,
+        spreadSheet: googleSheetPayload.spreadSheet,
+        worksheet: googleSheetPayload.worksheet,
+        worksheetName: googleSheetPayload.worksheetName,
+        mapping: googleSheetPayload.mapping,
+        lookUpValue: googleSheetPayload.lookUpValue,
+        lookUpColumn: googleSheetPayload.lookUpColumn,
+        index: this.props.index
+      }
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false }, buttonData)
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() }, buttonData)
       }
     }
   }
@@ -749,51 +700,195 @@ class Button extends React.Component {
     let buttonData = { title: this.state.title, visible: true, hubspotAction: hubspotAction, index: this.props.index }
     if (this.state.hubspotAction) {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false, buttonData })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid(), buttonData })
       }
     }
   }
-  removeGoogleAction() {
-    this.setState({
+  removeGoogleAction(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index] = Object.assign(postbackPayload[index], {
       googleSheetAction: '',
       spreadSheet: '',
       worksheet: '',
       worksheetName: '',
       mapping: '',
-      buttonDisabled: true,
       lookUpValue: '',
       lookUpColumn: ''
     })
+    this.setState({
+      postbackPayload
+    })
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
 
-  removeHubspotAction() {
-    this.setState({ hubspotAction: '', mapping: '', buttonDisabled: true })
+  removeHubspotAction(index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index] = Object.assign(postbackPayload[index], {
+      hubspotAction: '',
+      hubSpotForm: '',
+      portalId: '',
+      mapping: '',
+      identityFieldValue: ''
+    })
+    this.setState({ postbackPayload })
     if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: true })
+      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
 
-  updateCustomFieldValue(event) {
-    this.setState({ customFieldValue: event.target.value })
-    let buttonData = { title: this.state.title, visible: true, customFieldValue: this.state.customFieldValue, customFieldId: event.target.value, index: this.props.index }
-    if (this.state.customFieldId && event.target.value !== '' && this.state.title !=='') {
+  updateCustomFieldValue(event, index) {
+    let postbackPayload = this.state.postbackPayload
+    postbackPayload[index].customFieldValue =  event.target.value
+    this.setState({ postbackPayload })
+    let buttonData = { title: this.state.title, visible: true, index: this.props.index, payload: postbackPayload }
+    if (postbackPayload[index].customFieldId && event.target.value !== '' && this.state.title !=='') {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: false, buttonData })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid(), buttonData })
       }
     }
     else {
       if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: true, buttonData })
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid(), buttonData })
       }
     }
   }
 
+  showButtonActionPopover () {
+    this.setState({showButtonActionPopover: true})
+  }
+
+  toggleButtonActionPopover () {
+    this.setState({showButtonActionPopover: !this.state.showButtonActionPopover})
+  }
+
+  getPostbackActions () {
+    let postbackPayload = this.state.postbackPayload
+    let postbackActions = []
+    for (let i = 0; i < postbackPayload.length; i++) {
+      if (postbackPayload[i].action === 'set_custom_field') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }}className='card'>
+            <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
+            <div style={{ padding: '10px' }} className='card-block'>
+              <select value={postbackPayload[i].customFieldId ? postbackPayload[i].customFieldId : ''} style={{ borderColor: !postbackPayload[i].customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event, i)}>
+                <option value={''} disabled>Select a custom field</option>
+                {
+                  this.props.customFields.map((customField, index) => {
+                    return (
+                      <option key={index} value={customField._id}>{customField.name}</option>
+                    )
+                  })
+                }
+              </select>
+              {
+                postbackPayload[i].customFieldId &&
+                <div style={{ marginTop: '25px' }}>
+                  <input style={{ borderColor: !postbackPayload[i].customFieldValue ? 'red' : '' }} value={postbackPayload[i].customFieldValue} onChange={(event) => this.updateCustomFieldValue(event, i)} placeholder='Enter value here...' className='form-control' />
+                  <div style={{ color: 'red', textAlign: 'left' }}>{!postbackPayload[i].customFieldValue ? '*Required' : ''}</div>
+                </div>
+              }
+              <div style={{ color: 'red', textAlign: 'left' }}>{!postbackPayload[i].customFieldId ? '*Required' : ''}</div>
+              {/* <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
+                      Manage Custom Fields
+                  </button> */}
+            </div>
+          </div>
+        ))
+      } else if (postbackPayload[i].action === 'subscribe') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+            <h7 className='card-header'>Subscribe to Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeSubscribe(i)} /></h7>
+            <div style={{ padding: '10px' }} className='card-block'>
+              <select className='form-control m-input m-input--square' value={postbackPayload[i].sequenceId} onChange={(e) => this.onSequenceChange(e, i)}>
+                <option key='' value='' disabled>Select Sequence...</option>
+                {
+                  this.props.sequences.map((seq, i) => (
+                    seq.sequence.trigger.event === 'subscribes_to_sequence'
+                      ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
+                  ))
+                }
+              </select>
+            </div>
+          </div>
+        ))
+      } else if (postbackPayload[i].action === 'unsubscribe') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+            <h7 className='card-header'>Unsubscribe from Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeUnsubscribe(i)} /></h7>
+            <div style={{ padding: '10px' }} className='card-block'>
+              <select className='form-control m-input m-input--square' value={postbackPayload[i].sequenceId} onChange={(e) => this.onSequenceChange(e, i)}>
+                <option key='' value='' disabled>Select Sequence...</option>
+                {
+                  this.props.sequences.map((seq, i) => (
+                    seq.sequence.trigger.event === 'subscribes_to_sequence'
+                      ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
+                  ))
+                }
+              </select>
+            </div>
+          </div>
+        ))
+      } else if (postbackPayload[i].action === 'google_sheets') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+            <h7 className='card-header'>Google Sheets <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={(index) => this.closeGoogleSheets(i)} /></h7>
+            <div style={{ padding: '10px' }} className='card-block'>
+              <GoogleSheetActions
+                saveGoogleSheet={(googleSheetPayload) => this.saveGoogleSheet(googleSheetPayload, i)}
+                removeGoogleAction={() => this.removeGoogleAction(i)}
+                googleSheetAction={postbackPayload[i].googleSheetAction}
+                worksheet={postbackPayload[i].worksheet}
+                worksheetName={postbackPayload[i].worksheetName}
+                spreadSheet={postbackPayload[i].spreadSheet}
+                mapping={postbackPayload[i].mapping}
+                lookUpValue={postbackPayload[i].lookUpValue}
+                lookUpColumn={postbackPayload[i].lookUpColumn}
+                toggleGSModal={this.props.toggleGSModal}
+                closeGSModal={this.props.closeGSModal}
+                GSModalTarget='ActionModal'
+              />
+            </div>
+          </div>
+        ))
+      } else if (postbackPayload[i].action === 'hubspot') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+            <h7 className='card-header'>Hubspot <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeHubspot(i)} /></h7>
+            <div style={{ padding: '10px' }} className='card-block'>
+              <HubspotActions
+                savehubSpotForm={(hubspotPayload) => this.savehubSpotForm(hubspotPayload, i)}
+                hubspotAction={postbackPayload[i].hubspotAction}
+                removeHubspotAction={() => this.removeHubspotAction(i)}
+                hubSpotForm={postbackPayload[i].hubSpotForm}
+                portalId={postbackPayload[i].portalId}
+                mapping={postbackPayload[i].mapping}
+                identityFieldValue={postbackPayload[i].identityFieldValue}
+                index={this.props.index}
+                toggleGSModal={this.props.toggleGSModal}
+                closeGSModal={this.props.closeGSModal}
+                GSModalTarget='ActionModal'
+              />
+            </div>
+          </div>
+        ))
+      } else if (postbackPayload[i].action === 'send_message_block') {
+        postbackActions.push((
+          <div style={{ marginTop: '30px' }} className='card'>
+          <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.removeReplyWithMessage(i)} />
+          </h7>
+          <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
+        </div>
+        ))
+      }
+    }
+    return postbackActions
+  }
+
   render() {
     return (
-      <div id={this.buttonId} className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '300px', marginBottom: '30px', padding: '20px' }} >
+      <div id={this.buttonId} className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', marginBottom: '30px', padding: '20px' }} >
         <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
         <div onClick={this.props.closeButton} style={{ marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer' }}><span role='img' aria-label='times'>❌</span></div>
         <div>
@@ -801,68 +896,10 @@ class Button extends React.Component {
           <input style={{ borderColor: this.state.title === '' ? 'red' : '' }} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
           <div style={{ color: 'red', textAlign: 'left' }}>{this.state.title === '' ? '*Required' : ''}</div>
 
-          <div style={{ marginTop: '30px' }}>
-            {
-              !this.state.openCustomField && !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.sendSequenceMessageButton && !this.state.openWebView && !this.state.openCreateMessage && !this.state.openGoogleSheets && !this.state.openHubspot &&
-              <div>
-                <h6 style={{ color: 'red' }}>Select one of the below actions:</h6>
-                {
-                  (this.props.buttonActions.indexOf('open website') > -1) &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px' }} onClick={this.showWebsite}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-external-link' /> Open a website</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('open webview') > -1) &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px' }} onClick={this.showWebView}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-external-link' /> Open a webview</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('create message') > -1) && !(this.props.isGalleryCard === 'true') &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', cursor: 'pointer', marginBottom: '10px' }} onClick={this.replyWithMessage}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-external-link' /> Reply with a message</h7>
-                  </div>
-                }
-                {
-                  (this.props.buttonActions.indexOf('send sequence message') > -1) &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', cursor: 'pointer' }} onClick={this.sendSequenceMessageButton}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-share' /> Send Sequence Message</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('subscribe sequence') > -1) && this.state.showSequenceMessage &&
-                  this.props.sequences && this.props.sequences.length > 0 &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showSubscribe}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('unsubscribe sequence') > -1) && this.state.showSequenceMessage &&
-                  this.props.sequences && this.props.sequences.length > 0 &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showUnsubscribe}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('set custom field') > -1) &&
-                  this.props.customFields && this.props.customFields.length > 0 &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showCustomField}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-pencil-square-o' /> Set Custom Field</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('google sheets') > -1) &&
-                  this.state.googleIntegration !== '' && this.state.googleIntegration.enabled &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showGoogleSheets}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-file-excel-o' /> Google Sheets</h7>
-                  </div>
-                }
-                {(this.props.buttonActions.indexOf('hubspot') > -1) &&
-                  this.state.hubspotIntegration !== '' && this.state.hubspotIntegration.enabled &&
-                  <div style={{ border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer' }} onClick={this.showHubspot}>
-                    <h7 style={{ verticalAlign: 'middle', fontWeight: 'bold' }}><i className='fa fa-transgender-alt' /> Hubspot</h7>
-                  </div>
-                }
-              </div>
-            }
+          <div>
             {
               this.state.openWebsite &&
-              <div className='card'>
+              <div style={{ marginTop: '30px' }} className='card'>
                 <h7 className='card-header'>Open Website <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeWebsite} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <input id='button-weburl-input' type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
@@ -870,50 +907,8 @@ class Button extends React.Component {
               </div>
             }
             {
-              this.state.openCustomField &&
-              <div className='card'>
-                <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
-                <div style={{ padding: '10px' }} className='card-block'>
-                  <select value={this.state.customFieldId ? this.state.customFieldId : ''} style={{ borderColor: !this.state.customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event)}>
-                    <option value={''} disabled>Select a custom field</option>
-                    {
-                      this.props.customFields.map((customField, index) => {
-                        return (
-                          <option key={index} value={customField._id}>{customField.name}</option>
-                        )
-                      })
-                    }
-                  </select>
-                  {
-                    this.state.customFieldId &&
-                    <div style={{ marginTop: '25px' }}>
-                      <input style={{ borderColor: !this.state.customFieldValue ? 'red' : '' }} value={this.state.customFieldValue} onChange={(event) => this.updateCustomFieldValue(event)} placeholder='Enter value here...' className='form-control' />
-                      <div style={{ color: 'red', textAlign: 'left' }}>{!this.state.customFieldValue ? '*Required' : ''}</div>
-                    </div>
-                  }
-                  <div style={{ color: 'red', textAlign: 'left' }}>{!this.state.customFieldId ? '*Required' : ''}</div>
-                  {/* <button id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{marginTop: '30px', marginLeft: '10px'}} className='btn btn-primary btn-sm'>
-                          Manage Custom Fields
-                      </button> */}
-                </div>
-              </div>
-            }
-            {
-              this.state.openCreateMessage &&
-              <div className='card'>
-                <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.removeReplyWithMessage} />
-                </h7>
-                <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
-                {/* <div style={{padding: '10px'}} className='card-block'>
-                      <button className='btn btn-success m-btn m-btn--icon replyWithMessage' disabled={this.state.title === '' || this.props.disabled} onClick={this.replyWithMessage}>
-                       Create Message
-                       </button>
-                    </div> */}
-              </div>
-            }
-            {
               this.state.openWebView &&
-              <div className='card'>
+              <div style={{ marginTop: '30px' }} className='card'>
                 <h7 className='card-header'>Open WebView <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeWebview} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <div>
@@ -937,86 +932,27 @@ class Button extends React.Component {
               </div>
             }
             {
-              this.state.sendSequenceMessageButton &&
-              <div className='card'>
-                <h7 className='card-header'>Send Sequence Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeSendSequenceMessageButton} /></h7>
-              </div>
+              this.getPostbackActions()
             }
             {
-              this.state.openSubscribe &&
-              <div className='card'>
-                <h7 className='card-header'>Subscribe to Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeSubscribe} /></h7>
-                <div style={{ padding: '10px' }} className='card-block'>
-                  <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
-                    <option key='' value='' disabled>Select Sequence...</option>
-                    {
-                      this.props.sequences.map((seq, i) => (
-                        seq.sequence.trigger.event === 'subscribes_to_sequence'
-                          ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
-                      ))
-                    }
-                  </select>
-                </div>
-              </div>
-            }
-            {
-              this.state.openUnsubscribe &&
-              <div className='card'>
-                <h7 className='card-header'>Unsubscribe from Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeUnsubscribe} /></h7>
-                <div style={{ padding: '10px' }} className='card-block'>
-                  <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
-                    <option key='' value='' disabled>Select Sequence...</option>
-                    {
-                      this.props.sequences.map((seq, i) => (
-                        seq.sequence.trigger.event === 'subscribes_to_sequence'
-                          ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
-                      ))
-                    }
-                  </select>
-                </div>
-              </div>
-            }
-            {
-              this.state.openGoogleSheets &&
-              <div className='card'>
-                <h7 className='card-header'>Google Sheets <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeGoogleSheets} /></h7>
-                <div style={{ padding: '10px' }} className='card-block'>
-                  <GoogleSheetActions
-                    saveGoogleSheet={this.saveGoogleSheet}
-                    removeGoogleAction={this.removeGoogleAction}
-                    googleSheetAction={this.state.googleSheetAction}
-                    worksheet={this.state.worksheet}
-                    worksheetName={this.state.worksheetName}
-                    spreadSheet={this.state.spreadSheet}
-                    mapping={this.state.mapping}
-                    lookUpValue={this.state.lookUpValue}
-                    lookUpColumn={this.state.lookUpColumn}
-                    toggleGSModal={this.props.toggleGSModal}
-                    closeGSModal={this.props.closeGSModal}
-                    GSModalTarget='ActionModal'
+              !this.state.openWebsite && !this.state.openWebView &&
+              <div style={{ marginTop: '30px' }}>
+                  <button
+                    data-tip={'Assign action(s) to this button'}
+                    id={`addAction-${this.buttonId}`}
+                    onClick={this.showButtonActionPopover}
+                    style={{border: '1px dashed #36a3f7', cursor: 'pointer', marginLeft: '22%', marginRight: '22%'}}
+                    type="button"
+                    className="btn m-btn--pill btn-outline-info btn-sm m-btn m-btn--custom">
+                    + Add Action
+                  </button>
+
+                  <ActionsPopover
+                    showPopover={this.state.showButtonActionPopover}
+                    togglePopover={this.toggleButtonActionPopover}
+                    targetId={`addAction-${this.buttonId}`}
+                    actions={this.createButtonActions()}
                   />
-                </div>
-              </div>
-            }
-            {
-              this.state.openHubspot &&
-              <div className='card'>
-                <h7 className='card-header'>Hubspot <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeHubspot} /></h7>
-                <div style={{ padding: '10px' }} className='card-block'>
-                  <HubspotActions
-                    savehubSpotForm={this.savehubSpotForm}
-                    hubspotAction={this.state.hubspotAction}
-                    removeHubspotAction={this.removeHubspotAction}
-                    hubSpotForm={this.state.hubSpotForm}
-                    portalId={this.state.portalId}
-                    mapping={this.state.mapping}
-                    identityFieldValue={this.state.identityFieldValue}
-                    index={this.props.index}
-                    toggleGSModal={this.props.toggleGSModal}
-                    closeGSModal={this.props.closeGSModal}
-                    GSModalTarget='ActionModal'
-                  />
-                </div>
               </div>
             }
           </div>
