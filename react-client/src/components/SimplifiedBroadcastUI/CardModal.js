@@ -26,12 +26,12 @@ class CardModal extends React.Component {
         }
       }
     }
-    let messengerAdPayloads = []
+    let buttonPayloads = []
     for (let i = 0; i < cards.length; i++) {
       if (cards[i].component.buttons && cards[i].component.buttons.length > 0) {
         for (let j = 0; j < cards[i].component.buttons.length; j++) {
           if (cards[i].component.buttons[j].payload) {
-            messengerAdPayloads.push(cards[i].component.buttons[j].payload)
+            buttonPayloads.push(cards[i].component.buttons[j].payload)
           }
         }
       }
@@ -46,7 +46,7 @@ class CardModal extends React.Component {
       buttonDisabled: false,
       actionDisabled: false,
       numOfElements: cards.length,
-      messengerAdPayloads
+      buttonPayloads
     }
 
     this.carouselIndicatorStyle = {
@@ -202,18 +202,18 @@ class CardModal extends React.Component {
 
   getDeletePayload(buttons) {
     console.log('getDeletePayload buttons', buttons)
-    console.log('getDeletePayload messengerAdPayloads', this.state.messengerAdPayloads)
+    console.log('getDeletePayload buttonPayloads', this.state.buttonPayloads)
     let deletePayload = []
-    if (this.state.messengerAdPayloads.length > 0) {
-      for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
+    if (this.state.buttonPayloads.length > 0) {
+      for (let i = 0; i < this.state.buttonPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (this.state.messengerAdPayloads[i] === buttons[j].payload) {
+          if (this.state.buttonPayloads[i] === buttons[j].payload) {
             foundPayload = true
           }
         }
         if (!foundPayload) {
-          deletePayload.push(this.state.messengerAdPayloads[i])
+          deletePayload = deletePayload.concat(JSON.parse(this.state.buttonPayloads[i]))
         } else {
           foundPayload = false
         }

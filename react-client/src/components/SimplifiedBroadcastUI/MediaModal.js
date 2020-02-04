@@ -18,7 +18,8 @@ class MediaModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
       file: props.file ? props.file : null,
-      edited: false
+      edited: false,
+      buttonPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
     this.updateFile = this.updateFile.bind(this)
     this.updateImage = this.updateImage.bind(this)
@@ -38,6 +39,23 @@ class MediaModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent MediaModal', this.state)
+    let deletePayload = []
+    if (this.state.buttonPayloads.length > 0) {
+      for (let i = 0; i < this.state.buttonPayloads.length; i++) {
+        let foundPayload = false
+        for (let j = 0; j < buttons.length; j++) {
+          if (this.state.buttonPayloads[i] === buttons[j].payload) {
+            foundPayload = true
+          }
+        }
+        if (!foundPayload) {
+          deletePayload = deletePayload.concat(JSON.parse(this.state.buttonPayloads[i]))
+        } else {
+          foundPayload = false
+        }
+      }
+    }
+    console.log('deletePayload', deletePayload)
     if (this.props.module === 'jsonads') {
       this.props.addComponent({
         id: this.props.id,
@@ -46,7 +64,8 @@ class MediaModal extends React.Component {
         file: this.state.file,
         fileurl: this.state.file ? this.state.file.fileurl : '',
         fileName: this.state.file.fileName,
-        image_url: this.state.file ? this.state.file.image_url : ''
+        image_url: this.state.file ? this.state.file.image_url : '',
+        deletePayload
       },
         this.props.edit)
     } else {
@@ -60,6 +79,7 @@ class MediaModal extends React.Component {
         size: this.state.file.size,
         type: this.state.file.type,
         mediaType: this.state.imgSrc ? 'image' : 'video',
+        deletePayload,
         buttons
       }, this.props.edit)
     }

@@ -1421,7 +1421,8 @@ class Builders extends React.Component {
             size: broadcast.size,
             type: broadcast.type,
             mediaType: broadcast.mediaType,
-            buttons: broadcast.buttons ? broadcast.buttons : []})
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            deletePayload: broadcast.deletePayload})
         }
       },
       'userInput': {
