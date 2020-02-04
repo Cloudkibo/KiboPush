@@ -107,12 +107,12 @@ class Button extends React.Component {
         }
       }
       if (buttonAction === 'subscribe sequence') {
-        if (!this.doesActionExist('subscribe')) {
+        if (this.props.sequences.length > 0 && !this.doesActionExist('subscribe')) {
           buttonActions.push({title: 'Subscribe to sequence', action: this.showSubscribe})
         }
       }
       if (buttonAction === 'unsubscribe sequence') {
-        if (!this.doesActionExist('unsubscribe')) {
+        if (this.props.sequences.length > 0 && !this.doesActionExist('unsubscribe')) {
           buttonActions.push({title: 'Unsubscribe from sequence', action: this.showUnsubscribe})
         }
       }
