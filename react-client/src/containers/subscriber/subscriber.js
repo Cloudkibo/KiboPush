@@ -836,7 +836,6 @@ class Subscriber extends React.Component {
     this.setState({ subscribersData: data, subscribersDataAll: subscribers })
   }
   handleSubscriberClick(e) {
-    console.log('handleSubscriberClick', this.props.subscribers)
     var subscribers = JSON.parse(JSON.stringify(this.state.subscribersData))
     var subscribersAll = JSON.parse(JSON.stringify(this.state.subscribersDataAll))
     if (e.target.value === 'All') {
@@ -994,7 +993,6 @@ class Subscriber extends React.Component {
       })
     }
     if (nextProps.subscribers && nextProps.count) {
-      console.log('subscribers got', nextProps.subscribers)
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count, subscribersLoaded: true })
       if (this.state.subscriber && this.state.subscriber._id) {
@@ -1265,8 +1263,6 @@ class Subscriber extends React.Component {
       overflow: 'inherit',
       color: '#818a91'
     }
-    console.log('this.state.subscribersData', this.state.subscribersData)
-    console.log('this.props.subscribers', this.props.subscribers)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
