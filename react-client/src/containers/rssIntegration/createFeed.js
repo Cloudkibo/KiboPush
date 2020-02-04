@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { isWebURL, isRssUrl } from './../../utility/utils'
-import { createRssFeed, updateFeed, previewRssFeed } from '../../redux/actions/rssIntegration.actions'
+import { createNewsFeed, updateNewsFeed, previewNewsFeed } from '../../redux/actions/rssIntegration.actions'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import { RingLoader } from 'halogenium'
@@ -73,7 +73,7 @@ class CreateFeed extends React.Component {
     this.setState({
       loading: true
     })
-    this.props.previewRssFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
+    this.props.previewNewsFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
   }
 
   pageHasDefaultFeed (pageId) {
@@ -143,13 +143,13 @@ class CreateFeed extends React.Component {
       integrationType: 'rss'
     }
     if (!this.props.currentFeed) {
-      this.props.createRssFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
+      this.props.createNewsFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
     } else {
       var data = {
         feedId: this.props.currentFeed._id,
         updatedObject: rssPayload
       }
-      this.props.updateFeed(data, this.msg, false, () => {this.setState({ loading: false})})
+      this.props.updateNewsFeed(data, this.msg, false, () => {this.setState({ loading: false})})
     }
   }
 
@@ -454,9 +454,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      createRssFeed: createRssFeed,
-      previewRssFeed: previewRssFeed,
-      updateFeed: updateFeed,
+      createNewsFeed: createNewsFeed,
+      previewNewsFeed: previewNewsFeed,
+      updateNewsFeed: updateNewsFeed,
       getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions
