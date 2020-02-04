@@ -82,40 +82,54 @@ class Button extends React.Component {
     this.createButtonActions = this.createButtonActions.bind(this)
     this.showButtonActionPopover = this.showButtonActionPopover.bind(this)
     this.toggleButtonActionPopover = this.toggleButtonActionPopover.bind(this)
+    this.doesActionExist = this.doesActionExist.bind(this)
     this.scrollToElement = this.scrollToElement.bind(this)
     this.scrolled = false
+  }
+
+  doesActionExist (action) {
+    return this.state.postbackPayload.filter(p => p.action === action).length > 0
   }
 
   createButtonActions () {
     let buttonActions = []
     for (let i = 0; i < this.props.buttonActions.length; i++) {
       let buttonAction = this.props.buttonActions[i]
-      if (buttonAction === 'open website' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
+      if (buttonAction === 'open website' && this.state.postbackPayload.length === 0) {
         buttonActions.push({title: 'Open website', action: this.showWebsite})
       }
-      if (buttonAction === 'open webview' && this.state.postbackPayload.length === 0 && !this.state.openCreateMessage) {
+      if (buttonAction === 'open webview' && this.state.postbackPayload.length === 0) {
         buttonActions.push({title: 'Open webview', action: this.showWebView})
       }
-      if (buttonAction === 'create message' && !this.state.openCreateMessage) {
-        buttonActions.push({title: 'Reply with a message', action: this.replyWithMessage})
-      }
-      if (buttonAction === 'send sequence message') {
-        buttonActions.push({title: 'Send sequence message', action: this.sendSequenceMessageButton})
+      if (buttonAction === 'create message') {
+        if (!this.doesActionExist('send_message_block')) {
+          buttonActions.push({title: 'Reply with a message', action: this.replyWithMessage})
+        }
       }
       if (buttonAction === 'subscribe sequence') {
-        buttonActions.push({title: 'Subscribe to sequence', action: this.showSubscribe})
+        if (!this.doesActionExist('subscribe')) {
+          buttonActions.push({title: 'Subscribe to sequence', action: this.showSubscribe})
+        }
       }
       if (buttonAction === 'unsubscribe sequence') {
-        buttonActions.push({title: 'Unsubscribe from sequence', action: this.showUnsubscribe})
+        if (!this.doesActionExist('unsubscribe')) {
+          buttonActions.push({title: 'Unsubscribe from sequence', action: this.showUnsubscribe})
+        }
       }
       if (buttonAction === 'set custom field') {
-        buttonActions.push({title: 'Set custom field', action: this.showCustomField})
+        if (!this.doesActionExist('set_custom_field')) {
+          buttonActions.push({title: 'Set custom field', action: this.showCustomField})
+        }
       }
       if (buttonAction === 'google sheets' && this.state.googleIntegration) {
-        buttonActions.push({title: 'Google Sheets', action: this.showGoogleSheets})
+        if (!this.doesActionExist('google_sheets')) {
+          buttonActions.push({title: 'Google Sheets', action: this.showGoogleSheets})
+        }
       }
       if (buttonAction === 'hubspot' && this.state.hubspotIntegration) {
-        buttonActions.push({title: 'Hubspot', action: this.showHubspot})
+        if (!this.doesActionExist('hubspot')) {
+          buttonActions.push({title: 'Hubspot', action: this.showHubspot})
+        } 
       }
     }
     return buttonActions
@@ -582,6 +596,7 @@ class Button extends React.Component {
   }
 
   removeReplyWithMessage(index) {
+    debugger;
     let postbackPayload = this.state.postbackPayload
     postbackPayload.splice(index, 1)
     this.setState({
@@ -897,11 +912,12 @@ class Button extends React.Component {
         ))
       } else if (postbackPayload[i].action === 'send_message_block') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }} className='card'>
-          <h7 className='card-header'>Reply with a Message <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.removeReplyWithMessage(i)} />
-          </h7>
-          <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
-        </div>
+          <div id={`send_message_block${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
+            <h7 className='card-header'>Reply with a Message 
+              <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.removeReplyWithMessage(i)} />
+            </h7>
+            <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
+          </div>
         ))
       }
     }
@@ -909,6 +925,7 @@ class Button extends React.Component {
   }
 
   render() {
+    let buttonActions = this.createButtonActions()
     return (
       <div id={this.buttonId} className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', marginBottom: '30px', padding: '20px' }} >
         <CustomFields onLoadCustomFields={this.onLoadCustomFields} />
@@ -957,7 +974,7 @@ class Button extends React.Component {
               this.getPostbackActions()
             }
             {
-              !this.state.openWebsite && !this.state.openWebView &&
+              !this.state.openWebsite && !this.state.openWebView && buttonActions.length > 0 &&
               <div style={{ marginTop: '30px' }}>
                   <button
                     data-tip={'Assign action(s) to this button'}
@@ -973,7 +990,7 @@ class Button extends React.Component {
                     showPopover={this.state.showButtonActionPopover}
                     togglePopover={this.toggleButtonActionPopover}
                     targetId={`addAction-${this.buttonId}`}
-                    actions={this.createButtonActions()}
+                    actions={buttonActions}
                   />
               </div>
             }
