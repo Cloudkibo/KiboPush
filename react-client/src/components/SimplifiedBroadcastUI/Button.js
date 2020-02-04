@@ -82,6 +82,8 @@ class Button extends React.Component {
     this.createButtonActions = this.createButtonActions.bind(this)
     this.showButtonActionPopover = this.showButtonActionPopover.bind(this)
     this.toggleButtonActionPopover = this.toggleButtonActionPopover.bind(this)
+    this.scrollToElement = this.scrollToElement.bind(this)
+    this.scrolled = false
   }
 
   createButtonActions () {
@@ -185,6 +187,10 @@ class Button extends React.Component {
     }
   }
 
+  scrollToElement (elementId) {
+    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' })
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     let newState = {
       title: nextProps.tempButton
@@ -203,8 +209,9 @@ class Button extends React.Component {
     if (newState.openPopover) {
       this.setState(newState)
     }
-    if (nextProps.scrollTo) {
-      document.getElementById(this.buttonId).scrollIntoView({ behavior: 'smooth' })
+    if (nextProps.scrollTo && !this.scrolled) {
+      this.scrolled = true
+      this.scrollToElement(this.buttonId)
     }
     if (nextProps.integrations && nextProps.integrations.length > 0) {
       let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
@@ -278,7 +285,9 @@ class Button extends React.Component {
       customFieldId: '',
       customFieldValue: ''
     })
-    this.setState({ openCustomField: true, postbackPayload })
+    this.setState({ openCustomField: true, postbackPayload }, () => {
+      this.scrollToElement(`set_custom_field${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
@@ -296,7 +305,9 @@ class Button extends React.Component {
       lookUpValue: '',
       lookUpColumn: ''
     })
-    this.setState({ postbackPayload })
+    this.setState({ postbackPayload }, () => {
+      this.scrollToElement(`google_sheets${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
@@ -312,20 +323,26 @@ class Button extends React.Component {
       mapping: '',
       identityCustomFieldValue: ''
     })
-    this.setState({ postbackPayload })
+    this.setState({ postbackPayload }, () => {
+      this.scrollToElement(`hubspot${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
 
   showWebsite() {
-    this.setState({ openWebsite: true })
+    this.setState({ openWebsite: true }, () => {
+      this.scrollToElement(`open_website${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
   }
   showWebView() {
-    this.setState({ openWebView: true })
+    this.setState({ openWebView: true }, () => {
+      this.scrollToElement(`open_website${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
@@ -337,7 +354,9 @@ class Button extends React.Component {
       action: 'subscribe',
       sequenceId: ''
     })
-    this.setState({ postbackPayload })
+    this.setState({ postbackPayload }, () => {
+      this.scrollToElement(`subscribe${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
@@ -349,7 +368,9 @@ class Button extends React.Component {
       action: 'unsubscribe',
       sequenceId: ''
     })
-    this.setState({ postbackPayload})
+    this.setState({ postbackPayload}, () => {
+      this.scrollToElement(`unsubscribe${this.buttonId}`)
+    })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
     }
@@ -553,6 +574,7 @@ class Button extends React.Component {
       openCreateMessage: true,
       postbackPayload
     }, () => {
+      this.scrollToElement(`send_message_block${this.buttonId}`)
       if (this.props.updateButtonStatus) {
         this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
       }
@@ -769,7 +791,7 @@ class Button extends React.Component {
     for (let i = 0; i < postbackPayload.length; i++) {
       if (postbackPayload[i].action === 'set_custom_field') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }}className='card'>
+          <div id={`set_custom_field${this.buttonId}`} style={{ marginTop: '30px' }}className='card'>
             <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <select value={postbackPayload[i].customFieldId ? postbackPayload[i].customFieldId : ''} style={{ borderColor: !postbackPayload[i].customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event, i)}>
@@ -798,7 +820,7 @@ class Button extends React.Component {
         ))
       } else if (postbackPayload[i].action === 'subscribe') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }} className='card'>
+          <div id={`subscribe${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
             <h7 className='card-header'>Subscribe to Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeSubscribe(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <select className='form-control m-input m-input--square' value={postbackPayload[i].sequenceId} onChange={(e) => this.onSequenceChange(e, i)}>
@@ -815,7 +837,7 @@ class Button extends React.Component {
         ))
       } else if (postbackPayload[i].action === 'unsubscribe') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }} className='card'>
+          <div id={`unsubscribe${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
             <h7 className='card-header'>Unsubscribe from Sequence <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeUnsubscribe(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <select className='form-control m-input m-input--square' value={postbackPayload[i].sequenceId} onChange={(e) => this.onSequenceChange(e, i)}>
@@ -832,7 +854,7 @@ class Button extends React.Component {
         ))
       } else if (postbackPayload[i].action === 'google_sheets') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }} className='card'>
+          <div id={`google_sheets${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
             <h7 className='card-header'>Google Sheets <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={(index) => this.closeGoogleSheets(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <GoogleSheetActions
@@ -854,7 +876,7 @@ class Button extends React.Component {
         ))
       } else if (postbackPayload[i].action === 'hubspot') {
         postbackActions.push((
-          <div style={{ marginTop: '30px' }} className='card'>
+          <div id={`hubspot${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
             <h7 className='card-header'>Hubspot <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeHubspot(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <HubspotActions
@@ -899,7 +921,7 @@ class Button extends React.Component {
           <div>
             {
               this.state.openWebsite &&
-              <div style={{ marginTop: '30px' }} className='card'>
+              <div id={`open_website${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
                 <h7 className='card-header'>Open Website <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeWebsite} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <input id='button-weburl-input' type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
@@ -908,7 +930,7 @@ class Button extends React.Component {
             }
             {
               this.state.openWebView &&
-              <div style={{ marginTop: '30px' }} className='card'>
+              <div id={`open_webview${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
                 <h7 className='card-header'>Open WebView <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeWebview} /></h7>
                 <div style={{ padding: '10px' }} className='card-block'>
                   <div>
