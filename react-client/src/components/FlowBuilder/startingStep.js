@@ -22,6 +22,9 @@ class StartingStep extends React.Component {
             showAddComponentModal={this.props.showAddComponentModal}
             items={this.props.getItems(this.props.currentId)}
             changeMessage={this.props.changeMessage}
+            handleSidePanel={this.props.handleSidePanel}
+            sidePanelStyle={{background: '#34bfa3', color: 'white'}}
+            currentId={this.props.currentId}
           />
         </div>
       </div>
@@ -36,7 +39,8 @@ StartingStep.propTypes = {
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
   'getItems': PropTypes.func.isRequired,
-  'changeMessage': PropTypes.func.isRequired
+  'changeMessage': PropTypes.func.isRequired,
+  'handleSidePanel': PropTypes.func.isRequired
 }
 
 export default StartingStep

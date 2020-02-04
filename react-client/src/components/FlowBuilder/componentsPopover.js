@@ -6,6 +6,12 @@ class ComponentsPopover extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {}
+    this.onItemClick = this.onItemClick.bind(this)
+  }
+
+  onItemClick (component) {
+    this.props.togglePopover()
+    this.props.handleSidePanel(true, this.props.sidePanelStyle, this.props.currentId, component, 'Add')
   }
 
   render () {
@@ -25,7 +31,7 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('text')}
+            onClick={() => this.onItemClick('text')}
             type="button"
             className="btn btn-outline-brand"
           >
@@ -38,11 +44,11 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('media')}
+            onClick={() => this.onItemClick('attachments')}
             type="button"
             className="btn btn-outline-brand"
           >
-              + Add Media Component
+              + Add Attachments Component
           </button>
           <button
             style={{
@@ -51,7 +57,7 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('card')}
+            onClick={() => this.onItemClick('gallery')}
             type="button"
             className="btn btn-outline-brand"
           >
@@ -64,11 +70,11 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('audio')}
+            onClick={() => this.onItemClick('YouTube/Facebook video')}
             type="button"
             className="btn btn-outline-brand"
           >
-              + Add Audio Component
+              + Add YouTube/Facebook Video Component
           </button>
           <button
             style={{
@@ -77,33 +83,7 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('file')}
-            type="button"
-            className="btn btn-outline-brand"
-          >
-              + Add File Component
-          </button>
-          <button
-            style={{
-              margin: '5px',
-              border: '1px dashed #716aca',
-              whiteSpace: 'normal',
-              width: '235px'
-            }}
-            onClick={() => this.props.showAddComponentModal('video')}
-            type="button"
-            className="btn btn-outline-brand"
-          >
-              + Add YouTube Video Component
-          </button>
-          <button
-            style={{
-              margin: '5px',
-              border: '1px dashed #716aca',
-              whiteSpace: 'normal',
-              width: '235px'
-            }}
-            onClick={() => this.props.showAddComponentModal('link')}
+            onClick={() => this.onItemClick('link carousel')}
             type="button"
             className="btn btn-outline-brand"
           >
@@ -116,7 +96,7 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.props.showAddComponentModal('userInput')}
+            onClick={() => this.onItemClick('user input')}
             type="button"
             className="btn btn-outline-brand"
           >
@@ -132,7 +112,10 @@ ComponentsPopover.propTypes = {
   'showPopover': PropTypes.bool.isRequired,
   'togglePopover': PropTypes.func.isRequired,
   'targetId': PropTypes.string.isRequired,
-  'showAddComponentModal': PropTypes.func.isRequired
+  'showAddComponentModal': PropTypes.func.isRequired,
+  'sidePanelStyle': PropTypes.object.isRequired,
+  'handleSidePanel': PropTypes.func.isRequired,
+  'currentId': PropTypes.string.isRequired
 }
 
 export default ComponentsPopover
