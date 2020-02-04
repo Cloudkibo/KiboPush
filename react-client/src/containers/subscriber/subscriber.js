@@ -1989,13 +1989,13 @@ class Subscriber extends React.Component {
                             </div>
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{marginLeft: '-75px'}} className='col-5'>
+                                <div style={{marginLeft: '-12%'}} className='col-5'>
                                   <input placeholder={'Enter field value...'} value={this.state.selectedField ? this.state.selectedField.value : ''} onChange={this.handleSelectedFieldValue} className='form-control' />
                                 </div>
                             }
                             {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                              <div style={{marginLeft: '-15px'}}  className='col-1'>
+                              <div style={{marginLeft: '-3%'}}  className='col-1'>
                                 <button disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()} className='btn btn-primary'>
                                   Save
                                 </button>
