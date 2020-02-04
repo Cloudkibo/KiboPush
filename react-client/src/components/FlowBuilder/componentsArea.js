@@ -45,6 +45,9 @@ class ComponentsArea extends React.Component {
           togglePopover={this.toggleComponentsPopover}
           targetId={`message-${this.props.currentId}`}
           showAddComponentModal={this.props.showAddComponentModal}
+          handleSidePanel={this.props.handleSidePanel}
+          sidePanelStyle={this.props.sidePanelStyle}
+          currentId={this.props.currentId}
         />
 
         <DragSortableList
@@ -70,10 +73,12 @@ class ComponentsArea extends React.Component {
 }
 
 ComponentsArea.propTypes = {
-  'currentId': PropTypes.string,
   'showAddComponentModal': PropTypes.func.isRequired,
   'items': PropTypes.array.isRequired,
-  'changeMessage': PropTypes.func.isRequired
+  'changeMessage': PropTypes.func.isRequired,
+  'sidePanelStyle': PropTypes.object.isRequired,
+  'handleSidePanel': PropTypes.func.isRequired,
+  'currentId': PropTypes.string.isRequired
 }
 
 export default ComponentsArea

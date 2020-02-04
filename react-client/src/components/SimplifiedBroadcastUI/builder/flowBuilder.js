@@ -9,6 +9,7 @@ import STARTINGSTEP from '../../../components/FlowBuilder/startingStep'
 import COMPONENTSBLOCK from '../../../components/FlowBuilder/componentBlock'
 import ACTIONBLOCK from '../../../components/FlowBuilder/actionBlock'
 import SIDEBAR from '../../../components/FlowBuilder/sidebar'
+import SIDEPANEL from '../../broadcast/sidePanel/main'
 import Targeting from '../../../containers/convo/Targeting'
 import ReactFullScreenElement from "react-fullscreen-element"
 import { mapValues, cloneDeep } from 'lodash'
@@ -25,7 +26,8 @@ class FlowBuilder extends React.Component {
       minScale: 0.5,
       chart: this.getChartData(),
       prevChart: {},
-      selected: {}
+      selected: {},
+      sidePanel: {headerStyle: {}}
     }
 
     this.getNodeInner = this.getNodeInner.bind(this)
@@ -52,9 +54,27 @@ class FlowBuilder extends React.Component {
     this.updateSvgZIndex = this.updateSvgZIndex.bind(this)
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
     this.disableReset = this.disableReset.bind(this)
+    this.handleSidePanel = this.handleSidePanel.bind(this)
 
     this.updateZIndex = true
 
+  }
+
+  handleSidePanel (show, headerStyle, currentId, component, action) {
+    if (show) {
+      document.getElementById('broadcast_side_panel').classList.add('m-quick-sidebar--on')
+      const flowBuilderChart = document.getElementById(`flowBuilderCard-${currentId}`)
+      const domRect = flowBuilderChart.getBoundingClientRect()
+      console.log('transform value', domRect)
+      const panelProps = {
+        headerStyle,
+        component,
+        action
+      }
+      this.setState({sidePanel: panelProps})
+    } else {
+      document.getElementById('broadcast_side_panel').classList.remove('m-quick-sidebar--on')
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -482,6 +502,7 @@ class FlowBuilder extends React.Component {
             getItems={this.props.getItems}
             currentId={node.properties.id}
             changeMessage={this.props.changeMessage}
+            handleSidePanel={this.handleSidePanel}
           />
         )
       } else if (node.type === 'component_block') {
@@ -496,6 +517,7 @@ class FlowBuilder extends React.Component {
             changeMessage={this.props.changeMessage}
             getItems={this.props.getItems}
             removeMessage={this.props.removeMessage}
+            handleSidePanel={this.handleSidePanel}
           />
         )
       } else if (node.type === 'action_block') {
@@ -927,7 +949,7 @@ class FlowBuilder extends React.Component {
                 this.props.linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -987,7 +1009,7 @@ class FlowBuilder extends React.Component {
                 this.props.unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -1075,6 +1097,12 @@ class FlowBuilder extends React.Component {
                 </div>
               </div>
             </ReactFullScreenElement>
+            <div style={{padding: '0px', border: '1px solid ' + this.state.sidePanel.headerStyle.background}} id="broadcast_side_panel" class="m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light">
+              <SIDEPANEL
+                handleSidePanel={this.handleSidePanel}
+                panelProps={this.state.sidePanel}
+              />
+            </div>
           </div>
           <div className='tab-pane' id='tab_2'>
             <div className='m-portlet m-portlet--mobile'>
