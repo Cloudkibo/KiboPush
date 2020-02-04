@@ -1452,6 +1452,38 @@ class Builders extends React.Component {
       </div>
 
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div style={{ display: 'block' }} className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Warning
+              </h5>
+              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">
+                  &times;
+                </span>
+              </button>
+            </div>
+            <div style={{ color: 'black' }} className="modal-body">
+              <p>Are you sure you want to close this modal and lose all the data that was entered?</p>
+              <button style={{ float: 'right', marginLeft: '10px' }}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.closeModalAlertDialog()
+                  this.closeAddComponentModal()
+                }} data-dismiss='modal'>Yes
+            </button>
+              <button style={{ float: 'right' }}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.closeModalAlertDialog()
+                }} data-dismiss='modal'>Cancel
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <a href='#/' style={{ display: 'none' }} ref='resetModal' data-toggle="modal" data-target="#resetModal">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
