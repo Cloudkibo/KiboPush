@@ -11,9 +11,9 @@ class TextModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       buttonLimit: 3,
       buttonDisabled: false,
-      messengerAdPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
+      buttonPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
-    console.log('messengerAdPayloads', this.state.messengerAdPayloads)
+    console.log('buttonPayloads', this.state.buttonPayloads)
     console.log('TextModal initial state', this.state)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -53,18 +53,18 @@ class TextModal extends React.Component {
   addComponent(buttons) {
     console.log('addComponent in TextModal', this.props)
     console.log('buttons in addComponent', buttons)
-    console.log('messengerAdPayloads in addComponent', this.state.messengerAdPayloads)
+    console.log('buttonPayloads in addComponent', this.state.buttonPayloads)
     let deletePayload = []
-    if (this.state.messengerAdPayloads.length > 0) {
-      for (let i = 0; i < this.state.messengerAdPayloads.length; i++) {
+    if (this.state.buttonPayloads.length > 0) {
+      for (let i = 0; i < this.state.buttonPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (this.state.messengerAdPayloads[i] === buttons[j].payload) {
+          if (this.state.buttonPayloads[i] === buttons[j].payload) {
             foundPayload = true
           }
         }
         if (!foundPayload) {
-          deletePayload.push(this.state.messengerAdPayloads[i])
+          deletePayload = deletePayload.concat(JSON.parse(this.state.buttonPayloads[i]))
         } else {
           foundPayload = false
         }
