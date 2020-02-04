@@ -24,14 +24,14 @@ class CreateCustomField extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('componentWillRecieveProps customfields', nextProps)
     if (nextProps.customField) {
-      this.setState({ 
+      this.setState({
           customField: nextProps.customField,
           name: nextProps.customField.name,
           type: nextProps.customField.type,
           description: nextProps.customField.description
       })
     } else if (this.props.customField) {
-        this.setState({ 
+        this.setState({
             customField: null,
             name: '',
             type: '',
@@ -59,16 +59,16 @@ class CreateCustomField extends React.Component {
         let data = {
             customFieldId: this.props.customField._id,
             updated: {
-                name: this.props.customField.name !== this.state.name ? this.state.name.toLowerCase() : undefined,
-                description: this.state.description.toLocaleLowerCase(),
+                name: this.props.customField.name !== this.state.name ? this.state.name : undefined,
+                description: this.state.description,
             }
         }
         this.props.updateCustomField(data, this.handleUpdateResponse)
     } else {
         let data = {
-            name: this.state.name.toLowerCase(),
+            name: this.state.name,
             type: this.state.type.toLowerCase(),
-            description: this.state.description.toLocaleLowerCase(),
+            description: this.state.description,
             companyId: '',
             createdBy: ''
         }
