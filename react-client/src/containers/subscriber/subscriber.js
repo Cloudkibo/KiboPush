@@ -333,7 +333,7 @@ class Subscriber extends React.Component {
   setSelectedField(e) {
     console.log('setSelectedField', e.target.value)
     console.log('this.props.customFields', this.props.customFields)
-    let field = this.state.customFieldOptions.find(cf => cf._id === e.target.value)
+    let field = this.state.subscriber.customFields.find(cf => cf._id === e.target.value)
     console.log('field found', field)
     this.setState({selectedField: field})
   }
@@ -415,7 +415,7 @@ class Subscriber extends React.Component {
     }
   }
   setSubscriber(s) {
-    this.setState({ subscriber: s, show: false }, () => {
+    this.setState({ subscriber: s }, () => {
       console.log('find me', this.state.subscriber)
     })
     this.props.getSubscriberSequences(s._id)
@@ -1449,6 +1449,8 @@ class Subscriber extends React.Component {
                                           <option value='direct_message'>Direct Message</option>
                                           <option value='customer_matching'>Phone Number</option>
                                           <option value='chat_plugin'>Chat Plugin</option>
+                                          <option value='messaging_referrals'>Messaging Referral</option>
+                                          <option value='landing_page'>Landing Page</option>
                                           <option value='shopify'>Shopify</option>
                                         </select>
                                       </div>
