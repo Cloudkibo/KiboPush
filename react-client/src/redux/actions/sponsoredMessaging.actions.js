@@ -110,7 +110,7 @@ export function send(data, msg) {
           dispatch(fetchSponsoredMessages())
           msg.success('Ad has been sent to Ads Manager')
         } else {
-          msg.error(res.payload.message)
+          msg.error(res.payload.error_user_msg)
         }
       })
    }

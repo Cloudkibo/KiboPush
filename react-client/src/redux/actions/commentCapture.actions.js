@@ -227,7 +227,6 @@ export function createCommentCapture (data, msg, handleCreate) {
   return (dispatch) => {
     callApi('post/create', 'post', data)
       .then(res => {
-        console.log('response from server', res)
         if (res.status === 'success' && res.payload) {
           msg.success('Comment Capture saved successfully')
           if (res.payload.post_id && res.payload.payload && res.payload.payload.length > 0) {
@@ -237,8 +236,9 @@ export function createCommentCapture (data, msg, handleCreate) {
           }
         } else {
           if (res.status === 'failed' && res.payload) {
-            if(res.payload.code === 506) {
-              msg.error(res.payload.error_user_msg)
+            let payload = JSON.parse(res.payload)
+            if(payload.code === 506) {
+              msg.error(payload.error_user_msg)
             }
             else {
               msg.error(res.payload)
