@@ -10,6 +10,7 @@ import ReactPaginate from 'react-paginate'
 import {fetchURLs, deleteURL, resetState} from '../../redux/actions/messengerRefURL.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import YouTube from 'react-youtube'
 
 class MessengerRefURL extends React.Component {
   constructor (props, context) {
@@ -21,7 +22,8 @@ class MessengerRefURL extends React.Component {
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
-      pageSelected: {}
+      pageSelected: {},
+      openVideo: false
     }
     props.loadMyPagesList()
     props.fetchURLs()
@@ -35,6 +37,7 @@ class MessengerRefURL extends React.Component {
     this.onEdit = this.onEdit.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.changePage = this.changePage.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
   componentDidMount () {
     const hostname = window.location.hostname
@@ -47,7 +50,12 @@ class MessengerRefURL extends React.Component {
 
     document.title = `${title} | Messenger References`
   }
-
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoMessengerRef.click()
+  }
   changePage (e) {
     this.setState({pageSelected: e.target.value})
   }
@@ -123,6 +131,40 @@ class MessengerRefURL extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <a href='#/' style={{ display: 'none' }} ref='videoMessengerRef' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoMessengerRef">videoMessengerRefModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoMessengerRef" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Messenger Ref Url Video Tutorial
+									</h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                    aria-label="Close" 
+                    onClick={() => {
+                      this.setState({
+                        openVideo: false
+                      })}}>
+                  <span aria-hidden="true">
+                    &times;
+											</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                {this.state.openVideo && <YouTube
+                  videoId='QIg23sgjmzo'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />}
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -200,7 +242,7 @@ class MessengerRefURL extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Messenfer Ref URLs? Here is the <a href='http://kibopush.com/messenger-ref-url' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
