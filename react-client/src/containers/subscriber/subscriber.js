@@ -836,8 +836,8 @@ class Subscriber extends React.Component {
     this.setState({ subscribersData: data, subscribersDataAll: subscribers })
   }
   handleSubscriberClick(e) {
-    var subscribers = this.state.subscribersData
-    var subscribersAll = this.state.subscribersDataAll
+    var subscribers = JSON.parse(JSON.stringify(this.state.subscribersData))
+    var subscribersAll = JSON.parse(JSON.stringify(this.state.subscribersDataAll))
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
@@ -963,22 +963,22 @@ class Subscriber extends React.Component {
   }
 
   loadSubscribers (currentPage, requestedPage) {
-    this.props.loadAllSubscribersListNew({ 
+    this.props.loadAllSubscribersListNew({
       current_page: currentPage,
       requested_page: requestedPage,
-      last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', 
-      number_of_records: 10, 
-      first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first', 
-      filter: true, 
-      filter_criteria: { 
-        search_value: this.state.searchValue, 
-        gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender, 
-        page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage, 
-        locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale, 
-        tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag, 
+      last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
+      number_of_records: 10,
+      first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first',
+      filter: true,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender,
+        page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage,
+        locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale,
+        tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
         status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
-        source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource 
-      } 
+        source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
+      }
     })
   }
 
@@ -1148,10 +1148,10 @@ class Subscriber extends React.Component {
   handleFilterByGender(e) {
     this.setState({ filterGender: e.target.value })
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ 
-        filter: true, 
-        filterByGender: e.target.value, 
-        pageSelected: 0 
+      this.setState({
+        filter: true,
+        filterByGender: e.target.value,
+        pageSelected: 0
       }, () => {
         this.loadSubscribers()
       })
@@ -1199,7 +1199,7 @@ class Subscriber extends React.Component {
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, pageSelected: 0 })
       if (e.target.value === 'subscribed') {
-        this.setState({ status_value: true }, () => { 
+        this.setState({ status_value: true }, () => {
           this.loadSubscribers()
         })
       } else {
@@ -1263,11 +1263,10 @@ class Subscriber extends React.Component {
       overflow: 'inherit',
       color: '#818a91'
     }
-
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1310,7 +1309,7 @@ class Subscriber extends React.Component {
               this.props.pages && this.props.pages.length === 0 &&
               <AlertMessage type='page' />
             }
-            <div style={{width: '74vw'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-technology m--font-accent' />
               </div>
@@ -1404,7 +1403,7 @@ class Subscriber extends React.Component {
                                         <option key='' value='' disabled>Filter by Locale...</option>
                                         <option key='ALL' value='all'>All</option>
                                         {
-                                          this.props.locales && this.props.locales.length > 0 && this.props.locales[0] && 
+                                          this.props.locales && this.props.locales.length > 0 && this.props.locales[0] &&
                                           this.props.locales.map((locale, i) => (
                                             <option key={i} value={locale.value}>{locale.text}</option>
                                           ))
@@ -1477,7 +1476,7 @@ class Subscriber extends React.Component {
                                     <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
                                       <option key='' value='' disabled>Assign Tag</option>
                                       {
-                                        this.state.options.map((option, i) => { 
+                                        this.state.options.map((option, i) => {
                                           return (
                                             <option key={i} value={option.value}>{option.label}</option>
                                           )
@@ -1494,11 +1493,11 @@ class Subscriber extends React.Component {
                                   <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.removeTags}>
                                     <option key='' value='' disabled>Unassign Tag</option>
                                     {
-                                      this.state.options.map((option, i) => { 
+                                      this.state.options.map((option, i) => {
                                         return (
                                           <option key={i} value={option.value}>{option.label}</option>
                                         )
-                                      })      
+                                      })
                                     }
                                   </select>
                                 </div>
@@ -1732,7 +1731,7 @@ class Subscriber extends React.Component {
                           </div>
                           : <div className='table-responsive'>
                             {
-                              this.state.subscribersLoaded ? 
+                              this.state.subscribersLoaded ?
                               <h6> No subscribers found that match the criteria </h6>
                               : <h6> Loading subscribers... </h6>
                             }
@@ -1743,9 +1742,9 @@ class Subscriber extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='table-responsive'>
                         {
-                          this.props.pages && this.props.pages.length === 0 ? 
+                          this.props.pages && this.props.pages.length === 0 ?
                           <h6> No pages connected. Please first connect a page. </h6>
-                          : 
+                          :
                           <h6> Loading... </h6>
                         }
                       </div>
@@ -1906,7 +1905,7 @@ class Subscriber extends React.Component {
                                   </a>
                                   <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '145px' }}><i className='la la-gear' /> Manage Fields</span>
                                 </span>
-                                :                         
+                                :
                                 <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '210px' }}><i className='la la-gear' /> Manage Fields</span>
                               }
                             </div>
@@ -1924,7 +1923,7 @@ class Subscriber extends React.Component {
                                                 style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
                                                 <span style={{ marginLeft: '10px' }}>
                                                   <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>                                              
+                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>
                                                 </span>
                                               </div>
                                             </div>
@@ -1990,13 +1989,13 @@ class Subscriber extends React.Component {
                             </div>
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{marginLeft: '-75px'}} className='col-5'>
+                                <div style={{marginLeft: '-12%'}} className='col-5'>
                                   <input placeholder={'Enter field value...'} value={this.state.selectedField ? this.state.selectedField.value : ''} onChange={this.handleSelectedFieldValue} className='form-control' />
                                 </div>
                             }
                             {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                              <div style={{marginLeft: '-15px'}}  className='col-1'>
+                              <div style={{marginLeft: '-3%'}}  className='col-1'>
                                 <button disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()} className='btn btn-primary'>
                                   Save
                                 </button>

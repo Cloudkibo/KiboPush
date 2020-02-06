@@ -153,7 +153,7 @@ class EditTemplate extends React.Component {
     }
 
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{marginLeft: '-255px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

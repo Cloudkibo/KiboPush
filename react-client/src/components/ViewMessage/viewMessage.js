@@ -275,7 +275,7 @@ class ViewMessage extends React.Component {
                                                                   }
                                                                   {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
                                                                 </button>
-                        
+
                                                                 {
                                                                     (index+1) < b.quickReplies.length &&
                                                                     <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
@@ -284,7 +284,7 @@ class ViewMessage extends React.Component {
                                                                       {b.quickReplies[index+1].title}
                                                                     </button>
                                                                 }
-                        
+
                                                                 {
                                                                     (index+2) < b.quickReplies.length &&
                                                                     <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">

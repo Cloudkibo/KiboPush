@@ -38,7 +38,7 @@ class PreviewInitialState extends React.Component {
 
     return (
       <div style={{width: '100%', height: '100%'}}>
-      <img src={this.state.backgroundImage} style={{width: '100%', height: '100%', filter: 'blur(3px) opacity(0.5)'}}/>
+      <img src={this.state.backgroundImage} alt='' style={{width: '100%', height: '100%', filter: 'blur(3px) opacity(0.5)'}}/>
       { this.props.currentWidget.type === 'bar' && this.props.currentWidget.submittedState.action_type === 'show_new_message' &&
       <div style={{ width: '100%', height: '25%', position: 'absolute', top:'0', padding: '10px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.33)', textAlign: 'center', background: this.props.currentWidget.submittedState.background_color}}> 
           <PreviewContent 

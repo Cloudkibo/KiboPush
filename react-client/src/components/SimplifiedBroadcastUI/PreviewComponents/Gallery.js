@@ -72,6 +72,33 @@ class Gallery extends React.Component {
     return deletePayload
   }
 
+  validateButton(button) {
+    let domButton = document.getElementById('button-' + button.id)
+    if (button.type === 'postback') {
+      let buttonPayload = JSON.parse(button.payload)
+      for (let i = 0; i < buttonPayload.length; i++) {
+        if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
+          if (!domButton) {
+            setTimeout(() => {
+              for (let j = 0; j < this.state.cards.length; j++) {
+                for (let k = 0; k < this.state.cards[j].buttons.length; k++) {
+                  this.validateButton(this.state.cards[j].buttons[k])
+                }
+              }
+            }, 100)
+          } else {
+            domButton.style['border-color'] = 'red'
+          }
+          return false
+        }
+      }
+    }
+    if (domButton) {
+      domButton.style['border-color'] = 'rgba(0,0,0,.1)'
+    }
+    return true
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -99,7 +126,7 @@ class Gallery extends React.Component {
                     {
                         this.props.module !== 'commentcapture' && card.buttons.map((button, index) => {
                             return (
-                            <div id={`button-${button.id}`} style={{border: !button.type ? 'solid 1px red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
+                            <div id={`button-${button.id}`} style={{border: !this.validateButton(button) ? 'solid 1px red' : '1px solid rgba(0,0,0,.1)', borderRadius: '5px', paddingTop: '2%'}}>
                                 {/* <hr style={{marginTop: !card.title && !card.subtitle && index === 0 ? '50px' : ''}}/> */}
                                 <h5 style={{color: '#0782FF'}}>{button.title}</h5>
                             </div>
@@ -115,17 +142,17 @@ class Gallery extends React.Component {
                 <div>
                   {
                     this.state.selectedIndex > 0 &&
-                    <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" role="button" >
+                    <span onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex-1)} className="carousel-control-prev" role="button" >
                       <span className="carousel-control-prev-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
                       <span className="sr-only">Previous</span>
-                    </a>
+                    </span>
                   }
                   {
                     this.state.selectedIndex < this.state.cards.length-1 &&
-                    <a href='#/' onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" role="button" data-slide="next">
-                    <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
-                    <span className="sr-only">Next</span>
-                </a>
+                    <span onClick={(e) => this.updateSelectedIndex(this.state.selectedIndex+1)} className="carousel-control-next" role="button" data-slide="next">
+                      <span className="carousel-control-next-icon" style={{cursor: 'pointer', backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")`}} aria-hidden="true"></span>
+                      <span className="sr-only">Next</span>
+                    </span>
                   }
                 </div>
             }

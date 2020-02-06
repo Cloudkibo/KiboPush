@@ -77,7 +77,21 @@ class CreateConvo extends React.Component {
     this.rerenderFlowBuilder = this.rerenderFlowBuilder.bind(this)
     this.isBroadcastInvalid = this.isBroadcastInvalid.bind(this)
     this.deleteButtonIds = this.deleteButtonIds.bind(this)
+    this.deleteQuickReplyIds = this.deleteQuickReplyIds.bind(this)
     this.checkForInvalidButtons = this.checkForInvalidButtons.bind(this)
+  }
+
+  deleteQuickReplyIds (linkedMessages) {
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let messageContent = linkedMessages[i].messageContent
+      for (let j = 0; j < messageContent.length; j++) {
+        if (messageContent[j].quickReplies) {
+          for (let k = 0; k < messageContent[j].quickReplies.length; k++) {
+            delete messageContent[j].quickReplies[k].id
+          }
+        }
+      }
+    }
   }
 
 
@@ -350,6 +364,7 @@ class CreateConvo extends React.Component {
       // }
       console.log('payload before', this.state.linkedMessages[0].messageContent)
       this.deleteButtonIds(this.state.linkedMessages)
+      this.deleteQuickReplyIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
         payload: this.state.linkedMessages[0].messageContent,
@@ -739,6 +754,7 @@ class CreateConvo extends React.Component {
 					</div>
 				</div>
         <BUILDER
+          module='broadcast'
           rerenderFlowBuilder={this.rerenderFlowBuilder}
           convoTitle={this.state.convoTitle}
           handleChange={this.handleChange}
