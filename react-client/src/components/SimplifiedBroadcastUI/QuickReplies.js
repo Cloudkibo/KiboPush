@@ -76,6 +76,12 @@ class QuickReplies extends React.Component {
     this.createQuickReplyActions = this.createQuickReplyActions.bind(this)
 
     this.GSModalContent = null
+    if (this.props.setToggleQuickReply) {
+        this.props.setToggleQuickReply(this.toggleAddQuickReply)
+    }
+    if (this.props.setRemoveQuickReply) {
+        this.props.setRemoveQuickReply(this.removeQuickReply)
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -705,7 +711,7 @@ class QuickReplies extends React.Component {
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
+            <Popover container={document.getElementById('quickReplyPopover')} placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
