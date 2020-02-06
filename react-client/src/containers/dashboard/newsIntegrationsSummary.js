@@ -23,7 +23,7 @@ class NewsSummary extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
 
-    this.props.loadNewsIntegrationsSummary({days: 30, pageId: ''})
+    this.props.loadNewsIntegrationsSummary({days: 30, pageId: 'all'})
 
   }
 
