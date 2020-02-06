@@ -9,7 +9,6 @@ import {validateYoutubeURL} from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
-import { loadBroadcastsList } from '../../../redux/actions/templates.actions'
 
 import BASICBUILDER from './basicBuilder'
 import FLOWBUILDER from './flowBuilder'
@@ -105,6 +104,7 @@ class Builders extends React.Component {
     this.closeGSModal = this.closeGSModal.bind(this)
     this.deconstructUserInput = this.deconstructUserInput.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
+    this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
 
     this.GSModalContent = null
 
@@ -112,7 +112,6 @@ class Builders extends React.Component {
       props.setReset(this.reset)
     }
 
-    this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('builders props in constructor', this.props)
@@ -203,10 +202,27 @@ class Builders extends React.Component {
     let linkedMessages = this.state.linkedMessages
     let buttonPayload = JSON.parse(button.payload)
     for (let i = linkedMessages.length-1 ; i >= 0; i--) {
-      if (linkedMessages[i].id === buttonPayload.blockUniqueId) {
-        // linkedMessages[i].title = button.title
-        linkedMessages[i].parentId = this.state.currentId
-        linkedMessages[i].linkedButton = button
+      for (let j = 0; j < buttonPayload.length; j++) {
+        if (linkedMessages[i].id === buttonPayload[j].blockUniqueId) {
+          // linkedMessages[i].title = button.title
+          linkedMessages[i].parentId = this.state.currentId
+          linkedMessages[i].linkedButton = button
+        }
+      }
+    }
+    this.setState({linkedMessages})
+  }
+
+  editLinkedMessageForQuickReply (quickReply) {
+    let linkedMessages = this.state.linkedMessages
+    let quickReplyPayload = JSON.parse(quickReply.payload)
+    for (let i = linkedMessages.length-1 ; i >= 0; i--) {
+      for (let j = 0; j < quickReplyPayload.length; j++) {
+        if (linkedMessages[i].id === quickReplyPayload[j].blockUniqueId) {
+          // linkedMessages[i].title = button.title
+          linkedMessages[i].parentId = this.state.currentId
+          linkedMessages[i].linkedButton = quickReply
+        }
       }
     }
     this.setState({linkedMessages})
@@ -226,6 +242,7 @@ class Builders extends React.Component {
   handleChange (broadcast, event) {
     console.log('handleChange broadcast in basicBuilder', broadcast)
     console.log('handleChange event in basciBuilder', event)
+    //debugger;
     if (broadcast.convoTitle) {
       this.updateLinkedMessagesTitle(broadcast.convoTitle)
       this.props.handleChange({convoTitle: broadcast.convoTitle, linkedMessages: this.state.linkedMessages})
@@ -248,6 +265,9 @@ class Builders extends React.Component {
               let card = broadcastComponent.cards[j]
               this.createLinkedMessagesFromButtons(card)
             }
+          }
+          if (broadcastComponent.quickReplies) {
+            this.createLinkedMessagesFromQuickReplies(broadcastComponent)
           }
         }
         this.props.handleChange({broadcast: broadcast, linkedMessages: this.deconstructUserInput(this.state.linkedMessages), unlinkedMessages: this.state.unlinkedMessages})
@@ -280,7 +300,7 @@ class Builders extends React.Component {
                   temp.action.hubspotColumn = mapping.hubspotColumn
                 }
               }
-            } 
+            }
             delete temp.action.mapping
             userInputComponents.push(temp)
             finalMessages[x].messageContent.splice(y+i, 0, temp)
@@ -296,23 +316,102 @@ class Builders extends React.Component {
     let buttons = broadcastComponent.buttons
     for (let j = 0; j < buttons.length; j++) {
       let button = buttons[j]
-      if (button.type === 'postback' && button.payload === null) {
-        console.log('found create new message button')
-        this.addLinkedMessage(button)
-      } else {
-        if (typeof button.payload === 'string') {
-          this.editLinkedMessage(button)
+      if (button.type === 'postback') {
+        let buttonPayload = JSON.parse(button.payload)
+        for (let k = 0; k < buttonPayload.length; k++) {
+          if (buttonPayload[k].action === 'send_message_block' && !buttonPayload[k].blockUniqueId) {
+            this.addLinkedMessage(button)
+          } else if (buttonPayload[k].action === 'send_message_block' && buttonPayload[k].blockUniqueId) {
+            this.editLinkedMessage(button)
+          }
         }
       }
     }
+  }
+
+  createLinkedMessagesFromQuickReplies(broadcastComponent) {
+    let quickReplies = broadcastComponent.quickReplies
+    console.log('in createLinkedMessagesFromQuickReplies', quickReplies)
+    for (let j = 0; j < quickReplies.length; j++) {
+      let quickReply = quickReplies[j]
+      let payloads = JSON.parse(quickReply.payload)
+      for (let a = 0; a < payloads.length; a++) {
+        if (payloads[a].action === 'send_message_block' && !payloads[a].blockUniqueId) {
+          this.addLinkedMessageForQuickReply(quickReply, a)
+        } else if (payloads[a].action === 'send_message_block' && payloads[a].blockUniqueId) {
+          this.editLinkedMessageForQuickReply(quickReply)
+        }
+      }
+    }
+  }
+
+  addLinkedMessageForQuickReply (quickReply, payloadIndex) {
+    let id = new Date().getTime() + Math.floor(Math.random() * 100)
+    let data = {
+      id: id,
+      title: quickReply.title,
+      messageContent: [],
+      linkedButton: quickReply
+    }
+    let payload = JSON.parse(quickReply.payload)
+    payload[payloadIndex].blockUniqueId = id
+    quickReply.payload = JSON.stringify(payload)
+    // button.payload = JSON.stringify({
+    //   blockUniqueId: id,
+    //   action: 'send_message_block'
+    // })
+    let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
+    let quickReplies = this.state.quickReplies
+    let lists = this.state.lists
+
+    // debugger;
+    let quickReplyFound = false
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let message = linkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let messageContent = message.messageContent[j]
+        let quickReplies = []
+        if (messageContent.quickReplies && messageContent.quickReplies.length > 0) {
+          quickReplies = messageContent.quickReplies
+        }
+        for (let k = 0; k < quickReplies.length; k++) {
+          let payloads = JSON.parse(quickReplies[k].payload)
+          for (let a = 0; a < payloads.length; a++) {
+            if (payloads[a].action === 'send_message_block') {
+              quickReplyFound = true
+              break
+            }
+          }
+        }
+        if (quickReplyFound) {
+          break
+        }
+      }
+      if (quickReplyFound) {
+        break
+      }
+    }
+    console.log('quickReplyFound', quickReplyFound)
+    console.log('this.state.currentId', this.state.currentId)
+    if (quickReplyFound) {
+      data.parentId = this.state.currentId
+      linkedMessages.push(data)
+    } else {
+      data.parentId = this.state.currentId
+      unlinkedMessages.push(data)
+    }
+    lists[id] = []
+    quickReplies[id] = []
+    this.setState({linkedMessages, lists, quickReplies})
   }
 
   removeLinkedMessages (deletePayload) {
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     deletePayload = deletePayload.map(payload => {
-      if (payload && typeof payload === 'string') {
-        return JSON.parse(payload).blockUniqueId
+      if (payload && payload.action === 'send_message_block') {
+        return payload.blockUniqueId
       }
       return null
     }).filter(payload => !!payload)
@@ -362,14 +461,19 @@ class Builders extends React.Component {
       messageContent: [],
       linkedButton: button
     }
-    button.payload = JSON.stringify({
-      blockUniqueId: id,
-      action: 'send_message_block'
-    })
+    let buttonPayload = JSON.parse(button.payload)
+    for (let i = 0; i < buttonPayload.length; i++) {
+      if (buttonPayload[i].action === 'send_message_block' && !buttonPayload[i].blockUniqueId) {
+        buttonPayload[i].blockUniqueId = id
+        break
+      }
+    }
+    button.payload = JSON.stringify(buttonPayload)
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     let quickReplies = this.state.quickReplies
     let lists = this.state.lists
+    console.log('linkedMessages in buttons', linkedMessages)
 
     // debugger;
     let buttonFound = false
@@ -413,7 +517,7 @@ class Builders extends React.Component {
     this.setState({linkedMessages, lists, quickReplies})
   }
 
-  updateQuickReplies (quickRepliesValue, quickRepliesIndex) {
+  updateQuickReplies (quickRepliesValue, quickRepliesIndex, deletePayload) {
     return new Promise ((resolve, reject) => {
       console.log('updateQuickReplies', quickRepliesValue)
       let quickReplies = this.state.quickReplies
@@ -426,7 +530,7 @@ class Builders extends React.Component {
       this.setState({quickReplies, broadcast, quickRepliesIndex}, () => {
         resolve()
       })
-      this.handleChange({broadcast}, {})
+      this.handleChange({broadcast}, {deletePayload})
     })
   }
 
@@ -589,7 +693,7 @@ class Builders extends React.Component {
   //               temp[a].action.hubspotColumn = mapping.hubspotColumn
   //             }
   //           }
-  //         } 
+  //         }
   //         isPresent = true
   //       }
   //     }
@@ -610,11 +714,11 @@ class Builders extends React.Component {
   //           }
   //         }
   //       }
-  //       delete action.mapping 
+  //       delete action.mapping
   //       temp.push({
-  //         id: obj.id, 
-  //         ...obj.questions[i], 
-  //         componentType: 'userInput', 
+  //         id: obj.id,
+  //         ...obj.questions[i],
+  //         componentType: 'userInput',
   //         action: action})
   //       console.log('userInput temp add', temp)
   //     }
@@ -1317,7 +1421,8 @@ class Builders extends React.Component {
             size: broadcast.size,
             type: broadcast.type,
             mediaType: broadcast.mediaType,
-            buttons: broadcast.buttons ? broadcast.buttons : []})
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            deletePayload: broadcast.deletePayload})
         }
       },
       'userInput': {
@@ -1352,7 +1457,6 @@ class Builders extends React.Component {
           closeGSModal={this.closeGSModal}
           customFields={this.state.customFields}
           sequences={this.props.sequences}
-          broadcasts={this.props.broadcasts}
           tags={this.props.tags}
           quickReplies={quickReplies}
           updateQuickReplies={this.updateQuickReplies}
@@ -1378,7 +1482,6 @@ class Builders extends React.Component {
                 closeGSModal={this.closeGSModal}
                 customFields={this.state.customFields}
                 sequences={this.props.sequences}
-                broadcasts={this.props.broadcasts}
                 tags={this.props.tags}
                 quickReplies={this.state.quickReplies[id]}
                 updateQuickReplies={this.updateQuickReplies}
@@ -1609,7 +1712,6 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sequences: state.sequenceInfo.sequences,
-    broadcasts: state.templatesInfo.broadcasts,
     tags: state.tagsInfo.tags
   }
 }
@@ -1617,7 +1719,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       fetchAllSequence: fetchAllSequence,
-      loadBroadcastsList: loadBroadcastsList,
       loadTags: loadTags
   }, dispatch)
 }
