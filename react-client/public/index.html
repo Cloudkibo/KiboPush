@@ -123,8 +123,8 @@
       .tooltip.show.bs-tooltip-top {
         z-index: 99999
       }
-      .popover {
-        z-index: 0
+      #quickReplyPopover {
+        z-index: 1
       }
     </style>
     <!--
@@ -140,6 +140,7 @@
   </head>
   <body class="m-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id='quickReplyPopover'></div>
     <div id="content" class="m-grid m-grid--hor m-grid--root m-page"></div>
     <script src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous"></script>
     <script>
