@@ -13,7 +13,7 @@ class adSet extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      page: (this.props.pageId && this.props.adSetPayload.adset_name)? this.props.pageId :this.props.pages[0].pageId,
+      page: (this.props.pageId && this.props.adSetPayload && this.props.adSetPayload.adset_name)? this.props.pageId :this.props.pages[0].pageId,
       ad_set_payload: {
         adset_name: (this.props.adSetPayload && this.props.adSetPayload.adset_name)? this.props.adSetPayload.adset_name : '' ,
         gender: (this.props.adSetPayload && this.props.adSetPayload.gender)? this.props.adSetPayload.gender : 'all',
