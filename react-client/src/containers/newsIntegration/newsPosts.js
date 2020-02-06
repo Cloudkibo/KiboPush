@@ -291,7 +291,7 @@ class FeedPosts extends React.Component {
             </div>
             <div className='m-portlet__foot m-portlet__foot--fit'>
               <div className='col-12' style={{textAlign: 'right', paddingTop: '30px', paddingBottom: '30px'}}>
-                <Link to='/rssIntegration'>
+                <Link to='/newsIntegration'>
                   <button className='btn btn-secondary'>
                     Back
                   </button>
