@@ -148,9 +148,9 @@ class NewsIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
     } else {
-      this.props.fetchFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
     }
   }
   onPageFilter (e) {
@@ -300,7 +300,7 @@ class NewsIntegrations extends React.Component {
   gotoMessages (feed) {
     this.props.saveCurrentFeed(feed)
     this.props.history.push({
-      pathname: `/feedPosts`
+      pathname: `/newsPosts`
     })
   }
 

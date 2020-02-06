@@ -44,6 +44,7 @@ import CreateFeed from './containers/rssIntegration/createFeed'
 import CreateNewsSection from './containers/newsIntegration/createNewsSection'
 import UpdateStories from './containers/newsIntegration/updateStories'
 import FeedPosts from './containers/rssIntegration/feedPosts'
+import NewsPosts from './containers/newsIntegration/newsPosts'
 import MessagesContainer from './containers/autoposting/messagesContainer'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/livechat'
@@ -221,6 +222,7 @@ const Routes = () => (
     <Route path='/editFeed' component={CreateFeed} onEnter={requireAuth} />
     <Route path='/updateStories' component={UpdateStories} onEnter={requireAuth} />
     <Route path='/feedPosts' component={FeedPosts} onEnter={requireAuth} />
+    <Route path='/newsPosts' component={NewsPosts} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
