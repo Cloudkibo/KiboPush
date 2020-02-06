@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
-import { createRssFeed, updateFeed } from '../../redux/actions/rssIntegration.actions'
+import { createNewsFeed, updateNewsFeed } from '../../redux/actions/rssIntegration.actions'
 import { RingLoader } from 'halogenium'
 
 class CreateFeed extends React.Component {
@@ -94,13 +94,13 @@ class CreateFeed extends React.Component {
       integrationType: 'manual'
     }
     if (!this.props.currentFeed) {
-      this.props.createRssFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
+      this.props.createNewsFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
     } else {
       var data = {
         feedId: this.props.currentFeed._id,
         updatedObject: rssPayload
       }
-      this.props.updateFeed(data, this.msg, false, () => {this.setState({ loading: false})})
+      this.props.updateNewsFeed(data, this.msg, false, () => {this.setState({ loading: false})})
     }
   }
 
@@ -307,8 +307,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      createRssFeed: createRssFeed,
-      updateFeed: updateFeed
+      createNewsFeed: createNewsFeed,
+      updateNewsFeed: updateNewsFeed
     },
     dispatch)
 }
