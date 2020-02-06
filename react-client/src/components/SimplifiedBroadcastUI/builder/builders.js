@@ -1348,6 +1348,8 @@ class Builders extends React.Component {
     return {
       content:
         <QuickReplies
+          setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
+          setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
           toggleGSModal={this.toggleGSModal}
           closeGSModal={this.closeGSModal}
           customFields={this.state.customFields}
@@ -1374,6 +1376,8 @@ class Builders extends React.Component {
           quickRepliesComponents[id] = {
             content:
               <QuickReplies
+                setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
+                setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
                 toggleGSModal={this.toggleGSModal}
                 closeGSModal={this.closeGSModal}
                 customFields={this.state.customFields}
@@ -1412,6 +1416,62 @@ class Builders extends React.Component {
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} /> 
+
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                  <div style={{ display: 'block' }} className="modal-header">
+                      <h5 className="modal-title" id="exampleModalLabel">Warning</h5>
+                      <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  {
+                      <div style={{ color: 'black' }} className="modal-body">
+                          <p>Are you sure you want to close this quick reply and lose all the data that was entered?</p>
+                          <button style={{ float: 'right', marginLeft: '10px' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                              this.toggleAddQuickReply()
+                          }} data-dismiss='modal'>Yes
+                          </button>
+                              <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              data-dismiss='modal'>Cancel
+                          </button>
+                      </div>
+                  }
+              </div>
+          </div>
+      </div>
+
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                  <div style={{ display: 'block' }} className="modal-header">
+                      <h5 className="modal-title" id="exampleModalLabel">Warning</h5>
+                      <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  {
+                      <div style={{ color: 'black' }} className="modal-body">
+                          <p>Do you want to delete this quick reply?</p>
+                          <button style={{ float: 'right', marginLeft: '10px' }}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                              this.removeQuickReply()
+                          }} data-dismiss='modal'>Yes
+                          </button>
+                          <button style={{ float: 'right' }}
+                              className='btn btn-primary btn-sm'
+                              data-dismiss='modal'>No
+                          </button>
+                      </div>
+                  }
+              </div>
+          </div>
+      </div>
 
       <a href='#/' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
