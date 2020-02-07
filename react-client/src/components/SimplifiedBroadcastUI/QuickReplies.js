@@ -309,7 +309,7 @@ class QuickReplies extends React.Component {
   }
 
   checkIfEdited () {
-    if (!this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
+    if (this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
         this.setState({editing: true})
     } else {
         this.setState({editing: false})
