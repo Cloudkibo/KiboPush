@@ -231,14 +231,14 @@ class Autoposting extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Add Feed
 									          </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button ref='addFeedClose' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
                     &times;
 											        </span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel module='wizard' onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
+                <AddChannel module='wizard' addFeedClose={this.refs.addFeedClose} onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
               </div>
             </div>
           </div>
