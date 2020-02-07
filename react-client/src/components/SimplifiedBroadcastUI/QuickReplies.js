@@ -25,6 +25,7 @@ class QuickReplies extends React.Component {
     if (this.props.tags && this.props.tags.length > 0) {
         actions.push('assign_tag', 'unassign_tag')
     }
+    this.quickReplyLimit = 13
     this.state = {
         actions,
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
@@ -309,7 +310,7 @@ class QuickReplies extends React.Component {
   }
 
   checkIfEdited () {
-    if (!this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
+    if (this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
         this.setState({editing: true})
     } else {
         this.setState({editing: false})
@@ -705,7 +706,7 @@ class QuickReplies extends React.Component {
             }
 
             {
-                this.state.quickReplies.length < 10 &&
+                this.state.quickReplies.length < this.quickReplyLimit &&
                 <button id={'addQuickReply'+this.props.currentId} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
