@@ -30,7 +30,11 @@ class BasicBuilder extends React.Component {
                         this.props.linkedMessages.map((message, index) =>
                         <li key={message.id}>
                           <a href='#/' className={'broadcastTabs' + (this.props.currentId === message.id ? ' active' : '')} onClick={() => this.props.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
-                            {message.title}
+                          {
+                            !this.props.titleEditable || this.props.currentId !== message.id
+                            ? <h7> {message.title} </h7>
+                            : <h7>{message.title} <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer', color: 'black', marginLeft: '10px'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h7>
+                          }
                           </a>
                         </li>
                         )
@@ -39,17 +43,29 @@ class BasicBuilder extends React.Component {
                         this.props.unlinkedMessages.map((message, index) =>
                         <li key={message.id}>
                           <a href='#/' className={'broadcastTabs' + (this.props.currentId === message.id ? ' active' : '')} onClick={() => this.props.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px', color: 'red'}}>
-                            {message.title}
+                          {
+                            !this.props.titleEditable
+                            ? <h7> {message.title} </h7>
+                            : <h7>{message.title} <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h7>
+                          }
                           </a>
                         </li>
                         )
                       }
                       </ul>
                     }
+                      {/* <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px', zIndex: 1}} className='ui-block'>
+                        <div style={{padding: '5px'}}>
+                          {
+                            !this.props.titleEditable
+                            ? <h3> {this.props.convoTitle} </h3>
+                            : <h3>{this.props.convoTitle} <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                          }
+                        </div>
+                      </div> */}
                     <div className='tab-content'>
                       <div className='tab-pane fade active in' id='tab_1'>
                         <GenericMessage
-                          titleEditable
                           convoTitle={this.props.convoTitle}
                           showDialog={this.props.showDialog}
                           hiddenComponents={this.props.hiddenComponents}
