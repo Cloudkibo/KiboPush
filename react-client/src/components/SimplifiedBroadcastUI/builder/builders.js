@@ -44,6 +44,7 @@ class Builders extends React.Component {
     let quickReplies = {}
     quickReplies[currentId] = []
     this.state = {
+      tempConvoTitle: this.props.convoTitle,
       customFields: [],
       lists,
       quickReplies,
@@ -105,6 +106,7 @@ class Builders extends React.Component {
     this.deconstructUserInput = this.deconstructUserInput.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
+    this.titleChange = this.titleChange.bind(this)
 
     this.GSModalContent = null
 
@@ -115,6 +117,10 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('builders props in constructor', this.props)
+  }
+
+  titleChange (e) {
+    this.setState({tempConvoTitle: e.target.value})
   }
 
   onLoadCustomFields (customFields) {
@@ -149,7 +155,7 @@ class Builders extends React.Component {
         let messageIndex = messages.findIndex(m => m.id === id)
         if (messageIndex > -1) {
           console.log('changing message', this.state.linkedMessages[messageIndex])
-          this.setState({currentId: id}, () => {
+          this.setState({currentId: id, tempConvoTitle: this.state.linkedMessages[messageIndex].title}, () => {
             // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
             // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
             // this.initializeList(list)
@@ -630,13 +636,13 @@ class Builders extends React.Component {
   renameTitle () {
     console.log('in renameTitle')
     console.log('default title', this.defaultTitle)
-    if (this.titleConvo.value === '') {
+    if (this.state.tempConvoTitle === '') {
       return
     }
     console.log('renaming title')
-    this.setState({convoTitle: this.titleConvo.value})
+    this.setState({convoTitle: this.state.tempConvoTitle})
     this.closeDialog()
-    this.handleChange({convoTitle: this.titleConvo.value}, {})
+    this.handleChange({convoTitle: this.state.tempConvoTitle}, {})
   }
 
   handleText (obj) {
@@ -1591,8 +1597,8 @@ class Builders extends React.Component {
               </button>
             </div>
             <div style={{ color: 'black' }} className="modal-body">
-              <input style={{ maxWidth: '300px', float: 'left', margin: 2 }} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-              <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal'>Save</button>
+              <input style={{ maxWidth: '300px', float: 'left', margin: 2 }} value={this.state.tempConvoTitle} onChange={this.titleChange} type='text' className='form-control' />
+              <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal' disabled={!this.state.tempConvoTitle}>Save</button>
             </div>
           </div>
         </div>
